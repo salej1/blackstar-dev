@@ -13,101 +13,214 @@
 ******************************************************************************/
 
 
--- CREACION DE LA BASE DE DATOS
-CREATE DATABASE IF NOT EXISTS `blackstarDb`;
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL';
 
--- CREACION DEL FIELD POINTER
-CREATE TABLE IF NOT EXISTS `blackstarDb`.`fieldPtr` (
-  `fieldPointerId` INT NOT NULL ,
-  `entity` VARCHAR(45) NULL ,
-  `field` VARCHAR(45) NULL ,
-  `desc` VARCHAR(45) NULL ,
-  `sizeLimit` INT NULL ,
-  `created` DATETIME NULL ,
-  `createdBy` VARCHAR(45) NULL ,
+CREATE SCHEMA IF NOT EXISTS `blackstardb` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci ;
+USE `blackstardb` ;
+
+-- -----------------------------------------------------
+-- Table `blackstardb`.`equipmenttype`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `blackstardb`.`equipmenttype` (
+  `equipmentTypeId` INT(11) NOT NULL AUTO_INCREMENT ,
+  `equipmentType` VARCHAR(45) NOT NULL ,
+  PRIMARY KEY (`equipmentTypeId`) )
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1
+COLLATE = latin1_swedish_ci;
+
+
+-- -----------------------------------------------------
+-- Table `blackstardb`.`fieldptr`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `blackstardb`.`fieldptr` (
+  `fieldPointerId` INT(11) NOT NULL AUTO_INCREMENT ,
+  `entity` VARCHAR(45) NULL DEFAULT NULL ,
+  `field` VARCHAR(45) NULL DEFAULT NULL ,
+  `desc` VARCHAR(45) NULL DEFAULT NULL ,
+  `sizeLimit` INT(11) NULL DEFAULT NULL ,
+  `created` DATETIME NULL DEFAULT NULL ,
+  `createdBy` VARCHAR(45) NULL DEFAULT NULL ,
   PRIMARY KEY (`fieldPointerId`) )
-ENGINE = InnoDB;
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1
+COLLATE = latin1_swedish_ci;
 
--- CREACION DE LA TABLA DE POLIZAS
-CREATE TABLE IF NOT EXISTS `blackstarDb`.`policy` (
-  `policyId` int(11) NOT NULL DEFAULT '0',
-  `office` varchar(10) DEFAULT NULL,
-  `policyType` varchar(10) DEFAULT NULL,
-  `customerContract` varchar(50) DEFAULT NULL,
-  `customer` varchar(50) DEFAULT NULL,
-  `finalUser` varchar(50) DEFAULT NULL,
-  `project` varchar(10) DEFAULT NULL,
-  `cst` varchar(50) DEFAULT NULL,
-  `equipmentType` varchar(10) DEFAULT NULL,
-  `brand` varchar(50) DEFAULT NULL,
-  `model` varchar(50) DEFAULT NULL,
-  `serialNumber` varchar(50) DEFAULT NULL,
-  `capacity` varchar(10) DEFAULT NULL,
-  `equipmentAddress` varchar(100) DEFAULT NULL,
-  `equipmentLocation` varchar(100) DEFAULT NULL,
-  `contact` varchar(100) DEFAULT NULL,
-  `contactEmail` varchar(100) DEFAULT NULL,
-  `contactPhone` varchar(50) DEFAULT NULL,
-  `startDate` datetime DEFAULT NULL,
-  `endDate` datetime DEFAULT NULL,
-  `visitsPerYear` int(11) DEFAULT NULL,
-  `responseTimeHr` int(11) DEFAULT NULL,
-  `solutionTimeHr` int(11) DEFAULT NULL,
-  `penalty` varchar(100) DEFAULT NULL,
-  `service` varchar(10) DEFAULT NULL,
-  `includesParts` tinyint(1) DEFAULT NULL,
-  `exceptionParts` varchar(10) DEFAULT NULL,
-  `serviceCenter` varchar(10) DEFAULT NULL,
-  `observations` text,
-  `created` datetime NOT NULL,
-  `createdBy` varchar(45) NOT NULL,
-  `createdByUsr` varchar(45) NOT NULL,
-  `modified` datetime DEFAULT NULL,
-  `modifiedBy` varchar(45) DEFAULT NULL,
-  `modifiedByUsr` varchar(45) DEFAULT NULL,
-  PRIMARY KEY (`policyId`),
-  KEY `SERIAL` (`serialNumber`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
--- CREACION DE LA TABLA DE ESTATUS TICKETS
-CREATE TABLE IF NOT EXISTS `blackstarDb`.`ticketStatus` (
-  `ticketStatusId` int(11) NOT NULL,
-  `ticketStatus` varchar(10) NOT NULL,
-  PRIMARY KEY (`ticketStatusId`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+-- -----------------------------------------------------
+-- Table `blackstardb`.`policy`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `blackstardb`.`policy` (
+  `policyId` INT(11) NOT NULL AUTO_INCREMENT ,
+  `office` VARCHAR(10) NULL DEFAULT NULL ,
+  `policyType` VARCHAR(10) NULL DEFAULT NULL ,
+  `customerContract` VARCHAR(50) NULL DEFAULT NULL ,
+  `customer` VARCHAR(50) NULL DEFAULT NULL ,
+  `finalUser` VARCHAR(50) NULL DEFAULT NULL ,
+  `project` VARCHAR(10) NULL DEFAULT NULL ,
+  `cst` VARCHAR(50) NULL DEFAULT NULL ,
+  `equipmentTypeId` INT(11) NOT NULL ,
+  `brand` VARCHAR(50) NULL DEFAULT NULL ,
+  `model` VARCHAR(50) NULL DEFAULT NULL ,
+  `serialNumber` VARCHAR(50) NULL DEFAULT NULL ,
+  `capacity` VARCHAR(10) NULL DEFAULT NULL ,
+  `equipmentAddress` VARCHAR(100) NULL DEFAULT NULL ,
+  `equipmentLocation` VARCHAR(100) NULL DEFAULT NULL ,
+  `contact` VARCHAR(100) NULL DEFAULT NULL ,
+  `contactEmail` VARCHAR(100) NULL DEFAULT NULL ,
+  `contactPhone` VARCHAR(50) NULL DEFAULT NULL ,
+  `startDate` DATETIME NULL DEFAULT NULL ,
+  `endDate` DATETIME NULL DEFAULT NULL ,
+  `visitsPerYear` INT(11) NULL DEFAULT NULL ,
+  `responseTimeHr` INT(11) NULL DEFAULT NULL ,
+  `solutionTimeHr` INT(11) NULL DEFAULT NULL ,
+  `penalty` VARCHAR(100) NULL DEFAULT NULL ,
+  `service` VARCHAR(10) NULL DEFAULT NULL ,
+  `includesParts` TINYINT(1) NULL DEFAULT NULL ,
+  `exceptionParts` VARCHAR(10) NULL DEFAULT NULL ,
+  `serviceCenter` VARCHAR(10) NULL DEFAULT NULL ,
+  `observations` TEXT NULL DEFAULT NULL ,
+  `created` DATETIME NOT NULL ,
+  `createdBy` VARCHAR(45) NOT NULL ,
+  `createdByUsr` VARCHAR(45) NOT NULL ,
+  `modified` DATETIME NULL DEFAULT NULL ,
+  `modifiedBy` VARCHAR(45) NULL DEFAULT NULL ,
+  `modifiedByUsr` VARCHAR(45) NULL DEFAULT NULL ,
+  PRIMARY KEY (`policyId`) ,
+  INDEX `SERIAL` (`serialNumber` ASC) ,
+  INDEX `POLICY_EQUIPMENTTYPEID_EQUIPMENTTYPE_EQUIPMENTTYPEID` (`equipmentTypeId` ASC) ,
+  CONSTRAINT `POLICY_EQUIPMENTTYPEID_EQUIPMENTTYPE_EQUIPMENTTYPEID`
+    FOREIGN KEY (`equipmentTypeId` )
+    REFERENCES `blackstardb`.`equipmenttype` (`equipmentTypeId` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1
+COLLATE = latin1_swedish_ci;
 
--- CREACION DE LA TABLA DE TICKETS
-CREATE TABLE IF NOT EXISTS `blackstarDb`.`ticket` (
-  `ticketId` int(11) NOT NULL,
-  `ticketNumber` varchar(10) NOT NULL,
-  `user` varchar(45) DEFAULT NULL,
-  `contact` varchar(45) DEFAULT NULL,
-  `contactPhone` varchar(45) DEFAULT NULL,
-  `contactEmail` varchar(45) DEFAULT NULL,
-  `serialNumber` varchar(45) DEFAULT NULL,
-  `observations` text,
-  `phoneResolved` bit(1) DEFAULT NULL,
-  `arrival` datetime DEFAULT NULL,
-  `realResponseTime` int(11) DEFAULT NULL,
-  `responseTimeDeviation` int(11) DEFAULT NULL,
-  `followUp` text,
-  `closed` datetime DEFAULT NULL,
-  `serviceOrderNumber` varchar(45) DEFAULT NULL,
-  `employee` varchar(45) DEFAULT NULL,
-  `asignee` varchar(45) DEFAULT NULL,
-  `solutionTime` int(11) DEFAULT NULL,
-  `solutionTimeDeviationHr` int(11) DEFAULT NULL,
-  `status` int(11) DEFAULT NULL,
-  `created` datetime DEFAULT NULL,
-  `createdBy` varchar(45) DEFAULT NULL,
-  `createdByUsr` varchar(45) DEFAULT NULL,
-  `modified` datetime DEFAULT NULL,
-  `modifiedBy` varchar(45) DEFAULT NULL,
-  `modifiedByUsr` varchar(45) DEFAULT NULL,
-  PRIMARY KEY (`ticketId`),
-  UNIQUE KEY `ticketNumber_UNIQUE` (`ticketNumber`),
-  KEY `TICKET_SERIAL_POLICY_SERIAL` (`serialNumber`),
-  CONSTRAINT `TICKET_SERIAL_POLICY_SERIAL` FOREIGN KEY (`serialNumber`) REFERENCES `policy` (`serialNumber`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- -----------------------------------------------------
+-- Table `blackstardb`.`servicetype`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `blackstardb`.`servicetype` (
+  `serviceTypeId` INT(11) NOT NULL AUTO_INCREMENT ,
+  `serviceType` VARCHAR(20) NOT NULL ,
+  PRIMARY KEY (`serviceTypeId`) )
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1
+COLLATE = latin1_swedish_ci;
+
+
+-- -----------------------------------------------------
+-- Table `blackstardb`.`ticketstatus`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `blackstardb`.`ticketstatus` (
+  `ticketStatusId` INT(11) NOT NULL AUTO_INCREMENT ,
+  `ticketStatus` VARCHAR(10) NOT NULL ,
+  PRIMARY KEY (`ticketStatusId`) )
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1
+COLLATE = latin1_swedish_ci;
+
+
+-- -----------------------------------------------------
+-- Table `blackstardb`.`ticket`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `blackstardb`.`ticket` (
+  `ticketId` INT(11) NOT NULL AUTO_INCREMENT ,
+  `ticketNumber` VARCHAR(10) NOT NULL ,
+  `user` VARCHAR(45) NULL DEFAULT NULL ,
+  `contact` VARCHAR(45) NULL DEFAULT NULL ,
+  `contactPhone` VARCHAR(45) NULL DEFAULT NULL ,
+  `contactEmail` VARCHAR(45) NULL DEFAULT NULL ,
+  `serialNumber` VARCHAR(45) NULL DEFAULT NULL ,
+  `observations` TEXT NULL DEFAULT NULL ,
+  `phoneResolved` BIT(1) NULL DEFAULT NULL ,
+  `arrival` DATETIME NULL DEFAULT NULL ,
+  `realResponseTime` INT(11) NULL DEFAULT NULL ,
+  `responseTimeDeviation` INT(11) NULL DEFAULT NULL ,
+  `followUp` TEXT NULL DEFAULT NULL ,
+  `closed` DATETIME NULL DEFAULT NULL ,
+  `serviceOrderNumber` VARCHAR(45) NULL DEFAULT NULL ,
+  `employee` VARCHAR(45) NULL DEFAULT NULL ,
+  `asignee` VARCHAR(45) NULL DEFAULT NULL ,
+  `solutionTime` INT(11) NULL DEFAULT NULL ,
+  `solutionTimeDeviationHr` INT(11) NULL DEFAULT NULL ,
+  `ticketStatusId` INT(11) NULL DEFAULT NULL ,
+  `created` DATETIME NULL DEFAULT NULL ,
+  `createdBy` VARCHAR(45) NULL DEFAULT NULL ,
+  `createdByUsr` VARCHAR(45) NULL DEFAULT NULL ,
+  `modified` DATETIME NULL DEFAULT NULL ,
+  `modifiedBy` VARCHAR(45) NULL DEFAULT NULL ,
+  `modifiedByUsr` VARCHAR(45) NULL DEFAULT NULL ,
+  PRIMARY KEY (`ticketId`) ,
+  UNIQUE INDEX `ticketNumber_UNIQUE` (`ticketNumber` ASC) ,
+  INDEX `TICKET_SERIAL_POLICY_SERIAL` (`serialNumber` ASC) ,
+  INDEX `TICKET_STATUSID_TICKETSTATUS_STATUSID` (`ticketStatusId` ASC) ,
+  CONSTRAINT `TICKET_STATUSID_TICKETSTATUS_STATUSID`
+    FOREIGN KEY (`ticketStatusId` )
+    REFERENCES `blackstardb`.`ticketstatus` (`ticketStatusId` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `TICKET_SERIAL_POLICY_SERIAL`
+    FOREIGN KEY (`serialNumber` )
+    REFERENCES `blackstardb`.`policy` (`serialNumber` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1
+COLLATE = latin1_swedish_ci;
+
+
+-- -----------------------------------------------------
+-- Table `blackstardb`.`servicetx`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `blackstardb`.`servicetx` (
+  `serviceTxId` INT(11) NOT NULL AUTO_INCREMENT ,
+  `serviceNumber` VARCHAR(50) NULL DEFAULT NULL ,
+  `tickeId` INT(11) NULL DEFAULT NULL ,
+  `serviceUnit` VARCHAR(10) NULL DEFAULT NULL ,
+  `project` VARCHAR(10) NULL DEFAULT NULL ,
+  `customer` VARCHAR(50) NULL DEFAULT NULL ,
+  `city` VARCHAR(50) NULL DEFAULT NULL ,
+  `address` VARCHAR(200) NULL DEFAULT NULL ,
+  `serviceTypeId` INT(11) NULL DEFAULT NULL ,
+  `serviceDate` DATETIME NULL DEFAULT NULL ,
+  `serialNumber` VARCHAR(50) NULL DEFAULT NULL ,
+  `responsible` VARCHAR(100) NULL DEFAULT NULL ,
+  `receivedBy` VARCHAR(100) NULL DEFAULT NULL ,
+  `serviceComments` TEXT NULL DEFAULT NULL ,
+  `closed` DATETIME NULL DEFAULT NULL ,
+  `follwUp` TEXT NULL DEFAULT NULL ,
+  `spares` VARCHAR(100) NULL DEFAULT NULL ,
+  `consultant` VARCHAR(100) NULL DEFAULT NULL ,
+  `contractorCompany` VARCHAR(100) NULL DEFAULT NULL ,
+  `serviceRate` INT(11) NULL DEFAULT NULL ,
+  `customerComments` TEXT NULL DEFAULT NULL ,
+  PRIMARY KEY (`serviceTxId`) ,
+  INDEX `serviceNumber` (`serviceNumber` ASC) ,
+  INDEX `SERVICETX_TICKETID_TICKET_TICKETID` (`tickeId` ASC) ,
+  INDEX `SERVICETS_SERVICETYPEID_SERVICETYPE_SERVICETYPEID` (`serviceTypeId` ASC) ,
+  CONSTRAINT `SERVICETS_SERVICETYPEID_SERVICETYPE_SERVICETYPEID`
+    FOREIGN KEY (`serviceTypeId` )
+    REFERENCES `blackstardb`.`servicetype` (`serviceTypeId` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `SERVICETX_TICKETID_TICKET_TICKETID`
+    FOREIGN KEY (`tickeId` )
+    REFERENCES `blackstardb`.`ticket` (`ticketId` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1
+COLLATE = latin1_swedish_ci;
+
+
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 
 -- END
