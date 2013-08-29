@@ -1,0 +1,13 @@
+/* Styles for signature plugin v1.1.0. */
+.kbw-signature {
+	display: inline-block;
+	width: 330px; 
+	height: 90px;
+	background-color: #FFFFFF;
+	color: #888888;
+	border: 1px dashed #BDBDBD;;
+	text-align: center;
+	top: 1px;
+	left: 1px;
+	float: none;
+}

@@ -1,0 +1,89 @@
+body {
+	background:#F7F4E9 url(body.png) repeat-x top center;
+}
+small {
+	color:#333333
+}
+
+#navigation,.active,.pagination a:hover,.date td a:hover {
+	background:rgb(20, 63, 145);
+	color:#fff
+}
+
+th{
+	background:#4186D3;
+	color:#fff
+}
+
+select, textarea, input, td, #content, #foot {
+	background:#fff url(gradient.png) repeat-x 0 -28px
+}
+tr {
+	background-position:0 -18px;
+}
+#content {
+	background-position:0 1px;
+}
+
+#head{
+	color:#333333;
+}
+
+.active, th, #navigation a {
+	color:#fff;
+}
+
+input, select, textarea {
+	border-color:#ddd
+}
+
+h1,h2,h3,h4,h5,h6 {
+	border-color:#ddd
+}
+
+a {
+	color:#888
+}
+a.edit {
+	background-image:url(edit.png)
+}
+a.delete {
+	background-image:url(trash.png)
+}
+
+#head {
+	background:#FFFFFF
+}
+
+#navigation a:hover {
+	background:#0F4DA8
+}
+#navigation .active {
+	background:#6A94D4
+}
+
+.box,.box > .utils a {
+	background:#fff;
+	border-color:#eee
+}
+.box > h2 {
+	background:url(box-h2.png) repeat-x bottom center #fff
+}
+
+.error,.success,.info,.error a,.success a,.info a {
+	color:#fff
+}
+.error {
+	background:#901830
+}
+.success {
+	background:#C2EFC2
+}
+
+.glow-sortable-dropindicator {
+	background:#eee
+}
+
+tr:hover {
+	background:#6A94D4
+}
