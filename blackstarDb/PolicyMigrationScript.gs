@@ -54,6 +54,10 @@ function startLoadJob(conn) {
 	}  
 }
 
+String.prototype.trim = function() {
+	return this.replace(/^\s+|\s+$/g,"");
+}
+
 function sendToDatabase(policy, conn, eqTypes){
 	// sql string initialization
 	var sql = "	INSERT INTO `blackstarDb`.`policy`	\
@@ -92,40 +96,47 @@ function sendToDatabase(policy, conn, eqTypes){
 	VALUES(";
 	
 	// reading the values
-	var office = policy[0];
-	var policyType = policy[1];
-	var customerContract = policy[2];
-	var customer = policy[3];
-	var finalUser = policy[4];
-	var project = policy[5];
-	var cst = policy[6];
-	var equipmentType = policy[7];
-	var brand = policy[8];
-	var model = policy[9];
-	var serialNumber = policy[10];
-	var capacity = policy[11];
-	var equipmentAddress = policy[12];
-	var equipmentLocation = policy[13];
-	var contact = policy[14];
-	var contactEmail = policy[15];
-	var contactPhone = policy[16];
-	var startDate = policy[17];
-	var endDate = policy[18];
-	var visitsPerYear = policy[19];
-	var responseTimeHr = policy[20];
-	var solutionTimeHr = policy[21];
-	var penalty = policy[22];
-	var service = policy[23];
-	var includesParts = policy[24];
-	var exceptionParts = policy[25];
-	var serviceCenter = policy[26];
-	var observations = policy[27];
+	var ix = 1;
+	var office = policy[ix]; ix++;
+	var policyType = policy[ix]; ix++;
+	var customerContract = policy[ix]; ix++;
+	var customer = policy[ix]; ix++;
+	var finalUser = policy[ix]; ix++;
+	var project = policy[ix]; ix++;
+	var cst = policy[ix]; ix++;
+	var equipmentType = policy[ix]; ix++;
+	var brand = policy[ix]; ix++;
+	var model = policy[ix]; ix++;
+	var serialNumber = policy[ix]; ix++;
+	var capacity = policy[ix]; ix++;
+	var equipmentAddress = policy[ix]; ix++;
+	var equipmentLocation = policy[ix]; ix++;
+	var contact = policy[ix]; ix++;
+	var contactEmail = policy[ix]; ix++;
+	var contactPhone = policy[ix]; ix++;
+	var startDate = policy[ix]; ix++;
+	var endDate = policy[ix]; ix++;
+	var visitsPerYear = policy[ix]; ix++;
+	var responseTimeHr = policy[ix]; ix++;
+	if(responseTimeHr == "NA"){
+		responseTimeHr = "168";
+	}
+	var solutionTimeHr = policy[ix]; ix++;
+	if(solutionTimeHr == "NA"){
+		solutionTimeHr = "408";
+	}
+	var penalty = policy[ix]; ix++;
+	var service = policy[ix]; ix++;
+	var includesParts = policy[ix]; ix++;
+	var exceptionParts = policy[ix]; ix++;
+	var serviceCenter = policy[ix]; ix++;
+	var observations = policy[ix]; ix++;
 	var created = new Date();
 	var createdBy = "PolicyMigrationScript";
 	var createdByUsr = "sergio.aga";
 
 	// fetching derived values
-	var equipmentTypeId = eqTypes[equipmentType];
+	var equipmentTypeId = eqTypes[equipmentType.trim()];
 	
 	if(equipmentTypeId == null){
 		throw Utilities.formatString("equipmentType %s could not be found", equipmentType);
