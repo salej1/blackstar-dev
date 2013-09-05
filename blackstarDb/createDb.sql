@@ -16,13 +16,13 @@ SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL';
 
-CREATE SCHEMA IF NOT EXISTS `blackstardb` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci ;
-USE `blackstardb` ;
+CREATE SCHEMA IF NOT EXISTS `blackstarDb` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci ;
+USE `blackstarDb` ;
 
 -- -----------------------------------------------------
--- Table `blackstardb`.`equipmenttype`
+-- Table `blackstarDb`.`equipmentType`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `blackstardb`.`equipmenttype` (
+CREATE  TABLE IF NOT EXISTS `blackstarDb`.`equipmentType` (
   `equipmentTypeId` CHAR(1) NOT NULL ,
   `equipmentType` VARCHAR(45) NOT NULL ,
   PRIMARY KEY (`equipmentTypeId`) )
@@ -32,9 +32,9 @@ COLLATE = latin1_swedish_ci;
 
 
 -- -----------------------------------------------------
--- Table `blackstardb`.`fieldptr`
+-- Table `blackstarDb`.`fieldPtr`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `blackstardb`.`fieldptr` (
+CREATE  TABLE IF NOT EXISTS `blackstarDb`.`fieldPtr` (
   `fieldPointerId` INT(11) NOT NULL AUTO_INCREMENT ,
   `entity` VARCHAR(45) NULL DEFAULT NULL ,
   `desc` VARCHAR(45) NULL DEFAULT NULL ,
@@ -49,9 +49,9 @@ COLLATE = latin1_swedish_ci;
 
 
 -- -----------------------------------------------------
--- Table `blackstardb`.`policy`
+-- Table `blackstarDb`.`policy`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `blackstardb`.`policy` (
+CREATE  TABLE IF NOT EXISTS `blackstarDb`.`policy` (
   `policyId` INT(11) NOT NULL AUTO_INCREMENT ,
   `office` VARCHAR(50) NULL DEFAULT NULL ,
   `policyType` VARCHAR(50) NULL DEFAULT NULL ,
@@ -89,10 +89,10 @@ CREATE  TABLE IF NOT EXISTS `blackstardb`.`policy` (
   `modifiedByUsr` VARCHAR(45) NULL DEFAULT NULL ,
   PRIMARY KEY (`policyId`) ,
   INDEX `SERIAL` (`serialNumber` ASC) ,
-  INDEX `EQUIPMENTTYPEID_POLICY_EQUIPMENTTYPEID_EQUIPMENTTYPE` (`equipmentTypeId` ASC) ,
-  CONSTRAINT `EQUIPMENTTYPEID_POLICY_EQUIPMENTTYPEID_EQUIPMENTTYPE`
+  INDEX `equipmentTypeID_POLICY_equipmentTypeID_equipmentType` (`equipmentTypeId` ASC) ,
+  CONSTRAINT `equipmentTypeID_POLICY_equipmentTypeID_equipmentType`
     FOREIGN KEY (`equipmentTypeId` )
-    REFERENCES `blackstardb`.`equipmenttype` (`equipmentTypeId` )
+    REFERENCES `blackstarDb`.`equipmentType` (`equipmentTypeId` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -101,9 +101,9 @@ COLLATE = latin1_swedish_ci;
 
 
 -- -----------------------------------------------------
--- Table `blackstardb`.`servicetype`
+-- Table `blackstarDb`.`serviceType`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `blackstardb`.`servicetype` (
+CREATE  TABLE IF NOT EXISTS `blackstarDb`.`serviceType` (
   `serviceTypeId` INT(11) NOT NULL AUTO_INCREMENT ,
   `serviceType` VARCHAR(20) NOT NULL ,
   PRIMARY KEY (`serviceTypeId`) )
@@ -113,9 +113,9 @@ COLLATE = latin1_swedish_ci;
 
 
 -- -----------------------------------------------------
--- Table `blackstardb`.`ticketstatus`
+-- Table `blackstarDb`.`ticketStatus`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `blackstardb`.`ticketstatus` (
+CREATE  TABLE IF NOT EXISTS `blackstarDb`.`ticketStatus` (
   `ticketStatusId` CHAR(1) NOT NULL ,
   `ticketStatus` VARCHAR(10) NOT NULL ,
   PRIMARY KEY (`ticketStatusId`) )
@@ -125,26 +125,26 @@ COLLATE = latin1_swedish_ci;
 
 
 -- -----------------------------------------------------
--- Table `blackstardb`.`ticket`
+-- Table `blackstarDb`.`ticket`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `blackstardb`.`ticket` (
+CREATE  TABLE IF NOT EXISTS `blackstarDb`.`ticket` (
   `ticketId` INT(11) NOT NULL AUTO_INCREMENT ,
   `ticketNumber` VARCHAR(10) NOT NULL ,
   `policyId` INT(11) NULL DEFAULT NULL ,
   `user` VARCHAR(45) NULL DEFAULT NULL ,
   `contact` VARCHAR(45) NULL DEFAULT NULL ,
-  `contactPhone` VARCHAR(45) NULL DEFAULT NULL ,
-  `contactEmail` VARCHAR(45) NULL DEFAULT NULL ,
+  `contactPhone` VARCHAR(100) NULL DEFAULT NULL ,
+  `contactEmail` VARCHAR(100) NULL DEFAULT NULL ,
   `serialNumber` VARCHAR(45) NULL DEFAULT NULL ,
   `observations` TEXT NULL DEFAULT NULL ,
-  `phoneResolved` BIT(1) NULL DEFAULT NULL ,
+  `phoneResolved` TINYINT(1) NULL DEFAULT NULL ,
   `arrival` DATETIME NULL DEFAULT NULL ,
   `realResponseTime` INT(11) NULL DEFAULT NULL ,
   `responseTimeDeviation` INT(11) NULL DEFAULT NULL ,
   `followUp` TEXT NULL DEFAULT NULL ,
   `closed` DATETIME NULL DEFAULT NULL ,
   `serviceOrderNumber` VARCHAR(45) NULL DEFAULT NULL ,
-  `employee` VARCHAR(45) NULL DEFAULT NULL ,
+  `employee` VARCHAR(200) NULL DEFAULT NULL ,
   `asignee` VARCHAR(45) NULL DEFAULT NULL ,
   `solutionTime` INT(11) NULL DEFAULT NULL ,
   `solutionTimeDeviationHr` INT(11) NULL DEFAULT NULL ,
@@ -158,22 +158,22 @@ CREATE  TABLE IF NOT EXISTS `blackstardb`.`ticket` (
   PRIMARY KEY (`ticketId`) ,
   UNIQUE INDEX `ticketNumber_UNIQUE` (`ticketNumber` ASC) ,
   INDEX `TICKET_SERIAL_POLICY_SERIAL` (`serialNumber` ASC) ,
-  INDEX `TICKET_STATUSID_TICKETSTATUS_STATUSID` (`ticketStatusId` ASC) ,
+  INDEX `TICKET_STATUSID_ticketStatus_STATUSID` (`ticketStatusId` ASC) ,
   INDEX `TICKET_POLICYID_POLICY_POLICYID` (`policyId` ASC) ,
-  INDEX `TICKET_TICKETSTATUSID_TICKETSTATUS_TICKETSTATUSID` (`ticketStatusId` ASC) ,
+  INDEX `TICKET_ticketStatusID_ticketStatus_ticketStatusID` (`ticketStatusId` ASC) ,
   CONSTRAINT `TICKET_POLICYID_POLICY_POLICYID`
     FOREIGN KEY (`policyId` )
-    REFERENCES `blackstardb`.`policy` (`policyId` )
+    REFERENCES `blackstarDb`.`policy` (`policyId` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `TICKET_SERIAL_POLICY_SERIAL`
     FOREIGN KEY (`serialNumber` )
-    REFERENCES `blackstardb`.`policy` (`serialNumber` )
+    REFERENCES `blackstarDb`.`policy` (`serialNumber` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `TICKET_TICKETSTATUSID_TICKETSTATUS_TICKETSTATUSID`
+  CONSTRAINT `TICKET_ticketStatusID_ticketStatus_ticketStatusID`
     FOREIGN KEY (`ticketStatusId` )
-    REFERENCES `blackstardb`.`ticketstatus` (`ticketStatusId` )
+    REFERENCES `blackstarDb`.`ticketStatus` (`ticketStatusId` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -182,9 +182,9 @@ COLLATE = latin1_swedish_ci;
 
 
 -- -----------------------------------------------------
--- Table `blackstardb`.`servicetx`
+-- Table `blackstarDb`.`serviceTx`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `blackstardb`.`servicetx` (
+CREATE  TABLE IF NOT EXISTS `blackstarDb`.`serviceTx` (
   `serviceTxId` INT(11) NOT NULL AUTO_INCREMENT ,
   `serviceNumber` VARCHAR(50) NULL DEFAULT NULL ,
   `tickeId` INT(11) NULL DEFAULT NULL ,
@@ -208,16 +208,16 @@ CREATE  TABLE IF NOT EXISTS `blackstardb`.`servicetx` (
   `customerComments` TEXT NULL DEFAULT NULL ,
   PRIMARY KEY (`serviceTxId`) ,
   INDEX `serviceNumber` (`serviceNumber` ASC) ,
-  INDEX `SERVICETX_TICKETID_TICKET_TICKETID` (`tickeId` ASC) ,
-  INDEX `SERVICETS_SERVICETYPEID_SERVICETYPE_SERVICETYPEID` (`serviceTypeId` ASC) ,
-  CONSTRAINT `SERVICETS_SERVICETYPEID_SERVICETYPE_SERVICETYPEID`
+  INDEX `serviceTx_TICKETID_TICKET_TICKETID` (`tickeId` ASC) ,
+  INDEX `SERVICETS_serviceTypeID_serviceType_serviceTypeID` (`serviceTypeId` ASC) ,
+  CONSTRAINT `SERVICETS_serviceTypeID_serviceType_serviceTypeID`
     FOREIGN KEY (`serviceTypeId` )
-    REFERENCES `blackstardb`.`servicetype` (`serviceTypeId` )
+    REFERENCES `blackstarDb`.`serviceType` (`serviceTypeId` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `SERVICETX_TICKETID_TICKET_TICKETID`
+  CONSTRAINT `serviceTx_TICKETID_TICKET_TICKETID`
     FOREIGN KEY (`tickeId` )
-    REFERENCES `blackstardb`.`ticket` (`ticketId` )
+    REFERENCES `blackstarDb`.`ticket` (`ticketId` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB

@@ -3,6 +3,8 @@ function main() {
 	// Log init and timestamp
 	var formattedDate = Utilities.formatDate(new Date(), "CST", "yyyy-MM-dd HH:mm:ss");
 	Logger.log("Iniciando carga de tickets a base de datos: %s", formattedDate);
+	// SQL Log
+	var sqlLog = "";
 	
 	// verify connection & load
 	try{
@@ -10,7 +12,7 @@ function main() {
 		var conn = getDbConnection();
 		
 		// start loading
-		startLoadJob(conn);
+		sqlLog = startLoadJob(conn, sqlLog);
 		closeDbConnection(conn);
 		
 		// Log out
@@ -24,6 +26,8 @@ function main() {
 		Logger.log(err);
 		Logger.log("Carga de tickets finalizada con errores", formattedDate);
 	}
+	
+	saveLog(formattedDate, sqlLog);
 }
 
 function getDbConnection(){
@@ -37,7 +41,7 @@ function closeDbConnection(conn){
 	}
 }
 
-function startLoadJob(conn) {
+function startLoadJob(conn, sqlLog) {
 
 	// Load the equipment type Ids
 	var policies = loadPolicies(conn);
@@ -50,13 +54,13 @@ function startLoadJob(conn) {
 
 	for(var i = 1; i < data.length; i++){
 		var currTicket = data[i];
-		sendToDatabase(currTicket, conn, policies);
+		sqlLog = sendToDatabase(currTicket, conn, policies, sqlLog);
 	}  
 }
 
-function sendToDatabase(ticket, conn, policies){
+function sendToDatabase(ticket, conn, policies, sqlLog){
 	// sql string initialization
-	var sql = "INSERT INTO `blackstardb`.`ticket` \
+	var sql = "INSERT INTO `blackstarDb`.`ticket` \
 			( \
 			 `policyId`, \
 			 `created`, \
@@ -68,15 +72,13 @@ function sendToDatabase(ticket, conn, policies){
 			 `observations`, \
 			 `ticketNumber`, \
 			 `phoneResolved`, \
-			 `responseTimeDeviation`, \
 			 `followUp`, \
 			 `closed`, \
 			 `arrival`, \
 			 `serviceOrderNumber`, \
 			 `employee`, \
-			 `solutionTime`, \
-			 `solutionTimeDeviationHr`, \
-			 `ticketStatusId`)\
+			 `createdBy`, \
+			 `createdByUsr`) \
 			VALUES(";
 				
 	// reading the values
@@ -93,26 +95,27 @@ function sendToDatabase(ticket, conn, policies){
 	if(rawPhoneResolved == "SI"){
 		phoneResolved = 1;
 	}
-	var followUp = ticket[ 24 ];
-	var closed = ticket[ 25 ];
-	var arrival = ticket[ 26 ];
+	var arrival = ticket[ 23 ];
+	var followUp = ticket[ 25 ];
+	var closed = ticket[ 26 ];
 	var serviceOrderNumber = ticket[ 27 ];
 	var employee = ticket[ 28 ];
-	var solutionTime = ticket[ 29 ];
-	var solutionTimeDeviationHr = ticket[ 30 ];
 	var createdBy = "TicketMigrationScript";
 	var createdByUsr = "sergio.aga";
+
+	if(created == ""){
+		Logger.log(Utilities.formatString("Ticket %s ignorado. Sin marca temporal", ticketNumber));
+		return;
+	}
 
 	// fetching derived values
 	var policyId = policies[serialNumber];
 	
 	if(policyId == null){
-		throw Utilities.formatString("serialNumber %s could not be found", serialNumber);
+		Logger.log(Utilities.formatString("Ticket %s ignorado, no se encontro poliza %s", ticketNumber, serialNumber));
+		return;
 	}
 	
-	var rawTicketStatusId = ticket[ 31 ];
-	var ticketStatusId = ticketStatus[rawTicketStatusId];
-
 	// appending the values to the sql string
 	sql = sql + Utilities.formatString("'%s',",policyId);
 	sql = sql + Utilities.formatString("'%s',",Utilities.formatDate(created, "CST", "yyyy-MM-dd HH:mm:ss"));
@@ -124,20 +127,27 @@ function sendToDatabase(ticket, conn, policies){
 	sql = sql + Utilities.formatString("'%s',",observations);
 	sql = sql + Utilities.formatString("'%s',",ticketNumber);
 	sql = sql + Utilities.formatString("'%s',",phoneResolved);
-	sql = sql + Utilities.formatString("'%s',",responseTimeDeviation);
 	sql = sql + Utilities.formatString("'%s',",followUp);
-	sql = sql + Utilities.formatString("'%s',",Utilities.formatDate(closed, "CST", "yyyy-MM-dd HH:mm:ss"));
-	sql = sql + Utilities.formatString("'%s',",arrival);
+	if(closed != ""){
+		sql = sql + Utilities.formatString("'%s',",Utilities.formatDate(closed, "CST", "yyyy-MM-dd HH:mm:ss"));
+	}
+	else{
+		sql = sql + "NULL, "; 
+	}
+	if(arrival != ""){
+		sql = sql + Utilities.formatString("'%s',",Utilities.formatDate(arrival, "CST", "yyyy-MM-dd HH:mm:ss"));
+	}
+	else{
+		sql = sql + "NULL, "; 
+	}
 	sql = sql + Utilities.formatString("'%s',",serviceOrderNumber);
 	sql = sql + Utilities.formatString("'%s',",employee);
-	sql = sql + Utilities.formatString("'%s',",solutionTime);
-	sql = sql + Utilities.formatString("'%s',",solutionTimeDeviationHr);
-	sql = sql + Utilities.formatString("'%s',",ticketStatusId);
 	sql = sql + Utilities.formatString("'%s',",createdBy);
 	sql = sql + Utilities.formatString("'%s');",createdByUsr);
 	
-	Logger.log(Utilities.formatString("Inserting Ticket %s", serialNumber));
+	Logger.log(Utilities.formatString("Inserting Ticket %s", ticketNumber));
 	
+	sqlLog = saveSql(sqlLog, sql);
 	var stmt = conn.createStatement();
 	stmt.execute(sql);
 	
@@ -161,18 +171,20 @@ function loadPolicies(conn){
 }
 
 
-function loadTicketStatus(conn){
-	var stmt = conn.createStatement();
-	var rs = stmt.execute("use blackstarDb;");
-	var ticketStatus = { };
+function saveSql(sqlLog, sql){
+	sqlLog = sqlLog + sql + "\r\n" ;
 	
-	rs = stmt.executeQuery("select ticketStatusId, ticketStatus from ticketStatus");
-	while(rs.next()){
-		ticketStatus[rs.getString(2)] = rs.getString(1);
-	}
+	return sqlLog;
+}
+
+function saveLog(timestamp, sqlLog){
+	// Storing Log
+	var folderLog = DocsList.getFolder('Log');
+	var fileName = "Log_TicketsMigrationScript_" + timestamp + ".txt";
+	var logfile = folderLog.createFile(fileName, Logger.getLog());
 	
-	rs.close();
-	stmt.close();
-	
-	return ticketStatus;
+	// Storing SQL Log
+	var folderSql = DocsList.getFolder('SQL');
+	var fileName = "SQL_TicketsMigrationScript_" + timestamp + ".txt";
+	var sqlFile = folderSql.createFile(fileName, sqlLog);
 }

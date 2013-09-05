@@ -3,6 +3,8 @@ function main() {
 	// Log init and timestamp
 	var formattedDate = Utilities.formatDate(new Date(), "CST", "yyyy-MM-dd HH:mm:ss");
 	Logger.log("Iniciando carga de polizas a base de datos: %s", formattedDate);
+	// sqlLog
+	var sqlLog = "";
 	
 	// verify connection & load
 	try{
@@ -10,7 +12,7 @@ function main() {
 		var conn = getDbConnection();
 		
 		// start loading
-		startLoadJob(conn);
+		sqlLog = startLoadJob(conn, sqlLog);
 		closeDbConnection(conn);
 		
 		// Log out
@@ -24,6 +26,8 @@ function main() {
 		Logger.log(err);
 		Logger.log("Carga de polizas finalizada con errores", formattedDate);
 	}
+	
+	saveLog(formattedDate, sqlLog);
 }
 
 function getDbConnection(){
@@ -37,7 +41,7 @@ function closeDbConnection(conn){
 	}
 }
 
-function startLoadJob(conn) {
+function startLoadJob(conn, sqlLog) {
 
 	// Load the equipment type Ids
 	var eqTypes = loadEquipmentTypes(conn);
@@ -47,18 +51,20 @@ function startLoadJob(conn) {
 
 	// For every row of employee data, generate an ticket object.
 	var data = pd.getValues();
-
+	
 	for(var i = 1; i < data.length; i++){
 		var currPolicy = data[i];
-		sendToDatabase(currPolicy, conn, eqTypes);
+		sqlLog = sendToDatabase(currPolicy, conn, eqTypes, sqlLog);
 	}  
+	
+	return sqlLog;
 }
 
 String.prototype.trim = function() {
 	return this.replace(/^\s+|\s+$/g,"");
 }
 
-function sendToDatabase(policy, conn, eqTypes){
+function sendToDatabase(policy, conn, eqTypes, sqlLog){
 	// sql string initialization
 	var sql = "	INSERT INTO `blackstarDb`.`policy`	\
 	(	\
@@ -190,9 +196,12 @@ function sendToDatabase(policy, conn, eqTypes){
 	
 	Logger.log(Utilities.formatString("Inserting Policy %s", serialNumber));
 	
+	sqlLog = saveSql(sqlLog, sql);
+	
 	var stmt = conn.createStatement();
 	stmt.execute(sql);
 	
+	return sqlLog;
 }
 
 
@@ -210,4 +219,22 @@ function loadEquipmentTypes(conn){
 	stmt.close();
 	
 	return eqTypes;
+}
+
+function saveSql(sqlLog, sql){
+	sqlLog = sqlLog + sql + "\r\n" ;
+	
+	return sqlLog;
+}
+
+function saveLog(timestamp, sqlLog){
+	// Storing Log
+	var folderLog = DocsList.getFolder('Log');
+	var fileName = "Log_PolicyMigrationScript_" + timestamp + ".txt";
+	var logfile = folderLog.createFile(fileName, Logger.getLog());
+	
+	// Storing SQL Log
+	var folderSql = DocsList.getFolder('SQL');
+	var fileName = "SQL_PolicyMigrationScript_" + timestamp + ".txt";
+	var sqlFile = folderSql.createFile(fileName, sqlLog);
 }
