@@ -10,13 +10,20 @@
     <welcome-file>default.jsp</welcome-file>
   </welcome-file-list>
   <servlet>
-    <description>Sample Servlet</description>
-    <display-name>BlackstarWebServlet</display-name>
-    <servlet-name>BlackstarWebServlet</servlet-name>
-    <servlet-class>com.example.myproject.BlackstarWebServlet</servlet-class>
+    <description>Maneja el request a la pagina de mantenimientos programados</description>
+    <display-name>scheduleStatus</display-name>
+    <servlet-name>scheduleStatus</servlet-name>
+    <servlet-class>com.blackstar.web.scheduleStatus</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>BlackstarWebServlet</servlet-name>
-    <url-pattern>/blackstarweb</url-pattern>
+    <servlet-name>scheduleStatus</servlet-name>
+    <url-pattern>/scheduleStatus</url-pattern>
   </servlet-mapping>
+  <context-param>
+    <param-name>globalSettings_appTitle</param-name>
+    <param-value>GPO SAC Portal de servicios</param-value>
+  </context-param>
+  <listener>
+    <listener-class>com.blackstar.web.SessionListener</listener-class>
+  </listener>
 </web-app>

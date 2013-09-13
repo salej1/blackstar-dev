@@ -4,12 +4,31 @@
     xsi:schemaLocation="http://java.sun.com/xml/ns/persistence
         http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd" version="1.0">
 
-    <persistence-unit name="transactions-optional">
-        <provider>org.datanucleus.api.jpa.PersistenceProviderImpl</provider>
+    <persistence-unit name="com.blackstar.jpa">
+        <description>
+            Blackstar DB
+        </description>
+
+<!--         <class>TODO: poner 'fully qualified classes'</class> -->
+
         <properties>
-            <property name="datanucleus.NontransactionalRead" value="true"/>
-            <property name="datanucleus.NontransactionalWrite" value="true"/>
-            <property name="datanucleus.ConnectionURL" value="appengine"/>
+            <property name="javax.persistence.jdbc.driver" value="com.google.appengine.api.rdbms.AppEngineDriver" />
+<!-- Para pruebas en google cloud -->
+<!--             <property name="javax.persistence.jdbc.url" value="jdbc:google:rdbms://salej1-blackstar-dev:salej1-blackstar-dev/blackstarDb" /> -->
+<!--             <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" /> -->
+<!-- Para pruebas locales -->
+            <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/blackstarDb?user=root" />
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
+            
+            <!-- You may want to change this to false in production -->
+            <property name="hibernate.show_sql" value="true" />
+
+            <!-- You can change this to create at the first time -->
+            <property name="hibernate.hbm2ddl.auto" value="update" />
+
+            <!-- Set this to 0 otherwise you sometimes get errors -->
+            <property name="hibernate.connection.pool_size" value="0" />
         </properties>
+
     </persistence-unit>
 </persistence>
