@@ -1,3 +1,17 @@
+/******************************************************************************
+** File:	PolicyMigrationScript.gs   
+** Name:	PolicyMigrationScript
+** Desc:	transfiere los datos de polizas a una base de datos temporal de transferencia
+**			Este script debe ser ejecutado sobre el archivo de polizas de google apps
+** Auth:	Sergio A Gomez
+** Date:	17/09/2013
+*******************************************************************************
+** Change History
+*******************************************************************************
+** PR   Date    	Author	Description
+** --   --------   -------  ------------------------------------
+** 1    17/09/2013  SAG  	Version inicial: Exporta el archivo de polizas a BD blackstarDbTransfer
+*****************************************************************************/
 
 function main() {
 	// Log init and timestamp
@@ -31,7 +45,7 @@ function main() {
 }
 
 function getDbConnection(){
-	var conn = Jdbc.getCloudSqlConnection("jdbc:google:rdbms://salej1-blackstar-dev:salej1-blackstar-dev/blackstarDb");
+	var conn = Jdbc.getCloudSqlConnection("jdbc:google:rdbms://salej1-blackstar-dev:salej1-blackstar-dev/blackstarDbTransfer");
 	return conn;
 }
 
@@ -49,7 +63,7 @@ function startLoadJob(conn, sqlLog) {
 	// Get the selected range in the spreadsheet that stores policy data.
 	var pd = SpreadsheetApp.getActiveSpreadsheet().getRangeByName("polizasData");
 
-	// For every row of employee data, generate an ticket object.
+	// For every row of data, generate an policy object.
 	var data = pd.getValues();
 	
 	for(var i = 1; i < data.length; i++){
@@ -66,7 +80,7 @@ String.prototype.trim = function() {
 
 function sendToDatabase(policy, conn, eqTypes, sqlLog){
 	// sql string initialization
-	var sql = "	INSERT INTO `blackstarDb`.`policy`	\
+	var sql = "	INSERT INTO `blackstarDbTransfer`.`policy`	\
 	(	\
 	`office`,	\
 	`policyType`,	\
@@ -207,7 +221,7 @@ function sendToDatabase(policy, conn, eqTypes, sqlLog){
 
 function loadEquipmentTypes(conn){
 	var stmt = conn.createStatement();
-	var rs = stmt.execute("use blackstarDb;");
+	var rs = stmt.execute("use blackstarDbTransfer;");
 	var eqTypes = { };
 	
 	rs = stmt.executeQuery("select * from equipmentType;");
@@ -237,4 +251,80 @@ function saveLog(timestamp, sqlLog){
 	var folderSql = DocsList.getFolder('SQL');
 	var fileName = "SQL_PolicyMigrationScript_" + timestamp + ".txt";
 	var sqlFile = folderSql.createFile(fileName, sqlLog);
+}
+
+function policySync(){
+	// Log init and timestamp
+	var formattedDate = Utilities.formatDate(new Date(), "CST", "yyyy-MM-dd HH:mm:ss");
+	Logger.log("Iniciando sincronizacion de polizas a base de datos: %s", formattedDate);
+	// sqlLog
+	var sqlLog = "";
+	
+	// verify connection & load
+	try{
+		// get the database connection
+		var conn = getDbConnection();
+		
+		// start syncing
+		sqlLog = startSyncJob(conn, sqlLog);
+		closeDbConnection(conn);
+		
+		// Log out
+		formattedDate = Utilities.formatDate(new Date(), "CST", "yyyy-MM-dd HH:mm:ss");
+		Logger.log("Sincronizacion de polizas finalizada correctamente", formattedDate);
+	}
+	catch(err) {
+		// Log out with failure
+		formattedDate = Utilities.formatDate(new Date(), "CST", "yyyy-MM-dd HH:mm:ss");
+		Logger.log("Error al sincronizar polizas en la base de datos");
+		Logger.log(err);
+		Logger.log("Sincronizacion de polizas finalizada con errores", formattedDate);
+	}
+	
+	saveLog(formattedDate, sqlLog);
+
+}
+
+function startSyncJob(conn, sqlLog){
+
+	// Load the equipment type Ids
+	var eqTypes = loadEquipmentTypes(conn);
+	
+	// how many records do we have?
+	var policyCount = getPolicyCount(conn);
+	
+	// start point at the spreadsheet
+	const offset = 4;
+	var startRec = policyCount + offset + 1;
+	
+	// iterate looking for new policies
+	var range = "A" + startRec.toString() + ":AC" + startRec.toString();
+	var data = SpreadsheetApp.getActiveSpreadsheet().getRange(range).getValues();
+	var currPolicy = data[0];
+	
+	while(currPolicy != null && currPolicy[0] != null && currPolicy[0].toString() != ""){
+		sqlLog = sendToDatabase(currPolicy, conn, eqTypes, sqlLog);
+		startRec++;
+		range = "A" + startRec.toString() + ":AC" + startRec.toString();
+		data = SpreadsheetApp.getActiveSpreadsheet().getRange(range).getValues();
+		currPolicy = data[0];
+	}	
+}
+
+
+function getPolicyCount(conn){
+
+	var stmt = conn.createStatement();
+	var rs = stmt.execute("use blackstarDbTransfer;");
+	var policyCount = 0;
+	
+	rs = stmt.executeQuery("select count(*) from blackstarDbTransfer.policy;");
+	while(rs.next()){
+		policyCount = rs.getInt(1);
+	}
+	
+	rs.close();
+	stmt.close();
+	
+	return policyCount;
 }

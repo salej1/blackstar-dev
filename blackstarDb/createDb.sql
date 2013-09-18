@@ -10,19 +10,21 @@
 ** PR   Date    	Author	Description
 ** --   --------   -------  ------------------------------------
 ** 1    08/08/2013  SAG  	Version inicial: BD, policy, ticket
-** 20	01/09/2013	SAG		Campo policy.exceptionParts extendido a 100 chars
-******************************************************************************/
+** 2	01/09/2013	SAG		Campo policy.exceptionParts extendido a 100 chars
+** 3	17/09/2013	SAG		Cambia el nombre de la BD a blackstarDeTransfer
+**							Se homologaron tipos de equipos
+*****************************************************************************/
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL';
 
-CREATE SCHEMA IF NOT EXISTS `blackstarDb` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci ;
-USE `blackstarDb` ;
+CREATE SCHEMA IF NOT EXISTS `blackstarDbTransfer` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci ;
+USE `blackstarDbTransfer` ;
 
 -- -----------------------------------------------------
--- Table `blackstarDb`.`equipmentType`
+-- Table `blackstarDbTransfer`.`equipmentType`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `blackstarDb`.`equipmentType` (
+CREATE  TABLE IF NOT EXISTS `blackstarDbTransfer`.`equipmentType` (
   `equipmentTypeId` CHAR(1) NOT NULL ,
   `equipmentType` VARCHAR(45) NOT NULL ,
   PRIMARY KEY (`equipmentTypeId`) )
@@ -32,9 +34,9 @@ COLLATE = latin1_swedish_ci;
 
 
 -- -----------------------------------------------------
--- Table `blackstarDb`.`fieldPtr`
+-- Table `blackstarDbTransfer`.`fieldPtr`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `blackstarDb`.`fieldPtr` (
+CREATE  TABLE IF NOT EXISTS `blackstarDbTransfer`.`fieldPtr` (
   `fieldPointerId` INT(11) NOT NULL AUTO_INCREMENT ,
   `entity` VARCHAR(45) NULL DEFAULT NULL ,
   `desc` VARCHAR(45) NULL DEFAULT NULL ,
@@ -49,9 +51,9 @@ COLLATE = latin1_swedish_ci;
 
 
 -- -----------------------------------------------------
--- Table `blackstarDb`.`policy`
+-- Table `blackstarDbTransfer`.`policy`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `blackstarDb`.`policy` (
+CREATE  TABLE IF NOT EXISTS `blackstarDbTransfer`.`policy` (
   `policyId` INT(11) NOT NULL AUTO_INCREMENT ,
   `office` VARCHAR(50) NULL DEFAULT NULL ,
   `policyType` VARCHAR(50) NULL DEFAULT NULL ,
@@ -92,7 +94,7 @@ CREATE  TABLE IF NOT EXISTS `blackstarDb`.`policy` (
   INDEX `equipmentTypeID_POLICY_equipmentTypeID_equipmentType` (`equipmentTypeId` ASC) ,
   CONSTRAINT `equipmentTypeID_POLICY_equipmentTypeID_equipmentType`
     FOREIGN KEY (`equipmentTypeId` )
-    REFERENCES `blackstarDb`.`equipmentType` (`equipmentTypeId` )
+    REFERENCES `blackstarDbTransfer`.`equipmentType` (`equipmentTypeId` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -101,9 +103,9 @@ COLLATE = latin1_swedish_ci;
 
 
 -- -----------------------------------------------------
--- Table `blackstarDb`.`serviceType`
+-- Table `blackstarDbTransfer`.`serviceType`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `blackstarDb`.`serviceType` (
+CREATE  TABLE IF NOT EXISTS `blackstarDbTransfer`.`serviceType` (
   `serviceTypeId` INT(11) NOT NULL AUTO_INCREMENT ,
   `serviceType` VARCHAR(20) NOT NULL ,
   PRIMARY KEY (`serviceTypeId`) )
@@ -113,9 +115,9 @@ COLLATE = latin1_swedish_ci;
 
 
 -- -----------------------------------------------------
--- Table `blackstarDb`.`ticketStatus`
+-- Table `blackstarDbTransfer`.`ticketStatus`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `blackstarDb`.`ticketStatus` (
+CREATE  TABLE IF NOT EXISTS `blackstarDbTransfer`.`ticketStatus` (
   `ticketStatusId` CHAR(1) NOT NULL ,
   `ticketStatus` VARCHAR(10) NOT NULL ,
   PRIMARY KEY (`ticketStatusId`) )
@@ -125,9 +127,9 @@ COLLATE = latin1_swedish_ci;
 
 
 -- -----------------------------------------------------
--- Table `blackstarDb`.`ticket`
+-- Table `blackstarDbTransfer`.`ticket`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `blackstarDb`.`ticket` (
+CREATE  TABLE IF NOT EXISTS `blackstarDbTransfer`.`ticket` (
   `ticketId` INT(11) NOT NULL AUTO_INCREMENT ,
   `ticketNumber` VARCHAR(10) NOT NULL ,
   `policyId` INT(11) NULL DEFAULT NULL ,
@@ -163,17 +165,17 @@ CREATE  TABLE IF NOT EXISTS `blackstarDb`.`ticket` (
   INDEX `TICKET_ticketStatusID_ticketStatus_ticketStatusID` (`ticketStatusId` ASC) ,
   CONSTRAINT `TICKET_POLICYID_POLICY_POLICYID`
     FOREIGN KEY (`policyId` )
-    REFERENCES `blackstarDb`.`policy` (`policyId` )
+    REFERENCES `blackstarDbTransfer`.`policy` (`policyId` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `TICKET_SERIAL_POLICY_SERIAL`
     FOREIGN KEY (`serialNumber` )
-    REFERENCES `blackstarDb`.`policy` (`serialNumber` )
+    REFERENCES `blackstarDbTransfer`.`policy` (`serialNumber` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `TICKET_ticketStatusID_ticketStatus_ticketStatusID`
     FOREIGN KEY (`ticketStatusId` )
-    REFERENCES `blackstarDb`.`ticketStatus` (`ticketStatusId` )
+    REFERENCES `blackstarDbTransfer`.`ticketStatus` (`ticketStatusId` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -182,9 +184,9 @@ COLLATE = latin1_swedish_ci;
 
 
 -- -----------------------------------------------------
--- Table `blackstarDb`.`serviceTx`
+-- Table `blackstarDbTransfer`.`serviceTx`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `blackstarDb`.`serviceTx` (
+CREATE  TABLE IF NOT EXISTS `blackstarDbTransfer`.`serviceTx` (
   `serviceTxId` INT(11) NOT NULL AUTO_INCREMENT ,
   `serviceNumber` VARCHAR(50) NULL DEFAULT NULL ,
   `tickeId` INT(11) NULL DEFAULT NULL ,
@@ -212,12 +214,12 @@ CREATE  TABLE IF NOT EXISTS `blackstarDb`.`serviceTx` (
   INDEX `SERVICETS_serviceTypeID_serviceType_serviceTypeID` (`serviceTypeId` ASC) ,
   CONSTRAINT `SERVICETS_serviceTypeID_serviceType_serviceTypeID`
     FOREIGN KEY (`serviceTypeId` )
-    REFERENCES `blackstarDb`.`serviceType` (`serviceTypeId` )
+    REFERENCES `blackstarDbTransfer`.`serviceType` (`serviceTypeId` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `serviceTx_TICKETID_TICKET_TICKETID`
     FOREIGN KEY (`tickeId` )
-    REFERENCES `blackstarDb`.`ticket` (`ticketId` )
+    REFERENCES `blackstarDbTransfer`.`ticket` (`ticketId` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -243,30 +245,32 @@ SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 ** BEGINS DATA SECTION 
 *******************************************************************************/
 
-INSERT INTO `blackstarDb`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('U','UPS' );  
-INSERT INTO `blackstarDb`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('M','MONITOREO' );  
-INSERT INTO `blackstarDb`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('A','AA' );  
-INSERT INTO `blackstarDb`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('P','PE' );  
-INSERT INTO `blackstarDb`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('C','CA' );  
-INSERT INTO `blackstarDb`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('F','FUEGO' );  
-INSERT INTO `blackstarDb`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('V','VIDEO' );  
-INSERT INTO `blackstarDb`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('D','PDU' );  
-INSERT INTO `blackstarDb`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('O','MODULO DE POTENCIA' );  
-INSERT INTO `blackstarDb`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('S','SERVICIO DE DESCONTAMINACIÓN DATA CENTER' );  
-INSERT INTO `blackstarDb`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('B','BANCO DE BATERIAS' );  
-INSERT INTO `blackstarDb`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('E','SUBESTACION' );  
-INSERT INTO `blackstarDb`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('T','BATERIAS' );  
-INSERT INTO `blackstarDb`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('R','TARJETA ETHERNET' );  
-INSERT INTO `blackstarDb`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('Y','MODULO BYPASS' );  
-INSERT INTO `blackstarDb`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('H','MODULO SWITCH' );  
-INSERT INTO `blackstarDb`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('N','TRANSFORMADOR' );  
-INSERT INTO `blackstarDb`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('I','SUPRESOR' );  
-INSERT INTO `blackstarDb`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('G','GABINETE BY PASS' );  
+INSERT INTO `blackstarDbTransfer`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('U','UPS' );  
+INSERT INTO `blackstarDbTransfer`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('M','MONITOREO' );  
+INSERT INTO `blackstarDbTransfer`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('A','AA' );  
+INSERT INTO `blackstarDbTransfer`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('P','PE' );  
+INSERT INTO `blackstarDbTransfer`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('C','CA' );  
+INSERT INTO `blackstarDbTransfer`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('F','FUEGO' );  
+INSERT INTO `blackstarDbTransfer`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('V','VIDEO' );  
+INSERT INTO `blackstarDbTransfer`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('D','PDU' );  
+INSERT INTO `blackstarDbTransfer`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('O','MODULO DE POTENCIA' );  
+INSERT INTO `blackstarDbTransfer`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('S','SERVICIO DE DESCONTAMINACIÓN DATA CENTER' );  
+INSERT INTO `blackstarDbTransfer`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('B','BATERIAS' );  
+INSERT INTO `blackstarDbTransfer`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('E','SUBESTACION' );  
+INSERT INTO `blackstarDbTransfer`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('T','BATERIAS' );  
+INSERT INTO `blackstarDbTransfer`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('R','TARJETA ETHERNET' );  
+INSERT INTO `blackstarDbTransfer`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('Y','BYPASS' );  
+INSERT INTO `blackstarDbTransfer`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('H','MODULO SWITCH' );  
+INSERT INTO `blackstarDbTransfer`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('N','TRANSFORMADOR' );  
+INSERT INTO `blackstarDbTransfer`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('I','SUPRESOR' );  
+INSERT INTO `blackstarDbTransfer`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('G','TRANSFERENCIA' );   
+INSERT INTO `blackstarDbTransfer`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('J','CONDENSADORA' );    
+INSERT INTO `blackstarDbTransfer`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('K','EVAPORADORA' );    
 
-INSERT INTO `blackstarDb`.`ticketStatus` (`ticketStatusId`, `ticketStatus`) VALUES ('A','ABIERTO' );  
-INSERT INTO `blackstarDb`.`ticketStatus` (`ticketStatusId`, `ticketStatus`) VALUES ('C','CERRADO' );  
-INSERT INTO `blackstarDb`.`ticketStatus` (`ticketStatusId`, `ticketStatus`) VALUES ('R','RETRASADO' );  
-INSERT INTO `blackstarDb`.`ticketStatus` (`ticketStatusId`, `ticketStatus`) VALUES ('F','CERRADO FT' );  
+INSERT INTO `blackstarDbTransfer`.`ticketStatus` (`ticketStatusId`, `ticketStatus`) VALUES ('A','ABIERTO' );  
+INSERT INTO `blackstarDbTransfer`.`ticketStatus` (`ticketStatusId`, `ticketStatus`) VALUES ('C','CERRADO' );  
+INSERT INTO `blackstarDbTransfer`.`ticketStatus` (`ticketStatusId`, `ticketStatus`) VALUES ('R','RETRASADO' );  
+INSERT INTO `blackstarDbTransfer`.`ticketStatus` (`ticketStatusId`, `ticketStatus`) VALUES ('F','CERRADO FT' );  
 
 
 

@@ -31,7 +31,7 @@ function main() {
 }
 
 function getDbConnection(){
-	var conn = Jdbc.getCloudSqlConnection("jdbc:google:rdbms://salej1-blackstar-dev:salej1-blackstar-dev/blackstarDb");
+	var conn = Jdbc.getCloudSqlConnection("jdbc:google:rdbms://salej1-blackstar-dev:salej1-blackstar-dev/blackstarDbTransfer");
 	return conn;
 }
 
@@ -60,7 +60,7 @@ function startLoadJob(conn, sqlLog) {
 
 function sendToDatabase(ticket, conn, policies, sqlLog){
 	// sql string initialization
-	var sql = "INSERT INTO `blackstarDb`.`ticket` \
+	var sql = "INSERT INTO `blackstarDbTransfer`.`ticket` \
 			( \
 			 `policyId`, \
 			 `created`, \
@@ -156,7 +156,7 @@ function sendToDatabase(ticket, conn, policies, sqlLog){
 
 function loadPolicies(conn){
 	var stmt = conn.createStatement();
-	var rs = stmt.execute("use blackstarDb;");
+	var rs = stmt.execute("use blackstarDbTransfer;");
 	var policies = { };
 	
 	rs = stmt.executeQuery("select policyId, serialNumber from policy");
