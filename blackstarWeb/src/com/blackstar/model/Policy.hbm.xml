@@ -1,0 +1,108 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 19/09/2013 02:56:42 AM by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.blackstar.model.Policy" table="policy" catalog="blackstarDb">
+        <id name="policyId" type="java.lang.Integer">
+            <column name="policyId" />
+            <generator class="identity" />
+        </id>
+        <property name="officeId" type="char">
+            <column name="officeId" length="1" not-null="true" />
+        </property>
+        <property name="policyTypeId" type="char">
+            <column name="policyTypeId" length="1" not-null="true" />
+        </property>
+        <property name="customerContract" type="string">
+            <column name="customerContract" length="50" />
+        </property>
+        <property name="customer" type="string">
+            <column name="customer" length="100" />
+        </property>
+        <property name="finalUser" type="string">
+            <column name="finalUser" length="50" />
+        </property>
+        <property name="project" type="string">
+            <column name="project" length="50" />
+        </property>
+        <property name="cst" type="string">
+            <column name="cst" length="50" />
+        </property>
+        <property name="equipmentTypeId" type="java.lang.Character">
+            <column name="equipmentTypeId" length="1" />
+        </property>
+        <property name="brand" type="string">
+            <column name="brand" length="50" />
+        </property>
+        <property name="model" type="string">
+            <column name="model" length="50" />
+        </property>
+        <property name="serialNumber" type="string">
+            <column name="serialNumber" length="100" />
+        </property>
+        <property name="capacity" type="string">
+            <column name="capacity" length="50" />
+        </property>
+        <property name="equipmentAddress" type="string">
+            <column name="equipmentAddress" length="65535" />
+        </property>
+        <property name="equipmentLocation" type="string">
+            <column name="equipmentLocation" length="65535" />
+        </property>
+        <property name="policyContactId" type="java.lang.Integer">
+            <column name="policyContactId" />
+        </property>
+        <property name="startDate" type="date">
+            <column name="startDate" length="10" />
+        </property>
+        <property name="endDate" type="date">
+            <column name="endDate" length="10" />
+        </property>
+        <property name="visitsPerYear" type="java.lang.Integer">
+            <column name="visitsPerYear" />
+        </property>
+        <property name="responseTimeHr" type="java.lang.Byte">
+            <column name="responseTimeHR" />
+        </property>
+        <property name="solutionTimeHr" type="java.lang.Short">
+            <column name="solutionTimeHR" />
+        </property>
+        <property name="penalty" type="string">
+            <column name="penalty" length="65535" />
+        </property>
+        <property name="service" type="string">
+            <column name="service" length="50" />
+        </property>
+        <property name="includesParts" type="byte">
+            <column name="includesParts" not-null="true" />
+        </property>
+        <property name="exceptionParts" type="string">
+            <column name="exceptionParts" length="50" />
+        </property>
+        <property name="serviceCenterId" type="java.lang.Character">
+            <column name="serviceCenterId" length="1" />
+        </property>
+        <property name="observations" type="string">
+            <column name="observations" length="65535" />
+        </property>
+        <property name="created" type="timestamp">
+            <column name="created" length="19" />
+        </property>
+        <property name="createdBy" type="string">
+            <column name="createdBy" length="50" />
+        </property>
+        <property name="crratedByUsr" type="string">
+            <column name="crratedByUsr" length="50" />
+        </property>
+        <property name="modified" type="timestamp">
+            <column name="modified" length="19" />
+        </property>
+        <property name="modifiedBy" type="string">
+            <column name="modifiedBy" length="50" />
+        </property>
+        <property name="modifiedByUsr" type="string">
+            <column name="modifiedByUsr" length="50" />
+        </property>
+    </class>
+</hibernate-mapping>

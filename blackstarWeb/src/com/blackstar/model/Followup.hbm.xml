@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 19/09/2013 02:56:42 AM by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.blackstar.model.Followup" table="followup" catalog="blackstarDb">
+        <id name="followUpId" type="java.lang.Integer">
+            <column name="followUpId" />
+            <generator class="identity" />
+        </id>
+        <property name="ticketId" type="java.lang.Integer">
+            <column name="ticketId" />
+        </property>
+        <property name="serviceOrderId" type="java.lang.Integer">
+            <column name="serviceOrderId" />
+        </property>
+        <property name="asignee" type="string">
+            <column name="asignee" length="50" />
+        </property>
+        <property name="followup" type="string">
+            <column name="followup" length="65535" />
+        </property>
+        <property name="created" type="timestamp">
+            <column name="created" length="19" />
+        </property>
+        <property name="createdBy" type="string">
+            <column name="createdBy" length="8" />
+        </property>
+        <property name="createdByUsr" type="string">
+            <column name="createdByUsr" length="50" />
+        </property>
+        <property name="modified" type="timestamp">
+            <column name="modified" length="19" />
+        </property>
+        <property name="modifiedBy" type="string">
+            <column name="modifiedBy" length="50" />
+        </property>
+        <property name="modifiedByUsr" type="string">
+            <column name="modifiedByUsr" length="50" />
+        </property>
+    </class>
+</hibernate-mapping>
