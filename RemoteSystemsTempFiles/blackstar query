@@ -1,0 +1,10 @@
+select count(*) from ticket
+
+delete from ticket;
+delete from policy
+
+select * from ticket tk 
+	inner join policy pl on tk.policyId = pl.policyId
+	
+	select count(*) from policy
+	

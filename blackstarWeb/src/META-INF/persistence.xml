@@ -17,7 +17,7 @@
 <!--             <property name="javax.persistence.jdbc.url" value="jdbc:google:rdbms://salej1-blackstar-dev:salej1-blackstar-dev/blackstarDb" /> -->
 <!--             <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" /> -->
 <!-- Para pruebas locales -->
-            <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/blackstarDb?user=root" />
+            <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost/blackstarDb?user=root" />
             <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
             
             <!-- You may want to change this to false in production -->

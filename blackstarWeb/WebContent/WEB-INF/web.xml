@@ -26,4 +26,17 @@
   <listener>
     <listener-class>com.blackstar.web.SessionListener</listener-class>
   </listener>
+  <servlet>
+    <description></description>
+    <display-name>dashboard</display-name>
+    <servlet-name>dashboard</servlet-name>
+    <servlet-class>com.blackstar.web.dashboard</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>dashboard</servlet-name>
+    <url-pattern>/dashboard</url-pattern>
+  </servlet-mapping>
+  <listener>
+    <listener-class>com.blackstar.web.ContextListener</listener-class>
+  </listener>
 </web-app>

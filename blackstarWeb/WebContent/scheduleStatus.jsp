@@ -11,7 +11,7 @@
 
 		<!--   CONTENT COLUMN   -->
 		<div class="grid_16">
-			<p>Angeles Avila: Coordinador</p>
+			<p>${user.FullDescriptor}</p>
 		</div>
 		<div class="grid_16">
 			<div>
@@ -32,38 +32,22 @@
 				<table>
 					<thead>
 						<tr>
-							<th colspan="4">Hoy - 18/07/2013</th>
+							<th colspan="4">${ today }</th>
 						</tr>
 					</thead>
 					<tbody>
+					<c:foreach var="service" in"servicesToday">
 						<tr>
-							<td>UPS</td>
-							<td>PEMEX</td>
-							<td>26548</td>
-							<td>Alejandro Monroy</td>
+							<td>${ service.EquipmentType }</td>
+							<td>${ service.Customer }</td>
+							<td>${ service.SerialNUmber }</td>
+							<td>${ service.Asignee }</td>
 						</tr>
-						<tr>
-							<td>BB</td>
-							<td>PEMEX</td>
-							<td>79846546</td>
-							<td>Armando Perez Pinto, Gonzalo Ramirez</td>
-						</tr>
-						<tr>
-							<td>PE</td>
-							<td>BAXTER</td>
-							<td>1564</td>
-							<td>Martin Vazquez, Reynaldo Garcia</td>
-						</tr>
-						<tr>
-							<td>PE</td>
-							<td>SAC Energia</td>
-							<td>149877</td>
-							<td>Sergio Gallegos</td>
-						</tr>
-					</tbody>
+					</c:foreach>
+						
 					<thead>
 						<tr>
-							<th colspan="4">Viernes - 19/07/2013</th>
+							<th colspan="4">${ today1 }</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -94,17 +78,17 @@
 					</tbody>
 					<thead>
 						<tr>
-							<th colspan="4">Sabado - 20/07/2013</th>
+							<th colspan="4">${ today2 }</th>
 						</tr>
 					</thead>
 					<thead>
 						<tr>
-							<th colspan="4">Domingo - 21/07/2013</th>
+							<th colspan="4">${ today3 }</th>
 						</tr>
 					</thead>
 					<thead>
 						<tr>
-							<th colspan="4">Lunes - 22/07/2013</th>
+							<th colspan="4">${ today4 }</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -135,7 +119,7 @@
 					</tbody>
 					<thead>
 						<tr>
-							<th colspan="4">Martes - 23/07/2013</th>
+							<th colspan="4">${ today5 }</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -148,7 +132,7 @@
 					</tbody>
 					<thead>
 						<tr>
-							<th colspan="4">Miercoles - 24/07/2013</th>
+							<th colspan="4">${ today6 }</th>
 						</tr>
 					</thead>
 					<tbody>

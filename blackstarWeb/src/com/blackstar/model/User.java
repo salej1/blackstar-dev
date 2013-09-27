@@ -1,32 +1,57 @@
 package com.blackstar.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.blackstar.logging.*;
 
 public class User {
-	String _userId;
-	public String get_userId() {
-		return _userId;
+	String userId;
+	List<String> userGroups;
+	String userName;
+	
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
+	public List<String> getUserGroups() {
+		return userGroups;
+	}
+
+	public void setUserGroups(List<String> userGroups) {
+		this.userGroups = userGroups;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 	
-	String[] _userGroups;
-	public String[] get_userGroups() {
-		return _userGroups;
+	public User(String _userId, String _userName) {
+		userId = _userId;
+		userName = _userName;
 	}
 	
-	String _userName;
-	public String get_userName() {
-		return _userName;
-	}
-	
-	public User(String id) {
-		// TODO Auto-generated constructor stub
+	public void addGroup(String group){
+		if(userGroups == null){
+			userGroups = new ArrayList<String>();
+		}
+		
+		userGroups.add(group);
 	}
 	
 	public String getFullDescriptor() throws Exception{	
-		String name = this.get_userName();
+		String name = this.getUserName();
 		
-		if(this.get_userGroups() != null && this.get_userGroups().length > 0 && name.length() > 0){
-			String mainGroup = this.get_userGroups()[0];
+		if(this.getUserGroups() != null && this.getUserGroups().size() > 0 && name.length() > 0){
+			String mainGroup = this.getUserGroups().get(0);
 			
 			return name + ": " + mainGroup;
 		}
@@ -36,10 +61,10 @@ public class User {
 			if(name.length() == 0){
 				msg="No se encontro nombre del usuario";
 			}
-			else if(this.get_userGroups() == null){
+			else if(this.getUserGroups() == null){
 				msg="No se encontraron grupos del usuario";
 			}
-			else if(this.get_userGroups().length > 0){
+			else if(this.getUserGroups().size() > 0){
 				msg="No se encontraron grupos del usuario";
 			}
 			

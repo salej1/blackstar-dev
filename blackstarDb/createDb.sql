@@ -29,7 +29,7 @@ CREATE TABLE equipmentType
 	equipmentType NVARCHAR(50) NOT NULL,
 	PRIMARY KEY (equipmentTypeId),
 	UNIQUE UQ_equipmentType_equipmentTypeId(equipmentTypeId)
-) ;
+) ENGINE=INNODB;
 
 
 CREATE TABLE followUp
@@ -49,7 +49,7 @@ CREATE TABLE followUp
 	UNIQUE UQ_followUp_followUpId(followUpId),
 	KEY (serviceOrderId),
 	KEY (serviceOrderId)
-) ;
+) ENGINE=INNODB;
 
 
 CREATE TABLE office
@@ -58,7 +58,7 @@ CREATE TABLE office
 	officeName NVARCHAR(50) NULL,
 	PRIMARY KEY (officeId),
 	UNIQUE UQ_office_officeId(officeId)
-) ;
+) ENGINE=INNODB;
 
 
 CREATE TABLE policy
@@ -108,7 +108,7 @@ CREATE TABLE policy
 	KEY (officeId),
 	KEY (policyTypeId),
 	INDEX IX_serialNumber (serialNumber ASC)
-) ;
+) ENGINE=INNODB;
 
 
 CREATE TABLE policyContact
@@ -125,7 +125,7 @@ CREATE TABLE policyContact
 	modifiedByUsr NVARCHAR(50) NULL,
 	PRIMARY KEY (policyContactId),
 	UNIQUE UQ_policyContact_policyContactId(policyContactId)
-) ;
+) ENGINE=INNODB;
 
 
 CREATE TABLE policyType
@@ -134,7 +134,7 @@ CREATE TABLE policyType
 	policyType NVARCHAR(50) NOT NULL,
 	PRIMARY KEY (policyTypeId),
 	UNIQUE UQ_policyType_policyTypeId(policyTypeId)
-) ;
+) ENGINE=INNODB;
 
 
 CREATE TABLE serviceCenter
@@ -143,7 +143,7 @@ CREATE TABLE serviceCenter
 	serviceCenter VARCHAR(100) NOT NULL,
 	PRIMARY KEY (serviceCenterId),
 	UNIQUE UQ_serviceCenter_serviceCenterId(serviceCenterId)
-) ;
+) ENGINE=INNODB;
 
 
 CREATE TABLE serviceOrder
@@ -151,17 +151,20 @@ CREATE TABLE serviceOrder
 	serviceOrderId INTEGER NOT NULL AUTO_INCREMENT,
 	serviceTypeId CHAR(1) NULL,
 	ticketId INTEGER NULL,
-	policyId SMALLINT NULL,
+	policyId INTEGER NULL,
 	serviceUnit NVARCHAR(10) NULL,
 	serviceDate DATETIME NULL,
 	responsible NVARCHAR(100) NULL,
+	additionalEmployees NVARCHAR(400) NULL,
 	receivedBy NVARCHAR(100) NULL,
 	serviceComments TEXT NULL,
-	statusId TINYINT NULL,
+	serviceStatusId CHAR(1) NULL,
 	closed DATETIME NULL,
 	consultant NVARCHAR(100) NULL,
 	coordinator NVARCHAR(100) NULL,
 	asignee NVARCHAR(50) NULL,
+	hasErrors TINYINT NULL,
+	effectiveDate DATETIME,
 	created DATETIME NULL,
 	createdBy NVARCHAR(50) NULL,
 	createdByUsr NVARCHAR(50) NULL,
@@ -173,8 +176,8 @@ CREATE TABLE serviceOrder
 	KEY (serviceTypeId),
 	KEY (ticketId),
 	KEY (serviceTypeId),
-	KEY (statusId)
-) ;
+	KEY (serviceStatusId)
+) ENGINE=INNODB;
 
 
 CREATE TABLE serviceType
@@ -183,7 +186,7 @@ CREATE TABLE serviceType
 	serviceType NVARCHAR(50) NULL,
 	PRIMARY KEY (serviceTypeId),
 	UNIQUE UQ_serviceType_serviceTypeId(serviceTypeId)
-) ;
+) ENGINE=INNODB;
 
 
 CREATE TABLE ticket
@@ -213,7 +216,7 @@ CREATE TABLE ticket
 	KEY (ticketStatusId),
 	KEY (serviceId),
 	KEY (ticketStatusId)
-) ;
+) ENGINE=INNODB;
 
 
 CREATE TABLE ticketStatus
@@ -222,7 +225,15 @@ CREATE TABLE ticketStatus
 	ticketStatus NVARCHAR(50) NULL,
 	PRIMARY KEY (ticketStatusId),
 	UNIQUE UQ_ticketStatus_ticketStatusId(ticketStatusId)
-) ;
+) ENGINE=INNODB;
+
+CREATE TABLE serviceStatus
+(
+	serviceStatusId CHAR(1) NOT NULL,
+	serviceStatus NVARCHAR(50) NULL,
+	PRIMARY KEY (serviceStatus),
+	UNIQUE UQ_serviceStatus_serviceStatusId(serviceStatusId)
+) ENGINE=INNODB;
 
 
 
@@ -258,6 +269,9 @@ ALTER TABLE ticket ADD CONSTRAINT FK_ticket_policy
 
 ALTER TABLE ticket ADD CONSTRAINT FK_ticket_ticketStatus 
 	FOREIGN KEY (ticketStatusId) REFERENCES ticketStatus (ticketStatusId);
+	
+ALTER TABLE serviceOrder ADD CONSTRAINT FK_serviceOrder_serviceStatus 
+	FOREIGN KEY (serviceStatusId) REFERENCES serviceStatus (serviceStatusId);
 
 -- -----------------------------------------------------------------------------
 
@@ -321,13 +335,19 @@ INSERT INTO `blackstarDb`.`serviceCenter` (`serviceCenterId`, `serviceCenter`) V
 INSERT INTO `blackstarDb`.`policyType` (`policyTypeId`, `policyType`) VALUES ( 'P', 'POLIZA'); 
 INSERT INTO `blackstarDb`.`policyType` (`policyTypeId`, `policyType`) VALUES ( 'G', 'GARANTIA'); 
 
-INSERT INTO `blackstarDb`.`servicetype` (`serviceTypeId`, `serviceType`) VALUES ( 'C', 'CORRECTIVO' ); 
-INSERT INTO `blackstarDb`.`servicetype` (`serviceTypeId`, `serviceType`) VALUES ( 'I', 'INSPECCION' ); 
-INSERT INTO `blackstarDb`.`servicetype` (`serviceTypeId`, `serviceType`) VALUES ( 'T', 'INSTALACION' ); 
-INSERT INTO `blackstarDb`.`servicetype` (`serviceTypeId`, `serviceType`) VALUES ( 'A', 'INSTALACION Y ARRANQUE' ); 
-INSERT INTO `blackstarDb`.`servicetype` (`serviceTypeId`, `serviceType`) VALUES ( 'L', 'LEVANTAMIENTO' ); 
-INSERT INTO `blackstarDb`.`servicetype` (`serviceTypeId`, `serviceType`) VALUES ( 'P', 'PREVENTIVO' ); 
-INSERT INTO `blackstarDb`.`servicetype` (`serviceTypeId`, `serviceType`) VALUES ( 'R', 'REVISION' ); 
+INSERT INTO `blackstarDb`.`serviceType` (`serviceTypeId`, `serviceType`) VALUES ( 'C', 'CORRECTIVO' ); 
+INSERT INTO `blackstarDb`.`serviceType` (`serviceTypeId`, `serviceType`) VALUES ( 'I', 'INSPECCION' ); 
+INSERT INTO `blackstarDb`.`serviceType` (`serviceTypeId`, `serviceType`) VALUES ( 'T', 'INSTALACION' ); 
+INSERT INTO `blackstarDb`.`serviceType` (`serviceTypeId`, `serviceType`) VALUES ( 'A', 'INSTALACION Y ARRANQUE' ); 
+INSERT INTO `blackstarDb`.`serviceType` (`serviceTypeId`, `serviceType`) VALUES ( 'L', 'LEVANTAMIENTO' ); 
+INSERT INTO `blackstarDb`.`serviceType` (`serviceTypeId`, `serviceType`) VALUES ( 'P', 'PREVENTIVO' ); 
+INSERT INTO `blackstarDb`.`serviceType` (`serviceTypeId`, `serviceType`) VALUES ( 'R', 'REVISION' ); 
+
+INSERT INTO `blackstarDb`.`servideOrderStatus` (`serviceStatusId`, `serviceStatus`) VALUES ( 'P', 'PROGRAMADO' ); 
+INSERT INTO `blackstarDb`.`servideOrderStatus` (`serviceStatusId`, `serviceStatus`) VALUES ( 'N', 'NUEVO' ); 
+INSERT INTO `blackstarDb`.`servideOrderStatus` (`serviceStatusId`, `serviceStatus`) VALUES ( 'E', 'PENDIENTE' ); 
+INSERT INTO `blackstarDb`.`servideOrderStatus` (`serviceStatusId`, `serviceStatus`) VALUES ( 'C', 'CERRADO' ); 
+
 
 select * from equipmentType;
 select * from office;
@@ -338,5 +358,33 @@ select * from serviceType;
 -- -----------------------------------------------------------------------------
 
 -- FIN - Seccion de Datos
+
+-- -----------------------------------------------------------------------------
+
+-- -----------------------------------------------------------------------------
+
+-- SECCION DE STORED PROCEDURES
+
+-- -----------------------------------------------------------------------------
+
+
+DELIMITER $$
+
+CREATE PROCEDURE serviceOrderData_getSchedule()
+BEGIN
+	
+	SELECT serviceOrderId, effectiveDate, equipmentType, po.customer, serialNumber, responsible, additionalEmployees
+	FROM serviceOrder so
+		INNER JOIN policy po ON so.policyId = po.policyId
+		INNER JOIN equipmentType et ON et.equipmentTypeId = po.equipmentTypeId
+	WHERE 
+		effectiveDate >= CURRENT_DATE();
+END$$
+
+DELIMITER ;
+
+-- -----------------------------------------------------------------------------
+
+-- FIN - SECCION DE STORED PROCEDURES
 
 -- -----------------------------------------------------------------------------
