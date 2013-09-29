@@ -3,6 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@page isELIgnored="false"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
 <c:set var="pageSection" scope="request" value="ordenesServicio" />
 <c:import url="header.jsp"></c:import>
 <body>
@@ -11,7 +12,7 @@
 
 		<!--   CONTENT COLUMN   -->
 		<div class="grid_16">
-			<p>${user.FullDescriptor}</p>
+<%-- 			<p>${user.FullDescriptor}</p> --%>
 		</div>
 		<div class="grid_16">
 			<div>
@@ -36,14 +37,14 @@
 						</tr>
 					</thead>
 					<tbody>
-					<c:foreach var="service" in"servicesToday">
+					<c:forEach var="service" items="${servicesToday}">
 						<tr>
 							<td>${ service.EquipmentType }</td>
 							<td>${ service.Customer }</td>
 							<td>${ service.SerialNUmber }</td>
 							<td>${ service.Asignee }</td>
 						</tr>
-					</c:foreach>
+					</c:forEach>
 						
 					<thead>
 						<tr>

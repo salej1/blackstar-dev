@@ -2,6 +2,7 @@ package com.blackstar.web;
 
 import java.io.IOException;
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -51,6 +52,7 @@ public class scheduleStatus extends HttpServlet {
 		request.setAttribute("today6", today6.toString());
 		
 		List<ScheduledService> servicesToday; //TODO invocar lista de servicios programados
+		servicesToday = new ArrayList<ScheduledService>(); // Esto es un stub, habra que cambiarlo por la llamada a datos
 		
 		request.setAttribute("servicesToday", servicesToday);
 		
