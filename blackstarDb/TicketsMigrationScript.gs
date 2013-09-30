@@ -1,3 +1,16 @@
+/******************************************************************************
+** File:	TicketsMigrationScript.gs   
+** Name:	TicketsMigrationScript
+** Desc:	Transfiere los tickets a la base de datos de transferencia
+** Auth:	Sergio A Gomez
+** Date:	17/09/2013
+*******************************************************************************
+** Change History
+*******************************************************************************
+** PR   Date    	Author	Description
+** --   --------   -------  ------------------------------------
+** 1    17/09/2013  SAG  	Version inicial: Exporta el archivo de tickets a BD blackstarDbTransfer
+*****************************************************************************/
 
 function main() {
 	// Log init and timestamp
@@ -151,6 +164,7 @@ function sendToDatabase(ticket, conn, policies, sqlLog){
 	var stmt = conn.createStatement();
 	stmt.execute(sql);
 	
+	return sqlLog;
 }
 
 
