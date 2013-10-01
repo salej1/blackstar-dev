@@ -1,4 +1,4 @@
-package com.blackstar.dataAccess;
+package com.blackstar.db;
 
 import java.sql.DriverManager;
 import java.sql.ResultSet;

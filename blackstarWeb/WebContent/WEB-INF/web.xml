@@ -1,42 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
   <display-name>blackstarWeb</display-name>
-  <welcome-file-list>
-    <welcome-file>index.html</welcome-file>
-    <welcome-file>index.htm</welcome-file>
-    <welcome-file>index.jsp</welcome-file>
-    <welcome-file>default.html</welcome-file>
-    <welcome-file>default.htm</welcome-file>
-    <welcome-file>default.jsp</welcome-file>
-  </welcome-file-list>
-  <servlet>
-    <description>Maneja el request a la pagina de mantenimientos programados</description>
-    <display-name>scheduleStatus</display-name>
-    <servlet-name>scheduleStatus</servlet-name>
-    <servlet-class>com.blackstar.web.scheduleStatus</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>scheduleStatus</servlet-name>
-    <url-pattern>/scheduleStatus</url-pattern>
-  </servlet-mapping>
+  <!-- Change to "Production" when you are ready to deploy -->
   <context-param>
-    <param-name>globalSettings_appTitle</param-name>
-    <param-value>GPO SAC Portal de servicios</param-value>
+    <param-name>javax.faces.PROJECT_STAGE</param-name>
+    <param-value>Development</param-value>
   </context-param>
-  <listener>
-    <listener-class>com.blackstar.web.SessionListener</listener-class>
-  </listener>
+  
+  <!-- Welcome page -->
+  <welcome-file-list>
+    <welcome-file>faces/helloAjax.xhtml</welcome-file>
+  </welcome-file-list>
+  
+  <!-- JSF mapping -->
   <servlet>
-    <description></description>
-    <display-name>dashboard</display-name>
-    <servlet-name>dashboard</servlet-name>
-    <servlet-class>com.blackstar.web.dashboard</servlet-class>
+    <servlet-name>Faces Servlet</servlet-name>
+    <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
   </servlet>
+  
+  <!-- Map these files with JSF -->
   <servlet-mapping>
-    <servlet-name>dashboard</servlet-name>
-    <url-pattern>/dashboard</url-pattern>
+    <servlet-name>Faces Servlet</servlet-name>
+    <url-pattern>/faces/*</url-pattern>
   </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>Faces Servlet</servlet-name>
+    <url-pattern>*.jsf</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>Faces Servlet</servlet-name>
+    <url-pattern>*.faces</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>Faces Servlet</servlet-name>
+    <url-pattern>*.xhtml</url-pattern>
+  </servlet-mapping>
+  
   <listener>
-    <listener-class>com.blackstar.web.ContextListener</listener-class>
-  </listener>
+   <listener-class>com.sun.faces.config.ConfigureListener</listener-class>
+</listener>   
+  
 </web-app>

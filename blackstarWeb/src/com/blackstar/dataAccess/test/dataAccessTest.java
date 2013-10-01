@@ -9,7 +9,7 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
-import com.blackstar.dataAccess.dataAccess;
+import com.blackstar.db.dataAccess;
 
 public class dataAccessTest {
 
