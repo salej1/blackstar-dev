@@ -39,4 +39,16 @@
   <listener>
     <listener-class>com.blackstar.web.ContextListener</listener-class>
   </listener>
+  <servlet>
+    <description></description>
+    <display-name>osDetail</display-name>
+    <servlet-name>osDetail</servlet-name>
+    <servlet-class>com.blackstar.web.osDetail</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>osDetail</servlet-name>
+    <url-pattern>/osDetail</url-pattern>
+  </servlet-mapping>
+
+  
 </web-app>

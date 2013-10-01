@@ -155,6 +155,8 @@ CREATE TABLE serviceOrder
 	modified DATETIME NULL,
 	modifiedBy NVARCHAR(50) NULL,
 	modifiedByUsr NVARCHAR(50) NULL,
+	firmaRealizado NVARCHAR(250) NULL,
+	firmaRecibido NVARCHAR(250) NULL,
 	PRIMARY KEY (serviceOrderId),
 	UNIQUE UQ_serviceOrder_serviceOrderId(serviceOrderId),
 	KEY (serviceTypeId),

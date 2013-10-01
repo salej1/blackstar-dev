@@ -23,5 +23,7 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="lib" path="C:/Program Files/eclipse/plugins/com.google.appengine.eclipse.sdkbundle_1.8.4/appengine-java-sdk-1.8.4/lib/tools/jsp/repackaged-appengine-jakarta-standard-1.1.2.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/eclipse/plugins/com.google.appengine.eclipse.sdkbundle_1.8.4/appengine-java-sdk-1.8.4/lib/tools/jsp/repackaged-appengine-jakarta-jstl-1.1.2.jar"/>
 	<classpathentry kind="output" path="WebContent/WEB-INF/classes"/>
 </classpath>

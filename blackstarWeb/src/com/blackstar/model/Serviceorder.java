@@ -39,6 +39,8 @@ public class Serviceorder implements java.io.Serializable {
 	private Date modified;
 	private String modifiedBy;
 	private String modifiedByUsr;
+	private String firmaRealizado;
+	private String firmaRecibido;
 
 	public Serviceorder() {
 	}
@@ -49,7 +51,7 @@ public class Serviceorder implements java.io.Serializable {
 			Byte statusId, Date closed, String consultant, String coordinator,
 			String asignee, Date created, String createdBy,
 			String createdByUsr, Date modified, String modifiedBy,
-			String modifiedByUsr) {
+			String modifiedByUsr, String firmaRealizado, String firmaRecibido) {
 		this.serviceTypeId = serviceTypeId;
 		this.ticketId = ticketId;
 		this.policyId = policyId;
@@ -69,6 +71,8 @@ public class Serviceorder implements java.io.Serializable {
 		this.modified = modified;
 		this.modifiedBy = modifiedBy;
 		this.modifiedByUsr = modifiedByUsr;
+		this.firmaRealizado = firmaRealizado;
+		this.firmaRecibido = firmaRecibido;
 	}
 
 	@Id
@@ -255,6 +259,24 @@ public class Serviceorder implements java.io.Serializable {
 
 	public void setModifiedByUsr(String modifiedByUsr) {
 		this.modifiedByUsr = modifiedByUsr;
+	}
+	
+	@Column(name = "firmaRealizado", length = 50)
+	public String getFirmaRealizado() {
+		return this.firmaRealizado;
+	}
+
+	public void setfirmaRealizado(String firmaRealizado) {
+		this.firmaRealizado = firmaRealizado;
+	}
+	
+	@Column(name = "firmaRecibido", length = 50)
+	public String getFirmaRecibido() {
+		return this.firmaRecibido;
+	}
+
+	public void setFirmaRecibido(String firmaRecibido) {
+		this.firmaRecibido = firmaRecibido;
 	}
 
 }
