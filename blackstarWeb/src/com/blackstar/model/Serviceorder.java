@@ -39,8 +39,8 @@ public class Serviceorder implements java.io.Serializable {
 	private Date modified;
 	private String modifiedBy;
 	private String modifiedByUsr;
-	private String firmaRealizado;
-	private String firmaRecibido;
+	private String signCreated;
+	private String signReceivedBy;
 
 	public Serviceorder() {
 	}
@@ -51,7 +51,7 @@ public class Serviceorder implements java.io.Serializable {
 			Byte statusId, Date closed, String consultant, String coordinator,
 			String asignee, Date created, String createdBy,
 			String createdByUsr, Date modified, String modifiedBy,
-			String modifiedByUsr, String firmaRealizado, String firmaRecibido) {
+			String modifiedByUsr, String signCreated, String signReceivedBy) {
 		this.serviceTypeId = serviceTypeId;
 		this.ticketId = ticketId;
 		this.policyId = policyId;
@@ -71,8 +71,8 @@ public class Serviceorder implements java.io.Serializable {
 		this.modified = modified;
 		this.modifiedBy = modifiedBy;
 		this.modifiedByUsr = modifiedByUsr;
-		this.firmaRealizado = firmaRealizado;
-		this.firmaRecibido = firmaRecibido;
+		this.signCreated = signCreated;
+		this.signReceivedBy = signReceivedBy;
 	}
 
 	@Id
@@ -261,22 +261,22 @@ public class Serviceorder implements java.io.Serializable {
 		this.modifiedByUsr = modifiedByUsr;
 	}
 	
-	@Column(name = "firmaRealizado", length = 50)
-	public String getFirmaRealizado() {
-		return this.firmaRealizado;
+	@Column(name = "signCreated", length = 50)
+	public String getSignCreated() {
+		return this.signCreated;
 	}
 
-	public void setfirmaRealizado(String firmaRealizado) {
-		this.firmaRealizado = firmaRealizado;
+	public void setSignCreated(String signCreated) {
+		this.signCreated = signCreated;
 	}
 	
-	@Column(name = "firmaRecibido", length = 50)
-	public String getFirmaRecibido() {
-		return this.firmaRecibido;
+	@Column(name = "signReceivedBy", length = 50)
+	public String getsignReceivedBy() {
+		return this.signReceivedBy;
 	}
 
-	public void setFirmaRecibido(String firmaRecibido) {
-		this.firmaRecibido = firmaRecibido;
+	public void setSignReceivedBy(String signReceivedBy) {
+		this.signReceivedBy = signReceivedBy;
 	}
 
 }

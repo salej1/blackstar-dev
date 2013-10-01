@@ -267,9 +267,9 @@
 				
 				</script>
 				<!-- Signature capture box # 1 -->
-				<input type="hidden" id="leftSignJSON" />${servicioOrderDetail.firmaRealizado}
+				<input type="hidden" id="leftSignJSON" />${servicioOrderDetail.signCreated}
 				<!-- Signature capture box # 2 -->
-				<input type="hidden" id="rightSignJSON" />${servicioOrderDetail.firmaRecibido}
+				<input type="hidden" id="rightSignJSON" />${servicioOrderDetail.signReceivedBy}
 				
 				
 <!--   ~ CONTENT   -->
