@@ -72,22 +72,24 @@ CREATE TABLE policy
 	project VARCHAR(50) NULL,
 	cst NVARCHAR(50) NULL,
 	equipmentTypeId CHAR(1) NULL,
-	brand VARCHAR(50) NULL,
-	model VARCHAR(50) NULL,
+	brand VARCHAR(100) NULL,
+	model VARCHAR(100) NULL,
 	serialNumber VARCHAR(100) NULL,
 	capacity NVARCHAR(50) NULL,
 	equipmentAddress TEXT NULL,
 	equipmentLocation TEXT NULL,
-	policyContactId INTEGER NULL,
+	contactName NVARCHAR(100) NOT NULL,
+	contactPhone NVARCHAR(300) NULL,
+	contactEmail NVARCHAR(200) NULL,
 	startDate DATE NULL,
 	endDate DATE NULL,
 	visitsPerYear INTEGER NULL,
-	responseTimeHR TINYINT NULL,
+	responseTimeHR INTEGER NULL,
 	solutionTimeHR SMALLINT NULL,
 	penalty TEXT NULL,
 	service NVARCHAR(50) NULL,
 	includesParts TINYINT NOT NULL,
-	exceptionParts NVARCHAR(50) NULL,
+	exceptionParts NVARCHAR(100) NULL,
 	serviceCenterId CHAR(1) NULL,
 	observations TEXT NULL,
 	created DATETIME NULL,
@@ -100,31 +102,12 @@ CREATE TABLE policy
 	UNIQUE UQ_policyHeader_policyId(policyId),
 	KEY (equipmentTypeId),
 	KEY (officeId),
-	KEY (policyContactId),
 	KEY (policyTypeId),
 	KEY (serviceCenterId),
-	KEY (policyContactId),
 	KEY (customer),
 	KEY (officeId),
 	KEY (policyTypeId),
 	INDEX IX_serialNumber (serialNumber ASC)
-) ENGINE=INNODB;
-
-
-CREATE TABLE policyContact
-(
-	policyContactId INTEGER NOT NULL,
-	name NVARCHAR(50) NOT NULL,
-	phone NVARCHAR(20) NULL,
-	email NVARCHAR(10) NULL,
-	created DATETIME NULL,
-	createdBy NVARCHAR(50) NULL,
-	createdByUsr NVARCHAR(50) NULL,
-	modified DATETIME NULL,
-	modifiedBy NVARCHAR(50) NULL,
-	modifiedByUsr NVARCHAR(50) NULL,
-	PRIMARY KEY (policyContactId),
-	UNIQUE UQ_policyContact_policyContactId(policyContactId)
 ) ENGINE=INNODB;
 
 
@@ -149,6 +132,7 @@ CREATE TABLE serviceCenter
 CREATE TABLE serviceOrder
 (
 	serviceOrderId INTEGER NOT NULL AUTO_INCREMENT,
+	serviceOrderNumber VARCHAR(50),
 	serviceTypeId CHAR(1) NULL,
 	ticketId INTEGER NULL,
 	policyId INTEGER NULL,
@@ -171,6 +155,8 @@ CREATE TABLE serviceOrder
 	modified DATETIME NULL,
 	modifiedBy NVARCHAR(50) NULL,
 	modifiedByUsr NVARCHAR(50) NULL,
+	signCreated NVARCHAR(250) NULL,
+	signReceivedBy NVARCHAR(250) NULL,
 	PRIMARY KEY (serviceOrderId),
 	UNIQUE UQ_serviceOrder_serviceOrderId(serviceOrderId),
 	KEY (serviceTypeId),
@@ -193,22 +179,25 @@ CREATE TABLE ticket
 (
 	ticketId INTEGER ZEROFILL NOT NULL AUTO_INCREMENT,
 	policyId INTEGER NULL,
-	serviceId SMALLINT NULL,
-	user NVARCHAR(8) NULL,
+	serviceId INTEGER NULL,
+	ticketNumber  VARCHAR(10) NOT NULL ,
+	user NVARCHAR(50) NULL,
 	observations TEXT NULL,
+	phoneResolved TINYINT(1) NULL DEFAULT NULL ,
 	ticketStatusId CHAR(1) NULL,
 	realResponseTime SMALLINT NULL,
+	responseTimeDeviationHr SMALLINT NULL,
 	arrival DATETIME NULL,
-	employee BIGINT NULL,
-	asignee NVARCHAR(8) NULL,
+	employee NVARCHAR(200) NULL,
+	asignee NVARCHAR(50) NULL,
 	closed DATETIME NULL,
-	solutionTime DATETIME NULL,
+	solutionTime SMALLINT NULL,
 	solutionTimeDeviationHr SMALLINT NULL,
 	created DATETIME NULL,
-	createdBy NVARCHAR(8) NULL,
+	createdBy NVARCHAR(50) NULL,
 	createdByUsr NVARCHAR(50) NULL,
 	modified DATETIME NULL,
-	modifiedBy NVARCHAR(8) NULL,
+	modifiedBy NVARCHAR(50) NULL,
 	modifiedByUsr NVARCHAR(50) NULL,
 	PRIMARY KEY (ticketId),
 	UNIQUE UQ_ticket_ticketId(ticketId),
@@ -249,9 +238,6 @@ ALTER TABLE policy ADD CONSTRAINT FK_policy_equipmentType
 ALTER TABLE policy ADD CONSTRAINT FK_policy_office 
 	FOREIGN KEY (officeId) REFERENCES office (officeId);
 
-ALTER TABLE policy ADD CONSTRAINT FK_policy_policyContact 
-	FOREIGN KEY (policyContactId) REFERENCES policyContact (policyContactId);
-
 ALTER TABLE policy ADD CONSTRAINT FK_policy_policyType 
 	FOREIGN KEY (policyTypeId) REFERENCES policyType (policyTypeId);
 
@@ -260,9 +246,6 @@ ALTER TABLE policy ADD CONSTRAINT FK_policy_serviceCenter
 
 ALTER TABLE serviceOrder ADD CONSTRAINT FK_serviceOrder_serviceType 
 	FOREIGN KEY (serviceTypeId) REFERENCES serviceType (serviceTypeId);
-
-ALTER TABLE serviceOrder ADD CONSTRAINT FK_serviceOrder_ticket 
-	FOREIGN KEY (ticketId) REFERENCES ticket (ticketId);
 
 ALTER TABLE ticket ADD CONSTRAINT FK_ticket_policy 
 	FOREIGN KEY (policyId) REFERENCES policy (policyId);
@@ -335,18 +318,24 @@ INSERT INTO `blackstarDb`.`serviceCenter` (`serviceCenterId`, `serviceCenter`) V
 INSERT INTO `blackstarDb`.`policyType` (`policyTypeId`, `policyType`) VALUES ( 'P', 'POLIZA'); 
 INSERT INTO `blackstarDb`.`policyType` (`policyTypeId`, `policyType`) VALUES ( 'G', 'GARANTIA'); 
 
-INSERT INTO `blackstarDb`.`serviceType` (`serviceTypeId`, `serviceType`) VALUES ( 'C', 'CORRECTIVO' ); 
-INSERT INTO `blackstarDb`.`serviceType` (`serviceTypeId`, `serviceType`) VALUES ( 'I', 'INSPECCION' ); 
-INSERT INTO `blackstarDb`.`serviceType` (`serviceTypeId`, `serviceType`) VALUES ( 'T', 'INSTALACION' ); 
-INSERT INTO `blackstarDb`.`serviceType` (`serviceTypeId`, `serviceType`) VALUES ( 'A', 'INSTALACION Y ARRANQUE' ); 
-INSERT INTO `blackstarDb`.`serviceType` (`serviceTypeId`, `serviceType`) VALUES ( 'L', 'LEVANTAMIENTO' ); 
-INSERT INTO `blackstarDb`.`serviceType` (`serviceTypeId`, `serviceType`) VALUES ( 'P', 'PREVENTIVO' ); 
-INSERT INTO `blackstarDb`.`serviceType` (`serviceTypeId`, `serviceType`) VALUES ( 'R', 'REVISION' ); 
+INSERT INTO `blackstarDb`.`serviceType` (`serviceTypeId`, `serviceType`) VALUES ('A','ARRANQUE' );  
+INSERT INTO `blackstarDb`.`serviceType` (`serviceTypeId`, `serviceType`) VALUES ('P','PREVENTIVO' );  
+INSERT INTO `blackstarDb`.`serviceType` (`serviceTypeId`, `serviceType`) VALUES ('C','CORRECTIVO' );  
+INSERT INTO `blackstarDb`.`serviceType` (`serviceTypeId`, `serviceType`) VALUES ('I','INSPECCION' );  
+INSERT INTO `blackstarDb`.`serviceType` (`serviceTypeId`, `serviceType`) VALUES ('T','INSTALACION' );  
+INSERT INTO `blackstarDb`.`serviceType` (`serviceTypeId`, `serviceType`) VALUES ('L','LIMPIEZA' );  
+INSERT INTO `blackstarDb`.`serviceType` (`serviceTypeId`, `serviceType`) VALUES ('V','VISITA' );  
+INSERT INTO `blackstarDb`.`serviceType` (`serviceTypeId`, `serviceType`) VALUES ('D','DIAGNOSTICO' );  
+INSERT INTO `blackstarDb`.`serviceType` (`serviceTypeId`, `serviceType`) VALUES ('E','LEVANTAMIENTO' );  
+INSERT INTO `blackstarDb`.`serviceType` (`serviceTypeId`, `serviceType`) VALUES ('O','INSPECCION Y CORRECTIVO' );  
+INSERT INTO `blackstarDb`.`serviceType` (`serviceTypeId`, `serviceType`) VALUES ('M','PUESTA EN MARCHA' );  
+INSERT INTO `blackstarDb`.`serviceType` (`serviceTypeId`, `serviceType`) VALUES ('N','MANTENIMIENTO' );  
+INSERT INTO `blackstarDb`.`serviceType` (`serviceTypeId`, `serviceType`) VALUES ('R','REVISION' );  
 
-INSERT INTO `blackstarDb`.`servideOrderStatus` (`serviceStatusId`, `serviceStatus`) VALUES ( 'P', 'PROGRAMADO' ); 
-INSERT INTO `blackstarDb`.`servideOrderStatus` (`serviceStatusId`, `serviceStatus`) VALUES ( 'N', 'NUEVO' ); 
-INSERT INTO `blackstarDb`.`servideOrderStatus` (`serviceStatusId`, `serviceStatus`) VALUES ( 'E', 'PENDIENTE' ); 
-INSERT INTO `blackstarDb`.`servideOrderStatus` (`serviceStatusId`, `serviceStatus`) VALUES ( 'C', 'CERRADO' ); 
+INSERT INTO `blackstarDb`.`serviceStatus` (`serviceStatusId`, `serviceStatus`) VALUES ( 'P', 'PROGRAMADO' ); 
+INSERT INTO `blackstarDb`.`serviceStatus` (`serviceStatusId`, `serviceStatus`) VALUES ( 'N', 'NUEVO' ); 
+INSERT INTO `blackstarDb`.`serviceStatus` (`serviceStatusId`, `serviceStatus`) VALUES ( 'E', 'PENDIENTE' ); 
+INSERT INTO `blackstarDb`.`serviceStatus` (`serviceStatusId`, `serviceStatus`) VALUES ( 'C', 'CERRADO' ); 
 
 
 select * from equipmentType;

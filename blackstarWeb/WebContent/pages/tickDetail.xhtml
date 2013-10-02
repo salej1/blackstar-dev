@@ -71,38 +71,38 @@
 						</div>
 						<table>
 							<tbody>
-								<tr><td style="width:200px;">Marca temporal</td><td><input type="text" readonly="true"  style="width:95%;" value="1/2/2013 12:56:41"/></td></tr>
-								<tr><td>Nombre de usuario</td><td><h:inputText id="user" value="#{ticketPageBean.ticket.user}" readonly="true"/></td></tr>
-								<tr><td>Contacto</td><td><input type="text" readonly="true"  style="width:95%;" value="Pablo Conejo"/></td></tr>
-								<tr><td>Telefóno de Contacto</td><td><input type="text" readonly="true"  style="width:95%;" value="4727227400 ext 2234"/></td></tr>
-								<tr><td>E-mail</td><td><input type="text" readonly="true"  style="width:95%;" value="pablo.conejo@grupoantolin.com"/></td></tr>
-								<tr><td>Número de serie del Equipo</td><td><input type="text" readonly="true"  style="width:95%;" value="WE0247110050"/></td></tr>
-								<tr><td>Observaciones</td><td><h:inputText id="observations" value="#{ticketPageBean.ticket.observations}" /></td></tr>
-								<tr><td>CLIENTE</td><td><input type="text" readonly="true"  style="width:95%;" value="GRUPO ANTOLIN SILAO"/></td></tr>
-								<tr><td>EQUIPO</td><td><input type="text" readonly="true"  style="width:95%;" value="UPS"/></td></tr>
-								<tr><td>MARCA</td><td><input type="text" readonly="true"  style="width:95%;" value="SILCON"/></td></tr>
-								<tr><td>MODELO</td><td><input type="text" readonly="true"  style="width:95%;" value="SL15KB1"/></td></tr>
-								<tr><td>CAP.</td><td><input type="text" readonly="true"  style="width:95%;" value="15 KVA"/></td></tr>
-								<tr><td>Tiempo de Respuesta Comprometido</td><td><input type="text" readonly="true"  style="width:95%;" value="12"/></td></tr>
-								<tr><td>Tiempo de Solucion</td><td><input type="text" readonly="true"  style="width:95%;" value="408"/></td></tr>
-								<tr><td>Direccion del Equipo</td><td><input type="text" readonly="true"  style="width:95%;" value="AV. INGENIEROS NO. 51 PARQUE INDUSTRIAL FIPASI"/></td></tr>
-								<tr><td>Ubicación del Equipo</td><td><input type="text" readonly="true"  style="width:95%;" value="NA"/></td></tr>
-								<tr><td>Incluye Partes</td><td><input type="text" readonly="true"  style="width:95%;" value="SI"/></td></tr>
-								<tr><td>Excepción de Partes</td><td><input type="text" readonly="true"  style="width:95%;" value="BATERÍAS"/></td></tr>
-								<tr><td>Centro de Servicio</td><td><input type="text" readonly="true"  style="width:95%;" value="QRO"/></td></tr>
-								<tr><td>Oficina</td><td><input type="text" readonly="true"  style="width:95%;" value="QRO"/></td></tr>
-								<tr><td>Proyecto</td><td><input type="text" readonly="true"  style="width:95%;" value="CQ166"/></td></tr>
-								<tr><td>No. de Ticket</td><td><h:inputText id="ticketId" value="#{ticketPageBean.ticket.ticketId}" width="95%"/></td></tr>
-								<tr><td>Se pudo resolver via telefónica</td><td><input type="text" readonly="true"  style="width:95%;" value="NO"/></td></tr>
-								<tr><td>Hora y Fecha de Llegada a Sitio</td><td><input type="text" readonly="true"  style="width:95%;" value="41276.66667"/></td></tr>
-								<tr><td>Desviación TR</td><td><input type="text" readonly="true"  style="width:95%;" value="8.944722222"/></td></tr>
-								<tr><td>Seguimiento</td><td><textarea name="seg" style="width:95%;" rows="6">Se encuentra   equipo operando correctamente, se encuentran perillas de by- pass de mantenimiento en posicion correcta, se  revisa by pass de mantenimiento encontrando  perrillas fuera de posicion  se corrige,  se deja equipo operando correctamente y sin alaras presentes, se  investigara la opcion operancion de TR o Reglador con mtto.</textarea></td></tr>
-								<tr><td>Fecha y Hora de Cierre</td><td><input type="text" readonly="true"  style="width:95%;" value="41276.75"/></td></tr>
-								<tr><td>Numero de Reporte de Servicio</td><td><input type="text" readonly="true"  style="width:95%;" value="Q0282"/></td></tr>
-								<tr><td>Ingeniero que atendió</td><td><input type="text" readonly="true"  style="width:95%;" value="Ruben G. Leal"/></td></tr>
-								<tr><td>T S Brindado en HR</td><td><input type="text" readonly="true"  style="width:95%;" value="5.055277778"/></td></tr>
-								<tr><td>Desviación en Horas TS</td><td><input type="text" readonly="true"  style="width:95%;" value="402.9447222"/></td></tr>
-								<tr><td>Estatus</td><td><h:inputText id="ticketStatus" value="#{ticketPageBean.ticketStatus.ticketStatus}"  width="95%"/></td></tr>
+								<tr><td style="width:200px;">Marca temporal</td><td><h:inputText id="marca" value="#{ticketPageBean.policy.brand}" style="width:95%" readonly="true"/></td></tr>
+								<tr><td>Nombre de usuario</td><td><h:inputText id="user" value="#{ticketPageBean.ticket.user}" style="width:95%"  readonly="true"/></td></tr>
+								<tr><td>Contacto</td><td><h:inputText id="contact" value="#{ticketPageBean.policyContact.name}" style="width:95%"  readonly="true"/></td></tr>
+								<tr><td>Telefóno de Contacto</td><td><h:inputText id="contactPhone" value="#{ticketPageBean.policyContact.phone}" style="width:95%"  readonly="true"/></td></tr>
+								<tr><td>E-mail</td><td><h:inputText id="email" value="#{ticketPageBean.policyContact.email}" style="width:95%"  readonly="true"/></td></tr>
+								<tr><td>Número de serie del Equipo</td><td><h:inputText id="serialNumber" value="#{ticketPageBean.policyContact.email}" style="width:95%"  readonly="true"/></td></tr>
+								<tr><td>Observaciones</td><td><h:inputText id="observations" value="#{ticketPageBean.ticket.observations}" style="width:95%" readonly="true"/></td></tr>
+								<tr><td>CLIENTE</td><td><h:inputText id="customer" value="#{ticketPageBean.policy.customer}" style="width:95%"  readonly="true"/></td></tr>
+								<tr><td>EQUIPO</td><td><h:inputText id="equipment" value="#{ticketPageBean.equipmentType.equipmentType}" style="width:95%"  readonly="true"/></td></tr>
+								<tr><td>MARCA</td><td><h:inputText id="brand" value="#{ticketPageBean.policy.brand}" style="width:95%"  readonly="true"/></td></tr>
+								<tr><td>MODELO</td><td><h:inputText id="model" value="#{ticketPageBean.policy.model}" style="width:95%"  readonly="true"/></td></tr>
+								<tr><td>CAP.</td><td><h:inputText id="capacity" value="#{ticketPageBean.policy.capacity}" style="width:95%"  readonly="true"/></td></tr>
+								<tr><td>Tiempo de Respuesta Comprometido</td><td><h:inputText id="responseTimeHr" value="#{ticketPageBean.policy.responseTimeHr}" style="width:95%"  readonly="true"/></td></tr>
+								<tr><td>Tiempo de Solucion</td><td><h:inputText id="solutionTimeHr" value="#{ticketPageBean.policy.solutionTimeHr}" style="width:95%"  readonly="true"/></td></tr>
+								<tr><td>Direccion del Equipo</td><td><h:inputText id="equipmentAddress" value="#{ticketPageBean.policy.equipmentAddress}" style="width:95%"  readonly="true"/></td></tr>
+								<tr><td>Ubicación del Equipo</td><td><h:inputText id="equipmentLocation" value="#{ticketPageBean.policy.equipmentLocation}" style="width:95%"  readonly="true"/></td></tr>
+								<tr><td>Incluye Partes</td><td><h:inputText id="includesParts" value="#{ticketPageBean.policy.includesParts}" style="width:95%"  readonly="true"/></td></tr>
+								<tr><td>Excepción de Partes</td><td><h:inputText id="exceptionParts" value="#{ticketPageBean.policy.exceptionParts}" style="width:95%"  readonly="true"/></td></tr>
+								<tr><td>Centro de Servicio</td><td><h:inputText id="serviceCenter" value="#{ticketPageBean.serviceCenter.serviceCenter}" style="width:95%"  readonly="true"/></td></tr>
+								<tr><td>Oficina</td><td><h:inputText id="office" value="#{ticketPageBean.office.officeName}" style="width:95%"  readonly="true"/></td></tr>
+								<tr><td>Proyecto</td><td><h:inputText id="project" value="#{ticketPageBean.policy.project}" style="width:95%"  readonly="true"/></td></tr>
+								<tr><td>No. de Ticket</td><td><h:inputText id="ticketId" value="#{ticketPageBean.ticket.ticketId}" style="width:95%" readonly="true"/></td></tr>
+								<tr><td>Se pudo resolver via telefónica</td><td><h:inputText id="realResponse" value="#{ticketPageBean.ticket.realResponseTime}" style="width:95%"  readonly="true"/></td></tr>
+								<tr><td>Hora y Fecha de Llegada a Sitio</td><td><h:inputText id="arrival" value="#{ticketPageBean.ticket.arrival}" style="width:95%" readonly="true"/></td></tr>
+								<tr><td>Desviación TR</td><td><h:inputText id="desviation" value="#{ticketPageBean.ticket.arrival}" style="width:95%" readonly="true"/></td></tr>
+								<tr><td>Seguimiento</td><td><h:inputTextarea id="follow" value="#{ticketPageBean.followUp.followup}" style="width:95%" readonly="true"/></td></tr>
+								<tr><td>Fecha y Hora de Cierre</td><td><h:inputText id="closed" value="#{ticketPageBean.serviceOrder.closed}" style="width:95%" readonly="true"/></td></tr>
+								<tr><td>Numero de Reporte de Servicio</td><td><h:inputText id="serviceId" value="#{ticketPageBean.serviceOrder.serviceOrderId}" style="width:95%" readonly="true"/></td></tr>
+								<tr><td>Ingeniero que atendió</td><td><h:inputText id="asignee" value="#{ticketPageBean.serviceOrder.asignee}" style="width:95%" readonly="true"/></td></tr>
+								<tr><td>T S Brindado en HR</td><td><h:inputText id="tsbrindado" value="#{ticketPageBean.serviceOrder.serviceOrderId}" style="width:95%" readonly="true"/></td></tr>
+								<tr><td>Desviación en Horas TS</td><td><h:inputText id="desviationts" value="#{ticketPageBean.serviceOrder.serviceOrderId}" style="width:95%" readonly="true"/></td></tr>
+								<tr><td>Estatus</td><td><h:inputText id="ticketStatus" value="#{ticketPageBean.ticketStatus.ticketStatus}" style="width:95%" readonly="true"/></td></tr>
 							</tbody>
 						</table>
 					</div>					

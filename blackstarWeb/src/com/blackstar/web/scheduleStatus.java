@@ -1,9 +1,13 @@
 package com.blackstar.web;
 
 import java.io.IOException;
-import java.sql.Date;
+import java.util.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -14,7 +18,6 @@ import org.hibernate.jmx.HibernateService;
 import org.hibernate.jmx.HibernateServiceMBean;
 
 import com.blackstar.model.*;
-import com.google.appengine.repackaged.org.joda.time.DateTime;
 
 /**
  * Servlet implementation class scheduleStatus
@@ -35,21 +38,32 @@ public class scheduleStatus extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		DateTime today = DateTime.now();
-		DateTime today1 = today.plusDays(1);
-		DateTime today2 = today1.plusDays(1);
-		DateTime today3 = today2.plusDays(1);
-		DateTime today4 = today3.plusDays(1);
-		DateTime today5 = today4.plusDays(1);
-		DateTime today6 = today5.plusDays(1);
+		//SimpleDateFormat dateFormatter = new SimpleDateFormat("EEEE, MMMM d, 'yyyy", new Locale("es", "ES"));
+		DateFormat dateFormatter = DateFormat.getDateInstance(DateFormat.FULL);
+		Calendar cal = Calendar.getInstance();
 		
-		request.setAttribute("today", today.toString());
-		request.setAttribute("today1", today1.toString());
-		request.setAttribute("today2", today2.toString());
-		request.setAttribute("today3", today3.toString());
-		request.setAttribute("today4", today4.toString());
-		request.setAttribute("today5", today5.toString());
-		request.setAttribute("today6", today6.toString());
+		Date today = new Date();
+		cal.setTime(today);
+		cal.add(Calendar.DATE, 1);
+		Date today1 = cal.getTime();
+		cal.add(Calendar.DATE, 1);
+		Date today2 = cal.getTime();
+		cal.add(Calendar.DATE, 1);
+		Date today3 = cal.getTime();
+		cal.add(Calendar.DATE, 1);
+		Date today4 = cal.getTime();
+		cal.add(Calendar.DATE, 1);
+		Date today5 = cal.getTime();
+		cal.add(Calendar.DATE, 1);
+		Date today6 = cal.getTime();
+		
+		request.setAttribute("today",  dateFormatter.format(today));
+		request.setAttribute("today1", dateFormatter.format(today1));
+		request.setAttribute("today2", dateFormatter.format(today2));
+		request.setAttribute("today3", dateFormatter.format(today3));
+		request.setAttribute("today4", dateFormatter.format(today4));
+		request.setAttribute("today5", dateFormatter.format(today5));
+		request.setAttribute("today6", dateFormatter.format(today6));
 		
 		List<ScheduledService> servicesToday; //TODO invocar lista de servicios programados
 		servicesToday = new ArrayList<ScheduledService>(); // Esto es un stub, habra que cambiarlo por la llamada a datos

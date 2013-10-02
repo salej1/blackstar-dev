@@ -39,6 +39,8 @@ public class Serviceorder implements java.io.Serializable {
 	private Date modified;
 	private String modifiedBy;
 	private String modifiedByUsr;
+	private String signCreated;
+	private String signReceivedBy;
 
 	public Serviceorder() {
 	}
@@ -49,7 +51,7 @@ public class Serviceorder implements java.io.Serializable {
 			Byte statusId, Date closed, String consultant, String coordinator,
 			String asignee, Date created, String createdBy,
 			String createdByUsr, Date modified, String modifiedBy,
-			String modifiedByUsr) {
+			String modifiedByUsr, String signCreated, String signReceivedBy) {
 		this.serviceTypeId = serviceTypeId;
 		this.ticketId = ticketId;
 		this.policyId = policyId;
@@ -69,6 +71,8 @@ public class Serviceorder implements java.io.Serializable {
 		this.modified = modified;
 		this.modifiedBy = modifiedBy;
 		this.modifiedByUsr = modifiedByUsr;
+		this.signCreated = signCreated;
+		this.signReceivedBy = signReceivedBy;
 	}
 
 	@Id
@@ -255,6 +259,24 @@ public class Serviceorder implements java.io.Serializable {
 
 	public void setModifiedByUsr(String modifiedByUsr) {
 		this.modifiedByUsr = modifiedByUsr;
+	}
+	
+	@Column(name = "signCreated", length = 50)
+	public String getSignCreated() {
+		return this.signCreated;
+	}
+
+	public void setSignCreated(String signCreated) {
+		this.signCreated = signCreated;
+	}
+	
+	@Column(name = "signReceivedBy", length = 50)
+	public String getsignReceivedBy() {
+		return this.signReceivedBy;
+	}
+
+	public void setSignReceivedBy(String signReceivedBy) {
+		this.signReceivedBy = signReceivedBy;
 	}
 
 }

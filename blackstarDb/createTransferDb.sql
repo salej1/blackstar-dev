@@ -106,8 +106,8 @@ COLLATE = latin1_swedish_ci;
 -- Table `blackstarDbTransfer`.`serviceType`
 -- -----------------------------------------------------
 CREATE  TABLE IF NOT EXISTS `blackstarDbTransfer`.`serviceType` (
-  `serviceTypeId` INT(11) NOT NULL AUTO_INCREMENT ,
-  `serviceType` VARCHAR(20) NOT NULL ,
+  `serviceTypeId` CHAR(1) NOT NULL ,
+  `serviceType` VARCHAR(50) NOT NULL ,
   PRIMARY KEY (`serviceTypeId`) )
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1
@@ -189,37 +189,39 @@ COLLATE = latin1_swedish_ci;
 CREATE  TABLE IF NOT EXISTS `blackstarDbTransfer`.`serviceTx` (
   `serviceTxId` INT(11) NOT NULL AUTO_INCREMENT ,
   `serviceNumber` VARCHAR(50) NULL DEFAULT NULL ,
-  `tickeId` INT(11) NULL DEFAULT NULL ,
+  `ticketNumber` VARCHAR(50) NULL DEFAULT NULL ,
   `serviceUnit` VARCHAR(10) NULL DEFAULT NULL ,
-  `project` VARCHAR(10) NULL DEFAULT NULL ,
+  `project` VARCHAR(50) NULL DEFAULT NULL ,
   `customer` VARCHAR(50) NULL DEFAULT NULL ,
   `city` VARCHAR(50) NULL DEFAULT NULL ,
   `address` VARCHAR(200) NULL DEFAULT NULL ,
-  `serviceTypeId` INT(11) NULL DEFAULT NULL ,
+  `serviceTypeId` CHAR(1) NULL DEFAULT NULL ,
   `serviceDate` DATETIME NULL DEFAULT NULL ,
-  `serialNumber` VARCHAR(50) NULL DEFAULT NULL ,
+  `serialNumber` VARCHAR(100) NULL DEFAULT NULL ,
   `responsible` VARCHAR(100) NULL DEFAULT NULL ,
   `receivedBy` VARCHAR(100) NULL DEFAULT NULL ,
   `serviceComments` TEXT NULL DEFAULT NULL ,
   `closed` DATETIME NULL DEFAULT NULL ,
-  `follwUp` TEXT NULL DEFAULT NULL ,
-  `spares` VARCHAR(100) NULL DEFAULT NULL ,
+  `followUp` TEXT NULL DEFAULT NULL ,
+  `spares` TEXT NULL DEFAULT NULL ,
   `consultant` VARCHAR(100) NULL DEFAULT NULL ,
   `contractorCompany` VARCHAR(100) NULL DEFAULT NULL ,
   `serviceRate` INT(11) NULL DEFAULT NULL ,
   `customerComments` TEXT NULL DEFAULT NULL ,
+  `created` DATETIME NULL DEFAULT NULL ,
+  `createdBy` VARCHAR(45) NULL DEFAULT NULL ,
+  `createdByUsr` VARCHAR(45) NULL DEFAULT NULL ,
+  `modified` DATETIME NULL DEFAULT NULL ,
+  `modifiedBy` VARCHAR(45) NULL DEFAULT NULL ,
+  `modifiedByUsr` VARCHAR(45) NULL DEFAULT NULL ,
+
   PRIMARY KEY (`serviceTxId`) ,
   INDEX `serviceNumber` (`serviceNumber` ASC) ,
-  INDEX `serviceTx_TICKETID_TICKET_TICKETID` (`tickeId` ASC) ,
+  INDEX `serviceTx_ticketNumber_TICKET_ticketNumber` (`ticketNumber` ASC) ,
   INDEX `SERVICETS_serviceTypeID_serviceType_serviceTypeID` (`serviceTypeId` ASC) ,
   CONSTRAINT `SERVICETS_serviceTypeID_serviceType_serviceTypeID`
     FOREIGN KEY (`serviceTypeId` )
     REFERENCES `blackstarDbTransfer`.`serviceType` (`serviceTypeId` )
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `serviceTx_TICKETID_TICKET_TICKETID`
-    FOREIGN KEY (`tickeId` )
-    REFERENCES `blackstarDbTransfer`.`ticket` (`ticketId` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -271,6 +273,21 @@ INSERT INTO `blackstarDbTransfer`.`ticketStatus` (`ticketStatusId`, `ticketStatu
 INSERT INTO `blackstarDbTransfer`.`ticketStatus` (`ticketStatusId`, `ticketStatus`) VALUES ('C','CERRADO' );  
 INSERT INTO `blackstarDbTransfer`.`ticketStatus` (`ticketStatusId`, `ticketStatus`) VALUES ('R','RETRASADO' );  
 INSERT INTO `blackstarDbTransfer`.`ticketStatus` (`ticketStatusId`, `ticketStatus`) VALUES ('F','CERRADO FT' );  
+
+INSERT INTO `blackstarDbTransfer`.`serviceType` (`serviceTypeId`, `serviceType`) VALUES ('A','ARRANQUE' );  
+INSERT INTO `blackstarDbTransfer`.`serviceType` (`serviceTypeId`, `serviceType`) VALUES ('P','PREVENTIVO' );  
+INSERT INTO `blackstarDbTransfer`.`serviceType` (`serviceTypeId`, `serviceType`) VALUES ('C','CORRECTIVO' );  
+INSERT INTO `blackstarDbTransfer`.`serviceType` (`serviceTypeId`, `serviceType`) VALUES ('I','INSPECCION' );  
+INSERT INTO `blackstarDbTransfer`.`serviceType` (`serviceTypeId`, `serviceType`) VALUES ('T','INSTALACION' );  
+INSERT INTO `blackstarDbTransfer`.`serviceType` (`serviceTypeId`, `serviceType`) VALUES ('L','LIMPIEZA' );  
+INSERT INTO `blackstarDbTransfer`.`serviceType` (`serviceTypeId`, `serviceType`) VALUES ('V','VISITA' );  
+INSERT INTO `blackstarDbTransfer`.`serviceType` (`serviceTypeId`, `serviceType`) VALUES ('D','DIAGNOSTICO' );  
+INSERT INTO `blackstarDbTransfer`.`serviceType` (`serviceTypeId`, `serviceType`) VALUES ('E','LEVANTAMIENTO' );  
+INSERT INTO `blackstarDbTransfer`.`serviceType` (`serviceTypeId`, `serviceType`) VALUES ('O','INSPECCION Y CORRECTIVO' );  
+INSERT INTO `blackstarDbTransfer`.`serviceType` (`serviceTypeId`, `serviceType`) VALUES ('M','PUESTA EN MARCHA' );  
+INSERT INTO `blackstarDbTransfer`.`serviceType` (`serviceTypeId`, `serviceType`) VALUES ('N','MANTENIMIENTO' );  
+INSERT INTO `blackstarDbTransfer`.`serviceType` (`serviceTypeId`, `serviceType`) VALUES ('R','REVISION' );  
+
 
 
 

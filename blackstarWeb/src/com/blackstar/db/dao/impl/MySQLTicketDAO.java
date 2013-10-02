@@ -35,7 +35,7 @@ public class MySQLTicketDAO implements TicketDAO, Serializable {
 			ResultSet rs = ps.executeQuery();
 			
 			while(rs.next()) {
-				ticket = new Ticket(rs.getInt("policyId"), rs.getShort("serviceId"), rs.getString("user"),
+				ticket = new Ticket(rs.getInt("ticketId"),rs.getInt("policyId"), rs.getShort("serviceId"), rs.getString("user"),
 						rs.getString("observations"), new Character(rs.getString("ticketStatusId").charAt(0)),
 						rs.getShort("realResponseTime"), rs.getDate("arrival"), rs.getLong("employee"),
 						rs.getString("asignee"), rs.getDate("closed"), rs.getDate("solutionTime"),
@@ -75,7 +75,7 @@ public class MySQLTicketDAO implements TicketDAO, Serializable {
 			ResultSet rs = ps.executeQuery();
 			
 			while(rs.next()) {
-				ticket = new Ticket(rs.getInt("policyId"), rs.getShort("serviceId"), rs.getString("user"),
+				ticket = new Ticket(rs.getInt("ticketId"),rs.getInt("policyId"), rs.getShort("serviceId"), rs.getString("user"),
 						rs.getString("observations"), new Character(rs.getString("ticketStatusId").charAt(0)),
 						rs.getShort("realResponseTime"), rs.getDate("arrival"), rs.getLong("employee"),
 						rs.getString("asignee"), rs.getDate("closed"), rs.getDate("solutionTime"),
