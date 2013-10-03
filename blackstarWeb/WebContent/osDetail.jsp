@@ -166,7 +166,16 @@
 								</thead>
 									<tr>
 										<td id="seguimientoContent">
-											
+											<c:forEach var="followup" items="${ComentariosOS} }">
+												<div class="comment">
+													<p>
+														<strong> <c:out value="${followup}"/> <c:out value="${followup}"/>  </strong>
+													</p>
+													<p>
+														<small> <c:out value="${followup}"/> </small>
+													</p>
+												</div>
+											</c:forEach>
 										</td>
 									</tr>
 									<tr>
