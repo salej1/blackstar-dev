@@ -287,6 +287,7 @@ INSERT INTO `blackstarDbTransfer`.`serviceType` (`serviceTypeId`, `serviceType`)
 INSERT INTO `blackstarDbTransfer`.`serviceType` (`serviceTypeId`, `serviceType`) VALUES ('M','PUESTA EN MARCHA' );  
 INSERT INTO `blackstarDbTransfer`.`serviceType` (`serviceTypeId`, `serviceType`) VALUES ('N','MANTENIMIENTO' );  
 INSERT INTO `blackstarDbTransfer`.`serviceType` (`serviceTypeId`, `serviceType`) VALUES ('R','REVISION' );  
+INSERT INTO `blackstarDbTransfer`.`serviceType` (`serviceTypeId`, `serviceType`) VALUES ('F','CONFIGURACION' );  
 
 
 
