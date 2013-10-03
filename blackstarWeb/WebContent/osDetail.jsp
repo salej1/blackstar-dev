@@ -32,7 +32,7 @@
 								<td>Cliente</td>
 								<td colspan="5"><input type="text" style="width:95%;" readOnly="true" />${servicioOrderDetail.Cliente}</td>
 								<td>No Ticket</td>
-								<td><input type="text" style="width:95%;" readOnly="true" value="13-152"/></td>
+								<td><input type="text" style="width:95%;" readOnly="true" />${servicioOrderDetail.TicketNo}</td>
 							</tr>
 							<tr>
 								<td>Domicilio</td>
@@ -166,13 +166,13 @@
 								</thead>
 									<tr>
 										<td id="seguimientoContent">
-											<c:forEach var="Followup" items="${ComentariosOS} }">
+											<c:forEach var="followup" items="${ComentariosOS} }">
 												<div class="comment">
 													<p>
-														<strong>Followup.created + ":" +Followup.createdByUsr</strong>
+														<strong>${ followup.created } ${ followup.createdByUsr }</strong>
 													</p>
 													<p>
-														<small>Followup.followup</small>
+														<small>${ followup.followup }</small>
 													</p>
 												</div>
 											</c:forEach>

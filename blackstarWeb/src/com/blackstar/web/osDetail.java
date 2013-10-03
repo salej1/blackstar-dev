@@ -37,7 +37,7 @@ public class osDetail extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		/// obtener el id de la orden de servicio
-		String idOS = request.getAttribute("osID").toString();
+		String idOS = "";
 		
 		List<User> UsuariosAsignados = null; // TODO: Obtener los usuarios posibles a asignar una orden de servicio
 		request.setAttribute("UsuariosAsignados", UsuariosAsignados);

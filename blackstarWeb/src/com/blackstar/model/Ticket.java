@@ -42,13 +42,14 @@ public class Ticket implements java.io.Serializable {
 	public Ticket() {
 	}
 
-	public Ticket(Integer policyId, Short serviceId, String user,
+	public Ticket(Integer ticketId, Integer policyId, Short serviceId, String user,
 			String observations, Character ticketStatusId,
 			Short realResponseTime, Date arrival, Long employee,
 			String asignee, Date closed, Date solutionTime,
 			Short solutionTimeDeviationHr, Date created, String createdBy,
 			String createdByUsr, Date modified, String modifiedBy,
 			String modifiedByUsr) {
+		this.ticketId = ticketId;
 		this.policyId = policyId;
 		this.serviceId = serviceId;
 		this.user = user;
