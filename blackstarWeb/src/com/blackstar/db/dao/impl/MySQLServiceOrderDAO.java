@@ -41,7 +41,7 @@ public class MySQLServiceOrderDAO implements ServiceOrderDAO, Serializable {
 						rs.getByte("statusId"), rs.getDate("closed"), rs.getString("consultant"), rs.getString("coordinator"),
 						rs.getString("asignee"), rs.getDate("created"), rs.getString("createdBy"),
 						rs.getString("createdByUsr"), rs.getDate("modified"), rs.getString("modifiedBy"),
-						rs.getString("modifiedByUsr"), rs.getString("signCreated"), rs.getString("signReceivedBy"));
+						rs.getString("modifiedByUsr"), rs.getString("signCreated"), rs.getString("signReceivedBy"),rs.getString("receivedByPosition"),rs.getString("serviceOrderNumber"));
 				lstServiceOrder.add(serviceOrder);
 						
 			}
@@ -54,11 +54,11 @@ public class MySQLServiceOrderDAO implements ServiceOrderDAO, Serializable {
 	}
 
 	@Override
-	public Serviceorder getServiceOrderByTicketId(int id) {
+	public Serviceorder getServiceOrderById(int id) {
 		Serviceorder serviceOrder = new Serviceorder();
 		try {
 			Connection conn = MySQLDAOFactory.createConnection();
-			PreparedStatement ps = conn.prepareStatement("Select * from serviceorder where ticketId = ?");
+			PreparedStatement ps = conn.prepareStatement("Select * from serviceorder where serviceOrderId = ?");
 			ps.setInt(1, id);
 			ResultSet rs = ps.executeQuery();
 			
@@ -69,7 +69,7 @@ public class MySQLServiceOrderDAO implements ServiceOrderDAO, Serializable {
 						rs.getByte("statusId"), rs.getDate("closed"), rs.getString("consultant"), rs.getString("coordinator"),
 						rs.getString("asignee"), rs.getDate("created"), rs.getString("createdBy"),
 						rs.getString("createdByUsr"), rs.getDate("modified"), rs.getString("modifiedBy"),
-						rs.getString("modifiedByUsr"), rs.getString("signCreated"), rs.getString("signReceivedBy"));
+						rs.getString("modifiedByUsr"), rs.getString("signCreated"), rs.getString("signReceivedBy"),rs.getString("receivedByPosition"),rs.getString("serviceOrderNumber"));
 						
 			}
 		} catch (ClassNotFoundException | SQLException e) {

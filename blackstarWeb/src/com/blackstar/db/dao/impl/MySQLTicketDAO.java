@@ -41,7 +41,7 @@ public class MySQLTicketDAO implements TicketDAO, Serializable {
 						rs.getString("asignee"), rs.getDate("closed"), rs.getDate("solutionTime"),
 						rs.getShort("solutionTimeDeviationHr"), rs.getDate("created"), rs.getString("createdBy"),
 						rs.getString("createdByUsr"), rs.getDate("modified"), rs.getString("modifiedBy"),
-						rs.getString("modifiedByUsr"));
+						rs.getString("modifiedByUsr"),rs.getString("ticketNumber"));
 				lstTickets.add(ticket);
 						
 			}
@@ -81,7 +81,7 @@ public class MySQLTicketDAO implements TicketDAO, Serializable {
 						rs.getString("asignee"), rs.getDate("closed"), rs.getDate("solutionTime"),
 						rs.getShort("solutionTimeDeviationHr"), rs.getDate("created"), rs.getString("createdBy"),
 						rs.getString("createdByUsr"), rs.getDate("modified"), rs.getString("modifiedBy"),
-						rs.getString("modifiedByUsr"));
+						rs.getString("modifiedByUsr"), rs.getString("ticketNumber"));
 						
 			}
 		} catch (ClassNotFoundException | SQLException e) {

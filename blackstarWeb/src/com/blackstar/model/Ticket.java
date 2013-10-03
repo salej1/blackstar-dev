@@ -3,10 +3,13 @@ package com.blackstar.model;
 // Generated Sep 23, 2013 12:57:18 AM by Hibernate Tools 3.4.0.CR1
 
 import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+
 import static javax.persistence.GenerationType.IDENTITY;
+
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -38,6 +41,7 @@ public class Ticket implements java.io.Serializable {
 	private Date modified;
 	private String modifiedBy;
 	private String modifiedByUsr;
+	private String ticketNumber;
 
 	public Ticket() {
 	}
@@ -48,7 +52,7 @@ public class Ticket implements java.io.Serializable {
 			String asignee, Date closed, Date solutionTime,
 			Short solutionTimeDeviationHr, Date created, String createdBy,
 			String createdByUsr, Date modified, String modifiedBy,
-			String modifiedByUsr) {
+			String modifiedByUsr, String ticketNumber) {
 		this.ticketId = ticketId;
 		this.policyId = policyId;
 		this.serviceId = serviceId;
@@ -68,6 +72,7 @@ public class Ticket implements java.io.Serializable {
 		this.modified = modified;
 		this.modifiedBy = modifiedBy;
 		this.modifiedByUsr = modifiedByUsr;
+		this.ticketNumber = ticketNumber;
 	}
 
 	@Id
@@ -246,6 +251,14 @@ public class Ticket implements java.io.Serializable {
 
 	public void setModifiedByUsr(String modifiedByUsr) {
 		this.modifiedByUsr = modifiedByUsr;
+	}
+
+	public String getTicketNumber() {
+		return ticketNumber;
+	}
+
+	public void setTicketNumber(String ticketNumber) {
+		this.ticketNumber = ticketNumber;
 	}
 
 }

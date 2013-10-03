@@ -8,7 +8,7 @@ public interface ServiceOrderDAO {
 
 	public Serviceorder findServiceOrder();
 	public List<Serviceorder> selectAllServiceOrder();
-	public Serviceorder getServiceOrderByTicketId(int id);
+	public Serviceorder getServiceOrderById(int id);
 	public int insertServiceOrder();
 	public boolean updateServiceOrder();
 }

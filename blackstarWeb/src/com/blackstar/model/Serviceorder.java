@@ -41,6 +41,8 @@ public class Serviceorder implements java.io.Serializable {
 	private String modifiedByUsr;
 	private String signCreated;
 	private String signReceivedBy;
+	private String receivedByPosition;
+	private String serviceOrderNumber;
 
 	public Serviceorder() {
 	}
@@ -51,7 +53,7 @@ public class Serviceorder implements java.io.Serializable {
 			Byte statusId, Date closed, String consultant, String coordinator,
 			String asignee, Date created, String createdBy,
 			String createdByUsr, Date modified, String modifiedBy,
-			String modifiedByUsr, String signCreated, String signReceivedBy) {
+			String modifiedByUsr, String signCreated, String signReceivedBy, String receivedByPosition, String serviceOrderNumber) {
 		this.serviceTypeId = serviceTypeId;
 		this.ticketId = ticketId;
 		this.policyId = policyId;
@@ -73,6 +75,8 @@ public class Serviceorder implements java.io.Serializable {
 		this.modifiedByUsr = modifiedByUsr;
 		this.signCreated = signCreated;
 		this.signReceivedBy = signReceivedBy;
+		this.receivedByPosition = receivedByPosition;
+		this.serviceOrderNumber = serviceOrderNumber;
 	}
 
 	@Id
@@ -261,7 +265,7 @@ public class Serviceorder implements java.io.Serializable {
 		this.modifiedByUsr = modifiedByUsr;
 	}
 	
-	@Column(name = "signCreated", length = 50)
+	@Column(name = "signCreated", length = 250)
 	public String getSignCreated() {
 		return this.signCreated;
 	}
@@ -270,7 +274,7 @@ public class Serviceorder implements java.io.Serializable {
 		this.signCreated = signCreated;
 	}
 	
-	@Column(name = "signReceivedBy", length = 50)
+	@Column(name = "signReceivedBy", length = 250)
 	public String getsignReceivedBy() {
 		return this.signReceivedBy;
 	}
@@ -278,5 +282,25 @@ public class Serviceorder implements java.io.Serializable {
 	public void setSignReceivedBy(String signReceivedBy) {
 		this.signReceivedBy = signReceivedBy;
 	}
+	
+	@Column(name = "receivedByPosition", length = 50)
+	public String getReceivedByPosition() {
+		return this.receivedByPosition;
+	}
 
+	public void setReceivedByPosition(String receivedByPosition) {
+		this.receivedByPosition = receivedByPosition;
+	}
+
+	@Column(name = "serviceOrderNumber", length = 50)
+	public String getServiceOrderNumber() {
+		return serviceOrderNumber;
+	}
+
+	public void setServiceOrderNumber(String serviceOrderNumber) {
+		this.serviceOrderNumber = serviceOrderNumber;
+	}
+
+	
+	
 }

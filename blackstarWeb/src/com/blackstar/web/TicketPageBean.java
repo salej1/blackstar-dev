@@ -44,7 +44,7 @@ public class TicketPageBean implements Serializable {
 		this.equipmentType = daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
 		this.serviceCenter = daoFactory.getServiceCenterDAO().getServiceCenterById(policy.getServiceCenterId());
 		this.office = daoFactory.getOfficeDAO().getOfficeById(policy.getOfficeId());
-		this.serviceOrder = daoFactory.getServiceOrderDAO().getServiceOrderByTicketId(ticket.getTicketId());
+		//this.serviceOrder = daoFactory.getServiceOrderDAO().getServiceOrderBy(ticket.getTicketId());
 		this.followUp = daoFactory.getFollowUpDAO().getFollowUpByTicketId(ticket.getTicketId());
 	}
 

@@ -12,60 +12,60 @@
 			
 <!--   CONTENT COLUMN   -->			
 				<div class="grid_16">	
-					<p>${servicioOrderDetail.Usuario}</p>
+					<p>${servicioOrderDetail.coordinator}</p>
 				</div>
 				<div class="grid_15">					
 					<div class="box">
 						<h2>Orden de servicio</h2>
 						<div class="utils">
-							<a href="tickDetail"> Consultar Ticket ${servicioOrderDetail.TicketNo} </a>
+							<a href="tickDetail"> Consultar Ticket ${servicioOrderDetail.ticketNo} </a>
 						</div>
 						<table>
 							<tr>
 								<td>Folio:</td>
-								<td> <input id="FolioOS" type="text" style="width:95%;" readOnly="true"/>${servicioOrderDetail.Folio} </td>
+								<td> <input id="FolioOS" type="text" style="width:95%;" readOnly="true"/>${servicioOrderDetail.serviceOrderNo} </td>
 								<td colspan="2"><small><a href="#" onclick="window.open('img/UPSPreview.png', '_blank'); return false;">Ver PDF</a></small>
 									<img src="img/pdf.png" onclick="window.open('img/UPSPreview.png', '_blank');"/>
 								</td>
 							</tr>
 							<tr>
 								<td>Cliente</td>
-								<td colspan="5"><input type="text" style="width:95%;" readOnly="true" />${servicioOrderDetail.Cliente}</td>
+								<td colspan="5"><input type="text" style="width:95%;" readOnly="true" />${servicioOrderDetail.customer}</td>
 								<td>No Ticket</td>
-								<td><input type="text" style="width:95%;" readOnly="true" />${servicioOrderDetail.TicketNo}</td>
+								<td><input type="text" style="width:95%;" readOnly="true" />${servicioOrderDetail.ticketNo}</td>
 							</tr>
 							<tr>
 								<td>Domicilio</td>
-								<td colspan="5"><textarea style="width:95%;height:50px;">${servicioOrderDetail.Domicilio}</textarea></td>
+								<td colspan="5"><textarea style="width:95%;height:50px;">${servicioOrderDetail.equipmentAddress}</textarea></td>
 								<td>Fecha y hora de llegada</td>
 								<td><input id="myDate" type="text" style="width:95%;" readOnly="true"/>${servicioOrderDetail.serviceDate}</td>
 							</tr>
 							<tr>
 								<td>Solicitante</td>
-								<td colspan="5"><input type="text" style="width:95%;" readOnly="true" />${servicioOrderDetail.Solicitante}</td>
+								<td colspan="5"><input type="text" style="width:95%;" readOnly="true" />${servicioOrderDetail.contactName}</td>
 								<td>Telefono</td>
-								<td><input type="text" style="width:95%;" readOnly="true" />${servicioOrderDetail.Telefono}</td>
+								<td><input type="text" style="width:95%;" readOnly="true" />${servicioOrderDetail.contactPhone}</td>
 							</tr>
 							<tr>
 								<td>Equipo</td>
-								<td><input type="text" style="width:95%;" readOnly="true" />${servicioOrderDetail.Equipo}</td>
+								<td><input type="text" style="width:95%;" readOnly="true" />${servicioOrderDetail.equipmentType}</td>
 								<td style="padding-left:10px;">Marca</td>
-								<td><input type="text" style="width:95%;" readOnly="true"/>${servicioOrderDetail.Marca}</td>
+								<td><input type="text" style="width:95%;" readOnly="true"/>${servicioOrderDetail.equipmentBrand}</td>
 								<td>Modelo</td>
-								<td><input type="text" style="width:95%;" readOnly="true"/>${servicioOrderDetail.Modelo}</td>
+								<td><input type="text" style="width:95%;" readOnly="true"/>${servicioOrderDetail.equipmentModel}</td>
 								<td>Serie</td>
-								<td><input type="text" style="width:95%;" readOnly="true" />${servicioOrderDetail.Serie}</td>
+								<td><input type="text" style="width:95%;" readOnly="true" />${servicioOrderDetail.equipmentSerialNo}</td>
 								
 							</tr>
 							<tr>
 								<td>Reporte de falla</td>
-								<td colspan="7"><input type="text" style="width:95%;" readOnly="true" />${servicioOrderDetail.Falla}</td>
+								<td colspan="7"><input type="text" style="width:95%;" readOnly="true" />${servicioOrderDetail.failureDescription}</td>
 							</tr>
 							<tr>
 								<td>Tipo de servicio</td>
-								<td colspan="3"><input type="text" style="width:95%;" readOnly="true" />${servicioOrderDetail.TipoServicio}</td>
+								<td colspan="3"><input type="text" style="width:95%;" readOnly="true" />${servicioOrderDetail.serviceType}</td>
 								<td>Contrato/Proyecto</td>
-								<td colspan="3"><input type="text" style="width:95%;" readOnly="true" />${servicioOrderDetail.Contrato}</td>
+								<td colspan="3"><input type="text" style="width:95%;" readOnly="true" />${servicioOrderDetail.proyectNumber}</td>
 							</tr>							
 						</table>
 					</div>					
@@ -86,10 +86,10 @@
 								</thead>
 								<tr>
 									<td style="height:100px;">
-										<textarea  readOnly="true" style="width:100%;height:100%;">${servicioOrderDetail.Situacion}</textarea>
+										<textarea  readOnly="true" style="width:100%;height:100%;">${servicioOrderDetail.detailIssue}</textarea>
 									</td>
 									<td rowspan="3" style="height:100px;">
-										<textarea   readOnly="true" style="width:100%;height:100%;">${servicioOrderDetail.Trabajos}</textarea>
+										<textarea   readOnly="true" style="width:100%;height:100%;">${servicioOrderDetail.detailWorkDone}</textarea>
 									</td>
 								</tr>
 								<thead>
@@ -99,7 +99,7 @@
 								</thead>
 								<tr>
 									<td style="height:100px;">
-										<textarea  readOnly="true" style="width:100%;height:100%;">${servicioOrderDetail.Parametros}</textarea>
+										<textarea  readOnly="true" style="width:100%;height:100%;">${servicioOrderDetail.detailTechnicalJob}</textarea>
 									</td>
 								</tr>
 							</table>
@@ -112,7 +112,7 @@
 								</thead>
 								<tr>
 									<td style="height:140px;">
-										<textarea  readOnly="true" style="width:100%;height:100%;">${servicioOrderDetail.Material}</textarea>
+										<textarea  readOnly="true" style="width:100%;height:100%;">${servicioOrderDetail.detailRequirments}</textarea>
 									</td>
 								</tr>
 								<thead>
@@ -122,7 +122,7 @@
 								</thead>
 								<tr>
 									<td style="height:140px;">
-										<textarea readOnly="true" style="width:100%;height:100%;">${servicioOrderDetail.Observaciones}</textarea>
+										<textarea readOnly="true" style="width:100%;height:100%;">${servicioOrderDetail.detailStatus}</textarea>
 									</td>
 								</tr>
 							</table>
@@ -147,12 +147,12 @@
 									</td>
 								</tr>
 								<tr>
-									<td>Nombre</td><td><input type="text" style="width:95%;" readOnly="true" />${servicioOrderDetail.NombreRealizo}</td>
-									<td>Nombre</td><td><input type="text" style="width:95%;"readOnly="true" />${servicioOrderDetail.NombreRecibido}</td>
+									<td>Nombre</td><td><input type="text" style="width:95%;" readOnly="true" />${servicioOrderDetail.responsible}</td>
+									<td>Nombre</td><td><input type="text" style="width:95%;"readOnly="true" />${servicioOrderDetail.receivedBy}</td>
 								</tr>
 								<tr>
-									<td>Fecha y hora de salida</td><td><input id="myDate2" type="text" style="width:95%;" readOnly="true" />${servicioOrderDetail.FechaSalida}</td>
-									<td>Puesto</td><td><input type="text" style="width:95%;" readOnly="true" />${servicioOrderDetail.PuestoRecibio}</td>
+									<td>Fecha y hora de salida</td><td><input id="myDate2" type="text" style="width:95%;" readOnly="true" />${servicioOrderDetail.closed}</td>
+									<td>Puesto</td><td><input type="text" style="width:95%;" readOnly="true" />${servicioOrderDetail.receivedByPosition}</td>
 								</tr>						
 								<tr>
 									<td style="height:40px;"></td>
@@ -169,7 +169,7 @@
 											<c:forEach var="followup" items="${ComentariosOS} }">
 												<div class="comment">
 													<p>
-														<strong>${ followup.created } ${ followup.createdByUsr }</strong>
+														<strong>${ followup.created } </strong>
 													</p>
 													<p>
 														<small>${ followup.followup }</small>

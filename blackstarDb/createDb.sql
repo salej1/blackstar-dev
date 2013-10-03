@@ -157,6 +157,7 @@ CREATE TABLE serviceOrder
 	modifiedByUsr NVARCHAR(50) NULL,
 	signCreated NVARCHAR(250) NULL,
 	signReceivedBy NVARCHAR(250) NULL,
+	receivedByPosition NVARCHAR(50) NULL,
 	PRIMARY KEY (serviceOrderId),
 	UNIQUE UQ_serviceOrder_serviceOrderId(serviceOrderId),
 	KEY (serviceTypeId),
