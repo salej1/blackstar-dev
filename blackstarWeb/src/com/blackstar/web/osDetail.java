@@ -43,7 +43,7 @@ public class osDetail extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		/// obtener del request el id de la orden de servicio 
-		String idOS =  request.getAttribute("serviceOrderId");
+		String idOS =  request.getAttribute("serviceOrderId").toString();
 		Serviceorder serviceOrder = this.daoFactory.getServiceOrderDAO().getServiceOrderById(Integer.parseInt(idOS));
 		
 		if(serviceOrder != null)
