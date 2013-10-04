@@ -68,7 +68,7 @@ public class User {
 				msg="No se encontraron grupos del usuario";
 			}
 			
-			Logger.Log(LogLevel.Critical, "User", msg, Thread.currentThread().getStackTrace().toString());
+			Logger.Log(LogLevel.CRITICAL, "User", msg, Thread.currentThread().getStackTrace().toString());
 			throw new Exception(msg);
 		}
 	}

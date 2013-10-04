@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.blackstar.db.dao.interfaces.EquipmentTypeDAO;
-import com.blackstar.db.dao.interfaces.MySQLDAOFactory;
 import com.blackstar.model.Equipmenttype;
 
 public class MySQLEquipmentTypeDAO implements EquipmentTypeDAO, Serializable {

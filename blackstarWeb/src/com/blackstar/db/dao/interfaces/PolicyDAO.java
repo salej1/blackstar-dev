@@ -11,4 +11,5 @@ public interface PolicyDAO {
 	public Policy getPolicyById(int id);
 	public int insertPolicy();
 	public boolean updatePolicy();
+	public String getJsonEqupmentCollectionByCustomer(String customer);
 }

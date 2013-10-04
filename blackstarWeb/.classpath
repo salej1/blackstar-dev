@@ -9,7 +9,7 @@
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk7"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.7.0_25"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/antlr-2.7.7.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/hibernate-commons-annotations-4.0.2.Final.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/hibernate-core-4.2.2.Final.jar"/>
@@ -23,7 +23,8 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
-	<classpathentry kind="lib" path="C:/eclipse/plugins/com.google.appengine.eclipse.sdkbundle_1.8.5/appengine-java-sdk-1.8.5/lib/tools/jsp/repackaged-appengine-jakarta-standard-1.1.2.jar"/>
-	<classpathentry kind="lib" path="C:/eclipse/plugins/com.google.appengine.eclipse.sdkbundle_1.8.5/appengine-java-sdk-1.8.5/lib/tools/jsp/repackaged-appengine-jakarta-jstl-1.1.2.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Google/appengine-java-sdk-1.8.5/lib/tools/jsp/repackaged-appengine-jakarta-standard-1.1.2.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Google/appengine-java-sdk-1.8.5/lib/tools/jsp/repackaged-appengine-jakarta-jstl-1.1.2.jar"/>
+	<classpathentry kind="lib" path="C:/proj/blackstar/common/lib/java-json.jar"/>
 	<classpathentry kind="output" path="WebContent/WEB-INF/classes"/>
 </classpath>

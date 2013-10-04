@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.blackstar.db.dao.interfaces.FollowUpDAO;
-import com.blackstar.db.dao.interfaces.MySQLDAOFactory;
 import com.blackstar.model.Followup;
 
 public class MySQLFollowUpDAO implements FollowUpDAO, Serializable {

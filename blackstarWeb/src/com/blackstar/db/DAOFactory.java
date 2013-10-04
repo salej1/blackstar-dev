@@ -2,18 +2,8 @@ package com.blackstar.db;
 
 import java.io.Serializable;
 
-import com.blackstar.db.dao.interfaces.EquipmentTypeDAO;
-import com.blackstar.db.dao.interfaces.FollowUpDAO;
-import com.blackstar.db.dao.interfaces.MySQLDAOFactory;
-import com.blackstar.db.dao.interfaces.OfficeDAO;
-import com.blackstar.db.dao.interfaces.OracleDAOFactory;
-import com.blackstar.db.dao.interfaces.PolicyContactDAO;
-import com.blackstar.db.dao.interfaces.PolicyDAO;
-import com.blackstar.db.dao.interfaces.SQLiteDAOFactory;
-import com.blackstar.db.dao.interfaces.ServiceCenterDAO;
-import com.blackstar.db.dao.interfaces.ServiceOrderDAO;
-import com.blackstar.db.dao.interfaces.TicketDAO;
-import com.blackstar.db.dao.interfaces.TicketStatusDAO;
+import com.blackstar.db.dao.impl.MySQLDAOFactory;
+import com.blackstar.db.dao.interfaces.*;
 
 public abstract class DAOFactory implements Serializable {
 	
@@ -42,8 +32,6 @@ public abstract class DAOFactory implements Serializable {
 	          return new MySQLDAOFactory();
 	      case ORACLE    : 
 	          return new OracleDAOFactory();      
-	      case SQLITE    : 
-	          return new SQLiteDAOFactory();
 	      default           : 
 	          return null;
 	    }

@@ -1,10 +1,11 @@
 package com.blackstar.logging;
 
 public enum LogLevel {
-	Emergency, 	// El sistema entero es inoperable 
-	Critical,	// Un componente del sistema no es operable
-	Fatal,		// No se puede entregar al usuario su solicitud
-	Error,		// Error o situacion inesperada
-	Info,		// Informacion de rastreo
-	Debug		// Informacion muy detallada (solo para desarrollo)
+	EMERGENCY, 	// El sistema entero es inoperable 
+	CRITICAL,	// Un componente del sistema no es operable
+	FATAL,		// No se puede entregar al usuario su solicitud
+	ERROR,		// Error o Excepcion cachada
+	WARNING, 	// Situacion inesperada
+	INFO,		// Informacion de rastreo
+	DEBUG		// Informacion muy detallada (solo para desarrollo)
 }

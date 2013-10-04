@@ -8,7 +8,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.blackstar.db.dao.interfaces.MySQLDAOFactory;
 import com.blackstar.db.dao.interfaces.PolicyContactDAO;
 import com.blackstar.model.Policycontact;
 

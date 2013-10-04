@@ -22,8 +22,8 @@ public class ContextListener implements ServletContextListener {
 	/**
      * @see ServletContextListener#contextInitialized(ServletContextEvent)
      */
-	public void contextInitialized(ServletContextEvent arg0) {
-    	
+	public void contextInitialized(ServletContextEvent ev) {
+    	System.setProperty("AppLogLevel", ev.getServletContext().getInitParameter("LogLevel"));
     }
 
 	/**

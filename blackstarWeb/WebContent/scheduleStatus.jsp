@@ -52,71 +52,59 @@
 						</tr>
 					</thead>
 					<tbody>
+						<c:forEach var="service" items="${servicesToday1}">
 						<tr>
-							<td>UPS</td>
-							<td>PEMEX</td>
-							<td>154654</td>
-							<td>Alejandro Monroy, Gonzalo Ramirez</td>
+							<td>${ service.EquipmentType }</td>
+							<td>${ service.Customer }</td>
+							<td>${ service.SerialNUmber }</td>
+							<td>${ service.Asignee }</td>
 						</tr>
-						<tr>
-							<td>BB</td>
-							<td>PEMEX</td>
-							<td>13165</td>
-							<td>Armando Perez Pinto, Reynaldo Garcia</td>
-						</tr>
-						<tr>
-							<td>AA</td>
-							<td>PEMEX</td>
-							<td>4654988</td>
-							<td>Martin Vazquez</td>
-						</tr>
-						<tr>
-							<td>BB</td>
-							<td>SAC Energia</td>
-							<td>149877</td>
-							<td>Sergio Gallegos</td>
-						</tr>
+					</c:forEach>
 					</tbody>
 					<thead>
 						<tr>
 							<th colspan="4">${ today2 }</th>
 						</tr>
 					</thead>
+					<tbody>
+						<c:forEach var="service" items="${servicesToday2}">
+						<tr>
+							<td>${ service.EquipmentType }</td>
+							<td>${ service.Customer }</td>
+							<td>${ service.SerialNUmber }</td>
+							<td>${ service.Asignee }</td>
+						</tr>
+					</c:forEach>
+					</tbody>
 					<thead>
 						<tr>
 							<th colspan="4">${ today3 }</th>
 						</tr>
 					</thead>
+					<tbody>
+						<c:forEach var="service" items="${servicesToday3}">
+						<tr>
+							<td>${ service.EquipmentType }</td>
+							<td>${ service.Customer }</td>
+							<td>${ service.SerialNUmber }</td>
+							<td>${ service.Asignee }</td>
+						</tr>
+					</c:forEach>
+					</tbody>
 					<thead>
 						<tr>
 							<th colspan="4">${ today4 }</th>
 						</tr>
 					</thead>
 					<tbody>
+						<c:forEach var="service" items="${servicesToday4}">
 						<tr>
-							<td>UPS</td>
-							<td>SANMINA</td>
-							<td>154654</td>
-							<td>Alejandro Monroy, Gonzalo Ramirez, Martin Vazquez</td>
+							<td>${ service.EquipmentType }</td>
+							<td>${ service.Customer }</td>
+							<td>${ service.SerialNUmber }</td>
+							<td>${ service.Asignee }</td>
 						</tr>
-						<tr>
-							<td>AA</td>
-							<td>PEMEX</td>
-							<td>13165</td>
-							<td>Armando Perez Pinto, Reynaldo Garcia</td>
-						</tr>
-						<tr>
-							<td>BB</td>
-							<td>PEMEX</td>
-							<td>4654988</td>
-							<td>Martin Vazquez</td>
-						</tr>
-						<tr>
-							<td>PE</td>
-							<td>SAC Energia</td>
-							<td>149877</td>
-							<td>Sergio Gallegos, Gonzalo Ramirez</td>
-						</tr>
+					</c:forEach>
 					</tbody>
 					<thead>
 						<tr>
@@ -124,12 +112,14 @@
 						</tr>
 					</thead>
 					<tbody>
+						<c:forEach var="service" items="${servicesToday5}">
 						<tr>
-							<td>UPS</td>
-							<td>PEMEX</td>
-							<td>26548</td>
-							<td>Alejandro Monroy</td>
+							<td>${ service.EquipmentType }</td>
+							<td>${ service.Customer }</td>
+							<td>${ service.SerialNUmber }</td>
+							<td>${ service.Asignee }</td>
 						</tr>
+					</c:forEach>
 					</tbody>
 					<thead>
 						<tr>
@@ -137,7 +127,14 @@
 						</tr>
 					</thead>
 					<tbody>
-
+						<c:forEach var="service" items="${servicesToday6}">
+						<tr>
+							<td>${ service.EquipmentType }</td>
+							<td>${ service.Customer }</td>
+							<td>${ service.SerialNUmber }</td>
+							<td>${ service.Asignee }</td>
+						</tr>
+					</c:forEach>
 					</tbody>
 				</table>
 			</div>
@@ -147,65 +144,90 @@
 		</p>
 		<div class="grid_16">
 			<div class="box">
-				<h2>Otros servicios programados</h2>
+				<h2>Servicios programados aa futuro</h2>
 				<div class="utils"></div>
-				<table>
+				<table id="futureServices">
 					<thead>
 						<tr>
-							<th>Fecha<img class="filterImg" src="img/filter-16.png"
-								onclick="filtrar('Fecha:');" /></th>
-							<th>Cliente<img class="filterImg" src="img/filter-16.png"
-								onclick="filtrar('Cliente:');" /></th>
-							<th>Equipo<img class="filterImg" src="img/filter-16.png"
-								onclick="filtrar('Equipo:');" /></th>
-							<th>Proyecto<img class="filterImg" src="img/filter-16.png"
-								onclick="filtrar('Proyecto:');" /></th>
-							<th>Oficina<img class="filterImg" src="img/filter-16.png"
-								onclick="filtrar('Oficina:');" /></th>
-							<th>Marca<img class="filterImg" src="img/filter-16.png"
-								onclick="filtrar('Marca:');" /></th>
-							<th>No. Serie<img class="filterImg" src="img/filter-16.png"
-								onclick="filtrar('Modelo:');" /></th>
+							<th>Fecha</th>
+							<th>Cliente</th>
+							<th>Equipo</th>
+							<th>Proyecto</th>
+							<th>Oficina</th>
+							<th>Marca</th>
+							<th>No. Serie</th>
 							<th>Editar</th>
 						</tr>
 					</thead>
-					<tbody>
-						<tr>
-							<td><small>29/07/2013</small></td>
-							<td><small>PEMEX GAI</small></td>
-							<td><small>UPS</small></td>
-							<td><small>CM150</small></td>
-							<td><small>QRO</small></td>
-							<td><small>APC</small></td>
-							<td><small>PN0633152471</small></td>
-							<td><a href="agendaServicio_coo.html">Editar</a></td>
-						</tr>
-						<tr>
-							<td><small>30/07/2013</small></td>
-							<td><small>PEMEX GAI</small></td>
-							<td><small>AA</small></td>
-							<td><small>CM150</small></td>
-							<td><small>QRO</small></td>
-							<td><small>TRANE</small></td>
-							<td><small>3T0110-100821/101845HY4F</small></td>
-							<td><a href="agendaServicio_coo.html">Editar</a></td>
-						</tr>
-						<tr>
-							<td><small>31/07/2013</small></td>
-							<td><small>PEMEX GAI</small></td>
-							<td><small>UPS</small></td>
-							<td><small>CM150</small></td>
-							<td><small>QRO</small></td>
-							<td><small>APC</small></td>
-							<td><small>GG0027002256</small></td>
-							<td><a href="agendaServicio_coo.html">Editar</a></td>
-						</tr>
-					</tbody>
+			
 				</table>
 			</div>
 		</div>
 		<!--   ~ CONTENT COLUMN   -->
 		<!--   ~ CONTENT   -->
+	</div>
+	
+	<div id = "createServiceDlg">
+		<div class="grid_8">					
+			<div class="box">
+				<h2>Agendar servicio</h2>
+
+				<table>
+					<tbody>
+						<tr>
+							<td style="width:100px;">Fecha:</td>
+							<td><input id="datepicker" type="text" style="width:300px;"/></td>
+						</tr>
+
+						<tr>
+							<td>Cliente: </td>
+							<td>
+								<select id = "optCustomerCollection" style="width:300px;" 
+								onchange="javascript:populateEquipmentCollection($('optCustomer option:selected').text(), $('#optCustomerCollection')">
+									<option selected></option>
+									<c:forEach var="equipment" items="${clientCollection}">
+										<option>${equipment.clientName}</option>
+									</c:forEach>
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<td>Equipo: </td>
+							<td>
+								<select id = "optEquipmentCollection"style="width:300px;">
+									<option></option>
+									<option>UPS GE T2918 - 145649879</option>
+									<option>AA MAXTORM 12 - DFE45423DF</option>
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<td>Ing. de servicio: </td>
+							<td>
+								<select style="width:300px;">
+									<option></option>
+									<option>Alberto Lopez Gomez</option>
+									<option>Alejandro Monroy</option>
+									<option>Armando Perez Pinto</option>
+									<option>Gonzalo Ramirez</option>
+									<option>Jose Alberto Jonguitud Gallardo</option>
+									<option>Martin Vazquez</option>
+									<option>Reynaldo Garcia</option>
+									<option>Sergio  Gallegos</option>
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<td style="width:100px;">Ingenieros adicionales:</td>
+							<td><textarea name="" id="" cols="30" rows="10" style="width:300px;"></textarea></td>
+						</tr>
+					</tbody>
+				</table>
+				<p><small>&nbsp;</small></p>
+				<button class="searchButton" onclick="window.location='programaServicio_coo.html'">Agregar</button>
+				<button class="searchButton" onclick="window.location='programaServicio_coo.html'">Cancelar</button>
+			</div>					
+		</div>
 	</div>
 </body>
 </html>

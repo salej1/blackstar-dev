@@ -264,6 +264,34 @@ ALTER TABLE serviceOrder ADD CONSTRAINT FK_serviceOrder_serviceStatus
 -- -----------------------------------------------------------------------------
 
 
+
+-- -----------------------------------------------------------------------------
+
+-- Seccion de Administracion
+
+-- -----------------------------------------------------------------------------
+
+use blackstarManage;
+
+CREATE TABLE blackstarManage.ErrorLog
+(
+	errorLogId INTEGER NOT NULL AUTO_INCREMENT,
+	severity VARCHAR(20),
+	created DATETIME,
+	error VARCHAR(400),
+	sender TEXT,
+	stackTrace TEXT,
+	PRIMARY KEY (errorLogId)
+)ENGINE=INNODB;
+
+-- -----------------------------------------------------------------------------
+
+-- FIN Seccion de Administracion
+
+-- -----------------------------------------------------------------------------
+
+
+
 -- -----------------------------------------------------------------------------
 
 -- Seccion de Datos
@@ -348,33 +376,5 @@ select * from serviceType;
 -- -----------------------------------------------------------------------------
 
 -- FIN - Seccion de Datos
-
--- -----------------------------------------------------------------------------
-
--- -----------------------------------------------------------------------------
-
--- SECCION DE STORED PROCEDURES
-
--- -----------------------------------------------------------------------------
-
-
-DELIMITER $$
-
-CREATE PROCEDURE serviceOrderData_getSchedule()
-BEGIN
-	
-	SELECT serviceOrderId, effectiveDate, equipmentType, po.customer, serialNumber, responsible, additionalEmployees
-	FROM serviceOrder so
-		INNER JOIN policy po ON so.policyId = po.policyId
-		INNER JOIN equipmentType et ON et.equipmentTypeId = po.equipmentTypeId
-	WHERE 
-		effectiveDate >= CURRENT_DATE();
-END$$
-
-DELIMITER ;
-
--- -----------------------------------------------------------------------------
-
--- FIN - SECCION DE STORED PROCEDURES
 
 -- -----------------------------------------------------------------------------
