@@ -30,10 +30,10 @@ public class Ticket implements java.io.Serializable {
 	private Character ticketStatusId;
 	private Short realResponseTime;
 	private Date arrival;
-	private Long employee;
+	private String employee;
 	private String asignee;
 	private Date closed;
-	private Date solutionTime;
+	private Integer solutionTime;
 	private Short solutionTimeDeviationHr;
 	private Date created;
 	private String createdBy;
@@ -48,8 +48,8 @@ public class Ticket implements java.io.Serializable {
 
 	public Ticket(Integer ticketId, Integer policyId, Short serviceId, String user,
 			String observations, Character ticketStatusId,
-			Short realResponseTime, Date arrival, Long employee,
-			String asignee, Date closed, Date solutionTime,
+			Short realResponseTime, Date arrival, String employee,
+			String asignee, Date closed, Integer solutionTime,
 			Short solutionTimeDeviationHr, Date created, String createdBy,
 			String createdByUsr, Date modified, String modifiedBy,
 			String modifiedByUsr, String ticketNumber) {
@@ -151,11 +151,11 @@ public class Ticket implements java.io.Serializable {
 	}
 
 	@Column(name = "employee")
-	public Long getEmployee() {
+	public String getEmployee() {
 		return this.employee;
 	}
 
-	public void setEmployee(Long employee) {
+	public void setEmployee(String employee) {
 		this.employee = employee;
 	}
 
@@ -180,11 +180,11 @@ public class Ticket implements java.io.Serializable {
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "solutionTime", length = 19)
-	public Date getSolutionTime() {
+	public Integer getSolutionTime() {
 		return this.solutionTime;
 	}
 
-	public void setSolutionTime(Date solutionTime) {
+	public void setSolutionTime(Integer solutionTime) {
 		this.solutionTime = solutionTime;
 	}
 

@@ -40,7 +40,11 @@ public class Policy implements java.io.Serializable {
 	private String capacity;
 	private String equipmentAddress;
 	private String equipmentLocation;
-	private Integer policyContactId;
+	
+	private String contactName;
+	private String contactPhone;
+	private String contactEmail;
+	
 	private Date startDate;
 	private Date endDate;
 	private Integer visitsPerYear;
@@ -72,7 +76,7 @@ public class Policy implements java.io.Serializable {
 			String customer, String finalUser, String project, String cst,
 			Character equipmentTypeId, String brand, String model,
 			String serialNumber, String capacity, String equipmentAddress,
-			String equipmentLocation, Integer policyContactId, Date startDate,
+			String equipmentLocation, String contactName , String contactPhone, String contactEmail, Date startDate,
 			Date endDate, Integer visitsPerYear, Byte responseTimeHr,
 			Short solutionTimeHr, String penalty, String service,
 			byte includesParts, String exceptionParts,
@@ -93,7 +97,9 @@ public class Policy implements java.io.Serializable {
 		this.capacity = capacity;
 		this.equipmentAddress = equipmentAddress;
 		this.equipmentLocation = equipmentLocation;
-		this.policyContactId = policyContactId;
+		this.contactName = contactName;
+		this.contactPhone = contactPhone;
+		this.contactEmail = contactEmail;
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.visitsPerYear = visitsPerYear;
@@ -133,6 +139,33 @@ public class Policy implements java.io.Serializable {
 		this.officeId = officeId;
 	}
 
+	@Column(name = "contactName", nullable = false, length = 50)
+	public String getName() {
+		return this.contactName;
+	}
+
+	public void setName(String contactName) {
+		this.contactName = contactName;
+	}
+
+	@Column(name = "contactPhone", length = 20)
+	public String getPhone() {
+		return this.contactPhone;
+	}
+
+	public void setPhone(String contactPhone) {
+		this.contactPhone = contactPhone;
+	}
+
+	@Column(name = "contactEmail", length = 50)
+	public String getEmail() {
+		return this.contactEmail;
+	}
+
+	public void setEmail(String contactEmail) {
+		this.contactEmail = contactEmail;
+	}
+	
 	@Column(name = "policyTypeId", nullable = false, length = 1)
 	public char getPolicyTypeId() {
 		return this.policyTypeId;
@@ -250,14 +283,6 @@ public class Policy implements java.io.Serializable {
 		this.equipmentLocation = equipmentLocation;
 	}
 
-	@Column(name = "policyContactId")
-	public Integer getPolicyContactId() {
-		return this.policyContactId;
-	}
-
-	public void setPolicyContactId(Integer policyContactId) {
-		this.policyContactId = policyContactId;
-	}
 
 	@Temporal(TemporalType.DATE)
 	@Column(name = "startDate", length = 10)
