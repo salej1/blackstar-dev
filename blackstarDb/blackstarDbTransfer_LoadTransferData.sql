@@ -1,6 +1,6 @@
 -- -----------------------------------------------------------------------------
--- File:	LoadTransferData.sql   
--- Name:	LoadTransferData
+-- File:	blackstarDbTransfer_LoadTransferData.sql   
+-- Name:	blackstarDbTransfer_LoadTransferData
 -- Desc:	Transfiere los datos de la BD temporal a la BD de produccion
 -- Auth:	Sergio A Gomez
 -- Date:	29/09/2013

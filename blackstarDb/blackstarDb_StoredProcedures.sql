@@ -1,7 +1,7 @@
 -- -----------------------------------------------------------------------------
--- File:	BlackstarDb_StoredProcedures.sql   
--- Name:	BlackstarDb_StoredProcedures
--- Desc:	Crea o actualiza los Stored procedures de la aplicacion
+-- File:	blackstarDb_StoredProcedures.sql   
+-- Name:	blackstarDb_StoredProcedures
+-- Desc:	Crea o actualiza los Stored procedures operativos de la aplicacion
 -- Auth:	Sergio A Gomez
 -- Date:	03/10/2013
 -- -----------------------------------------------------------------------------
@@ -150,30 +150,6 @@ BEGIN
 	WHERE closed IS NOT NULL
 		AND solutionTimeDeviationHr > 0;
 		
-END$$
-
--- -----------------------------------------------------------------------------
-	-- blackstarManage.WriteLog
--- -----------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS blackstarManage.WriteLog$$
-CREATE PROCEDURE blackstarManage.WriteLog (
-	pLevel		VARCHAR(20),
-	pError		VARCHAR(400),
-	pSender		TEXT,
-	pStackTrace	TEXT
-)
-BEGIN
-
-	INSERT INTO blackstarManage.ErroLog(
-		severity,		
-		created, 	
-		error,		
-		sender,		
-		stackTrace
-	)
-	SELECT 
-		pLevel, CURRENT_DATE(), pError, pSender, pStackTrace;
-	
 END$$
 
 

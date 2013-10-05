@@ -1,19 +1,19 @@
-/******************************************************************************
-** File:	createTransferDatabse.sql    
-** Name:	createTransferDatabse
-** Desc:	crea una version inicial de la base de datos de transferencia
-** Auth:	Sergio A Gomez
-** Date:	08/08/2013
-*******************************************************************************
-** Change History
-*******************************************************************************
-** PR   Date    	Author	Description
-** --   --------   -------  ------------------------------------
-** 1    08/08/2013  SAG  	Version inicial: BD, policy, ticket
-** 2	01/09/2013	SAG		Campo policy.exceptionParts extendido a 100 chars
-** 3	17/09/2013	SAG		Cambia el nombre de la BD a blackstarDeTransfer
-**							Se homologaron tipos de equipos
-*****************************************************************************/
+-- -----------------------------------------------------
+-- File:	blackstarDbTransfer_CreateSchema.sql    
+-- Name:	blackstarDbTransfer_CreateSchema
+-- Desc:	crea una version inicial de la base de datos de transferencia
+-- Auth:	Sergio A Gomez
+-- Date:	08/08/2013
+-- -----------------------------------------------------
+-- Change History
+-- -----------------------------------------------------
+-- PR   Date    	Author	Description
+-- --   --------   -------  ------------------------------------
+-- 1    08/08/2013  SAG  	Version inicial: BD, policy, ticket
+-- 2	01/09/2013	SAG		Campo policy.exceptionParts extendido a 100 chars
+-- 3	17/09/2013	SAG		Cambia el nombre de la BD a blackstarDeTransfer
+--							Se homologaron tipos de equipos
+-- -----------------------------------------------------
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL';

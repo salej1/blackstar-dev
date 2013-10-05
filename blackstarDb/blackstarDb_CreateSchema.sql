@@ -1,6 +1,6 @@
 ﻿-- -----------------------------------------------------------------------------
--- File:	createDatabase.sql    
--- Name:	createDatabase
+-- File:	blackstarDb_CreateSchema.sql    
+-- Name:	blackstarDb_CreateSchema
 -- Desc:	crea una version inicial de la base de datos de produccion
 -- Auth:	Sergio A Gomez
 -- Date:	18/09/2013
@@ -273,7 +273,7 @@ ALTER TABLE serviceOrder ADD CONSTRAINT FK_serviceOrder_serviceStatus
 
 use blackstarManage;
 
-CREATE TABLE blackstarManage.ErrorLog
+CREATE TABLE blackstarManage.errorLog
 (
 	errorLogId INTEGER NOT NULL AUTO_INCREMENT,
 	severity VARCHAR(20),
