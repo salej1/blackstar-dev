@@ -99,34 +99,6 @@
 	SET 
 		solutionTimeDeviationHr = CASE WHEN(solutionTime < solutionTimeHR) THEN 0 ELSE (solutionTime - solutionTimeHR) END;
 		
-	-- ACTUALIZACION ESTATUS DEL TICKET
-	-- ABIERTOS
-	UPDATE blackstarDb.ticket t
-		INNER JOIN policy p on t.policyId = p.policyId
-	SET
-		ticketStatusId = 'A'
-	WHERE closed IS NULL;
-			AND TIMESTAMPDIFF(HOUR, created, CURRENT_DATE()) <= p.solutionTimeHR;
-			
-	-- RETRASADOS
-	UPDATE blackstarDb.ticket t
-		INNER JOIN policy p on t.policyId = p.policyId
-	SET
-		ticketStatusId = 'A'
-	WHERE closed IS NULL;
-			AND TIMESTAMPDIFF(HOUR, created, CURRENT_DATE()) > p.solutionTimeHR;
-
-	-- CERRADOS
-	UPDATE blackstarDb.ticket SET
-		ticketStatusId = 'C'
-	WHERE closed IS NOT NULL;
-			AND solutionTimeDeviationHr <= 0;
-			
-	-- CERRADOS FUERA DE TIEMPO
-	UPDATE blackstarDb.ticket SET
-		ticketStatusId = 'F'
-	WHERE closed IS NOT NULL
-		AND solutionTimeDeviationHr > 0;
 
 -- -----------------------------------------------------------------------------
 
