@@ -37,10 +37,10 @@ public class MySQLServiceOrderDAO implements ServiceOrderDAO, Serializable {
 				serviceOrder = new Serviceorder(rs.getString("serviceTypeId").charAt(0), rs.getInt("ticketId"),
 						rs.getShort("policyId"), rs.getString("serviceUnit"), rs.getDate("serviceDate"),
 						rs.getString("responsible"), rs.getString("receivedBy"), rs.getString("serviceComments"),
-						rs.getByte("statusId"), rs.getDate("closed"), rs.getString("consultant"), rs.getString("coordinator"),
+						rs.getString("servicestatusId"), rs.getDate("closed"), rs.getString("consultant"), rs.getString("coordinator"),
 						rs.getString("asignee"), rs.getDate("created"), rs.getString("createdBy"),
 						rs.getString("createdByUsr"), rs.getDate("modified"), rs.getString("modifiedBy"),
-						rs.getString("modifiedByUsr"), rs.getString("signCreated"), rs.getString("signReceivedBy"),rs.getString("receivedByPosition"),rs.getString("serviceOrderNumber"));
+						rs.getString("modifiedByUsr"), rs.getString("signCreated"), rs.getString("signReceivedBy"),rs.getString("receivedByPosition"),rs.getString("serviceOrderNumber"), rs.getInt("serviceOrderId"));
 				lstServiceOrder.add(serviceOrder);
 						
 			}
@@ -65,10 +65,10 @@ public class MySQLServiceOrderDAO implements ServiceOrderDAO, Serializable {
 				serviceOrder = new Serviceorder(rs.getString("serviceTypeId").charAt(0), rs.getInt("ticketId"),
 						rs.getShort("policyId"), rs.getString("serviceUnit"), rs.getDate("serviceDate"),
 						rs.getString("responsible"), rs.getString("receivedBy"), rs.getString("serviceComments"),
-						rs.getByte("statusId"), rs.getDate("closed"), rs.getString("consultant"), rs.getString("coordinator"),
+						rs.getString("servicestatusId"), rs.getDate("closed"), rs.getString("consultant"), rs.getString("coordinator"),
 						rs.getString("asignee"), rs.getDate("created"), rs.getString("createdBy"),
 						rs.getString("createdByUsr"), rs.getDate("modified"), rs.getString("modifiedBy"),
-						rs.getString("modifiedByUsr"), rs.getString("signCreated"), rs.getString("signReceivedBy"),rs.getString("receivedByPosition"),rs.getString("serviceOrderNumber"));
+						rs.getString("modifiedByUsr"), rs.getString("signCreated"), rs.getString("signReceivedBy"),rs.getString("receivedByPosition"),rs.getString("serviceOrderNumber"),rs.getInt("serviceOrderId"));
 						
 			}
 		} catch (ClassNotFoundException | SQLException e) {

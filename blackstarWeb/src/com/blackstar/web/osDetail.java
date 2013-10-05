@@ -43,7 +43,7 @@ public class osDetail extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		/// obtener del request el id de la orden de servicio 
-		String idOS =  request.getAttribute("serviceOrderId").toString();
+		String idOS = request.getAttribute("serviceOrderId").toString();
 		Serviceorder serviceOrder = this.daoFactory.getServiceOrderDAO().getServiceOrderById(Integer.parseInt(idOS));
 		
 		if(serviceOrder != null)
@@ -54,13 +54,10 @@ public class osDetail extends HttpServlet {
 			/// Obtener la poliza asociada a la orden de servicio
 			Policy policy  = this.daoFactory.getPolicyDAO().getPolicyById(serviceOrder.getPolicyId());
 			
-			/// Obtener la poliza asociada a la orden de servicio
-			Policycontact policyContact  = this.daoFactory.getPolicyContactDAO().getPolicyContactById(policy.getPolicyContactId());
-			
 			/// Crea el objeto DTO (OrderserviceDTO)
 			OrderserviceDTO serviceOrderDTO = new OrderserviceDTO(serviceOrder.getCoordinator(), serviceOrder.getServiceOrderId(), serviceOrder.getServiceOrderNumber(), ticket.getTicketNumber(),
-																	ticket.getTicketId(), policy.getCustomer(), policy.getEquipmentAddress(), policyContact.getName(), serviceOrder.getServiceDate(), 
-																	policyContact.getPhone(), policy.getEquipmentTypeId(), policy.getBrand(), policy.getModel(), policy.getSerialNumber(), 
+																	ticket.getTicketId(), policy.getCustomer(), policy.getEquipmentAddress(), policy.getName(), serviceOrder.getServiceDate(), 
+																	policy.getPhone(), policy.getEquipmentTypeId(), policy.getBrand(), policy.getModel(), policy.getSerialNumber(), 
 																	ticket.getObservations(), serviceOrder.getServiceTypeId(), policy.getProject(), "", "", 
 																	"", "", serviceOrder.getServiceComments(), serviceOrder.getSignCreated(), serviceOrder.getsignReceivedBy(), 
 																	serviceOrder.getReceivedBy(), serviceOrder.getResponsible(), serviceOrder.getClosed(), serviceOrder.getReceivedByPosition());
