@@ -1,7 +1,6 @@
 package com.blackstar.db;
 
 import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.util.logging.*;
 import com.google.cloud.sql.jdbc.*;
 

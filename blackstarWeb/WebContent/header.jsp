@@ -37,7 +37,7 @@
 		<form action="/search" method="GET"></form>
 		<ul id="navigation">
 		<c:choose>
-			<c:when test="${pageSection == 'inicio'}">
+			<c:when test="${pageSection == 'dashboard'}">
 				<li><span class="active">Inicio</span></li>
 				<li><a href="tickets">Tickets</a></li>
 				<li><a href="ordenesServicio">Ordenes de servicio</a></li>
