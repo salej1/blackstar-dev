@@ -6,4 +6,6 @@ public interface IUserService {
 	String getCurrentUserName();
 
 	String[] getCurrentUsetGroups();
+	
+	String[] getEmployeeList();
 }

@@ -15,10 +15,44 @@
 --								blackstarDb.GetTickets
 -- 								blackstarDb.UpdateTicketStatus
 -- -----------------------------------------------------------------------------
+-- 2    04/10/2013	SAG		Se Integra:
+--								blackstarDb.GetUnassignedTickets
+-- -----------------------------------------------------------------------------
+
+
 use blackstarDb;
 
 
 DELIMITER $$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetUnassignedTickets
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetUnassignedTickets$$
+CREATE PROCEDURE blackstarDb.GetUnassignedTickets ()
+BEGIN
+
+	SELECT 
+		tk.ticketId AS ticketId,
+		tk.created AS created,
+		p.contactName AS contactName,
+		p.serialNumber AS serialNumber,
+		p.customer AS customer,
+		et.equipmenttype AS equipmentType,
+		tk.solutionTimeDeviationHr AS solutionTimeDeviationHr,
+		p.project AS project,
+		ts.ticketStatus AS ticketStatus,
+		'Crear OS' AS OS 
+	FROM ticket tk 
+		INNER JOIN ticketStatus ts ON tk.ticketStatusId = ts.ticketStatusId
+		INNER JOIN policy p ON tk.policyId = p.policyId
+		INNER JOIN equipmentType et ON p.equipmenttypeId = et.equipmenttypeId
+		INNER JOIN office of on p.officeId = of.officeId
+	WHERE IFNULL(employee, '') = ''
+		AND closed IS NULL;
+	
+END$$
+
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetScheduleStatus
@@ -99,6 +133,7 @@ BEGIN
 	
 END$$
 
+
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetEquipmentCollectionByCustomer
 -- -----------------------------------------------------------------------------
@@ -134,7 +169,7 @@ BEGIN
 	UPDATE blackstarDb.ticket t
 		INNER JOIN policy p on t.policyId = p.policyId
 	SET
-		ticketStatusId = 'A'
+		ticketStatusId = 'R'
 	WHERE closed IS NULL
 		AND TIMESTAMPDIFF(HOUR, t.created, CURRENT_DATE()) > p.solutionTimeHR;
 
