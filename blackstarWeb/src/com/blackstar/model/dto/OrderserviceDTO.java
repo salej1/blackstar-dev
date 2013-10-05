@@ -75,7 +75,12 @@ public class OrderserviceDTO {
 	private String responsible;
 	private Date closed;
 	
-
+    public String getCoordinator() {
+        return coordinator;
+    }
+    public void setCoordinator(String coordinator) {
+        this.coordinator = coordinator;
+    }
     
     public String getServiceOrderNo() {
         return serviceOrderNo;
@@ -242,13 +247,5 @@ public class OrderserviceDTO {
 
 	public void setReceivedByPosition(String receivedByPosition) {
 		this.receivedByPosition = receivedByPosition;
-	}
-
-	public String getCoordinator() {
-		return coordinator;
-	}
-
-	public void setCoordinator(String coordinator) {
-		this.coordinator = coordinator;
 	}
 }

@@ -28,11 +28,6 @@
   <servlet-name>Tickets</servlet-name>
   <servlet-class>com.blackstar.web.Tickets</servlet-class>
  </servlet>
-  <servlet>
-  <display-name>osDetail</display-name>
-  <servlet-name>osDetail</servlet-name>
-  <servlet-class>com.blackstar.web.osDetail</servlet-class>
- </servlet>
  <servlet-mapping>
   <servlet-name>EquipmentCollectionByCustomer</servlet-name>
   <url-pattern>/equipmentCollectionByCustomer</url-pattern>
@@ -44,9 +39,5 @@
  <servlet-mapping>
   <servlet-name>Tickets</servlet-name>
   <url-pattern>/tickets</url-pattern>
- </servlet-mapping>
- <servlet-mapping>
-  <servlet-name>osDetail</servlet-name>
-  <url-pattern>/osDetail</url-pattern>
  </servlet-mapping>
 </web-app>

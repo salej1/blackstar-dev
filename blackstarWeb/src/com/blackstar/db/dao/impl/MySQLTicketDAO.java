@@ -36,8 +36,8 @@ public class MySQLTicketDAO implements TicketDAO, Serializable {
 			while(rs.next()) {
 				ticket = new Ticket(rs.getInt("ticketId"),rs.getInt("policyId"), rs.getShort("serviceId"), rs.getString("user"),
 						rs.getString("observations"), new Character(rs.getString("ticketStatusId").charAt(0)),
-						rs.getShort("realResponseTime"), rs.getDate("arrival"), rs.getString("employee"),
-						rs.getString("asignee"), rs.getDate("closed"), rs.getInt("solutionTime"),
+						rs.getShort("realResponseTime"), rs.getDate("arrival"), rs.getLong("employee"),
+						rs.getString("asignee"), rs.getDate("closed"), rs.getDate("solutionTime"),
 						rs.getShort("solutionTimeDeviationHr"), rs.getDate("created"), rs.getString("createdBy"),
 						rs.getString("createdByUsr"), rs.getDate("modified"), rs.getString("modifiedBy"),
 						rs.getString("modifiedByUsr"),rs.getString("ticketNumber"));
@@ -76,8 +76,8 @@ public class MySQLTicketDAO implements TicketDAO, Serializable {
 			while(rs.next()) {
 				ticket = new Ticket(rs.getInt("ticketId"),rs.getInt("policyId"), rs.getShort("serviceId"), rs.getString("user"),
 						rs.getString("observations"), new Character(rs.getString("ticketStatusId").charAt(0)),
-						rs.getShort("realResponseTime"), rs.getDate("arrival"), rs.getString("employee"),
-						rs.getString("asignee"), rs.getDate("closed"), rs.getInt("solutionTime"),
+						rs.getShort("realResponseTime"), rs.getDate("arrival"), rs.getLong("employee"),
+						rs.getString("asignee"), rs.getDate("closed"), rs.getDate("solutionTime"),
 						rs.getShort("solutionTimeDeviationHr"), rs.getDate("created"), rs.getString("createdBy"),
 						rs.getString("createdByUsr"), rs.getDate("modified"), rs.getString("modifiedBy"),
 						rs.getString("modifiedByUsr"), rs.getString("ticketNumber"));

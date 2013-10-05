@@ -28,7 +28,7 @@ public class Serviceorder implements java.io.Serializable {
 	private String responsible;
 	private String receivedBy;
 	private String serviceComments;
-	private String serviceStatusId;
+	private Byte statusId;
 	private Date closed;
 	private String consultant;
 	private String coordinator;
@@ -50,11 +50,10 @@ public class Serviceorder implements java.io.Serializable {
 	public Serviceorder(Character serviceTypeId, Integer ticketId,
 			Short policyId, String serviceUnit, Date serviceDate,
 			String responsible, String receivedBy, String serviceComments,
-			String statusId, Date closed, String consultant, String coordinator,
+			Byte statusId, Date closed, String consultant, String coordinator,
 			String asignee, Date created, String createdBy,
 			String createdByUsr, Date modified, String modifiedBy,
-			String modifiedByUsr, String signCreated, String signReceivedBy, String receivedByPosition, String serviceOrderNumber, Integer serviceOrderId) {
-		this.serviceOrderId = serviceOrderId;
+			String modifiedByUsr, String signCreated, String signReceivedBy, String receivedByPosition, String serviceOrderNumber) {
 		this.serviceTypeId = serviceTypeId;
 		this.ticketId = ticketId;
 		this.policyId = policyId;
@@ -63,7 +62,7 @@ public class Serviceorder implements java.io.Serializable {
 		this.responsible = responsible;
 		this.receivedBy = receivedBy;
 		this.serviceComments = serviceComments;
-		this.serviceStatusId = statusId;
+		this.statusId = statusId;
 		this.closed = closed;
 		this.consultant = consultant;
 		this.coordinator = coordinator;
@@ -164,13 +163,13 @@ public class Serviceorder implements java.io.Serializable {
 		this.serviceComments = serviceComments;
 	}
 
-	@Column(name = "serviceStatusId")
-	public String getStatusId() {
-		return this.serviceStatusId;
+	@Column(name = "statusId")
+	public Byte getStatusId() {
+		return this.statusId;
 	}
 
-	public void setStatusId(String serviceStatusId) {
-		this.serviceStatusId = serviceStatusId;
+	public void setStatusId(Byte statusId) {
+		this.statusId = statusId;
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
