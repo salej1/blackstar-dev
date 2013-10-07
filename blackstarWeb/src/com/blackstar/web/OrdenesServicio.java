@@ -8,12 +8,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONArray;
 import com.blackstar.common.ResultSetConverter;
 
-import com.google.cloud.sql.jdbc.ResultSet; 
-import com.google.cloud.sql.jdbc.*;
+import java.sql.ResultSet;
+import com.blackstar.db.BlackstarDataAccess;
 
-import com.blackstar.db.DataAccess;
-//import com.blackstar.dataAccess.*;
-//import java.sql.ResultSet;
 
 /**
  * Servlet implementation class OrdenesServicio
@@ -41,10 +38,11 @@ public class OrdenesServicio extends HttpServlet {
 
 		try
 		{		
-			rsServiceOrdersToReview = DataAccess.executeQuery("CALL GetServiceOrders(\"CERRADO\")");
+			BlackstarDataAccess da = new BlackstarDataAccess();
+			rsServiceOrdersToReview = da.executeQuery("CALL GetServiceOrders(\"CERRADO\")");
 			jsServiceOrdersToReview = ResultSetConverter.convertResultSetToJSONArray(rsServiceOrdersToReview);
 
-			rsServiceOrdersPending = DataAccess.executeQuery("CALL GetServiceOrders(\"nada\")");
+			rsServiceOrdersPending = da.executeQuery("CALL GetServiceOrders(\"nada\")");
 			jsServiceOrdersPending = ResultSetConverter.convertResultSetToJSONArray(rsServiceOrdersPending);	
 		}
 		catch (Exception ex)

@@ -21,7 +21,7 @@
 
 use blackstarManage;
 
-CREATE TABLE blackstarManage.errorLog
+CREATE TABLE IF NOT EXISTS blackstarManage.errorLog
 (
 	errorLogId INTEGER NOT NULL AUTO_INCREMENT,
 	severity VARCHAR(20),

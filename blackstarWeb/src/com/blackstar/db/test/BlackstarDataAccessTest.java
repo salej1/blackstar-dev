@@ -1,14 +1,14 @@
-package com.blackstar.dataAccess.test;
+package com.blackstar.db.test;
 
 import static org.junit.Assert.*;
 
-import java.sql.*;
+import java.sql.ResultSet;
 
 import org.junit.Test;
 
-import com.blackstar.db.DataAccess;
+import com.blackstar.db.BlackstarDataAccess;
 
-public class DataAccessTest {
+public class BlackstarDataAccessTest {
 
 	@Test
 	public final void testExecuteQuery() {
@@ -16,7 +16,8 @@ public class DataAccessTest {
 		int count = 0;
 		
 		try {
-			ResultSet res = DataAccess.executeQuery(sql);
+			BlackstarDataAccess da = new BlackstarDataAccess();
+			ResultSet res = da.executeQuery(sql);
 						
 			while(res.next()){
 				count++;
@@ -27,4 +28,5 @@ public class DataAccessTest {
 		}
 		assertTrue("Cuenta de polizas en cero", count > 0);
 	}
+
 }

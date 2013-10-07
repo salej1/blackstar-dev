@@ -1,19 +1,17 @@
 package com.blackstar.web;
 
 import java.io.IOException;
+import java.sql.ResultSet;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
-//import com.google.cloud.sql.jdbc.ResultSet;
-import java.sql.ResultSet;
-
 import org.json.JSONArray;
 
 import com.blackstar.common.*;
-import com.blackstar.db.DataAccess;;
+import com.blackstar.db.BlackstarDataAccess;;
 
 /**
  * Servlet implementation class Tickets
@@ -39,8 +37,8 @@ public class Tickets extends HttpServlet {
 		ResultSet rsTickets;
 		try
 		{
-			
-			rsTickets = DataAccess.executeQuery(String.format("CALL GetTickets('%s')", "ABIERTO"));
+			BlackstarDataAccess da = new BlackstarDataAccess();
+			rsTickets = da.executeQuery(String.format("CALL GetTickets('%s')", "ABIERTO"));
 			jsTickets = ResultSetConverter.convertResultSetToJSONArray(rsTickets);
 		//	List<Ticket> tckts;
 		//	MySQLTicketDAO tckDAO = new MySQLTicketDAO();

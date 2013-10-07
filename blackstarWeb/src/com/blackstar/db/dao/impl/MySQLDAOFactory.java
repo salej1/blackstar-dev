@@ -1,11 +1,10 @@
 package com.blackstar.db.dao.impl;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 
 import com.blackstar.db.DAOFactory;
-import com.blackstar.db.DBConnectionString;
+import com.blackstar.db.DbConnectionProvider;
 import com.blackstar.db.dao.interfaces.EquipmentTypeDAO;
 import com.blackstar.db.dao.interfaces.FollowUpDAO;
 import com.blackstar.db.dao.interfaces.OfficeDAO;
@@ -16,18 +15,16 @@ import com.blackstar.db.dao.interfaces.ServiceOrderDAO;
 import com.blackstar.db.dao.interfaces.TicketDAO;
 import com.blackstar.db.dao.interfaces.TicketStatusDAO;
 
+
 public class MySQLDAOFactory extends DAOFactory {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 4050710525058420896L;
-	private static final String DRIVER = "com.mysql.jdbc.Driver";
-	public static final String DBURL = DBConnectionString.getConnectionString();
 	
 	public static Connection createConnection() throws ClassNotFoundException, SQLException {
-		Class.forName(DRIVER);
-		Connection conn = DriverManager.getConnection(DBURL);
+		Connection conn = DbConnectionProvider.getConnection("blackstarDb");
 		return conn;
 	}
 

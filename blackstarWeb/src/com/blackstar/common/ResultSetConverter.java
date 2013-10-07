@@ -4,9 +4,9 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONException;
 
-import java.sql.SQLException;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 
 public class ResultSetConverter {
 	  public static JSONArray convertResultSetToJSONArray( ResultSet rs )

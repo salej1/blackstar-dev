@@ -2,7 +2,7 @@ package com.blackstar.logging;
 
 import java.util.logging.Level;
 
-import com.blackstar.db.DataAccess;
+import com.blackstar.db.ManageDataAccess;
 
 public class Logger {
 	public static void Log(LogLevel level, Throwable ex){
@@ -21,7 +21,7 @@ public class Logger {
 	private static void WriteToLog(LogLevel level, String who, String message,
 			String stackTrace) {
 
-		String propLogLvl = System.getProperty("AppLogLevel");
+		String propLogLvl = "INFO";  //System.getProperty("AppLogLevel");
 		LogLevel appLogLevel = LogLevel.INFO;
 		switch (propLogLvl) {
 		case "DEBUG":
@@ -51,10 +51,10 @@ public class Logger {
 			String sql = String.format("CALL blackstarManage.WriteLog(%s, %s, %s, %s)", level, message, who, stackTrace);
 			
 			try {
-				DataAccess.executeQuery(sql);
+				ManageDataAccess.executeQuery(sql);
 			} catch (Exception e) {
 				// Utilizando el logger del container! no hay acceso a la BD
-				java.util.logging.Logger log = java.util.logging.Logger.getLogger(DataAccess.class.getName());
+				java.util.logging.Logger log = java.util.logging.Logger.getLogger(ManageDataAccess.class.getName());
 				log.log(Level.ALL, String.format("$s: Error: %s",who, e.getMessage()));
 			}
 		}

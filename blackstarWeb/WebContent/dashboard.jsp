@@ -8,11 +8,149 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<script type="text/javascript" language="javascript" src="/DataTables-1.9.4/media/js/jquery.js"></script>
-<script type="text/javascript" language="javascript" src="/DataTables-1.9.4/media/js/jquery.dataTables.js"></script>
+<link rel="stylesheet" href="css/jquery.ui.theme.css"/>
+<link rel="stylesheet" href="css/jquery-ui.min.css"/>
+<script src="js/jquery-1.10.1.min.js"></script>
+<script src="js/jquery-ui.js"></script>
+<script src="DataTables-1.9.4/media/js/jquery.dataTables.js"></script>
+
 <script type="text/javascript" charset="utf-8">
+	var strSO = '${serviceOrdersPendingDashboard}';
+	var str = '${ticketsToAssignDashboard}';
+	var strSOTR = '${serviceOrdersToReviewDashboard}';
+	var assignedTicket = "";
+	
+	 function assignTicket(tkt){
+		assignedTicket = tkt;
+		$('#lblTicketBeignAssigned').html(tkt);
+		$('#tktAssignDlg').dialog('open');
+	 }
+	 
+	 function refreshTicketList(){
+		 var data = $.parseJSON(str);
+		$('#ticketTablaContainer').html('');
+
+		$('#ticketTablaContainer').html('<table cellpadding="0" cellspacing="0" border="0" class="display" id="dtTicketsPorAsignar"> <thead> <tr> <th style="width:60px;">Ticket</th> <th>Fecha/Hora</th> <th>Cliente</th> <th>Equipo</th> <th style="width:70px;">Tiem. R</th> <th>Proyecto</th> <th>Estatus</th> <th>Asignar</th> </tr> </thead> <tbody>  </tbody> </table>')	;
+		
+		$('#dtTicketsPorAsignar').dataTable({	    		
+			"bProcessing": true,
+			"bFilter": false,
+			"bLengthChange": false,
+			"iDisplayLength": 10,
+			"bInfo": false,
+			"aaData": data,
+			"aoColumns": [
+						  { "mData": "ticketNumber" },
+						  { "mData": "created" },
+						  { "mData": "customer" },
+						  { "mData": "equipmentType" },
+						  { "mData": "responseTimeHR" },
+						  { "mData": "project" }, 	              
+						  { "mData": "ticketStatus" },
+						  { "mData": "Asignar" }
+
+					  ],
+			"aoColumnDefs" : [{"mRender" : function(data){return "<div align=center><a href=/ticketDetail?ticketId=" + data + ">" + data + "</a></div>";}, "aTargets" : [0]},
+							  {"mRender" : function(data){return "<a href='#' class='edit' onclick='javascript: assignTicket(\"" + data + "\"); return false;'>Asignar</a>";}, "aTargets" : [7]}	    		    	       
+							 ]}
+		);
+
+
+		 var dataSOTR  = $.parseJSON(strSOTR);
+		 
+		$('#dtOrdenesPorRevisar').dataTable({	    		
+			"bProcessing": true,
+			"bFilter": false,
+			"bLengthChange": false,
+			"iDisplayLength": 10,
+			"bInfo": false,
+			"aaData": dataSOTR,
+			"aoColumns": [
+						  { "mData": "serviceOrderNumber" },
+						  { "mData": "ticketNumber" },
+						  { "mData": "serviceType" },
+						  { "mData": "created" },
+						  { "mData": "customer" },
+						  { "mData": "equipmentType" },
+						  { "mData": "project" },
+						  { "mData": "officeName" },
+						  { "mData": "brand" },
+						  { "mData": "serialNumber" }
+
+					  ],
+			"aoColumnDefs" : [{"mRender" : function(dataSOTR){return "<div align='center'><a href='/osDetail.html?ticketId=" + dataSOTR + "'>" + dataSOTR + "</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src='img/pdf.png' onclick=window.open('img/UPSPreview.png', '_blank');/></div>";}, "aTargets" : [0]},
+							  {"mRender" : function(dataSOTR){return "<div align='center'><a href='/ticketDetail.html?ticketId=" + dataSOTR + "'>" + dataSOTR + "</a></div>";}, "aTargets" : [1]}	    		    	       
+							   ]}
+		);
+
+		var dataSO = $.parseJSON(strSO);	
+		alert(strSO);
+			$('#dtOrdenesPendientes').dataTable({	    		
+				"bProcessing": true,
+				"bFilter": false,
+				"bLengthChange": false,
+				"iDisplayLength": 10,
+				"bInfo": false,
+				"aaData": dataSO,
+				"aoColumns": [
+						  { "mData": "serviceOrderNumber" },
+						  { "mData": "placeHolder" },
+						  { "mData": "ticketNumber" },
+						  { "mData": "serviceType" },
+						  { "mData": "created" },
+						  { "mData": "customer" },
+						  { "mData": "equipmentType" },
+						  { "mData": "project" },
+						  { "mData": "officeName" },
+						  { "mData": "brand" },
+						  { "mData": "serialNumber" }
+
+						  ],
+				"aoColumnDefs" : [{"mRender" : function(dataSO){return "<div align='center'><a href='/osDetail.html?ticketId=" + dataSO + "'>" + dataSO + "</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src='img/pdf.png' onclick=window.open('img/UPSPreview.png', '_blank');/></div>";}, "aTargets" : [0]},
+								  {"mRender" : function(dataSO){return "<div align='center'><a href='/ticketDetail.html?ticketId=" + dataSO + "'>" + dataSO + "</a></div>";}, "aTargets" : [1]}	    		    	       
+								   ]}
+		);
+	 }
+	 
+	 function postAssignedTicket(pTicketNumber, pEmployee){
+
+		$.post( "dashboard", { 
+				ticketNumber: pTicketNumber, 
+				employee: pEmployee
+		})
+		.done(function( str ) {
+			alert('done');
+			var data = $.parseJSON(str);
+			$('#ticketTablaContainer').html('');
+/*
+			$('#ticketTablaContainer').html('<table cellpadding="0" cellspacing="0" border="0" class="display" id="dtTicketsPorAsignar"> <thead> <tr> <th style="width:60px;">Ticket</th> <th>Fecha/Hora</th> <th>Cliente</th> <th>Equipo</th> <th style="width:70px;">Tiem. R</th> <th>Proyecto</th> <th>Estatus</th> <th>Asignar</th> </tr> </thead> <tbody>  </tbody> </table>')	;
+			$('#dtTicketsPorAsignar').dataTable({	    		
+				"bProcessing": true,
+				"bFilter": false,
+				"bLengthChange": false,
+				"iDisplayLength": 10,
+				"bInfo": false,
+				"aaData": data,
+				"aoColumns": [
+							  { "mData": "ticketNumber" },
+							  { "mData": "created" },
+							  { "mData": "customer" },
+							  { "mData": "equipmentType" },
+							  { "mData": "responseTimeHR" },
+							  { "mData": "project" }, 	              
+							  { "mData": "ticketStatus" },
+							  { "mData": "Asignar" }
+
+						  ],
+				"aoColumnDefs" : [{"mRender" : function(data){return "<div align=center><a href=/ticketDetail?ticketId=" + data + ">" + data + "</a></div>";}, "aTargets" : [0]},
+								  {"mRender" : function(data){return "<a href='#' class='edit' onclick='javascript: assignTicket(\"" + data + "\"); return false;'>Asignar</a>";}, "aTargets" : [7]}	    		    	       
+								 ]}
+			);	*/
+			
+	});
+	}
+ 
  $(document).ready(function() {
-	 var ticketIdBeingAssigned = 0; // Contenedor del ticket al que se le hace click en Asignar
 	 
 	 $("#tktAssignDlg").dialog({
 			autoOpen: false,
@@ -21,7 +159,9 @@
 			modal: true,
 			buttons: {
 				"Aceptar": function() {
-					postAssignedTicket();
+					var employee = $("#selectStatus option:selected").val();
+
+					postAssignedTicket(assignedTicket, employee);
 					
 					$( this ).dialog( "close" );
 				},
@@ -30,91 +170,11 @@
 				$( this ).dialog( "close" );
 			}}
 	});
-		
-	 var str = '${ticketsToAssignDashboard}';
-	 var data = $.parseJSON(str);
+
+	refreshTicketList();
 	
-	    $('#dtTicketsPorAsignar').dataTable({	    		
-	    	"bProcessing": true,
-	    	"bFilter": false,
-	    	"bLengthChange": false,
-	    	"iDisplayLength": 10,
-	    	"bInfo": false,
-	    	"aaData": data,
-	    	"aoColumns": [
-	    	              { "mData": "ticketId" },
-	    	              { "mData": "created" },
-	    	              { "mData": "customer" },
-	    	              { "mData": "equipmenttype" },
-	    	              { "mData": "solutionTimeDeviationHr" },
-	    	              { "mData": "project" }, 	              
-	    	              { "mData": "ticketStatus" },
-	    	              { "mData": "Asignar" }
-
-	    	          ],
-	    	"aoColumnDefs" : [{"mRender" : function(data){return "<div align=center><a href=/ticketDetail.html?ticketId=" + data + ">" + data + "</a></div>";}, "aTargets" : [0]},
-	    	                  {"mRender" : function(data){return "<a href='#' class='edit' onclick='ticketIdBeingAssigned=" + data + "; $('#tktAssignDlg').dialog('open'); return false';>Asignar</a>";}, "aTargets" : [7]}	    		    	       
-	    		    	       ]}
-	    		);
-
-	 var strSOTR = '${serviceOrdersToReviewDashboard}';
-	 var dataSOTR  = $.parseJSON(strSOTR);
-	 alert(strSOTR);
-	    $('#dtOrdenesPorRevisar').dataTable({	    		
-	    	"bProcessing": true,
-	    	"bFilter": false,
-	    	"bLengthChange": false,
-	    	"iDisplayLength": 10,
-	    	"bInfo": false,
-	    	"aaData": dataSOTR,
-	    	"aoColumns": [
-	    	              { "mData": "serviceOrderId" },
-	    	              { "mData": "ticketId" },
-	    	              { "mData": "serviceType" },
-	    	              { "mData": "created" },
-	    	              { "mData": "customer" },
-	    	              { "mData": "equipmentType" },
-	    	              { "mData": "project" },
-	    	              { "mData": "officeName" },
-	    	              { "mData": "brand" },
-	    	              { "mData": "serialNumber" }
-
-	    	          ],
-	    	"aoColumnDefs" : [{"mRender" : function(dataSOTR){return "<div align='center'><a href='/osDetail.html?ticketId=" + dataSOTR + "'>" + dataSOTR + "</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src='img/pdf.png' onclick=window.open('img/UPSPreview.png', '_blank');/></div>";}, "aTargets" : [0]},
-	    	                  {"mRender" : function(dataSOTR){return "<div align='center'><a href='/ticketDetail.html?ticketId=" + dataSOTR + "'>" + dataSOTR + "</a></div>";}, "aTargets" : [1]}	    		    	       
-	    		    	       ]}
-	    		);
-
-	    var strSO = '${serviceOrdersPendingDashboard}';
-		var dataSO = $.parseJSON(strSO);	
-		alert(strSO);
-		    $('#dtOrdenesPendientes').dataTable({	    		
-		    	"bProcessing": true,
-		    	"bFilter": false,
-		    	"bLengthChange": false,
-		    	"iDisplayLength": 10,
-		    	"bInfo": false,
-		    	"aaData": dataSO,
-		    	"aoColumns": [
-		    	              { "mData": "serviceOrderId" },
-		    	              { "mData": "ticketId" },
-		    	              { "mData": "serviceType" },
-		    	              { "mData": "created" },
-		    	              { "mData": "customer" },
-		    	              { "mData": "equipmentType" },
-		    	              { "mData": "project" },
-		    	              { "mData": "officeName" },
-		    	              { "mData": "brand" },
-		    	              { "mData": "serialNumber" }
-
-		    	          ],
-		    	"aoColumnDefs" : [{"mRender" : function(dataSO){return "<div align='center'><a href='/osDetail.html?ticketId=" + dataSO + "'>" + dataSO + "</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src='img/pdf.png' onclick=window.open('img/UPSPreview.png', '_blank');/></div>";}, "aTargets" : [0]},
-		    	                  {"mRender" : function(dataSO){return "<div align='center'><a href='/ticketDetail.html?ticketId=" + dataSO + "'>" + dataSO + "</a></div>";}, "aTargets" : [1]}	    		    	       
-		    		    	       ]}
-		    		);	    
-	    } 
- );
- </script> 
+});
+</script> 
 <title>Tickets</title>
 </head>
 <body>
@@ -122,7 +182,7 @@
 
 <!--   CONTENT COLUMN   -->		
 				<div class="grid_16">	
-					<p>Angeles Avila: Coordinador</p>
+					
 				</div>
 				<div class="grid_16">
 					<div class="box">
@@ -130,23 +190,9 @@
 						<div class="utils">
 							<a href="#">Ver Todos</a>
 						</div>
-						<table cellpadding="0" cellspacing="0" border="0" class="display" id="dtTicketsPorAsignar">
-							<thead>
-								<tr>
-									<th style="width:60px;">Ticket</th>
-									<th>Fecha/Hora</th>
-									<th>Cliente</th>
-									<th>Equipo</th>
-									<th style="width:70px;">Tiem. R</th>
-									<th>Proyecto</th>
-									<th>Estatus</th>
-									<th>Asignar</th>
-								</tr>
-							</thead>
-							<tbody>
-
-							</tbody>
-						</table>
+						<div id= ticketTablaContainer>
+							
+						</div>
 					</div>
 				</div>
 
@@ -159,8 +205,8 @@
 						<table cellpadding="0" cellspacing="0" border="0" class="display" id="dtOrdenesPorRevisar">
 							<thead>
 								<tr>
-									<th>Folio</th>
-									<th></th>
+									<th style="width=250px;">Folio</th>
+									<th style="width=50px;"></th>
 									<th>Ticket</th>
 									<th>Tipo</th>
 									<th>Fecha</th>
@@ -212,14 +258,14 @@
 
 </div>
 	<!-- Assign Ticket section -->
-			<div id="tktAssignDlg" title="Asignar Ticket" >
-			
-				<p>Asignar ticket<label>13-40:</label></p>
-				<select id="selectStatus">
-					<c:forEach var="employee" items="${employees}">
-						<option>${employee}</option>
-					</c:forEach>
-				</select>
-</div>
+	<div id="tktAssignDlg" title="Asignar Ticket" >
+	
+		<p>Asignar ticket<label id="lblTicketBeignAssigned"></label></p>
+		<select id="selectStatus">
+			<c:forEach var="employee" items="${employees}">
+				<option>${employee}</option>
+			</c:forEach>
+		</select>
+	</div>
 </body>
 </html>

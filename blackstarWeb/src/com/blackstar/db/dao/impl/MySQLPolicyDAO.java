@@ -2,7 +2,6 @@ package com.blackstar.db.dao.impl;
 
 import java.io.Serializable;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -14,7 +13,6 @@ import com.blackstar.logging.*;
 import com.blackstar.common.ResultSetConverter;
 import com.blackstar.db.dao.interfaces.PolicyDAO;
 import com.blackstar.model.Policy;
-import com.google.appengine.api.log.LogService.LogLevel;
 
 public class MySQLPolicyDAO implements PolicyDAO, Serializable {
 
@@ -34,9 +32,8 @@ public class MySQLPolicyDAO implements PolicyDAO, Serializable {
 		List<Policy> lstPolicy = new ArrayList<Policy>();
 		Policy policy = null;
 		try {
-			Connection conn = MySQLDAOFactory.createConnection();
-			PreparedStatement ps = conn.prepareStatement("Select * from policy");
-			ResultSet rs = ps.executeQuery();
+			Connection conn = (Connection) MySQLDAOFactory.createConnection();
+			ResultSet rs = conn.createStatement().executeQuery(("Select * from policy"));
 			
 			while(rs.next()) {
 				policy = new Policy(rs.getString("officeId").charAt(0), rs.getString("policyTypeId").charAt(0), rs.getString("customerContract"),
@@ -79,9 +76,8 @@ public class MySQLPolicyDAO implements PolicyDAO, Serializable {
 		Policy policy = null;
 		try {
 			Connection conn = MySQLDAOFactory.createConnection();
-			PreparedStatement ps = conn.prepareStatement("Select * from policy where policyId = ?");
-			ps.setInt(1, id);
-			ResultSet rs = ps.executeQuery();
+
+			ResultSet rs = conn.createStatement().executeQuery(String.format("Select * from policy where policyId = %d", id));
 			
 			while(rs.next()) {
 				policy = new Policy(rs.getString("officeId").charAt(0), rs.getString("policyTypeId").charAt(0), rs.getString("customerContract"),
@@ -113,10 +109,8 @@ public class MySQLPolicyDAO implements PolicyDAO, Serializable {
 		try {
 			Connection conn = MySQLDAOFactory.createConnection();
 			
-			PreparedStatement ps = conn.prepareStatement(String.format("CALL blackstarDb.GetEquipmentCollectionByCustomer('%s');", customer));
+			ResultSet rs = conn.createStatement().executeQuery(String.format("CALL blackstarDb.GetEquipmentCollectionByCustomer('%s');", customer));
 
-			ResultSet rs = ps.executeQuery();
-			
 			retVal = ResultSetConverter.convertResultSetToJSONArray(rs).toString();
 			
 			conn.close();

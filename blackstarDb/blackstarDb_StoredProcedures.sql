@@ -18,7 +18,10 @@
 -- 2    04/10/2013	SAG		Se Integra:
 --								blackstarDb.GetUnassignedTickets
 -- -----------------------------------------------------------------------------
-
+-- -----------------------------------------------------------------------------
+-- 3    04/10/2013	SAG		Se Integra:
+--								blackstarDb.AssignTicket
+-- -----------------------------------------------------------------------------
 
 use blackstarDb;
 
@@ -34,15 +37,16 @@ BEGIN
 
 	SELECT 
 		tk.ticketId AS ticketId,
+		tk.ticketNumber AS ticketNumber,
 		tk.created AS created,
 		p.contactName AS contactName,
 		p.serialNumber AS serialNumber,
 		p.customer AS customer,
 		et.equipmenttype AS equipmentType,
-		tk.solutionTimeDeviationHr AS solutionTimeDeviationHr,
+		p.responseTimeHR AS responseTimeHR,
 		p.project AS project,
 		ts.ticketStatus AS ticketStatus,
-		'Crear OS' AS OS 
+		tk.ticketNumber AS Asignar
 	FROM ticket tk 
 		INNER JOIN ticketStatus ts ON tk.ticketStatusId = ts.ticketStatusId
 		INNER JOIN policy p ON tk.policyId = p.policyId
@@ -85,7 +89,9 @@ CREATE PROCEDURE blackstarDb.GetServiceOrders (IN status VARCHAR(20))
 BEGIN
 
 	SELECT 
-		so.ticketId AS ticketId,
+		so.serviceOrderNumber AS serviceOrderNumber,
+		'' AS placeHolder,
+		IFNULL(t.ticketNumber, '') AS ticketNumber,
 		st.serviceType AS serviceType,
 		so.created AS created,
 		p.customer AS customer,
@@ -101,8 +107,8 @@ BEGIN
 		INNER JOIN policy p ON so.policyId = p.policyId
 		INNER JOIN equipmentType et ON p.equipmenttypeId = et.equipmenttypeId
 		INNER JOIN office of on p.officeId = of.officeId
+     LEFT OUTER JOIN ticket t on t.ticketId = so.ticketId
 	WHERE ss.serviceStatus = status;
-
 	
 END$$
 
@@ -187,6 +193,22 @@ BEGIN
 		
 END$$
 
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.AssignTicket
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.AssignTicket$$
+CREATE PROCEDURE blackstarDb.AssignTicket (pTicketNumber VARCHAR(100), pEmployee VARCHAR(100), usr VARCHAR(100), proc VARCHAR(100))
+BEGIN
+
+	UPDATE ticket SET
+		employee = pEmployee,
+		modified = CURRENT_DATE(),
+		modifiedBy = proc,
+		modifiedByUsr = usr
+	WHERE ticketNumber = pTicketNumber;
+	
+END$$
 
 -- -----------------------------------------------------------------------------
 	-- FIN DE LOS STORED PROCEDURES
