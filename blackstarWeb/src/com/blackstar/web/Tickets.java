@@ -11,7 +11,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONArray;
 
 import com.blackstar.common.*;
-import com.blackstar.db.BlackstarDataAccess;;
+import com.blackstar.db.BlackstarDataAccess;
+import com.blackstar.logging.LogLevel;
+import com.blackstar.logging.Logger;
 
 /**
  * Servlet implementation class Tickets
@@ -38,20 +40,16 @@ public class Tickets extends HttpServlet {
 		try
 		{
 			BlackstarDataAccess da = new BlackstarDataAccess();
-			rsTickets = da.executeQuery(String.format("CALL GetTickets('%s')", "ABIERTO"));
+			rsTickets = da.executeQuery("CALL GetAllTickets()");
 			jsTickets = ResultSetConverter.convertResultSetToJSONArray(rsTickets);
-		//	List<Ticket> tckts;
-		//	MySQLTicketDAO tckDAO = new MySQLTicketDAO();
-		//	tckts = tckDAO.selectAllTicket();
-		//	jsTickets = ListConverter.getJsonFromTicketsList(tckts);
 			
+			request.setAttribute("ticketsList", jsTickets.toString());	
 		}
 		catch (Exception ex)
 		{
-			 ex.printStackTrace();
+			 Logger.Log(LogLevel.FATAL, ex);
 		}
 		
-	    request.setAttribute("ticketsList", jsTickets.toString());		
 		request.getRequestDispatcher("/tickets.jsp").forward(request, response);
 	}
 

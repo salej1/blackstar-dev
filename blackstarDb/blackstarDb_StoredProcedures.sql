@@ -22,6 +22,11 @@
 -- 3    04/10/2013	SAG		Se Integra:
 --								blackstarDb.AssignTicket
 -- -----------------------------------------------------------------------------
+-- -----------------------------------------------------------------------------
+-- 3    08/10/2013	SAG		Se Integra:
+--								blackstarDb.GetAllTickets
+-- -----------------------------------------------------------------------------
+
 
 use blackstarDb;
 
@@ -36,7 +41,7 @@ CREATE PROCEDURE blackstarDb.GetUnassignedTickets ()
 BEGIN
 
 	SELECT 
-		tk.ticketId AS ticketId,
+		tk.ticketId AS DT_RowId,
 		tk.ticketNumber AS ticketNumber,
 		tk.created AS created,
 		p.contactName AS contactName,
@@ -57,6 +62,35 @@ BEGIN
 	
 END$$
 
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetAllTickets
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetAllTickets$$
+CREATE PROCEDURE blackstarDb.GetAllTickets ()
+BEGIN
+
+	SELECT 
+		tk.ticketId AS DT_RowId,
+		tk.ticketNumber AS ticketNumber,
+		tk.created AS created,
+		p.contactName AS contactName,
+		p.serialNumber AS serialNumber,
+		p.customer AS customer,
+		et.equipmenttype AS equipmentType,
+		p.responseTimeHR AS responseTimeHR,
+		p.project AS project,
+		ts.ticketStatus AS ticketStatus,
+		tk.ticketNumber AS Asignar
+	FROM ticket tk 
+		INNER JOIN ticketStatus ts ON tk.ticketStatusId = ts.ticketStatusId
+		INNER JOIN policy p ON tk.policyId = p.policyId
+		INNER JOIN equipmentType et ON p.equipmenttypeId = et.equipmenttypeId
+		INNER JOIN office of on p.officeId = of.officeId
+	WHERE tk.created > '01-01' + YEAR(CURRENT_DATE())
+    ORDER BY tk.created DESC;
+	
+END$$
+
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetScheduleStatus
@@ -67,7 +101,7 @@ BEGIN
 	
 	SELECT 
 		serviceOrderId AS serviceOrderId,
-		effectiveDate AS effectiveDate,
+		DATE(effectiveDate) AS effectiveDate,
 		equipmentType AS equipmentType,
 		po.customer AS customer,
 		serialNumber AS serialNumber,
@@ -89,11 +123,12 @@ CREATE PROCEDURE blackstarDb.GetServiceOrders (IN status VARCHAR(20))
 BEGIN
 
 	SELECT 
+		so.ServiceOrderId AS DT_RowId,
 		so.serviceOrderNumber AS serviceOrderNumber,
 		'' AS placeHolder,
 		IFNULL(t.ticketNumber, '') AS ticketNumber,
 		st.serviceType AS serviceType,
-		so.created AS created,
+		DATE(so.created) AS created,
 		p.customer AS customer,
 		et.equipmentType AS equipmentType,
 		p.project AS project,
@@ -198,15 +233,16 @@ END$$
 	-- blackstarDb.AssignTicket
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.AssignTicket$$
-CREATE PROCEDURE blackstarDb.AssignTicket (pTicketNumber VARCHAR(100), pEmployee VARCHAR(100), usr VARCHAR(100), proc VARCHAR(100))
+CREATE PROCEDURE blackstarDb.AssignTicket (pTicketId INTEGER, pEmployee VARCHAR(100), usr VARCHAR(100), proc VARCHAR(100))
 BEGIN
 
 	UPDATE ticket SET
 		employee = pEmployee,
+		asignee = pEmployee,
 		modified = CURRENT_DATE(),
 		modifiedBy = proc,
 		modifiedByUsr = usr
-	WHERE ticketNumber = pTicketNumber;
+	WHERE ticketId = pTicketId;
 	
 END$$
 

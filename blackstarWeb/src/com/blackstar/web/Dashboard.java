@@ -100,7 +100,7 @@ public class Dashboard extends HttpServlet {
 		BlackstarDataAccess da = new BlackstarDataAccess();
 		
 		try {
-			String ticket = request.getParameter("ticketNumber");
+			String ticket = request.getParameter("ticketId");
 			String employee = request.getParameter("employee");		
 			
 			da.executeQuery(String.format("CALL AssignTicket('%s', '%s', '%s', '%s')", ticket, employee, "sergio.aga", "Dashboard"));
@@ -114,9 +114,9 @@ public class Dashboard extends HttpServlet {
 			
 			da.closeConnection();
 			
-		} catch (Exception e) {
+		} catch (Exception ex) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.Log(LogLevel.FATAL, ex);
 		}
 		finally{
 			da.closeConnection();

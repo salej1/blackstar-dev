@@ -18,27 +18,28 @@
 	var strSO = '${serviceOrdersPendingDashboard}';
 	var str = '${ticketsToAssignDashboard}';
 	var strSOTR = '${serviceOrdersToReviewDashboard}';
-	var assignedTicket = "";
+	var assignedTicket = 0;
 	
-	 function assignTicket(tkt){
-		assignedTicket = tkt;
-		$('#lblTicketBeignAssigned').html(tkt);
+	 function assignTicket(tktId, tktNumber){
+		assignedTicket = tktId;
+		$('#lblTicketBeignAssigned').html(tktNumber);
 		$('#tktAssignDlg').dialog('open');
 	 }
 	 
 	 function refreshTicketList(){
+	 
+		// Tabla de tickets
 		 var data = $.parseJSON(str);
-		$('#ticketTablaContainer').html('');
-
-		$('#ticketTablaContainer').html('<table cellpadding="0" cellspacing="0" border="0" class="display" id="dtTicketsPorAsignar"> <thead> <tr> <th style="width:60px;">Ticket</th> <th>Fecha/Hora</th> <th>Cliente</th> <th>Equipo</th> <th style="width:70px;">Tiem. R</th> <th>Proyecto</th> <th>Estatus</th> <th>Asignar</th> </tr> </thead> <tbody>  </tbody> </table>')	;
 		
 		$('#dtTicketsPorAsignar').dataTable({	    		
 			"bProcessing": true,
-			"bFilter": false,
+			"bFilter": true,
 			"bLengthChange": false,
 			"iDisplayLength": 10,
 			"bInfo": false,
+			"sPaginationType": "full_numbers",
 			"aaData": data,
+			"sDom": '<"top"i>rt<"bottom"flp><"clear">',
 			"aoColumns": [
 						  { "mData": "ticketNumber" },
 						  { "mData": "created" },
@@ -50,23 +51,27 @@
 						  { "mData": "Asignar" }
 
 					  ],
-			"aoColumnDefs" : [{"mRender" : function(data){return "<div align=center><a href=/ticketDetail?ticketId=" + data + ">" + data + "</a></div>";}, "aTargets" : [0]},
-							  {"mRender" : function(data){return "<a href='#' class='edit' onclick='javascript: assignTicket(\"" + data + "\"); return false;'>Asignar</a>";}, "aTargets" : [7]}	    		    	       
+			"aoColumnDefs" : [{"mRender" : function(data, type, row){return "<div align=center style='width:60px;'><a href=/ticketDetail?ticketId=" + row.DT_RowId + ">" + data + "</a></div>";}, "aTargets" : [0]},
+							  {"mRender" : function(data, type, row){return "<a href='#' class='edit' onclick='javascript: assignTicket(" + row.DT_RowId + ", \"" + data + "\"); return false;'>Asignar</a>";}, "aTargets" : [7]}	    		    	       
 							 ]}
 		);
-
-
+  
+  
+		// Tabla de Ordenes de servicio nuevas
 		 var dataSOTR  = $.parseJSON(strSOTR);
 		 
 		$('#dtOrdenesPorRevisar').dataTable({	    		
 			"bProcessing": true,
-			"bFilter": false,
+			"bFilter": true,
 			"bLengthChange": false,
 			"iDisplayLength": 10,
 			"bInfo": false,
+			"sPaginationType": "full_numbers",
 			"aaData": dataSOTR,
+			"sDom": '<"top"i>rt<"bottom"flp><"clear">',
 			"aoColumns": [
 						  { "mData": "serviceOrderNumber" },
+						  { "mData": "placeHolder" },
 						  { "mData": "ticketNumber" },
 						  { "mData": "serviceType" },
 						  { "mData": "created" },
@@ -78,20 +83,24 @@
 						  { "mData": "serialNumber" }
 
 					  ],
-			"aoColumnDefs" : [{"mRender" : function(dataSOTR){return "<div align='center'><a href='/osDetail.html?ticketId=" + dataSOTR + "'>" + dataSOTR + "</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src='img/pdf.png' onclick=window.open('img/UPSPreview.png', '_blank');/></div>";}, "aTargets" : [0]},
-							  {"mRender" : function(dataSOTR){return "<div align='center'><a href='/ticketDetail.html?ticketId=" + dataSOTR + "'>" + dataSOTR + "</a></div>";}, "aTargets" : [1]}	    		    	       
-							   ]}
+				"aoColumnDefs" : [{"mRender" : function(data, type, row){return "<div align='center' style='width:70px;' ><a href='/osDetail?serviceOrderId=" + row.DT_RowId + "'>" + data + "</a></div>";}, "aTargets" : [0]},
+								  {"mRender" : function(data){return "<img src='img/pdf.png' onclick=return false;/>" ;}, "aTargets" : [1]},
+								  {"mRender" : function(data){return "<div align='center'><a href='/ticketDetail?ticketId=" + data + "'>" + data + "</a></div>";}, "aTargets" : [2]}	    		    	       
+								   ]}
 		);
 
+		// Tabla de ordenes de servicio pendientes
 		var dataSO = $.parseJSON(strSO);	
-		alert(strSO);
-			$('#dtOrdenesPendientes').dataTable({	    		
+
+		$('#dtOrdenesPendientes').dataTable({	
 				"bProcessing": true,
-				"bFilter": false,
+				"bFilter": true,
 				"bLengthChange": false,
 				"iDisplayLength": 10,
 				"bInfo": false,
+				"sPaginationType": "full_numbers",
 				"aaData": dataSO,
+				"sDom": '<"top"i>rt<"bottom"flp><"clear">',
 				"aoColumns": [
 						  { "mData": "serviceOrderNumber" },
 						  { "mData": "placeHolder" },
@@ -106,48 +115,17 @@
 						  { "mData": "serialNumber" }
 
 						  ],
-				"aoColumnDefs" : [{"mRender" : function(dataSO){return "<div align='center'><a href='/osDetail.html?ticketId=" + dataSO + "'>" + dataSO + "</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src='img/pdf.png' onclick=window.open('img/UPSPreview.png', '_blank');/></div>";}, "aTargets" : [0]},
-								  {"mRender" : function(dataSO){return "<div align='center'><a href='/ticketDetail.html?ticketId=" + dataSO + "'>" + dataSO + "</a></div>";}, "aTargets" : [1]}	    		    	       
+				"aoColumnDefs" : [{"mRender" : function(data, type, row){return "<div align='center' style='width:70px;' ><a href='/osDetail?serviceOrderId=" + row.DT_RowId + "'>" + data + "</a></div>";}, "aTargets" : [0]},
+								  {"mRender" : function(data){return "<img src='img/pdf.png' onclick=return false;/>" ;}, "aTargets" : [1]},
+								  {"mRender" : function(data){return "<div align='center'><a href='/ticketDetail?ticketId=" + data + "'>" + data + "</a></div>";}, "aTargets" : [2]}	    		    	       
 								   ]}
 		);
 	 }
 	 
-	 function postAssignedTicket(pTicketNumber, pEmployee){
-
-		$.post( "dashboard", { 
-				ticketNumber: pTicketNumber, 
-				employee: pEmployee
-		})
-		.done(function( str ) {
-			alert('done');
-			var data = $.parseJSON(str);
-			$('#ticketTablaContainer').html('');
-/*
-			$('#ticketTablaContainer').html('<table cellpadding="0" cellspacing="0" border="0" class="display" id="dtTicketsPorAsignar"> <thead> <tr> <th style="width:60px;">Ticket</th> <th>Fecha/Hora</th> <th>Cliente</th> <th>Equipo</th> <th style="width:70px;">Tiem. R</th> <th>Proyecto</th> <th>Estatus</th> <th>Asignar</th> </tr> </thead> <tbody>  </tbody> </table>')	;
-			$('#dtTicketsPorAsignar').dataTable({	    		
-				"bProcessing": true,
-				"bFilter": false,
-				"bLengthChange": false,
-				"iDisplayLength": 10,
-				"bInfo": false,
-				"aaData": data,
-				"aoColumns": [
-							  { "mData": "ticketNumber" },
-							  { "mData": "created" },
-							  { "mData": "customer" },
-							  { "mData": "equipmentType" },
-							  { "mData": "responseTimeHR" },
-							  { "mData": "project" }, 	              
-							  { "mData": "ticketStatus" },
-							  { "mData": "Asignar" }
-
-						  ],
-				"aoColumnDefs" : [{"mRender" : function(data){return "<div align=center><a href=/ticketDetail?ticketId=" + data + ">" + data + "</a></div>";}, "aTargets" : [0]},
-								  {"mRender" : function(data){return "<a href='#' class='edit' onclick='javascript: assignTicket(\"" + data + "\"); return false;'>Asignar</a>";}, "aTargets" : [7]}	    		    	       
-								 ]}
-			);	*/
-			
-	});
+	 function postAssignedTicket(pTicketId, pEmployee){
+		$('#ticketId').val(pTicketId);
+		$('#employee').val(pEmployee);
+		$('#ticksetSelect').submit();
 	}
  
  $(document).ready(function() {
@@ -159,7 +137,7 @@
 			modal: true,
 			buttons: {
 				"Aceptar": function() {
-					var employee = $("#selectStatus option:selected").val();
+					var employee = $("#employeeSelect option:selected").val();
 
 					postAssignedTicket(assignedTicket, employee);
 					
@@ -191,7 +169,19 @@
 							<a href="#">Ver Todos</a>
 						</div>
 						<div id= ticketTablaContainer>
-							
+							<table cellpadding="0" cellspacing="0" border="0" class="display" id="dtTicketsPorAsignar">
+								<thead>
+									<tr> 
+										<th>Ticket</th>
+										<th>Fecha/Hora</th>
+										<th>Cliente</th>
+										<th>Equipo</th> <th>Tiem. R</th>
+										<th>Proyecto</th> <th>Estatus</th> <th>Asignar</th>
+									</tr>
+								</thead>
+								<tbody>  
+								</tbody> 
+							</table>
 						</div>
 					</div>
 				</div>
@@ -259,13 +249,16 @@
 </div>
 	<!-- Assign Ticket section -->
 	<div id="tktAssignDlg" title="Asignar Ticket" >
-	
 		<p>Asignar ticket<label id="lblTicketBeignAssigned"></label></p>
-		<select id="selectStatus">
-			<c:forEach var="employee" items="${employees}">
-				<option>${employee}</option>
-			</c:forEach>
-		</select>
+			<select id="employeeSelect">
+				<c:forEach var="employee" items="${employees}">
+					<option>${employee}</option>
+				</c:forEach>
+			</select>
+		<form id="ticksetSelect" action="dashboard" method="post">
+			<input id="ticketId" name="ticketId" type="hidden"/>
+			<input id="employee" name="employee" type="hidden"/>
+		</form>
 	</div>
 </body>
 </html>
