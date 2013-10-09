@@ -30,7 +30,7 @@ public class MySQLServiceOrderDAO implements ServiceOrderDAO, Serializable {
 		Serviceorder serviceOrder = null;
 		try {
 			Connection conn = MySQLDAOFactory.createConnection();
-			PreparedStatement ps = conn.prepareStatement("Select * from serviceOrder");
+			PreparedStatement ps = conn.prepareStatement("Select * from serviceOrder ");
 			ResultSet rs = ps.executeQuery();
 			
 			while(rs.next()) {
@@ -57,7 +57,7 @@ public class MySQLServiceOrderDAO implements ServiceOrderDAO, Serializable {
 		Serviceorder serviceOrder = new Serviceorder();
 		try {
 			Connection conn = MySQLDAOFactory.createConnection();
-			PreparedStatement ps = conn.prepareStatement("Select * from serviceorder where serviceOrderId = ?");
+			PreparedStatement ps = conn.prepareStatement("Select * from serviceOrder where serviceOrderId = ?");
 			ps.setInt(1, id);
 			ResultSet rs = ps.executeQuery();
 			
