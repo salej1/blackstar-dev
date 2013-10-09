@@ -32,6 +32,11 @@
     <servlet-name>osDetail</servlet-name>
     <servlet-class>com.blackstar.web.osDetail</servlet-class>
   </servlet>
+   <servlet>
+    <display-name>tickDetail_cal</display-name>
+    <servlet-name>tickDetail_cal</servlet-name>
+    <servlet-class>com.blackstar.web.tickDetail_cal</servlet-class>
+  </servlet>
   <servlet>
     <display-name>dashboard</display-name>
     <servlet-name>dashboard</servlet-name>
@@ -52,6 +57,10 @@
   <servlet-mapping>
     <servlet-name>osDetail</servlet-name>
     <url-pattern>/osDetail</url-pattern>
+  </servlet-mapping>
+    <servlet-mapping>
+    <servlet-name>tickDetail_cal</servlet-name>
+    <url-pattern>/tickDetail_cal</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>dashboard</servlet-name>
