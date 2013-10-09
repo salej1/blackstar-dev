@@ -1,4 +1,4 @@
-﻿-- -----------------------------------------------------------------------------
+-- -----------------------------------------------------------------------------
 -- File:	blackstarDb_CreateSchema.sql    
 -- Name:	blackstarDb_CreateSchema
 -- Desc:	crea una version inicial de la base de datos de produccion
@@ -11,6 +11,9 @@
 -- --   --------   -------  ------------------------------------
 -- 1    18/09/2013  SAG  	Version inicial. Tablas autogeneradas por EA
 -- ---------------------------------------------------------------------------
+-- --   --------   -------  ------------------------------------
+-- 2    8/10/2013  SAG  	Se agrega blackstarUser, userGroup
+-- ---------------------------------------------------------------------------
 
 -- -----------------------------------------------------------------------------
 
@@ -22,6 +25,34 @@ USE blackstarDb;
 
 SET FOREIGN_KEY_CHECKS=0;
 
+CREATE TABLE blackstarUser_userGroup(
+	blackstarUser_userGroupId INTEGER NOT NULL AUTO_INCREMENT,
+	blackstarUserId INTEGER NOT NULL,
+	userGroupId INTEGER NOT NULL,
+	PRIMARY KEY(blackstarUser_userGroupId),
+	UNIQUE UQ_blackstarUser_userGroup_blackstarUser_userGroupId(blackstarUser_userGroupId),
+	KEY(blackstarUserId),
+	KEY(userGroupId)
+)ENGINE=INNODB;
+
+CREATE TABLE userGroup
+(
+	userGroupId INTEGER NOT NULL AUTO_INCREMENT,
+	externalId VARCHAR(100) NOT NULL,
+	name VARCHAR(100),
+	PRIMARY KEY (userGroupId),
+	UNIQUE UQ_userGroup_userGroupId(userGroupId)
+) ENGINE=INNODB;
+
+
+CREATE TABLE blackstarUser
+(
+	blackstarUserId INTEGER NOT NULL AUTO_INCREMENT,
+	email VARCHAR(100),
+	name VARCHAR(100),
+	PRIMARY KEY (blackstarUserId),
+	UNIQUE UQ_blackstarUser_blackstarUserId(blackstarUserId)
+) ENGINE=INNODB;
 
 CREATE TABLE equipmentType
 (
@@ -257,38 +288,17 @@ ALTER TABLE ticket ADD CONSTRAINT FK_ticket_ticketStatus
 ALTER TABLE serviceOrder ADD CONSTRAINT FK_serviceOrder_serviceStatus 
 	FOREIGN KEY (serviceStatusId) REFERENCES serviceStatus (serviceStatusId);
 
+ALTER TABLE blackstarUser_userGroup ADD CONSTRAINT FK_blackstarUser_userGroup_blackstarUserId
+	FOREIGN KEY (blackstarUserId) REFERENCES blackstarUser (blackstarUserId);
+	
+ALTER TABLE blackstarUser_userGroup ADD CONSTRAINT FK_blackstarUser_userGroup_userGroupId
+	FOREIGN KEY (userGroupId) REFERENCES userGroup (userGroupId);
 -- -----------------------------------------------------------------------------
 
 -- FIN - Seccion autogenerada por EA
 
 -- -----------------------------------------------------------------------------
 
-
-
--- -----------------------------------------------------------------------------
-
--- Seccion de Administracion
-
--- -----------------------------------------------------------------------------
-
-use blackstarManage;
-
-CREATE TABLE blackstarManage.errorLog
-(
-	errorLogId INTEGER NOT NULL AUTO_INCREMENT,
-	severity VARCHAR(20),
-	created DATETIME,
-	error VARCHAR(400),
-	sender TEXT,
-	stackTrace TEXT,
-	PRIMARY KEY (errorLogId)
-)ENGINE=INNODB;
-
--- -----------------------------------------------------------------------------
-
--- FIN Seccion de Administracion
-
--- -----------------------------------------------------------------------------
 
 
 

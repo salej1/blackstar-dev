@@ -7,13 +7,19 @@ import java.util.logging.*;
 public class BlackstarDataAccess {
 	Connection conn = null;
 	
+	private Connection getMyConnection(){
+		if(conn == null){
+			conn = DbConnectionProvider.getConnection("blackstarDb");
+		}
+		
+		return conn;
+	}
+	
 	public ResultSet executeQuery(String sql) throws Exception {
 		
 		
 		try {
-			conn = DbConnectionProvider.getConnection("blackstarDb");
-
-			ResultSet res = conn.createStatement().executeQuery(sql);
+			ResultSet res = getMyConnection().createStatement().executeQuery(sql);
 			
 			return res;
 

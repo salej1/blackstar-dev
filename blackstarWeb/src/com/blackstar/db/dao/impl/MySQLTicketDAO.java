@@ -40,7 +40,7 @@ public class MySQLTicketDAO implements TicketDAO, Serializable {
 						rs.getString("asignee"), rs.getDate("closed"), rs.getInt("solutionTime"),
 						rs.getShort("solutionTimeDeviationHr"), rs.getDate("created"), rs.getString("createdBy"),
 						rs.getString("createdByUsr"), rs.getDate("modified"), rs.getString("modifiedBy"),
-						rs.getString("modifiedByUsr"),rs.getString("ticketNumber"));
+						rs.getString("modifiedByUsr"),rs.getString("ticketNumber"), rs.getBoolean("phoneResolved"));
 				lstTickets.add(ticket);
 						
 			}
@@ -80,7 +80,32 @@ public class MySQLTicketDAO implements TicketDAO, Serializable {
 						rs.getString("asignee"), rs.getDate("closed"), rs.getInt("solutionTime"),
 						rs.getShort("solutionTimeDeviationHr"), rs.getDate("created"), rs.getString("createdBy"),
 						rs.getString("createdByUsr"), rs.getDate("modified"), rs.getString("modifiedBy"),
-						rs.getString("modifiedByUsr"), rs.getString("ticketNumber"));
+						rs.getString("modifiedByUsr"), rs.getString("ticketNumber"),rs.getBoolean("phoneResolved"));
+						
+			}
+		} catch (ClassNotFoundException | SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		// TODO Auto-generated method stub
+		return ticket;
+	}
+	
+	@Override
+	public Ticket getTicketByNumber(String number) {
+		Ticket ticket = null;
+		try {
+			Connection conn = MySQLDAOFactory.createConnection();
+			ResultSet rs = conn.createStatement().executeQuery(String.format("Select * from ticket where ticketNumber = '%s'", number));
+			
+			while(rs.next()) {
+				ticket = new Ticket(rs.getInt("ticketId"),rs.getInt("policyId"), rs.getShort("serviceId"), rs.getString("user"),
+						rs.getString("observations"), new Character(rs.getString("ticketStatusId").charAt(0)),
+						rs.getShort("realResponseTime"), rs.getTimestamp("arrival"), rs.getString("employee"),
+						rs.getString("asignee"), rs.getTimestamp("closed"), rs.getInt("solutionTime"),
+						rs.getShort("solutionTimeDeviationHr"), rs.getTimestamp("created"), rs.getString("createdBy"),
+						rs.getString("createdByUsr"), rs.getDate("modified"), rs.getString("modifiedBy"),
+						rs.getString("modifiedByUsr"), rs.getString("ticketNumber"), rs.getBoolean("phoneResolved"));
 						
 			}
 		} catch (ClassNotFoundException | SQLException e) {

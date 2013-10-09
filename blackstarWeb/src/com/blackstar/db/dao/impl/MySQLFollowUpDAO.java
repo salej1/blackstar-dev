@@ -50,8 +50,9 @@ public class MySQLFollowUpDAO implements FollowUpDAO, Serializable {
 	}
 
 	@Override
-	public Followup getFollowUpByTicketId(int id) {
-		Followup followUp = new Followup();
+	public List<Followup> getFollowUpByTicketId(int id) {
+		List<Followup> lstFollowpUp = new ArrayList<Followup>();
+		Followup followUp = null;
 		try {
 			Connection conn = MySQLDAOFactory.createConnection();
 			PreparedStatement ps = conn.prepareStatement("Select * from followUp where ticketId=?");
@@ -63,14 +64,15 @@ public class MySQLFollowUpDAO implements FollowUpDAO, Serializable {
 						rs.getString("followup"), rs.getDate("created"), rs.getString("createdBy"),
 						rs.getString("createdByUsr"), rs.getDate("modified"), rs.getString("modifiedBy"),
 						rs.getString("modifiedByUsr"));
-					
+				
+				lstFollowpUp.add(followUp);		
 			}
 		} catch (ClassNotFoundException | SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		// TODO Auto-generated method stub
-		return followUp;
+		return lstFollowpUp;
 	}
 
 	@Override

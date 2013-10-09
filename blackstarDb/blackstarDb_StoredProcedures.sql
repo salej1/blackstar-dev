@@ -8,9 +8,9 @@
 -- Change History
 -- -----------------------------------------------------------------------------
 -- PR   Date    	Author	Description
--- --   --------   -------  ------------------------------------
+-- --   --------   -------  ----------------------------------------------------
 -- 1    03/10/2013	SAG		Se Integran los SP iniciales:
---								blackstarDb.GetScheduleStatus
+--								blackstarDb.GetServicesScheduleStatus
 --								blackstarDb.GetServiceOrders
 --								blackstarDb.GetTickets
 -- 								blackstarDb.UpdateTicketStatus
@@ -18,20 +18,151 @@
 -- 2    04/10/2013	SAG		Se Integra:
 --								blackstarDb.GetUnassignedTickets
 -- -----------------------------------------------------------------------------
--- -----------------------------------------------------------------------------
 -- 3    04/10/2013	SAG		Se Integra:
 --								blackstarDb.AssignTicket
 -- -----------------------------------------------------------------------------
--- -----------------------------------------------------------------------------
--- 3    08/10/2013	SAG		Se Integra:
+-- 4    08/10/2013	SAG		Se Integra:
 --								blackstarDb.GetAllTickets
+--								blackstarDb.UpsertUser
+--								blackstarDb.CreateUserGroup
+-- 								blackstarDb.GetUserData
+-- 								blackstarDb.GetDomainEmployess
+-- 								blackstarDb.GetCustomerList
+-- 								blackstarDb.GetServicesSchedule sustituye a GetServicesScheduleStatus
 -- -----------------------------------------------------------------------------
+
 
 
 use blackstarDb;
 
 
 DELIMITER $$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetServicesByPolicyId
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetServicesByPolicyId$$
+CREATE PROCEDURE blackstarDb.GetServicesByPolicyId(pPolicyId INTEGER)
+BEGIN
+
+	SELECT serviceOrderId AS ServiceOrderId,
+		   serviceOrderNumber AS serviceOrderNumber
+	FROM blackstarDb.serviceOrder
+	WHERE policyId = pPolicyId;
+	
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetCustomerList
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetCustomerList$$
+CREATE PROCEDURE blackstarDb.GetCustomerList()
+BEGIN
+
+	SELECT customer
+	FROM blackstarDb.policy
+		WHERE startDate <= CURRENT_DATE() AND CURRENT_DATE <= endDate
+	ORDER BY customer;
+
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetServicesSchedule
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetServicesSchedule$$
+CREATE PROCEDURE blackstarDb.GetServicesSchedule()
+BEGIN
+
+	SELECT 
+		serviceOrderId AS serviceOrderId,
+		effectiveDate AS scheduledDate,
+		equipmentType AS equipmentType,
+		customer AS customer,
+		serialNumber AS serialNumber,
+		responsible AS responsible,
+		asignee AS asignee,
+		additionalEmployees AS additionalEmployees
+	FROM blackstarDb.serviceOrder s
+		INNER JOIN blackstarDb.policy p ON s.policyId = p.policyId
+		INNER JOIN blackstarDb.equipmentType et ON et.equipmentTypeId = p.equipmentTypeId
+	WHERE serviceStatus = 'P'
+		AND effectiveDate >= CURRENT_DATE()
+	ORDER BY effectiveDate DESC;
+	
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetDomainEmployess
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetDomainEmployess$$
+CREATE PROCEDURE blackstarDb.GetDomainEmployess()
+BEGIN
+
+	SELECT DISTINCT email AS email, name AS name
+	FROM blackstarUser
+	ORDER BY name;
+	
+END$$
+
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetUserData
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetUserData$$
+CREATE PROCEDURE blackstarDb.GetUserData(pEmail VARCHAR(100))
+BEGIN
+
+	SELECT u.email AS userEmail, u.name AS userName, g.name AS groupName
+	FROM blackstarUser_userGroup ug
+		INNER JOIN blackstarUser u ON u.blackstarUserId = ug.blackstarUserId
+		INNER JOIN userGroup g ON g.userGroupId = ug.userGroupId
+	WHERE u.email = pEmail;
+	
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.CreateUserGroup
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.CreateUserGroup$$
+CREATE PROCEDURE blackstarDb.CreateUserGroup(pGroupId VARCHAR(100), pGroupName VARCHAR(100), pUserEmail VARCHAR(100))
+BEGIN
+
+		-- Crear el grupo si no existe
+		INSERT INTO blackstarDb.userGroup(externalId, name)
+		SELECT a.id, a.name
+		FROM (
+			SELECT pGroupId AS id, pGroupName AS name
+		) a
+			LEFT OUTER JOIN blackstarDb.userGroup u ON a.id = u.externalId
+		WHERE u.userGroupId IS NULL;
+		
+		-- Crear la relacion con usuario
+		INSERT INTO blackstarUser_userGroup(blackstarUserId, userGroupId)
+		SELECT a.blackstarUserId, a.userGroupId
+		FROM (
+        SELECT
+			(SELECT blackstarUserId	FROM blackstarDb.blackstarUser WHERE email = pUserEmail) AS blackstarUserId,
+			(SELECT userGroupId FROM blackstarDb.userGroup WHERE externalId = pGroupId) as userGroupId
+		) a
+			LEFT OUTER JOIN blackstarDb.blackstarUser_userGroup ug ON a.blackstarUserId = ug.blackstarUserId and a.userGroupId = ug.userGroupId
+		WHERE ug.blackstarUser_userGroupId IS NULL;
+END$$
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.UpsertUser
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.UpsertUser$$
+CREATE PROCEDURE blackstarDb.UpsertUser(pEmail VARCHAR(100), pName VARCHAR(100))
+BEGIN
+
+	INSERT INTO blackstarDb.blackstarUser(email, name)
+	SELECT a.email, a.name
+	FROM (
+		SELECT pEmail AS email, pName AS name
+	) a
+		LEFT OUTER JOIN blackstarDb.blackstarUser u ON a.email = u.email
+	WHERE u.email IS NULL;
+
+END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetUnassignedTickets
@@ -91,29 +222,6 @@ BEGIN
 	
 END$$
 
-
--- -----------------------------------------------------------------------------
-	-- blackstarDb.GetScheduleStatus
--- -----------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS blackstarDb.GetScheduleStatus$$
-CREATE PROCEDURE blackstarDb.GetScheduleStatus()
-BEGIN
-	
-	SELECT 
-		serviceOrderId AS serviceOrderId,
-		DATE(effectiveDate) AS effectiveDate,
-		equipmentType AS equipmentType,
-		po.customer AS customer,
-		serialNumber AS serialNumber,
-		responsible AS responsible,
-		additionalEmployees AS additionalEmployees 
-	FROM serviceOrder so
-		INNER JOIN policy po ON so.policyId = po.policyId
-		INNER JOIN equipmentType et ON et.equipmentTypeId = po.equipmentTypeId
-	WHERE 
-		effectiveDate >= CURRENT_DATE();
-		
-END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetServiceOrders

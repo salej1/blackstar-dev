@@ -17,7 +17,6 @@ public abstract class DAOFactory implements Serializable {
 
 	public abstract TicketDAO getTicketDAO();
 	public abstract PolicyDAO getPolicyDAO();
-	public abstract PolicyContactDAO getPolicyContactDAO();
 	public abstract TicketStatusDAO getTicketStatusDAO();
 	public abstract EquipmentTypeDAO getEquipmentTypeDAO();
 	public abstract ServiceCenterDAO getServiceCenterDAO();

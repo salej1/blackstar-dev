@@ -140,29 +140,29 @@ public class Policy implements java.io.Serializable {
 	}
 
 	@Column(name = "contactName", nullable = false, length = 50)
-	public String getName() {
+	public String getContactName() {
 		return this.contactName;
 	}
 
-	public void setName(String contactName) {
+	public void setContactName(String contactName) {
 		this.contactName = contactName;
 	}
 
 	@Column(name = "contactPhone", length = 20)
-	public String getPhone() {
+	public String getContactPhone() {
 		return this.contactPhone;
 	}
 
-	public void setPhone(String contactPhone) {
+	public void setContactPhone(String contactPhone) {
 		this.contactPhone = contactPhone;
 	}
 
 	@Column(name = "contactEmail", length = 50)
-	public String getEmail() {
+	public String getContactEmail() {
 		return this.contactEmail;
 	}
 
-	public void setEmail(String contactEmail) {
+	public void setContactEmail(String contactEmail) {
 		this.contactEmail = contactEmail;
 	}
 	
@@ -314,20 +314,20 @@ public class Policy implements java.io.Serializable {
 	}
 
 	@Column(name = "responseTimeHR")
-	public Byte getResponseTimeHr() {
+	public Byte getResponseTimeHR() {
 		return this.responseTimeHr;
 	}
 
-	public void setResponseTimeHr(Byte responseTimeHr) {
+	public void setResponseTimeHR(Byte responseTimeHr) {
 		this.responseTimeHr = responseTimeHr;
 	}
 
 	@Column(name = "solutionTimeHR")
-	public Short getSolutionTimeHr() {
+	public Short getSolutionTimeHR() {
 		return this.solutionTimeHr;
 	}
 
-	public void setSolutionTimeHr(Short solutionTimeHr) {
+	public void setSolutionTimeHR(Short solutionTimeHr) {
 		this.solutionTimeHr = solutionTimeHr;
 	}
 

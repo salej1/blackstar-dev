@@ -1,6 +1,7 @@
 package com.blackstar.web;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -10,7 +11,6 @@ import com.blackstar.model.Equipmenttype;
 import com.blackstar.model.Followup;
 import com.blackstar.model.Office;
 import com.blackstar.model.Policy;
-import com.blackstar.model.Policycontact;
 import com.blackstar.model.Servicecenter;
 import com.blackstar.model.Serviceorder;
 import com.blackstar.model.Ticket;
@@ -28,13 +28,12 @@ public class TicketPageBean implements Serializable {
 	
 	private Ticket ticket;
 	private Policy policy;
-	private Policycontact policyContact;
 	private Ticketstatus ticketStatus;
 	private Equipmenttype equipmentType;
 	private Servicecenter serviceCenter;
 	private Office office;
 	private Serviceorder serviceOrder;
-	private Followup followUp;
+	private List<Followup> followUp;
 	
 	public TicketPageBean() {
 		this.ticket = daoFactory.getTicketDAO().getTicketById(1);
@@ -71,14 +70,6 @@ public class TicketPageBean implements Serializable {
 		this.ticketStatus = ticketStatus;
 	}
 
-	public Policycontact getPolicyContact() {
-		return policyContact;
-	}
-
-	public void setPolicyContact(Policycontact policyContact) {
-		this.policyContact = policyContact;
-	}
-
 	public Equipmenttype getEquipmentType() {
 		return equipmentType;
 	}
@@ -111,11 +102,11 @@ public class TicketPageBean implements Serializable {
 		this.serviceOrder = serviceOrder;
 	}
 
-	public Followup getFollowUp() {
+	public List<Followup> getFollowUp() {
 		return followUp;
 	}
 
-	public void setFollowUp(Followup followUp) {
+	public void setFollowUp(List<Followup> followUp) {
 		this.followUp = followUp;
 	}
 }

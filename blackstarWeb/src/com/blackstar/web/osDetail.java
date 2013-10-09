@@ -15,7 +15,6 @@ import java.util.List;
 import com.blackstar.db.DAOFactory;
 import com.blackstar.model.Followup;
 import com.blackstar.model.Policy;
-import com.blackstar.model.Policycontact;
 import com.blackstar.model.Serviceorder;
 import com.blackstar.model.Ticket;
 import com.blackstar.model.User;
@@ -56,8 +55,8 @@ public class osDetail extends HttpServlet {
 			
 			/// Crea el objeto DTO (OrderserviceDTO)
 			OrderserviceDTO serviceOrderDTO = new OrderserviceDTO(serviceOrder.getCoordinator(), serviceOrder.getServiceOrderId(), serviceOrder.getServiceOrderNumber(), ticket.getTicketNumber(),
-																	ticket.getTicketId(), policy.getCustomer(), policy.getEquipmentAddress(), policy.getName(), serviceOrder.getServiceDate(), 
-																	policy.getPhone(), policy.getEquipmentTypeId(), policy.getBrand(), policy.getModel(), policy.getSerialNumber(), 
+																	ticket.getTicketId(), policy.getCustomer(), policy.getEquipmentAddress(), policy.getContactName(), serviceOrder.getServiceDate(), 
+																	policy.getContactPhone(), policy.getEquipmentTypeId(), policy.getBrand(), policy.getModel(), policy.getSerialNumber(), 
 																	ticket.getObservations(), serviceOrder.getServiceTypeId(), policy.getProject(), "", "", 
 																	"", "", serviceOrder.getServiceComments(), serviceOrder.getSignCreated(), serviceOrder.getsignReceivedBy(), 
 																	serviceOrder.getReceivedBy(), serviceOrder.getResponsible(), serviceOrder.getClosed(), serviceOrder.getReceivedByPosition());

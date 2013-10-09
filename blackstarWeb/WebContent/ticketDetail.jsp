@@ -3,25 +3,24 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@page isELIgnored="false"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<c:set var="pageSection" scope="request" value="ordenesServicio" />
+<c:set var="pageSection" scope="request" value="tickets" />
 <c:import url="header.jsp"></c:import>
 <html>
 <head>
 	<script type="text/javascript">
 		$(document).ready(function () 
 		{
-			$('#lbCoordinador').val('${serviceOrderT.coordinator}');
-			$('#lbMarca').val('${serviceOrderDetail.created}');
+			$('#lbCreated').val('${ticketF.created}');
 			$('#lbNombreUsuario').val('${ticketF.user}');
 			$('#lbContacto').val('${policyt.contactName}');
-			$('#bTelContacto').val('${policyt.contactPhone}');
-			$('#lbMailContacto').val('${policyt.contactMail}');
+			$('#lbTelContacto').val('${policyt.contactPhone}');
+			$('#lbMailContacto').val('${policyt.contactEmail}');
 			$('#lbNoSerie').val('${policyt.serialNumber}');
 			$('#lbObservaciones').val('${policyt.observations}');
 			$('#lbCliente').val('${policyt.customer}');
 			$('#lbEquipo').val('${EquipmenttypeT.Equipmenttype}');
-			$('#lbMarca').val('${policyt.Brand}');
-			$('#lbModelo').val('${policyt.Model}');
+			$('#lbMarca').val('${policyt.brand}');
+			$('#lbModelo').val('${policyt.model}');
 			$('#lbCAP').val('${policyt.capacity}');
 			$('#lbTiempoRespuesta').val('${policyt.responseTimeHR}');
 			$('#lbTiempoSolucion').val('${policyt.solutionTimeHR}');
@@ -33,7 +32,7 @@
 			$('#lbOficina').val('${officeT.officeName}');
 			$('#lbProyecto').val('${policyt.project}');
 			$('#lbNoTicket').val('${ticketF.ticketNumber}');
-			$('#lbResolvioTel').val('${ticketF.phoneResolvd}');
+			$('#lbResolvioTel').val('${ticketF.phoneResolved}');
 			$('#lbHoraLLegada').val('${ticketF.arrival}');
 			$('#lbDesviacion').val('${ticketF.solutionTimeDeviationHr}');
 			$('#lbHoraCierre').val('${ticketF.closed}');
@@ -99,16 +98,15 @@
 		function addSeguimiento(){
 			var d = new Date(); 
 			$("#seguimientoCapture").show();	
-			$("#seguimientoStamp").html(d.format('dd/MM/yyyy h:mm:ss') + ' Angeles Avila:');
+			$("#seguimientoStamp").html(d.format('dd/MM/yyyy h:mm:ss') + '${user.name}:');
 			$("#seguimientoText").val('');
 		}
 		
-		function applySeguimiento(){
-			var template = '<div class="comment"><p><strong>TIMESTAMP: Angeles Avila WHO:</strong></p><p><small>MYCOMMENT</small></p></div>';
-			var d = new Date(); 
+		function applySeguimiento(from, to, text, d){
+			var template = '<div class="comment"><p><strong>TIMESTAMP: " + from + " WHO:</strong></p><p><small>MYCOMMENT</small></p></div>';
 			var content = template.replace('TIMESTAMP', d.format('dd/MM/yyyy h:mm:ss'));
-			content = content.replace('MYCOMMENT', $("#seguimientoText").val());
-			var who =  $("#seguimientoWho").val();
+			content = content.replace('MYCOMMENT', text);
+			var who = to;
 			if(who != ""){
 				content = content.replace('WHO', " a: " + who);
 			}
@@ -136,11 +134,11 @@
 			
 <!--   CONTENT COLUMN   -->		
 				<div class="grid_15">
-					Coordinador: <input  id="lbCoordinador" type="text" style="width:95%;" readOnly="true" />
+					<p>${user.fullDescriptor }</p>
 				</div>	
 				<div class="grid_16">					
 					<div class="box">
-						<h2>Ticket 12-34</h2>
+						<h2>Ticket ${ticketF.ticketNumber}</h2>
 						<div class="utils">
 						</div>
 						<table>
@@ -149,23 +147,14 @@
 									<td style="width:200px;">Asignado a:</td>
 									<td>
 										<select id="selectStatus"  style="width:78%;">
-											<option></option>
-											<option>Alberto Lopez Gomez</option>
-											<option>Alejandra Diaz</option>
-											<option>Alejandro Monroy</option>
-											<option selected="true">Angeles Avila</option>
-											<option>Armando Perez Pinto</option>
-											<option>Gonzalo Ramirez</option>
-											<option>Jose Alberto Jonguitud Gallardo</option>
-											<option>Marlem Samano</option>
-											<option>Martin Vazquez</option>
-											<option>Reynaldo Garcia</option>
-											<option>Sergio  Gallegos</option>
+											<c:forEach var="employee" items="${ UsuariosAsignados}">
+												<option value="${emmployee.email }">${employee.name }</option>
+											</c:forEach>
 										</select>
 										<button class="searchButton" onclick="window.location = 'dashboard_coo.html'">Asignar ahora</button>
 									</td>
 								</tr>
-								<tr><td>Marca temporal</td><td><input id="lbMarca" type="text" readonly="true"  style="width:95%;" /></td></tr>
+								<tr><td>Marca temporal</td><td><input id="lbCreated" type="text" readonly="true"  style="width:95%;" /></td></tr>
 								<tr><td>Nombre de usuario</td><td><input id="lbNombreUsuario" type="text" readonly="true"  style="width:95%;" /></td></tr>
 								<tr><td>Contacto</td><td><input type="text" id="lbContacto" readonly="true"  style="width:95%;" /></td></tr>
 								<tr><td>Telefóno de Contacto</td><td><input id="lbTelContacto" type="text" readonly="true"  style="width:95%;" /></td></tr>
@@ -195,10 +184,7 @@
 								<tr><td>Ingeniero que atendió</td><td><input type="text" readonly="true" id="lbIngeniero" style="width:95%;" /></td></tr>
 								<tr><td>T S Brindado en HR</td><td><input type="text" readonly="true" id="lbTS"  style="width:95%;" /></td></tr>
 								<tr><td>Desviación en Horas TS</td><td><input type="text" readonly="true" id="lbDesviacion" style="width:95%;" /></td></tr>
-								<tr>
-								<td>Estatus</td>
-								<td>
-									<input id="lbEstatus" type="text" style="width:95%;" readonly="true"/>/>
+								<tr><td>Estatus</td><td><input id="lbEstatus" type="text" style="width:95%;" readonly="true"/>
 								</td>
 								</tr>
 							</tbody>
@@ -244,7 +230,7 @@
 					</div>					
 				</div>
 				
-			<div id="cerrarOSCapture" title="Cerrat Ticket 12-34">
+			<div id="cerrarOSCapture" title="Cerrar Ticket ${ticketF.ticketNumber} }">
 				<p>Por favor seleccione la OS que cierra el ticket:</p>
 				<select style="width:90%">
 					<option>3042</option>

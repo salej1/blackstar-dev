@@ -5,11 +5,12 @@ import java.util.Date;
 public class ScheduledService {
 	int scheduledServiceId;
 	Date scheduledDate;
-	String	equipmentType;
+	String equipmentType;
 	String customer;
 	String serialNumber;
 	String asignee;
 	String additionalEmployees;
+	
 	public int getScheduledServiceId() {
 		return scheduledServiceId;
 	}

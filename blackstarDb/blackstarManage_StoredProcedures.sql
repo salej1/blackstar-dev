@@ -29,7 +29,7 @@ CREATE PROCEDURE blackstarManage.WriteLog (
 )
 BEGIN
 
-	INSERT INTO blackstarManage.erroLog(
+	INSERT INTO blackstarManage.errorLog(
 		severity,		
 		created, 	
 		error,		

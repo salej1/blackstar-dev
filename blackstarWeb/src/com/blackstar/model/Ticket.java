@@ -42,6 +42,7 @@ public class Ticket implements java.io.Serializable {
 	private String modifiedBy;
 	private String modifiedByUsr;
 	private String ticketNumber;
+	private boolean phoneResolved;
 
 	public Ticket() {
 	}
@@ -52,7 +53,7 @@ public class Ticket implements java.io.Serializable {
 			String asignee, Date closed, Integer solutionTime,
 			Short solutionTimeDeviationHr, Date created, String createdBy,
 			String createdByUsr, Date modified, String modifiedBy,
-			String modifiedByUsr, String ticketNumber) {
+			String modifiedByUsr, String ticketNumber, boolean phoneResolved) {
 		this.ticketId = ticketId;
 		this.policyId = policyId;
 		this.serviceId = serviceId;
@@ -73,7 +74,8 @@ public class Ticket implements java.io.Serializable {
 		this.modifiedBy = modifiedBy;
 		this.modifiedByUsr = modifiedByUsr;
 		this.ticketNumber = ticketNumber;
-	}
+		this.phoneResolved = phoneResolved;
+		}
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -259,6 +261,14 @@ public class Ticket implements java.io.Serializable {
 
 	public void setTicketNumber(String ticketNumber) {
 		this.ticketNumber = ticketNumber;
+	}
+
+	public boolean isPhoneResolved() {
+		return phoneResolved;
+	}
+
+	public void setPhoneResolved(boolean phoneResolved) {
+		this.phoneResolved = phoneResolved;
 	}
 
 }

@@ -9,6 +9,7 @@ public interface TicketDAO {
 	public Ticket findTicket();
 	public List<Ticket> selectAllTicket();
 	public Ticket getTicketById(int id);
+	public Ticket getTicketByNumber(String number);
 	public int insertTicket();
 	public boolean updateTicket();
 }

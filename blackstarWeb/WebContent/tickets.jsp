@@ -19,8 +19,13 @@
 
 	 $(document).ready(function() {
 
+	 try{
 	 var data = $.parseJSON(str);
-
+	 }
+	 catch(err){
+	 alert(err);
+	 }
+/*
 	 $('#tickets').dataTable({
 			"bProcessing": true,
 			"bFilter": true,
@@ -45,6 +50,7 @@
 							  {"mRender" : function(data, type, row){return "<a href='#' class='edit' onclick='javascript: assignTicket(" + row.DT_RowId + ", \"" + data + "\"); return false;'>Asignar</a>";}, "aTargets" : [7]}
 							 ]}
 		);
+		*/
 	} );
  </script> 
 

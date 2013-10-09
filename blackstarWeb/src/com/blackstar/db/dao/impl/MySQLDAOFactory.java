@@ -8,7 +8,6 @@ import com.blackstar.db.DbConnectionProvider;
 import com.blackstar.db.dao.interfaces.EquipmentTypeDAO;
 import com.blackstar.db.dao.interfaces.FollowUpDAO;
 import com.blackstar.db.dao.interfaces.OfficeDAO;
-import com.blackstar.db.dao.interfaces.PolicyContactDAO;
 import com.blackstar.db.dao.interfaces.PolicyDAO;
 import com.blackstar.db.dao.interfaces.ServiceCenterDAO;
 import com.blackstar.db.dao.interfaces.ServiceOrderDAO;
@@ -38,12 +37,6 @@ public class MySQLDAOFactory extends DAOFactory {
 	public PolicyDAO getPolicyDAO() {
 		// TODO Auto-generated method stub
 		return new MySQLPolicyDAO();
-	}
-
-	@Override
-	public PolicyContactDAO getPolicyContactDAO() {
-		// TODO Auto-generated method stub
-		return new MySQLPolicyContactDAO();
 	}
 
 	@Override

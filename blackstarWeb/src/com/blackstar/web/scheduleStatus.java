@@ -2,6 +2,7 @@ package com.blackstar.web;
 
 import java.io.IOException;
 import java.util.Date;
+import java.sql.ResultSet;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -17,6 +18,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.hibernate.jmx.HibernateService;
 import org.hibernate.jmx.HibernateServiceMBean;
 
+import com.blackstar.db.BlackstarDataAccess;
+import com.blackstar.logging.LogLevel;
+import com.blackstar.logging.Logger;
 import com.blackstar.model.*;
 
 /**
@@ -38,7 +42,52 @@ public class scheduleStatus extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		//SimpleDateFormat dateFormatter = new SimpleDateFormat("EEEE, MMMM d, 'yyyy", new Locale("es", "ES"));
+		
+		// Conexion a la BD		
+		BlackstarDataAccess da = new BlackstarDataAccess();
+
+		// Seccion de programa de servicios 
+		printDates(request);
+		List<ScheduledService> servicesToday = getScheduledServices(da);
+		
+		// Seccion de polizas por cliente
+		List<String> customers = getCustomers(da);
+		
+		da.closeConnection();
+
+		request.setAttribute("servicesToday", servicesToday);
+		request.setAttribute("customers", customers);
+		request.getRequestDispatcher("/scheduleStatus.jsp").forward(request, response);
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		String policyId;
+		String responsible;
+		String additionalEmployees;
+		String effectiveDate;
+		
+		try{
+		
+			policyId = request.getParameter("policyId");
+			responsible = request.getParameter("responsible");
+			additionalEmployees = request.getParameter("additionalEmployees");
+			effectiveDate = request.getParameter("effectiveDate");
+			
+			BlackstarDataAccess da = new BlackstarDataAccess();
+			
+			da.executeQuery("CALL ScheduleService(" + policyId + ", '" + responsible + "', '" + additionalEmployees + "', '" + effectiveDate + "')");
+			da.closeConnection();
+		}
+		catch(Exception ex){
+			Logger.Log(LogLevel.ERROR, ex);
+		}
+		
+	}
+	private void printDates(HttpServletRequest request){
 		DateFormat dateFormatter = DateFormat.getDateInstance(DateFormat.FULL);
 		Calendar cal = Calendar.getInstance();
 		
@@ -64,20 +113,47 @@ public class scheduleStatus extends HttpServlet {
 		request.setAttribute("today4", dateFormatter.format(today4));
 		request.setAttribute("today5", dateFormatter.format(today5));
 		request.setAttribute("today6", dateFormatter.format(today6));
-		
-		List<ScheduledService> servicesToday; //TODO invocar lista de servicios programados
-		servicesToday = new ArrayList<ScheduledService>(); // Esto es un stub, habra que cambiarlo por la llamada a datos
-		
-		request.setAttribute("servicesToday", servicesToday);
-		
-		request.getRequestDispatcher("/scheduleStatus.jsp").forward(request, response);
 	}
+	
+	private List<ScheduledService> getScheduledServices(BlackstarDataAccess da){
+				
+		List<ScheduledService> servicesToday = new ArrayList<ScheduledService>(); 
+		try{
+			ResultSet rs = da.executeQuery("CALL GetServicesSchedule()");
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+			
+			while(rs.next()){
+				ScheduledService sch = new ScheduledService();
+				sch.setScheduledServiceId(rs.getInt("serviceOrderId"));
+				sch.setScheduledDate(rs.getDate("effectiveDate"));
+				sch.setEquipmentType(rs.getString("equipmentType"));
+				sch.setCustomer(rs.getString("customer"));
+				sch.setSerialNumber(rs.getString("serialNumber"));
+				sch.setAsignee(rs.getString("asignee"));
+				sch.setAdditionalEmployees(rs.getString("additionalEmployees"));
+				
+				servicesToday.add(sch);
+			}
+		}catch(Exception ex){
+		Logger.Log(LogLevel.ERROR, ex);	
+		}
+		// Leyendo los servicios programados de la BD
+		
+		return servicesToday;
 	}
+	
+	private List<String> getCustomers(BlackstarDataAccess da){
+		List<String> customers = new ArrayList<String>();
+		try{
 
+			ResultSet rs = da.executeQuery("CALL GetCustomerList()");
+			
+			while(rs.next()){
+				customers.add(rs.getString("customer"));
+			}
+		}catch(Exception ex){
+			Logger.Log(LogLevel.ERROR, ex);
+		}
+			return customers;
+	}
 }

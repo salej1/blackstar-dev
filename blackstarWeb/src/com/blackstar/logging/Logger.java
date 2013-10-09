@@ -48,7 +48,7 @@ public class Logger {
 		}
 		
 		if(level.ordinal()>=appLogLevel.ordinal()){
-			String sql = String.format("CALL blackstarManage.WriteLog(%s, %s, %s, %s)", level, message, who, stackTrace);
+			String sql = String.format("CALL blackstarManage.WriteLog('%s', '%s', '%s', '%s')", level, message, who, stackTrace);
 			
 			try {
 				ManageDataAccess.executeQuery(sql);

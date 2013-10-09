@@ -1,11 +1,14 @@
 package com.blackstar.interfaces;
 
+import java.util.List;
+import java.util.Map;
+
 public interface IUserService {
 	String getCurrentUserId();
 
 	String getCurrentUserName();
 
-	String[] getCurrentUsetGroups();
+	List<String> getCurrentUserGroups();
 	
-	String[] getEmployeeList();
+	Map<String, String> getEmployeeList();
 }

@@ -22,12 +22,6 @@ public class OracleDAOFactory extends DAOFactory {
 	}
 
 	@Override
-	public PolicyContactDAO getPolicyContactDAO() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public TicketStatusDAO getTicketStatusDAO() {
 		// TODO Auto-generated method stub
 		return null;

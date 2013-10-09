@@ -1,44 +1,74 @@
 package com.blackstar.services;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.blackstar.db.BlackstarDataAccess;
 import com.blackstar.interfaces.IUserService;
+import com.blackstar.logging.LogLevel;
+import com.blackstar.logging.Logger;
+import com.google.appengine.api.users.User;
 import com.google.apphosting.api.UserServicePb.UserService;
 
 public class GoogleUserService implements IUserService {
-
+	com.google.appengine.api.users.UserService srv = com.google.appengine.api.users.UserServiceFactory.getUserService();
+	
 	@Override
 	public String getCurrentUserId() {
 		// TODO Auto-generated method stub
-		return null;
-		
+		com.google.appengine.api.users.UserService srv = com.google.appengine.api.users.UserServiceFactory.getUserService();
+		User currUsr = srv.getCurrentUser();
+		return currUsr.getEmail();
 	}
 
 	@Override
 	public String getCurrentUserName() {
 		// TODO Auto-generated method stub
-		return null;
+		User currUsr = srv.getCurrentUser();
+		return currUsr.getNickname();
 	}
 
 	@Override
-	public String[] getCurrentUsetGroups() {
+	public List<String> getCurrentUserGroups(){
 		// TODO Auto-generated method stub
-		return null;
+		List<String> groupList = new ArrayList<String>();
+		
+		try{
+			BlackstarDataAccess da = new BlackstarDataAccess();
+			String usrCommonId = getCurrentUserId();
+			ResultSet groups = da.executeQuery("CALL GetUserData('" + usrCommonId + "');");
+						
+			while(groups.next()){
+				groupList.add(groups.getString("groupName"));
+			}
+			
+			da.closeConnection();	
+		}catch(Exception se){
+			Logger.Log(LogLevel.ERROR, se);
+		}
+		
+		return groupList;
 	}
 
 	@Override
-	public String[] getEmployeeList(){
-		String[] emp = new String[11];
-		emp[ 0 ] = "Alberto Lopez Gomez";
-		emp[ 1 ] = "Alejandra Diaz";
-		emp[ 2 ] = "Alejandro Monroy";
-		emp[ 3 ] = "Angeles Avila";
-		emp[ 4 ] = "Armando Perez Pinto";
-		emp[ 5 ] = "Gonzalo Ramirez";
-		emp[ 6 ] = "Jose Alberto Jonguitud Gallardo";
-		emp[ 7 ] = "Marlem Samano";
-		emp[ 8 ] = "Martin Vazquez";
-		emp[ 9 ] = "Reynaldo Garcia";
-		emp[ 10 ] = "Sergio  Gallegos";
+	public Map<String, String> getEmployeeList(){
+		BlackstarDataAccess da = new BlackstarDataAccess();
+		Map<String, String> empList = new HashMap<String, String>();
 		
-		return emp;
+		try{
+			ResultSet employees = da.executeQuery("CALL GetDomainEmployess();");
+			
+			while(employees.next()){
+				empList.put(employees.getString("email"), employees.getString("name"));
+			}
+		}catch(Exception ex){
+			Logger.Log(LogLevel.ERROR, ex);
+		}
+		
+		return empList;
 	}
 }

@@ -138,5 +138,8 @@
 		INNER JOIN blackstarDb.serviceOrder so ON tt.serviceOrderNumber = so.serviceOrderNumber	
 	SET
 		t.serviceId = so.serviceOrderId;	
-
+	
+	-- ACTUALIZACION DEL ESTADO DE LOS TICKETS
+	use blackstarDb;
+	CALL UpdateTicketStatus();
 -- -----------------------------------------------------------------------------

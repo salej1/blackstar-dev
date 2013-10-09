@@ -27,19 +27,7 @@ public class SessionListener implements HttpSessionListener {
      */
     public void sessionCreated(HttpSessionEvent arg0) {
         // TODO: Recuperar User de google Services
-//    	IUserService dir = UserServiceFactory.getUserService();
-//    	String uid = dir.getCurrentUserId();
-//    	String name = dir.getCurrentUserName();
-//    	String[] groups = dir.getCurrentUsetGroups();
-//    	
-//    	if(uid.equals("") || name.equals("") || groups.length == 0){
-//    		Logger.Log(LogLevel.Fatal, "SessionListener", "Could not find current user ID", Thread.currentThread().getStackTrace().toString());
-//    	}
-//    	
-//    	User usr = new User(uid, name);
-//    	for(int i = 0; i < groups.length; i++){
-//    		usr.addGroup(groups[i]);
-//    	}
+		
     }
 
 	/**
