@@ -50,13 +50,16 @@ public class osDetail extends HttpServlet {
 		String idOS = request.getParameter("serviceOrderId").toString();
 		Serviceorder serviceOrder = this.daoFactory.getServiceOrderDAO().getServiceOrderById(Integer.parseInt(idOS));
 		
-		if(serviceOrder != null)
+		if(serviceOrder.getServiceOrderId() != null)
 		{
-			/// Obtener el ticket asociado a la orden de servicio
-			Ticket ticket  = this.daoFactory.getTicketDAO().getTicketById(serviceOrder.getTicketId());
-			
 			/// Obtener la poliza asociada a la orden de servicio
 			Policy policy  = this.daoFactory.getPolicyDAO().getPolicyById(serviceOrder.getPolicyId());
+			
+			/// Obtener el ticket asociado a la orden de servicio
+			Ticket ticket =null;
+			
+			if( serviceOrder.getTicketId()!= null)
+				 ticket  = this.daoFactory.getTicketDAO().getTicketById(serviceOrder.getTicketId());
 			
 			OrderserviceDTO serviceOrderDTO;
 			
@@ -90,6 +93,11 @@ public class osDetail extends HttpServlet {
 			List<Followup> followUps =  this.daoFactory.getFollowUpDAO().getFollowUpByServiceOrderId(serviceOrder.getServiceOrderId());
 			request.setAttribute("ComentariosOS", followUps);
 	
+			request.getRequestDispatcher("/osDetail.jsp").forward(request, response);
+		}
+		else
+		{	
+			Logger.Log(LogLevel.EMERGENCY, "osDetail.java", "No hay Orden de Servicio con el Id " + idOS, "" );
 			request.getRequestDispatcher("/osDetail.jsp").forward(request, response);
 		}
 	}
