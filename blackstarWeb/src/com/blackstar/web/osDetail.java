@@ -1,6 +1,7 @@
 package com.blackstar.web;
 
 import java.io.IOException;
+import java.sql.ResultSet;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -12,12 +13,16 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.blackstar.db.BlackstarDataAccess;
 import com.blackstar.db.DAOFactory;
+import com.blackstar.logging.LogLevel;
+import com.blackstar.logging.Logger;
 import com.blackstar.model.Followup;
 import com.blackstar.model.Policy;
 import com.blackstar.model.Serviceorder;
 import com.blackstar.model.Ticket;
 import com.blackstar.model.User;
+import com.blackstar.model.dto.EmployeeDTO;
 import com.blackstar.model.dto.OrderserviceDTO;
 
 /**
@@ -53,16 +58,32 @@ public class osDetail extends HttpServlet {
 			/// Obtener la poliza asociada a la orden de servicio
 			Policy policy  = this.daoFactory.getPolicyDAO().getPolicyById(serviceOrder.getPolicyId());
 			
+			OrderserviceDTO serviceOrderDTO;
+			
+			if(ticket != null)
+			{
 			/// Crea el objeto DTO (OrderserviceDTO)
-			OrderserviceDTO serviceOrderDTO = new OrderserviceDTO(serviceOrder.getCoordinator(), serviceOrder.getServiceOrderId(), serviceOrder.getServiceOrderNumber(), ticket.getTicketNumber(),
+				serviceOrderDTO = new OrderserviceDTO(serviceOrder.getCoordinator(), serviceOrder.getServiceOrderId(), serviceOrder.getServiceOrderNumber(), ticket.getTicketNumber(),
 																	ticket.getTicketId(), policy.getCustomer(), policy.getEquipmentAddress(), policy.getContactName(), serviceOrder.getServiceDate(), 
 																	policy.getContactPhone(), policy.getEquipmentTypeId(), policy.getBrand(), policy.getModel(), policy.getSerialNumber(), 
 																	ticket.getObservations(), serviceOrder.getServiceTypeId(), policy.getProject(), "", "", 
 																	"", "", serviceOrder.getServiceComments(), serviceOrder.getSignCreated(), serviceOrder.getsignReceivedBy(), 
 																	serviceOrder.getReceivedBy(), serviceOrder.getResponsible(), serviceOrder.getClosed(), serviceOrder.getReceivedByPosition());
+			}
+			else
+			{
+				serviceOrderDTO = new OrderserviceDTO(serviceOrder.getCoordinator(), serviceOrder.getServiceOrderId(), serviceOrder.getServiceOrderNumber(), "NA",
+						0, policy.getCustomer(), policy.getEquipmentAddress(), policy.getContactName(), serviceOrder.getServiceDate(), 
+						policy.getContactPhone(), policy.getEquipmentTypeId(), policy.getBrand(), policy.getModel(), policy.getSerialNumber(), 
+						"", serviceOrder.getServiceTypeId(), policy.getProject(), "", "", 
+						"", "", serviceOrder.getServiceComments(), serviceOrder.getSignCreated(), serviceOrder.getsignReceivedBy(), 
+						serviceOrder.getReceivedBy(), serviceOrder.getResponsible(), serviceOrder.getClosed(), serviceOrder.getReceivedByPosition());
+				
+			}
+				
 			request.setAttribute("serviceOrderDetail", serviceOrderDTO);
 			
-			List<User> UsuariosAsignados = null; // TODO: Obtener los usuarios posibles a asignar una orden de servicio
+			List<EmployeeDTO> UsuariosAsignados = getEmployeeList(); // TODO: Obtener los usuarios posibles a asignar una orden de servicio
 			request.setAttribute("UsuariosAsignados", UsuariosAsignados);
 			
 			// Obtener los followups asociados a la orden de servicio
@@ -91,6 +112,27 @@ public class osDetail extends HttpServlet {
 			  followup.setModified(new Date());
 			  followup.setCreated(new Date());
 		}
+	}
+	
+	private List<EmployeeDTO> getEmployeeList(){
+		List<EmployeeDTO> list = new ArrayList<EmployeeDTO>();
+		try{
+			BlackstarDataAccess da = new BlackstarDataAccess();
+			ResultSet rs = da.executeQuery("CALL GetDomainEmployess()");
+			
+			while(rs.next()){
+				EmployeeDTO emp = new EmployeeDTO();
+				emp.setEmail(rs.getString("email"));
+				emp.setName(rs.getString("name"));
+				list.add(emp);
+			}
+			
+			da.closeConnection();
+		}
+		catch(Exception ex){
+			Logger.Log(LogLevel.ERROR, ex);
+		}
+		return list;
 	}
 	
 	
