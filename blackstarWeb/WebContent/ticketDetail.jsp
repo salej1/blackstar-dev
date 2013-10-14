@@ -161,11 +161,11 @@
 								<tr><td>E-mail</td><td><input type="text" id="lbMailContacto" readonly="true"  style="width:95%;" /></td></tr>
 								<tr><td>Número de serie del Equipo</td><td><input id="lbNoSerie" type="text" readonly="true"  style="width:95%;"/></td></tr>
 								<tr><td>Observaciones</td><td><input type="text" id="lbObservaciones" readonly="true"  style="width:95%;" /></td></tr>
-								<tr><td>CLIENTE</td><td><input type="text" id="lbCliente" readonly="true"  style="width:95%;" /></td></tr>
-								<tr><td>EQUIPO</td><td><input type="text" id="lbEquipo"  readonly="true"  style="width:95%;" /></td></tr>
-								<tr><td>MARCA</td><td><input type="text" id="lbMarca" readonly="true"  style="width:95%;" /></td></tr>
-								<tr><td>MODELO</td><td><input type="text" id="lbModelo" readonly="true"  style="width:95%;" /></td></tr>
-								<tr><td>CAP.</td><td><input type="text" id="lbCAP" readonly="true"  style="width:95%;" /></td></tr>
+								<tr><td>Cliente</td><td><input type="text" id="lbCliente" readonly="true"  style="width:95%;" /></td></tr>
+								<tr><td>Equipo</td><td><input type="text" id="lbEquipo"  readonly="true"  style="width:95%;" /></td></tr>
+								<tr><td>Marca</td><td><input type="text" id="lbMarca" readonly="true"  style="width:95%;" /></td></tr>
+								<tr><td>Modelo</td><td><input type="text" id="lbModelo" readonly="true"  style="width:95%;" /></td></tr>
+								<tr><td>Capacidad</td><td><input type="text" id="lbCAP" readonly="true"  style="width:95%;" /></td></tr>
 								<tr><td>Tiempo de Respuesta Comprometido</td><td><input id="lbTiempoRespuesta" type="text" readonly="true"  style="width:95%;" /></td></tr>
 								<tr><td>Tiempo de Solucion</td><td><input type="text" id="lbTiempoSolucion" readonly="true"  style="width:95%;" /></td></tr>
 								<tr><td>Direccion del Equipo</td><td><input type="text" id="lbDireccion" readonly="true"  style="width:95%;" /></td></tr>
@@ -175,7 +175,7 @@
 								<tr><td>Centro de Servicio</td><td><input type="text" id="lbCentroServicio" readonly="true"  style="width:95%;" /></td></tr>
 								<tr><td>Oficina</td><td><input type="text" readonly="true" id="lbOficina" style="width:95%;" /></td></tr>
 								<tr><td>Proyecto</td><td><input type="text" readonly="true" id="lbProyecto" style="width:95%;" /></td></tr>
-								<tr><td>No. de Ticket</td><td><input type="text" readonly="true" id="lbNoTicket" style="width:95%;" /></td></tr>
+								<tr><td>Ticket</td><td><input type="text" readonly="true" id="lbNoTicket" style="width:95%;" /></td></tr>
 								<tr><td>Se pudo resolver via telefónica</td><td><input type="text" id="lbResolvioTel" readonly="true"  style="width:95%;" /></td></tr>
 								<tr><td>Hora y Fecha de Llegada a Sitio</td><td><input type="text" id="lbHoraLLegada" readonly="true"  style="width:95%;" /></td></tr>
 								<tr><td>Desviación TR</td><td><input type="text" readonly="true"  id="lbDesviacion" style="width:95%;" /></td></tr>
@@ -230,23 +230,12 @@
 					</div>					
 				</div>
 				
-			<div id="cerrarOSCapture" title="Cerrar Ticket ${ticketF.ticketNumber} }">
+			<div id="cerrarOSCapture" title="Cerrar Ticket ${ticketF.ticketNumber}">
 				<p>Por favor seleccione la OS que cierra el ticket:</p>
 				<select style="width:90%">
-					<option>3042</option>
-					<option>3151</option>
-					<option>UPS-Q0251</option>
-					<option>3857</option>
-					<option>3952</option>
-					<option>3953</option>
-					<option>3954</option>
-					<option>OS-0016</option>
-					<option>OS-0018</option>
-					<option>OS-0017</option>
-					<option>OS-0019</option>
-					<option>UPS-0003</option>
-					<option>BB-0001</option>
-					<option>OS-0652</option>
+					<c:forEach var="os" items="${ potentialOs }">
+						<option value="${ os[0] }">${ os[1] }</option>
+					</c:forEach>
 				</select>
 			</div>
 </div>

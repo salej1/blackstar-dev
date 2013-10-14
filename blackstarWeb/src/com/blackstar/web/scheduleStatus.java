@@ -134,8 +134,11 @@ public class scheduleStatus extends HttpServlet {
 				
 				servicesToday.add(sch);
 			}
+			
+			da.closeConnection();
+			
 		}catch(Exception ex){
-		Logger.Log(LogLevel.ERROR, ex);	
+			Logger.Log(LogLevel.ERROR, ex);	
 		}
 		// Leyendo los servicios programados de la BD
 		

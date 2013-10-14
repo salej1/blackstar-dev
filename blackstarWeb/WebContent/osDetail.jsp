@@ -308,7 +308,7 @@
 									<tr>
 										<td>
 											<button class="searchButton" onclick="addSeguimiento();">Agregar seguimiento</button>
-											<button class="searchButton" onclick="window.location = 'dashboard_coo.html'">Cerrar</button>
+											<button class="searchButton" onclick="window.location = 'dashboard'">Cerrar</button>
 										</td>
 									</tr>
 								<tbody>

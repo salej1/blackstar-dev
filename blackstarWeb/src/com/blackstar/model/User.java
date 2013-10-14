@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.blackstar.logging.*;
 
-public class User {
+public class User implements java.io.Serializable {
 	String userEmail;
 	String userName;
 	List<String> userGroups;

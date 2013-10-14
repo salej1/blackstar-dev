@@ -211,7 +211,8 @@ BEGIN
 		p.responseTimeHR AS responseTimeHR,
 		p.project AS project,
 		ts.ticketStatus AS ticketStatus,
-		tk.ticketNumber AS Asignar
+		tk.ticketNumber AS Asignar,
+		tk.asignee AS Asignee
 	FROM ticket tk 
 		INNER JOIN ticketStatus ts ON tk.ticketStatusId = ts.ticketStatusId
 		INNER JOIN policy p ON tk.policyId = p.policyId

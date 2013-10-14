@@ -370,6 +370,7 @@ INSERT INTO `blackstarDb`.`serviceType` (`serviceTypeId`, `serviceType`) VALUES 
 INSERT INTO `blackstarDb`.`serviceType` (`serviceTypeId`, `serviceType`) VALUES ('M','PUESTA EN MARCHA' );  
 INSERT INTO `blackstarDb`.`serviceType` (`serviceTypeId`, `serviceType`) VALUES ('N','MANTENIMIENTO' );  
 INSERT INTO `blackstarDb`.`serviceType` (`serviceTypeId`, `serviceType`) VALUES ('R','REVISION' );  
+INSERT INTO `blackstarDb`.`serviceType` (`serviceTypeId`, `serviceType`) VALUES ('F','CONFIGURACION' );  
 
 INSERT INTO `blackstarDb`.`serviceStatus` (`serviceStatusId`, `serviceStatus`) VALUES ( 'P', 'PROGRAMADO' ); 
 INSERT INTO `blackstarDb`.`serviceStatus` (`serviceStatusId`, `serviceStatus`) VALUES ( 'N', 'NUEVO' ); 

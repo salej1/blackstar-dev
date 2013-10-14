@@ -12,8 +12,10 @@ import org.json.JSONArray;
 
 import com.blackstar.common.*;
 import com.blackstar.db.BlackstarDataAccess;
+import com.blackstar.interfaces.IUserService;
 import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
+import com.blackstar.services.UserServiceFactory;
 
 /**
  * Servlet implementation class Tickets
@@ -44,6 +46,11 @@ public class Tickets extends HttpServlet {
 			jsTickets = ResultSetConverter.convertResultSetToJSONArray(rsTickets);
 			
 			request.setAttribute("ticketsList", jsTickets.toString());	
+			
+			da.closeConnection();
+			
+			IUserService dir = UserServiceFactory.getUserService();
+			request.setAttribute("employees", dir.getEmployeeList());
 		}
 		catch (Exception ex)
 		{
@@ -58,6 +65,19 @@ public class Tickets extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-	
+		try {
+			BlackstarDataAccess da = new BlackstarDataAccess();
+			
+			String ticket = request.getParameter("ticketId");
+			String employee = request.getParameter("employee");		
+			
+			da.executeQuery(String.format("CALL AssignTicket('%s', '%s', '%s', '%s')", ticket, employee, "sergio.aga", "Dashboard"));
+			
+			da.closeConnection();
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

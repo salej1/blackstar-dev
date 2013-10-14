@@ -84,7 +84,7 @@
 
 					  ],
 				"aoColumnDefs" : [{"mRender" : function(data, type, row){return "<div align='center' style='width:70px;' ><a href='/osDetail?serviceOrderId=" + row.DT_RowId + "'>" + data + "</a></div>";}, "aTargets" : [0]},
-								  {"mRender" : function(data){return "<img src='img/pdf.png' onclick=return false;/>" ;}, "aTargets" : [1]},
+								  {"mRender" : function(data){return "<img src='img/pdf.png' onclick='return false';/>" ;}, "aTargets" : [1]},
 								  {"mRender" : function(data){return "<div align='center'><a href='/ticketDetail?ticketId=" + data + "'>" + data + "</a></div>";}, "aTargets" : [2]}	    		    	       
 								   ]}
 		);
@@ -175,8 +175,11 @@
 										<th>Ticket</th>
 										<th>Fecha/Hora</th>
 										<th>Cliente</th>
-										<th>Equipo</th> <th>Tiem. R</th>
-										<th>Proyecto</th> <th>Estatus</th> <th>Asignar</th>
+										<th>Equipo</th>
+										<th>Tiem. R</th>
+										<th>Proyecto</th>
+										<th>Estatus</th>
+										<th>Asignar</th>
 									</tr>
 								</thead>
 								<tbody>  

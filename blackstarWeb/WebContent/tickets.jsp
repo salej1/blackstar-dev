@@ -17,6 +17,12 @@
 <script type="text/javascript" charset="utf-8">
 	 var str = '${ticketsList}';
 
+	 function assignTicket(tktId, tktNumber){
+		assignedTicket = tktId;
+		$('#lblTicketBeignAssigned').html(tktNumber);
+		$('#tktAssignDlg').dialog('open');
+	 }
+	 
 	 $(document).ready(function() {
 
 	 try{
@@ -25,12 +31,12 @@
 	 catch(err){
 	 alert(err);
 	 }
-/*
+
 	 $('#tickets').dataTable({
 			"bProcessing": true,
 			"bFilter": true,
 			"bLengthChange": false,
-			"iDisplayLength": 50,
+			"iDisplayLength": 10,
 			"bInfo": false,
 			"sPaginationType": "full_numbers",
 			"aaData": data,
@@ -41,17 +47,50 @@
 						  { "mData": "customer" },
 						  { "mData": "equipmentType" },
 						  { "mData": "responseTimeHR" },
-						  { "mData": "project" },
+						  { "mData": "project" }, 	              
 						  { "mData": "ticketStatus" },
+						  { "mData": "asignee" },
 						  { "mData": "Asignar" }
 
 					  ],
 			"aoColumnDefs" : [{"mRender" : function(data, type, row){return "<div align=center style='width:60px;'><a href=/ticketDetail?ticketId=" + row.DT_RowId + ">" + data + "</a></div>";}, "aTargets" : [0]},
-							  {"mRender" : function(data, type, row){return "<a href='#' class='edit' onclick='javascript: assignTicket(" + row.DT_RowId + ", \"" + data + "\"); return false;'>Asignar</a>";}, "aTargets" : [7]}
+							  {"mRender" : function(data, type, row){return "<a href='#' class='edit' onclick='javascript: assignTicket(" + row.DT_RowId + ", \"" + data + "\"); return false;'>Asignar</a>";}, "aTargets" : [7]}	    		    	       
 							 ]}
 		);
-		*/
+		
 	} );
+	
+		 function postAssignedTicket(pTicketId, pEmployee){
+		$('#ticketId').val(pTicketId);
+		$('#employee').val(pEmployee);
+		$('#ticksetSelect').submit();
+	}
+ 
+ $(document).ready(function() {
+	 
+	 $("#tktAssignDlg").dialog({
+			autoOpen: false,
+			height: 200,
+			width: 260,
+			modal: true,
+			buttons: {
+				"Aceptar": function() {
+					var employee = $("#employeeSelect option:selected").val();
+
+					postAssignedTicket(assignedTicket, employee);
+					
+					$( this ).dialog( "close" );
+				},
+				
+				"Cancelar": function() {
+				$( this ).dialog( "close" );
+			}}
+	});
+
+	refreshTicketList();
+	
+});
+
  </script> 
 
  <title>Tickets</title>
@@ -71,14 +110,13 @@
 					<tr>
 						<th>Ticket</th>
 						<th>Fecha/Hora</th>
-						<th>Contacto</th>
-						<th>NS</th>
 						<th>Cliente</th>
 						<th>Equipo</th>
-						<th>TR</th>
+						<th>Tiem. R</th>
 						<th>Proyecto</th>
 						<th>Estatus</th>
-						<th>OS</th>
+						<th>Responsable</th>
+						<th>Asignar</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -86,6 +124,19 @@
 			</table>
 			</div>
 		</div>
+	</div>
+		<!-- Assign Ticket section -->
+	<div id="tktAssignDlg" title="Asignar Ticket" >
+		<p>Asignar ticket<label id="lblTicketBeignAssigned"></label></p>
+			<select id="employeeSelect">
+				<c:forEach var="employee" items="${employees}">
+					<option>${employee}</option>
+				</c:forEach>
+			</select>
+		<form id="ticksetSelect" action="tickets" method="post">
+			<input id="ticketId" name="ticketId" type="hidden"/>
+			<input id="employee" name="employee" type="hidden"/>
+		</form>
 	</div>
 </body>
 </html>

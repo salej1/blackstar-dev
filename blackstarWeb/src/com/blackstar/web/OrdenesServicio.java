@@ -1,15 +1,21 @@
 package com.blackstar.web;
 
 import java.io.IOException;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.json.JSONArray;
+
 import com.blackstar.common.ResultSetConverter;
 
 import java.sql.ResultSet;
+
 import com.blackstar.db.BlackstarDataAccess;
+import com.blackstar.logging.LogLevel;
+import com.blackstar.logging.Logger;
 
 
 /**
@@ -33,25 +39,29 @@ public class OrdenesServicio extends HttpServlet {
 		// TODO Auto-generated method stub
 		JSONArray jsServiceOrdersToReview = new JSONArray();
 		JSONArray jsServiceOrdersPending = new JSONArray();
+		
 		ResultSet rsServiceOrdersToReview;
 		ResultSet rsServiceOrdersPending;
 
 		try
 		{		
 			BlackstarDataAccess da = new BlackstarDataAccess();
-			rsServiceOrdersToReview = da.executeQuery("CALL GetServiceOrders(\"CERRADO\")");
+			rsServiceOrdersToReview = da.executeQuery(String.format("CALL GetServiceOrders('%s')", "NUEVO"));
 			jsServiceOrdersToReview = ResultSetConverter.convertResultSetToJSONArray(rsServiceOrdersToReview);
 
-			rsServiceOrdersPending = da.executeQuery("CALL GetServiceOrders(\"nada\")");
-			jsServiceOrdersPending = ResultSetConverter.convertResultSetToJSONArray(rsServiceOrdersPending);	
+			rsServiceOrdersPending = da.executeQuery(String.format("CALL GetServiceOrders ('%s')", "PENDIENTE"));
+			jsServiceOrdersPending = ResultSetConverter.convertResultSetToJSONArray(rsServiceOrdersPending);
+			
+			request.setAttribute("serviceOrdersToReview", jsServiceOrdersToReview.toString());
+			request.setAttribute("serviceOrdersPending", jsServiceOrdersPending.toString());
+			
+			da.closeConnection();
 		}
 		catch (Exception ex)
 		{
-			 ex.printStackTrace();
+			 Logger.Log(LogLevel.ERROR, ex);
 		}
 
-		request.setAttribute("serviceOrdersToReview", jsServiceOrdersToReview.toString());
-		request.setAttribute("serviceOrdersPending", jsServiceOrdersPending.toString());	
 		request.getRequestDispatcher("/ordenesServicio.jsp").forward(request, response);
 
 	}

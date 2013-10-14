@@ -12,6 +12,7 @@ import com.blackstar.interfaces.IUserService;
 import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
 import com.google.appengine.api.users.User;
+import com.google.appengine.api.utils.SystemProperty;
 import com.google.apphosting.api.UserServicePb.UserService;
 
 public class GoogleUserService implements IUserService {
@@ -19,19 +20,29 @@ public class GoogleUserService implements IUserService {
 	
 	@Override
 	public String getCurrentUserId() {
-		// TODO Auto-generated method stub
-		com.google.appengine.api.users.UserService srv = com.google.appengine.api.users.UserServiceFactory.getUserService();
-		User currUsr = srv.getCurrentUser();
-		return currUsr.getEmail();
+		String usrId = "sergio.aga@gmail.com";
+		if (SystemProperty.environment.value() ==
+			    SystemProperty.Environment.Value.Production) {
+			com.google.appengine.api.users.UserService srv = com.google.appengine.api.users.UserServiceFactory.getUserService();
+			User currUsr = srv.getCurrentUser();
+			usrId = currUsr.getEmail();
+		}
+
+		return usrId;
 	}
 
 	@Override
 	public String getCurrentUserName() {
-		// TODO Auto-generated method stub
-		User currUsr = srv.getCurrentUser();
-		return currUsr.getNickname();
+		String usrName = "sergio.aga";
+		if (SystemProperty.environment.value() ==
+			    SystemProperty.Environment.Value.Production) {
+			com.google.appengine.api.users.UserService srv = com.google.appengine.api.users.UserServiceFactory.getUserService();
+			User currUsr = srv.getCurrentUser();
+			usrName = currUsr.getEmail();
+		}
+		return usrName;
 	}
-
+	
 	@Override
 	public List<String> getCurrentUserGroups(){
 		// TODO Auto-generated method stub
