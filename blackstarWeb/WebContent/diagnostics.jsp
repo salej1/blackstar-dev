@@ -9,6 +9,7 @@
 <title>Insert title here</title>
 </head>
 <body>
+<p>Error: ${ error }</p>
 <p>User Id: ${ userId }</p>
 <p>User name: ${ userName }</p>
 <p>User groups:</p>

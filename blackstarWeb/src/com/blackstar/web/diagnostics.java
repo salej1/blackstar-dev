@@ -36,6 +36,7 @@ public class diagnostics extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// Pruebas de usuario
+		try{
 		IUserService s = UserServiceFactory.getUserService();
 		
 		request.setAttribute("userId", s.getCurrentUserId());
@@ -44,6 +45,9 @@ public class diagnostics extends HttpServlet {
 		request.setAttribute("employeeList", s.getEmployeeList());
 		
 		request.getRequestDispatcher("/diagnostics.jsp").forward(request, response);
+		}catch(Exception ex){
+			request.setAttribute("error", ex.getMessage());
+		}
 	}
 	
 	public final void testGetCurrentUserId() {
