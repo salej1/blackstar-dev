@@ -34,7 +34,7 @@ public class MySQLOfficeDAO implements OfficeDAO, Serializable {
 			ResultSet rs = ps.executeQuery();
 			
 			while(rs.next()) {
-				office = new Office(rs.getString("officeId").charAt(0), rs.getString("officeName"));
+				office = new Office(rs.getString("officeId").charAt(0), rs.getString("officeName"), rs.getString("officeEmail"));
 				lstOffice.add(office);
 						
 			}
@@ -68,7 +68,7 @@ public class MySQLOfficeDAO implements OfficeDAO, Serializable {
 			ResultSet rs = ps.executeQuery();
 			
 			while(rs.next()) {
-				office = new Office(rs.getString("officeId").charAt(0), rs.getString("officeName"));
+				office = new Office(rs.getString("officeId").charAt(0), rs.getString("officeName"), rs.getString("officeEmail"));
 						
 			}
 		} catch (ClassNotFoundException | SQLException e) {

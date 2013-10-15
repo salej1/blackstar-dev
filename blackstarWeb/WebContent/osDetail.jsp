@@ -115,7 +115,7 @@
 <!--   CONTENT COLUMN   -->			
 				<div class="grid_16">	
 					<p>
-						Coordinador: <input  id="lbCoordinador" type="text" style="width:95%;" readOnly="true" />
+						
 					</p>
 				</div>
 				<div class="grid_15">					
@@ -128,8 +128,8 @@
 							<tr>
 								<td>Folio:</td>
 								<td><input  id="lbFolio" type="text" style="width:95%;" readOnly="true" /></td>
-								<td colspan="2"><small><a href="#" onclick="window.open('img/UPSPreview.png', '_blank'); return false;">Ver PDF</a></small>
-									<img src="img/pdf.png" onclick="window.open('img/UPSPreview.png', '_blank');"/>
+								<td colspan="2"><small></small>
+									
 								</td>
 							</tr>
 							<tr>

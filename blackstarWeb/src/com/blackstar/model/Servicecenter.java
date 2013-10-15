@@ -16,13 +16,15 @@ public class Servicecenter implements java.io.Serializable {
 
 	private char serviceCenterId;
 	private String serviceCenter;
+	private String serviceCenterEmail;
 
 	public Servicecenter() {
 	}
 
-	public Servicecenter(char serviceCenterId, String serviceCenter) {
+	public Servicecenter(char serviceCenterId, String serviceCenter, String serviceCenterEmail) {
 		this.serviceCenterId = serviceCenterId;
 		this.serviceCenter = serviceCenter;
+		this.serviceCenterEmail = serviceCenterEmail;
 	}
 
 	@Id
@@ -42,6 +44,14 @@ public class Servicecenter implements java.io.Serializable {
 
 	public void setServiceCenter(String serviceCenter) {
 		this.serviceCenter = serviceCenter;
+	}
+
+	public String getServiceCenterEmail() {
+		return serviceCenterEmail;
+	}
+
+	public void setServiceCenterEmail(String serviceCenterEmail) {
+		this.serviceCenterEmail = serviceCenterEmail;
 	}
 
 }

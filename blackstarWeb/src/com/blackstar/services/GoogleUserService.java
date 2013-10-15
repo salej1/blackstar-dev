@@ -71,7 +71,7 @@ public class GoogleUserService implements IUserService {
 		Map<String, String> empList = new HashMap<String, String>();
 		
 		try{
-			ResultSet employees = da.executeQuery("CALL GetDomainEmployess();");
+			ResultSet employees = da.executeQuery("CALL GetDomainEmployees();");
 			
 			while(employees.next()){
 				empList.put(employees.getString("email"), employees.getString("name"));

@@ -42,9 +42,9 @@ public class MySQLPolicyDAO implements PolicyDAO, Serializable {
 						rs.getString("serialNumber"), rs.getString("capacity"), rs.getString("equipmentAddress"),
 						rs.getString("equipmentLocation"), rs.getString("contactName"), rs.getString("contactPhone"), rs.getString("contactEmail"),
 						rs.getDate("startDate"),
-						rs.getDate("endDate"), rs.getInt("visitsPerYear"), rs.getByte("responseTimeHr"),
+						rs.getDate("endDate"), rs.getInt("visitsPerYear"), rs.getInt("responseTimeHr"),
 						rs.getShort("solutionTimeHr"), rs.getString("penalty"), rs.getString("service"),
-						rs.getString("includesParts").getBytes()[0], rs.getString("exceptionParts"),
+						rs.getBoolean("includesParts"), rs.getString("exceptionParts"),
 						rs.getString("serviceCenterId").charAt(0), rs.getString("observations"), rs.getDate("created"),
 						rs.getString("createdBy"), rs.getString("crratedByUsr"), rs.getDate("modified"),
 						rs.getString("modifiedBy"), rs.getString("modifiedByUsr"));
@@ -86,9 +86,9 @@ public class MySQLPolicyDAO implements PolicyDAO, Serializable {
 						rs.getString("serialNumber"), rs.getString("capacity"), rs.getString("equipmentAddress"),
 						rs.getString("equipmentLocation"), rs.getString("contactName"), rs.getString("contactPhone"), rs.getString("contactEmail"),
 						rs.getDate("startDate"),
-						rs.getDate("endDate"), rs.getInt("visitsPerYear"), rs.getByte("responseTimeHr"),
+						rs.getDate("endDate"), rs.getInt("visitsPerYear"), rs.getInt("responseTimeHr"),
 						rs.getShort("solutionTimeHr"), rs.getString("penalty"), rs.getString("service"),
-						rs.getString("includesParts").getBytes()[0], rs.getString("exceptionParts"),
+						rs.getBoolean("includesParts"), rs.getString("exceptionParts"),
 						rs.getString("serviceCenterId").charAt(0), rs.getString("observations"), rs.getDate("created"),
 						rs.getString("createdBy"), rs.getString("crratedByUsr"), rs.getDate("modified"),
 						rs.getString("modifiedBy"), rs.getString("modifiedByUsr"));

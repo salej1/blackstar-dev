@@ -10,7 +10,7 @@ public class Logger {
 			Log(level, ex.getCause());
 		}
 		else{
-			Log(level, ex.getClass().toString(), ex.getMessage(), ex.getStackTrace().toString());
+			Log(level, ex.getClass().toString(), ex.toString(), ex.getStackTrace()[0].toString());
 		}
 	}
 	

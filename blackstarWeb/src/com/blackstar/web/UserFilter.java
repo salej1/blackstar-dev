@@ -49,19 +49,7 @@ public class UserFilter implements Filter {
 		if(usr == null){
 			try{
 				
-				IUserService dir = UserServiceFactory.getUserService();
-				String uid = dir.getCurrentUserId();
-				String name = dir.getCurrentUserName();
-				List<String> groups = dir.getCurrentUserGroups();
-				
-				User myUser = new User(name, uid);
-				
-				Iterator<String> itr= groups.iterator();
-				while(itr.hasNext()){
-					myUser.addGroup(itr.next());
-				}
-				
-				req.getSession().setAttribute("user", myUser);
+				request.getRequestDispatcher("/login").forward(request, response);
 			}
 			catch(Exception e){
 				Logger.Log(LogLevel.CRITICAL, e);

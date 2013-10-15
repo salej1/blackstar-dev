@@ -50,11 +50,11 @@
 						  { "mData": "project" }, 	              
 						  { "mData": "ticketStatus" },
 						  { "mData": "asignee" },
-						  { "mData": "Asignar" }
+						  { "mData": "asignar" }
 
 					  ],
 			"aoColumnDefs" : [{"mRender" : function(data, type, row){return "<div align=center style='width:60px;'><a href=/ticketDetail?ticketId=" + row.DT_RowId + ">" + data + "</a></div>";}, "aTargets" : [0]},
-							  {"mRender" : function(data, type, row){return "<a href='#' class='edit' onclick='javascript: assignTicket(" + row.DT_RowId + ", \"" + data + "\"); return false;'>Asignar</a>";}, "aTargets" : [7]}	    		    	       
+							  {"mRender" : function(data, type, row){return "<a href='#' class='edit' onclick='javascript: assignTicket(" + row.DT_RowId + ", \"" + data + "\"); return false;'>Asignar</a>";}, "aTargets" : [8]}	    		    	       
 							 ]}
 		);
 		
@@ -130,7 +130,7 @@
 		<p>Asignar ticket<label id="lblTicketBeignAssigned"></label></p>
 			<select id="employeeSelect">
 				<c:forEach var="employee" items="${employees}">
-					<option>${employee}</option>
+					<option value = "${ eomployee.key }">${employee.value}</option>
 				</c:forEach>
 			</select>
 		<form id="ticksetSelect" action="tickets" method="post">

@@ -26,7 +26,7 @@
 --								blackstarDb.UpsertUser
 --								blackstarDb.CreateUserGroup
 -- 								blackstarDb.GetUserData
--- 								blackstarDb.GetDomainEmployess
+-- 								blackstarDb.GetDomainEmployees
 -- 								blackstarDb.GetCustomerList
 -- 								blackstarDb.GetServicesSchedule sustituye a GetServicesScheduleStatus
 -- -----------------------------------------------------------------------------
@@ -92,10 +92,10 @@ BEGIN
 END$$
 
 -- -----------------------------------------------------------------------------
-	-- blackstarDb.GetDomainEmployess
+	-- blackstarDb.GetDomainEmployees
 -- -----------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS blackstarDb.GetDomainEmployess$$
-CREATE PROCEDURE blackstarDb.GetDomainEmployess()
+DROP PROCEDURE IF EXISTS blackstarDb.GetDomainEmployees$$
+CREATE PROCEDURE blackstarDb.GetDomainEmployees()
 BEGIN
 
 	SELECT DISTINCT email AS email, name AS name
@@ -211,13 +211,14 @@ BEGIN
 		p.responseTimeHR AS responseTimeHR,
 		p.project AS project,
 		ts.ticketStatus AS ticketStatus,
-		tk.ticketNumber AS Asignar,
-		tk.asignee AS Asignee
+		IFNULL(bu.name, '') AS asignee,
+		tk.ticketNumber AS asignar
 	FROM ticket tk 
 		INNER JOIN ticketStatus ts ON tk.ticketStatusId = ts.ticketStatusId
 		INNER JOIN policy p ON tk.policyId = p.policyId
 		INNER JOIN equipmentType et ON p.equipmenttypeId = et.equipmenttypeId
 		INNER JOIN office of on p.officeId = of.officeId
+		LEFT OUTER JOIN blackstarUser bu ON bu.email = tk.asignee
 	WHERE tk.created > '01-01' + YEAR(CURRENT_DATE())
     ORDER BY tk.created DESC;
 	

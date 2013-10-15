@@ -147,8 +147,8 @@
 									<td style="width:200px;">Asignado a:</td>
 									<td>
 										<select id="selectStatus"  style="width:78%;">
-											<c:forEach var="employee" items="${ UsuariosAsignados}">
-												<option value="${emmployee.email }">${employee.name }</option>
+											<c:forEach var="employee" items="${employees}">
+														<option value="${employee.key}">${ employee.value }</option>
 											</c:forEach>
 										</select>
 										<button class="searchButton" onclick="window.location = 'dashboard_coo.html'">Asignar ahora</button>
@@ -204,8 +204,8 @@
 											</div>
 											<div> Asignar a:
 												<select id="seguimientoWho" style="width:200px;">
-													<c:forEach var="usuario" items="${UsuariosAsignados}">
-														<option>usuario</option>
+													<c:forEach var="employee" items="${employees}">
+														<option value="${employee.key}">${ employee.value }</option>
 													</c:forEach>
 												</select>
 												<p></p>
@@ -234,7 +234,7 @@
 				<p>Por favor seleccione la OS que cierra el ticket:</p>
 				<select style="width:90%">
 					<c:forEach var="os" items="${ potentialOs }">
-						<option value="${ os[0] }">${ os[1] }</option>
+						<option value="${ os.key }">${ os.value }</option>
 					</c:forEach>
 				</select>
 			</div>

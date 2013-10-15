@@ -34,7 +34,7 @@ public class MySQLServiceCenterDAO implements ServiceCenterDAO, Serializable {
 			ResultSet rs = ps.executeQuery();
 			
 			while(rs.next()) {
-				serviceCenter = new Servicecenter(rs.getString("serviceCenterId").charAt(0), rs.getString("serviceCenter"));
+				serviceCenter = new Servicecenter(rs.getString("serviceCenterId").charAt(0), rs.getString("serviceCenter"), rs.getString("serviceCenterEmail"));
 				lstServiceCenter.add(serviceCenter);
 						
 			}
@@ -68,7 +68,7 @@ public class MySQLServiceCenterDAO implements ServiceCenterDAO, Serializable {
 			ResultSet rs = ps.executeQuery();
 			
 			while(rs.next()) {
-				serviceCenter = new Servicecenter(rs.getString("serviceCenterId").charAt(0), rs.getString("serviceCenter"));
+				serviceCenter = new Servicecenter(rs.getString("serviceCenterId").charAt(0), rs.getString("serviceCenter"), rs.getString("serviceCenterEmail"));
 						
 			}
 		} catch (ClassNotFoundException | SQLException e) {

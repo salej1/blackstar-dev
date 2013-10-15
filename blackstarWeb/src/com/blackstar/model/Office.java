@@ -16,6 +16,7 @@ public class Office implements java.io.Serializable {
 
 	private char officeId;
 	private String officeName;
+	private String officeEmail;
 
 	public Office() {
 	}
@@ -24,9 +25,10 @@ public class Office implements java.io.Serializable {
 		this.officeId = officeId;
 	}
 
-	public Office(char officeId, String officeName) {
+	public Office(char officeId, String officeName, String officeEmail) {
 		this.officeId = officeId;
 		this.officeName = officeName;
+		this.officeEmail = officeEmail;
 	}
 
 	@Id
@@ -46,6 +48,14 @@ public class Office implements java.io.Serializable {
 
 	public void setOfficeName(String officeName) {
 		this.officeName = officeName;
+	}
+
+	public String getOfficeEmail() {
+		return officeEmail;
+	}
+
+	public void setOfficeEmail(String officeEmail) {
+		this.officeEmail = officeEmail;
 	}
 
 }

@@ -30,6 +30,7 @@ import com.blackstar.model.Ticketstatus;
 import com.blackstar.model.User;
 import com.blackstar.model.dto.EmployeeDTO;
 import com.blackstar.model.dto.OrderserviceDTO;
+import com.blackstar.services.UserServiceFactory;
 
 
 public class TicketDetail extends HttpServlet{
@@ -101,8 +102,8 @@ public class TicketDetail extends HttpServlet{
 					Servicecenter Servicecenter =  this.daoFactory.getServiceCenterDAO().getServiceCenterById(policy.getServiceCenterId());
 					request.setAttribute("ServicecenterT", Servicecenter);
 						
-					List<EmployeeDTO> UsuariosAsignados = getEmployeeList(); // TODO: Obtener los usuarios posibles a asignar un ticket
-					request.setAttribute("UsuariosAsignados", UsuariosAsignados);
+					Map<String, String> UsuariosAsignados = UserServiceFactory.getUserService().getEmployeeList(); 
+					request.setAttribute("employees", UsuariosAsignados);
 						
 					// Obtener los followups asociados a la orden de servicio
 					List<Followup> followUps =  this.daoFactory.getFollowUpDAO().getFollowUpByTicketId(parsedTicketId);
@@ -154,26 +155,26 @@ public class TicketDetail extends HttpServlet{
 		}
 		return list;
 	}
-	
-	private List<EmployeeDTO> getEmployeeList(){
-		List<EmployeeDTO> list = new ArrayList<EmployeeDTO>();
-		try{
-			BlackstarDataAccess da = new BlackstarDataAccess();
-			ResultSet rs = da.executeQuery("CALL GetDomainEmployess()");
-			
-			while(rs.next()){
-				EmployeeDTO emp = new EmployeeDTO();
-				emp.setEmail(rs.getString("email"));
-				emp.setName(rs.getString("name"));
-				list.add(emp);
-			}
-			
-			da.closeConnection();
-		}
-		catch(Exception ex){
-			Logger.Log(LogLevel.ERROR, ex);
-		}
-		return list;
-	}
+//	
+//	private List<EmployeeDTO> getEmployeeList(){
+//		List<EmployeeDTO> list = new ArrayList<EmployeeDTO>();
+//		try{
+//			BlackstarDataAccess da = new BlackstarDataAccess();
+//			ResultSet rs = da.executeQuery("CALL GetDomainEmployees()");
+//			
+//			while(rs.next()){
+//				EmployeeDTO emp = new EmployeeDTO();
+//				emp.setEmail(rs.getString("email"));
+//				emp.setName(rs.getString("name"));
+//				list.add(emp);
+//			}
+//			
+//			da.closeConnection();
+//		}
+//		catch(Exception ex){
+//			Logger.Log(LogLevel.ERROR, ex);
+//		}
+//		return list;
+//	}
 }
 

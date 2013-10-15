@@ -87,6 +87,7 @@ CREATE TABLE office
 (
 	officeId CHAR(1) NOT NULL,
 	officeName NVARCHAR(50) NULL,
+	officeEmail VARCHAR(100) NULL,
 	PRIMARY KEY (officeId),
 	UNIQUE UQ_office_officeId(officeId)
 ) ENGINE=INNODB;
@@ -155,6 +156,7 @@ CREATE TABLE serviceCenter
 (
 	serviceCenterId CHAR(1) NOT NULL,
 	serviceCenter VARCHAR(100) NOT NULL,
+	serviceCenterEmail VARCHAR(100) NULL,
 	PRIMARY KEY (serviceCenterId),
 	UNIQUE UQ_serviceCenter_serviceCenterId(serviceCenterId)
 ) ENGINE=INNODB;

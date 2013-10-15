@@ -126,7 +126,7 @@ public class osDetail extends HttpServlet {
 		List<EmployeeDTO> list = new ArrayList<EmployeeDTO>();
 		try{
 			BlackstarDataAccess da = new BlackstarDataAccess();
-			ResultSet rs = da.executeQuery("CALL GetDomainEmployess()");
+			ResultSet rs = da.executeQuery("CALL GetDomainEmployees()");
 			
 			while(rs.next()){
 				EmployeeDTO emp = new EmployeeDTO();

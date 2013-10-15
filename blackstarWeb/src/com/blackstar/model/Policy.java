@@ -48,11 +48,11 @@ public class Policy implements java.io.Serializable {
 	private Date startDate;
 	private Date endDate;
 	private Integer visitsPerYear;
-	private Byte responseTimeHr;
+	private Integer responseTimeHr;
 	private Short solutionTimeHr;
 	private String penalty;
 	private String service;
-	private byte includesParts;
+	private boolean includesParts;
 	private String exceptionParts;
 	private Character serviceCenterId;
 	private String observations;
@@ -66,7 +66,7 @@ public class Policy implements java.io.Serializable {
 	public Policy() {
 	}
 
-	public Policy(char officeId, char policyTypeId, byte includesParts) {
+	public Policy(char officeId, char policyTypeId, boolean includesParts) {
 		this.officeId = officeId;
 		this.policyTypeId = policyTypeId;
 		this.includesParts = includesParts;
@@ -77,9 +77,9 @@ public class Policy implements java.io.Serializable {
 			Character equipmentTypeId, String brand, String model,
 			String serialNumber, String capacity, String equipmentAddress,
 			String equipmentLocation, String contactName , String contactPhone, String contactEmail, Date startDate,
-			Date endDate, Integer visitsPerYear, Byte responseTimeHr,
+			Date endDate, Integer visitsPerYear, Integer responseTimeHr,
 			Short solutionTimeHr, String penalty, String service,
-			byte includesParts, String exceptionParts,
+			boolean includesParts, String exceptionParts,
 			Character serviceCenterId, String observations, Date created,
 			String createdBy, String crratedByUsr, Date modified,
 			String modifiedBy, String modifiedByUsr) {
@@ -314,11 +314,11 @@ public class Policy implements java.io.Serializable {
 	}
 
 	@Column(name = "responseTimeHR")
-	public Byte getResponseTimeHR() {
+	public Integer getResponseTimeHR() {
 		return this.responseTimeHr;
 	}
 
-	public void setResponseTimeHR(Byte responseTimeHr) {
+	public void setResponseTimeHR(Integer responseTimeHr) {
 		this.responseTimeHr = responseTimeHr;
 	}
 
@@ -350,11 +350,11 @@ public class Policy implements java.io.Serializable {
 	}
 
 	@Column(name = "includesParts", nullable = false)
-	public byte getIncludesParts() {
+	public boolean getIncludesParts() {
 		return this.includesParts;
 	}
 
-	public void setIncludesParts(byte includesParts) {
+	public void setIncludesParts(boolean includesParts) {
 		this.includesParts = includesParts;
 	}
 

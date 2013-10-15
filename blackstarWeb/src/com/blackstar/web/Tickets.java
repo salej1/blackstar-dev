@@ -15,6 +15,7 @@ import com.blackstar.db.BlackstarDataAccess;
 import com.blackstar.interfaces.IUserService;
 import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
+import com.blackstar.model.TicketController;
 import com.blackstar.services.UserServiceFactory;
 
 /**
@@ -64,20 +65,20 @@ public class Tickets extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
 		try {
-			BlackstarDataAccess da = new BlackstarDataAccess();
+			String ticket = request.getParameter("ticket");
+			String employee = request.getParameter("employee");
+			int ticketId = Integer.parseInt(ticket);
+			String who = "portal-servicios";
 			
-			String ticket = request.getParameter("ticketId");
-			String employee = request.getParameter("employee");		
-			
-			da.executeQuery(String.format("CALL AssignTicket('%s', '%s', '%s', '%s')", ticket, employee, "sergio.aga", "Dashboard"));
-			
-			da.closeConnection();
-			
-		} catch (Exception e) {
+			TicketController.AssignTicket(ticketId, employee, who);
+
+		} catch (NumberFormatException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.Log(LogLevel.ERROR, e);
+		}
+		finally{
+			response.sendRedirect("/tickets");
 		}
 	}
 }

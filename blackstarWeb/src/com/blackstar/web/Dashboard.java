@@ -13,9 +13,13 @@ import org.json.JSONArray;
 
 import com.blackstar.common.ResultSetConverter;
 import com.blackstar.db.BlackstarDataAccess;
+import com.blackstar.db.DAOFactory;
+import com.blackstar.db.dao.interfaces.TicketDAO;
+import com.blackstar.interfaces.IEmailService;
 import com.blackstar.interfaces.IUserService;
 import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
+import com.blackstar.model.*;
 import com.blackstar.services.*;
 
 /**
@@ -90,38 +94,21 @@ public class Dashboard extends HttpServlet {
 	 *      response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		JSONArray jsServiceOrdersToReview = new JSONArray();
-		JSONArray jsServiceOrdersPending = new JSONArray();
-		JSONArray jsticketsToAssign = new JSONArray();
-
-		ResultSet rsServiceOrdersToReview;
-		ResultSet rsServiceOrdersPending;
-		ResultSet rsTicketsToAssign;
-		BlackstarDataAccess da = new BlackstarDataAccess();
 		
 		try {
-			String ticket = request.getParameter("ticketId");
-			String employee = request.getParameter("employee");		
+			String ticket = request.getParameter("ticket");
+			String employee = request.getParameter("employee");
+			int ticketId = Integer.parseInt(ticket);
+			String who = "portal-servicios";
 			
-			da.executeQuery(String.format("CALL AssignTicket('%s', '%s', '%s', '%s')", ticket, employee, "sergio.aga", "Dashboard"));
-			
-			rsTicketsToAssign = da.executeQuery("CALL GetUnassignedTickets();");
-			jsticketsToAssign = ResultSetConverter.convertResultSetToJSONArray(rsTicketsToAssign);
+			TicketController.AssignTicket(ticketId, employee, who);
 
-			response.getWriter().print(jsticketsToAssign);
-			request.setAttribute("serviceOrdersToReviewDashboard", jsServiceOrdersToReview.toString());
-			request.setAttribute("serviceOrdersPendingDashboard", jsServiceOrdersPending.toString());
-			
-			da.closeConnection();
-			
-		} catch (Exception ex) {
+		} catch (NumberFormatException e) {
 			// TODO Auto-generated catch block
-			Logger.Log(LogLevel.FATAL, ex);
+			Logger.Log(LogLevel.ERROR, e);
 		}
 		finally{
-			da.closeConnection();
 			response.sendRedirect("/dashboard");
 		}
 	}
-
 }
