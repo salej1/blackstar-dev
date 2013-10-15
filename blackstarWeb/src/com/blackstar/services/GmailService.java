@@ -39,10 +39,16 @@ public class GmailService implements IEmailService{
 				InternetAddress.parse(to));
 			message.setSubject(subject);
 			message.setText(body);
- 
+			
 			Transport.send(message);
  
-		} catch (MessagingException e) {
+		} 
+		catch (MessagingException e) 
+		{
+			throw new RuntimeException(e);
+		}
+		catch (Exception e) 
+		{
 			throw new RuntimeException(e);
 		}
 	}

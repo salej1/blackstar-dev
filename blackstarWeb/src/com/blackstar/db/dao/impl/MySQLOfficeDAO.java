@@ -64,7 +64,7 @@ public class MySQLOfficeDAO implements OfficeDAO, Serializable {
 		try {
 			Connection conn = MySQLDAOFactory.createConnection();
 			PreparedStatement ps = conn.prepareStatement("Select * from office where officeId = ?");
-			ps.setString(1, new char[]{id}.toString());
+			ps.setString(1, Character.toString(id));
 			ResultSet rs = ps.executeQuery();
 			
 			while(rs.next()) {

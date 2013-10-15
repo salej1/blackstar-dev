@@ -64,7 +64,7 @@ public class MySQLEquipmentTypeDAO implements EquipmentTypeDAO, Serializable {
 		try {
 			Connection conn = MySQLDAOFactory.createConnection();
 			PreparedStatement ps = conn.prepareStatement("Select * from equipmenttype where equipmenttypeId = ?");
-			ps.setString(1, new char[]{id}.toString());
+			ps.setString(1, Character.toString(id));
 			ResultSet rs = ps.executeQuery();
 			
 			while(rs.next()) {
