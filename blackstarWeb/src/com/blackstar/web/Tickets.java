@@ -55,7 +55,7 @@ public class Tickets extends HttpServlet {
 		}
 		catch (Exception ex)
 		{
-			 Logger.Log(LogLevel.FATAL, ex);
+			 Logger.Log(LogLevel.FATAL, Thread.currentThread().getStackTrace()[1].toString(), ex);
 		}
 		
 		request.getRequestDispatcher("/tickets.jsp").forward(request, response);
@@ -75,7 +75,7 @@ public class Tickets extends HttpServlet {
 
 		} catch (NumberFormatException e) {
 			// TODO Auto-generated catch block
-			Logger.Log(LogLevel.ERROR, e);
+			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
 		}
 		finally{
 			response.sendRedirect("/tickets");

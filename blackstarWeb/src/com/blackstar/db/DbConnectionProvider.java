@@ -19,20 +19,20 @@ public class DbConnectionProvider {
 			    SystemProperty.Environment.Value.Production) {
 			  // Load the class that provides the new "jdbc:google:mysql://" prefix.
 			  Class.forName("com.mysql.jdbc.GoogleDriver");
-			  url = "jdbc:google:rdbms://salej1-blackstar-dev:salej1-blackstar-dev/blackstarDb";
+			  url = String.format("jdbc:google:rdbms://salej1-blackstar-dev:salej1-blackstar-dev/%s", db);
 			  conn =  (Connection) DriverManager.getConnection(url);
 			} else {
 			  // Local MySQL instance to use during development.
 			  Class.forName("com.mysql.jdbc.Driver");
-			  url = "jdbc:mysql://localhost:3306/blackstarDb";
+			  url = String.format("jdbc:mysql://localhost:3306/%s", db);
 			  conn =  (Connection) DriverManager.getConnection(url, "root", "");
 			}
 		}
 		catch(SQLException ex){
-			Logger.Log(LogLevel.ERROR, ex);
+			Logger.Log(LogLevel.CRITICAL, Thread.currentThread().getStackTrace()[0].toString(), ex);
 		}
 		catch(ClassNotFoundException ex2){
-			Logger.Log(LogLevel.FATAL, ex2);
+			Logger.Log(LogLevel.CRITICAL, Thread.currentThread().getStackTrace()[0].toString(), ex2);
 		}
 		
 		return conn;

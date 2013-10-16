@@ -5,17 +5,17 @@ import java.util.logging.Level;
 import com.blackstar.db.ManageDataAccess;
 
 public class Logger {
-	public static void Log(LogLevel level, Throwable ex){
+	public static void Log(LogLevel level, String where, Throwable ex){
 		if(ex.getCause() != null){
-			Log(level, ex.getCause());
+			Log(level, where, ex.getCause());
 		}
 		else{
-			Log(level, ex.getClass().toString(), ex.toString(), ex.getStackTrace()[0].toString());
+			Log(level, where, ex.toString(), ex.getStackTrace()[1].toString());
 		}
 	}
 	
-	public static void Log(LogLevel level, String who, String message, String stackTrace){
-		WriteToLog(level, who, message, stackTrace);
+	public static void Log(LogLevel level, String where, String message, String stackTrace){
+		WriteToLog(level, where, message, stackTrace);
 	}
 	
 	private static void WriteToLog(LogLevel level, String who, String message,

@@ -52,8 +52,7 @@ public class MySQLPolicyDAO implements PolicyDAO, Serializable {
 						
 			}
 		} catch (ClassNotFoundException | SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
 		}
 		// TODO Auto-generated method stub
 		return lstPolicy;
@@ -95,8 +94,7 @@ public class MySQLPolicyDAO implements PolicyDAO, Serializable {
 						
 			}
 		} catch (ClassNotFoundException | SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
 		}
 		// TODO Auto-generated method stub
 		return policy;
@@ -116,14 +114,11 @@ public class MySQLPolicyDAO implements PolicyDAO, Serializable {
 			conn.close();
 			
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			Logger.Log(com.blackstar.logging.LogLevel.ERROR, e);
+			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
 		}
 		
 		return retVal;

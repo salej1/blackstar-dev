@@ -30,6 +30,14 @@
 -- 								blackstarDb.GetCustomerList
 -- 								blackstarDb.GetServicesSchedule sustituye a GetServicesScheduleStatus
 -- -----------------------------------------------------------------------------
+-- 5    14/10/2013	SAG		Se Integra:
+-- 								blackstarDb.GetFollowUpByTicket
+-- 								blackstarDb.GetBigTicketTable
+-- 								blackstarDb.GetTickets se sustituye por GetTicketsByStatus
+-- 								blackstarDb.GetTickets
+-- 								blackstarDb.GetFollowUpByServiceOrder
+-- 								blackstarDb.UpsertScheduledService
+-- -----------------------------------------------------------------------------
 
 
 
@@ -37,6 +45,135 @@ use blackstarDb;
 
 
 DELIMITER $$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.UpsertScheduledService
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.UpsertScheduledService$$
+CREATE PROCEDURE blackstarDb.UpsertScheduledService(pPolicyId INTEGER, pScheduledDate DATETIME, engineer VARCHAR(100), pCreatedByUsr VARCHAR(100))
+BEGIN
+
+	INSERT INTO serviceOrder(
+		policyId,
+		serviceDate,
+		responsible,
+		asignee,
+		serviceStatusId,
+		created,
+		createdBy,
+		createdByUsr
+	)
+	SELECT
+		pPolicyId,
+		pScheduledDate,
+		engineer,
+		engineer,
+		'P',
+		CURRENT_DATE(),
+		'UpsertScheduledService',
+		pCreatedByUsr;
+		
+END$$
+
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetFollowUpByServiceOrder
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetFollowUpByServiceOrder$$
+CREATE PROCEDURE blackstarDb.GetFollowUpByServiceOrder(pServiceOrderId INTEGER)
+BEGIN
+
+	SELECT 
+		created AS created,
+		u2.name AS craetedBy,
+		u.name AS asignee,
+		followup AS followUp,
+		fs.followUpStatus AS status
+	FROM followUp f
+		INNER JOIN blackstarUser u ON f.asignee = u.email
+		INNER JOIN blackstarUser u2 ON f.craetedBy = u2.email
+	WHERE serviceOrderId = pServiceOrderId
+	ORDER BY created;
+	
+END$$
+
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetBigTicketTable
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetBigTicketTable$$
+CREATE PROCEDURE blackstarDb.GetBigTicketTable(pTicketId INTEGER)
+BEGIN
+
+	SELECT 
+		t.ticketId AS DT_RowId,
+		t.reated AS created,
+		t.createdBy AS createdBy,
+		p.contactName AS contactName,
+		p.contactPhone AS contactPhone,
+		p.contactEmail AS contactEmail,
+		p.serialNumber AS serialNumber,
+		p.observations AS observations,
+		p.customer AS customer,
+		et.equipmentType AS equipmentType,
+		p.brand AS brand,
+		p.model AS model,
+		p.capacity AS capacity,
+		p.responseTimeHr AS responseTimeHr,
+		p.solutionTimeHr AS solutionTimeHr,
+		p.equipmentAddress AS equipmentAddress,
+		p.equipmentLocation AS equipmentLocation,
+		p.includesParts AS includesParts,
+		p.exceptionParts AS exceptionParts,
+		sc.serviceCenter AS serviceCenter,
+		o.office AS office,
+		p.project AS project,
+		t.ticketNumber AS ticketNumber,
+		t.phoneResolved AS phoneResolved,
+		t.arrival AS arrival,
+		t.responseTimeDeviationHr AS responseTimeDeviationHr,
+		'FollowUp' AS followUp,
+		t.closed AS closed,
+		IFNULL(so.serviceOrderNumber, '') AS serviceOrderNumber,
+		t.employee AS employee,
+		t.solutionTime AS solutionTime,
+		t.solutionTimeDeviationHr AS solutionTimeDeviationHr,
+		ts.ticketStatus AS ticketStatus,
+		'Cerrar' AS Cerrar
+	FROM ticket t
+		INNER JOIN policy p ON p.policyId = t.policyId	
+		INNER JOIN ticketStatus ts on ts.ticketStatusId = t.ticketStatusId
+		INNER JOIN office o ON p.officeId = o.officeId
+		INNER JOIN serviceCenter sc ON sc.serviceCenterId = p.serviceCenterId
+		INNER JOIN equipmentType et ON et.equipmentTypeId = p.equipmentTypeId
+		LEFT OUTER JOIN serviceOrder so ON so.serviceOrderId = t.serviceOrderId
+	WHERE ticketId = pTicketId
+	ORDER BY created;
+	
+END$$
+
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetFollowUpByTicket
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetFollowUpByTicket$$
+CREATE PROCEDURE blackstarDb.GetFollowUpByTicket(pTicketId INTEGER)
+BEGIN
+
+	SELECT 
+		created AS created,
+		u2.name AS craetedBy,
+		u.name AS asignee,
+		followup AS followUp,
+		fs.followUpStatus AS status
+	FROM followUp f
+		INNER JOIN blackstarUser u ON f.asignee = u.email
+		INNER JOIN blackstarUser u2 ON f.craetedBy = u2.email
+	WHERE ticketId = pTicketId
+	ORDER BY created;
+	
+END$$
+
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetServicesByPolicyId
@@ -258,14 +395,15 @@ BEGIN
 END$$
 
 -- -----------------------------------------------------------------------------
-	-- blackstarDb.GetTickets
+	-- blackstarDb.GetTicketsByStatus
 -- -----------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS blackstarDb.GetTickets$$
-CREATE PROCEDURE blackstarDb.GetTickets (IN status VARCHAR(20))
+DROP PROCEDURE IF EXISTS blackstarDb.GetTicketsByStatus$$
+CREATE PROCEDURE blackstarDb.GetTicketsByStatus (IN status VARCHAR(20))
 BEGIN
 
 	SELECT 
-		tk.ticketId AS ticketId,
+		tk.ticketId AS DT_RowId,
+		tk.ticketNumber AS ticketNumber,
 		tk.created AS created,
 		p.contactName AS contactName,
 		p.serialNumber AS serialNumber,

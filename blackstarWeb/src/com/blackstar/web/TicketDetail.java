@@ -151,7 +151,7 @@ public class TicketDetail extends HttpServlet{
 			da.closeConnection();
 		}
 		catch(Exception ex){
-			Logger.Log(LogLevel.ERROR, ex);
+			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), ex);
 		}
 		return list;
 	}

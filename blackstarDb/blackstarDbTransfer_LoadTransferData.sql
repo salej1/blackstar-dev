@@ -137,7 +137,7 @@
 		INNER JOIN blackstarDbTransfer.ticket tt ON t.ticketNumber = tt.ticketNumber
 		INNER JOIN blackstarDb.serviceOrder so ON tt.serviceOrderNumber = so.serviceOrderNumber	
 	SET
-		t.serviceId = so.serviceOrderId;	
+		t.serviceOrderId = so.serviceOrderId;	
 	
 	-- ACTUALIZACION DEL ESTADO DE LOS TICKETS
 	use blackstarDb;

@@ -3,12 +3,11 @@ package com.blackstar.interfaces;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletResponse;
+
 public interface IUserService {
-	String getCurrentUserId();
-
-	String getCurrentUserName();
-
-	List<String> getCurrentUserGroups();
-	
+	String getCurrentUserId(HttpServletResponse resp);
+	String getCurrentUserName(HttpServletResponse resp);
+	List<String> getCurrentUserGroups(HttpServletResponse resp);
 	Map<String, String> getEmployeeList();
 }

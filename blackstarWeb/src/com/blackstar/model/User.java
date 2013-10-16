@@ -1,6 +1,7 @@
 package com.blackstar.model;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import com.blackstar.logging.*;
@@ -47,5 +48,20 @@ public class User implements java.io.Serializable {
 		}
 		
 		return name + ": " + mainGroup;
+	}
+
+	public boolean belongsToGroup(String queryGroup) {
+		Iterator<String> git = userGroups.iterator();
+		boolean retval = false;
+		
+		while(git.hasNext()){
+			String groupName = git.next().toString();
+			if(groupName.equals(queryGroup)){
+				retval = true;
+				break;
+			}
+		}
+		
+		return retval;
 	}
 }

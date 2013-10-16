@@ -97,7 +97,7 @@ public class osDetail extends HttpServlet {
 		}
 		else
 		{	
-			Logger.Log(LogLevel.EMERGENCY, "osDetail.java", "No hay Orden de Servicio con el Id " + idOS, "" );
+			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), "No hay Orden de Servicio con el Id " + idOS, "" );
 			request.getRequestDispatcher("/osDetail.jsp").forward(request, response);
 		}
 	}
@@ -138,7 +138,7 @@ public class osDetail extends HttpServlet {
 			da.closeConnection();
 		}
 		catch(Exception ex){
-			Logger.Log(LogLevel.ERROR, ex);
+			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), ex);
 		}
 		return list;
 	}

@@ -20,7 +20,7 @@ public class TicketController {
 			SendAssignationEmail(ticketId, employee, userName);
 		} catch (Exception ex) {
 			// TODO Auto-generated catch block
-			Logger.Log(LogLevel.FATAL, ex);
+			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), ex);
 		}
 		finally{
 			da.closeConnection();

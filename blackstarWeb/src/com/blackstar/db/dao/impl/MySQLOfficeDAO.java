@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.blackstar.db.dao.interfaces.OfficeDAO;
+import com.blackstar.logging.LogLevel;
+import com.blackstar.logging.Logger;
 import com.blackstar.model.Office;
 
 public class MySQLOfficeDAO implements OfficeDAO, Serializable {
@@ -39,8 +41,7 @@ public class MySQLOfficeDAO implements OfficeDAO, Serializable {
 						
 			}
 		} catch (ClassNotFoundException | SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.Log(LogLevel.CRITICAL, Thread.currentThread().getStackTrace()[1].toString(), e);
 		}
 		// TODO Auto-generated method stub
 		return lstOffice;
@@ -72,8 +73,7 @@ public class MySQLOfficeDAO implements OfficeDAO, Serializable {
 						
 			}
 		} catch (ClassNotFoundException | SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.Log(LogLevel.CRITICAL, Thread.currentThread().getStackTrace()[1].toString(), e);
 		}
 		// TODO Auto-generated method stub
 		return office;

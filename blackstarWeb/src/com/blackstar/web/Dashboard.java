@@ -74,7 +74,7 @@ public class Dashboard extends HttpServlet {
 		
 		catch (Exception ex) {
 			
-			Logger.Log(LogLevel.ERROR, ex);
+			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), ex);
 			if (jsticketsToAssign.length() == 0) {
 				request.setAttribute("ticketsToAssignDashboard", "Error al recuperar tickets por asignar");
 			}
@@ -105,7 +105,7 @@ public class Dashboard extends HttpServlet {
 
 		} catch (NumberFormatException e) {
 			// TODO Auto-generated catch block
-			Logger.Log(LogLevel.ERROR, e);
+			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
 		}
 		finally{
 			response.sendRedirect("/dashboard");

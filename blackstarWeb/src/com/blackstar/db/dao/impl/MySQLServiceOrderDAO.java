@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.blackstar.db.dao.interfaces.ServiceOrderDAO;
+import com.blackstar.logging.LogLevel;
+import com.blackstar.logging.Logger;
 import com.blackstar.model.Serviceorder;
 
 public class MySQLServiceOrderDAO implements ServiceOrderDAO, Serializable {
@@ -45,8 +47,7 @@ public class MySQLServiceOrderDAO implements ServiceOrderDAO, Serializable {
 						
 			}
 		} catch (ClassNotFoundException | SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
 		}
 		// TODO Auto-generated method stub
 		return lstServiceOrder;
@@ -72,8 +73,7 @@ public class MySQLServiceOrderDAO implements ServiceOrderDAO, Serializable {
 						
 			}
 		} catch (ClassNotFoundException | SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
 		}
 		// TODO Auto-generated method stub
 		return serviceOrder;

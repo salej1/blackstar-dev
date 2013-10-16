@@ -11,12 +11,11 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-import com.blackstar.interfaces.IUserService;
 import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
 import com.blackstar.model.User;
-import com.blackstar.services.UserServiceFactory;
 
 /**
  * Servlet Filter implementation class UserFilter
@@ -44,19 +43,35 @@ public class UserFilter implements Filter {
 		// TODO Auto-generated method stub
 		// place your code here
 		HttpServletRequest req = (HttpServletRequest) request;
+		HttpServletResponse resp = (HttpServletResponse) response;
 		User usr = (User)req.getSession().getAttribute("user");
 		
 		if(usr == null){
 			try{
+				// create the user
+				com.google.appengine.api.users.UserService srv = com.google.appengine.api.users.UserServiceFactory.getUserService();
+				com.google.appengine.api.users.User gUser = srv.getCurrentUser();
 				
-				request.getRequestDispatcher("/login").forward(request, response);
+				if(gUser == null){
+					req.getRequestDispatcher(srv.createLoginURL(req.getRequestURI())).forward(req, resp);;
+				}
+				else{
+					String id = gUser.getEmail();
+					String name = gUser.getNickname();
+					User myUser = new User(id, name);
+					req.getSession().setAttribute("user", myUser);
+					
+					// pass the request along the filter chain
+					chain.doFilter(request, response);
+				}
 			}
 			catch(Exception e){
-				Logger.Log(LogLevel.CRITICAL, e);
-			}
+				Logger.Log(LogLevel.CRITICAL, Thread.currentThread().getStackTrace()[1].toString(), e);
+			}	
 		}
-		// pass the request along the filter chain
-		chain.doFilter(request, response);
+		else{
+			chain.doFilter(request, response);
+		}
 	}
 
 	/**

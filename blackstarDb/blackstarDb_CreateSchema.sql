@@ -62,7 +62,6 @@ CREATE TABLE equipmentType
 	UNIQUE UQ_equipmentType_equipmentTypeId(equipmentTypeId)
 ) ENGINE=INNODB;
 
-
 CREATE TABLE followUp
 (
 	followUpId INTEGER NOT NULL AUTO_INCREMENT,
@@ -78,7 +77,7 @@ CREATE TABLE followUp
 	modifiedByUsr NVARCHAR(50) NULL,
 	PRIMARY KEY (followUpId),
 	UNIQUE UQ_followUp_followUpId(followUpId),
-	KEY (serviceOrderId),
+	KEY (ticketId),
 	KEY (serviceOrderId)
 ) ENGINE=INNODB;
 
@@ -181,7 +180,6 @@ CREATE TABLE serviceOrder
 	coordinator NVARCHAR(100) NULL,
 	asignee NVARCHAR(50) NULL,
 	hasErrors TINYINT NULL,
-	effectiveDate DATETIME,
 	created DATETIME NULL,
 	createdBy NVARCHAR(50) NULL,
 	createdByUsr NVARCHAR(50) NULL,
@@ -200,6 +198,15 @@ CREATE TABLE serviceOrder
 ) ENGINE=INNODB;
 
 
+CREATE TABLE serviceOrderAdditionalEngineer(
+	serviceOrderAdditionalEngineerId INTEGER NOT NULL AUTO_INCREMENT,
+	serviceOrderId INTEGER,
+	additionalEngineer VARCHAR(100),
+	PRIMARY KEY(serviceOrderAdditionalEngineerId),
+	KEY(serviceOrderId)
+) ENGINE=INNODB;
+
+
 CREATE TABLE serviceType
 (
 	serviceTypeId CHAR(1) NOT NULL,
@@ -213,7 +220,7 @@ CREATE TABLE ticket
 (
 	ticketId INTEGER ZEROFILL NOT NULL AUTO_INCREMENT,
 	policyId INTEGER NULL,
-	serviceId INTEGER NULL,
+	serviceOrderId INTEGER NULL,
 	ticketNumber  VARCHAR(10) NOT NULL ,
 	user NVARCHAR(50) NULL,
 	observations TEXT NULL,
@@ -237,7 +244,7 @@ CREATE TABLE ticket
 	UNIQUE UQ_ticket_ticketId(ticketId),
 	KEY (policyId),
 	KEY (ticketStatusId),
-	KEY (serviceId),
+	KEY (serviceOrderId),
 	KEY (ticketStatusId)
 ) ENGINE=INNODB;
 
@@ -287,14 +294,17 @@ ALTER TABLE ticket ADD CONSTRAINT FK_ticket_policy
 ALTER TABLE ticket ADD CONSTRAINT FK_ticket_ticketStatus 
 	FOREIGN KEY (ticketStatusId) REFERENCES ticketStatus (ticketStatusId);
 	
+ALTER TABLE ticket ADD CONSTRAINT FK_ticket_serviceOrder
+	FOREIGN KEY (serviceOrderId) REFERENCES serviceOrder (serviceOrderId);
+	
 ALTER TABLE serviceOrder ADD CONSTRAINT FK_serviceOrder_serviceStatus 
 	FOREIGN KEY (serviceStatusId) REFERENCES serviceStatus (serviceStatusId);
 
-ALTER TABLE blackstarUser_userGroup ADD CONSTRAINT FK_blackstarUser_userGroup_blackstarUserId
+ALTER TABLE blackstarUser_userGroup ADD CONSTRAINT FK_blackstarUser_userGroup
 	FOREIGN KEY (blackstarUserId) REFERENCES blackstarUser (blackstarUserId);
 	
-ALTER TABLE blackstarUser_userGroup ADD CONSTRAINT FK_blackstarUser_userGroup_userGroupId
-	FOREIGN KEY (userGroupId) REFERENCES userGroup (userGroupId);
+ALTER TABLE serviceOrderAdditionalEngineer ADD CONSTRAINT FK_serviceOrderAdditionalEngineer_serviceOrder
+	FOREIGN KEY (serviceOrderId) REFERENCES serviceOrder (serviceOrderId);
 -- -----------------------------------------------------------------------------
 
 -- FIN - Seccion autogenerada por EA

@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.blackstar.db.dao.interfaces.TicketDAO;
+import com.blackstar.logging.LogLevel;
+import com.blackstar.logging.Logger;
 import com.blackstar.model.Ticket;
 
 public class MySQLTicketDAO implements TicketDAO, Serializable {
@@ -34,7 +36,7 @@ public class MySQLTicketDAO implements TicketDAO, Serializable {
 			ResultSet rs = ps.executeQuery();
 			
 			while(rs.next()) {
-				ticket = new Ticket(rs.getInt("ticketId"),rs.getInt("policyId"), rs.getShort("serviceId"), rs.getString("user"),
+				ticket = new Ticket(rs.getInt("ticketId"),rs.getInt("policyId"), rs.getShort("serviceOrderId"), rs.getString("user"),
 						rs.getString("observations"), new Character(rs.getString("ticketStatusId").charAt(0)),
 						rs.getShort("realResponseTime"), rs.getDate("arrival"), rs.getString("employee"),
 						rs.getString("asignee"), rs.getDate("closed"), rs.getInt("solutionTime"),
@@ -45,8 +47,7 @@ public class MySQLTicketDAO implements TicketDAO, Serializable {
 						
 			}
 		} catch (ClassNotFoundException | SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
 		}
 		// TODO Auto-generated method stub
 		return lstTickets;
@@ -74,7 +75,7 @@ public class MySQLTicketDAO implements TicketDAO, Serializable {
 			ResultSet rs = ps.executeQuery();
 			
 			while(rs.next()) {
-				ticket = new Ticket(rs.getInt("ticketId"),rs.getInt("policyId"), rs.getShort("serviceId"), rs.getString("user"),
+				ticket = new Ticket(rs.getInt("ticketId"),rs.getInt("policyId"), rs.getShort("serviceOrderId"), rs.getString("user"),
 						rs.getString("observations"), new Character(rs.getString("ticketStatusId").charAt(0)),
 						rs.getShort("realResponseTime"), rs.getDate("arrival"), rs.getString("employee"),
 						rs.getString("asignee"), rs.getDate("closed"), rs.getInt("solutionTime"),
@@ -84,8 +85,7 @@ public class MySQLTicketDAO implements TicketDAO, Serializable {
 						
 			}
 		} catch (ClassNotFoundException | SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
 		}
 		// TODO Auto-generated method stub
 		return ticket;
@@ -109,8 +109,7 @@ public class MySQLTicketDAO implements TicketDAO, Serializable {
 						
 			}
 		} catch (ClassNotFoundException | SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
 		}
 		// TODO Auto-generated method stub
 		return ticket;

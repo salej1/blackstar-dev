@@ -6,6 +6,33 @@
 <html>
 <c:set var="pageSection" scope="request" value="ordenesServicio" />
 <c:import url="header.jsp"></c:import>
+<script type="text/javascript">
+
+	function postScheduledService(){
+		
+	}
+	
+	$(function(){
+		 $("#createServiceDlg").dialog({
+				autoOpen: false,
+				height: 200,
+				width: 260,
+				modal: true,
+				buttons: {
+					"Aceptar": function() {
+						var employee = $("#employeeSelect option:selected").val();
+
+						postScheduledService(assignedTicket, employee);
+						
+						$( this ).dialog( "close" );
+					},
+					
+					"Cancelar": function() {
+					$( this ).dialog( "close" );
+				}}
+		});		
+	});
+</script>
 <body>
 	<!--   CONTENT   -->
 	<div id="content" class="container_16 clearfix">
@@ -171,7 +198,12 @@
 		<div class="grid_8">					
 			<div class="box">
 				<h2>Agendar servicio</h2>
-
+				<script type="text/javascript">
+						var engineers = [
+							<c:forEach var="engineer" items="${serviceEngineers}">
+								<option value = "engineer.key">${engineer.value}</option>
+							</c:forEach>
+				</script>
 				<table>
 					<tbody>
 						<tr>
@@ -195,26 +227,15 @@
 							<td>Equipo: </td>
 							<td>
 								<select id = "optEquipmentCollection"style="width:300px;">
-									<option></option>
-									<option>UPS GE T2918 - 145649879</option>
-									<option>AA MAXTORM 12 - DFE45423DF</option>
+
 								</select>
 							</td>
 						</tr>
 						<tr>
 							<td>Ing. de servicio: </td>
 							<td>
-								<select style="width:300px;">
-									<option></option>
-									<option>Alberto Lopez Gomez</option>
-									<option>Alejandro Monroy</option>
-									<option>Armando Perez Pinto</option>
-									<option>Gonzalo Ramirez</option>
-									<option>Jose Alberto Jonguitud Gallardo</option>
-									<option>Martin Vazquez</option>
-									<option>Reynaldo Garcia</option>
-									<option>Sergio  Gallegos</option>
-								</select>
+							<input type="text"/>
+
 							</td>
 						</tr>
 						<tr>

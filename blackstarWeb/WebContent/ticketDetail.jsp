@@ -18,7 +18,7 @@
 			$('#lbNoSerie').val('${policyt.serialNumber}');
 			$('#lbObservaciones').val('${policyt.observations}');
 			$('#lbCliente').val('${policyt.customer}');
-			$('#lbEquipo').val('${EquipmenttypeT.Equipmenttype}');
+			$('#lbEquipo').val('${EquipmenttypeT.equipmentType}');
 			$('#lbMarca').val('${policyt.brand}');
 			$('#lbModelo').val('${policyt.model}');
 			$('#lbCAP').val('${policyt.capacity}');
@@ -28,7 +28,7 @@
 			$('#lbUbicacion').val('${policyt.equipmentLocation}');
 			$('#lbIncluyePartes').val('${policyt.includesParts}');
 			$('#lbExcpcionPartes').val('${policyt.exceptionParts}');
-			$('#lbCentroServicio').val('${ServicecenterT.Servicecenter}');
+			$('#lbCentroServicio').val('${ServicecenterT.serviceCenter}');
 			$('#lbOficina').val('${officeT.officeName}');
 			$('#lbProyecto').val('${policyt.project}');
 			$('#lbNoTicket').val('${ticketF.ticketNumber}');
@@ -98,7 +98,7 @@
 		function addSeguimiento(){
 			var d = new Date(); 
 			$("#seguimientoCapture").show();	
-			$("#seguimientoStamp").html(d.format('dd/MM/yyyy h:mm:ss') + '${user.name}:');
+			$("#seguimientoStamp").html(d.format('dd/MM/yyyy h:mm:ss') + ' ${user.userName}:');
 			$("#seguimientoText").val('');
 		}
 		
@@ -122,10 +122,7 @@
 		function cancelAddSeguimiento(){
 			$("#seguimientoCapture").hide();
 		}
-		
-		function fillSeguimiento(){
-			$("#seguimientoText").val('Se encuentro equipo apagado y la carga  que tenía conectada a tomas de corriente. Se encuentran baterías descargadas, su voltaje unitario no llega a los 12 V, se requiere que las baterías tengan su voltaje de 12v y su carga para poder verificar si el modulo de potencia se encuentra funcionando. El swtich estatico se encuentra dañado');
-		}
+
 	</script>
 </head>
 <body>
@@ -148,7 +145,11 @@
 									<td>
 										<select id="selectStatus"  style="width:78%;">
 											<c:forEach var="employee" items="${employees}">
-														<option value="${employee.key}">${ employee.value }</option>
+												<option value="${employee.key}"
+												<c:if test="${ employee.key == ticketF.asignee }">
+													selected = "true"
+												</c:if>
+												>${ employee.value }</option>
 											</c:forEach>
 										</select>
 										<button class="searchButton" onclick="window.location = 'dashboard_coo.html'">Asignar ahora</button>
@@ -209,7 +210,7 @@
 													</c:forEach>
 												</select>
 												<p></p>
-												<textarea id="seguimientoText" rows="5" style="width:65%;" onclick="fillSeguimiento();"></textarea>
+												<textarea id="seguimientoText" rows="5" style="width:65%;"></textarea>
 												<button class="searchButton" onclick="applySeguimiento();">Agregar</button>
 												<button class="searchButton" onclick="cancelAddSeguimiento();">Cancelar</button>
 											</div>

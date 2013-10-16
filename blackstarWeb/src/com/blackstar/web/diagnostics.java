@@ -52,15 +52,15 @@ public class diagnostics extends HttpServlet {
 		out.println(resp);
 		
 		// User Id test
-		resp = testGetCurrentUserId();
+		resp = testGetCurrentUserId(response);
 		out.println(resp);
 
 		// User name test
-		resp = testGetCurrentUserName();
+		resp = testGetCurrentUserName(response);
 		out.println(resp);
 		
 		// User groups
-		resp = testGetCurrentUserGroups();
+		resp = testGetCurrentUserGroups(response);
 		out.println(resp);
 		
 		// Employee list
@@ -81,11 +81,11 @@ public class diagnostics extends HttpServlet {
 			return ex.getMessage();
 		}
 	}
-	public String testGetCurrentUserId() {
+	public String testGetCurrentUserId(HttpServletResponse response) {
 		try {
 			GoogleUserService target = new GoogleUserService();
 			
-			java.lang.String uid = target.getCurrentUserId();
+			java.lang.String uid = target.getCurrentUserId(response);
 
 			return "User Id: ".concat(uid);
 		} catch (Exception e) {
@@ -94,11 +94,11 @@ public class diagnostics extends HttpServlet {
 		}
 	}
 
-	public String testGetCurrentUserName() {
+	public String testGetCurrentUserName(HttpServletResponse response) {
 		try {
 			GoogleUserService target = new GoogleUserService();
 			
-			java.lang.String name = target.getCurrentUserName();
+			java.lang.String name = target.getCurrentUserName(response);
 			return "User Name: ".concat(name);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -106,13 +106,13 @@ public class diagnostics extends HttpServlet {
 		}
 	}
 
-	public String testGetCurrentUserGroups() {
+	public String testGetCurrentUserGroups(HttpServletResponse response) {
 		try {
 			String retGroups = "User Groups";
 			
 			GoogleUserService target = new GoogleUserService();
 			
-			List<String> groups = target.getCurrentUserGroups();
+			List<String> groups = target.getCurrentUserGroups(response);
 			
 			java.util.Iterator<String> it = groups.iterator();
 			

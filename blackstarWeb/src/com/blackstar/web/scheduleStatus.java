@@ -83,7 +83,7 @@ public class scheduleStatus extends HttpServlet {
 			da.closeConnection();
 		}
 		catch(Exception ex){
-			Logger.Log(LogLevel.ERROR, ex);
+			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), ex);
 		}
 		
 	}
@@ -138,7 +138,7 @@ public class scheduleStatus extends HttpServlet {
 			da.closeConnection();
 			
 		}catch(Exception ex){
-			Logger.Log(LogLevel.ERROR, ex);	
+			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), ex);	
 		}
 		// Leyendo los servicios programados de la BD
 		
@@ -155,7 +155,7 @@ public class scheduleStatus extends HttpServlet {
 				customers.add(rs.getString("customer"));
 			}
 		}catch(Exception ex){
-			Logger.Log(LogLevel.ERROR, ex);
+			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), ex);
 		}
 			return customers;
 	}

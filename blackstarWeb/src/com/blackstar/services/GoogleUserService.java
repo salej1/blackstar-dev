@@ -1,5 +1,6 @@
 package com.blackstar.services;
 
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -7,50 +8,62 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletResponse;
+
 import com.blackstar.db.BlackstarDataAccess;
 import com.blackstar.interfaces.IUserService;
 import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
 import com.google.appengine.api.users.User;
 import com.google.appengine.api.utils.SystemProperty;
-import com.google.apphosting.api.UserServicePb.UserService;
 
 public class GoogleUserService implements IUserService {
 	com.google.appengine.api.users.UserService srv = com.google.appengine.api.users.UserServiceFactory.getUserService();
 	
 	@Override
-	public String getCurrentUserId() {
-		String usrId = "sergio.aga@gmail.com";
-		if (SystemProperty.environment.value() ==
-			    SystemProperty.Environment.Value.Production) {
-			com.google.appengine.api.users.UserService srv = com.google.appengine.api.users.UserServiceFactory.getUserService();
-			User currUsr = srv.getCurrentUser();
-			usrId = currUsr.getEmail();
-		}
-
-		return usrId;
+	public String getCurrentUserId(HttpServletResponse resp) {
+        User user = srv.getCurrentUser();
+        String userId = null;
+        
+        if (user != null) {
+            userId = user.getEmail();
+        } else {
+            try {
+				resp.sendRedirect(srv.createLoginURL("/dashboard"));
+			} catch (IOException e) {
+				Logger.Log(LogLevel.CRITICAL, Thread.currentThread().getStackTrace()[0].toString(), e);
+			}
+        }
+        
+        return userId;
 	}
 
 	@Override
-	public String getCurrentUserName() {
-		String usrName = "sergio.aga";
-		if (SystemProperty.environment.value() ==
-			    SystemProperty.Environment.Value.Production) {
-			com.google.appengine.api.users.UserService srv = com.google.appengine.api.users.UserServiceFactory.getUserService();
-			User currUsr = srv.getCurrentUser();
-			usrName = currUsr.getEmail();
-		}
-		return usrName;
+	public String getCurrentUserName(HttpServletResponse resp) {
+		User user = srv.getCurrentUser();
+        String userName = null;
+        
+        if (user != null) {
+            userName = user.getNickname();
+        } else {
+            try {
+				resp.sendRedirect(srv.createLoginURL("/dashboard"));
+			} catch (IOException e) {
+				Logger.Log(LogLevel.CRITICAL, Thread.currentThread().getStackTrace()[0].toString(), e);
+			}
+        }
+        
+        return userName;
 	}
 	
 	@Override
-	public List<String> getCurrentUserGroups(){
+	public List<String> getCurrentUserGroups(HttpServletResponse resp){
 		// TODO Auto-generated method stub
 		List<String> groupList = new ArrayList<String>();
 		
 		try{
 			BlackstarDataAccess da = new BlackstarDataAccess();
-			String usrCommonId = getCurrentUserId();
+			String usrCommonId = getCurrentUserId(resp);
 			ResultSet groups = da.executeQuery("CALL GetUserData('" + usrCommonId + "');");
 						
 			while(groups.next()){
@@ -59,7 +72,7 @@ public class GoogleUserService implements IUserService {
 			
 			da.closeConnection();	
 		}catch(Exception se){
-			Logger.Log(LogLevel.ERROR, se);
+			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[0].toString(), se);
 		}
 		
 		return groupList;
@@ -77,7 +90,7 @@ public class GoogleUserService implements IUserService {
 				empList.put(employees.getString("email"), employees.getString("name"));
 			}
 		}catch(Exception ex){
-			Logger.Log(LogLevel.ERROR, ex);
+			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[0].toString(), ex);
 		}
 		
 		return empList;
