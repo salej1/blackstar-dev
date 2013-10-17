@@ -39,9 +39,6 @@
 
 		<!--   CONTENT COLUMN   -->
 		<div class="grid_16">
-<%-- 			<p>${user.FullDescriptor}</p> --%>
-		</div>
-		<div class="grid_16">
 			<div>
 				<div>
 					<img src="img/navigate-right.png" /><a

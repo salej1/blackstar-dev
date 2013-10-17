@@ -115,7 +115,7 @@
 											var content = "";
 											var buffer = "";
 											
-											for(int i = 0; i < rawData.length; i++){
+											for(var i = 0; i < rawData.length; i++){
 												d = new Date(rawData[i].created);
 												content = template.replace('TIMESTAMP', d.format('dd/MM/yyyy h:mm:ss'));
 												content = content.replace('FROM', rawData[i].createdBy);

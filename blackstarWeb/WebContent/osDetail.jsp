@@ -113,12 +113,7 @@
 <div id="content" class="container_16 clearfix">
 			
 <!--   CONTENT COLUMN   -->			
-				<div class="grid_16">	
-					<p>
-						
-					</p>
-				</div>
-				<div class="grid_15">					
+				<div class="grid_16">					
 					<div class="box">
 						<h2>Orden de servicio</h2>
 						<div class="utils">
@@ -178,7 +173,7 @@
 <!--   ~ CONTENT COLUMN   -->
 
 <!--   CONTENT COLUMN   -->				
-				<div class="grid_15">
+				<div class="grid_16">
 					<div class="box">
 						<h2>Detalles</h2>
 							<table>

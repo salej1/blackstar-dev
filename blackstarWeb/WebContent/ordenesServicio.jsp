@@ -85,10 +85,8 @@
 </head>
 <body>
 <div id="content" class="container_16 clearfix">
-<div class="grid_16">
-			<p>${ user.fullDescriptor }</p>
-</div>
-<div class="grid_15">	
+
+<div class="grid_16">	
 					<div>
 						<div>
 							<img src="img/navigate-right.png"/><a href="scheduleStatus">Programa de servicios preventivos</a>
@@ -96,7 +94,7 @@
 					</div>
 					<p><small>&nbsp;</small></p>
 </div>	
-<div class="grid_15">					
+<div class="grid_16">					
 					<div class="box">
 						<h2>Ordenes de servicio por revisar</h2>
 						<div class="utils">

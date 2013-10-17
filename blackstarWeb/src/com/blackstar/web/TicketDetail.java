@@ -121,7 +121,7 @@ public class TicketDetail extends HttpServlet{
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+		
 		if(request.getParameter("datosComentario").toString().equals("")== false){
 			  
 			String[] datosComentario=request.getParameter("datosComentario").toString().split("&&");
@@ -145,7 +145,7 @@ public class TicketDetail extends HttpServlet{
 			ResultSet rs = da.executeQuery("CALL GetServicesByPolicyId(" + policyId + ")");
 			
 			while(rs.next()){
-				list.put(rs.getString("serviceOrderId"), rs.getString("serviceOrderNumber") );
+				list.put(rs.getString("DT_RowId"), rs.getString("serviceOrderNumber") );
 			}
 			
 			da.closeConnection();

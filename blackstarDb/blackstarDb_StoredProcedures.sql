@@ -102,12 +102,12 @@ END$$
 	-- blackstarDb.GetBigTicketTable
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetBigTicketTable$$
-CREATE PROCEDURE blackstarDb.GetBigTicketTable(pTicketId INTEGER)
+CREATE PROCEDURE blackstarDb.GetBigTicketTable()
 BEGIN
 
 	SELECT 
 		t.ticketId AS DT_RowId,
-		t.reated AS created,
+		t.created AS created,
 		t.createdBy AS createdBy,
 		p.contactName AS contactName,
 		p.contactPhone AS contactPhone,
@@ -126,7 +126,7 @@ BEGIN
 		p.includesParts AS includesParts,
 		p.exceptionParts AS exceptionParts,
 		sc.serviceCenter AS serviceCenter,
-		o.office AS office,
+		o.officeName AS office,
 		p.project AS project,
 		t.ticketNumber AS ticketNumber,
 		t.phoneResolved AS phoneResolved,
@@ -147,7 +147,6 @@ BEGIN
 		INNER JOIN serviceCenter sc ON sc.serviceCenterId = p.serviceCenterId
 		INNER JOIN equipmentType et ON et.equipmentTypeId = p.equipmentTypeId
 		LEFT OUTER JOIN serviceOrder so ON so.serviceOrderId = t.serviceOrderId
-	WHERE ticketId = pTicketId
 	ORDER BY created;
 	
 END$$
@@ -164,11 +163,10 @@ BEGIN
 		created AS created,
 		u2.name AS craetedBy,
 		u.name AS asignee,
-		followup AS followUp,
-		fs.followUpStatus AS status
+		followup AS followUp
 	FROM followUp f
 		INNER JOIN blackstarUser u ON f.asignee = u.email
-		INNER JOIN blackstarUser u2 ON f.craetedBy = u2.email
+		INNER JOIN blackstarUser u2 ON f.createdBy = u2.email
 	WHERE ticketId = pTicketId
 	ORDER BY created;
 	
@@ -390,7 +388,8 @@ BEGIN
 		INNER JOIN equipmentType et ON p.equipmenttypeId = et.equipmenttypeId
 		INNER JOIN office of on p.officeId = of.officeId
      LEFT OUTER JOIN ticket t on t.ticketId = so.ticketId
-	WHERE ss.serviceStatus = status;
+	WHERE ss.serviceStatus = status
+	ORDER BY serviceOrderNumber ;
 	
 END$$
 

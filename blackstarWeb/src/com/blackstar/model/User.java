@@ -9,7 +9,7 @@ import com.blackstar.logging.*;
 public class User implements java.io.Serializable {
 	String userEmail;
 	String userName;
-	List<String> userGroups;
+	List<String> userGroups = new ArrayList<String>();
 	
 	public List<String> getUserGroups() {
 		return userGroups;
@@ -23,7 +23,7 @@ public class User implements java.io.Serializable {
 		return userEmail;
 	}
 	
-	public User(String _userName, String _email) {
+	public User(String _email, String _userName) {
 		userName = _userName;
 		userEmail = _email;
 	}

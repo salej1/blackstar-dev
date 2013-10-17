@@ -130,9 +130,6 @@
 <div id="content" class="container_16 clearfix">
 			
 <!--   CONTENT COLUMN   -->		
-				<div class="grid_15">
-					<p>${user.fullDescriptor }</p>
-				</div>	
 				<div class="grid_16">					
 					<div class="box">
 						<h2>Ticket ${ticketF.ticketNumber}</h2>

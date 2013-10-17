@@ -4,29 +4,29 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		<title>${initParam['globalsSettings_appTitle']}</title>
-				<link rel="stylesheet" href="css/960.css" type="text/css" media="screen" charset="utf-8" />
-				<link rel="stylesheet" href="css/template.css" type="text/css" media="screen" charset="utf-8" />
-				<link rel="stylesheet" href="css/colour.css" type="text/css" media="screen" charset="utf-8" />
-				<link href="js/glow/1.7.0/widgets/widgets.css" type="text/css" rel="stylesheet" />
-				<link rel="stylesheet" href="css/jquery.ui.theme.css">
-				<link rel="stylesheet" href="css/jquery-ui.min.css">
-				<script src="js/glow/1.7.0/core/core.js" type="text/javascript"></script>
-				<script src="js/glow/1.7.0/widgets/widgets.js" type="text/javascript"></script>
-				<script src="js/jquery-1.10.1.min.js"></script>
-				<script src="js/jquery-ui.js"></script>
-				<script type="text/javascript">
-					glow.ready(function(){
-						new glow.widgets.Sortable(
-							'#content .grid_5, #content .grid_6',
-							{
-								draggableOptions : {
-									handle : 'h2'
-								}
-							}
-						);
-					});
-				</script>
-		</head>
+		<link rel="stylesheet" href="css/960.css" type="text/css" media="screen" charset="utf-8" />
+		<link rel="stylesheet" href="css/template.css" type="text/css" media="screen" charset="utf-8" />
+		<link rel="stylesheet" href="css/colour.css" type="text/css" media="screen" charset="utf-8" />
+		<link href="js/glow/1.7.0/widgets/widgets.css" type="text/css" rel="stylesheet" />
+		<link rel="stylesheet" href="css/jquery.ui.theme.css">
+		<link rel="stylesheet" href="css/jquery-ui.min.css">
+		<script src="js/glow/1.7.0/core/core.js" type="text/javascript"></script>
+		<script src="js/glow/1.7.0/widgets/widgets.js" type="text/javascript"></script>
+		<script src="js/jquery-1.10.1.min.js"></script>
+		<script src="js/jquery-ui.js"></script>
+		<script type="text/javascript">
+			glow.ready(function(){
+				new glow.widgets.Sortable(
+					'#content .grid_5, #content .grid_6',
+					{
+						draggableOptions : {
+							handle : 'h2'
+						}
+					}
+				);
+			});
+		</script>
+	</head>
 
 		<h1 id="head">
 			<div class="logo">
@@ -91,4 +91,9 @@
 			<li><small>&nbsp;</small></li>
 			<li><input type="submit" value="Buscar" class="searchButton" onclick="window.location = 'resultadoBusqueda.html'"/></li>
 		</ul>
+		<div id="user" class="container_16 clearfix">
+			<div class="grid_16">	
+				<p>${ user.fullDescriptor }</p>
+			</div>
+		</div>
 <!--   ~ HEADER   -->

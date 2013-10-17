@@ -47,6 +47,7 @@ public class Logger {
 			break;
 		}
 		
+		message = message.replace("'", "");
 		if(level.ordinal()>=appLogLevel.ordinal()){
 			String sql = String.format("CALL blackstarManage.WriteLog('%s', '%s', '%s', '%s')", level, message, who, stackTrace);
 			

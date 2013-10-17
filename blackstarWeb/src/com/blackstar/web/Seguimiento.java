@@ -2,6 +2,8 @@ package com.blackstar.web;
 
 import java.io.IOException;
 import java.sql.ResultSet;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -44,9 +46,11 @@ public class Seguimiento extends HttpServlet {
 		{
 			if(myUser.belongsToGroup("Call Center")){
 				processCallCenterFollowUp(da, request);
+				request.getRequestDispatcher("/seguimientoCal.jsp").forward(request, response);
 			}
 			else{
 				processFollowUp(da, request);
+				request.getRequestDispatcher("/seguimiento.jsp").forward(request, response);
 			}
 		}
 		catch (Exception ex)
@@ -54,7 +58,7 @@ public class Seguimiento extends HttpServlet {
 			 Logger.Log(LogLevel.FATAL, Thread.currentThread().getStackTrace()[1].toString(), ex);
 		}
 		
-		request.getRequestDispatcher("/tickets.jsp").forward(request, response);
+	
 	}
 
 	/**
@@ -67,17 +71,27 @@ public class Seguimiento extends HttpServlet {
 	private void processCallCenterFollowUp(BlackstarDataAccess da, HttpServletRequest request) throws Exception{
 		ResultSet rsTickets;
 		JSONArray jsTickets = new JSONArray();
+		Map<String, String> ticketMap = new HashMap<String, String>();
 		
 		rsTickets = da.executeQuery("CALL GetBigTicketTable()");
 		jsTickets = ResultSetConverter.convertResultSetToJSONArray(rsTickets);
 		
 		for(int i = 0; i < jsTickets.length(); i++){
-			ResultSet rsFollowUp = da.executeQuery(String.format("CALL GetFollowUpbyTicket(%d)", jsTickets.getJSONObject(i).getInt("DT_RowId")));
+			ResultSet rsFollowUp = da.executeQuery(String.format("CALL GetFollowUpByTicket(%d)", jsTickets.getJSONObject(i).getInt("DT_RowId")));
+			// Agregando los elementos de seguimiento
 			JSONArray jsTicketFollowup = ResultSetConverter.convertResultSetToJSONArray(rsFollowUp);
 			jsTickets.getJSONObject(i).append("followUps", jsTicketFollowup);
+			
+			// Agregado el mapa de tickets
+			ticketMap.put(String.format("%s", jsTickets.getJSONObject(i).getInt("DT_RowId")), jsTickets.getJSONObject(i).getString("ticketNumber"));
 		}
 		
+		// obteniendo el listado de OS para cerrar tickets
+		Map<String, String> serviceOrdersList = getServiceOrderList();
+		request.setAttribute("potentialOs", serviceOrdersList);
+		
 		request.setAttribute("ticketsList", jsTickets.toString());	
+		request.setAttribute("ticketMap", ticketMap);
 		
 		da.closeConnection();
 		
@@ -112,6 +126,24 @@ public class Seguimiento extends HttpServlet {
 		}
 		
 		request.setAttribute("pendingSo", jsPendingSo);
+	}
+	
+	private Map<String, String> getServiceOrderList(){
+		Map<String, String> list = new HashMap<String, String>();
+		try{
+			BlackstarDataAccess da = new BlackstarDataAccess();
+			ResultSet rs = da.executeQuery("CALL GetServiceOrders('CERRADO')");
+			
+			while(rs.next()){
+				list.put(rs.getString("DT_RowId"), rs.getString("serviceOrderNumber") );
+			}
+			
+			da.closeConnection();
+		}
+		catch(Exception ex){
+			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), ex);
+		}
+		return list;
 	}
 
 }

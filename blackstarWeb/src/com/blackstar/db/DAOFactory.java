@@ -23,14 +23,13 @@ public abstract class DAOFactory implements Serializable {
 	public abstract OfficeDAO getOfficeDAO();
 	public abstract ServiceOrderDAO getServiceOrderDAO();
 	public abstract FollowUpDAO getFollowUpDAO();
+	public abstract UserDAO getUserDAO();
 
 	  public static DAOFactory getDAOFactory(int whichFactory) {
 	  
 	    switch (whichFactory) {
 	      case MYSQL: 
-	          return new MySQLDAOFactory();
-	      case ORACLE    : 
-	          return new OracleDAOFactory();      
+	          return new MySQLDAOFactory();    
 	      default           : 
 	          return null;
 	    }

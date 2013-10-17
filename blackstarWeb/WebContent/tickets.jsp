@@ -98,7 +98,6 @@
 <body>
 	<div id="content" class="container_16 clearfix">
 		<div class="grid_16">
-			<p></p>
 
 			<div class="box">
 							<h2>Ultimos tickets</h2>

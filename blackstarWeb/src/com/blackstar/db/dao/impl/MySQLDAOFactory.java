@@ -13,6 +13,7 @@ import com.blackstar.db.dao.interfaces.ServiceCenterDAO;
 import com.blackstar.db.dao.interfaces.ServiceOrderDAO;
 import com.blackstar.db.dao.interfaces.TicketDAO;
 import com.blackstar.db.dao.interfaces.TicketStatusDAO;
+import com.blackstar.db.dao.interfaces.UserDAO;
 
 
 public class MySQLDAOFactory extends DAOFactory {
@@ -73,5 +74,11 @@ public class MySQLDAOFactory extends DAOFactory {
 	public FollowUpDAO getFollowUpDAO() {
 		// TODO Auto-generated method stub
 		return new MySQLFollowUpDAO();
+	}
+
+	@Override
+	public UserDAO getUserDAO() {
+		// TODO Auto-generated method stub
+		return new MySQLUserDAO();
 	}
 }

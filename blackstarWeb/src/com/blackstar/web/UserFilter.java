@@ -13,6 +13,8 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.blackstar.db.DAOFactory;
+import com.blackstar.db.dao.interfaces.UserDAO;
 import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
 import com.blackstar.model.User;
@@ -21,7 +23,7 @@ import com.blackstar.model.User;
  * Servlet Filter implementation class UserFilter
  */
 public class UserFilter implements Filter {
-
+	private DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.MYSQL);
     /**
      * Default constructor. 
      */
@@ -48,7 +50,7 @@ public class UserFilter implements Filter {
 		
 		if(usr == null){
 			try{
-				// create the user
+				// create the google user
 				com.google.appengine.api.users.UserService srv = com.google.appengine.api.users.UserServiceFactory.getUserService();
 				com.google.appengine.api.users.User gUser = srv.getCurrentUser();
 				
@@ -57,8 +59,12 @@ public class UserFilter implements Filter {
 				}
 				else{
 					String id = gUser.getEmail();
-					String name = gUser.getNickname();
-					User myUser = new User(id, name);
+					
+					// create the blackstar user
+					User myUser; 
+					UserDAO dao = this.daoFactory.getUserDAO();
+					
+					myUser = dao.getUserById(id);
 					req.getSession().setAttribute("user", myUser);
 					
 					// pass the request along the filter chain

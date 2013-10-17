@@ -159,9 +159,6 @@
 <div id="content" class="container_16 clearfix">
 
 <!--   CONTENT COLUMN   -->		
-				<div class="grid_16">	
-					
-				</div>
 				<div class="grid_16">
 					<div class="box">
 						<h2>Tickets por asignar</h2>

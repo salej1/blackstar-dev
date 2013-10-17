@@ -44,10 +44,24 @@ public class ResultSetConverter {
 	         obj.put(column_name, rs.getInt(column_name));
 	        }
 	        else if(rsmd.getColumnType(i)==java.sql.Types.NVARCHAR){
-	         obj.put(column_name, rs.getNString(column_name));
+	        	String s = rs.getNString(column_name);
+	        	s = s.replace("\\", "\\\\")
+	        		    .replace("\"", "\\\"")
+	        		    .replace("\r", "\\r")
+	        		    .replace("\n", "\\n")
+	        		    .replace("\u2028", "\\u2028")
+	        		    .replace("\u2029", "\\u2029");
+	         obj.put(column_name, s);
 	        }
 	        else if(rsmd.getColumnType(i)==java.sql.Types.VARCHAR){
-	         obj.put(column_name, rs.getString(column_name));
+	        	String s = rs.getString(column_name);
+	        	s = s.replace("\\", "\\\\")
+	        		    .replace("\"", "\\\"")
+	        		    .replace("\r", "\\r")
+	        		    .replace("\n", "\\n")
+	        		    .replace("\u2028", "\\u2028")
+	        		    .replace("\u2029", "\\u2029");
+	         obj.put(column_name, s);
 	        }
 	        else if(rsmd.getColumnType(i)==java.sql.Types.TINYINT){
 	         obj.put(column_name, rs.getInt(column_name));
