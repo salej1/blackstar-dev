@@ -28,8 +28,9 @@ public class MySQLServiceCenterDAO implements ServiceCenterDAO, Serializable {
 	public List<Servicecenter> selectAllServiceCenter() {
 		List<Servicecenter> lstServiceCenter = new ArrayList<Servicecenter>();
 		Servicecenter serviceCenter = null;
+		Connection conn = null;
 		try {
-			Connection conn = MySQLDAOFactory.createConnection();
+			conn = MySQLDAOFactory.createConnection();
 			PreparedStatement ps = conn.prepareStatement("Select * from serviceCenter");
 			ResultSet rs = ps.executeQuery();
 			
@@ -41,6 +42,16 @@ public class MySQLServiceCenterDAO implements ServiceCenterDAO, Serializable {
 		} catch (ClassNotFoundException | SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+		finally{
+			if(conn != null){
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		}
 		// TODO Auto-generated method stub
 		return lstServiceCenter;
@@ -61,8 +72,9 @@ public class MySQLServiceCenterDAO implements ServiceCenterDAO, Serializable {
 	@Override
 	public Servicecenter getServiceCenterById(char id) {
 		Servicecenter serviceCenter = null;
+		Connection conn  = null;
 		try {
-			Connection conn = MySQLDAOFactory.createConnection();
+			conn = MySQLDAOFactory.createConnection();
 			PreparedStatement ps = conn.prepareStatement("Select * from serviceCenter where serviceCenterId = ?");
 			ps.setString(1, Character.toString(id));
 			ResultSet rs = ps.executeQuery();
@@ -74,6 +86,16 @@ public class MySQLServiceCenterDAO implements ServiceCenterDAO, Serializable {
 		} catch (ClassNotFoundException | SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+		finally{
+			if(conn != null){
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		}
 		// TODO Auto-generated method stub
 		return serviceCenter;

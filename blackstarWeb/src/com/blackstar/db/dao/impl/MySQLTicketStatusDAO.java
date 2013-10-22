@@ -28,8 +28,9 @@ public class MySQLTicketStatusDAO implements TicketStatusDAO, Serializable {
 	public List<Ticketstatus> selectAllTicketStatus() {
 		List<Ticketstatus> lstTicketStatus = new ArrayList<Ticketstatus>();
 		Ticketstatus ticketStatus = null;
+		Connection conn = null;
 		try {
-			Connection conn = MySQLDAOFactory.createConnection();
+			conn = MySQLDAOFactory.createConnection();
 			PreparedStatement ps = conn.prepareStatement("Select * from ticketStatus");
 			ResultSet rs = ps.executeQuery();
 			
@@ -41,6 +42,16 @@ public class MySQLTicketStatusDAO implements TicketStatusDAO, Serializable {
 		} catch (ClassNotFoundException | SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+		finally{
+			if(conn != null){
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		}
 		// TODO Auto-generated method stub
 		return lstTicketStatus;
@@ -61,8 +72,9 @@ public class MySQLTicketStatusDAO implements TicketStatusDAO, Serializable {
 	@Override
 	public Ticketstatus getTicketStatusById(int id) {
 		Ticketstatus ticketStatus = null;
+		Connection conn = null;
 		try {
-			Connection conn = MySQLDAOFactory.createConnection();
+			conn = MySQLDAOFactory.createConnection();
 			PreparedStatement ps = conn.prepareStatement("Select * from ticketStatus where ticketStatusId = ?");
 			ps.setInt(1, id);
 			ResultSet rs = ps.executeQuery();
@@ -74,6 +86,16 @@ public class MySQLTicketStatusDAO implements TicketStatusDAO, Serializable {
 		} catch (ClassNotFoundException | SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+		finally{
+			if(conn != null){
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		}
 		// TODO Auto-generated method stub
 		return ticketStatus;

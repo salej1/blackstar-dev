@@ -28,8 +28,9 @@ public class MySQLFollowUpDAO implements FollowUpDAO, Serializable {
 	public List<Followup> selectAllFollowUp() {
 		List<Followup> lstFollowpUp = new ArrayList<Followup>();
 		Followup followUp = null;
+		Connection conn = null;
 		try {
-			Connection conn = MySQLDAOFactory.createConnection();
+			conn = MySQLDAOFactory.createConnection();
 			PreparedStatement ps = conn.prepareStatement("Select * from followUp");
 			ResultSet rs = ps.executeQuery();
 			
@@ -45,6 +46,16 @@ public class MySQLFollowUpDAO implements FollowUpDAO, Serializable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		finally{
+			if(conn != null){
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
 		// TODO Auto-generated method stub
 		return lstFollowpUp;
 	}
@@ -53,8 +64,9 @@ public class MySQLFollowUpDAO implements FollowUpDAO, Serializable {
 	public List<Followup> getFollowUpByTicketId(int id) {
 		List<Followup> lstFollowpUp = new ArrayList<Followup>();
 		Followup followUp = null;
+		Connection conn = null;
 		try {
-			Connection conn = MySQLDAOFactory.createConnection();
+			conn = MySQLDAOFactory.createConnection();
 			PreparedStatement ps = conn.prepareStatement("Select * from followUp where ticketId=?");
 			ps.setInt(1, id);
 			ResultSet rs = ps.executeQuery();
@@ -70,6 +82,16 @@ public class MySQLFollowUpDAO implements FollowUpDAO, Serializable {
 		} catch (ClassNotFoundException | SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+		finally{
+			if(conn != null){
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		}
 		// TODO Auto-generated method stub
 		return lstFollowpUp;
@@ -91,8 +113,9 @@ public class MySQLFollowUpDAO implements FollowUpDAO, Serializable {
 	public List<Followup> getFollowUpByServiceOrderId(int id) {
 		List<Followup> lstFollowpUp = new ArrayList<Followup>();
 		Followup followUp = null;
+		Connection conn = null;
 		try {
-			Connection conn = MySQLDAOFactory.createConnection();
+			conn = MySQLDAOFactory.createConnection();
 			PreparedStatement ps = conn.prepareStatement("Select * from followUp where serviceOrderId=?");
 			ps.setInt(1, id);
 			ResultSet rs = ps.executeQuery();
@@ -108,6 +131,16 @@ public class MySQLFollowUpDAO implements FollowUpDAO, Serializable {
 		} catch (ClassNotFoundException | SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+		finally{
+			if(conn != null){
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		}
 		// TODO Auto-generated method stub
 		return lstFollowpUp;

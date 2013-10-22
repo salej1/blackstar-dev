@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import com.blackstar.db.dao.impl.MySQLDAOFactory;
 import com.blackstar.db.dao.interfaces.*;
+import com.blackstar.model.Servicetype;
 
 public abstract class DAOFactory implements Serializable {
 	
@@ -24,6 +25,7 @@ public abstract class DAOFactory implements Serializable {
 	public abstract ServiceOrderDAO getServiceOrderDAO();
 	public abstract FollowUpDAO getFollowUpDAO();
 	public abstract UserDAO getUserDAO();
+	public abstract ServiceTypeDAO getServiceTypeDAO();
 
 	  public static DAOFactory getDAOFactory(int whichFactory) {
 	  

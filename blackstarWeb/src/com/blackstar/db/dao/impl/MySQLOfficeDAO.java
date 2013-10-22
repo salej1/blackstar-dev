@@ -30,8 +30,9 @@ public class MySQLOfficeDAO implements OfficeDAO, Serializable {
 	public List<Office> selectAllOffice() {
 		List<Office> lstOffice = new ArrayList<Office>();
 		Office office = null;
+		Connection conn = null;
 		try {
-			Connection conn = MySQLDAOFactory.createConnection();
+			conn = MySQLDAOFactory.createConnection();
 			PreparedStatement ps = conn.prepareStatement("Select * from office");
 			ResultSet rs = ps.executeQuery();
 			
@@ -42,6 +43,16 @@ public class MySQLOfficeDAO implements OfficeDAO, Serializable {
 			}
 		} catch (ClassNotFoundException | SQLException e) {
 			Logger.Log(LogLevel.CRITICAL, Thread.currentThread().getStackTrace()[1].toString(), e);
+		}
+		finally{
+			if(conn != null){
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		}
 		// TODO Auto-generated method stub
 		return lstOffice;
@@ -62,8 +73,9 @@ public class MySQLOfficeDAO implements OfficeDAO, Serializable {
 	@Override
 	public Office getOfficeById(char id) {
 		Office office = null;
+		Connection conn = null;
 		try {
-			Connection conn = MySQLDAOFactory.createConnection();
+			conn = MySQLDAOFactory.createConnection();
 			PreparedStatement ps = conn.prepareStatement("Select * from office where officeId = ?");
 			ps.setString(1, Character.toString(id));
 			ResultSet rs = ps.executeQuery();
@@ -74,6 +86,16 @@ public class MySQLOfficeDAO implements OfficeDAO, Serializable {
 			}
 		} catch (ClassNotFoundException | SQLException e) {
 			Logger.Log(LogLevel.CRITICAL, Thread.currentThread().getStackTrace()[1].toString(), e);
+		}
+		finally{
+			if(conn != null){
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		}
 		// TODO Auto-generated method stub
 		return office;

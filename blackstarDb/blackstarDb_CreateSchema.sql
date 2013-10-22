@@ -70,7 +70,7 @@ CREATE TABLE followUp
 	asignee NVARCHAR(50) NULL,
 	followup TEXT NULL,
 	created DATETIME NULL,
-	createdBy NVARCHAR(8) NULL,
+	createdBy NVARCHAR(50) NULL,
 	createdByUsr NVARCHAR(50) NULL,
 	modified DATETIME NULL,
 	modifiedBy NVARCHAR(50) NULL,

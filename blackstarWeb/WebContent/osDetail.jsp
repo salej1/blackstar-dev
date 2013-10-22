@@ -3,31 +3,16 @@
 <%@page isELIgnored="false"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <c:set var="pageSection" scope="request" value="ordenesServicio" />
-
 <c:import url="header.jsp"></c:import>
 <html>
 <head>
 <title>Detalle orden servicio</title>
 
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<script src="js/glow/1.7.0/core/core.js" type="text/javascript"></script>
-		<script src="js/glow/1.7.0/widgets/widgets.js" type="text/javascript"></script>
-		<script src="js/jquery-1.10.1.min.js"></script>
-		<script src="js/jquery-ui.js"></script>
 		<script src="js/jquery.ui.touch-punch.min.js"></script>
-		<script src="js/jquery.ui.core.js"></script>
-		<script src="js/jquery.ui.widget.js"></script>
-		<script src="js/jquery.ui.mouse.js"></script>
-		<script src="js/jquery.ui.button.js"></script>
-		<script src="js/jquery.ui.draggable.js"></script>
-		<script src="js/jquery.ui.position.js"></script>
-		<script src="js/jquery.ui.resizable.js"></script>
-		<script src="js/jquery.ui.button.js"></script>
-		<script src="js/jquery.ui.dialog.js"></script>
-		<script src="js/jquery.ui.effect.js"></script>
 		<script src="js/jquery.signature.min.js"></script>
 		
-				<link rel="stylesheet" href="css/960.css" type="text/css" media="screen" charset="utf-8" />
+		<link rel="stylesheet" href="css/960.css" type="text/css" media="screen" charset="utf-8" />
 		<link rel="stylesheet" href="css/template.css" type="text/css" media="screen" charset="utf-8" />
 		<link rel="stylesheet" href="css/colour.css" type="text/css" media="screen" charset="utf-8" />
 		<link href="js/glow/1.7.0/widgets/widgets.css" type="text/css" rel="stylesheet" />
@@ -66,6 +51,9 @@
 		$('#lbFechaSalida').val('${serviceOrderDetail.closed}');
 		$('#lblPuesto').val('${serviceOrderDetail.receivedByPosition}');
 
+		// inicializando el dialogo para agregar seguimientos
+		initFollowUpDlg("orderService", "osDetail?serviceOrderId=${serviceOrderDetail.serviceOrderId}");
+		
 		// Signature capture box # 1 
 		$('#leftSign').signature({disabled: true}); 
 		$('#leftSign').signature('draw', '${serviceOrderDetail.signCreated}'); 
@@ -73,37 +61,8 @@
 		// Signature capture box # 2 
 		$('#rightSign').signature({disabled: true}); 
 		$('#rightSign').signature('draw', '${serviceOrderDetail.signReceivedBy}'); 
-
 	});
 
-	$("#seguimientoCapture").hide();
-					
-					function addSeguimiento(){
-						var d = new Date(); 
-						$("#seguimientoCapture").show();	
-						$("#seguimientoStamp").html(d.format('dd/MM/yyyy h:mm:ss')+ ', ');
-						$("#seguimientoText").val('');
-					}
-					
-				function ocultarSeguimiento(){
-						//funcion de guardar followup
-						var comentario =  $("#seguimientoText").val();
-						var asignado = $("#AsignadoASelect").val();
-	
-						$.ajax({
-								type: form.attr('method'),
-								url: form.attr('action'),
-								data: form.serialize(),
-								success: function (data) {var result=data;$('#result').attr("value",result);}
-							});
-						
-						$("#seguimientoCapture").hide();
-					}
-	
-
-					
-	 				
-	
  </script> 
 
 	 
@@ -116,9 +75,11 @@
 				<div class="grid_16">					
 					<div class="box">
 						<h2>Orden de servicio</h2>
-						<div class="utils">
-							<a id="linkTicket" href="tickDetail.html"> </a>
-						</div>
+							<c:if test="${serviceOrderDetail.ticketId gt 0}">
+								<div class="utils">
+										<a id="linkTicket" href="ticketDetail?ticketId=${serviceOrderDetail.ticketId}"> </a>
+								</div>
+							</c:if>
 						<table>
 							<tr>
 								<td>Folio:</td>
@@ -263,46 +224,26 @@
 								<thead>
 									<th>Seguimiento</th>
 								</thead>
+								<tbody>
 									<tr>
 										<td id="seguimientoContent">
-											<c:if test="ComentariosOS">
-												<c:forEach var="followup" items="${ComentariosOS} }">
-													<div class="comment">
-														<p>
-															<strong> <c:out value=" "/> <c:out value=" "/>  </strong>
-														</p>
-														<p>
-															<small> <c:out value=" "/> </small>
-														</p>
-													</div>
-												</c:forEach>
-											</c:if>
+											<c:forEach var="followup" items="${followUps}">
+												<div class="comment">
+													<p><strong>${followup.timeStamp}: ${followup.createdBy} a: ${followup.asignee}</strong></p>
+													<p>
+													<small>${followup.followUp}</small></p>
+												</div>
+											</c:forEach>
 										</td>
 									</tr>
-									<tr>
-										<td id="seguimientoCapture" class="comment">
-											<div>
-												<Label id="seguimientoStamp">stamp</Label> 
-											</div>
-											<div> Asignar a:
-												<select id="AsignadoASelect" style="width:200px;">												
-													<c:forEach var="usuario" items="${UsuariosAsignados}">
-														<option>usuario</option>
-													</c:forEach>
-												</select>
-												<p></p>
-												<textarea id="seguimientoText" rows="5" style="width:65%;" ></textarea> 
-												<button id="EnviarComentario"   class="searchButton" >Agregar</button>
-												<button class="searchButton" onclick="cancelAddSeguimiento();">Cancelar</button>
-											</div>
-										</td>
-									</tr>
+								</tbody>
 							</table>
+							<c:import url="addfollowUpDlg.jsp"></c:import>
 							<table>
 								<tbody>
 									<tr>
 										<td>
-											<button class="searchButton" onclick="addSeguimiento();">Agregar seguimiento</button>
+											<button class="searchButton" onclick="addSeguimiento(${serviceOrderDetail.serviceOrderId}, '${serviceOrderDetail.serviceOrderNo}');">Agregar seguimiento</button>
 											<button class="searchButton" onclick="window.location = 'dashboard'">Cerrar</button>
 										</td>
 									</tr>

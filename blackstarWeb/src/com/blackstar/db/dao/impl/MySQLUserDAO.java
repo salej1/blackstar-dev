@@ -16,8 +16,9 @@ public class MySQLUserDAO implements UserDAO {
 	@Override
 	public User getUserById(String email) {
 		User user = null;
+		Connection conn = null;
 		try {
-			Connection conn = MySQLDAOFactory.createConnection();
+			conn = MySQLDAOFactory.createConnection();
 			ResultSet rs = conn.createStatement().executeQuery(String.format("CALL GetUserData('%s')", email));
 			
 			while(rs.next()) {
@@ -28,7 +29,10 @@ public class MySQLUserDAO implements UserDAO {
 					);
 				}
 				
-				user.addGroup(rs.getString("groupName"));
+				String groupName = rs.getString("groupName");
+				if(groupName != null && groupName.length() > 0){
+					user.addGroup(groupName);
+				}
 			}
 			
 			if(user.getUserGroups().size() == 0){
@@ -37,6 +41,15 @@ public class MySQLUserDAO implements UserDAO {
 			
 		} catch (ClassNotFoundException | SQLException e) {
 			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
+		}
+		finally{
+			if(conn != null){
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
+				}
+			}
 		}
 		// TODO Auto-generated method stub
 		return user;

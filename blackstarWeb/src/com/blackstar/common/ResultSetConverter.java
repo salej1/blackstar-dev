@@ -45,22 +45,26 @@ public class ResultSetConverter {
 	        }
 	        else if(rsmd.getColumnType(i)==java.sql.Types.NVARCHAR){
 	        	String s = rs.getNString(column_name);
-	        	s = s.replace("\\", "\\\\")
-	        		    .replace("\"", "\\\"")
-	        		    .replace("\r", "\\r")
-	        		    .replace("\n", "\\n")
-	        		    .replace("\u2028", "\\u2028")
-	        		    .replace("\u2029", "\\u2029");
+	        	if(s != null){
+		        	s = s.replace("\\", " ")
+		        		    .replace("\"", " ")
+		        		    .replace("\r", ". ")
+		        		    .replace("\n", ". ")
+		        		    .replace("\u2028", "\\u2028")
+		        		    .replace("\u2029", "\\u2029");
+	        	}
 	         obj.put(column_name, s);
 	        }
 	        else if(rsmd.getColumnType(i)==java.sql.Types.VARCHAR){
 	        	String s = rs.getString(column_name);
-	        	s = s.replace("\\", "\\\\")
-	        		    .replace("\"", "\\\"")
-	        		    .replace("\r", "\\r")
-	        		    .replace("\n", "\\n")
-	        		    .replace("\u2028", "\\u2028")
-	        		    .replace("\u2029", "\\u2029");
+	        	if(s != null){
+		        	s = s.replace("\\", " ")
+		        		    .replace("\"", " ")
+		        		    .replace("\r", ". ")
+		        		    .replace("\n", ". ")
+		        		    .replace("\u2028", "\\u2028")
+		        		    .replace("\u2029", "\\u2029");
+	        	}
 	         obj.put(column_name, s);
 	        }
 	        else if(rsmd.getColumnType(i)==java.sql.Types.TINYINT){

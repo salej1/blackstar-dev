@@ -11,9 +11,11 @@ import com.blackstar.db.dao.interfaces.OfficeDAO;
 import com.blackstar.db.dao.interfaces.PolicyDAO;
 import com.blackstar.db.dao.interfaces.ServiceCenterDAO;
 import com.blackstar.db.dao.interfaces.ServiceOrderDAO;
+import com.blackstar.db.dao.interfaces.ServiceTypeDAO;
 import com.blackstar.db.dao.interfaces.TicketDAO;
 import com.blackstar.db.dao.interfaces.TicketStatusDAO;
 import com.blackstar.db.dao.interfaces.UserDAO;
+import com.blackstar.model.Servicetype;
 
 
 public class MySQLDAOFactory extends DAOFactory {
@@ -80,5 +82,11 @@ public class MySQLDAOFactory extends DAOFactory {
 	public UserDAO getUserDAO() {
 		// TODO Auto-generated method stub
 		return new MySQLUserDAO();
+	}
+
+	@Override
+	public ServiceTypeDAO getServiceTypeDAO() {
+		// TODO Auto-generated method stub
+		return new MySQLServiceTypeDAO();
 	}
 }

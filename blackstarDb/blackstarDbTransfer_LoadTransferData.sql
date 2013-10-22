@@ -99,7 +99,18 @@
 	SET 
 		solutionTimeDeviationHr = CASE WHEN(solutionTime < solutionTimeHR) THEN 0 ELSE (solutionTime - solutionTimeHR) END;
 		
-
+	-- CAMBIAR OBSERVATIONS POR FOLLOW UPS
+	INSERT INTO blackstarDb.followUp(
+		ticketId,
+		asignee,
+		followup,
+		created,
+		createdBy,
+		createdByUsr
+	)
+	SELECT ticketId, 'marlem.samano@gposac.com.mx', followUp, CURRENT_DATE(), 'TicketTransfer', 'sergio.aga'
+	FROM blackstarDbTransfer.ticket
+	WHERE followUp IS NOT NULL;
 -- -----------------------------------------------------------------------------
 
 
@@ -142,4 +153,51 @@
 	-- ACTUALIZACION DEL ESTADO DE LOS TICKETS
 	use blackstarDb;
 	CALL UpdateTicketStatus();
+-- -----------------------------------------------------------------------------
+
+
+-- -----------------------------------------------------------------------------
+	-- ELIMINACION DE COMILLAS QUE PROVOCAN PROBLEMAS AL CONVERTIR A JSON
+	UPDATE blackstarDb.policy SET	
+		equipmentAddress = REPLACE( equipmentAddress,'"','');
+		
+	UPDATE blackstarDb.policy SET	
+		equipmentLocation = REPLACE( equipmentLocation,'"','');
+		
+	UPDATE blackstarDb.policy SET	
+		penalty = REPLACE( penalty,'"','');
+		
+	UPDATE blackstarDb.policy SET	
+		observations = REPLACE( observations,'"','');
+		
+	UPDATE blackstarDb.serviceOrder SET	
+		serviceComments = REPLACE( serviceComments,'"','');
+		
+	UPDATE blackstarDb.ticket SET	
+		observations = REPLACE( observations,'"','');
+
+	UPDATE blackstarDb.followUp SET	
+		followUp = REPLACE( followUp,'"','');
+		
+	-- ELIMINACION DE RETORNOS DE CARRO QUE PROVOCAN PROBLEMAS AL CONVERTIR A JSON
+	UPDATE blackstarDb.policy SET	
+		equipmentAddress = REPLACE( equipmentAddress,'\n','');
+		
+	UPDATE blackstarDb.policy SET	
+		equipmentLocation = REPLACE( equipmentLocation,'\n','');
+		
+	UPDATE blackstarDb.policy SET	
+		penalty = REPLACE( penalty,'\n','');
+		
+	UPDATE blackstarDb.policy SET	
+		observations = REPLACE( observations,'\n','');
+		
+	UPDATE blackstarDb.serviceOrder SET	
+		serviceComments = REPLACE( serviceComments,'\n','');
+		
+	UPDATE blackstarDb.ticket SET	
+		observations = REPLACE( observations,'\n','');
+
+	UPDATE blackstarDb.followUp SET	
+		followUp = REPLACE( followUp,'\n','');
 -- -----------------------------------------------------------------------------

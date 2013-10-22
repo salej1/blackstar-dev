@@ -42,7 +42,7 @@
 			<div>
 				<div>
 					<img src="img/navigate-right.png" /><a
-						href="agendaServicio_coo.html">Agendar servicio preventivo</a>
+						href="#">Agendar servicio preventivo</a>
 				</div>
 			</div>
 			<p>

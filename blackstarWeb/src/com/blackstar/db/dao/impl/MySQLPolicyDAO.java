@@ -31,8 +31,9 @@ public class MySQLPolicyDAO implements PolicyDAO, Serializable {
 	public List<Policy> selectAllPolicy() {
 		List<Policy> lstPolicy = new ArrayList<Policy>();
 		Policy policy = null;
+		Connection conn = null;;
 		try {
-			Connection conn = (Connection) MySQLDAOFactory.createConnection();
+			conn = (Connection) MySQLDAOFactory.createConnection();
 			ResultSet rs = conn.createStatement().executeQuery(("Select * from policy"));
 			
 			while(rs.next()) {
@@ -54,6 +55,16 @@ public class MySQLPolicyDAO implements PolicyDAO, Serializable {
 		} catch (ClassNotFoundException | SQLException e) {
 			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
 		}
+		finally{
+			if(conn != null){
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
 		// TODO Auto-generated method stub
 		return lstPolicy;
 	}
@@ -73,8 +84,9 @@ public class MySQLPolicyDAO implements PolicyDAO, Serializable {
 	@Override
 	public Policy getPolicyById(int id) {
 		Policy policy = null;
+		Connection conn = null;
 		try {
-			Connection conn = MySQLDAOFactory.createConnection();
+			conn = MySQLDAOFactory.createConnection();
 
 			ResultSet rs = conn.createStatement().executeQuery(String.format("Select * from policy where policyId = %d", id));
 			
@@ -95,6 +107,16 @@ public class MySQLPolicyDAO implements PolicyDAO, Serializable {
 			}
 		} catch (ClassNotFoundException | SQLException e) {
 			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
+		}
+		finally{
+			if(conn != null){
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		}
 		// TODO Auto-generated method stub
 		return policy;

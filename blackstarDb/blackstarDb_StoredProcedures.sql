@@ -38,13 +38,130 @@
 -- 								blackstarDb.GetFollowUpByServiceOrder
 -- 								blackstarDb.UpsertScheduledService
 -- -----------------------------------------------------------------------------
-
-
+-- 6    17/10/2013	SAG		Se Integra:
+-- 								blackstarDb.AddFollowUpToTicket
+-- 								blackstarDb.AddFollowUpToOS
+-- -----------------------------------------------------------------------------
+-- 7    18/10/2013	SAG		Se Integra:
+-- 								blackstarDb.CloseTicket
+-- -----------------------------------------------------------------------------
+-- 8   19/10/2013	SAG		Se Integra:
+-- 								blackstarDb.ReopenTicket
+-- -----------------------------------------------------------------------------
 
 use blackstarDb;
 
 
 DELIMITER $$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.ReopenTicket
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.ReopenTicket$$
+CREATE PROCEDURE blackstarDb.ReopenTicket(pTicketId INTEGER, pModifiedBy VARCHAR(100))
+BEGIN
+	
+	-- ACTUALIZAR EL ESTATUS DEL TICKET Y NUMERO DE ORDEN DE SERVICIO
+	UPDATE ticket t 
+		INNER JOIN policy p ON p.policyId = t.policyId
+	SET 
+		t.ticketStatusId = IF(TIMESTAMPDIFF(HOUR, t.created, CURRENT_DATE()) > p.solutionTimeHR, 'R', 'A'),
+		t.modified = CURRENT_DATE(),
+		t.modifiedBy = 'ReopenTicket',
+		t.modifiedByUsr = pModifiedBy
+	WHERE t.ticketId = pTicketId;
+	
+END$$
+
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.CloseTicket
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.CloseTicket$$
+CREATE PROCEDURE blackstarDb.CloseTicket(pTicketId INTEGER, pOsId INTEGER, pModifiedBy VARCHAR(100))
+BEGIN
+	
+	-- ACTUALIZAR EL ESTATUS DEL TICKET Y NUMERO DE ORDEN DE SERVICIO
+	UPDATE ticket t 
+		INNER JOIN ticket t2 on t.ticketId = t2.ticketId
+	SET 
+		t.ticketStatusId = IF(t2.ticketStatusId = 'R', 'F', 'C'),
+		t.serviceOrderId = pOsId,
+		t.modified = CURRENT_DATE(),
+		t.modifiedBy = 'CloseTicket',
+		t.modifiedByUsr = pModifiedBy
+	WHERE t.ticketId = pTicketId;
+	
+END$$
+
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.AddFollowUpToTicket
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.AddFollowUpToOS$$
+CREATE PROCEDURE blackstarDb.AddFollowUpToOS(pOsId INTEGER, pCreated DATETIME, pCreatedBy VARCHAR(100), pAsignee VARCHAR(100), pMessage TEXT)
+BEGIN
+
+	-- INSERTAR EL REGISTRO DE SEGUIMIENTO
+	INSERT INTO blackstarDb.followUp(
+		serviceOrderId,
+		asignee,
+		followup,
+		created,
+		createdBy,
+		createdByUsr
+	)
+	SELECT 
+		pOsId,
+		pAsignee,
+		pMessage,
+		pCreated,
+		'AddFollowUpToTicket',
+		pCreatedBy;
+		
+	-- ASIGNAR lA ORDEN DE SERVICIO
+	UPDATE serviceOrder SET	
+		asignee = pAsignee,
+		modified = CURRENT_DATE(),
+		modifiedBy = 'AddFollowUpToTicket',
+		modifiedByUsr = pCreatedBy
+	WHERE ticketId = pOsId;
+END$$
+
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.AddFollowUpToTicket
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.AddFollowUpToTicket$$
+CREATE PROCEDURE blackstarDb.AddFollowUpToTicket(pTicketId INTEGER, pCreated DATETIME, pCreatedBy VARCHAR(100), pAsignee VARCHAR(100), pMessage TEXT)
+BEGIN
+
+	-- INSERTAR EL REGISTRO DE SEGUIMIENTO
+	INSERT INTO blackstarDb.followUp(
+		ticketId,
+		asignee,
+		followup,
+		created,
+		createdBy,
+		createdByUsr
+	)
+	SELECT 
+		pTicketId,
+		pAsignee,
+		pMessage,
+		pCreated,
+		'AddFollowUpToTicket',
+		pCreatedBy;
+		
+	-- ASIGNAR EL TICKET
+	UPDATE ticket SET	
+		asignee = pAsignee,
+		modified = CURRENT_DATE(),
+		modifiedBy = 'AddFollowUpToTicket',
+		modifiedByUsr = pCreatedBy
+	WHERE ticketId = pTicketId;
+END$$
+
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.UpsertScheduledService
@@ -85,15 +202,14 @@ BEGIN
 
 	SELECT 
 		created AS created,
-		u2.name AS craetedBy,
+		u2.name AS createdBy,
 		u.name AS asignee,
-		followup AS followUp,
-		fs.followUpStatus AS status
+		followup AS followUp
 	FROM followUp f
 		INNER JOIN blackstarUser u ON f.asignee = u.email
-		INNER JOIN blackstarUser u2 ON f.craetedBy = u2.email
+		INNER JOIN blackstarUser u2 ON f.createdByUsr = u2.email
 	WHERE serviceOrderId = pServiceOrderId
-	ORDER BY created;
+	ORDER BY f.created;
 	
 END$$
 
@@ -106,9 +222,10 @@ CREATE PROCEDURE blackstarDb.GetBigTicketTable()
 BEGIN
 
 	SELECT 
+		'' AS num,
 		t.ticketId AS DT_RowId,
 		t.created AS created,
-		t.createdBy AS createdBy,
+		t.user AS createdBy,
 		p.contactName AS contactName,
 		p.contactPhone AS contactPhone,
 		p.contactEmail AS contactEmail,
@@ -123,23 +240,23 @@ BEGIN
 		p.solutionTimeHr AS solutionTimeHr,
 		p.equipmentAddress AS equipmentAddress,
 		p.equipmentLocation AS equipmentLocation,
-		p.includesParts AS includesParts,
+		IF(p.includesParts, 'SI', 'NO') AS includesParts,
 		p.exceptionParts AS exceptionParts,
 		sc.serviceCenter AS serviceCenter,
 		o.officeName AS office,
 		p.project AS project,
 		t.ticketNumber AS ticketNumber,
-		t.phoneResolved AS phoneResolved,
+		IF(t.phoneResolved, 'SI', 'NO') AS phoneResolved,
 		t.arrival AS arrival,
 		t.responseTimeDeviationHr AS responseTimeDeviationHr,
 		'FollowUp' AS followUp,
-		t.closed AS closed,
+		IFNULL(t.closed, '') AS closed,
 		IFNULL(so.serviceOrderNumber, '') AS serviceOrderNumber,
 		t.employee AS employee,
 		t.solutionTime AS solutionTime,
 		t.solutionTimeDeviationHr AS solutionTimeDeviationHr,
 		ts.ticketStatus AS ticketStatus,
-		'Cerrar' AS Cerrar
+		t.ticketNumber AS Cerrar
 	FROM ticket t
 		INNER JOIN policy p ON p.policyId = t.policyId	
 		INNER JOIN ticketStatus ts on ts.ticketStatusId = t.ticketStatusId
@@ -151,6 +268,10 @@ BEGIN
 	
 END$$
 
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetFollowUpByOS
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetFollowUpByOS$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetFollowUpByTicket
@@ -161,12 +282,12 @@ BEGIN
 
 	SELECT 
 		created AS created,
-		u2.name AS craetedBy,
+		u2.name AS createdBy,
 		u.name AS asignee,
 		followup AS followUp
 	FROM followUp f
-		INNER JOIN blackstarUser u ON f.asignee = u.email
-		INNER JOIN blackstarUser u2 ON f.createdBy = u2.email
+		LEFT OUTER JOIN blackstarUser u ON f.asignee = u.email
+		LEFT OUTER JOIN blackstarUser u2 ON f.createdBy = u2.email
 	WHERE ticketId = pTicketId
 	ORDER BY created;
 	
@@ -250,7 +371,7 @@ BEGIN
 	SELECT u.email AS userEmail, u.name AS userName, g.name AS groupName
 	FROM blackstarUser_userGroup ug
 		INNER JOIN blackstarUser u ON u.blackstarUserId = ug.blackstarUserId
-		INNER JOIN userGroup g ON g.userGroupId = ug.userGroupId
+		LEFT OUTER JOIN userGroup g ON g.userGroupId = ug.userGroupId
 	WHERE u.email = pEmail;
 	
 END$$
@@ -364,7 +485,7 @@ END$$
 	-- blackstarDb.GetServiceOrders
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetServiceOrders$$
-CREATE PROCEDURE blackstarDb.GetServiceOrders (IN status VARCHAR(20))
+CREATE PROCEDURE blackstarDb.GetServiceOrders(IN status VARCHAR(20))
 BEGIN
 
 	SELECT 

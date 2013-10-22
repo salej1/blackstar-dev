@@ -61,8 +61,9 @@ public class MySQLEquipmentTypeDAO implements EquipmentTypeDAO, Serializable {
 	@Override
 	public Equipmenttype getEquipmentTypeById(char id) {
 		Equipmenttype equipmentType = null;
+		Connection conn = null;
 		try {
-			Connection conn = MySQLDAOFactory.createConnection();
+			conn = MySQLDAOFactory.createConnection();
 			PreparedStatement ps = conn.prepareStatement("Select * from equipmenttype where equipmenttypeId = ?");
 			ps.setString(1, Character.toString(id));
 			ResultSet rs = ps.executeQuery();
@@ -74,6 +75,16 @@ public class MySQLEquipmentTypeDAO implements EquipmentTypeDAO, Serializable {
 		} catch (ClassNotFoundException | SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+		finally{
+			if(conn != null){
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		}
 		// TODO Auto-generated method stub
 		return equipmentType;

@@ -30,8 +30,9 @@ public class MySQLServiceOrderDAO implements ServiceOrderDAO, Serializable {
 	public List<Serviceorder> selectAllServiceOrder() {
 		List<Serviceorder> lstServiceOrder = new ArrayList<Serviceorder>();
 		Serviceorder serviceOrder = null;
+		Connection conn = null;
 		try {
-			Connection conn = MySQLDAOFactory.createConnection();
+			conn = MySQLDAOFactory.createConnection();
 			PreparedStatement ps = conn.prepareStatement("Select * from serviceOrder ");
 			ResultSet rs = ps.executeQuery();
 			
@@ -49,6 +50,16 @@ public class MySQLServiceOrderDAO implements ServiceOrderDAO, Serializable {
 		} catch (ClassNotFoundException | SQLException e) {
 			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
 		}
+		finally{
+			if(conn != null){
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
 		// TODO Auto-generated method stub
 		return lstServiceOrder;
 	}
@@ -56,8 +67,9 @@ public class MySQLServiceOrderDAO implements ServiceOrderDAO, Serializable {
 	@Override
 	public Serviceorder getServiceOrderById(int id) {
 		Serviceorder serviceOrder = new Serviceorder();
+		Connection conn = null;
 		try {
-			Connection conn = MySQLDAOFactory.createConnection();
+			conn = MySQLDAOFactory.createConnection();
 			PreparedStatement ps = conn.prepareStatement("Select * from serviceOrder where serviceOrderId = ?");
 			ps.setInt(1, id);
 			ResultSet rs = ps.executeQuery();
@@ -75,6 +87,16 @@ public class MySQLServiceOrderDAO implements ServiceOrderDAO, Serializable {
 		} catch (ClassNotFoundException | SQLException e) {
 			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
 		}
+		finally{
+			if(conn != null){
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
 		// TODO Auto-generated method stub
 		return serviceOrder;
 	}
@@ -89,6 +111,43 @@ public class MySQLServiceOrderDAO implements ServiceOrderDAO, Serializable {
 	public boolean updateServiceOrder() {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public Serviceorder getServiceOrderByNum(String num) {
+		Serviceorder serviceOrder = new Serviceorder();
+		Connection conn = null;
+		try {
+			conn = MySQLDAOFactory.createConnection();
+			PreparedStatement ps = conn.prepareStatement("Select * from serviceOrder where serviceOrderNumber = ?");
+			ps.setString(1, num);
+			ResultSet rs = ps.executeQuery();
+			
+			while(rs.next()) {
+				serviceOrder = new Serviceorder(rs.getString("serviceTypeId").charAt(0), rs.getInt("ticketId"),
+						rs.getShort("policyId"), rs.getString("serviceUnit"), rs.getDate("serviceDate"),
+						rs.getString("responsible"), rs.getString("receivedBy"), rs.getString("serviceComments"),
+						rs.getString("servicestatusId"), rs.getDate("closed"), rs.getString("consultant"), rs.getString("coordinator"),
+						rs.getString("asignee"), rs.getDate("created"), rs.getString("createdBy"),
+						rs.getString("createdByUsr"), rs.getDate("modified"), rs.getString("modifiedBy"),
+						rs.getString("modifiedByUsr"), rs.getString("signCreated"), rs.getString("signReceivedBy"),rs.getString("receivedByPosition"),rs.getString("serviceOrderNumber"),rs.getInt("serviceOrderId"));
+						
+			}
+		} catch (ClassNotFoundException | SQLException e) {
+			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
+		}
+		finally{
+			if(conn != null){
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		// TODO Auto-generated method stub
+		return serviceOrder;
 	}
 
 }

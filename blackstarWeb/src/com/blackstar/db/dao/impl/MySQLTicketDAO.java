@@ -30,8 +30,9 @@ public class MySQLTicketDAO implements TicketDAO, Serializable {
 	public List<Ticket> selectAllTicket() {
 		List<Ticket> lstTickets = new ArrayList<Ticket>();
 		Ticket ticket = null;
+		Connection conn = null;
 		try {
-			Connection conn = MySQLDAOFactory.createConnection();
+			conn = MySQLDAOFactory.createConnection();
 			PreparedStatement ps = conn.prepareStatement("Select * from ticket");
 			ResultSet rs = ps.executeQuery();
 			
@@ -48,6 +49,16 @@ public class MySQLTicketDAO implements TicketDAO, Serializable {
 			}
 		} catch (ClassNotFoundException | SQLException e) {
 			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
+		}
+		finally{
+			if(conn != null){
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		}
 		// TODO Auto-generated method stub
 		return lstTickets;
@@ -68,8 +79,9 @@ public class MySQLTicketDAO implements TicketDAO, Serializable {
 	@Override
 	public Ticket getTicketById(int id) {
 		Ticket ticket = null;
+		Connection conn = null;
 		try {
-			Connection conn = MySQLDAOFactory.createConnection();
+			conn = MySQLDAOFactory.createConnection();
 			PreparedStatement ps = conn.prepareStatement("Select * from ticket where ticketId = ?");
 			ps.setInt(1, id);
 			ResultSet rs = ps.executeQuery();
@@ -87,6 +99,16 @@ public class MySQLTicketDAO implements TicketDAO, Serializable {
 		} catch (ClassNotFoundException | SQLException e) {
 			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
 		}
+		finally{
+			if(conn != null){
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
 		// TODO Auto-generated method stub
 		return ticket;
 	}
@@ -94,12 +116,13 @@ public class MySQLTicketDAO implements TicketDAO, Serializable {
 	@Override
 	public Ticket getTicketByNumber(String number) {
 		Ticket ticket = null;
+		Connection conn = null;
 		try {
-			Connection conn = MySQLDAOFactory.createConnection();
+			conn = MySQLDAOFactory.createConnection();
 			ResultSet rs = conn.createStatement().executeQuery(String.format("Select * from ticket where ticketNumber = '%s'", number));
 			
 			while(rs.next()) {
-				ticket = new Ticket(rs.getInt("ticketId"),rs.getInt("policyId"), rs.getShort("serviceId"), rs.getString("user"),
+				ticket = new Ticket(rs.getInt("ticketId"),rs.getInt("policyId"), rs.getShort("serviceOrderId"), rs.getString("user"),
 						rs.getString("observations"), new Character(rs.getString("ticketStatusId").charAt(0)),
 						rs.getShort("realResponseTime"), rs.getTimestamp("arrival"), rs.getString("employee"),
 						rs.getString("asignee"), rs.getTimestamp("closed"), rs.getInt("solutionTime"),
@@ -110,6 +133,16 @@ public class MySQLTicketDAO implements TicketDAO, Serializable {
 			}
 		} catch (ClassNotFoundException | SQLException e) {
 			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
+		}
+		finally{
+			if(conn != null){
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		}
 		// TODO Auto-generated method stub
 		return ticket;

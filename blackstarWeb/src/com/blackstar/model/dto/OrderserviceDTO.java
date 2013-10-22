@@ -11,8 +11,8 @@ public class OrderserviceDTO {
 	
 	public OrderserviceDTO(String coordinator, Integer serviceOrderId, String serviceOrderNo, String ticketNo, Integer ticketId, 
 							String customer, String equipmentAddress, String contactName, Date serviceDate, String contactPhone, 
-							Character equipmentType, String equipmentBrand, String equipmentModel, String equipmentSerialNo, String failureDescription, 
-							Character serviceType, String proyectNumber, String detailIssue, String detailWorkDone, String detailTechnicalJob, 
+							String equipmentType, String equipmentBrand, String equipmentModel, String equipmentSerialNo, String failureDescription, 
+							String serviceType, String proyectNumber, String detailIssue, String detailWorkDone, String detailTechnicalJob, 
 							String detailRequirments, String detailStatus, String signCreated, String signReceivedBy, String receivedBy, String responsible, Date closed, String receivedByPosition)
 	{
 		this.coordinator = coordinator;
@@ -56,12 +56,12 @@ public class OrderserviceDTO {
 	private Date serviceDate;
 	private String contactName;
 	private String contactPhone;
-	private Character equipmentType;
+	private String equipmentType;
 	private String equipmentBrand;
 	private String equipmentModel;
 	private String equipmentSerialNo;
 	private String failureDescription;
-	private Character serviceType;
+	private String serviceType;
 	private String proyectNumber;
 	private String detailIssue;
 	private String detailWorkDone;
@@ -133,10 +133,10 @@ public class OrderserviceDTO {
 	public void setContactPhone(String contactPhone) {
 		this.contactPhone = contactPhone;
 	}
-	public Character getEquipmentType() {
+	public String getEquipmentType() {
 		return equipmentType;
 	}
-	public void setEquipmentType(Character equipmentType) {
+	public void setEquipmentType(String equipmentType) {
 		this.equipmentType = equipmentType;
 	}
 	public String getEquipmentBrand() {
@@ -163,10 +163,10 @@ public class OrderserviceDTO {
 	public void setFailureDescription(String failureDescription) {
 		this.failureDescription = failureDescription;
 	}
-	public Character getServiceType() {
+	public String getServiceType() {
 		return serviceType;
 	}
-	public void setServiceType(Character serviceType) {
+	public void setServiceType(String serviceType) {
 		this.serviceType = serviceType;
 	}
 	public String getProyectNumber() {
