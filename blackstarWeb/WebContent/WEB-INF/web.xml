@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
-  <display-name>blackstarWeb</display-name>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns="http://java.sun.com/xml/ns/javaee"
+xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
+<display-name>blackstarWeb</display-name>
   <context-param>
     <param-name>LoggLevel</param-name>
-    <param-value>ERROR</param-value>
+    <param-value>DEBUG</param-value>
   </context-param>
   <context-param>
     <param-name>javax.faces.PROJECT_STAGE</param-name>
@@ -135,7 +139,7 @@
     <servlet-name>AddFollowUp</servlet-name>
     <url-pattern>/addFollowUp</url-pattern>
   </servlet-mapping>
-    <servlet>
+  <servlet>
     <description></description>
     <display-name>ScheduleStatus</display-name>
     <servlet-name>ScheduleStatus</servlet-name>
@@ -145,4 +149,27 @@
     <servlet-name>ScheduleStatus</servlet-name>
     <url-pattern>/scheduleStatus</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>Logout</display-name>
+    <servlet-name>Logout</servlet-name>
+    <servlet-class>com.blackstar.web.Logout</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Logout</servlet-name>
+    <url-pattern>/logout</url-pattern>
+  </servlet-mapping>
+  
+    <!-- The following ensures the user will be logged in to a Google Account by
+    redirecting them to the sign-in page if not.
+    For more information, see https://developers.google.com/appengine/docs/java/config/webxml -->
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>any</web-resource-name>
+      <url-pattern>/*</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>*</role-name>
+    </auth-constraint>
+  </security-constraint>
 </web-app>

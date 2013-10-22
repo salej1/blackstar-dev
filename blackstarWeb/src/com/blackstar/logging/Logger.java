@@ -21,7 +21,7 @@ public class Logger {
 	private static void WriteToLog(LogLevel level, String who, String message,
 			String stackTrace) {
 
-		String propLogLvl = "INFO";  //System.getProperty("AppLogLevel");
+		String propLogLvl = "DEBUG";  //System.getProperty("AppLogLevel");
 		LogLevel appLogLevel = LogLevel.INFO;
 		switch (propLogLvl) {
 		case "DEBUG":

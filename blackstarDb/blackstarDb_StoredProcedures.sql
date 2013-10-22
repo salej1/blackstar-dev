@@ -247,7 +247,7 @@ BEGIN
 		p.project AS project,
 		t.ticketNumber AS ticketNumber,
 		IF(t.phoneResolved, 'SI', 'NO') AS phoneResolved,
-		t.arrival AS arrival,
+		IFNULL(t.arrival, '') AS arrival,
 		t.responseTimeDeviationHr AS responseTimeDeviationHr,
 		'FollowUp' AS followUp,
 		IFNULL(t.closed, '') AS closed,
@@ -331,7 +331,7 @@ BEGIN
 
 	SELECT 
 		serviceOrderId AS serviceOrderId,
-		effectiveDate AS scheduledDate,
+		serviceDate AS scheduledDate,
 		equipmentType AS equipmentType,
 		customer AS customer,
 		serialNumber AS serialNumber,
@@ -342,8 +342,8 @@ BEGIN
 		INNER JOIN blackstarDb.policy p ON s.policyId = p.policyId
 		INNER JOIN blackstarDb.equipmentType et ON et.equipmentTypeId = p.equipmentTypeId
 	WHERE serviceStatus = 'P'
-		AND effectiveDate >= CURRENT_DATE()
-	ORDER BY effectiveDate DESC;
+		AND serviceDate >= CURRENT_DATE()
+	ORDER BY serviceDate DESC;
 	
 END$$
 

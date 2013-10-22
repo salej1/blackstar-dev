@@ -8,17 +8,15 @@ import java.util.logging.*;
 
 public class ManageDataAccess {
 
-	public static ResultSet executeQuery(String sql) throws Exception {
+	public static void executeQuery(String sql) throws Exception {
 		Connection conn = null;
 		
 		try {
 			conn = DbConnectionProvider.getConnection("blackstarManage");
 
-			ResultSet res = conn.createStatement().executeQuery(sql);
+			conn.createStatement().executeQuery(sql);
 
 			conn.close();
-			
-			return res;
 
 		} catch (Exception e) {
 			// Utilizando el logger del container! no hay acceso a la BD

@@ -52,79 +52,85 @@ public class osDetail extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		/// obtener del request el id de la orden de servicio 
-		String idOS = request.getParameter("serviceOrderId");
-		String numOs = request.getParameter("osNum");
-		Serviceorder serviceOrder = null;
-		BlackstarDataAccess da = new BlackstarDataAccess();
-		
-		if(idOS != null){
-			serviceOrder = this.daoFactory.getServiceOrderDAO().getServiceOrderById(Integer.parseInt(idOS));
-		}
-		else if(numOs != null){
-			serviceOrder = this.daoFactory.getServiceOrderDAO().getServiceOrderByNum(numOs);
-		}
-		if(serviceOrder.getServiceOrderId() != null)
-		{
-			/// Obtener la poliza asociada a la orden de servicio
-			Policy policy  = this.daoFactory.getPolicyDAO().getPolicyById(serviceOrder.getPolicyId());
+		try {
+			/// obtener del request el id de la orden de servicio 
+			String idOS = request.getParameter("serviceOrderId");
+			String numOs = request.getParameter("osNum");
+			Serviceorder serviceOrder = null;
+			BlackstarDataAccess da = new BlackstarDataAccess();
 			
-			/// Obtener el ticket asociado a la orden de servicio
-			Ticket ticket =null;
-			
-			if( serviceOrder.getTicketId()!= null)
-				 ticket  = this.daoFactory.getTicketDAO().getTicketById(serviceOrder.getTicketId());
-			
-			// Obtener el tipo de servicio asociado
-			Servicetype st = null;
-			if(serviceOrder.getServiceTypeId() != null){
-				st = this.daoFactory.getServiceTypeDAO().getServiceTypeById(serviceOrder.getServiceTypeId());
+			if(idOS != null){
+				serviceOrder = this.daoFactory.getServiceOrderDAO().getServiceOrderById(Integer.parseInt(idOS));
 			}
-			
-			// Obtener el tipo de equipo asociado
-			Equipmenttype et = null;
-			if(policy.getEquipmentTypeId() != null){
-				et = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
+			else if(numOs != null){
+				serviceOrder = this.daoFactory.getServiceOrderDAO().getServiceOrderByNum(numOs);
 			}
-			
-			OrderserviceDTO serviceOrderDTO;
-			
-			if(ticket != null)
+			if(serviceOrder.getServiceOrderId() != null)
 			{
-			/// Crea el objeto DTO (OrderserviceDTO)
-				serviceOrderDTO = new OrderserviceDTO(serviceOrder.getCoordinator(), serviceOrder.getServiceOrderId(), serviceOrder.getServiceOrderNumber(), ticket.getTicketNumber(),
-																	ticket.getTicketId(), policy.getCustomer(), policy.getEquipmentAddress(), policy.getContactName(), serviceOrder.getServiceDate(), 
-																	policy.getContactPhone(), et.getEquipmentType(), policy.getBrand(), policy.getModel(), policy.getSerialNumber(), 
-																	ticket.getObservations(), st.getServiceType(), policy.getProject(), "", "", 
-																	"", "", serviceOrder.getServiceComments(), serviceOrder.getSignCreated(), serviceOrder.getsignReceivedBy(), 
-																	serviceOrder.getReceivedBy(), serviceOrder.getResponsible(), serviceOrder.getClosed(), serviceOrder.getReceivedByPosition());
+				/// Obtener la poliza asociada a la orden de servicio
+				Policy policy  = this.daoFactory.getPolicyDAO().getPolicyById(serviceOrder.getPolicyId());
+				if(policy == null){
+					
+				}
+				/// Obtener el ticket asociado a la orden de servicio
+				Ticket ticket =null;
+				
+				if( serviceOrder.getTicketId()!= null)
+					 ticket  = this.daoFactory.getTicketDAO().getTicketById(serviceOrder.getTicketId());
+				
+				// Obtener el tipo de servicio asociado
+				Servicetype st = null;
+				if(serviceOrder.getServiceTypeId() != null){
+					st = this.daoFactory.getServiceTypeDAO().getServiceTypeById(serviceOrder.getServiceTypeId());
+				}
+				
+				// Obtener el tipo de equipo asociado
+				Equipmenttype et = null;
+				if(policy.getEquipmentTypeId() != null){
+					et = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
+				}
+				
+				OrderserviceDTO serviceOrderDTO;
+				
+				if(ticket != null)
+				{
+				/// Crea el objeto DTO (OrderserviceDTO)
+					serviceOrderDTO = new OrderserviceDTO(serviceOrder.getCoordinator(), serviceOrder.getServiceOrderId(), serviceOrder.getServiceOrderNumber(), ticket.getTicketNumber(),
+																		ticket.getTicketId(), policy.getCustomer(), policy.getEquipmentAddress(), policy.getContactName(), serviceOrder.getServiceDate(), 
+																		policy.getContactPhone(), et.getEquipmentType(), policy.getBrand(), policy.getModel(), policy.getSerialNumber(), 
+																		ticket.getObservations(), st.getServiceType(), policy.getProject(), "", "", 
+																		"", "", serviceOrder.getServiceComments(), serviceOrder.getSignCreated(), serviceOrder.getsignReceivedBy(), 
+																		serviceOrder.getReceivedBy(), serviceOrder.getResponsible(), serviceOrder.getClosed(), serviceOrder.getReceivedByPosition());
+				}
+				else
+				{
+					serviceOrderDTO = new OrderserviceDTO(serviceOrder.getCoordinator(), serviceOrder.getServiceOrderId(), serviceOrder.getServiceOrderNumber(), "NA",
+							0, policy.getCustomer(), policy.getEquipmentAddress(), policy.getContactName(), serviceOrder.getServiceDate(), 
+							policy.getContactPhone(), et.getEquipmentType(), policy.getBrand(), policy.getModel(), policy.getSerialNumber(), 
+							"", st.getServiceType(), policy.getProject(), "", "", 
+							"", "", serviceOrder.getServiceComments(), serviceOrder.getSignCreated(), serviceOrder.getsignReceivedBy(), 
+							serviceOrder.getReceivedBy(), serviceOrder.getResponsible(), serviceOrder.getClosed(), serviceOrder.getReceivedByPosition());
+					
+				}
+					
+				request.setAttribute("serviceOrderDetail", serviceOrderDTO);
+				
+				IUserService dir = UserServiceFactory.getUserService();
+				request.setAttribute("employees", dir.getEmployeeList());
+				
+				// Obtener los followups asociados a la orden de servicio
+				List<FollowUpDTO> followUps = getFollowUpList(serviceOrder.getServiceOrderId(), da);
+				request.setAttribute("followUps", followUps);
+
+				request.getRequestDispatcher("/osDetail.jsp").forward(request, response);
 			}
 			else
-			{
-				serviceOrderDTO = new OrderserviceDTO(serviceOrder.getCoordinator(), serviceOrder.getServiceOrderId(), serviceOrder.getServiceOrderNumber(), "NA",
-						0, policy.getCustomer(), policy.getEquipmentAddress(), policy.getContactName(), serviceOrder.getServiceDate(), 
-						policy.getContactPhone(), et.getEquipmentType(), policy.getBrand(), policy.getModel(), policy.getSerialNumber(), 
-						"", st.getServiceType(), policy.getProject(), "", "", 
-						"", "", serviceOrder.getServiceComments(), serviceOrder.getSignCreated(), serviceOrder.getsignReceivedBy(), 
-						serviceOrder.getReceivedBy(), serviceOrder.getResponsible(), serviceOrder.getClosed(), serviceOrder.getReceivedByPosition());
-				
+			{	
+				Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), "No hay Orden de Servicio con el Id " + idOS, "" );
+				request.getRequestDispatcher("/osDetail.jsp").forward(request, response);
 			}
-				
-			request.setAttribute("serviceOrderDetail", serviceOrderDTO);
-			
-			IUserService dir = UserServiceFactory.getUserService();
-			request.setAttribute("employees", dir.getEmployeeList());
-			
-			// Obtener los followups asociados a la orden de servicio
-			List<FollowUpDTO> followUps = getFollowUpList(serviceOrder.getServiceOrderId(), da);
-			request.setAttribute("followUps", followUps);
-	
-			request.getRequestDispatcher("/osDetail.jsp").forward(request, response);
-		}
-		else
-		{	
-			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), "No hay Orden de Servicio con el Id " + idOS, "" );
-			request.getRequestDispatcher("/osDetail.jsp").forward(request, response);
+		} catch (NumberFormatException e) {
+			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
 		}
 	}
 

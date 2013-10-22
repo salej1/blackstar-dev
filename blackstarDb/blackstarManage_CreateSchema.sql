@@ -1,4 +1,4 @@
-﻿-- -----------------------------------------------------
+-- -----------------------------------------------------
 -- File:	blackstarManage_createSchema.sql    
 -- Name:	blackstarManage_createSchema
 -- Desc:	crea una version inicial de la base de datos administrativa

@@ -2,6 +2,8 @@ package com.blackstar.web;
 
 import com.blackstar.model.User;
 import com.blackstar.common.*;
+import com.blackstar.db.DAOFactory;
+import com.blackstar.db.dao.interfaces.UserDAO;
 import com.google.api.client.auth.oauth2.AuthorizationCodeFlow;
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.extensions.appengine.auth.oauth2.AbstractAppEngineAuthorizationCodeServlet;
@@ -10,6 +12,7 @@ import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 
 import java.io.IOException;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -24,7 +27,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class Login
     extends AbstractAppEngineAuthorizationCodeServlet {
-
+	DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.MYSQL);
   /**
    * Be sure to specify the name of your application. If the application name is {@code null} or
    * blank, the application will log a warning. Suggested format is "MyCompany-ProductName/1.0".
@@ -49,14 +52,21 @@ public class Login
     
     // Add the code to make an API call here.
     UserService userService = UserServiceFactory.getUserService();
+    com.google.appengine.api.users.User gUser = userService.getCurrentUser();
     
-    User usr = new User(userService.getCurrentUser().getEmail(), userService.getCurrentUser().getNickname());
-    		
-    req.setAttribute("user", usr);
-    req.setAttribute("access_token", credential.getAccessToken());
+    if(gUser != null){
+    	String id = gUser.getEmail();
+    	User myUser; 
+    	UserDAO dao = this.daoFactory.getUserDAO();
+    	myUser = dao.getUserById(id);
+    	if(myUser != null){
+        	req.getSession().setAttribute("user", myUser);
+        	req.getSession().setAttribute("access_token", credential.getAccessToken());
+    	}
+    }
 
      // Send the results as the response
-    req.getRequestDispatcher("/dashboard").forward(req, resp);
+    resp.sendRedirect("/dashboard");
   }
   @Override
   protected AuthorizationCodeFlow initializeFlow() throws ServletException, IOException {
