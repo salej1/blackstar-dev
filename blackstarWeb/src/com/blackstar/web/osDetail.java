@@ -70,7 +70,7 @@ public class osDetail extends HttpServlet {
 				/// Obtener la poliza asociada a la orden de servicio
 				Policy policy  = this.daoFactory.getPolicyDAO().getPolicyById(serviceOrder.getPolicyId());
 				if(policy == null){
-					
+					Logger.Log(LogLevel.WARNING, "osDetail.doGet", "Referencia a poliza " + serviceOrder.getPolicyId() + " es nula" , "" );
 				}
 				/// Obtener el ticket asociado a la orden de servicio
 				Ticket ticket =null;
@@ -89,7 +89,9 @@ public class osDetail extends HttpServlet {
 				if(policy.getEquipmentTypeId() != null){
 					et = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
 				}
-				
+				if(et == null){
+					Logger.Log(LogLevel.WARNING, "osDetail.doGet", "Referencia a equipmentType " + policy.getEquipmentTypeId() + " es nula" , "" );
+				}
 				OrderserviceDTO serviceOrderDTO;
 				
 				if(ticket != null)

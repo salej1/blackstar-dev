@@ -30,7 +30,7 @@ public class MySQLEquipmentTypeDAO implements EquipmentTypeDAO, Serializable {
 		Equipmenttype equipmentType = null;
 		try {
 			Connection conn = MySQLDAOFactory.createConnection();
-			PreparedStatement ps = conn.prepareStatement("Select * from equipmenttype");
+			PreparedStatement ps = conn.prepareStatement("Select * from equipmentType");
 			ResultSet rs = ps.executeQuery();
 			
 			while(rs.next()) {
@@ -64,7 +64,7 @@ public class MySQLEquipmentTypeDAO implements EquipmentTypeDAO, Serializable {
 		Connection conn = null;
 		try {
 			conn = MySQLDAOFactory.createConnection();
-			PreparedStatement ps = conn.prepareStatement("Select * from equipmenttype where equipmenttypeId = ?");
+			PreparedStatement ps = conn.prepareStatement("Select * from equipmentType where equipmentTypeId = ?");
 			ps.setString(1, Character.toString(id));
 			ResultSet rs = ps.executeQuery();
 			
