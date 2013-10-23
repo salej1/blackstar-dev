@@ -8,18 +8,15 @@ import com.blackstar.logging.Logger;
 import com.blackstar.services.EmailServiceFactory;
 
 public class TicketController {
-	public static void AssignTicket(int ticketId, String employee, String who){
+	public static void AssignTicket(int ticketId, String asignee, String who){
 		BlackstarDataAccess da = new BlackstarDataAccess();
 		
 		try {
 
-			//User who = (User)request.getSession().getAttribute("user");
-			String userName = "portal-servicios@gposac.com.mx";
-			da.executeQuery(String.format("CALL AssignTicket('%s', '%s', '%s', '%s')", ticketId, employee, userName, "Dashboard"));
+			da.executeUpdate(String.format("CALL AssignTicket('%s', '%s', '%s', '%s')", ticketId, asignee, who, "Dashboard"));
 			
-			SendAssignationEmail(ticketId, employee, userName);
+			SendAssignationEmail(ticketId, asignee, who);
 		} catch (Exception ex) {
-			// TODO Auto-generated catch block
 			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), ex);
 		}
 		finally{
@@ -27,7 +24,6 @@ public class TicketController {
 		}
 	}
 	
-
 	private static void SendAssignationEmail(int ticketId, String employee, String who){
 		String officeMail = "";
 		String ssMail = "";
@@ -36,72 +32,82 @@ public class TicketController {
 		DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.MYSQL);
 		
 		Ticket myTicket = daoFactory.getTicketDAO().getTicketById(ticketId);
-		ticketNum = myTicket.getTicketNumber();
-		
-		int policyId = myTicket.getPolicyId();
-		
-		if(policyId > 0)
-		{
-			Policy tickPolicy;
-			tickPolicy = daoFactory.getPolicyDAO().getPolicyById(policyId);
+		if(myTicket != null){
 			
-			if(tickPolicy != null){
-				char officeId = tickPolicy.getOfficeId();
+			ticketNum = myTicket.getTicketNumber();
+			
+			int policyId = myTicket.getPolicyId();
+			
+			if(policyId > 0)
+			{
+				Policy tickPolicy;
+				tickPolicy = daoFactory.getPolicyDAO().getPolicyById(policyId);
 				
-				Office off = null;
-				// Office email
-				if((int)officeId > 0){
-					off = daoFactory.getOfficeDAO().getOfficeById(officeId);
-					officeMail = off.getOfficeEmail();
+				if(tickPolicy != null){
+					char officeId = tickPolicy.getOfficeId();
+					
+					
+					try {
+						Office off = null;
+						// Office email
+						if((int)officeId > 0){
+							off = daoFactory.getOfficeDAO().getOfficeById(officeId);
+							officeMail = off.getOfficeEmail();
+						}
+						
+						char ssId = tickPolicy.getServiceCenterId();
+						// Service center email
+						Servicecenter ss = null;
+						if(ssId > 0){
+							ss = daoFactory.getServiceCenterDAO().getServiceCenterById(ssId);
+							ssMail = ss.getServiceCenterEmail();
+						}
+						
+						char eqId = tickPolicy.getEquipmentTypeId();
+						// Service center email
+						Equipmenttype et = null;
+						if((int)eqId > 0){
+							et = daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(eqId);
+							equipmentType = et.getEquipmentType();
+						}
+						
+						// Enviar el email
+						IEmailService mail = EmailServiceFactory.getEmailService();
+						String to = employee + ", " + ssMail + ", " + officeMail;
+						String subject = String.format("Ticket %s asignado", ticketNum);
+						StringBuilder bodySb = new StringBuilder();
+						
+						bodySb.append(String.format("El reporte de emergencia con número de ticket %s le ha sido asignado. Por favor revise a continuación los detalles del reporte:", ticketNum));
+						bodySb.append(String.format("\r\n\r\n Marca temporal: %s", myTicket.getCreated()));
+						bodySb.append(String.format("\r\n\r\n Contacto: %s", tickPolicy.getContactName()));
+						bodySb.append(String.format("\r\n\r\n Teléfono de Contacto: %s", tickPolicy.getContactPhone()));
+						bodySb.append(String.format("\r\n\r\n Email de Contacto: %s", tickPolicy.getContactEmail()));
+						bodySb.append(String.format("\r\n\r\n Número de serie: %s", tickPolicy.getSerialNumber()));
+						bodySb.append(String.format("\r\n\r\n Observaciones: %s", myTicket.getObservations()));
+						bodySb.append(String.format("\r\n\r\n Cliente: %s", tickPolicy.getCustomer()));
+						bodySb.append(String.format("\r\n\r\n Equipo: %s", equipmentType));
+						bodySb.append(String.format("\r\n\r\n Marca: %s", tickPolicy.getBrand()));
+						bodySb.append(String.format("\r\n\r\n Modelo: %s", tickPolicy.getModel()));
+						bodySb.append(String.format("\r\n\r\n Capacidad: %s", tickPolicy.getCapacity()));
+						bodySb.append(String.format("\r\n\r\n Tiempo de respuesta compromiso: %s", tickPolicy.getResponseTimeHR()));
+						bodySb.append(String.format("\r\n\r\n Dirección del equipo: %s", tickPolicy.getEquipmentAddress()));
+						bodySb.append(String.format("\r\n\r\n Ubicación del equipo: %s", tickPolicy.getEquipmentLocation()));
+						if(tickPolicy.getIncludesParts()){
+							bodySb.append(String.format("\r\n\r\n Incluye partes: %s", "SI"));
+						}
+						else{
+							bodySb.append(String.format("\r\n\r\n Incluye partes: %s", "NO"));
+						}
+						bodySb.append(String.format("\r\n\r\n Excepcion partes: %s", tickPolicy.getExceptionParts()));
+						bodySb.append(String.format("\r\n\r\n Centro de servicio: %s", ss.getServiceCenter()));
+						bodySb.append(String.format("\r\n\r\n Oficina: %s", off.getOfficeName()));
+						bodySb.append(String.format("\r\n\r\n Proyecto: %s", tickPolicy.getProject()));
+						mail.sendEmail(who, to, subject, bodySb.toString()
+								);
+					} catch (Exception e) {
+						Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
+					}
 				}
-				
-				char ssId = tickPolicy.getServiceCenterId();
-				// Service center email
-				Servicecenter ss = null;
-				if(ssId > 0){
-					ss = daoFactory.getServiceCenterDAO().getServiceCenterById(ssId);
-					ssMail = ss.getServiceCenterEmail();
-				}
-				
-				char eqId = tickPolicy.getEquipmentTypeId();
-				// Service center email
-				Equipmenttype et = null;
-				if((int)eqId > 0){
-					et = daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(eqId);
-					equipmentType = et.getEquipmentType();
-				}
-				
-				// Enviar el email
-				IEmailService mail = EmailServiceFactory.getEmailService();
-				String to = employee + ", " + ssMail + ", " + officeMail;
-				String subject = String.format("Ticket %s asignado", ticketNum);
-				String body = String.format("El reporte de emergencia con número de ticket %s le ha sido asignado. Por favor revise a continuación los detalles del reporte: ", ticketNum);
-				body.concat(String.format("\r\n\r\n Marca temporal: ", myTicket.getCreated()));
-				body.concat(String.format("\r\n\r\n Usuario: ", myTicket.getCreated()));
-				body.concat(String.format("\r\n\r\n Contacto: ", tickPolicy.getContactName()));
-				body.concat(String.format("\r\n\r\n Teléfono de Contacto: ", tickPolicy.getContactPhone()));
-				body.concat(String.format("\r\n\r\n Email de Contacto: ", tickPolicy.getContactEmail()));
-				body.concat(String.format("\r\n\r\n Número de serie: ", tickPolicy.getSerialNumber()));
-				body.concat(String.format("\r\n\r\n Observaciones: ", myTicket.getObservations()));
-				body.concat(String.format("\r\n\r\n Cliente: ", tickPolicy.getCustomer()));
-				body.concat(String.format("\r\n\r\n Equipo: ", equipmentType));
-				body.concat(String.format("\r\n\r\n Marca: ", tickPolicy.getBrand()));
-				body.concat(String.format("\r\n\r\n Modelo: ", tickPolicy.getModel()));
-				body.concat(String.format("\r\n\r\n Capacidad: ", tickPolicy.getCapacity()));
-				body.concat(String.format("\r\n\r\n Tiempo de respuesta compromiso: ", tickPolicy.getResponseTimeHR()));
-				body.concat(String.format("\r\n\r\n Dirección del equipo: ", tickPolicy.getEquipmentAddress()));
-				body.concat(String.format("\r\n\r\n Ubicación del equipo: ", tickPolicy.getEquipmentLocation()));
-				if(tickPolicy.getIncludesParts()){
-					body.concat(String.format("\r\n\r\n Incluye partes: ", "SI"));
-				}
-				else{
-					body.concat(String.format("\r\n\r\n Incluye partes: ", "NO"));
-				}
-				body.concat(String.format("\r\n\r\n Excepcion partes: ", tickPolicy.getExceptionParts()));
-				body.concat(String.format("\r\n\r\n Centro de servicio: ", ss.getServiceCenter()));
-				body.concat(String.format("\r\n\r\n Oficina: ", off.getOfficeName()));
-				body.concat(String.format("\r\n\r\n Proyecto: ", tickPolicy.getProject()));
-				mail.sendEmail(to, subject, body);
 			}
 		}
 	}

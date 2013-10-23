@@ -37,7 +37,7 @@ BEGIN
 		stackTrace
 	)
 	SELECT 
-		pLevel, CURRENT_DATE(), pError, pSender, pStackTrace;
+		pLevel, NOW(), pError, pSender, pStackTrace;
 	
 END$$
 

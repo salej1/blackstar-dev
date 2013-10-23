@@ -5,7 +5,6 @@ import java.util.Properties;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
-import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
@@ -14,9 +13,7 @@ import javax.mail.internet.MimeMessage;
 public class GmailService implements IEmailService{
 
 	@Override
-	public void sendEmail(String to, String subject, String body) {
-		final String username = "portal-servicios@gposac.com.mx";
-		final String password = "SACPORTAL";
+	public void sendEmail(String from, String to, String subject, String body) {
  
 		Properties props = new Properties();
 		props.put("mail.smtp.auth", "true");
@@ -24,17 +21,12 @@ public class GmailService implements IEmailService{
 		props.put("mail.smtp.host", "smtp.gmail.com");
 		props.put("mail.smtp.port", "587");
  
-		Session session = Session.getInstance(props,
-		  new javax.mail.Authenticator() {
-			protected PasswordAuthentication getPasswordAuthentication() {
-				return new PasswordAuthentication(username, password);
-			}
-		  });
+		Session session = Session.getInstance(props, null);
  
 		try {
  
 			Message message = new MimeMessage(session);
-			message.setFrom(new InternetAddress(username));
+			message.setFrom(new InternetAddress(from));
 			message.setRecipients(Message.RecipientType.TO,
 				InternetAddress.parse(to));
 			message.setSubject(subject);

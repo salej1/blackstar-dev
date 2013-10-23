@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import com.blackstar.common.Globals;
 import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
 import com.google.appengine.api.utils.SystemProperty;
@@ -18,13 +19,13 @@ public class DbConnectionProvider {
 			if (SystemProperty.environment.value() ==
 			    SystemProperty.Environment.Value.Production) {
 			  // Load the class that provides the new "jdbc:google:mysql://" prefix.
-			  Class.forName("com.mysql.jdbc.GoogleDriver");
-			  url = String.format("jdbc:google:rdbms://salej1-blackstar-dev:salej1-blackstar-dev/%s", db);
+			  Class.forName(Globals.GOOGLE_DRIVER_CLASS);
+			  url = String.format(Globals.CONNECTION_STRING_TEMPLATE, db);
 			  conn =  (Connection) DriverManager.getConnection(url);
 			} else {
 			  // Local MySQL instance to use during development.
-			  Class.forName("com.mysql.jdbc.Driver");
-			  url = String.format("jdbc:mysql://localhost:3306/%s", db);
+			  Class.forName(Globals.DEFAULT_DRIVER_CLASS);
+			  url = String.format(Globals.LOCAL_CONNECTION_STRING_TEMPLATE, db);
 			  conn =  (Connection) DriverManager.getConnection(url, "root", "");
 			}
 		}

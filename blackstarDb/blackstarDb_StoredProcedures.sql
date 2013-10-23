@@ -65,8 +65,8 @@ BEGIN
 	UPDATE ticket t 
 		INNER JOIN policy p ON p.policyId = t.policyId
 	SET 
-		t.ticketStatusId = IF(TIMESTAMPDIFF(HOUR, t.created, CURRENT_DATE()) > p.solutionTimeHR, 'R', 'A'),
-		t.modified = CURRENT_DATE(),
+		t.ticketStatusId = IF(TIMESTAMPDIFF(HOUR, t.created, NOW()) > p.solutionTimeHR, 'R', 'A'),
+		t.modified = NOW(),
 		t.modifiedBy = 'ReopenTicket',
 		t.modifiedByUsr = pModifiedBy
 	WHERE t.ticketId = pTicketId;
@@ -87,7 +87,7 @@ BEGIN
 	SET 
 		t.ticketStatusId = IF(t2.ticketStatusId = 'R', 'F', 'C'),
 		t.serviceOrderId = pOsId,
-		t.modified = CURRENT_DATE(),
+		t.modified = NOW(),
 		t.modifiedBy = 'CloseTicket',
 		t.modifiedByUsr = pModifiedBy
 	WHERE t.ticketId = pTicketId;
@@ -118,14 +118,7 @@ BEGIN
 		pCreated,
 		'AddFollowUpToTicket',
 		pCreatedBy;
-		
-	-- ASIGNAR lA ORDEN DE SERVICIO
-	UPDATE serviceOrder SET	
-		asignee = pAsignee,
-		modified = CURRENT_DATE(),
-		modifiedBy = 'AddFollowUpToTicket',
-		modifiedByUsr = pCreatedBy
-	WHERE ticketId = pOsId;
+
 END$$
 
 
@@ -152,14 +145,7 @@ BEGIN
 		pCreated,
 		'AddFollowUpToTicket',
 		pCreatedBy;
-		
-	-- ASIGNAR EL TICKET
-	UPDATE ticket SET	
-		asignee = pAsignee,
-		modified = CURRENT_DATE(),
-		modifiedBy = 'AddFollowUpToTicket',
-		modifiedByUsr = pCreatedBy
-	WHERE ticketId = pTicketId;
+
 END$$
 
 
@@ -186,7 +172,7 @@ BEGIN
 		engineer,
 		engineer,
 		'P',
-		CURRENT_DATE(),
+		NOW(),
 		'UpsertScheduledService',
 		pCreatedByUsr;
 		
@@ -252,7 +238,7 @@ BEGIN
 		'FollowUp' AS followUp,
 		IFNULL(t.closed, '') AS closed,
 		IFNULL(so.serviceOrderNumber, '') AS serviceOrderNumber,
-		t.employee AS employee,
+		IFNULL(t.employee, '') AS employee,
 		t.solutionTime AS solutionTime,
 		t.solutionTimeDeviationHr AS solutionTimeDeviationHr,
 		ts.ticketStatus AS ticketStatus,
@@ -317,7 +303,7 @@ BEGIN
 
 	SELECT customer
 	FROM blackstarDb.policy
-		WHERE startDate <= CURRENT_DATE() AND CURRENT_DATE <= endDate
+		WHERE startDate <= NOW() AND NOW <= endDate
 	ORDER BY customer;
 
 END$$
@@ -342,7 +328,7 @@ BEGIN
 		INNER JOIN blackstarDb.policy p ON s.policyId = p.policyId
 		INNER JOIN blackstarDb.equipmentType et ON et.equipmentTypeId = p.equipmentTypeId
 	WHERE serviceStatus = 'P'
-		AND serviceDate >= CURRENT_DATE()
+		AND serviceDate >= NOW()
 	ORDER BY serviceDate DESC;
 	
 END$$
@@ -475,7 +461,7 @@ BEGIN
 		INNER JOIN equipmentType et ON p.equipmenttypeId = et.equipmenttypeId
 		INNER JOIN office of on p.officeId = of.officeId
 		LEFT OUTER JOIN blackstarUser bu ON bu.email = tk.asignee
-	WHERE tk.created > '01-01' + YEAR(CURRENT_DATE())
+	WHERE tk.created > '01-01' + YEAR(NOW())
     ORDER BY tk.created DESC;
 	
 END$$
@@ -553,7 +539,7 @@ BEGIN
 	SELECT serialNumber, brand, model 
 	FROM blackstarDb.policy
 	WHERE customer = pCustomer
-		AND endDate > CURRENT_DATE()
+		AND endDate > NOW()
 	ORDER BY serialNumber;
 	
 END$$
@@ -572,7 +558,7 @@ BEGIN
 	SET
 		ticketStatusId = 'A'
 	WHERE closed IS NULL
-		AND TIMESTAMPDIFF(HOUR, t.created, CURRENT_DATE()) <= p.solutionTimeHR;
+		AND TIMESTAMPDIFF(HOUR, t.created, NOW()) <= p.solutionTimeHR;
 			
 	-- RETRASADOS
 	UPDATE blackstarDb.ticket t
@@ -580,7 +566,7 @@ BEGIN
 	SET
 		ticketStatusId = 'R'
 	WHERE closed IS NULL
-		AND TIMESTAMPDIFF(HOUR, t.created, CURRENT_DATE()) > p.solutionTimeHR;
+		AND TIMESTAMPDIFF(HOUR, t.created, NOW()) > p.solutionTimeHR;
 
 	-- CERRADOS
 	UPDATE blackstarDb.ticket SET
@@ -605,9 +591,9 @@ CREATE PROCEDURE blackstarDb.AssignTicket (pTicketId INTEGER, pEmployee VARCHAR(
 BEGIN
 
 	UPDATE ticket SET
-		employee = pEmployee,
+		employee = IFNULL(employee, pEmployee),
 		asignee = pEmployee,
-		modified = CURRENT_DATE(),
+		modified = NOW(),
 		modifiedBy = proc,
 		modifiedByUsr = usr
 	WHERE ticketId = pTicketId;

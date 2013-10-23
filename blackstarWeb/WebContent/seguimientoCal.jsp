@@ -156,28 +156,34 @@
 															var d = new Date(); 
 															var content = "";
 															var buffer = "";
-															for(var i = 0; i < rawData[0].length; i++){		
-																var obj = rawData[0][i];
-																d = new Date(obj.created);
-																content = template.replace('TIMESTAMP', d.format('dd/MM/yyyy h:mm:ss'));
-																if(obj.createdBy != null){
-																	content = content.replace('FROM', obj.createdBy);
-																}
-																else{
-																	content = content.replace('FROM', '');
-																}
-																if(obj.asignee != null){
-																	content = content.replace('WHO', obj.asignee);
-																}
-																else{
-																	content = content.replace('WHO', '');
-																}
-																content = content.replace('MYCOMMENT', obj.followUp);
-																
-																buffer = buffer + content;
+															if(rawData[0].length == 0){ //Si no hay ningun seguimiento capturado
+																buffer  = '<div onclick="addSeguimiento('+ row.DT_RowId + ', \'' + ticketNumberMap[row.DT_RowId] + '\');" style="width:700px;">Click aqui para agregar</div>';
 															}
+															else{
 															
-															buffer = outerTemplate.replace("INNER_TEMPLATE", buffer);
+																for(var i = 0; i < rawData[0].length; i++){		
+																	var obj = rawData[0][i];
+																	d = new Date(obj.created);
+																	content = template.replace('TIMESTAMP', d.format('dd/MM/yyyy h:mm:ss'));
+																	if(obj.createdBy != null){
+																		content = content.replace('FROM', obj.createdBy);
+																	}
+																	else{
+																		content = content.replace('FROM', '');
+																	}
+																	if(obj.asignee != null){
+																		content = content.replace('WHO', obj.asignee);
+																	}
+																	else{
+																		content = content.replace('WHO', '');
+																	}
+																	content = content.replace('MYCOMMENT', obj.followUp);
+																	
+																	buffer = buffer + content;
+																}
+																
+																buffer = outerTemplate.replace("INNER_TEMPLATE", buffer);
+															}
 															
 															return buffer;
 														}
@@ -298,7 +304,7 @@
 				});
 				
 				// inicializando el dialogo para agregar seguimientos
-				initFollowUpDlg("ticket");
+				initFollowUpDlg("ticket", "/seguimiento");
 				
 				// inicializando el llenado de la tabla
 				showBigTable();

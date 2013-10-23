@@ -99,7 +99,16 @@ public class Dashboard extends HttpServlet {
 			String ticket = request.getParameter("ticketId");
 			String employee = request.getParameter("employee");
 			int ticketId = Integer.parseInt(ticket);
-			String who = "portal-servicios";
+			User thisUser = (User) request.getSession().getAttribute("user");
+			String who = null;
+			
+			if(thisUser != null){
+				who = thisUser.getUserEmail();
+			}
+			else{
+				Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), "No se encontro atributo User en sesion, usando portal-servicios", "");
+				who = "portal-servicios@gposac.com.mx";
+			}
 			
 			TicketController.AssignTicket(ticketId, employee, who);
 

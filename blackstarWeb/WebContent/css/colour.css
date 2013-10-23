@@ -15,6 +15,10 @@ th{
 	color:#fff
 }
 
+table.pretty tbody tr.odd td {
+    background: #DCE8F5;
+}
+
 select, textarea, input, td, #content, #foot {
 	background:#fff url(gradient.png) repeat-x 0 -28px
 }

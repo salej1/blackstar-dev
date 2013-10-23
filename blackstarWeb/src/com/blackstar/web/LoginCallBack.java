@@ -24,7 +24,7 @@ public class LoginCallBack extends AbstractAppEngineAuthorizationCodeCallbackSer
 	  @Override
 	  protected void onSuccess(HttpServletRequest req, HttpServletResponse resp, Credential credential)
 	      throws ServletException, IOException {
-	    resp.sendRedirect(Utils.MAIN_SERVLET_PATH);
+	    resp.sendRedirect(Globals.MAIN_SERVLET_PATH);
 	  }
 
 	  @Override

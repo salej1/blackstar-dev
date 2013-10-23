@@ -8,13 +8,13 @@ import java.util.logging.*;
 
 public class ManageDataAccess {
 
-	public static void executeQuery(String sql) throws Exception {
+	public static void executeUpdate(String sql) throws Exception {
 		Connection conn = null;
 		
 		try {
 			conn = DbConnectionProvider.getConnection("blackstarManage");
 
-			conn.createStatement().executeQuery(sql);
+			conn.createStatement().executeUpdate(sql);
 
 			conn.close();
 

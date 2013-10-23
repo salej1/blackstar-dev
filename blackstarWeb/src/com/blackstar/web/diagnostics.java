@@ -1,6 +1,5 @@
 package com.blackstar.web;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -15,14 +14,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.junit.Test;
-
-import com.blackstar.interfaces.IUserService;
 import com.blackstar.services.GmailService;
 import com.blackstar.services.GoogleUserService;
-import com.blackstar.services.UserServiceFactory;
-import com.google.appengine.api.users.User;
-import com.google.appengine.api.utils.SystemProperty;
 
 /**
  * Servlet implementation class diagnostics
@@ -75,7 +68,7 @@ public class diagnostics extends HttpServlet {
 	public String testEmailSend(){
 		try{
 			GmailService target = new GmailService();
-			target.sendEmail("sergio.aga@gmail.com", "Prueba de email", "Este es el cuerpo del mail\r\nEsta es una linea\n\r<a href='www.google.com'>Este es un link a google</a>");
+			target.sendEmail("sergio.aga@gmail.com", "sergio.aga@gmail.com", "Prueba de email", "Este es el cuerpo del mail\r\nEsta es una linea\n\r<a href='www.google.com'>Este es un link a google</a>");
 			return "Email sent";
 		}catch(Exception ex){
 			return ex.getMessage();
@@ -116,9 +109,7 @@ public class diagnostics extends HttpServlet {
 			
 			java.util.Iterator<String> it = groups.iterator();
 			
-			int counter = 0;
 			while(it.hasNext()){
-				counter++;
 				String group = it.next();
 				
 				retGroups.concat(": " + group);

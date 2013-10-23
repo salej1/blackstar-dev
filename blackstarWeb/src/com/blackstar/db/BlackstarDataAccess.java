@@ -33,6 +33,23 @@ public class BlackstarDataAccess {
 		}		
 	}
 	
+	public void executeUpdate(String sql) throws Exception {
+		
+		
+		try {
+			
+			getMyConnection().createStatement().executeUpdate(sql);
+			
+		} catch (Exception e) {
+			// Utilizando el logger del container! no hay acceso a la BD
+			Logger log = Logger.getLogger(BlackstarDataAccess.class.getName());
+			log.log(Level.SEVERE, String.format(
+					"Error al crear conexion a la base de datos: %s",
+					e.getMessage()));
+			throw e;
+		}		
+	}
+	
 	public void closeConnection(){
 		try{
 			conn.close();

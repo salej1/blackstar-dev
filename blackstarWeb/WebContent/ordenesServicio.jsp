@@ -98,7 +98,7 @@
 					<div class="box">
 						<h2>Ordenes de servicio por revisar</h2>
 						<div class="utils">
-							<a href="#">Ver Todos</a>
+							
 						</div>
 						<table cellpadding="0" cellspacing="0" border="0" class="display" id="ordenesPorRevisar">
 							<thead>
@@ -124,7 +124,7 @@
 					<div class="box">
 						<h2>Ordenes de servicio con pendientes</h2>
 						<div class="utils">
-							<a href="#">Ver Todos</a>
+							
 						</div>
 						<table  cellpadding="0" cellspacing="0" border="0" class="display" id="ordenesPendientes">
 							<thead>

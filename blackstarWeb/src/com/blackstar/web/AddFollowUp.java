@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletResponse;
 import com.blackstar.db.BlackstarDataAccess;
 import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
+import com.blackstar.model.TicketController;
+import com.blackstar.model.User;
 
 /**
  * Servlet implementation class AddFollowUp
@@ -39,7 +41,7 @@ public class AddFollowUp extends HttpServlet {
 		try {
 			String id = request.getParameter("id");
 			String type = request.getParameter("type");
-			String sender = request.getParameter("sender");
+			String sender = request.getParameter("sender"); // Se usa solo en caso de que falle recuperacion del usuario en sesion
 			String timeStamp = request.getParameter("timeStamp");
 			String asignee = request.getParameter("asignee");
 			String message = request.getParameter("message");
@@ -47,6 +49,14 @@ public class AddFollowUp extends HttpServlet {
 			
 			BlackstarDataAccess da = new BlackstarDataAccess();
 			String sql = null;
+			
+			User thisUser = (User) request.getSession().getAttribute("user");
+			if(thisUser != null){
+				sender = thisUser.getUserEmail();
+			}
+			else{
+				Logger.Log(LogLevel.WARNING, Thread.currentThread().getStackTrace()[1].toString(), "No se pudo recuperar el usuario de sesion", "");
+			}
 			if(type.equals("ticket")){
 				sql = "CALL AddFollowUpToTicket(%s, '%s', '%s', '%s', '%s')";
 			}
@@ -55,9 +65,19 @@ public class AddFollowUp extends HttpServlet {
 			}
 			sql = String.format(sql, id, timeStamp, sender, asignee, message);
 			
-			da.executeQuery(sql);
+			da.executeUpdate(sql);
 			
 			da.closeConnection();
+			
+			if(type.equals("ticket")){
+				int ticketId;
+				try {
+					ticketId = Integer.parseInt(id);
+					TicketController.AssignTicket(ticketId, asignee, sender);
+				} catch (Exception e) {
+					Logger.Log(LogLevel.WARNING, Thread.currentThread().getStackTrace()[1].toString(), "Error al agrear FollowUp a ticket " + id + ". No se puede convertir ID a entero", "");
+				}
+			}
 			
 			response.sendRedirect(redirect);
 			

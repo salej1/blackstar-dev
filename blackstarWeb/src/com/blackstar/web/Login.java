@@ -45,7 +45,7 @@ public class Login
     // Build the Directory object using the credentials
     @SuppressWarnings("unused")
     Directory admin = new Directory.Builder(
-        Utils.HTTP_TRANSPORT, Utils.JSON_FACTORY, credential)
+        Globals.HTTP_TRANSPORT, Globals.JSON_FACTORY, credential)
         .setApplicationName(APPLICATION_NAME)
         .build();
 

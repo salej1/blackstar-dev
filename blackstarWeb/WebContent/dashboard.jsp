@@ -163,7 +163,7 @@
 					<div class="box">
 						<h2>Tickets por asignar</h2>
 						<div class="utils">
-							<a href="#">Ver Todos</a>
+							
 						</div>
 						<div id= ticketTablaContainer>
 							<table cellpadding="0" cellspacing="0" border="0" class="display" id="dtTicketsPorAsignar">
@@ -190,7 +190,7 @@
 					<div class="box">
 						<h2>Ordenes de servicio por revisar</h2>
 						<div class="utils">
-							<a href="#">Ver Todos</a>
+							
 						</div>
 						<table cellpadding="0" cellspacing="0" border="0" class="display" id="dtOrdenesPorRevisar">
 							<thead>
@@ -220,7 +220,7 @@
 					<div class="box">
 						<h2>Ordenes de servicio con pendientes</h2>
 						<div class="utils">
-							<a href="#">Ver Todos</a>
+							
 						</div>
 						<table cellpadding="0" cellspacing="0" border="0" class="display" id="dtOrdenesPendientes">
 							<thead>

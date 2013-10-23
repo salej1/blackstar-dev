@@ -122,20 +122,7 @@ public class TicketDetail extends HttpServlet{
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		if(request.getParameter("datosComentario").toString().equals("")== false){
-			  
-			String[] datosComentario=request.getParameter("datosComentario").toString().split("&&");
-			  String comentario = datosComentario[0];
-			  String asignadoA = datosComentario[1];
-			  String folioOS = datosComentario[2];
-			  
-			  //TODO: Guardar followup
-			  Followup followup =  new Followup();
-			  followup.setModified(new Date());
-			  followup.setCreated(new Date());
-		}
-		
-		
+				
 	}
 
 	private Map<String, String> getServiceOrderList(int policyId){

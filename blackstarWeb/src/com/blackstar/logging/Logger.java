@@ -52,7 +52,7 @@ public class Logger {
 			String sql = String.format("CALL blackstarManage.WriteLog('%s', '%s', '%s', '%s')", level, message, who, stackTrace);
 			
 			try {
-				ManageDataAccess.executeQuery(sql);
+				ManageDataAccess.executeUpdate(sql);
 			} catch (Exception e) {
 				// Utilizando el logger del container! no hay acceso a la BD
 				java.util.logging.Logger log = java.util.logging.Logger.getLogger(ManageDataAccess.class.getName());

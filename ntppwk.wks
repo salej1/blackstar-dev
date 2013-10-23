@@ -1,0 +1,66 @@
+<NotepadPlus>
+    <Project name="blackstar">
+        <Folder name="servlets">
+            <File name="blackstarWeb\src\com\blackstar\web\BlackstarWebServlet.java" />
+            <File name="blackstarWeb\src\com\blackstar\web\ContextListener.java" />
+            <File name="blackstarWeb\src\com\blackstar\web\Dashboard.java" />
+            <File name="blackstarWeb\src\com\blackstar\web\dbtest.java" />
+            <File name="blackstarWeb\src\com\blackstar\web\diagnostics.java" />
+            <File name="blackstarWeb\src\com\blackstar\web\EquipmentCollectionByCustomer.java" />
+            <File name="blackstarWeb\src\com\blackstar\web\Login.java" />
+            <File name="blackstarWeb\src\com\blackstar\web\LoginCallBack.java" />
+            <File name="blackstarWeb\src\com\blackstar\web\OrdenesServicio.java" />
+            <File name="blackstarWeb\src\com\blackstar\web\osDetail.java" />
+            <File name="blackstarWeb\src\com\blackstar\web\scheduleStatus.java" />
+            <File name="blackstarWeb\src\com\blackstar\web\Seguimiento.java" />
+            <File name="blackstarWeb\src\com\blackstar\web\SessionListener.java" />
+            <File name="blackstarWeb\src\com\blackstar\web\TicketDetail.java" />
+            <File name="blackstarWeb\src\com\blackstar\web\TicketPageBean.java" />
+            <File name="blackstarWeb\src\com\blackstar\web\Tickets.java" />
+            <File name="blackstarWeb\src\com\blackstar\web\UserFilter.java" />
+        </Folder>
+        <Folder name="jsp">
+            <Folder name="WEB-INF">
+                <File name="blackstarWeb\WebContent\WEB-INF\.gitignore" />
+                <File name="blackstarWeb\WebContent\WEB-INF\appengine-web.xml" />
+                <File name="blackstarWeb\WebContent\WEB-INF\logging.properties" />
+                <File name="blackstarWeb\WebContent\WEB-INF\web.xml" />
+            </Folder>
+            <File name="blackstarWeb\WebContent\dashboard.jsp" />
+            <File name="blackstarWeb\WebContent\favicon.ico" />
+            <File name="blackstarWeb\WebContent\header.jsp" />
+            <File name="blackstarWeb\WebContent\index.html" />
+            <File name="blackstarWeb\WebContent\ordenesServicio.jsp" />
+            <File name="blackstarWeb\WebContent\osDetail.jsp" />
+            <File name="blackstarWeb\WebContent\scheduleStatus.jsp" />
+            <File name="blackstarWeb\WebContent\seguimiento.jsp" />
+            <File name="blackstarWeb\WebContent\seguimientoCal.jsp" />
+            <File name="blackstarWeb\WebContent\seguimientoCoo.jsp" />
+            <File name="blackstarWeb\WebContent\ticketDetail.jsp" />
+            <File name="blackstarWeb\WebContent\tickets.jsp" />
+        </Folder>
+        <Folder name="model">
+            <Folder name="dto">
+                <File name="blackstarWeb\src\com\blackstar\model\dto\EmployeeDTO.java" />
+                <File name="blackstarWeb\src\com\blackstar\model\dto\OrderserviceDTO.java" />
+            </Folder>
+            <Folder name="test">
+                <File name="blackstarWeb\src\com\blackstar\model\test\ServiceorderTest.java" />
+            </Folder>
+            <File name="blackstarWeb\src\com\blackstar\model\Equipmenttype.java" />
+            <File name="blackstarWeb\src\com\blackstar\model\Followup.java" />
+            <File name="blackstarWeb\src\com\blackstar\model\Office.java" />
+            <File name="blackstarWeb\src\com\blackstar\model\Policy.java" />
+            <File name="blackstarWeb\src\com\blackstar\model\Policytype.java" />
+            <File name="blackstarWeb\src\com\blackstar\model\ScheduledService.java" />
+            <File name="blackstarWeb\src\com\blackstar\model\Servicecenter.java" />
+            <File name="blackstarWeb\src\com\blackstar\model\Serviceorder.java" />
+            <File name="blackstarWeb\src\com\blackstar\model\Servicetype.java" />
+            <File name="blackstarWeb\src\com\blackstar\model\Ticket.java" />
+            <File name="blackstarWeb\src\com\blackstar\model\TicketController.java" />
+            <File name="blackstarWeb\src\com\blackstar\model\Ticketstatus.java" />
+            <File name="blackstarWeb\src\com\blackstar\model\User.java" />
+        </Folder>
+        <Folder name="dao" />
+    </Project>
+</NotepadPlus>

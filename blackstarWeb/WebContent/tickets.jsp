@@ -102,7 +102,7 @@
 			<div class="box">
 							<h2>Ultimos tickets</h2>
 							<div class="utils">
-								<a href="#">Ver Todos</a>
+								
 			</div>
 			<table cellpadding="0" cellspacing="0" border="0" class="display" id="tickets">
 				<thead>
