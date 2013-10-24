@@ -192,7 +192,7 @@
 														}
 													}, "aTargets" : [26]},
 									  {"mRender" : function(data, type, row){return "<a href='osDetail?osNum=" + data  + "'>" + data + "</a>";}, "aTargets" : [28]},	    		    	       
-									  {"mRender" : function(data, type, row){ticketStatusMap[row.DT_RowId] = data; return data;}, "aTargets" : [34]},	    		    	       
+									  {"mRender" : function(data, type, row){ticketStatusMap[row.DT_RowId] = data; return data;}, "aTargets" : [32]},	    		    	       
 									  {"mRender" : function(data, type, row){
 														if(ticketStatusMap[row.DT_RowId] == "CERRADO" || ticketStatusMap[row.DT_RowId] == "CERRADO FT"){
 															return "<a href='#' class='edit' onclick='javascript: reopenTicket(" + row.DT_RowId + ", \"" + data + "\"); return false;'>Reabrir ticlet</a>";
@@ -204,7 +204,8 @@
 									 ]}
 				);
 				
-				new FixedHeader( oTable, { "left": true, "right": true, "bottom": true } );
+				// No se ha podido hacer funcionar FixHeader, por el momento se ignora, ya que causa un error de JS
+				// new FixedHeader( oTable, { "left": true, "right": true, "bottom": true } );
 			}
 		</script>	
 	</head>
@@ -265,7 +266,7 @@
 	<!--   ~ CONTENT COLUMN   -->
 
 	<!--   CONTENT ADDS  -->
-		<c:import url="addfollowUpDlg.jsp"></c:import>
+		<c:import url="followUpControl.jsp"></c:import>
 		<script type="text/javascript">
 			$(function() {
 				

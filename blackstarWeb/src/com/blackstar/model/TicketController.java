@@ -8,14 +8,14 @@ import com.blackstar.logging.Logger;
 import com.blackstar.services.EmailServiceFactory;
 
 public class TicketController {
-	public static void AssignTicket(int ticketId, String asignee, String who){
+	public static void AssignTicket(int ticketId, String asignee, String who, String message){
 		BlackstarDataAccess da = new BlackstarDataAccess();
 		
 		try {
 
 			da.executeUpdate(String.format("CALL AssignTicket('%s', '%s', '%s', '%s')", ticketId, asignee, who, "Dashboard"));
 			
-			SendAssignationEmail(ticketId, asignee, who);
+			SendAssignationEmail(ticketId, asignee, who, message);
 		} catch (Exception ex) {
 			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), ex);
 		}
@@ -24,7 +24,7 @@ public class TicketController {
 		}
 	}
 	
-	private static void SendAssignationEmail(int ticketId, String employee, String who){
+	private static void SendAssignationEmail(int ticketId, String employee, String who, String message){
 		String officeMail = "";
 		String ssMail = "";
 		String ticketNum;
@@ -77,7 +77,10 @@ public class TicketController {
 						String subject = String.format("Ticket %s asignado", ticketNum);
 						StringBuilder bodySb = new StringBuilder();
 						
-						bodySb.append(String.format("El reporte de emergencia con número de ticket %s le ha sido asignado. Por favor revise a continuación los detalles del reporte:", ticketNum));
+						bodySb.append(String.format("El reporte de emergencia con número de ticket %s le ha sido asignado. Por favor revise a continuación los detalles del reporte ", ticketNum));
+						if(message != null){
+							bodySb.append(" y la invormación adicional.");
+						}
 						bodySb.append(String.format("\r\n\r\n Marca temporal: %s", myTicket.getCreated()));
 						bodySb.append(String.format("\r\n\r\n Contacto: %s", tickPolicy.getContactName()));
 						bodySb.append(String.format("\r\n\r\n Teléfono de Contacto: %s", tickPolicy.getContactPhone()));
@@ -102,6 +105,7 @@ public class TicketController {
 						bodySb.append(String.format("\r\n\r\n Centro de servicio: %s", ss.getServiceCenter()));
 						bodySb.append(String.format("\r\n\r\n Oficina: %s", off.getOfficeName()));
 						bodySb.append(String.format("\r\n\r\n Proyecto: %s", tickPolicy.getProject()));
+						bodySb.append(String.format("\r\n\r\n Informacón adicional: %s", message));
 						mail.sendEmail(who, to, subject, bodySb.toString()
 								);
 					} catch (Exception e) {

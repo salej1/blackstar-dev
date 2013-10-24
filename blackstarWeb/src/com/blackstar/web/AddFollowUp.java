@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.blackstar.db.BlackstarDataAccess;
 import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
+import com.blackstar.model.ServiceOrderController;
 import com.blackstar.model.TicketController;
 import com.blackstar.model.User;
 
@@ -65,6 +66,7 @@ public class AddFollowUp extends HttpServlet {
 			}
 			sql = String.format(sql, id, timeStamp, sender, asignee, message);
 			
+			Logger.Log(LogLevel.DEBUG, Thread.currentThread().getStackTrace()[1].toString(), "Invocando asignacion de ticket: " + sql, "");
 			da.executeUpdate(sql);
 			
 			da.closeConnection();
@@ -73,9 +75,17 @@ public class AddFollowUp extends HttpServlet {
 				int ticketId;
 				try {
 					ticketId = Integer.parseInt(id);
-					TicketController.AssignTicket(ticketId, asignee, sender);
+					TicketController.AssignTicket(ticketId, asignee, sender, message);
 				} catch (Exception e) {
 					Logger.Log(LogLevel.WARNING, Thread.currentThread().getStackTrace()[1].toString(), "Error al agrear FollowUp a ticket " + id + ". No se puede convertir ID a entero", "");
+				}
+			}
+			else if(type.equals("serviceOrder")){
+				try {
+					int osId = Integer.parseInt(id);
+					ServiceOrderController.AssignServiceOrder(osId, asignee, sender, message);
+				} catch (Exception e) {
+					Logger.Log(LogLevel.WARNING, Thread.currentThread().getStackTrace()[1].toString(), "Error al agrear FollowUp a OS " + id + ". No se puede convertir ID a entero", "");
 				}
 			}
 			

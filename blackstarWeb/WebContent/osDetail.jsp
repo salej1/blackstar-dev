@@ -52,7 +52,7 @@
 		$('#lblPuesto').val('${serviceOrderDetail.receivedByPosition}');
 
 		// inicializando el dialogo para agregar seguimientos
-		initFollowUpDlg("orderService", "osDetail?serviceOrderId=${serviceOrderDetail.serviceOrderId}");
+		initFollowUpDlg("serviceOrder", "osDetail?serviceOrderId=${serviceOrderDetail.serviceOrderId}");
 		
 		// Signature capture box # 1 
 		$('#leftSign').signature({disabled: true}); 
@@ -220,25 +220,10 @@
 									<td></td>
 								</tr>
 							</table>
-							<table id="seguimientoTable">
-								<thead>
-									<th>Seguimiento</th>
-								</thead>
-								<tbody>
-									<tr>
-										<td id="seguimientoContent">
-											<c:forEach var="followup" items="${followUps}">
-												<div class="comment">
-													<p><strong>${followup.timeStamp}: ${followup.createdBy} a: ${followup.asignee}</strong></p>
-													<p>
-													<small>${followup.followUp}</small></p>
-												</div>
-											</c:forEach>
-										</td>
-									</tr>
-								</tbody>
-							</table>
-							<c:import url="addfollowUpDlg.jsp"></c:import>
+							
+							<!-- Control de secuencia y captura de seguimiento -->
+							<c:import url="followUpControl.jsp"></c:import>
+							
 							<table>
 								<tbody>
 									<tr>

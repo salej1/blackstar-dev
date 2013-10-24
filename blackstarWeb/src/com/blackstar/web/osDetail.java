@@ -167,7 +167,7 @@ public class osDetail extends HttpServlet {
 			
 			while(rs.next()){
 				FollowUpDTO fu = new FollowUpDTO(
-						String.format("%s", rs.getDate("created")),
+						String.format("%s", rs.getTimestamp("created")),
 						rs.getString("asignee"), 
 						rs.getString("createdBy"), 
 						rs.getString("followUp")

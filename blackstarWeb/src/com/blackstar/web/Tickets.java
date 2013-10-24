@@ -71,7 +71,7 @@ public class Tickets extends HttpServlet {
 			int ticketId = Integer.parseInt(ticket);
 			String who = "portal-servicios";
 			
-			TicketController.AssignTicket(ticketId, employee, who);
+			TicketController.AssignTicket(ticketId, employee, who, null);
 
 		} catch (NumberFormatException e) {
 			// TODO Auto-generated catch block

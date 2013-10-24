@@ -78,7 +78,28 @@
 	}
 
 </script>
+<!--Tabla que muestra el hilo de seguimiento que se le ha dato al ticket/OS-->
+<table id="followUpTable">
+	<thead>
+		<th>Seguimiento</th>
+	</thead>
+	<tbody>
+		<tr>
+			<td id="seguimientoContent">
+				<c:forEach var="followup" items="${followUps}">
+					<div class="comment">
+						<p><strong>${followup.timeStamp}: ${followup.createdBy} a: ${followup.asignee}</strong></p>
+						<p>
+						<small>${followup.followUp}</small></p>
+					</div>
+				</c:forEach>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<!-- FIN Tabla de seguimiento -->
 
+<!--Dialogo de captura de seguimiento -->
 <div id="seguimientoCaptureDlg" title="">
 	<div>
 		<Label id="seguimientoStamp" style="display:inline;">stamp</Label><Label id="seguimientoSender" style="display:inline;">: </Label>
@@ -102,3 +123,4 @@
 		<input id="redirect" name="redirect" type="hidden"/>
 	</form>
 </div>
+<!-- FIN Dialogo de seguimiento -->

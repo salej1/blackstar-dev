@@ -48,11 +48,31 @@
 -- 8   19/10/2013	SAG		Se Integra:
 -- 								blackstarDb.ReopenTicket
 -- -----------------------------------------------------------------------------
+-- 8   24/10/2013	SAG		Se Integra:
+-- 								blackstarDb.AssignServiceOrder
+-- -----------------------------------------------------------------------------
 
 use blackstarDb;
 
 
 DELIMITER $$
+
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.AssignServiceOrder
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.AssignServiceOrder$$
+CREATE PROCEDURE blackstarDb.AssignServiceOrder (pOsId INTEGER, pEmployee VARCHAR(100), usr VARCHAR(100), proc VARCHAR(100))
+BEGIN
+
+	UPDATE serviceOrder SET
+		asignee = pEmployee,
+		modified = NOW(),
+		modifiedBy = proc,
+		modifiedByUsr = usr
+	WHERE serviceOrderId = pOsId;
+	
+END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.ReopenTicket
@@ -273,7 +293,7 @@ BEGIN
 		followup AS followUp
 	FROM followUp f
 		LEFT OUTER JOIN blackstarUser u ON f.asignee = u.email
-		LEFT OUTER JOIN blackstarUser u2 ON f.createdBy = u2.email
+		LEFT OUTER JOIN blackstarUser u2 ON f.createdByUsr = u2.email
 	WHERE ticketId = pTicketId
 	ORDER BY created;
 	

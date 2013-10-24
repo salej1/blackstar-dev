@@ -29,6 +29,7 @@ import com.blackstar.model.Ticket;
 import com.blackstar.model.Ticketstatus;
 import com.blackstar.model.User;
 import com.blackstar.model.dto.EmployeeDTO;
+import com.blackstar.model.dto.FollowUpDTO;
 import com.blackstar.model.dto.OrderserviceDTO;
 import com.blackstar.services.UserServiceFactory;
 
@@ -53,67 +54,75 @@ public class TicketDetail extends HttpServlet{
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
 		
-				/// obtener del request el id del ticket
-				Ticket ticket = null;
-				String idTicket = null;
-				String numTicket = null;
-				
-				Object rawTicket = request.getParameter("ticketId");
+		try {
+			/// obtener del request el id del ticket
+			Ticket ticket = null;
+			String idTicket = null;
+			String numTicket = null;
+			String  rawTicket = request.getParameter("ticketId");
+			
+			if(rawTicket == null){
+				rawTicket = request.getParameter("ticketNumber");
 				if(rawTicket == null){
-					rawTicket = request.getParameter("ticketNumber");
-					numTicket = rawTicket.toString();
+					Logger.Log(LogLevel.FATAL, Thread.currentThread().getStackTrace()[1].toString(), "TicketDetail se invoca sin parametros validos", "");
+					response.getWriter().write("Ticket Detail: Parametros invalidos");
+					request.getRequestDispatcher("/dashboard").forward(request, response);
 				}
-				else{
-					idTicket = rawTicket.toString();
-				}
+				numTicket = rawTicket.toString();
+			}
+			else{
+				idTicket = rawTicket.toString();
+			}
 
-				int parsedTicketId = 0;
+			int parsedTicketId = 0;
+			
+			if(idTicket != null){
+				parsedTicketId = Integer.parseInt(idTicket);
+				ticket = this.daoFactory.getTicketDAO().getTicketById(parsedTicketId);
+			}
+			else if(numTicket != null){
+				ticket = this.daoFactory.getTicketDAO().getTicketByNumber(numTicket);
+				parsedTicketId = ticket.getTicketId();
+			}
+			
+			if(ticket!= null && parsedTicketId > 0){
 				
-				if(idTicket != null){
-					parsedTicketId = Integer.parseInt(idTicket);
-					ticket = this.daoFactory.getTicketDAO().getTicketById(parsedTicketId);
-				}
-				else if(numTicket != null){
-					ticket = this.daoFactory.getTicketDAO().getTicketByNumber(numTicket);
-					parsedTicketId = ticket.getTicketId();
-				}
+				request.setAttribute("ticketF", ticket);
+							
+				Ticketstatus ticketstatus = this.daoFactory.getTicketStatusDAO().getTicketStatusById(ticket.getTicketStatusId());
+				request.setAttribute("ticketstatusT", ticketstatus);
+
+				/// Obtener la poliza asociada a la orden de servicio
+				Policy policy  = this.daoFactory.getPolicyDAO().getPolicyById(ticket.getPolicyId());
+				request.setAttribute("policyt", policy);
 				
-				if(ticket!= null && parsedTicketId > 0){
+				/// Obtener el tipo de equipo asociada a la orden de servicio
+				Equipmenttype equipmenttype  = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
+				request.setAttribute("EquipmenttypeT", equipmenttype);
+				
+				/// Obtener la oficina asociada a la orden de servicio
+				Office office =  this.daoFactory.getOfficeDAO().getOfficeById(policy.getOfficeId());
+				request.setAttribute("officeT", office);
+				
+				Servicecenter Servicecenter =  this.daoFactory.getServiceCenterDAO().getServiceCenterById(policy.getServiceCenterId());
+				request.setAttribute("ServicecenterT", Servicecenter);
 					
-					request.setAttribute("ticketF", ticket);
-								
-					Ticketstatus ticketstatus = this.daoFactory.getTicketStatusDAO().getTicketStatusById(ticket.getTicketStatusId());
-					request.setAttribute("ticketstatusT", ticketstatus);
-	
-					/// Obtener la poliza asociada a la orden de servicio
-					Policy policy  = this.daoFactory.getPolicyDAO().getPolicyById(ticket.getPolicyId());
-					request.setAttribute("policyt", policy);
+				Map<String, String> UsuariosAsignados = UserServiceFactory.getUserService().getEmployeeList(); 
+				request.setAttribute("employees", UsuariosAsignados);
 					
-					/// Obtener el tipo de equipo asociada a la orden de servicio
-					Equipmenttype equipmenttype  = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
-					request.setAttribute("EquipmenttypeT", equipmenttype);
-					
-					/// Obtener la oficina asociada a la orden de servicio
-					Office office =  this.daoFactory.getOfficeDAO().getOfficeById(policy.getOfficeId());
-					request.setAttribute("officeT", office);
-					
-					Servicecenter Servicecenter =  this.daoFactory.getServiceCenterDAO().getServiceCenterById(policy.getServiceCenterId());
-					request.setAttribute("ServicecenterT", Servicecenter);
-						
-					Map<String, String> UsuariosAsignados = UserServiceFactory.getUserService().getEmployeeList(); 
-					request.setAttribute("employees", UsuariosAsignados);
-						
-					// Obtener los followups asociados a la orden de servicio
-					List<Followup> followUps =  this.daoFactory.getFollowUpDAO().getFollowUpByTicketId(parsedTicketId);
-					request.setAttribute("Comentarios", followUps);
-					
-					// Obtener las ordenes de servicio que pueden cerrar este ticket
-					Map<String, String> serviceOrdersList = getServiceOrderList(ticket.getPolicyId());
-					request.setAttribute("potentialOs", serviceOrdersList);
-				}
-				request.getRequestDispatcher("/ticketDetail.jsp").forward(request, response);
+				// Obtener los followups asociados a la orden de servicio
+				List<FollowUpDTO> followUps = getFollowUpList(ticket.getTicketId());
+				request.setAttribute("followUps", followUps);
+				
+				// Obtener las ordenes de servicio que pueden cerrar este ticket
+				Map<String, String> serviceOrdersList = getServiceOrderList(ticket.getPolicyId());
+				request.setAttribute("potentialOs", serviceOrdersList);
+			}
+			request.getRequestDispatcher("/ticketDetail.jsp").forward(request, response);
+		} catch (NumberFormatException e) {
+			Logger.Log(LogLevel.FATAL, Thread.currentThread().getStackTrace()[1].toString(), e);
+		}
 				
 	}
 
@@ -132,7 +141,7 @@ public class TicketDetail extends HttpServlet{
 			ResultSet rs = da.executeQuery("CALL GetServicesByPolicyId(" + policyId + ")");
 			
 			while(rs.next()){
-				list.put(rs.getString("DT_RowId"), rs.getString("serviceOrderNumber") );
+				list.put(rs.getString("ServiceOrderId"), rs.getString("serviceOrderNumber") );
 			}
 			
 			da.closeConnection();
@@ -142,26 +151,34 @@ public class TicketDetail extends HttpServlet{
 		}
 		return list;
 	}
-//	
-//	private List<EmployeeDTO> getEmployeeList(){
-//		List<EmployeeDTO> list = new ArrayList<EmployeeDTO>();
-//		try{
-//			BlackstarDataAccess da = new BlackstarDataAccess();
-//			ResultSet rs = da.executeQuery("CALL GetDomainEmployees()");
-//			
-//			while(rs.next()){
-//				EmployeeDTO emp = new EmployeeDTO();
-//				emp.setEmail(rs.getString("email"));
-//				emp.setName(rs.getString("name"));
-//				list.add(emp);
-//			}
-//			
-//			da.closeConnection();
-//		}
-//		catch(Exception ex){
-//			Logger.Log(LogLevel.ERROR, ex);
-//		}
-//		return list;
-//	}
+
+	private List<FollowUpDTO> getFollowUpList(int ticketId){
+		BlackstarDataAccess da = new BlackstarDataAccess();
+		
+		List<FollowUpDTO> list = new ArrayList<FollowUpDTO>();
+		try{
+			String sql = "CALL GetFollowUpByTicket(%s)";
+			sql = String.format(sql, ticketId);
+			
+			ResultSet rs = da.executeQuery(sql);
+			
+			while(rs.next()){
+				FollowUpDTO fu = new FollowUpDTO(
+						String.format("%s", rs.getTimestamp("created")),
+						rs.getString("asignee"), 
+						rs.getString("createdBy"), 
+						rs.getString("followUp")
+				);
+				list.add(fu);
+			}
+		}
+		catch(Exception ex){
+			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), ex);
+		}
+		finally{
+			da.closeConnection();
+		}
+		return list;
+	}
 }
 

@@ -110,7 +110,7 @@ public class Dashboard extends HttpServlet {
 				who = "portal-servicios@gposac.com.mx";
 			}
 			
-			TicketController.AssignTicket(ticketId, employee, who);
+			TicketController.AssignTicket(ticketId, employee, who, null);
 
 		} catch (NumberFormatException e) {
 			// TODO Auto-generated catch block

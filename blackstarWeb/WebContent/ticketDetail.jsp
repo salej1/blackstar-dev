@@ -58,6 +58,9 @@
 			$('#lbTS').val('${ticketF.solutionTime}');
 			$('#lbDesviacion').val('${serviceOrderDetail.solutionTimeDeviationHr}');
 			$('#lbEstatus').val('${ticketstatusT.ticketstatus}');
+			
+			// inicializando el dialogo para agregar seguimientos
+			initFollowUpDlg("ticket", "ticketDetail?ticketId=${ticketF.ticketId}");
 		});
 	
 		glow.ready(function(){
@@ -143,44 +146,21 @@
 								</tr>
 							</tbody>
 						</table>
-						<table id="seguimientoTable">
-								<thead>
-									<th>Seguimiento</th>
-								</thead>
-									<tr>
-										<td id="seguimientoContent">
-										</td>
-									</tr>
-									<tr>
-										<td id="seguimientoCapture" class="comment">
-											<div>
-												<Label id="seguimientoStamp">stamp</Label>
-											</div>
-											<div> Asignar a:
-												<select id="seguimientoWho" style="width:200px;">
-													<c:forEach var="employee" items="${employees}">
-														<option value="${employee.key}">${ employee.value }</option>
-													</c:forEach>
-												</select>
-												<p></p>
-												<textarea id="seguimientoText" rows="5" style="width:65%;"></textarea>
-												<button class="searchButton" onclick="applySeguimiento();">Agregar</button>
-												<button class="searchButton" onclick="cancelAddSeguimiento();">Cancelar</button>
-											</div>
-										</td>
-									</tr>
-							</table>
+						
+						<!-- Control de secuencia y captura de seguimiento -->
+						<c:import url="followUpControl.jsp"></c:import>
+
 						<table>
-								<tbody>
-									<tr>
-										<td>
-											<p></p>
-											<button class="searchButton" onclick="addSeguimiento();">Agregar seguimiento</button>
-											<button class="searchButton" onclick="$('#cerrarOSCapture').dialog('open')">Cerrar Ticket</button>
-										</td>
-									</tr>
-								<tbody>
-							</table>
+							<tbody>
+								<tr>
+									<td>
+										<p></p>
+										<button class="searchButton" onclick="addSeguimiento(${ticketF.ticketId}, '${ticketF.ticketNumber}');">Agregar seguimiento</button>
+										<button class="searchButton" onclick="$('#cerrarOSCapture').dialog('open')">Cerrar Ticket</button>
+									</td>
+								</tr>
+							<tbody>
+						</table>
 					</div>					
 				</div>
 				
