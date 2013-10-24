@@ -10,6 +10,23 @@
 	<script type="text/javascript">
 		$(document).ready(function () 
 		{
+			// Close ticket section
+			$("#cerrarOSCapture").dialog({
+				autoOpen: false,
+				height: 180,
+				width: 360,
+				modal: true,
+				buttons: {
+					"Aceptar": function() {
+						$( this ).dialog( "close" );
+						$().selectedIndex = 2;
+					},
+					
+					"Cancelar": function() {
+					$( this ).dialog( "close" );
+				}}
+			});
+			
 			$('#lbCreated').val('${ticketF.created}');
 			$('#lbNombreUsuario').val('${ticketF.user}');
 			$('#lbContacto').val('${policyt.contactName}');
@@ -52,77 +69,16 @@
 					}
 				}
 			);
-			
-			$("#seguimientoCapture").hide();
-			
-			// Close ticket section
-			$("#cerrarOSCapture").dialog({
-				autoOpen: false,
-				height: 180,
-				width: 360,
-				modal: true,
-				buttons: {
-					"Aceptar": function() {
-						$( this ).dialog( "close" );
-						$().selectedIndex = 2;
-					},
-					
-					"Cancelar": function() {
-					$( this ).dialog( "close" );
-				}}
-			});
 		});
 	
-		Date.prototype.format = function(format) //author: meizz
-		{
-		  var o = {
-			"M+" : this.getMonth()+1, //month
-			"d+" : this.getDate(),    //day
-			"h+" : this.getHours(),   //hour
-			"m+" : this.getMinutes(), //minute
-			"s+" : this.getSeconds(), //second
-			"q+" : Math.floor((this.getMonth()+3)/3),  //quarter
-			"S" : this.getMilliseconds() //millisecond
-		  }
-	
-		  if(/(y+)/.test(format)) format=format.replace(RegExp.$1,
-			(this.getFullYear()+"").substr(4 - RegExp.$1.length));
-		  for(var k in o)if(new RegExp("("+ k +")").test(format))
-			format = format.replace(RegExp.$1,
-			  RegExp.$1.length==1 ? o[k] :
-				("00"+ o[k]).substr((""+ o[k]).length));
-		  return format;
+		function assignNow(){
+			var ticketId = ${ticketF.ticketId};
+			var asignee = $("#selectAsignee option:selected").val();
+			
+			$("#ticketId").val(ticketId);
+			$("#employee").val(asignee);
+			$("#sendAssignNow").submit();
 		}
-					
-		// Seguimiento
-		function addSeguimiento(){
-			var d = new Date(); 
-			$("#seguimientoCapture").show();	
-			$("#seguimientoStamp").html(d.format('dd/MM/yyyy h:mm:ss') + ' ${user.userName}:');
-			$("#seguimientoText").val('');
-		}
-		
-		function applySeguimiento(from, to, text, d){
-			var template = '<div class="comment"><p><strong>TIMESTAMP: " + from + " WHO:</strong></p><p><small>MYCOMMENT</small></p></div>';
-			var content = template.replace('TIMESTAMP', d.format('dd/MM/yyyy h:mm:ss'));
-			content = content.replace('MYCOMMENT', text);
-			var who = to;
-			if(who != ""){
-				content = content.replace('WHO', " a: " + who);
-			}
-			else{
-				content = content.replace('WHO', "");
-			}
-			var currSegContent = $("#seguimientoContent").html();
-			currSegContent = currSegContent + content;
-			$("#seguimientoContent").html(currSegContent);
-			$("#seguimientoCapture").hide();
-		}
-		
-		function cancelAddSeguimiento(){
-			$("#seguimientoCapture").hide();
-		}
-
 	</script>
 </head>
 <body>
@@ -140,7 +96,7 @@
 								<tr>
 									<td style="width:200px;">Asignado a:</td>
 									<td>
-										<select id="selectStatus"  style="width:78%;">
+										<select id="selectAsignee"  style="width:78%;">
 											<c:forEach var="employee" items="${employees}">
 												<option value="${employee.key}"
 												<c:if test="${ employee.key == ticketF.asignee }">
@@ -149,7 +105,7 @@
 												>${ employee.value }</option>
 											</c:forEach>
 										</select>
-										<button class="searchButton" onclick="window.location = 'dashboard_coo.html'">Asignar ahora</button>
+										<button class="searchButton" onclick="javascript:assignNow(); return false;">Asignar ahora</button>
 									</td>
 								</tr>
 								<tr><td>Marca temporal</td><td><input id="lbCreated" type="text" readonly="true"  style="width:95%;" /></td></tr>
@@ -227,6 +183,11 @@
 							</table>
 					</div>					
 				</div>
+				
+			<form action="dashboard" id="sendAssignNow" method="POST">
+				<input type="hidden" name="ticketId" id="ticketId"/>
+				<input type="hidden" name="employee" id="employee"/>
+			</form>	
 				
 			<div id="cerrarOSCapture" title="Cerrar Ticket ${ticketF.ticketNumber}">
 				<p>Por favor seleccione la OS que cierra el ticket:</p>
