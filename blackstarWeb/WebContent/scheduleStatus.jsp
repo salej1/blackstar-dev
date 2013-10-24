@@ -41,8 +41,8 @@
 		<div class="grid_16">
 			<div>
 				<div>
-					<img src="img/navigate-right.png" /><a
-						href="#">Agendar servicio preventivo</a>
+					<img src="img/navigate-right.png" />
+					<a href="#" onclick='$("#createServiceDlg").dialog("open");'>Agendar servicio preventivo</a>
 				</div>
 			</div>
 			<p>
@@ -168,7 +168,7 @@
 		</p>
 		<div class="grid_16">
 			<div class="box">
-				<h2>Servicios programados aa futuro</h2>
+				<h2>Servicios programados a futuro</h2>
 				<div class="utils"></div>
 				<table id="futureServices">
 					<thead>
