@@ -19,9 +19,11 @@ import org.hibernate.jmx.HibernateService;
 import org.hibernate.jmx.HibernateServiceMBean;
 
 import com.blackstar.db.BlackstarDataAccess;
+import com.blackstar.interfaces.IUserService;
 import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
 import com.blackstar.model.*;
+import com.blackstar.services.UserServiceFactory;
 
 /**
  * Servlet implementation class scheduleStatus
@@ -57,6 +59,10 @@ public class scheduleStatus extends HttpServlet {
 
 		request.setAttribute("servicesToday", servicesToday);
 		request.setAttribute("customers", customers);
+		// Recuperando la lista de empleados del directorio
+		IUserService dir = UserServiceFactory.getUserService();
+		request.setAttribute("serviceEngineers", dir.getEmployeeList());
+		
 		request.getRequestDispatcher("/scheduleStatus.jsp").forward(request, response);
 	}
 
@@ -64,26 +70,58 @@ public class scheduleStatus extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+		BlackstarDataAccess da = null;
 		String policyId;
 		String responsible;
-		String additionalEmployees;
+		String engineer1;
+		String engineer2;
+		String engineer3;
+		String engineer4;
 		String effectiveDate;
 		
 		try{
 		
 			policyId = request.getParameter("policyId");
-			responsible = request.getParameter("responsible");
-			additionalEmployees = request.getParameter("additionalEmployees");
+			responsible = request.getParameter("serviceEng0");
+			engineer1 = request.getParameter("serviceEng1");
+			engineer2 = request.getParameter("serviceEng2");
+			engineer3 = request.getParameter("serviceEng3");
+			engineer4 = request.getParameter("serviceEng4");
 			effectiveDate = request.getParameter("effectiveDate");
 			
-			BlackstarDataAccess da = new BlackstarDataAccess();
+			StringBuilder sb = new StringBuilder();
+			if(engineer1 != null){
+				sb.append(engineer1);
+			}
+			if(engineer2 != null){
+				sb.append(", " + engineer2);
+			}
+			if(engineer3 != null){
+				sb.append(", " + engineer3);
+			}
+			if(engineer4 != null){
+				sb.append(", " + engineer4);
+			}
 			
-			da.executeQuery("CALL ScheduleService(" + policyId + ", '" + responsible + "', '" + additionalEmployees + "', '" + effectiveDate + "')");
-			da.closeConnection();
+			User myUser = (User) request.getSession().getAttribute("user");
+			String userId = "";
+			if(myUser != null){
+				userId = myUser.getUserEmail();
+			}
+			
+			da = new BlackstarDataAccess();
+			
+			da.executeQuery(String.format("CALL ScheduleService(%s, '%s', '%s', '%s', '%s')", policyId, effectiveDate, responsible, sb.toString(), userId));
+	
+			response.sendRedirect("/scheduleStatus");
 		}
 		catch(Exception ex){
 			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), ex);
+		}
+		finally{
+			if(da!= null){
+				da.closeConnection();
+			}
 		}
 		
 	}

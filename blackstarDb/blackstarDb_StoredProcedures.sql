@@ -50,12 +50,29 @@
 -- -----------------------------------------------------------------------------
 -- 8   24/10/2013	SAG		Se Integra:
 -- 								blackstarDb.AssignServiceOrder
+-- 								blackstarDb.GetEquipmentByCustomer
 -- -----------------------------------------------------------------------------
 
 use blackstarDb;
 
 
 DELIMITER $$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetEquipmentByCustomer
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetEquipmentByCustomer$$
+CREATE PROCEDURE blackstarDb.GetEquipmentByCustomer (pCustomerName VARCHAR(100))
+BEGIN
+
+	SELECT 
+		policyId as policyId,
+		serialNumber as serialNumber
+	FROM policy 
+	WHERE 
+		customer = pCustomerName
+	ORDER BY serialNumber;
+END$$
 
 
 -- -----------------------------------------------------------------------------
@@ -173,7 +190,7 @@ END$$
 	-- blackstarDb.UpsertScheduledService
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.UpsertScheduledService$$
-CREATE PROCEDURE blackstarDb.UpsertScheduledService(pPolicyId INTEGER, pScheduledDate DATETIME, engineer VARCHAR(100), pCreatedByUsr VARCHAR(100))
+CREATE PROCEDURE blackstarDb.UpsertScheduledService(pPolicyId INTEGER, pScheduledDate DATETIME, responsible VARCHAR(100), engineers VARCHAR(400), pCreatedByUsr VARCHAR(100))
 BEGIN
 
 	INSERT INTO serviceOrder(
@@ -181,6 +198,7 @@ BEGIN
 		serviceDate,
 		responsible,
 		asignee,
+		additionalEmployees,
 		serviceStatusId,
 		created,
 		createdBy,
@@ -189,8 +207,9 @@ BEGIN
 	SELECT
 		pPolicyId,
 		pScheduledDate,
-		engineer,
-		engineer,
+		responsible,
+		responsible,
+		engineers,
 		'P',
 		NOW(),
 		'UpsertScheduledService',
@@ -321,9 +340,9 @@ DROP PROCEDURE IF EXISTS blackstarDb.GetCustomerList$$
 CREATE PROCEDURE blackstarDb.GetCustomerList()
 BEGIN
 
-	SELECT customer
+	SELECT DISTINCT customer
 	FROM blackstarDb.policy
-		WHERE startDate <= NOW() AND NOW <= endDate
+		WHERE startDate <= NOW() AND NOW() <= endDate
 	ORDER BY customer;
 
 END$$

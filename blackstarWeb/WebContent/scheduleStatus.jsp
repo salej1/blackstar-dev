@@ -7,22 +7,37 @@
 <c:set var="pageSection" scope="request" value="ordenesServicio" />
 <c:import url="header.jsp"></c:import>
 <script type="text/javascript">
-
+	
+	function populateEquipmentCollection(clientName){
+		$.getJSON("/equipmentService?clientName=" + clientName, function( data ) {
+			var buffer = "";
+			  
+			for(var eq = 0; eq < data.length; eq++){
+				buffer = buffer + "<option value='" + data[eq].policyId + "'>" + data[eq].serialNumber + "</option>" ;
+			}
+			  
+			$("#optEquipmentCollection").html(buffer);
+		});
+	}
+	
 	function postScheduledService(){
+		var policyId;
 		
+		policyId = $("#optEquipmentCollection option:selected").val();
+		$("#policyId").val(policyId);
+		$("#sendSchedule").submit();
 	}
 	
 	$(function(){
 		 $("#createServiceDlg").dialog({
 				autoOpen: false,
-				height: 200,
-				width: 260,
+				height: 500,
+				width: 580,
 				modal: true,
 				buttons: {
 					"Aceptar": function() {
-						var employee = $("#employeeSelect option:selected").val();
-
-						postScheduledService(assignedTicket, employee);
+						
+						postScheduledService();
 						
 						$( this ).dialog( "close" );
 					},
@@ -30,8 +45,11 @@
 					"Cancelar": function() {
 					$( this ).dialog( "close" );
 				}}
-		});		
+		});	
+
+		$("#serviceDate").datepicker();		
 	});
+	
 </script>
 <body>
 	<!--   CONTENT   -->
@@ -196,54 +214,95 @@
 			<div class="box">
 				<h2>Agendar servicio</h2>
 				<script type="text/javascript">
-						var engineers = [
-							<c:forEach var="engineer" items="${serviceEngineers}">
-								<option value = "engineer.key">${engineer.value}</option>
-							</c:forEach>
+
 				</script>
-				<table>
-					<tbody>
-						<tr>
-							<td style="width:100px;">Fecha:</td>
-							<td><input id="datepicker" type="text" style="width:300px;"/></td>
-						</tr>
+				<form action="scheduleStatus" id="sendSchedule" method="POST">
+					<table>
+						<tbody>
+							<tr>
+								<td style="width:200px;">Fecha:</td>
+								<td><input name="effectiveDate" id="serviceDate" type="text" style="width:300px;"/></td>
+							</tr>
 
-						<tr>
-							<td>Cliente: </td>
-							<td>
-								<select id = "optCustomerCollection" style="width:300px;" 
-								onchange="javascript:populateEquipmentCollection($('optCustomer option:selected').text(), $('#optCustomerCollection')">
+							<tr>
+								<td>Cliente: </td>
+								<td>
+									<select id = "optCustomerCollection" style="width:300px;" 
+									onchange='javascript:populateEquipmentCollection($("#optCustomerCollection").val());'>
+										<option selected></option>
+										<c:forEach var="equipment" items="${customers}">
+											<option>${equipment}</option>
+										</c:forEach>
+									</select>
+								</td>
+							</tr>
+							<tr>
+								<td>Equipo: </td>
+								<td>
+									<select name = "optEquipmentCollection" id = "optEquipmentCollection" style="width:300px;">
+
+									</select>
+								</td>
+								<input type="hidden" name="policyId" id="policyId"/>
+							</tr>
+							<tr>
+								<td>Ing. responsable: </td>
+								<td>
+								 <select name="serviceEng0" id="serviceEng0" style="width:300px;" >
 									<option selected></option>
-									<c:forEach var="equipment" items="${clientCollection}">
-										<option>${equipment.clientName}</option>
+									<c:forEach var="engineer" items="${serviceEngineers}">
+										<option value="${engineer.key}">${engineer.value}</option>
 									</c:forEach>
-								</select>
-							</td>
-						</tr>
-						<tr>
-							<td>Equipo: </td>
-							<td>
-								<select id = "optEquipmentCollection"style="width:300px;">
-
-								</select>
-							</td>
-						</tr>
-						<tr>
-							<td>Ing. de servicio: </td>
-							<td>
-							<input type="text"/>
-
-							</td>
-						</tr>
-						<tr>
-							<td style="width:100px;">Ingenieros adicionales:</td>
-							<td><textarea name="" id="" cols="30" rows="10" style="width:300px;"></textarea></td>
-						</tr>
-					</tbody>
-				</table>
-				<p><small>&nbsp;</small></p>
-				<button class="searchButton" onclick="window.location='programaServicio_coo.html'">Agregar</button>
-				<button class="searchButton" onclick="window.location='programaServicio_coo.html'">Cancelar</button>
+								 </select>
+								</td>
+							</tr>
+							<tr>
+								<td>Ing. adicional 1: </td>
+								<td>
+								 <select name="serviceEng1" id="serviceEng1" style="width:300px;" >
+									<option selected></option>
+									<c:forEach var="engineer" items="${serviceEngineers}">
+										<option value="${engineer.key}">${engineer.value}</option>
+									</c:forEach>
+								 </select>
+								</td>
+							</tr>
+							<tr>
+								<td>Ing. adicional 2: </td>
+								<td>
+								 <select name="serviceEng2" id="serviceEng2" style="width:300px;" >
+									<option selected></option>
+									<c:forEach var="engineer" items="${serviceEngineers}">
+										<option value="${engineer.key}">${engineer.value}</option>
+									</c:forEach>
+								 </select>
+								</td>
+							</tr>
+							<tr>
+								<td>Ing. adicional 3: </td>
+								<td>
+								 <select name="serviceEng3" id="serviceEng3" style="width:300px;" >
+									<option selected></option>
+									<c:forEach var="engineer" items="${serviceEngineers}">
+										<option value="${engineer.key}">${engineer.value}</option>
+									</c:forEach>
+								 </select>
+								</td>
+							</tr>
+							<tr>
+								<td>Ing. adicional 4: </td>
+								<td>
+								 <select name="serviceEng4" id="serviceEng4" style="width:300px;" >
+									<option selected></option>
+									<c:forEach var="engineer" items="${serviceEngineers}">
+										<option value="${engineer.key}">${engineer.value}</option>
+									</c:forEach>
+								 </select>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</form>
 			</div>					
 		</div>
 	</div>

@@ -1,15 +1,15 @@
 -- -----------------------------------------------------------------------------
--- File:	blackstarDb_startupData.sql
--- Name:	blackstarDb_startupData
--- Desc:	Hace una carga inicial de usuarios para poder operar el sistema
--- Auth:	Sergio A Gomez
--- Date:	22/10/2013
+-- File:blackstarDb_startupData.sql
+-- Name:blackstarDb_startupData
+-- Desc:Hace una carga inicial de usuarios para poder operar el sistema
+-- Auth:Sergio A Gomez
+-- Date:22/10/2013
 -- -----------------------------------------------------------------------------
 -- Change History
 -- -----------------------------------------------------------------------------
--- PR   Date    	Author	Description
+-- PR   Date    AuthorDescription
 -- --   --------   -------  ------------------------------------
--- 1    22/10/2013  SAG  	Version inicial. Usuarios basicos de GPO Sac
+-- 1    22/10/2013  SAG  Version inicial. Usuarios basicos de GPO Sac
 -- ---------------------------------------------------------------------------
 use blackstarDb;
 
@@ -27,6 +27,23 @@ Call UpsertUser('sergio.gallegos@gposac.com.mx','Sergio  Gallegos');
 Call UpsertUser('angeles.avila@gposac.com.mx','Angeles Avila');
 Call UpsertUser('sergio.aga@gmail.com','Sergio A. Gomez');
 Call UpsertUser('portal-servicios@gposac.com.mx','Portal Servicios');
+Call UpsertUser('josue.ramirez@gposac.com.mx','Josue Fernando Ramirez Rosas');
+Call UpsertUser('martin.vazquez@gposac.com.mx','Martin Vazquez Vargas');
+Call UpsertUser('daniel.bravo@gposac.com.mx','Daniel Bravo Muñoz');
+Call UpsertUser('felipe.campos@gposac.com.mx','Felipe Campos Morales');
+Call UpsertUser('guillermo.santos@gposac.com.mx','Guillermo Santos Cruz');
+Call UpsertUser('joel.paz@gposac.com.mx','Joel Paz Torres');
+Call UpsertUser('juanpablo.procopio@gposac.com.mx','Juan Pablo Procopio Wences');
+Call UpsertUser('julio.lara@gposac.com.mx','Julio Enrique Lara Reyes');
+Call UpsertUser('joel.barron@gposac.com.mx','Joel Barron Moreno');
+Call UpsertUser('oscar.huerta@gposac.com.mx','Oscar Huerta González');
+Call UpsertUser('victor.hubert@gposac.com.mx','Victor Manuel Hubert Pérez');
+Call UpsertUser('salvador.ruvalcaba@gposac.com.mx','Salvador Ruvalcaba Plascencia');
+Call UpsertUser('joseluis.esteva@gposac.com.mx','Jose Luis Esteva Angel');
+Call UpsertUser('alberto.suarez@gposac.com.mx','Alberto Suarez Naranjo');
+Call UpsertUser('hector.casillas@gposac.com.mx','Hector Tobías Casillas Aguilera');
+Call UpsertUser('jose.osorio@gposac.com.mx','Jose Roberto Osorio López');
+
 
 Call CreateUserGroup('sysServicio','Implementacion y Servicio','alberto.lopez.gomez@gposac.com.mx');
 Call CreateUserGroup('sysCallCenter','Call Center','alejandra.diaz@gposac.com.mx');

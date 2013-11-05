@@ -4,7 +4,7 @@ xmlns="http://java.sun.com/xml/ns/javaee"
 xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
 http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
-<display-name>blackstarWeb</display-name>
+  <display-name>blackstarWeb</display-name>
   <context-param>
     <param-name>LoggLevel</param-name>
     <param-value>DEBUG</param-value>
@@ -159,10 +159,6 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
     <servlet-name>Logout</servlet-name>
     <url-pattern>/logout</url-pattern>
   </servlet-mapping>
-  
-    <!-- The following ensures the user will be logged in to a Google Account by
-    redirecting them to the sign-in page if not.
-    For more information, see https://developers.google.com/appengine/docs/java/config/webxml -->
   <security-constraint>
     <web-resource-collection>
       <web-resource-name>any</web-resource-name>
@@ -172,4 +168,14 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
       <role-name>*</role-name>
     </auth-constraint>
   </security-constraint>
+  <servlet>
+    <description></description>
+    <display-name>EquipmentService</display-name>
+    <servlet-name>EquipmentService</servlet-name>
+    <servlet-class>com.blackstar.web.EquipmentService</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>EquipmentService</servlet-name>
+    <url-pattern>/equipmentService</url-pattern>
+  </servlet-mapping>
 </web-app>
