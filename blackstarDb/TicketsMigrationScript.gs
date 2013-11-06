@@ -10,6 +10,8 @@
 ** PR   Date    	Author	Description
 ** --   --------   -------  ------------------------------------
 ** 1    17/09/2013  SAG  	Version inicial: Exporta el archivo de tickets a BD blackstarDbTransfer
+** --   --------   -------  ------------------------------------
+** 2    05/11/2013  SAG  	Se agrega job de sincronizacion
 *****************************************************************************/
 
 function main() {
@@ -201,4 +203,81 @@ function saveLog(timestamp, sqlLog){
 	var folderSql = DocsList.getFolder('SQL');
 	var fileName = "SQL_TicketsMigrationScript_" + timestamp + ".txt";
 	var sqlFile = folderSql.createFile(fileName, sqlLog);
+}
+
+
+function ticketSync(){
+	// Log init and timestamp
+	var formattedDate = Utilities.formatDate(new Date(), "CST", "yyyy-MM-dd HH:mm:ss");
+	Logger.log("Iniciando sincronizacion de tickets a base de datos: %s", formattedDate);
+	// sqlLog
+	var sqlLog = "";
+	
+	// verify connection & load
+	try{
+		// get the database connection
+		var conn = getDbConnection();
+		
+		// start syncing
+		sqlLog = startSyncJob(conn, sqlLog);
+		closeDbConnection(conn);
+		
+		// Log out
+		formattedDate = Utilities.formatDate(new Date(), "CST", "yyyy-MM-dd HH:mm:ss");
+		Logger.log("Sincronizacion de tickets finalizada correctamente", formattedDate);
+	}
+	catch(err) {
+		// Log out with failure
+		formattedDate = Utilities.formatDate(new Date(), "CST", "yyyy-MM-dd HH:mm:ss");
+		Logger.log("Error al sincronizar tickets en la base de datos");
+		Logger.log(err);
+		Logger.log("Sincronizacion de tickets finalizada con errores", formattedDate);
+	}
+	
+	saveLog(formattedDate, sqlLog);
+
+}
+
+function startSyncJob(conn, sqlLog){
+
+	// Load the equipment type Ids
+	var policies = loadPolicies(conn);
+	
+	// how many records do we have?
+	var ticketCount = getTicketCount(conn);
+	
+	// start point at the spreadsheet
+	const offset = 2;
+	var startRec = ticketCount + offset + 1;
+	
+	// iterate looking for new tickets
+	var range = "A" + startRec.toString() + ":AF" + startRec.toString();
+	var data = SpreadsheetApp.getActiveSpreadsheet().getRange(range).getValues();
+	var currTicket = data[0];
+	
+	while(currTicket != null && currTicket[0] != null && currTicket[0].toString() != ""){
+		sqlLog = sendToDatabase(currTicket, conn, eqTypes, sqlLog);
+		startRec++;
+		range = "A" + startRec.toString() + ":AF" + startRec.toString();
+		data = SpreadsheetApp.getActiveSpreadsheet().getRange(range).getValues();
+		currTicket = data[0];
+	}	
+}
+
+
+function getTicketCount(conn){
+
+	var stmt = conn.createStatement();
+	var rs = stmt.execute("use blackstarDbTransfer;");
+	var ticketCount = 0;
+	
+	rs = stmt.executeQuery("select count(*) from blackstarDbTransfer.ticket;");
+	while(rs.next()){
+		ticketCount = rs.getInt(1);
+	}
+	
+	rs.close();
+	stmt.close();
+	
+	return ticketCount;
 }
