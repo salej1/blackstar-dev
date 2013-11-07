@@ -268,6 +268,9 @@ INSERT INTO `blackstarDbTransfer`.`equipmentType` (`equipmentTypeId`, `equipment
 INSERT INTO `blackstarDbTransfer`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('G','TRANSFERENCIA' );   
 INSERT INTO `blackstarDbTransfer`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('J','CONDENSADORA' );    
 INSERT INTO `blackstarDbTransfer`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('K','EVAPORADORA' );    
+INSERT INTO `blackstarDbTransfer`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('L','SUBESTACION' );    
+INSERT INTO `blackstarDbTransfer`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('W','TVSS ' );    
+INSERT INTO `blackstarDbTransfer`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('Q','PCD' );    
 
 INSERT INTO `blackstarDbTransfer`.`ticketStatus` (`ticketStatusId`, `ticketStatus`) VALUES ('A','ABIERTO' );  
 INSERT INTO `blackstarDbTransfer`.`ticketStatus` (`ticketStatusId`, `ticketStatus`) VALUES ('C','CERRADO' );  
