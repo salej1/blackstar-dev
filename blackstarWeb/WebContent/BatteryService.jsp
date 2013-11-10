@@ -68,7 +68,406 @@
 	</head>
 	<body>
 		<div id="content" class="container_16 clearfix">
-	
+			<div class="grid_16">					
+				<div class="box">
+					<h2>Órden de servicio</h2>
+						<c:if test="${serviceOrderDetail.ticketId gt 0}">
+							<div class="utils">
+									<a id="linkTicket" href="ticketDetail?ticketId=${serviceOrderDetail.ticketId}"> </a>
+							</div>
+						</c:if>
+					<table>
+						<tr>
+							<td>Folio:</td>
+							<td><input  id="lbFolio" type="text" style="width:95%;" readOnly="true" /></td>
+							<td colspan="2"><small></small>
+								
+							</td>
+						</tr>
+						<tr>
+							<td>Cliente</td>
+							<td colspan="5"><input id="lbCliente" type="text" style="width:95%;" readOnly="true" /></td>
+							<td>No Ticket</td>
+							<td><input  id="lbNoTicket" type="text" style="width:95%;" readOnly="true" /></td>
+						</tr>
+						<tr>
+							<td>Domicilio</td>
+							<td colspan="5"><textarea  id="lbDomicilio" style="width:95%;height:50px;"></textarea></td>
+							<td>Telefono</td>
+							<td><input type="text" id="lbTelefono" style="width:95%;" readOnly="true" /></td>
+						</tr>
+						<tr>
+							<td>Fecha y hora de llegada</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+						</tr>
+					</table>
+				</div>					
+			</div>
+			<div class="grid_16">
+				<div class="box">
+					<p><label>&nbsp;</label></p>
+					
+					<table>
+						<thead>
+							<tr>
+								<th>DATOS DEL EQUIPO</th>
+							</tr>
+						</thead>
+						<tr>
+							<td>PE MARCA:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>MOTOR DIESEL MARCA:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>CAPACIDAD TANQUE DIESEL:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+						</tr>
+						<tr>
+							<td>PE MARCA:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>MOTOR DIESEL MARCA:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>CAPACIDAD TANQUE DIESEL:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+						</tr>
+						<tr>
+							<td>PE MARCA:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>MOTOR DIESEL MARCA:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>CAPACIDAD TANQUE DIESEL:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+						</tr>
+						<tr>
+							<td>PE MARCA:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>MOTOR DIESEL MARCA:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>CAPACIDAD TANQUE DIESEL:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+						</tr>
+						<tr>
+							<td>PE MARCA:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>MOTOR DIESEL MARCA:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>CAPACIDAD TANQUE DIESEL:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+						</tr>
+						<tr>
+							<td>PE MARCA:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>MOTOR DIESEL MARCA:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>CAPACIDAD TANQUE DIESEL:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+						</tr>
+						<tr>
+							<td>PE MARCA:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>MOTOR DIESEL MARCA:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>CAPACIDAD TANQUE DIESEL:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+						</tr>
+						<tr>
+							<td>PE MARCA:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>MOTOR DIESEL MARCA:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>CAPACIDAD TANQUE DIESEL:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+						</tr>
+						<tr>
+							<td>PE MARCA:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>MOTOR DIESEL MARCA:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>CAPACIDAD TANQUE DIESEL:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+						</tr>
+						<tr>
+							<td>PE MARCA:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>MOTOR DIESEL MARCA:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>CAPACIDAD TANQUE DIESEL:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+						</tr>
+					</table>
+					<table>
+						<thead>
+							<tr>
+								<th>INSPECCION BASICA</th>
+							</tr>
+						</thead>
+						<tr>
+							<td>PE MARCA:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>MOTOR DIESEL MARCA:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>CAPACIDAD TANQUE DIESEL:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+						</tr>
+						<tr>
+							<td>PE MARCA:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>MOTOR DIESEL MARCA:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>CAPACIDAD TANQUE DIESEL:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+						</tr>
+						<tr>
+							<td>PE MARCA:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>MOTOR DIESEL MARCA:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>CAPACIDAD TANQUE DIESEL:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+						</tr>
+						<tr>
+							<td>PE MARCA:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>MOTOR DIESEL MARCA:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>CAPACIDAD TANQUE DIESEL:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+						</tr>
+					</table>
+					<table>
+						<thead>
+							<tr>
+								<th>SERVICIOS BASICOS</th>
+							</tr>
+						</thead>
+						<tr>
+							<td>PE MARCA:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>MOTOR DIESEL MARCA:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>CAPACIDAD TANQUE DIESEL:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+						</tr>
+						<tr>
+							<td>PE MARCA:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>MOTOR DIESEL MARCA:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>CAPACIDAD TANQUE DIESEL:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+						</tr>
+						<tr>
+							<td>PE MARCA:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>MOTOR DIESEL MARCA:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>CAPACIDAD TANQUE DIESEL:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+						</tr>
+						<tr>
+							<td>PE MARCA:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>MOTOR DIESEL MARCA:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>CAPACIDAD TANQUE DIESEL:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+						</tr>
+					</table>
+					<table>
+						<thead>
+							<tr>
+								<th>PRUEBAS DINAMICAS MOTOR DE COMBUSTION (Solicitar autorización para pruebas con carga)</th>
+							</tr>
+						</thead>
+						<tr>
+							<td>PE MARCA:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>MOTOR DIESEL MARCA:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>CAPACIDAD TANQUE DIESEL:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+						</tr>
+						<tr>
+							<td>PE MARCA:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>MOTOR DIESEL MARCA:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>CAPACIDAD TANQUE DIESEL:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+						</tr>
+						<tr>
+							<td>PE MARCA:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>MOTOR DIESEL MARCA:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>CAPACIDAD TANQUE DIESEL:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+						</tr>
+					</table>
+					<table>
+						<thead>
+							<tr>
+								<th>PRUEBAS PROTECCION DEL EQUIPO</th>
+							</tr>
+						</thead>
+						<tr>
+							<td>PE MARCA:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>MOTOR DIESEL MARCA:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>CAPACIDAD TANQUE DIESEL:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+						</tr>
+						<tr>
+							<td>PE MARCA:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>MOTOR DIESEL MARCA:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>CAPACIDAD TANQUE DIESEL:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+						</tr>
+					</table>
+					<table>
+						<thead>
+							<tr>
+								<th>INTERRUPTOR DE TRANSFERENCIA AUTOMATICO</th>
+							</tr>
+						</thead>
+						<tr>
+							<td>PE MARCA:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>MOTOR DIESEL MARCA:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>CAPACIDAD TANQUE DIESEL:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+						</tr>
+						<tr>
+							<td>PE MARCA:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>MOTOR DIESEL MARCA:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>CAPACIDAD TANQUE DIESEL:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+						</tr>
+						<tr>
+							<td>PE MARCA:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>MOTOR DIESEL MARCA:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>CAPACIDAD TANQUE DIESEL:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+						</tr>
+					</table>
+					<table>
+						<thead>
+							<tr>
+								<th>LECTURAS DEL SISTEMA (CON CARGA/SIN CARGA)</th>
+							</tr>
+						</thead>
+						<tr>
+							<td>PE MARCA:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>MOTOR DIESEL MARCA:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>CAPACIDAD TANQUE DIESEL:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+						</tr>
+						<tr>
+							<td>PE MARCA:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>MOTOR DIESEL MARCA:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>CAPACIDAD TANQUE DIESEL:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+						</tr>
+						<tr>
+							<td>PE MARCA:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>MOTOR DIESEL MARCA:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>CAPACIDAD TANQUE DIESEL:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+						</tr>
+						<tr>
+							<td>PE MARCA:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>MOTOR DIESEL MARCA:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>CAPACIDAD TANQUE DIESEL:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+						</tr>
+					</table>
+					<table>
+						<thead>
+							<tr>
+								<th>OTROS PARAMETROS</th>
+							</tr>
+						</thead>
+						<tr>
+							<td>PE MARCA:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>MOTOR DIESEL MARCA:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>CAPACIDAD TANQUE DIESEL:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+						</tr>
+						<tr>
+							<td>PE MARCA:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>MOTOR DIESEL MARCA:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>CAPACIDAD TANQUE DIESEL:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+						</tr>
+					</table>
+					<table>
+						<thead>
+							<tr>
+								<th>Observaciones (HISTORIAL DE ALARMAS CUANDO APLIQUE)</th>
+							</tr>
+						</thead>
+						<tr>
+							<td style="height:140px;">
+								<textarea id="fldObserv"  readOnly="true" style="width:100%;height:100%;"></textarea>
+							</td>
+						</tr>
+					</table>
+					<p><label>&nbsp;</label></p>
+					<table>
+						<thead>
+							<tr>
+								<th colspan="2">Realizado Por</th>
+								<th colspan="2">Servicio y/o equipo recibido a mi entera satisfaccion</th>
+							</tr>
+						</thead>
+						<tr>
+							<td colspan="2">
+								<span>Firma</span>
+								<div id="leftSign" class="signBox">
+								</div>
+							</td>
+							<td colspan="2" >
+								<span>Firma</span>
+								<div id="rightSign" class="signBox">
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>Nombre</td><td><input id="lbNombreRealizado" type="text" style="width:95%;" readOnly="true" /></td>
+							<td>Nombre</td><td><input id="lbNombreRecibido" type="text" style="width:95%;"readOnly="true" /></td>
+						</tr>
+						<tr>
+							<td>Fecha y hora de salida</td><td><input id="lbFechaSalida" type="text" style="width:95%;" readOnly="true" /></td>
+							<td>Puesto</td><td><input type="text" id="lblPuesto" style="width:95%;" readOnly="true" /></td>
+						</tr>						
+						<tr>
+							<td style="height:40px;"></td>
+							<td></td>
+							<td></td>
+						</tr>
+					</table>
+						
+				</div>					
+			</div>		
 			
 			<!-- Signature capture box # 1 -->
 			<input type="hidden" id="leftSignJSON" />
