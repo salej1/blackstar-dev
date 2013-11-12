@@ -110,327 +110,99 @@
 					<table>
 						<thead>
 							<tr>
-								<th>DATOS DEL EQUIPO</th>
+								<th>LIMPIEZA</th>
+								<th></th>
+								<th>ESTADO FÍSICO </th>
+								<th>OBSERVACIONES</th>
 							</tr>
 						</thead>
 						<tr>
-							<td>PE MARCA:</td>
+							<td>CONECTORES / TERMINALES</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>MOTOR DIESEL MARCA:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>CAPACIDAD TANQUE DIESEL:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
 						</tr>
 						<tr>
-							<td>PE MARCA:</td>
+							<td>CUBIERTA</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>MOTOR DIESEL MARCA:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>CAPACIDAD TANQUE DIESEL:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
 						</tr>
 						<tr>
-							<td>PE MARCA:</td>
+							<td>TAPONES</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>MOTOR DIESEL MARCA:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>CAPACIDAD TANQUE DIESEL:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
 						</tr>
 						<tr>
-							<td>PE MARCA:</td>
+							<td>TIERRA FÍSICA</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>MOTOR DIESEL MARCA:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>CAPACIDAD TANQUE DIESEL:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
 						</tr>
 						<tr>
-							<td>PE MARCA:</td>
+							<td>ESTANTE/GABINETE/RACK</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>MOTOR DIESEL MARCA:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>CAPACIDAD TANQUE DIESEL:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
 						</tr>
 						<tr>
-							<td>PE MARCA:</td>
+							<td>NO DE SERIE, LOTE, FECHA DE FABRICACIÓN</td>
+							<td></td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>MOTOR DIESEL MARCA:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>CAPACIDAD TANQUE DIESEL:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
 						</tr>
 						<tr>
-							<td>PE MARCA:</td>
+							<td>TEMPERATURA PROMEDIO BATERÍAS </td>
+							<td></td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>MOTOR DIESEL MARCA:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>CAPACIDAD TANQUE DIESEL:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
 						</tr>
+					</table>
+					<br/>
+					<br/>
+					<table>
 						<tr>
-							<td>PE MARCA:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>MOTOR DIESEL MARCA:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>CAPACIDAD TANQUE DIESEL:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-						</tr>
-						<tr>
-							<td>PE MARCA:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>MOTOR DIESEL MARCA:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>CAPACIDAD TANQUE DIESEL:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-						</tr>
-						<tr>
-							<td>PE MARCA:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>MOTOR DIESEL MARCA:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>CAPACIDAD TANQUE DIESEL:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>VOLTAJE DE FLOTACIÓN DEL BUS:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/>V.C.D.</td>
+							<td>TEMPERATURA AMBIENTE::</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/> °C</td>
 						</tr>
 					</table>
 					<table>
-						<thead>
+						<tr>
+							<td>BAT. CELDA No.</td>
+							<td>VOLTAJE FLOTACIÓN</td>
+							<td>VOLTAJE CON CARGA</td>
+							<td>BAT. CELDA No.</td>
+							<td>VOLTAJE FLOTACIÓN</td>
+							<td>VOLTAJE CON CARGA</td>
+							<td>BAT. CELDA No.</td>
+							<td>VOLTAJE FLOTACIÓN</td>
+							<td>VOLTAJE CON CARGA</td>
+							<td>BAT. CELDA No.</td>
+							<td>VOLTAJE FLOTACIÓN</td>
+							<td>VOLTAJE CON CARGA</td>
+						</tr>
+						
+						<c:forEach var="i" begin="1" end="22">
 							<tr>
-								<th>INSPECCION BASICA</th>
-							</tr>
-						</thead>
-						<tr>
-							<td>PE MARCA:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>MOTOR DIESEL MARCA:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>CAPACIDAD TANQUE DIESEL:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-						</tr>
-						<tr>
-							<td>PE MARCA:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>MOTOR DIESEL MARCA:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>CAPACIDAD TANQUE DIESEL:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-						</tr>
-						<tr>
-							<td>PE MARCA:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>MOTOR DIESEL MARCA:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>CAPACIDAD TANQUE DIESEL:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-						</tr>
-						<tr>
-							<td>PE MARCA:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>MOTOR DIESEL MARCA:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>CAPACIDAD TANQUE DIESEL:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-						</tr>
+								<td><c:out value="${i}"/></td>
+								<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/>V.C.D.</td>
+								<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/>V.C.D.</td>
+								<td><c:out value="${i+22}"/></td>
+								<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/>V.C.D.</td>
+								<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/>V.C.D.</td>
+								<td><c:out value="${i+44}"/></td>
+								<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/>V.C.D.</td>
+								<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/>V.C.D.</td>
+								<td><c:out value="${i+66}"/></td>
+								<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/>V.C.D.</td>
+								<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/>V.C.D.</td>
+					   		</tr>
+						</c:forEach>
 					</table>
-					<table>
-						<thead>
-							<tr>
-								<th>SERVICIOS BASICOS</th>
-							</tr>
-						</thead>
-						<tr>
-							<td>PE MARCA:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>MOTOR DIESEL MARCA:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>CAPACIDAD TANQUE DIESEL:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-						</tr>
-						<tr>
-							<td>PE MARCA:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>MOTOR DIESEL MARCA:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>CAPACIDAD TANQUE DIESEL:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-						</tr>
-						<tr>
-							<td>PE MARCA:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>MOTOR DIESEL MARCA:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>CAPACIDAD TANQUE DIESEL:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-						</tr>
-						<tr>
-							<td>PE MARCA:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>MOTOR DIESEL MARCA:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>CAPACIDAD TANQUE DIESEL:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-						</tr>
-					</table>
-					<table>
-						<thead>
-							<tr>
-								<th>PRUEBAS DINAMICAS MOTOR DE COMBUSTION (Solicitar autorización para pruebas con carga)</th>
-							</tr>
-						</thead>
-						<tr>
-							<td>PE MARCA:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>MOTOR DIESEL MARCA:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>CAPACIDAD TANQUE DIESEL:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-						</tr>
-						<tr>
-							<td>PE MARCA:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>MOTOR DIESEL MARCA:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>CAPACIDAD TANQUE DIESEL:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-						</tr>
-						<tr>
-							<td>PE MARCA:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>MOTOR DIESEL MARCA:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>CAPACIDAD TANQUE DIESEL:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-						</tr>
-					</table>
-					<table>
-						<thead>
-							<tr>
-								<th>PRUEBAS PROTECCION DEL EQUIPO</th>
-							</tr>
-						</thead>
-						<tr>
-							<td>PE MARCA:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>MOTOR DIESEL MARCA:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>CAPACIDAD TANQUE DIESEL:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-						</tr>
-						<tr>
-							<td>PE MARCA:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>MOTOR DIESEL MARCA:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>CAPACIDAD TANQUE DIESEL:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-						</tr>
-					</table>
-					<table>
-						<thead>
-							<tr>
-								<th>INTERRUPTOR DE TRANSFERENCIA AUTOMATICO</th>
-							</tr>
-						</thead>
-						<tr>
-							<td>PE MARCA:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>MOTOR DIESEL MARCA:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>CAPACIDAD TANQUE DIESEL:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-						</tr>
-						<tr>
-							<td>PE MARCA:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>MOTOR DIESEL MARCA:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>CAPACIDAD TANQUE DIESEL:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-						</tr>
-						<tr>
-							<td>PE MARCA:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>MOTOR DIESEL MARCA:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>CAPACIDAD TANQUE DIESEL:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-						</tr>
-					</table>
-					<table>
-						<thead>
-							<tr>
-								<th>LECTURAS DEL SISTEMA (CON CARGA/SIN CARGA)</th>
-							</tr>
-						</thead>
-						<tr>
-							<td>PE MARCA:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>MOTOR DIESEL MARCA:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>CAPACIDAD TANQUE DIESEL:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-						</tr>
-						<tr>
-							<td>PE MARCA:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>MOTOR DIESEL MARCA:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>CAPACIDAD TANQUE DIESEL:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-						</tr>
-						<tr>
-							<td>PE MARCA:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>MOTOR DIESEL MARCA:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>CAPACIDAD TANQUE DIESEL:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-						</tr>
-						<tr>
-							<td>PE MARCA:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>MOTOR DIESEL MARCA:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>CAPACIDAD TANQUE DIESEL:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-						</tr>
-					</table>
-					<table>
-						<thead>
-							<tr>
-								<th>OTROS PARAMETROS</th>
-							</tr>
-						</thead>
-						<tr>
-							<td>PE MARCA:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>MOTOR DIESEL MARCA:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>CAPACIDAD TANQUE DIESEL:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-						</tr>
-						<tr>
-							<td>PE MARCA:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>MOTOR DIESEL MARCA:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>CAPACIDAD TANQUE DIESEL:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-						</tr>
-					</table>
-					<table>
-						<thead>
-							<tr>
-								<th>Observaciones (HISTORIAL DE ALARMAS CUANDO APLIQUE)</th>
-							</tr>
-						</thead>
-						<tr>
-							<td style="height:140px;">
-								<textarea id="fldObserv"  readOnly="true" style="width:100%;height:100%;"></textarea>
-							</td>
-						</tr>
-					</table>
+					
 					<p><label>&nbsp;</label></p>
 					<table>
 						<thead>
