@@ -70,14 +70,13 @@ public class MySQLTicketStatusDAO implements TicketStatusDAO, Serializable {
 	}
 
 	@Override
-	public Ticketstatus getTicketStatusById(int id) {
+	public Ticketstatus getTicketStatusById(Character id) {
 		Ticketstatus ticketStatus = null;
 		Connection conn = null;
 		try {
 			conn = MySQLDAOFactory.createConnection();
-			PreparedStatement ps = conn.prepareStatement("Select * from ticketStatus where ticketStatusId = ?");
-			ps.setInt(1, id);
-			ResultSet rs = ps.executeQuery();
+			String sql = String.format("Select * from ticketStatus where ticketStatusId = '%s'", id);
+			ResultSet rs = conn.createStatement().executeQuery(sql);
 			
 			while(rs.next()) {
 				ticketStatus = new Ticketstatus(rs.getString("ticketStatusId").charAt(0), rs.getString("ticketStatus"));

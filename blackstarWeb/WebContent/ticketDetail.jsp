@@ -33,7 +33,7 @@
 			$('#lbTelContacto').val('${policyt.contactPhone}');
 			$('#lbMailContacto').val('${policyt.contactEmail}');
 			$('#lbNoSerie').val('${policyt.serialNumber}');
-			$('#lbObservaciones').val('${policyt.observations}');
+			$('#lbObservaciones').html('${policyt.observations}');
 			$('#lbCliente').val('${policyt.customer}');
 			$('#lbEquipo').val('${EquipmenttypeT.equipmentType}');
 			$('#lbMarca').val('${policyt.brand}');
@@ -56,8 +56,8 @@
 			$('#lbNoReporte').val('${serviceOrderT.serviceOrderNumber}');
 			$('#lbIngeniero').val('${ticketF.employee}');
 			$('#lbTS').val('${ticketF.solutionTime}');
-			$('#lbDesviacion').val('${serviceOrderDetail.solutionTimeDeviationHr}');
-			$('#lbEstatus').val('${ticketstatusT.ticketstatus}');
+			$('#lbDesviacionTS').val('${ticketF.solutionTimeDeviationHr}');
+			$('#lbEstatus').val('${ticketstatusT.ticketStatus}');
 			
 			// inicializando el dialogo para agregar seguimientos
 			initFollowUpDlg("ticket", "ticketDetail?ticketId=${ticketF.ticketId}");
@@ -117,7 +117,7 @@
 								<tr><td>Telefóno de Contacto</td><td><input id="lbTelContacto" type="text" readonly="true"  style="width:95%;" /></td></tr>
 								<tr><td>E-mail</td><td><input type="text" id="lbMailContacto" readonly="true"  style="width:95%;" /></td></tr>
 								<tr><td>Número de serie del Equipo</td><td><input id="lbNoSerie" type="text" readonly="true"  style="width:95%;"/></td></tr>
-								<tr><td>Observaciones</td><td><input type="text" id="lbObservaciones" readonly="true"  style="width:95%;" /></td></tr>
+								<tr><td>Observaciones</td><td><textarea id="lbObservaciones" readonly="true"  style="width:95%;" rows="7"></textarea></td></tr>
 								<tr><td>Cliente</td><td><input type="text" id="lbCliente" readonly="true"  style="width:95%;" /></td></tr>
 								<tr><td>Equipo</td><td><input type="text" id="lbEquipo"  readonly="true"  style="width:95%;" /></td></tr>
 								<tr><td>Marca</td><td><input type="text" id="lbMarca" readonly="true"  style="width:95%;" /></td></tr>
@@ -140,7 +140,7 @@
 								<tr><td>Numero de Reporte de Servicio</td><td><input type="text" readonly="true" id="lbNoReporte" style="width:95%;"/></td></tr>
 								<tr><td>Ingeniero que atendió</td><td><input type="text" readonly="true" id="lbIngeniero" style="width:95%;" /></td></tr>
 								<tr><td>T S Brindado en HR</td><td><input type="text" readonly="true" id="lbTS"  style="width:95%;" /></td></tr>
-								<tr><td>Desviación en Horas TS</td><td><input type="text" readonly="true" id="lbDesviacion" style="width:95%;" /></td></tr>
+								<tr><td>Desviación en Horas TS</td><td><input type="text" readonly="true" id="lbDesviacionTS" style="width:95%;" /></td></tr>
 								<tr><td>Estatus</td><td><input id="lbEstatus" type="text" style="width:95%;" readonly="true"/>
 								</td>
 								</tr>
