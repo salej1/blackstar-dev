@@ -11,5 +11,5 @@ public interface ServiceOrderDAO {
 	public Serviceorder getServiceOrderById(int id);
 	public Serviceorder getServiceOrderByNum(String num);
 	public int insertServiceOrder();
-	public boolean updateServiceOrder();
+	public boolean updateServiceOrder(Serviceorder so);
 }

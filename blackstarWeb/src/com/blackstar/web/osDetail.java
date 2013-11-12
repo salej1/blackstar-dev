@@ -102,7 +102,8 @@ public class osDetail extends HttpServlet {
 																		policy.getContactPhone(), et.getEquipmentType(), policy.getBrand(), policy.getModel(), policy.getSerialNumber(), 
 																		ticket.getObservations(), st.getServiceType(), policy.getProject(), "", "", 
 																		"", "", serviceOrder.getServiceComments(), serviceOrder.getSignCreated(), serviceOrder.getsignReceivedBy(), 
-																		serviceOrder.getReceivedBy(), serviceOrder.getResponsible(), serviceOrder.getClosed(), serviceOrder.getReceivedByPosition());
+																		serviceOrder.getReceivedBy(), serviceOrder.getResponsible(), serviceOrder.getClosed(), serviceOrder.getReceivedByPosition(),
+																		serviceOrder.getIsWrong());
 				}
 				else
 				{
@@ -111,7 +112,8 @@ public class osDetail extends HttpServlet {
 							policy.getContactPhone(), et.getEquipmentType(), policy.getBrand(), policy.getModel(), policy.getSerialNumber(), 
 							"", st.getServiceType(), policy.getProject(), "", "", 
 							"", "", serviceOrder.getServiceComments(), serviceOrder.getSignCreated(), serviceOrder.getsignReceivedBy(), 
-							serviceOrder.getReceivedBy(), serviceOrder.getResponsible(), serviceOrder.getClosed(), serviceOrder.getReceivedByPosition());
+							serviceOrder.getReceivedBy(), serviceOrder.getResponsible(), serviceOrder.getClosed(), serviceOrder.getReceivedByPosition(),
+							serviceOrder.getIsWrong());
 					
 				}
 					
@@ -140,19 +142,28 @@ public class osDetail extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	
+		String pIsWrong = (String)request.getParameter("isWrong");
+		String osId = (String)request.getParameter("serviceOrderId");
 		
-		if(request.getParameter("datosComentario").toString().equals("")== false){
-			  
-			String[] datosComentario=request.getParameter("datosComentario").toString().split("&&");
-			  String comentario = datosComentario[0];
-			  String asignadoA = datosComentario[1];
-			  String folioOS = datosComentario[2];
-			  
-			  //TODO: Guardar followup
-			  Followup followup =  new Followup();
-			  followup.setModified(new Date());
-			  followup.setCreated(new Date());
+		try {
+			int serviceOrderId = Integer.parseInt(osId);
+
+			if(serviceOrderId > 0){
+				if(pIsWrong != null && !pIsWrong.equals("")){
+					Serviceorder so = this.daoFactory.getServiceOrderDAO().getServiceOrderById(serviceOrderId);
+					
+					// actualizando los valores
+					Integer isWrong = Integer.parseInt(pIsWrong);
+					so.setIsWrong(isWrong);
+					
+					// guardando el nuevo OS
+					this.daoFactory.getServiceOrderDAO().updateServiceOrder(so);
+					
+					response.sendRedirect(String.format("/osDetail?serviceOrderId=%s", so.getServiceOrderId()));
+				}
+			}
+		} catch (NumberFormatException e) {
+			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
 		}
 	}
 	

@@ -50,7 +50,11 @@
 		$('#lbNombreRealizado').val('${serviceOrderDetail.responsible}');
 		$('#lbFechaSalida').val('${serviceOrderDetail.closed}');
 		$('#lblPuesto').val('${serviceOrderDetail.receivedByPosition}');
-
+		
+		if(${serviceOrderDetail.isWrong}){
+			$('#optIsWrong').attr('checked', 'checked');			
+		}
+		
 		// inicializando el dialogo para agregar seguimientos
 		initFollowUpDlg("serviceOrder", "osDetail?serviceOrderId=${serviceOrderDetail.serviceOrderId}");
 		
@@ -63,6 +67,19 @@
 		$('#rightSign').signature('draw', '${serviceOrderDetail.signReceivedBy}'); 
 	});
 
+	function updateOs(){
+		var osUpdateForm = $("#osUpdateForm");
+		
+		// llenado de los campos de actualizacion
+		if($("#optIsWrong").is(":checked")){
+			$("#isWrong").val(1);
+		}
+		else{
+			$("#isWrong").val(0);
+		}
+		
+		osUpdateForm.submit();
+	}
  </script> 
 
 	 
@@ -211,15 +228,25 @@
 									<td>Nombre</td><td><input id="lbNombreRecibido" type="text" style="width:95%;"readOnly="true" /></td>
 								</tr>
 								<tr>
-									<td>Fecha y hora de salida</td><td><input id="lbFechaSalida" type="text" style="width:95%;" readOnly="true" /></td>
-									<td>Puesto</td><td><input type="text" id="lblPuesto" style="width:95%;" readOnly="true" /></td>
+									<td>Fecha y hora de salida</td>
+									<td><input id="lbFechaSalida" type="text" style="width:95%;" readOnly="true" /></td>
+									<td>Puesto</td>
+									<td><input type="text" id="lblPuesto" style="width:95%;" readOnly="true" /></td>
 								</tr>						
 								<tr>
 									<td style="height:40px;"></td>
 									<td></td>
 									<td></td>
+									<td></td>
 								</tr>
-							</table>
+								<tr>
+									<td>Errores de captura<input type = "checkbox" id="optIsWrong" name="optIsWrong"/></td>
+									<td></td>
+									<td></td>
+									<td></td>
+								</tr>
+							</table>							
+
 							
 							<!-- Control de secuencia y captura de seguimiento -->
 							<c:import url="followUpControl.jsp"></c:import>
@@ -229,11 +256,18 @@
 									<tr>
 										<td>
 											<button class="searchButton" onclick="addSeguimiento(${serviceOrderDetail.serviceOrderId}, '${serviceOrderDetail.serviceOrderNo}');">Agregar seguimiento</button>
-											<button class="searchButton" onclick="window.location = 'dashboard'">Cerrar</button>
+											<button class="searchButton" onclick="updateOs();">Guardar</button>
+											<button class="searchButton" onclick="window.location = 'dashboard'">Cerrar OS</button>
 										</td>
 									</tr>
 								<tbody>
 							</table>
+							
+							<form id="osUpdateForm" action="/osDetail" method="POST">
+								<input type="hidden" name="serviceOrderId" id="serviceOrderId" value="${serviceOrderDetail.serviceOrderId}"/>
+								<input type="hidden" name="isWrong" id="isWrong"/>
+							</form>
+
 					</div>					
 				</div>				
 <!--   ~ CONTENT COLUMN   -->
