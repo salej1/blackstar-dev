@@ -48,15 +48,33 @@
 -- 8   19/10/2013	SAG		Se Integra:
 -- 								blackstarDb.ReopenTicket
 -- -----------------------------------------------------------------------------
--- 8   24/10/2013	SAG		Se Integra:
+-- 9   24/10/2013	SAG		Se Integra:
 -- 								blackstarDb.AssignServiceOrder
 -- 								blackstarDb.GetEquipmentByCustomer
 -- -----------------------------------------------------------------------------
+-- 10   19/10/2013	SAG		Se Integra:
+-- 								blackstarDb.GetOfficesList
+-- -----------------------------------------------------------------------------
+
 
 use blackstarDb;
 
 
 DELIMITER $$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetOfficesList
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetOfficesList$$
+CREATE PROCEDURE blackstarDb.GetOfficesList()
+BEGIN
+
+	SELECT DISTINCT
+		officeName
+	FROM office 
+	ORDER BY officeName;
+END$$
+
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetEquipmentByCustomer

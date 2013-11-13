@@ -13,6 +13,7 @@
 <script src="js/jquery-1.10.1.min.js"></script>
 <script src="js/jquery-ui.js"></script>
 <script src="DataTables-1.9.4/media/js/jquery.dataTables.js"></script>
+<script src="js/jquery.cookie.js"></script>
 
 <script type="text/javascript" charset="utf-8">
 	var strSO = '${serviceOrdersPendingDashboard}';
@@ -24,6 +25,19 @@
 		assignedTicket = tktId;
 		$('#lblTicketBeignAssigned').html(tktNumber);
 		$('#tktAssignDlg').dialog('open');
+	 }
+	 
+	 function refreshSoListByOffice(office){
+		// tabla de OS nuevas
+		var newSOTable = $('#dtOrdenesPorRevisar').dataTable();
+			newSOTable.fnFilter(office, 8);
+
+		// tabla de OS con pendientes
+		var pendingSOTable = $('#dtOrdenesPendientes').dataTable();
+			pendingSOTable.fnFilter(office, 8);
+			
+		// se guarda la preferencia del usuario
+		$.cookie('blackstar_office_pref', office, { expires: 365 });
 	 }
 	 
 	 function refreshTicketList(){
@@ -151,6 +165,12 @@
 
 	refreshTicketList();
 	
+	// se filtran las oficinas de acuerdo a la ultima preferencia del usuario
+	var officePref = $.cookie('blackstar_office_pref');
+	if(officePref != null){
+		$("#optOffices").val(officePref);
+		refreshSoListByOffice(officePref);
+	}
 });
 </script> 
 <title>Tickets</title>
@@ -185,7 +205,16 @@
 						</div>
 					</div>
 				</div>
-
+				<div class="grid_16">
+					<p>Oficina:
+						<select id="optOffices" onchange="refreshSoListByOffice($(this).val());">
+							<option value="">Todas</option>
+							<c:forEach var="office" items="${offices}">
+								<option value = "${office}">${office}</option>
+							</c:forEach>					
+						</select>
+					</p>
+				</div>
 				<div class="grid_16">
 					<div class="box">
 						<h2>Ordenes de servicio por revisar</h2>
