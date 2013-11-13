@@ -305,7 +305,7 @@ BEGIN
 		p.contactPhone AS contactPhone,
 		p.contactEmail AS contactEmail,
 		p.serialNumber AS serialNumber,
-		p.observations AS observations,
+		t.observations AS observations,
 		p.customer AS customer,
 		et.equipmentType AS equipmentType,
 		p.brand AS brand,
@@ -718,7 +718,7 @@ DELIMITER $$
 	-- blackstarDb.GetEquipmentByCustomer
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDbTransfer.ExecuteTransfer$$
-CREATE PROCEDURE blackstarDbTransfer.ExecuteTransfer ()
+CREATE PROCEDURE blackstarDbTransfer.ExecuteTransfer()
 BEGIN
 
   -- LLENAR CATALOGO DE POLIZAS
@@ -899,6 +899,20 @@ BEGIN
 
 	UPDATE blackstarDb.followUp SET	
 		followUp = REPLACE( followUp,'"','');
+	
+	-- ELIMINACION DE TABS QUE PROVOCAN PROBLEMAS AL CONVERTIR A JSON
+
+	UPDATE blackstarDb.policy SET	
+		observations = REPLACE( observations,'\t',' ');
+		
+	UPDATE blackstarDb.serviceOrder SET	
+		serviceComments = REPLACE( serviceComments,'\t',' ');
+		
+	UPDATE blackstarDb.ticket SET	
+		observations = REPLACE( observations,'\t',' ');
+
+	UPDATE blackstarDb.followUp SET	
+		followUp = REPLACE( followUp,'\t','');
 		
 	-- ELIMINACION DE RETORNOS DE CARRO QUE PROVOCAN PROBLEMAS AL CONVERTIR A JSON
 	UPDATE blackstarDb.policy SET	
@@ -913,6 +927,12 @@ BEGIN
 	UPDATE blackstarDb.policy SET	
 		observations = REPLACE( observations,'\n','');
 		
+	UPDATE blackstarDb.policy SET	
+		contactPhone = REPLACE( contactPhone,'\n','');
+		
+	UPDATE blackstarDb.policy SET	
+		contactEmail = REPLACE( contactEmail,'\n','');
+
 	UPDATE blackstarDb.serviceOrder SET	
 		serviceComments = REPLACE( serviceComments,'\n','');
 		

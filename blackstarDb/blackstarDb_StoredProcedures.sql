@@ -255,7 +255,7 @@ BEGIN
 		p.contactPhone AS contactPhone,
 		p.contactEmail AS contactEmail,
 		p.serialNumber AS serialNumber,
-		p.observations AS observations,
+		t.observations AS observations,
 		p.customer AS customer,
 		et.equipmentType AS equipmentType,
 		p.brand AS brand,

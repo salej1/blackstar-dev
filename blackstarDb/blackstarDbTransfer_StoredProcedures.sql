@@ -203,6 +203,20 @@ BEGIN
 
 	UPDATE blackstarDb.followUp SET	
 		followUp = REPLACE( followUp,'"','');
+	
+	-- ELIMINACION DE TABS QUE PROVOCAN PROBLEMAS AL CONVERTIR A JSON
+
+	UPDATE blackstarDb.policy SET	
+		observations = REPLACE( observations,'\t',' ');
+		
+	UPDATE blackstarDb.serviceOrder SET	
+		serviceComments = REPLACE( serviceComments,'\t',' ');
+		
+	UPDATE blackstarDb.ticket SET	
+		observations = REPLACE( observations,'\t',' ');
+
+	UPDATE blackstarDb.followUp SET	
+		followUp = REPLACE( followUp,'\t','');
 		
 	-- ELIMINACION DE RETORNOS DE CARRO QUE PROVOCAN PROBLEMAS AL CONVERTIR A JSON
 	UPDATE blackstarDb.policy SET	
@@ -217,6 +231,12 @@ BEGIN
 	UPDATE blackstarDb.policy SET	
 		observations = REPLACE( observations,'\n','');
 		
+	UPDATE blackstarDb.policy SET	
+		contactPhone = REPLACE( contactPhone,'\n','');
+		
+	UPDATE blackstarDb.policy SET	
+		contactEmail = REPLACE( contactEmail,'\n','');
+
 	UPDATE blackstarDb.serviceOrder SET	
 		serviceComments = REPLACE( serviceComments,'\n','');
 		
