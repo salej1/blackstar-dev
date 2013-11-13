@@ -33,7 +33,7 @@
 			$('#lbTelContacto').val('${policyt.contactPhone}');
 			$('#lbMailContacto').val('${policyt.contactEmail}');
 			$('#lbNoSerie').val('${policyt.serialNumber}');
-			$('#lbObservaciones').html('${policyt.observations}');
+			$('#lbObservaciones').html('${ticketF.observations}');
 			$('#lbCliente').val('${policyt.customer}');
 			$('#lbEquipo').val('${EquipmenttypeT.equipmentType}');
 			$('#lbMarca').val('${policyt.brand}');
