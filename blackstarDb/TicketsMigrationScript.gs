@@ -12,6 +12,8 @@
 ** 1    17/09/2013  SAG  	Version inicial: Exporta el archivo de tickets a BD blackstarDbTransfer
 ** --   --------   -------  ------------------------------------
 ** 2    05/11/2013  SAG  	Se agrega job de sincronizacion
+** --   --------   -------  ------------------------------------
+** 3    12/11/2013  SAG  	Se agrega deteccion de ultimo ticket en BD
 *****************************************************************************/
 
 function main() {
@@ -243,41 +245,124 @@ function startSyncJob(conn, sqlLog){
 	// Load the equipment type Ids
 	var policies = loadPolicies(conn);
 	
-	// how many records do we have?
-	var ticketCount = getTicketCount(conn);
-	
 	// start point at the spreadsheet
-	const offset = 2;
-	var startRec = ticketCount + offset + 1;
+	const offset = 3;
 	
-	// iterate looking for new tickets
+	var lastTicketNumber = getLastTicketNumber(conn);
+	var startRec = offset;
 	var range = "A" + startRec.toString() + ":AF" + startRec.toString();
-	var data = SpreadsheetApp.getActiveSpreadsheet().getRange(range).getValues();
+	var ss = SpreadsheetApp.getActiveSpreadsheet();
+	var sheet = ss.getSheets()[4];
+	var data = sheet.getRange(range).getValues();
 	var currTicket = data[0];
+	var found = 0;
+	var blanks = 0;
+	var fuBuffer = [];
 	
-	while(currTicket != null && currTicket[0] != null && currTicket[0].toString() != ""){
-		sqlLog = sendToDatabase(currTicket, conn, eqTypes, sqlLog);
+	while(found == 0 && blanks < 5){
+		var thisTktNum = currTicket[21];
+		var thisFollowUp = currTicket[25];
+
+		if(thisTktNum != null || thisTktNum != ""){
+			fuBuffer = accumulateFollowUpUdate(thisTktNum, thisFollowUp, fuBuffer);
+		}
+		else{
+			blanks++;
+		}
+		if(thisTktNum == lastTicketNumber){
+			found = 1;
+			break;
+		}
 		startRec++;
 		range = "A" + startRec.toString() + ":AF" + startRec.toString();
-		data = SpreadsheetApp.getActiveSpreadsheet().getRange(range).getValues();
+		data = sheet.getRange(range).getValues();
 		currTicket = data[0];
 	}	
+	
+	// updating the follow up data
+	executeFollowUpUpdate(conn, fuBuffer);
+	
+	// if we have new tickets
+	if(found){
+		startRec++;
+	
+		// iterate looking for new tickets
+		range = "A" + startRec.toString() + ":AF" + startRec.toString();
+		data = sheet.getRange(range).getValues();
+		currTicket = data[0];
+	
+		while(currTicket != null && currTicket[0] != null && currTicket[0].toString() != ""){
+			sqlLog = sendToDatabase(currTicket, conn, policies, sqlLog);
+			startRec++;
+			range = "A" + startRec.toString() + ":AF" + startRec.toString();
+			data = sheet.getRange(range).getValues();
+			currTicket = data[0];
+		}	
+		
+		sqlLog = executeTransfer(conn, sqlLog);
+	}
+	
+	return sqlLog;
 }
 
-
-function getTicketCount(conn){
-
+function getLastTicketNumber(conn){
 	var stmt = conn.createStatement();
 	var rs = stmt.execute("use blackstarDbTransfer;");
-	var ticketCount = 0;
-	
-	rs = stmt.executeQuery("select count(*) from blackstarDbTransfer.ticket;");
+	rs = stmt.executeQuery("select ticketNumber from ticket order by ticketId desc limit 1;");
+	var lastTicketNumber = "";
+
 	while(rs.next()){
-		ticketCount = rs.getInt(1);
+		lastTicketNumber = rs.getString(1);
 	}
 	
 	rs.close();
 	stmt.close();
 	
-	return ticketCount;
+	return lastTicketNumber;
+}
+
+function executeTransfer(conn, sqlLog){
+	var stmt = conn.createStatement();
+	var sql = "call executeTransfer();";
+
+	Logger.log("Executing Transfer...");
+	
+	sqlLog = saveSql(sqlLog, sql);
+	
+	stmt.execute(sql);
+	stmt.close();
+
+	return sqlLog;
+}
+
+function executeFollowUpUpdate(conn, buffer){
+	var stmt = conn.createStatement();
+	stmt.execute("use blackstarDbTransfer;");
+
+	conn.setAutoCommit(false);
+	stmt = conn.prepareStatement("update ticket set followUp = ? where ticketNumber = ?;");
+	
+	var item = buffer.shift();
+	while(item != null){
+		Logger.log(Utilities.formatString("Updating Ticket FollowUp %s", item[1]));
+		stmt.setObject(1, item[0]);
+		stmt.setObject(2, item[1]);
+		stmt.addBatch();
+		item = buffer.shift();
+	}
+	
+	var res = stmt.executeBatch();
+	conn.commit();
+	Logger.log("Ticket followUps updated");
+}
+
+function accumulateFollowUpUdate(ticketNum, followUp, buffer){
+	if(followUp == null){
+		followUp = "";
+	}
+	
+	var fuSet = [followUp, ticketNum];
+	buffer.push(fuSet);
+	
+	return buffer;
 }
