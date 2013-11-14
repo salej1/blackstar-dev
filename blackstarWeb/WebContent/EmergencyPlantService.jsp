@@ -49,17 +49,130 @@
 			$('#lbNombreRealizado').val('${serviceOrderDetail.responsible}');
 			$('#lbFechaSalida').val('${serviceOrderDetail.closed}');
 			$('#lblPuesto').val('${serviceOrderDetail.receivedByPosition}');
-		
-			// inicializando el dialogo para agregar seguimientos
-			initFollowUpDlg("serviceOrder", "osDetail?serviceOrderId=${serviceOrderDetail.serviceOrderId}");
-			
+
 			// Signature capture box # 1 
 			$('#leftSign').signature({disabled: true}); 
 			$('#leftSign').signature('draw', '${serviceOrderDetail.signCreated}'); 
-		
+
 			// Signature capture box # 2 
 			$('#rightSign').signature({disabled: true}); 
 			$('#rightSign').signature('draw', '${serviceOrderDetail.signReceivedBy}'); 
+
+			 $('#epServiceId').val('${serviceOrder.epServiceId}');
+			 $('#serviceOrderId').val('${serviceOrder.serviceOrderId}');
+			 $('#transferType').val('${serviceOrder.transferType}');
+			 $('#modelTransfer').val('${serviceOrder.modelTransfer}');
+			 $('#modelControl').val('${serviceOrder.modelControl}');
+			 $('#modelRegVoltage').val('${serviceOrder.modelRegVoltage}');
+			 $('#modelRegVelocity').val('${serviceOrder.modelRegVelocity}');
+			 $('#modelCharger').val('${serviceOrder.modelCharger}');
+			 $('#oilChange').val('${serviceOrder.oilChange}');
+			 $('#brandMotor').val('${serviceOrder.brandMotor}');
+			 $('#modelMotor').val('${serviceOrder.modelMotor}');
+			 $('#serialMotor').val('${serviceOrder.serialMotor}');
+			 $('#cplMotor').val('${serviceOrder.cplMotor}');
+			 $('#brandGenerator').val('${serviceOrder.brandGenerator}');
+			 $('#modelGenerator').val('${serviceOrder.modelGenerator}');
+			 $('#serialGenerator').val('${serviceOrder.serialGenerator}');
+			 $('#powerWattGenerator').val('${serviceOrder.powerWattGenerator}');
+			 $('#tensionGenerator').val('${serviceOrder.tensionGenerator}');
+			 $('#tuningDate').val('${serviceOrder.tuningDate}');
+			 $('#tankCapacity').val('${serviceOrder.tankCapacity}');
+			 $('#pumpFuelModel').val('${serviceOrder.pumpFuelModel}');
+			 $('#filterFuelFlag').val('${serviceOrder.filterFuelFlag}');
+			 $('#filterOilFlag').val('${serviceOrder.filterOilFlag}');
+			 $('#filterWaterFlag').val('${serviceOrder.filterWaterFlag}');
+			 $('#filterAirFlag').val('${serviceOrder.filterAirFlag}');
+			 $('#brandGear').val('${serviceOrder.brandGear}');
+			 $('#brandBattery').val('${serviceOrder.brandBattery}');
+			 $('#clockLecture').val('${serviceOrder.clockLecture}');
+			 $('#serviceCorrective').val('${serviceOrder.serviceCorrective}');
+			 $('#observations').val('${serviceOrder.observations}');
+
+			 $('#epServiceSurveyId').val('${serviceOrder.epServiceSurveyId}');
+			 $('#epServiceId').val('${serviceOrder.epServiceId}');
+			 $('#levelOilFlag').val('${serviceOrder.levelOilFlag}');
+			 $('#levelWaterFlag').val('${serviceOrder.levelWaterFlag}');
+			 $('#levelBattery').val('${serviceOrder.levelBattery}');
+			 $('#tubeLeak').val('${serviceOrder.tubeLeak}');
+			 $('#batteryCap').val('${serviceOrder.batteryCap}');
+			 $('#batterySulfate').val('${serviceOrder.batterySulfate}');
+			 $('#levelOil').val('${serviceOrder.levelOil}');
+			 $('#heatEngine').val('${serviceOrder.heatEngine}');
+			 $('#hoseOil').val('${serviceOrder.hoseOil}');
+			 $('#hoseWater').val('${serviceOrder.hoseWater}');
+			 $('#tubeValve').val('${serviceOrder.tubeValve}');
+			 $('#stripBlades').val('${serviceOrder.stripBlades}');
+
+			 $('#epServiceWorkBasicId').val('${serviceOrder.epServiceWorkBasicId}');
+			 $('#epServiceId').val('${serviceOrder.epServiceId}');
+			 $('#washEngine').val('${serviceOrder.washEngine}');
+			 $('#washRadiator').val('${serviceOrder.washRadiator}');
+			 $('#cleanWorkArea').val('${serviceOrder.cleanWorkArea}');
+			 $('#conectionCheck').val('${serviceOrder.conectionCheck}');
+			 $('#cleanTransfer').val('${serviceOrder.cleanTransfer}');
+			 $('#cleanCardControl').val('${serviceOrder.cleanCardControl}');
+			 $('#checkConectionControl').val('${serviceOrder.checkConectionControl}');
+			 $('#checkWinding').val('${serviceOrder.checkWinding}');
+			 $('#batteryTests').val('${serviceOrder.batteryTests}');
+			 $('#checkCharger').val('${serviceOrder.checkCharger}');
+			 $('#checkPaint').val('${serviceOrder.checkPaint}');
+			 $('#cleanGenerator').val('${serviceOrder.cleanGenerator}');
+
+			 $('#epServiceDynamicTestId').val('${serviceOrder.epServiceDynamicTestId}');
+			 $('#epServiceId').val('${serviceOrder.epServiceId}');
+			 $('#vacuumFrequency').val('${serviceOrder.vacuumFrequency}');
+			 $('#chargeFrequency').val('${serviceOrder.chargeFrequency}');
+			 $('#bootTryouts').val('${serviceOrder.bootTryouts}');
+			 $('#vacuumVoltage').val('${serviceOrder.vacuumVoltage}');
+			 $('#chargeVoltage').val('${serviceOrder.chargeVoltage}');
+			 $('#qualitySmoke').val('${serviceOrder.qualitySmoke}');
+			 $('#startTime').val('${serviceOrder.startTime}');
+			 $('#transferTime').val('${serviceOrder.transferTime}');
+			 $('#stopTime').val('${serviceOrder.stopTime}');
+
+			 $('#epServiceTestProtectionId').val('${serviceOrder.epServiceTestProtectionId}');
+			 $('#epServiceId').val('${serviceOrder.epServiceId}');
+			 $('#tempSensor').val('${serviceOrder.tempSensor}');
+			 $('#oilSensor').val('${serviceOrder.oilSensor}');
+			 $('#voltageSensor').val('${serviceOrder.voltageSensor}');
+			 $('#overSpeedSensor').val('${serviceOrder.overSpeedSensor}');
+			 $('#oilPreasureSensor').val('${serviceOrder.oilPreasureSensor}');
+			 $('#waterLevelSensor').val('${serviceOrder.waterLevelSensor}');
+
+			 $('#epServiceTransferSwitchId').val('${serviceOrder.epServiceTransferSwitchId}');
+			 $('#epServiceId').val('${serviceOrder.epServiceId}');
+			 $('#mechanicalStatus').val('${serviceOrder.mechanicalStatus}');
+			 $('#boardClean').val('${serviceOrder.boardClean}');
+			 $('#screwAdjust').val('${serviceOrder.screwAdjust}');
+			 $('#conectionAdjust').val('${serviceOrder.conectionAdjust}');
+			 $('#systemMotors').val('${serviceOrder.systemMotors}');
+			 $('#electricInterlock').val('${serviceOrder.electricInterlock}');
+			 $('#mechanicalInterlock').val('${serviceOrder.mechanicalInterlock}');
+			 $('#capacityAmp').val('${serviceOrder.capacityAmp}');
+
+			 $('#epServiceLecturesId').val('${serviceOrder.epServiceLecturesId}');
+			 $('#epServiceId').val('${serviceOrder.epServiceId}');
+			 $('#voltageABAN').val('${serviceOrder.voltageABAN}');
+			 $('#voltageACCN').val('${serviceOrder.voltageACCN}');
+			 $('#voltageBCBN').val('${serviceOrder.voltageBCBN}');
+			 $('#voltageNT').val('${serviceOrder.voltageNT}');
+			 $('#currentA').val('${serviceOrder.currentA}');
+			 $('#currentB').val('${serviceOrder.currentB}');
+			 $('#currentC').val('${serviceOrder.currentC}');
+			 $('#frequency').val('${serviceOrder.frequency}');
+			 $('#oilPreassure').val('${serviceOrder.oilPreassure}');
+			 $('#temp').val('${serviceOrder.temp}');
+
+			 $('#epServiceParamsId').val('${serviceOrder.epServiceParamsId}');
+			 $('#epServiceId').val('${serviceOrder.epServiceId}');
+			 $('#adjsutmentTherm').val('${serviceOrder.adjsutmentTherm}');
+			 $('#current').val('${serviceOrder.current}');
+			 $('#batteryCurrent').val('${serviceOrder.batteryCurrent}');
+			 $('#clockStatus').val('${serviceOrder.clockStatus}');
+			 $('#trasnferTypeProtection').val('${serviceOrder.trasnferTypeProtection}');
+			 $('#generatorTypeProtection').val('${serviceOrder.generatorTypeProtection}');
+						
 		});
 	
 	</script> 

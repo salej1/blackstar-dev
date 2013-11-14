@@ -49,17 +49,44 @@
 			$('#lbNombreRealizado').val('${serviceOrderDetail.responsible}');
 			$('#lbFechaSalida').val('${serviceOrderDetail.closed}');
 			$('#lblPuesto').val('${serviceOrderDetail.receivedByPosition}');
-		
-			// inicializando el dialogo para agregar seguimientos
-			initFollowUpDlg("serviceOrder", "osDetail?serviceOrderId=${serviceOrderDetail.serviceOrderId}");
-			
+
 			// Signature capture box # 1 
 			$('#leftSign').signature({disabled: true}); 
 			$('#leftSign').signature('draw', '${serviceOrderDetail.signCreated}'); 
-		
+
 			// Signature capture box # 2 
 			$('#rightSign').signature({disabled: true}); 
 			$('#rightSign').signature('draw', '${serviceOrderDetail.signReceivedBy}'); 
+
+			 $('#bbServiceId').val('${serviceOrder.bbServiceId}');
+			 $('#serviceOrderId').val('${serviceOrder.serviceOrderId}');
+			 $('#plugClean').val('${serviceOrder.plugClean}');
+			 $('#plugCleanStatus').val('${serviceOrder.plugCleanStatus}');
+			 $('#plugCleanComments').val('${serviceOrder.plugCleanComments}');
+			 $('#coverClean').val('${serviceOrder.coverClean}');
+			 $('#coverCleanStatus').val('${serviceOrder.coverCleanStatus}');
+			 $('#coverCleanComments').val('${serviceOrder.coverCleanComments}');
+			 $('#capClean').val('${serviceOrder.capClean}');
+			 $('#capCleanStatus').val('${serviceOrder.capCleanStatus}');
+			 $('#capCleanComments').val('${serviceOrder.capCleanComments}');
+			 $('#groundClean').val('${serviceOrder.groundClean}');
+			 $('#groundCleanStatus').val('${serviceOrder.groundCleanStatus}');
+			 $('#groundCleanComments').val('${serviceOrder.groundCleanComments}');
+			 $('#rackClean').val('${serviceOrder.rackClean}');
+			 $('#rackCleanStatus').val('${serviceOrder.rackCleanStatus}');
+			 $('#rackCleanComments').val('${serviceOrder.rackCleanComments}');
+			 $('#serialNoDateManufact').val('${serviceOrder.serialNoDateManufact}');
+			 $('#batteryTemperature').val('${serviceOrder.batteryTemperature}');
+			 $('#voltageBus').val('${serviceOrder.voltageBus}');
+			 $('#temperature').val('${serviceOrder.temperature}');
+
+			 $('#bbCellServiceId').val('${serviceOrder.bbCellServiceId}');
+			 $('#bbServiceId').val('${serviceOrder.bbServiceId}');
+			 $('#cellNumber').val('${serviceOrder.cellNumber}');
+			 $('#floatVoltage').val('${serviceOrder.floatVoltage}');
+			 $('#chargeVoltage').val('${serviceOrder.chargeVoltage}');
+						 
+						
 		});
 	
 	</script> 

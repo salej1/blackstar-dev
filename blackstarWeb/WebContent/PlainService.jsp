@@ -49,17 +49,22 @@
 			$('#lbNombreRealizado').val('${serviceOrderDetail.responsible}');
 			$('#lbFechaSalida').val('${serviceOrderDetail.closed}');
 			$('#lblPuesto').val('${serviceOrderDetail.receivedByPosition}');
-		
-			// inicializando el dialogo para agregar seguimientos
-			initFollowUpDlg("serviceOrder", "osDetail?serviceOrderId=${serviceOrderDetail.serviceOrderId}");
-			
+
 			// Signature capture box # 1 
 			$('#leftSign').signature({disabled: true}); 
 			$('#leftSign').signature('draw', '${serviceOrderDetail.signCreated}'); 
-		
+
 			// Signature capture box # 2 
 			$('#rightSign').signature({disabled: true}); 
 			$('#rightSign').signature('draw', '${serviceOrderDetail.signReceivedBy}'); 
+
+			 $('#plainServiceId').val('${serviceOrder.plainServiceId}');
+			 $('#serviceOrderId').val('${serviceOrder.serviceOrderId}');
+			 $('#troubleDescription').val('${serviceOrder.troubleDescription}');
+			 $('#techParam').val('${serviceOrder.techParam}');
+			 $('#workDone').val('${serviceOrder.workDone}');
+			 $('#materialUsed').val('${serviceOrder.materialUsed}');
+			 $('#observations').val('${serviceOrder.observations}');
 		});
 	
 	</script> 

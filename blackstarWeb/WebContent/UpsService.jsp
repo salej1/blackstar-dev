@@ -49,17 +49,57 @@
 			$('#lbNombreRealizado').val('${serviceOrderDetail.responsible}');
 			$('#lbFechaSalida').val('${serviceOrderDetail.closed}');
 			$('#lblPuesto').val('${serviceOrderDetail.receivedByPosition}');
-		
-			// inicializando el dialogo para agregar seguimientos
-			initFollowUpDlg("serviceOrder", "osDetail?serviceOrderId=${serviceOrderDetail.serviceOrderId}");
-			
+
 			// Signature capture box # 1 
 			$('#leftSign').signature({disabled: true}); 
 			$('#leftSign').signature('draw', '${serviceOrderDetail.signCreated}'); 
-		
+
 			// Signature capture box # 2 
 			$('#rightSign').signature({disabled: true}); 
 			$('#rightSign').signature('draw', '${serviceOrderDetail.signReceivedBy}'); 
+
+			 $('#upsServiceId').val('${serviceOrder.upsServiceId}');
+			 $('#serviceOrderId').val('${serviceOrder.serviceOrderId}');
+			 $('#estatusEquipment').val('${serviceOrder.estatusEquipment}');
+			 $('#cleaned').val('${serviceOrder.cleaned}');
+			 $('#hooverClean').val('${serviceOrder.hooverClean}');
+			 $('#verifyConnections').val('${serviceOrder.verifyConnections}');
+			 $('#capacitorStatus').val('${serviceOrder.capacitorStatus}');
+			 $('#verifyFuzz').val('${serviceOrder.verifyFuzz}');
+			 $('#chargerReview').val('${serviceOrder.chargerReview}');
+			 $('#fanStatus').val('${serviceOrder.fanStatus}');
+
+			 $('#upsServiceBatteryBankId').val('${serviceOrder.upsServiceBatteryBankId}');
+			 $('#upsServiceId').val('${serviceOrder.upsServiceId}');
+			 $('#checkConnectors').val('${serviceOrder.checkConnectors}');
+			 $('#cverifyOutflow').val('${serviceOrder.cverifyOutflow}');
+			 $('#numberBatteries').val('${serviceOrder.numberBatteries}');
+			 $('#manufacturedDateSerial').val('${serviceOrder.manufacturedDateSerial}');
+			 $('#damageBatteries').val('${serviceOrder.damageBatteries}');
+			 $('#other').val('${serviceOrder.other}');
+			 $('#temp').val('${serviceOrder.temp}');
+			 $('#chargeTest').val('${serviceOrder.chargeTest}');
+			 $('#brandModel').val('${serviceOrder.brandModel}');
+			 $('#batteryVoltage').val('${serviceOrder.batteryVoltage}');
+
+			 $('#upsServiceGeneralTestId').val('${serviceOrder.upsServiceGeneralTestId}');
+			 $('#upsServiceId').val('${serviceOrder.upsServiceId}');
+			 $('#trasferLine').val('${serviceOrder.trasferLine}');
+			 $('#transferEmergencyPlant').val('${serviceOrder.transferEmergencyPlant}');
+			 $('#backupBatteries').val('${serviceOrder.backupBatteries}');
+			 $('#verifyVoltage').val('${serviceOrder.verifyVoltage}');
+
+			 $('#upsServiceParamsId').val('${serviceOrder.upsServiceParamsId}');
+			 $('#upsServiceId').val('${serviceOrder.upsServiceId}');
+			 $('#inputVoltagePhase').val('${serviceOrder.inputVoltagePhase}');
+			 $('#inputVoltageNeutro').val('${serviceOrder.inputVoltageNeutro}');
+			 $('#inputVoltageNeutroGround').val('${serviceOrder.inputVoltageNeutroGround}');
+			 $('#percentCharge').val('${serviceOrder.percentCharge}');
+			 $('#outputVoltagePhase').val('${serviceOrder.outputVoltagePhase}');
+			 $('#outputVoltageNeutro').val('${serviceOrder.outputVoltageNeutro}');
+			 $('#inOutFrecuency').val('${serviceOrder.inOutFrecuency}');
+			 $('#busVoltage').val('${serviceOrder.busVoltage}');
+						
 		});
 	
 	</script> 

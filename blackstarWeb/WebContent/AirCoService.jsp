@@ -49,17 +49,66 @@
 			$('#lbNombreRealizado').val('${serviceOrderDetail.responsible}');
 			$('#lbFechaSalida').val('${serviceOrderDetail.closed}');
 			$('#lblPuesto').val('${serviceOrderDetail.receivedByPosition}');
-		
-			// inicializando el dialogo para agregar seguimientos
-			initFollowUpDlg("serviceOrder", "osDetail?serviceOrderId=${serviceOrderDetail.serviceOrderId}");
-			
+
 			// Signature capture box # 1 
 			$('#leftSign').signature({disabled: true}); 
 			$('#leftSign').signature('draw', '${serviceOrderDetail.signCreated}'); 
-		
+
 			// Signature capture box # 2 
 			$('#rightSign').signature({disabled: true}); 
 			$('#rightSign').signature('draw', '${serviceOrderDetail.signReceivedBy}'); 
+				
+			 $('#aaServiceId').val('${serviceOrder.aaServiceId}');			 
+			 $('#evaDescription').val('${serviceOrder.evaDescription}');
+			 $('#evaValTemp').val('${serviceOrder.evaValTemp}');
+			 $('#evaValHum').val('${serviceOrder.evaValHum}');
+			 $('#evaSetpointTemp').val('${serviceOrder.evaSetpointTemp}');
+			 $('#evaSetpointHum').val('${serviceOrder.evaSetpointHum}');
+			 $('#evaFlagCalibration').val('${serviceOrder.evaFlagCalibration}');
+			 $('#evaReviewFilter').val('${serviceOrder.evaReviewFilter}');
+			 $('#evaReviewStrip').val('${serviceOrder.evaReviewStrip}');
+			 $('#evaCleanElectricSystem').val('${serviceOrder.evaCleanElectricSystem}');
+			 $('#evaCleanControlCard').val('${serviceOrder.evaCleanControlCard}');
+			 $('#evaCleanTray').val('${serviceOrder.evaCleanTray}');
+			 $('#evaLectrurePreasureHigh').val('${serviceOrder.evaLectrurePreasureHigh}');
+			 $('#evaLectrurePreasureLow').val('${serviceOrder.evaLectrurePreasureLow}');
+			 $('#evaLectureTemp').val('${serviceOrder.evaLectureTemp}');
+			 $('#evaLectureOilColor').val('${serviceOrder.evaLectureOilColor}');
+			 $('#evaLectureOilLevel').val('${serviceOrder.evaLectureOilLevel}');
+			 $('#evaLectureCoolerColor').val('${serviceOrder.evaLectureCoolerColor}');
+			 $('#evaLectureCoolerLevel').val('${serviceOrder.evaLectureCoolerLevel}');
+			 $('#evaCheckOperatation').val('${serviceOrder.evaCheckOperatation}');
+			 $('#evaCheckNoise').val('${serviceOrder.evaCheckNoise}');
+			 $('#evaCheckIsolated').val('${serviceOrder.evaCheckIsolated}');
+			 $('#evaLectureVoltageGroud').val('${serviceOrder.evaLectureVoltageGroud}');
+			 $('#evaLectureVoltagePhases').val('${serviceOrder.evaLectureVoltagePhases}');
+			 $('#evaLectureVoltageControl').val('${serviceOrder.evaLectureVoltageControl}');
+			 $('#evaLectureCurrentMotor1').val('${serviceOrder.evaLectureCurrentMotor1}');
+			 $('#evaLectureCurrentMotor2').val('${serviceOrder.evaLectureCurrentMotor2}');
+			 $('#evaLectureCurrentMotor3').val('${serviceOrder.evaLectureCurrentMotor3}');
+			 $('#evaLectureCurrentCompressor1').val('${serviceOrder.evaLectureCurrentCompressor1}');
+			 $('#evaLectureCurrentCompressor2').val('${serviceOrder.evaLectureCurrentCompressor2}');
+			 $('#evaLectureCurrentCompressor3').val('${serviceOrder.evaLectureCurrentCompressor3}');
+			 $('#evaLectureCurrentHumidifier1').val('${serviceOrder.evaLectureCurrentHumidifier1}');
+			 $('#evaLectureCurrentHumidifier2').val('${serviceOrder.evaLectureCurrentHumidifier2}');
+			 $('#evaLectureCurrentHumidifier3').val('${serviceOrder.evaLectureCurrentHumidifier3}');
+			 $('#evaLectureCurrentHeater1').val('${serviceOrder.evaLectureCurrentHeater1}');
+			 $('#evaLectureCurrentHeater2').val('${serviceOrder.evaLectureCurrentHeater2}');
+			 $('#evaLectureCurrentHeater3').val('${serviceOrder.evaLectureCurrentHeater3}');
+			 $('#evaCheckFluidSensor').val('${serviceOrder.evaCheckFluidSensor}');
+			 $('#evaRequirMaintenance').val('${serviceOrder.evaRequirMaintenance}');
+			 $('#condReview').val('${serviceOrder.condReview}');
+			 $('#condCleanElectricSystem').val('${serviceOrder.condCleanElectricSystem}');
+			 $('#condClean').val('${serviceOrder.condClean}');
+			 $('#condLectureVoltageGroud').val('${serviceOrder.condLectureVoltageGroud}');
+			 $('#condLectureVoltagePhases').val('${serviceOrder.condLectureVoltagePhases}');
+			 $('#condLectureVoltageControl').val('${serviceOrder.condLectureVoltageControl}');
+			 $('#condLectureMotorCurrent').val('${serviceOrder.condLectureMotorCurrent}');
+			 $('#condReviewThermostat').val('${serviceOrder.condReviewThermostat}');
+			 $('#condModel').val('${serviceOrder.condModel}');
+			 $('#condSerialNumber').val('${serviceOrder.condSerialNumber}');
+			 $('#condBrand').val('${serviceOrder.condBrand}');
+			 $('#observations').val('${serviceOrder.observations}');						 
 		});
 	
 	</script> 
