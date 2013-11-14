@@ -122,75 +122,75 @@
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
 						</tr>
 						<tr>
-							<td>PE MARCA:</td>
+							<td>MODELO PE:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>MOTOR DIESEL MARCA:</td>
+							<td>MODELO MOTOR:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>CAPACIDAD TANQUE DIESEL:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-						</tr>
-						<tr>
-							<td>PE MARCA:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>MOTOR DIESEL MARCA:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>CAPACIDAD TANQUE DIESEL:</td>
+							<td>MODELO BOMBA COMBUSTIBLE:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
 						</tr>
 						<tr>
-							<td>PE MARCA:</td>
+							<td>No SERIE PE:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>MOTOR DIESEL MARCA:</td>
+							<td>No. DE SERIE MOTOR:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>CAPACIDAD TANQUE DIESEL:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-						</tr>
-						<tr>
-							<td>PE MARCA:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>MOTOR DIESEL MARCA:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>CAPACIDAD TANQUE DIESEL:</td>
+							<td>FILTRO DE COMBUSTIBLE. SE CAMBIÓ?:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
 						</tr>
 						<tr>
-							<td>PE MARCA:</td>
+							<td>TIPO DE TRANSFERENCIA:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>MOTOR DIESEL MARCA:</td>
+							<td>CPL MOTOR:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>CAPACIDAD TANQUE DIESEL:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-						</tr>
-						<tr>
-							<td>PE MARCA:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>MOTOR DIESEL MARCA:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>CAPACIDAD TANQUE DIESEL:</td>
+							<td>FILTRO DE ACEITE. SE CAMBIÓ?</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
 						</tr>
 						<tr>
-							<td>PE MARCA:</td>
+							<td>MCA/MODELO TRANSF:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>MOTOR DIESEL MARCA:</td>
+							<td>GENERADOR MCA:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>CAPACIDAD TANQUE DIESEL:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-						</tr>
-						<tr>
-							<td>PE MARCA:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>MOTOR DIESEL MARCA:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>CAPACIDAD TANQUE DIESEL:</td>
+							<td>FILTRO DE AGUA. SE CAMBIÓ?:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
 						</tr>
 						<tr>
-							<td>PE MARCA:</td>
+							<td>MCA/MODELO CONTROL:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>MOTOR DIESEL MARCA:</td>
+							<td>MODELO GENERADOR:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>CAPACIDAD TANQUE DIESEL:</td>
+							<td>FILTRO DE AIRE. SE CAMBIÓ?:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+						</tr>
+						<tr>
+							<td>MCA/MODELO REGULADOR DE VOLTAJE:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>No DE SERIE GENERADOR:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>MODELO DE LA MARCHA:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+						</tr>
+						<tr>
+							<td>MCA/MODELO REGULADOR DE VELOCIDAD:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>POTENCIA (KW) GENERADOR:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>MODELO DE BATERÍAS:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+						</tr>
+						<tr>
+							<td>MCA/MODELO CARGADOR DE BAT:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>TENSIÓN GENERADOR:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>LECTURA RELOJ CUENTA HORAS:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+						</tr>
+						<tr>
+							<td>ULTIMO CAMBIO DE ACEITE:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>ULTIMA FECHA DE AFINACIÓN:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>ULTIMO SERVICIO CORRECTIVO:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
 						</tr>
 					</table>
@@ -201,74 +201,74 @@
 							</tr>
 						</thead>
 						<tr>
-							<td>PE MARCA:</td>
+							<td>NIVEL/LIMP/CAMBIO DE ACEITE LUBRICANTE. SE CAMBIÓ?</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>MOTOR DIESEL MARCA:</td>
+							<td>ZAPATAS DE BATERÍA:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>CAPACIDAD TANQUE DIESEL:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-						</tr>
-						<tr>
-							<td>PE MARCA:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>MOTOR DIESEL MARCA:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>CAPACIDAD TANQUE DIESEL:</td>
+							<td>MANGUERAS COMBUSTIBLE:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
 						</tr>
 						<tr>
-							<td>PE MARCA:</td>
+							<td>NIVEL DE AGUA/ANTICONGELANTE. SE CAMBIÓ?:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>MOTOR DIESEL MARCA:</td>
+							<td>SULFATACIÓN BATERÍA:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>CAPACIDAD TANQUE DIESEL:</td>
+							<td>MANGUERAS AGUA:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
 						</tr>
 						<tr>
-							<td>PE MARCA:</td>
+							<td>NIVEL ELECTROLITO BATERÍA:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>MOTOR DIESEL MARCA:</td>
+							<td>NIVEL DE COMBUSTIBLE %:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>CAPACIDAD TANQUE DIESEL:</td>
+							<td>VÁLVULAS Y TUBERÍAS (CU/NEGRA):</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+						</tr>
+						<tr>
+							<td>FUGA EN TUBO DE ESCAPE:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>PRECALENTADO DE LA MÁQUINA. TEMPERATURA (MIN 60°):</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>TENSIÓN DE BANDAS/ESTADO DE ASPAS:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
 						</tr>
 					</table>
 					<table>
 						<thead>
 							<tr>
-								<th>SERVICIOS BASICOS</th>
+								<th>SERVICIOS BÁSICOS</th>
 							</tr>
 						</thead>
 						<tr>
-							<td>PE MARCA:</td>
+							<td>LAVADO DE MOTOR/TANQUE (FUGA):</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>MOTOR DIESEL MARCA:</td>
+							<td>SOPLETEADO DE TRANSFER:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>CAPACIDAD TANQUE DIESEL:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-						</tr>
-						<tr>
-							<td>PE MARCA:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>MOTOR DIESEL MARCA:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>CAPACIDAD TANQUE DIESEL:</td>
+							<td>PRUEBAS DE BATERÍAS:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
 						</tr>
 						<tr>
-							<td>PE MARCA:</td>
+							<td>LAVADO DE RADIADOR:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>MOTOR DIESEL MARCA:</td>
+							<td>LIMPIEZA TARJETAS DE CONTROL:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>CAPACIDAD TANQUE DIESEL:</td>
+							<td>REVISIÓN CARGADOR DE BATERÍA/ALTERNADOR:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
 						</tr>
 						<tr>
-							<td>PE MARCA:</td>
+							<td>LIMPIEZA ÁREA DE TRABAJO:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>MOTOR DIESEL MARCA:</td>
+							<td>AJUSTE DE CONEXIONES DE CONTROL:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>CAPACIDAD TANQUE DIESEL:</td>
+							<td>PINTURA Y CONSERVACIÓN:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+						</tr>
+						<tr>
+							<td>REVISIÓN DE CABLEADO  Y CONEXIONES:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>REVISIÓN DE EXT/EMBOBINADOS:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>SOPLETEADO TAB GENERADOR:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
 						</tr>
 					</table>
@@ -279,50 +279,50 @@
 							</tr>
 						</thead>
 						<tr>
-							<td>PE MARCA:</td>
+							<td>FRECUENCIA EN VACÍO:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>MOTOR DIESEL MARCA:</td>
+							<td>VOLTAJE EN VACÍO:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>CAPACIDAD TANQUE DIESEL:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-						</tr>
-						<tr>
-							<td>PE MARCA:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>MOTOR DIESEL MARCA:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>CAPACIDAD TANQUE DIESEL:</td>
+							<td>TIEMPO DE ARRANQUE:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
 						</tr>
 						<tr>
-							<td>PE MARCA:</td>
+							<td>FRECUENCIA EN CARGA:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>MOTOR DIESEL MARCA:</td>
+							<td>VOLTAJE EN CARGA:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>CAPACIDAD TANQUE DIESEL:</td>
+							<td>TIEMPO DE TRANSFERENCIA:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+						</tr>
+						<tr>
+							<td>NUM. DE INTENTOS DE ARRANQUE:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>CALIDAD DE EMISIONES DE HUMO:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>TIEMPO DE PARO:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
 						</tr>
 					</table>
 					<table>
 						<thead>
 							<tr>
-								<th>PRUEBAS PROTECCION DEL EQUIPO</th>
+								<th>PRUEBAS PROTECCIÓN DEL EQUIPO</th>
 							</tr>
 						</thead>
 						<tr>
-							<td>PE MARCA:</td>
+							<td>SENSOR DE TEMPERATURA:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>MOTOR DIESEL MARCA:</td>
+							<td>SENSOR DE VOLTAJE O GENERACIÓN:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>CAPACIDAD TANQUE DIESEL:</td>
+							<td>SENSOR BAJA PRESIÓN DE ACEITE:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
 						</tr>
 						<tr>
-							<td>PE MARCA:</td>
+							<td>SENSOR DE PRESIÓN DEL ACEITE:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>MOTOR DIESEL MARCA:</td>
+							<td>SENSOR DE SOBRE-VELOCIDAD:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>CAPACIDAD TANQUE DIESEL:</td>
+							<td>SENSOR BAJA PRESIÓN DE ACEITE:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
 						</tr>
 					</table>
@@ -333,27 +333,27 @@
 							</tr>
 						</thead>
 						<tr>
-							<td>PE MARCA:</td>
+							<td>ESTADO MECÁNICA:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>MOTOR DIESEL MARCA:</td>
+							<td>AJUSTE DE TORNILLERÍA:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>CAPACIDAD TANQUE DIESEL:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-						</tr>
-						<tr>
-							<td>PE MARCA:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>MOTOR DIESEL MARCA:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>CAPACIDAD TANQUE DIESEL:</td>
+							<td>INTERLOCK ELÉCTRICO:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
 						</tr>
 						<tr>
-							<td>PE MARCA:</td>
+							<td>LIMPIEZA DEL TABLERO:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>MOTOR DIESEL MARCA:</td>
+							<td>AJUSTE DE CONEXIONES:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>CAPACIDAD TANQUE DIESEL:</td>
+							<td>INTERLOCK MECÁNICO:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+						</tr>
+						<tr>
+							<td>PRUEBA DE LÁMPARAS:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>MOTORES DEL SISTEMA:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td>CAPACIDAD EN AMPERES:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
 						</tr>
 					</table>
@@ -364,35 +364,31 @@
 							</tr>
 						</thead>
 						<tr>
-							<td>PE MARCA:</td>
+							<td>VOLTAJE AB/AN:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>MOTOR DIESEL MARCA:</td>
+							<td>CORRIENTE A(AMP):</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>CAPACIDAD TANQUE DIESEL:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-						</tr>
-						<tr>
-							<td>PE MARCA:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>MOTOR DIESEL MARCA:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>CAPACIDAD TANQUE DIESEL:</td>
+							<td>FRECUENCIA:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
 						</tr>
 						<tr>
-							<td>PE MARCA:</td>
+							<td>VOLTAJE AC/CN:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>MOTOR DIESEL MARCA:</td>
+							<td>CORRIENTE B(AMP):</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>CAPACIDAD TANQUE DIESEL:</td>
+							<td>PRESIÓN DE ACEITE:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
 						</tr>
 						<tr>
-							<td>PE MARCA:</td>
+							<td>VOLTAJE BC/BN:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>MOTOR DIESEL MARCA:</td>
+							<td>CORRIENTE C (AMP):</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>CAPACIDAD TANQUE DIESEL:</td>
+							<td>TEMPERATURA:</td>
+							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+						</tr>
+						<tr>
+							<td>VOLTAJE NT:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
 						</tr>
 					</table>
@@ -403,19 +399,19 @@
 							</tr>
 						</thead>
 						<tr>
-							<td>PE MARCA:</td>
+							<td>AJUSTE DEL TERMOSTATO:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>MOTOR DIESEL MARCA:</td>
+							<td>VOLTAJE FLOTACIÓN BATERÍAS:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>CAPACIDAD TANQUE DIESEL:</td>
+							<td>TIPO DE PROTECCIÓN TRANSFER:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
 						</tr>
 						<tr>
-							<td>PE MARCA:</td>
+							<td>AJUSTE DEL TERMOSTATO:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>MOTOR DIESEL MARCA:</td>
+							<td>VOLTAJE FLOTACIÓN BATERÍAS:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>CAPACIDAD TANQUE DIESEL:</td>
+							<td>TIPO DE PROTECCIÓN GENERADOR:</td>
 							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
 						</tr>
 					</table>
