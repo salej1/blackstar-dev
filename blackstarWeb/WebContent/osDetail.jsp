@@ -84,9 +84,7 @@
 							<tr>
 								<td>Folio:</td>
 								<td><input  id="lbFolio" type="text" style="width:95%;" readOnly="true" /></td>
-								<td colspan="2"><small></small>
-									
-								</td>
+								<td colspan='2'><a href='#'>Ver PDF</a><img src='${pageContext.request.contextPath}/img/pdf.png'/></td>
 							</tr>
 							<tr>
 								<td>Cliente</td>
@@ -190,21 +188,21 @@
 							<table>
 								<thead>
 									<tr>
-										<th colspan="2">Realizado Por</th>
-										<th colspan="2">Servicio y/o equipo recibido a mi entera satisfaccion</th>
+										<th colspan="2" style="width:50%;">Realizado Por</th>
+										<th colspan="2" style="width:50%;">Servicio y/o equipo recibido a mi entera satisfaccion</th>
 									</tr>
 								</thead>
 								<tr>
-									<td colspan="2">
-										<span>Firma</span>
-										<div id="leftSign" class="signBox">
-										</div>
-									</td>
-									<td colspan="2" >
-										<span>Firma</span>
-										<div id="rightSign" class="signBox">
-										</div>
-									</td>
+								    <td colspan="4">
+								      <table>
+								         <tr>
+								            <td style="width:5%;"><span>Firma</span></td>
+								            <td style="width:5%;"><div id="leftSign" class="signBox"></div></td>
+								            <td style="width:5%;"><span>Firma</span></td>
+								            <td><div id="rightSign" class="signBox"></div></td>
+								         </tr>
+								      </table>
+								    <td>
 								</tr>
 								<tr>
 									<td>Nombre</td><td><input id="lbNombreRealizado" type="text" style="width:95%;" readOnly="true" /></td>

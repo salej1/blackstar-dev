@@ -31,6 +31,18 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
     <listener-class>com.sun.faces.config.ConfigureListener</listener-class>
   </listener>
   <servlet>
+    <servlet-name>BlackStarWeb</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <init-param>
+      <param-name>contextConfigLocation</param-name>
+         <param-value>
+                /WEB-INF/ctx/dao-context.xml
+                /WEB-INF/ctx/service-context.xml
+                /WEB-INF/ctx/web-context.xml
+            </param-value>
+        </init-param>
+  </servlet>
+  <servlet>
     <display-name>EquipmentCollectionByCustomer</display-name>
     <servlet-name>EquipmentCollectionByCustomer</servlet-name>
     <servlet-class>com.blackstar.web.EquipmentCollectionByCustomer</servlet-class>
@@ -85,6 +97,10 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
     <servlet-name>FollowUp</servlet-name>
     <servlet-class>com.blackstar.web.FollowUp</servlet-class>
   </servlet>
+  <servlet-mapping>
+        <servlet-name>BlackStarWeb</servlet-name>
+        <url-pattern>*.do</url-pattern>
+    </servlet-mapping>
   <servlet-mapping>
     <servlet-name>EquipmentCollectionByCustomer</servlet-name>
     <url-pattern>/equipmentCollectionByCustomer</url-pattern>
@@ -159,63 +175,6 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
     <servlet-name>Logout</servlet-name>
     <url-pattern>/logout</url-pattern>
   </servlet-mapping>
-  
-   <servlet>
-    <description></description>
-    <display-name>AirCoService</display-name>
-    <servlet-name>AirCoService</servlet-name>
-    <servlet-class>com.blackstar.web.AirCoService</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>AirCoService</servlet-name>
-    <url-pattern>/aircoservice</url-pattern>
-  </servlet-mapping>
-  
-   <servlet>
-    <description></description>
-    <display-name>BatteryService</display-name>
-    <servlet-name>BatteryService</servlet-name>
-    <servlet-class>com.blackstar.web.BatteryService</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>BatteryService</servlet-name>
-    <url-pattern>/batteryservice</url-pattern>
-  </servlet-mapping>
-  
-   <servlet>
-    <description></description>
-    <display-name>PlainService</display-name>
-    <servlet-name>PlainService</servlet-name>
-    <servlet-class>com.blackstar.web.PlainService</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>PlainService</servlet-name>
-    <url-pattern>/plainservice</url-pattern>
-  </servlet-mapping>
-  
-   <servlet>
-    <description></description>
-    <display-name>UpsService</display-name>
-    <servlet-name>UpsService</servlet-name>
-    <servlet-class>com.blackstar.web.UpsService</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>UpsService</servlet-name>
-    <url-pattern>/upsservice</url-pattern>
-  </servlet-mapping>
-  
-   <servlet>
-    <description></description>
-    <display-name>EmergencyPlantService</display-name>
-    <servlet-name>EmergencyPlantService</servlet-name>
-    <servlet-class>com.blackstar.web.EmergencyPlantService</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>EmergencyPlantService</servlet-name>
-    <url-pattern>/emergencyplantservice</url-pattern>
-  </servlet-mapping>
-  
-  
   <security-constraint>
     <web-resource-collection>
       <web-resource-name>any</web-resource-name>

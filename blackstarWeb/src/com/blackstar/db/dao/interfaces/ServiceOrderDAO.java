@@ -3,6 +3,8 @@ package com.blackstar.db.dao.interfaces;
 import java.util.List;
 
 import com.blackstar.model.Serviceorder;
+import com.blackstar.model.dto.FollowUpDTO;
+import com.blackstar.model.dto.OrderserviceDTO;
 
 public interface ServiceOrderDAO {
 
@@ -12,4 +14,7 @@ public interface ServiceOrderDAO {
 	public Serviceorder getServiceOrderByNum(String num);
 	public int insertServiceOrder();
 	public boolean updateServiceOrder();
+	
+	public OrderserviceDTO getServiceOrderByIdOrNumber(Integer serviceOrderId, String orderNumber);
+	public List<FollowUpDTO> getFollows (Integer serviceOrderId);
 }
