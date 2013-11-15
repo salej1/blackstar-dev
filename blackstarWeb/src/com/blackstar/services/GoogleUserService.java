@@ -95,4 +95,22 @@ public class GoogleUserService implements IUserService {
 		
 		return empList;
 	}
+	
+	@Override
+	public Map<String, String> getEmployeeListByGroup(String group){
+		BlackstarDataAccess da = new BlackstarDataAccess();
+		Map<String, String> empList = new HashMap<String, String>();
+		
+		try{
+			ResultSet employees = da.executeQuery(String.format("CALL GetDomainEmployeesByGroup('%s');", group));
+			
+			while(employees.next()){
+				empList.put(employees.getString("email"), employees.getString("name"));
+			}
+		}catch(Exception ex){
+			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[0].toString(), ex);
+		}
+		
+		return empList;
+	}
 }

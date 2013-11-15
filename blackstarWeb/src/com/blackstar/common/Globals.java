@@ -42,4 +42,9 @@ public class Globals {
 	    }
 	    return clientSecrets;
 	  }
+	  
+	  // User Groups
+	  public static final String GROUP_SERVICE = "sysServicio";
+	  public static final String GROUP_CALL_CENTER = "sysCallCenter";
+	  public static final String GROUP_COORDINATOR = "sysCoordinador";
 }

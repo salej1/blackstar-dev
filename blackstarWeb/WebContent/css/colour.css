@@ -74,16 +74,6 @@ a.delete {
 	background:url(box-h2.png) repeat-x bottom center #fff
 }
 
-.error,.success,.info,.error a,.success a,.info a {
-	color:#fff
-}
-.error {
-	background:#901830
-}
-.success {
-	background:#C2EFC2
-}
-
 .glow-sortable-dropindicator {
 	background:#eee
 }

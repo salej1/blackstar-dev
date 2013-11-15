@@ -12,6 +12,8 @@
 -- 1    11/11/2013  SAG  	Version inicial. Modificaciones a OS
 -- --   --------   -------  ------------------------------------
 -- 2    12/11/2013  SAG  	Modificaciones a followUp - isSource
+-- --   --------   -------  ------------------------------------
+-- 3    13/11/2013  SAG  	Se agrega scheduledService
 -- ---------------------------------------------------------------------------
 
 use blackstarDb;
@@ -34,6 +36,87 @@ BEGIN
 -- AGREGANDO COLUMNA isSource A followUp -- ESTA COLUMN INDICA SI EL FOLLOW UP ES IMPORTADO DE LA HOJA ORIGINAL DE TICKETS
 	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'followUp' AND COLUMN_NAME = 'isSource') =0  THEN
 		ALTER TABLE followUp ADD isSource TINYINT NOT NULL DEFAULT 0;
+	END IF;
+	
+-- CREANDO TABLA scheduledService
+	IF (SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'scheduledService') = 0 THEN
+		CREATE TABLE blackstarDb.scheduledService(
+			scheduledServiceId INTEGER NOT NULL AUTO_INCREMENT,
+			serviceStatusId CHAR(1) NOT NULL,
+			created DATETIME NULL,
+			createdBy NVARCHAR(50) NULL,
+			createdByUsr NVARCHAR(50) NULL,
+			modified DATETIME NULL,
+			modifiedBy NVARCHAR(50) NULL,
+			modifiedByUsr NVARCHAR(50) NULL,	
+			PRIMARY KEY (scheduledServiceId),
+			UNIQUE UQ_scheduledService_scheduledServiceId(scheduledServiceId),
+			KEY(serviceStatusId)
+		) ENGINE=INNODB;
+		
+		ALTER TABLE blackstarDb.scheduledService ADD CONSTRAINT FK_scheduledService_serviceStatus
+		FOREIGN KEY (serviceStatusId) REFERENCES serviceStatus (serviceStatusId);
+	END IF;
+
+
+-- CREANDO TABLA scheduledServicePolicy
+	IF (SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'scheduledServicePolicy') = 0 THEN
+		CREATE TABLE blackstarDb.scheduledServicePolicy(
+			scheduledServicePolicyId INTEGER NOT NULL AUTO_INCREMENT,
+			scheduledServiceId INTEGER NOT NULL,
+			policyId INTEGER NOT NULL,
+			created DATETIME NULL,
+			createdBy NVARCHAR(50) NULL,
+			createdByUsr NVARCHAR(50) NULL,
+			PRIMARY KEY (scheduledServicePolicyId),
+			UNIQUE UQ_scheduledServicePolicy_scheduledServicePolicyId(scheduledServicePolicyId),
+			KEY(scheduledServiceId),
+			KEY(policyId)
+		) ENGINE=INNODB;
+		
+		ALTER TABLE blackstarDb.scheduledServicePolicy ADD CONSTRAINT FK_scheduledServicePolicy_scheduledService
+		FOREIGN KEY (scheduledServiceId) REFERENCES scheduledService (scheduledServiceId);
+		
+		ALTER TABLE blackstarDb.scheduledServicePolicy ADD CONSTRAINT FK_scheduledServicePolicy_policy
+		FOREIGN KEY (policyId) REFERENCES policy (policyId);
+	END IF;
+	
+
+-- CREANDO TABLA scheduledServiceEmployee
+	IF (SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'scheduledServiceEmployee') = 0 THEN
+		CREATE TABLE blackstarDb.scheduledServiceEmployee(
+			scheduledServiceEmployeeId INTEGER NOT NULL AUTO_INCREMENT,
+			scheduledServiceId INTEGER NOT NULL,
+			employeeId VARCHAR(100) NOT NULL,
+			isDefault TINYINT NOT NULL DEFAULT 0,
+			created DATETIME NULL,
+			createdBy NVARCHAR(50) NULL,
+			createdByUsr NVARCHAR(50) NULL,
+			PRIMARY KEY (scheduledServiceEmployeeId),
+			KEY(scheduledServiceId),
+			UNIQUE UQ_scheduledServiceEmployee_scheduledServiceEmployeeId(scheduledServiceEmployeeId)
+		) ENGINE=INNODB;
+		
+		ALTER TABLE blackstarDb.scheduledServiceEmployee ADD CONSTRAINT FK_scheduledServiceEmployee_scheduledService
+		FOREIGN KEY (scheduledServiceId) REFERENCES scheduledService (scheduledServiceId);
+	END IF;
+	
+-- CREANDO TABLA scheduledServiceDate
+	IF (SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'scheduledServiceDate') = 0 THEN
+		CREATE TABLE blackstarDb.scheduledServiceDate(
+			scheduledServiceDateId INTEGER NOT NULL AUTO_INCREMENT,
+			scheduledServiceId INTEGER NOT NULL,
+			serviceDate DATE NOT NULL,
+			created DATETIME NULL,
+			createdBy NVARCHAR(50) NULL,
+			createdByUsr NVARCHAR(50) NULL,
+			PRIMARY KEY (scheduledServiceDateId),
+			KEY(scheduledServiceId),
+			UNIQUE UQ_scheduledServiceDate_scheduledServiceDateId(scheduledServiceDateId)
+		) ENGINE=INNODB;
+		
+		ALTER TABLE blackstarDb.scheduledServiceDate ADD CONSTRAINT FK_scheduledServiceDate_scheduledService
+		FOREIGN KEY (scheduledServiceId) REFERENCES scheduledService (scheduledServiceId);
 	END IF;
 	
 -- -----------------------------------------------------------------------------
@@ -98,30 +181,209 @@ DROP PROCEDURE blackstarDb.upgradeSchema;
 -- 8   19/10/2013	SAG		Se Integra:
 -- 								blackstarDb.ReopenTicket
 -- -----------------------------------------------------------------------------
--- 8   24/10/2013	SAG		Se Integra:
+-- 9   24/10/2013	SAG		Se Integra:
 -- 								blackstarDb.AssignServiceOrder
 -- 								blackstarDb.GetEquipmentByCustomer
 -- -----------------------------------------------------------------------------
+-- 10   13/11/2013	SAG		Se Integra:
+-- 								blackstarDb.GetOfficesList
+-- -----------------------------------------------------------------------------
+-- 11   13/11/2013	SAG		Se Sustituye:
+-- 								blackstarDb.GetEquipmentByCustomer por
+-- 								blackstarDb.GetEquipmentList
+--							Se Integra:
+-- 								blackstarDb.GetProjectList
+-- 								blackstarDb.GetDomainEmployeesByGroup
+--								blackstarDb.AddScheduledServicePolicy
+--								blackstarDb.AddScheduledServiceEmployee
+--								blackstarDb.AddScheduledServiceDate
+-- 								blackstarDb.GetFutureServicesSchedule
+--							Se Reescribe:
+-- 								blackstarDb.GetServicesSchedule
+-- -----------------------------------------------------------------------------
+
 
 use blackstarDb;
 
 
 DELIMITER $$
 
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetFutureServicesSchedule
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetFutureServicesSchedule$$
+CREATE PROCEDURE blackstarDb.GetFutureServicesSchedule(pServiceDate DATETIME)
+BEGIN
+
+	SELECT DISTINCT
+		s.scheduledServiceId AS scheduledServiceId,
+		serviceDate AS scheduledDate,
+		equipmentType AS equipmentType,
+		customer AS customer,
+		project AS project,
+		serialNumber AS serialNumber,
+		officeName AS officeName,
+		brand AS brand,
+		us.name AS employee
+	FROM blackstarDb.scheduledService s
+		INNER JOIN blackstarDb.scheduledServicePolicy sp ON sp.scheduledServiceId = s.scheduledServiceId
+		INNER JOIN blackstarDb.scheduledServiceDate sd ON sd.scheduledServiceId = s.scheduledServiceId
+		INNER JOIN blackstarDb.policy p ON sp.policyId = p.policyId
+		INNER JOIN blackstarDb.serviceStatus ss ON ss.serviceStatusId = s.serviceStatusId
+		INNER JOIN blackstarDb.equipmentType et ON et.equipmentTypeId = p.equipmentTypeId
+		INNER JOIN blackstarDb.scheduledServiceEmployee em ON em.scheduledServiceId = s.scheduledServiceId AND em.isDefault = 1
+		INNER JOIN blackstarDb.blackstarUser us ON us.email = em.employeeId
+		INNER JOIN blackstarDb.office o ON o.officeId = p.officeId
+	WHERE s.serviceStatusId = 'P'
+		AND serviceDate >= pServiceDate
+	ORDER BY equipmentType;
+	
+END$$
+
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.AddScheduledServiceEmployee
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.AddScheduledServiceDate$$
+CREATE PROCEDURE blackstarDb.AddScheduledServiceDate(pScheduledServiceId INTEGER, pDate DATETIME, pUser VARCHAR(100))
+BEGIN
+
+	INSERT INTO scheduledServiceDate(
+			scheduledServiceId,
+			serviceDate,
+			created,
+			createdBy,
+			createdByUsr
+	)
+	SELECT 
+		pScheduledServiceId,
+		pDate,
+		NOW(),
+		'AddScheduledServiceDate',
+		pUser;
+	
+END$$
+
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.AddScheduledServiceEmployee
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.AddScheduledServiceEmployee$$
+CREATE PROCEDURE blackstarDb.AddScheduledServiceEmployee(pScheduledServiceId INTEGER, pEmployeeId VARCHAR(100), pIsDefault TINYINT, pUser VARCHAR(100))
+BEGIN
+
+	INSERT INTO scheduledServiceEmployee(
+			scheduledServiceId,
+			employeeId,
+			isDefault,
+			created,
+			createdBy,
+			createdByUsr
+	)
+	SELECT 
+		pScheduledServiceId,
+		pEmployeeId,
+		pIsDefault,
+		NOW(),
+		'AddScheduledServiceEmployee',
+		pUser;
+	
+END$$
+
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.AddScheduledServicePolicy
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.AddScheduledServicePolicy$$
+CREATE PROCEDURE blackstarDb.AddScheduledServicePolicy(pScheduledServiceId INTEGER, pPolicyId INTEGER, pUser VARCHAR(100))
+BEGIN
+
+	INSERT INTO scheduledServicePolicy(
+			scheduledServiceId,
+			policyId,
+			created,
+			createdBy,
+			createdByUsr
+	)
+	SELECT 
+		pScheduledServiceId,
+		pPolicyId,
+		NOW(),
+		'AddScheduledServicePolicy',
+		pUser;
+	
+END$$
+
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetDomainEmployeesByGroup
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetDomainEmployeesByGroup$$
+CREATE PROCEDURE blackstarDb.GetDomainEmployeesByGroup(pUserGroup VARCHAR(100))
+BEGIN
+
+	SELECT 
+		u.email AS DT_RowId, 
+		u.email AS email, 
+		u.name AS employee
+	FROM blackstarUser_userGroup ug
+		INNER JOIN blackstarUser u ON u.blackstarUserId = ug.blackstarUserId
+		INNER JOIN userGroup g ON g.userGroupId = ug.userGroupId
+	WHERE g.externalId = pUserGroup;
+	
+END$$
+
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetProjectList
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetProjectList$$
+CREATE PROCEDURE blackstarDb.GetProjectList()
+BEGIN
+
+	SELECT DISTINCT 
+		project as project
+	FROM blackstarDb.policy
+		WHERE startDate <= NOW() AND NOW() <= endDate
+	ORDER BY project;
+
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetOfficesList
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetOfficesList$$
+CREATE PROCEDURE blackstarDb.GetOfficesList()
+BEGIN
+
+	SELECT DISTINCT
+		officeName as officeName
+	FROM blackstarDb.office 
+	ORDER BY officeName;
+	
+END$$
+
+
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetEquipmentByCustomer
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetEquipmentByCustomer$$
-CREATE PROCEDURE blackstarDb.GetEquipmentByCustomer (pCustomerName VARCHAR(100))
+DROP PROCEDURE IF EXISTS blackstarDb.GetEquipmentList$$
+CREATE PROCEDURE blackstarDb.GetEquipmentList()
 BEGIN
 
-	SELECT 
-		policyId as policyId,
-		serialNumber as serialNumber
-	FROM policy 
+	SELECT
+		policyId as DT_RowId,
+		equipmentType as equipmentType,
+		serialNumber as serialNumber,
+		project as project
+	FROM policy p
+		INNER JOIN equipmentType e on e.equipmentTypeId = p.equipmentTypeId
 	WHERE 
-		customer = pCustomerName
+		NOW() > p.startDate and NOW() < p.endDate
 	ORDER BY serialNumber;
+	
 END$$
 
 
@@ -240,30 +502,38 @@ END$$
 	-- blackstarDb.UpsertScheduledService
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.UpsertScheduledService$$
-CREATE PROCEDURE blackstarDb.UpsertScheduledService(pPolicyId INTEGER, pScheduledDate DATETIME, responsible VARCHAR(100), engineers VARCHAR(400), pCreatedByUsr VARCHAR(100))
+CREATE PROCEDURE blackstarDb.UpsertScheduledService(pScheduledServiceId INTEGER, pUser VARCHAR(100) )
 BEGIN
 
-	INSERT INTO serviceOrder(
-		policyId,
-		serviceDate,
-		responsible,
-		asignee,
-		additionalEmployees,
-		serviceStatusId,
-		created,
-		createdBy,
-		createdByUsr
-	)
-	SELECT
-		pPolicyId,
-		pScheduledDate,
-		responsible,
-		responsible,
-		engineers,
-		'P',
-		NOW(),
-		'UpsertScheduledService',
-		pCreatedByUsr;
+	IF pScheduledServiceId = 0 THEN
+		INSERT INTO scheduledService(
+			serviceStatusId,
+			created,
+			createdBy,
+			createdByUsr
+		)
+		SELECT 
+			'P', NOW(), 'UpsertScheduledService', pUser;
+			
+		SET pScheduledServiceId = LAST_INSERT_ID();
+	END IF;
+	
+	UPDATE scheduledService SET
+			serviceStatusId = 'P',
+			modified = NOW(),
+			modifiedBy = 'UpsertScheduledService',
+			modifiedByUsr = pUser
+	WHERE scheduledServiceId = pScheduledServiceId;
+	
+	-- Se eliminan los hijos del scheduledService. Se asume que se actualizaran equipos y empleados usando:
+	-- AddScheduledServicePolicy y AddScheduledServiceEmployee
+	DELETE FROM scheduledServiceEmployee WHERE scheduledServiceId = pScheduledServiceId;
+	
+	DELETE FROM scheduledServicePolicy WHERE scheduledServiceId = pScheduledServiceId;
+	
+	DELETE FROM scheduledServiceDate WHERE scheduledServiceId = pScheduledServiceId;
+	
+	SELECT pScheduledServiceId as scheduledServiceId;
 		
 END$$
 
@@ -401,24 +671,28 @@ END$$
 	-- blackstarDb.GetServicesSchedule
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetServicesSchedule$$
-CREATE PROCEDURE blackstarDb.GetServicesSchedule()
+CREATE PROCEDURE blackstarDb.GetServicesSchedule(pServiceDate DATETIME)
 BEGIN
 
-	SELECT 
-		serviceOrderId AS serviceOrderId,
+	SELECT DISTINCT
+		s.scheduledServiceId AS scheduledServiceId,
 		serviceDate AS scheduledDate,
 		equipmentType AS equipmentType,
 		customer AS customer,
+		project AS project,
 		serialNumber AS serialNumber,
-		responsible AS responsible,
-		asignee AS asignee,
-		additionalEmployees AS additionalEmployees
-	FROM blackstarDb.serviceOrder s
-		INNER JOIN blackstarDb.policy p ON s.policyId = p.policyId
+		us.name AS employee
+	FROM blackstarDb.scheduledService s
+		INNER JOIN blackstarDb.scheduledServicePolicy sp ON sp.scheduledServiceId = s.scheduledServiceId
+		INNER JOIN blackstarDb.scheduledServiceDate sd ON sd.scheduledServiceId = s.scheduledServiceId
+		INNER JOIN blackstarDb.policy p ON sp.policyId = p.policyId
+		INNER JOIN blackstarDb.serviceStatus ss ON ss.serviceStatusId = s.serviceStatusId
 		INNER JOIN blackstarDb.equipmentType et ON et.equipmentTypeId = p.equipmentTypeId
-	WHERE serviceStatus = 'P'
-		AND serviceDate >= NOW()
-	ORDER BY serviceDate DESC;
+		INNER JOIN blackstarDb.scheduledServiceEmployee em ON em.scheduledServiceId = s.scheduledServiceId AND em.isDefault = 1
+		INNER JOIN blackstarDb.blackstarUser us ON us.email = em.employeeId
+	WHERE s.serviceStatusId = 'P'
+		AND serviceDate = pServiceDate
+	ORDER BY equipmentType;
 	
 END$$
 
