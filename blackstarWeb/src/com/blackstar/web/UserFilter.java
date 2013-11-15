@@ -63,6 +63,8 @@ public class UserFilter implements Filter {
 			    		req.getRequestDispatcher("noUser.jsp");
 			    	}
 		    	}
+		    } else {
+		    	chain.doFilter(request, response);
 		    }
 		}
 		else{
