@@ -340,6 +340,9 @@ INSERT INTO `blackstarDb`.`equipmentType` (`equipmentTypeId`, `equipmentType`) V
 INSERT INTO `blackstarDb`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('G','TRANSFERENCIA' );   
 INSERT INTO `blackstarDb`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('J','CONDENSADORA' );    
 INSERT INTO `blackstarDb`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('K','EVAPORADORA' );    
+INSERT INTO `blackstarDb`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('L','SUBESTACION' );    
+INSERT INTO `blackstarDb`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('W','TVSS ' );    
+INSERT INTO `blackstarDb`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('Q','PCD' );    
 
 INSERT INTO `blackstarDb`.`ticketStatus` (`ticketStatusId`, `ticketStatus`) VALUES ('A','ABIERTO' );  
 INSERT INTO `blackstarDb`.`ticketStatus` (`ticketStatusId`, `ticketStatus`) VALUES ('C','CERRADO' );  
