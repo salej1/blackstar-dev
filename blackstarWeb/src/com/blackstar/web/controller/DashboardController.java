@@ -6,8 +6,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
 import com.blackstar.services.interfaces.DashboardService;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
+@RequestMapping("/dashboard")
 public class DashboardController {
 
   private DashboardService service;
@@ -16,8 +18,8 @@ public class DashboardController {
 	this.service = service;
   }
 
-  @RequestMapping("/dashboard/callCenter.do")
-  public String  setupCallCenter(ModelMap model) {
+  @RequestMapping(value= "/show.do", method = RequestMethod.GET)
+  public String show(ModelMap model) {
 	try {
 		 model.addAttribute("ticketsToAssignDashboard", service.getUnassignedTickets());
 		 model.addAttribute("serviceOrdersToReviewDashboard", service.getServiceOrders("NUEVO"));
@@ -26,22 +28,8 @@ public class DashboardController {
 		Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), ex);
 		ex.printStackTrace();
 		return "error";
-	}	  
-	return "/dashboard";
-  }
-  
-  @RequestMapping("/dashboard/service.do")
-  public String  setupService(ModelMap model) {
-	try {
-		model.addAttribute("ticketsToAssignDashboard", service.getUnassignedTickets());
-		 model.addAttribute("serviceOrdersToReviewDashboard", service.getServiceOrders("NUEVO"));
-		 model.addAttribute("serviceOrdersPendingDashboard", service.getServiceOrders("PENDIENTE"));
-	} catch (Exception ex) {	
-		Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), ex);
-		ex.printStackTrace();
-		return "error";
-	}	  
-	return "jsp/dashboard/service";
+	}	 
+	return "dashboard";
   }
   
 }

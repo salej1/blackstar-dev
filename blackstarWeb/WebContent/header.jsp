@@ -46,7 +46,7 @@
 				<li><a href="${pageContext.request.contextPath}/indicadores">Indicadores Serv.</a></li>
 			</c:when>
 			<c:when test="${pageSection == 'tickets'}">
-				<li><a href="${pageContext.request.contextPath}/dashboard">Inicio</a></li>
+				<li><a href="${pageContext.request.contextPath}/dashboard/show.do">Inicio</a></li>
 				<li><span class="active">Tickets</span></li>
 				<li><a href="${pageContext.request.contextPath}/ordenesServicio">Ordenes de servicio</a></li>
 				<li><a href="${pageContext.request.contextPath}/seguimiento">Seguimiento</a></li>
@@ -54,7 +54,7 @@
 				<li><a href="${pageContext.request.contextPath}/indicadores">Indicadores Serv.</a></li>
 			</c:when>
 			<c:when test="${pageSection == 'ordenesServicio'}">  
-				<li><a href="${pageContext.request.contextPath}/dashboard">Inicio</a></li>
+				<li><a href="${pageContext.request.contextPath}/dashboard/show.do">Inicio</a></li>
 				<li><a href="${pageContext.request.contextPath}/tickets">Tickets</a></li>
 				<li><span class="active">Ordenes de servicio</span></li>
 				<li><a href="${pageContext.request.contextPath}/seguimiento">Seguimiento</a></li>
@@ -62,7 +62,7 @@
 				<li><a href="${pageContext.request.contextPath}/indicadores">Indicadores Serv.</a></li>
 			</c:when>
 			<c:when test="${pageSection == 'seguimiento'}">
-				<li><a href="${pageContext.request.contextPath}/dashboard">Inicio</a></li>
+				<li><a href="${pageContext.request.contextPath}/dashboard/show.do">Inicio</a></li>
 				<li><a href="${pageContext.request.contextPath}/tickets">Tickets</a></li>
 				<li><a href="${pageContext.request.contextPath}/ordenesServicio">Ordenes de servicio</a></li>
 				<li><span class="active">Seguimiento</span></li>
@@ -70,7 +70,7 @@
 				<li><a href="${pageContext.request.contextPath}/indicadores">Indicadores Serv.</a></li>
 			</c:when>			
 			<c:when test="${pageSection == 'encuestas'}">
-				<li><a href="${pageContext.request.contextPath}/dashboard">Inicio</a></li>
+				<li><a href="${pageContext.request.contextPath}/dashboard/show.do">Inicio</a></li>
 				<li><a href="${pageContext.request.contextPath}/tickets">Tickets</a></li>
 				<li><a href="${pageContext.request.contextPath}/ordenesServicio">Ordenes de servicio</a></li>
 				<li><a href="${pageContext.request.contextPath}/seguimiento">Seguimiento</a></li>
@@ -78,7 +78,7 @@
 				<li><a href="${pageContext.request.contextPath}/indicadores">Indicadores Serv.</a></li>
 			</c:when>			
 			<c:when test="${pageSection == 'indicadores'}">
-				<li><a href="${pageContext.request.contextPath}/dashboard">Inicio</a></li>
+				<li><a href="${pageContext.request.contextPath}/dashboard/show.do">Inicio</a></li>
 				<li><a href="${pageContext.request.contextPath}/tickets">Tickets</a></li>
 				<li><a href="${pageContext.request.contextPath}/ordenesServicio">Ordenes de servicio</a></li>
 				<li><a href="${pageContext.request.contextPath}/seguimiento">Seguimiento</a></li>

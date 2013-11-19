@@ -2,19 +2,19 @@ package com.blackstar.db;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.util.logging.Level;
 
 import com.blackstar.common.Globals;
-import com.blackstar.logging.LogLevel;
-import com.blackstar.logging.Logger;
 import com.google.appengine.api.utils.SystemProperty;
 
 
 public class DbConnectionProvider {
+	
+	private static java.util.logging.Logger log = java.util.logging.Logger.getLogger(DbConnectionProvider
+			                                                                           .class.getName());
 	public static Connection getConnection(String db){
 		Connection conn = null;
 		try {
-			
 			String url = null;
 			if (SystemProperty.environment.value() ==
 			    SystemProperty.Environment.Value.Production) {
@@ -29,13 +29,11 @@ public class DbConnectionProvider {
 			  conn =  (Connection) DriverManager.getConnection(url, "root", "admin");
 			}
 		}
-		catch(SQLException ex){
-			Logger.Log(LogLevel.CRITICAL, Thread.currentThread().getStackTrace()[0].toString(), ex);
+		catch(Exception ex){
+			log.info("Fatal error: " + ex.toString());
+			log.log(Level.ALL, "log.log: " + ex.toString());
+			ex.printStackTrace();
 		}
-		catch(ClassNotFoundException ex2){
-			Logger.Log(LogLevel.CRITICAL, Thread.currentThread().getStackTrace()[0].toString(), ex2);
-		}
-		
 		return conn;
 	}
 }

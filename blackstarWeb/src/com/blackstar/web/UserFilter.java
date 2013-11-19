@@ -47,7 +47,6 @@ public class UserFilter implements Filter {
 			// Estamos asumiendo que la configuracion google forzara al usuario a logearse
 			UserService userService = UserServiceFactory.getUserService();
 		    com.google.appengine.api.users.User gUser = userService.getCurrentUser();
-		    
 		    if(gUser != null){
 		    	String id = gUser.getEmail();
 

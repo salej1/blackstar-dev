@@ -14,15 +14,20 @@
                            http://www.springframework.org/schema/tx
                            http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
 
-      <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">  
+      <bean id="dsBlackStartDev" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">  
              <property name="driverClassName" value="com.mysql.jdbc.Driver"/>  
              <property name="url" value="jdbc:mysql://localhost:3306/blackstarDb"/>  
              <property name="username" value="root"/>  
              <property name="password" value="admin"/>  
        </bean>
        
+       <bean id="dsBlackStartProd" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">  
+             <property name="driverClassName" value="com.mysql.jdbc.GoogleDriver"/>  
+             <property name="url" value="jdbc:google:rdbms://salej1-blackstar-dev:salej1-blackstar-dev/blackstarDb"/>  
+       </bean>
+       
        <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
-             <property name="dataSource" ref="dataSource"/>
+             <property name="dataSource" ref="#{ systemProperties['com.google.appengine.runtime.environment'] == 'Production'? 'dsBlackStartProd' : 'dsBlackStartDev' }"/>
        </bean>
        
        <bean id="dashboardDAO" class="com.blackstar.db.dao.impl.DashboardDAOImpl">

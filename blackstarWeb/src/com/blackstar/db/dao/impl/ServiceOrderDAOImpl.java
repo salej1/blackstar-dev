@@ -13,31 +13,53 @@ import com.blackstar.model.dto.OrderserviceDTO;
 public class ServiceOrderDAOImpl extends AbstractDAO implements ServiceOrderDAO {
  
   public OrderserviceDTO getServiceOrderByIdOrNumber(Integer serviceOrderId, String orderNumber){
-	StringBuilder sqlBuilder = new StringBuilder();
 	//Se sugiere generar un SP y cambiar la invocacion por 
-	//        sqlBuilder.append("CALL GetServiceOrderByIdOrNumber(?,?)");
-	sqlBuilder.append("SELECT SO.coordinator AS 'coordinator', SO.serviceOrderId AS 'serviceOrderId',")
-	          .append("       SO.serviceOrderNumber AS 'serviceOrderNo', TK.ticketNumber AS 'ticketNo',")
-	          .append("       TK.ticketId AS 'ticketId', PY.customer AS 'customer',")
-	          .append("       PY.equipmentAddress AS 'equipmentAddress', PY.contactName AS 'contactName',")
-	          .append("       SO.serviceDate AS 'serviceDate', PY.contactPhone AS 'contactPhone',")
-	          .append("       ET.equipmentType AS 'equipmentType', PY.brand AS 'equipmentBrand',")
-	          .append("       PY.model AS 'equipmentModel', PY.serialNumber AS 'equipmentSerialNo',")
-	          .append("       TK.observations AS 'failureDescription', ST.serviceType AS 'serviceType',")
-	          .append("       PY.project AS 'proyectNumber', '' AS 'detailIssue',")
-	          .append("       '' AS 'detailWorkDone', '' AS 'detailTechnicalJob',")
-	          .append("       '' AS 'detailRequirments', SO.serviceComments AS 'detailStatus',")
-	          .append("       SO.signCreated AS 'signCreated', SO.signReceivedBy AS 'signReceivedBy',")
-	          .append("       SO.receivedBy AS 'receivedBy', SO.responsible AS 'responsible',")
-	          .append("       SO.closed AS 'closed', SO.receivedByPosition AS 'receivedByPosition' ")
-	          .append("FROM serviceOrder SO, policy PY, ticket TK,")
-	          .append("     serviceType ST, equipmentType ET ")
-	          .append("WHERE (SO.serviceOrderId = ? OR SO.serviceOrderNumber = ?)")
-	          .append("      AND SO.policyId = PY.policyId")
-	          .append("      AND SO.ticketId = TK.ticketId")
-	          .append("      AND SO.serviceTypeId = ST.serviceTypeId")
-	          .append("      AND PY.equipmentTypeId = ET.equipmentTypeId");
-	return (OrderserviceDTO) getJdbcTemplate().queryForObject(sqlBuilder.toString() 
+    //       sqlBuilder.append("CALL GetServiceOrderByIdOrNumber(?,?)");	  
+    OrderserviceDTO data = null;
+	StringBuilder sqlSelect = new StringBuilder();
+	StringBuilder sqlFrom = new StringBuilder();
+	StringBuilder sqlWhere = new StringBuilder();
+	StringBuilder sqlBuilder = new StringBuilder();
+	sqlSelect.append("SELECT SO.coordinator AS 'coordinator', SO.serviceOrderId AS 'serviceOrderId'")
+	         .append("        , SO.serviceOrderNumber AS 'serviceOrderNo', SO.serviceDate AS 'serviceDate'")
+	         .append("        , SO.serviceComments AS 'detailStatus', SO.signCreated AS 'signCreated'")
+	         .append("        , SO.signReceivedBy AS 'signReceivedBy', SO.receivedBy AS 'receivedBy'")
+	         .append("        , SO.responsible AS 'responsible', SO.closed AS 'closed' ")
+	         .append("        , SO.receivedByPosition AS 'receivedByPosition', SO.policyId AS 'policyId'")
+	         .append("        , SO.ticketId AS 'ticketId', SO.serviceTypeId AS 'serviceTypeId' ");
+	sqlFrom.append("FROM serviceOrder SO ");
+	sqlWhere.append("WHERE (SO.serviceOrderId = ? OR SO.serviceOrderNumber = ?)" );
+	sqlBuilder.append(sqlSelect).append(sqlFrom).append(sqlWhere);
+	data = (OrderserviceDTO) getJdbcTemplate().queryForObject(sqlBuilder.toString()
+			, new Object []{serviceOrderId, orderNumber}, getMapperFor(OrderserviceDTO.class));
+	
+	if(data.getPolicyId() != null){
+		sqlSelect.append(", PY.customer AS 'customer', PY.equipmentAddress AS 'equipmentAddress'")
+		         .append(", PY.contactName AS 'contactName', PY.contactPhone AS 'contactPhone'")
+		         .append(", PY.brand AS 'equipmentBrand', PY.model AS 'equipmentModel'")
+		         .append(", PY.serialNumber AS 'equipmentSerialNo', PY.project AS 'proyectNumber'" );
+		sqlFrom.append(", policy PY ");
+		sqlWhere.append("AND SO.policyId = PY.policyId ");
+	}
+	if(data.getTicketId() != null){
+		sqlSelect.append(", TK.ticketNumber AS 'ticketNo', TK.ticketId AS 'ticketId'")
+		         .append(", TK.observations AS 'failureDescription' ");
+		sqlFrom.append(", ticket TK ");
+		sqlWhere.append("AND SO.ticketId = TK.ticketId " );		
+	}
+	if(data.getServiceTypeId() != null){
+		sqlSelect.append(", ST.serviceType AS 'serviceType'");
+		sqlFrom.append(", serviceType ST ");
+		sqlWhere.append("AND SO.serviceTypeId = ST.serviceTypeId ");
+	}
+	if(data.getEquipmentTypeId() != null){
+		sqlSelect.append(", ET.equipmentType AS 'equipmentType' ");
+		sqlFrom.append(", equipmentType ET ");
+		sqlWhere.append("AND PY.equipmentTypeId = ET.equipmentTypeId ");
+	}
+	sqlBuilder = new StringBuilder();
+	sqlBuilder.append(sqlSelect).append(sqlFrom).append(sqlWhere);
+	return (OrderserviceDTO) getJdbcTemplate().queryForObject(sqlBuilder.toString()
 			     , new Object []{serviceOrderId, orderNumber}, getMapperFor(OrderserviceDTO.class));
   }
   

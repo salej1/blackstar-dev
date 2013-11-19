@@ -67,7 +67,7 @@ public class TicketDetail extends HttpServlet{
 				if(rawTicket == null){
 					Logger.Log(LogLevel.FATAL, Thread.currentThread().getStackTrace()[1].toString(), "TicketDetail se invoca sin parametros validos", "");
 					response.getWriter().write("Ticket Detail: Parametros invalidos");
-					request.getRequestDispatcher("/dashboard").forward(request, response);
+					request.getRequestDispatcher("/dashboard/show.do").forward(request, response);
 				}
 				numTicket = rawTicket.toString();
 			}

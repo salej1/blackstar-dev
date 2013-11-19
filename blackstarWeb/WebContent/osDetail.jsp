@@ -197,9 +197,9 @@
 								      <table>
 								         <tr>
 								            <td style="width:5%;"><span>Firma</span></td>
-								            <td style="width:5%;"><div id="leftSign" class="signBox"></div></td>
+								            <td style="width:45%;"><div id="leftSign" class="signBox"></div></td>
 								            <td style="width:5%;"><span>Firma</span></td>
-								            <td><div id="rightSign" class="signBox"></div></td>
+								            <td style="width:45%;"><div id="rightSign" class="signBox"></div></td>
 								         </tr>
 								      </table>
 								    <td>
