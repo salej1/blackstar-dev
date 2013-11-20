@@ -198,6 +198,9 @@ IF (SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackst
 	(
 		epServiceId INTEGER NOT NULL AUTO_INCREMENT,
 		serviceOrderId Integer not null,
+		brandPE nvarchar (50) null,
+		modelPE nvarchar (50) null,
+		serialPE nvarchar (50) null,
 		transferType nvarchar(50) null,
 		modelTransfer nvarchar(50) null,
 		modelControl nvarchar(50) null,

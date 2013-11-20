@@ -38,13 +38,7 @@
 			$('#lbFalla').val('${serviceOrderDetail.failureDescription}');
 			$('#lbTipoServicio').val('${serviceOrderDetail.serviceType}');
 			$('#lbProyecto').val('${serviceOrderDetail.proyectNumber}');
-			$('#fldSitEnc').val('${serviceOrderDetail.detailIssue}');
-			$('#fldTrabReal').val('${serviceOrderDetail.detailWorkDone}');
-			$('#lbParametros').val('${serviceOrderDetail.detailTechnicalJob}');
-			$('#fldReq').val('${serviceOrderDetail.detailRequirments}');
-			$('#fldObserv').val('${serviceOrderDetail.detailStatus}');
-			$('#leftSignJSON').val();
-			$('#rightSignJSON').val();
+			
 			$('#lbNombreRecibido').val('${serviceOrderDetail.receivedBy}');
 			$('#lbNombreRealizado').val('${serviceOrderDetail.responsible}');
 			$('#lbFechaSalida').val('${serviceOrderDetail.closed}');
@@ -58,13 +52,11 @@
 			$('#rightSign').signature({disabled: true}); 
 			$('#rightSign').signature('draw', '${serviceOrderDetail.signReceivedBy}'); 
 
-			 $('#plainServiceId').val('${serviceOrder.plainServiceId}');
-			 $('#serviceOrderId').val('${serviceOrder.serviceOrderId}');
-			 $('#troubleDescription').val('${serviceOrder.troubleDescription}');
-			 $('#techParam').val('${serviceOrder.techParam}');
-			 $('#workDone').val('${serviceOrder.workDone}');
-			 $('#materialUsed').val('${serviceOrder.materialUsed}');
-			 $('#observations').val('${serviceOrder.observations}');
+			 $('#fldSitEnc').val('${serviceOrder.troubleDescription}');
+			 $('#lbParametros').val('${serviceOrder.techParam}');
+			 $('#fldTrabReal').val('${serviceOrder.workDone}');
+			 $('#fldReq').val('${serviceOrder.materialUsed}');
+			 $('#fldObserv').val('${serviceOrder.observations}');
 		});
 	
 	</script> 
@@ -72,6 +64,7 @@
 		 
 	</head>
 	<body>
+	<form id = "formServicio" action="/crear" method="POST">
 		<div id="content" class="container_16 clearfix">
 		<!--   CONTENT COLUMN   -->			
 			<div class="grid_16">					
@@ -218,16 +211,24 @@
 								<td></td>
 							</tr>
 						</table>
-						
-				</div>					
-			</div>				
-<!--   ~ CONTENT COLUMN   -->
-
+							<table>
+								<tbody>
+									<tr>
+										<td>
+											<button class="searchButton" >Guardar servicio</button>
+											<button class="searchButton" onclick="window.location = 'dashboard'">Cerrar</button>
+										</td>
+									</tr>
+								<tbody>
+							</table>
+						</div>					
+					</div>		
 				
-			<!-- Signature capture box # 1 -->
-			<input type="hidden" id="leftSignJSON" />
-			<!-- Signature capture box # 2 -->
-			<input type="hidden" id="rightSignJSON" />
-		</div>
+				<!-- Signature capture box # 1 -->
+				<input type="hidden" id="leftSignJSON" />
+				<!-- Signature capture box # 2 -->
+				<input type="hidden" id="rightSignJSON" />
+			</div>
+		</form>
 	</body>
 </html>

@@ -248,7 +248,16 @@
 							<td></td>
 						</tr>
 					</table>
-						
+					<table>
+						<tbody>
+							<tr>
+								<td>
+									<button class="searchButton" >Guardar servicio</button>
+									<button class="searchButton" onclick="window.location = 'dashboard'">Cerrar</button>
+								</td>
+							</tr>
+						<tbody>
+					</table>
 				</div>					
 			</div>		
 			

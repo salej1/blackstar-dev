@@ -21,30 +21,17 @@
 	<script type="text/javascript" charset="utf-8">
 	
 		$(document).ready(function () {
-		
-			$('#lbCoordinador').val('${serviceOrderDetail.coordinator}');
-			$('#linkTicket').text('Consultar Ticket ' + '${serviceOrderDetail.ticketNo}');
-			$('#lbNoTicket').val('${serviceOrderDetail.ticketNo}');
+
 			$('#lbFolio').val('${serviceOrderDetail.serviceOrderNo}');
 			$('#lbCliente').val('${serviceOrderDetail.customer}');
 			$('#lbDomicilio').val('${serviceOrderDetail.equipmentAddress}');
 			$('#fechaLlegada').val('${serviceOrderDetail.serviceDate}');
-			$('#lbSolicitante').val('${serviceOrderDetail.contactName}');
 			$('#lbTelefono').val('${serviceOrderDetail.contactPhone}');
 			$('#lbEquipo').val('${serviceOrderDetail.equipmentType}');
 			$('#lbMarca').val('${serviceOrderDetail.equipmentBrand}');
 			$('#lbModelo').val('${serviceOrderDetail.equipmentModel}');
 			$('#lbSerie').val('${serviceOrderDetail.equipmentSerialNo}');
-			$('#lbFalla').val('${serviceOrderDetail.failureDescription}');
-			$('#lbTipoServicio').val('${serviceOrderDetail.serviceType}');
 			$('#lbProyecto').val('${serviceOrderDetail.proyectNumber}');
-			$('#fldSitEnc').val('${serviceOrderDetail.detailIssue}');
-			$('#fldTrabReal').val('${serviceOrderDetail.detailWorkDone}');
-			$('#lbParametros').val('${serviceOrderDetail.detailTechnicalJob}');
-			$('#fldReq').val('${serviceOrderDetail.detailRequirments}');
-			$('#fldObserv').val('${serviceOrderDetail.detailStatus}');
-			$('#leftSignJSON').val();
-			$('#rightSignJSON').val();
 			$('#lbNombreRecibido').val('${serviceOrderDetail.receivedBy}');
 			$('#lbNombreRealizado').val('${serviceOrderDetail.responsible}');
 			$('#lbFechaSalida').val('${serviceOrderDetail.closed}');
@@ -58,8 +45,6 @@
 			$('#rightSign').signature({disabled: true}); 
 			$('#rightSign').signature('draw', '${serviceOrderDetail.signReceivedBy}'); 
 
-			 $('#upsServiceId').val('${serviceOrder.upsServiceId}');
-			 $('#serviceOrderId').val('${serviceOrder.serviceOrderId}');
 			 $('#estatusEquipment').val('${serviceOrder.estatusEquipment}');
 			 $('#cleaned').val('${serviceOrder.cleaned}');
 			 $('#hooverClean').val('${serviceOrder.hooverClean}');
@@ -68,6 +53,7 @@
 			 $('#verifyFuzz').val('${serviceOrder.verifyFuzz}');
 			 $('#chargerReview').val('${serviceOrder.chargerReview}');
 			 $('#fanStatus').val('${serviceOrder.fanStatus}');
+			 $('#observations').val('${serviceOrder.observations}');
 
 			 $('#upsServiceBatteryBankId').val('${serviceOrder.upsServiceBatteryBankId}');
 			 $('#upsServiceId').val('${serviceOrder.upsServiceId}');
@@ -107,6 +93,7 @@
 		 
 	</head>
 	<body>
+	<form id = "formServicio" action="/crear" method="POST">
 		<div id="content" class="container_16 clearfix">
 			<div class="grid_16">					
 				<div class="box">
@@ -165,104 +152,104 @@
 						</thead>
 						<tr>
 							<td>Estado del equipo encontrado:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td><input id="estatusEquipment" type="text" style="width:95%;" /></td>
 							<td>Estado de los capacitores:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td><input id="capacitorStatus" type="text" style="width:95%;" /></td>
 						</tr>
 						<tr>
 							<td>Sopleteado:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td><input id="cleaned" type="text" style="width:95%;" /></td>
 							<td>Verificación de fusibles y conexiones eléctricas:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td><input id="verifyFuzz" type="text" style="width:95%;" /></td>
 						</tr>
 						<tr>
 							<td>Limpieza por aspirado y brocha:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td><input id="hooverClean" type="text" style="width:95%;" /></td>
 							<td>Revisión y verificación del rectificador/cargador:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td><input id="chargerReview" type="text" style="width:95%;" /></td>
 						</tr>
 						<tr>
 							<td>Verificación de conexiones y reapriete tornillería:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td><input id="verifyConnections" type="text" style="width:95%;" /></td>
 							<td>Estado de ventiladores:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td><input id="fanStatus" type="text" style="width:95%;" /></td>
 						</tr>
 						<tr>
 							<td>BANCO DE BATERIAS:</td>
 						</tr>
 						<tr>
 							<td>Reapriete de puentes/conectores:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td><input id="checkConnectors" type="text" style="width:95%;" /></td>
 							<td>Temperatura ambiente:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td><input id="temp" type="text" style="width:95%;" /></td>
 						</tr>
 						<tr>
 							<td>Verificación de fugas/sulfataciones:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td><input id="cverifyOutflow" type="text" style="width:95%;" /></td>
 							<td>Pruebas de carga y descarga:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td><input id="chargeTest" type="text" style="width:95%;" /></td>
 						</tr>
 						<tr>
 							<td>No de baterías:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td><input id="numberBatteries" type="text" style="width:95%;" /></td>
 							<td>Marca, modelo, capacidad:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td><input id="brandModel" type="text" style="width:95%;" /></td>
 						</tr>
 						<tr>
 							<td>Fecha o serie de fabricación:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td><input id="manufacturedDateSerial" type="text" style="width:95%;" /></td>
 							<td>Voltaje promedio de baterías:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td><input id="batteryVoltage" type="text" style="width:95%;" /></td>
 						</tr>
 						<tr>
 							<td>Baterías dañadas (cant y voltaje de c/carga):</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td><input id="damageBatteries" type="text" style="width:95%;" /></td>
 						</tr>
 						<tr>
 							<td>Otro (modelo banco externo)):</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td><input id="other" type="text" style="width:95%;" /></td>
 						</tr>
 						<tr>
 							<td>PRUEBAS GENERALES: (Solicitar autorización para pruebas)</td>
 						</tr>
 						<tr>
 							<td>Transferencia  y re-transferencia a línea comercial:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td><input id="trasferLine" type="text" style="width:95%;" /></td>
 							<td>Respaldo de baterías con falla en línea:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td><input id="backupBatteries" type="text" style="width:95%;" /></td>
 						</tr>
 						<tr>
 							<td>Transferencia y re-transferencia con planta de emergencia:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td><input id="transferEmergencyPlant" type="text" style="width:95%;" /></td>
 							<td>Verificación de voltaje de baterías y de salida durante las pruebas:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td><input id="verifyVoltage" type="text" style="width:95%;" /></td>
 						</tr>
 						<tr>
 							<td>PARÁMETROS DE OPERACIÓN:</td>
 						</tr>
 						<tr>
 							<td>Voltaje entrada fase a fase:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td><input id="inputVoltagePhase" type="text" style="width:95%;" /></td>
 							<td>Voltaje salida fase a fase:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td><input id="outputVoltagePhase" type="text" style="width:95%;" /></td>
 						</tr>
 						<tr>
 							<td>Voltaje entrada fase a neutro:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td><input id="inputVoltageNeutro" type="text" style="width:95%;" /></td>
 							<td>Voltaje salida fase a neutro:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td><input id="outputVoltageNeutro" type="text" style="width:95%;" /></td>
 						</tr>
 						<tr>
 							<td>Voltaje entre neutro y tierra:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td><input id="inputVoltageNeutroGround" type="text" style="width:95%;" /></td>
 							<td>Frec. Entrada/salida:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td><input id="inOutFrecuency" type="text" style="width:95%;" /></td>
 						</tr>
 						<tr>
 							<td>Porcentaje de carga o corriente:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td><input id="percentCharge" type="text" style="width:95%;" /></td>
 							<td>Frec. Entrada/salida:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td><input id="busVoltage" type="text" style="width:95%;" /></td>
 						</tr>
 					</table>
 					<p><label>&nbsp;</label></p>
@@ -276,7 +263,7 @@
 							<td>Anotar comentarios del usuario. Anotar alarmas inusuales. Indicar condiciones del lugar y estado final del equipo. Otras observaciones.</td>
 						</tr>
 						<tr>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td><input id="observations" type="text" style="width:95%;" /></td>
 						</tr>
 						
 					</table>
@@ -301,12 +288,12 @@
 							</td>
 						</tr>
 						<tr>
-							<td>Nombre</td><td><input id="lbNombreRealizado" type="text" style="width:95%;" readOnly="true" /></td>
-							<td>Nombre</td><td><input id="lbNombreRecibido" type="text" style="width:95%;"readOnly="true" /></td>
+							<td>Nombre</td><td><input id="lbNombreRealizado" type="text" style="width:95%;"  /></td>
+							<td>Nombre</td><td><input id="lbNombreRecibido" type="text" style="width:95%;" /></td>
 						</tr>
 						<tr>
-							<td>Fecha y hora de salida</td><td><input id="lbFechaSalida" type="text" style="width:95%;" readOnly="true" /></td>
-							<td>Puesto</td><td><input type="text" id="lblPuesto" style="width:95%;" readOnly="true" /></td>
+							<td>Fecha y hora de salida</td><td><input id="lbFechaSalida" type="text" style="width:95%;"  /></td>
+							<td>Puesto</td><td><input type="text" id="lblPuesto" style="width:95%;"  /></td>
 						</tr>						
 						<tr>
 							<td style="height:40px;"></td>
@@ -314,7 +301,16 @@
 							<td></td>
 						</tr>
 					</table>
-						
+					<table>
+						<tbody>
+							<tr>
+								<td>
+									<button class="searchButton" >Guardar servicio</button>
+									<button class="searchButton" onclick="window.location = 'dashboard'">Cerrar</button>
+								</td>
+							</tr>
+						<tbody>
+					</table>
 				</div>					
 			</div>		
 			
@@ -323,5 +319,6 @@
 			<!-- Signature capture box # 2 -->
 			<input type="hidden" id="rightSignJSON" />
 		</div>
+		</form>
 	</body>
 </html>
