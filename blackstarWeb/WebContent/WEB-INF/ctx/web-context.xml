@@ -18,12 +18,17 @@
      <property name="suffix" value=".jsp"/>
    </bean>
 
+   <!--::::::::::::::::::::::::::::::: Template :::::::::::::::::::::::::::::::-->
+   <bean id ="abstractController" class="com.blackstar.web.AbstractController">
+      <property name="udService" ref="userDomainService" />
+   </bean>
+   
    <!--::::::::::::::::::::::::::::::: Controllers :::::::::::::::::::::::::::::::-->
-   <bean class="com.blackstar.web.controller.DashboardController">
+   <bean class="com.blackstar.web.controller.DashboardController" parent="abstractController">
       <property name="service" ref="dashboardService" />
    </bean>
    
-   <bean class="com.blackstar.web.controller.ServiceOrderController">
+   <bean class="com.blackstar.web.controller.ServiceOrderController" parent="abstractController">
       <property name="service" ref="serviceOrderService" />
    </bean>
    

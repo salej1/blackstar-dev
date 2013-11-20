@@ -6,11 +6,20 @@
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
  
   
-  <bean id="dashboardService" class="com.blackstar.services.impl.DashboardServiceImpl">
+  <!--::::::::::::::::::::::::::::::: Template :::::::::::::::::::::::::::::::-->
+   <bean id ="abstractService" class="com.blackstar.services.AbstractService">
+   </bean>
+   
+   
+  <bean id="userDomainService" class="com.blackstar.services.impl.UserDomainServiceImpl" parent="abstractService">
+      <property name="dao" ref="userDomainDAO" />
+  </bean>
+  
+  <bean id="dashboardService" class="com.blackstar.services.impl.DashboardServiceImpl" parent="abstractService">
       <property name="dao" ref="dashboardDAO" />
   </bean>
   
-  <bean id="serviceOrderService" class="com.blackstar.services.impl.ServiceOrderServiceImpl">
+  <bean id="serviceOrderService" class="com.blackstar.services.impl.ServiceOrderServiceImpl" parent="abstractService">
       <property name="dao" ref="serviceOrderDAO" />
   </bean>
 </beans>

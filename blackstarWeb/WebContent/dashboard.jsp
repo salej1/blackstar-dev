@@ -252,10 +252,10 @@
 		<p>Asignar ticket<label id="lblTicketBeignAssigned"></label></p>
 			<select id="employeeSelect">
 				<c:forEach var="employee" items="${employees}">
-					<option value = "${employee.key}">${employee.value}</option>
+					<option value = "${employee.email}">${employee.name}</option>
 				</c:forEach>
 			</select>
-		<form id="ticksetSelect" action="dashboard" method="post">
+		<form id="ticksetSelect" action="${pageContext.request.contextPath}/dashboard/asignTicket.do" method="post">
 			<input id="ticketId" name="ticketId" type="hidden"/>
 			<input id="employee" name="employee" type="hidden"/>
 		</form>
