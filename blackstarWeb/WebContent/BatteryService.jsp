@@ -22,29 +22,16 @@
 	
 		$(document).ready(function () {
 		
-			$('#lbCoordinador').val('${serviceOrderDetail.coordinator}');
-			$('#linkTicket').text('Consultar Ticket ' + '${serviceOrderDetail.ticketNo}');
+			
 			$('#lbNoTicket').val('${serviceOrderDetail.ticketNo}');
 			$('#lbFolio').val('${serviceOrderDetail.serviceOrderNo}');
 			$('#lbCliente').val('${serviceOrderDetail.customer}');
-			$('#lbDomicilio').val('${serviceOrderDetail.equipmentAddress}');
 			$('#fechaLlegada').val('${serviceOrderDetail.serviceDate}');
-			$('#lbSolicitante').val('${serviceOrderDetail.contactName}');
-			$('#lbTelefono').val('${serviceOrderDetail.contactPhone}');
 			$('#lbEquipo').val('${serviceOrderDetail.equipmentType}');
 			$('#lbMarca').val('${serviceOrderDetail.equipmentBrand}');
 			$('#lbModelo').val('${serviceOrderDetail.equipmentModel}');
-			$('#lbSerie').val('${serviceOrderDetail.equipmentSerialNo}');
-			$('#lbFalla').val('${serviceOrderDetail.failureDescription}');
 			$('#lbTipoServicio').val('${serviceOrderDetail.serviceType}');
 			$('#lbProyecto').val('${serviceOrderDetail.proyectNumber}');
-			$('#fldSitEnc').val('${serviceOrderDetail.detailIssue}');
-			$('#fldTrabReal').val('${serviceOrderDetail.detailWorkDone}');
-			$('#lbParametros').val('${serviceOrderDetail.detailTechnicalJob}');
-			$('#fldReq').val('${serviceOrderDetail.detailRequirments}');
-			$('#fldObserv').val('${serviceOrderDetail.detailStatus}');
-			$('#leftSignJSON').val();
-			$('#rightSignJSON').val();
 			$('#lbNombreRecibido').val('${serviceOrderDetail.receivedBy}');
 			$('#lbNombreRealizado').val('${serviceOrderDetail.responsible}');
 			$('#lbFechaSalida').val('${serviceOrderDetail.closed}');
@@ -58,8 +45,6 @@
 			$('#rightSign').signature({disabled: true}); 
 			$('#rightSign').signature('draw', '${serviceOrderDetail.signReceivedBy}'); 
 
-			 $('#bbServiceId').val('${serviceOrder.bbServiceId}');
-			 $('#serviceOrderId').val('${serviceOrder.serviceOrderId}');
 			 $('#plugClean').val('${serviceOrder.plugClean}');
 			 $('#plugCleanStatus').val('${serviceOrder.plugCleanStatus}');
 			 $('#plugCleanComments').val('${serviceOrder.plugCleanComments}');
@@ -94,6 +79,7 @@
 		 
 	</head>
 	<body>
+	<form id = "formServicio" action="/crear" method="POST">
 		<div id="content" class="container_16 clearfix">
 			<div class="grid_16">					
 				<div class="box">
@@ -145,45 +131,43 @@
 						</thead>
 						<tr>
 							<td>CONECTORES / TERMINALES</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td><input id="plugClean" type="text" style="width:95%;" readOnly="true"/></td>
+							<td><input id="plugCleanStatus" type="text" style="width:95%;" readOnly="true"/></td>
+							<td><input id="plugCleanComments" type="text" style="width:95%;" readOnly="true"/></td>
 						</tr>
 						<tr>
 							<td>CUBIERTA</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td><input id="coverClean" type="text" style="width:95%;" readOnly="true"/></td>
+							<td><input id="coverCleanStatus" type="text" style="width:95%;" readOnly="true"/></td>
+							<td><input id="coverCleanComments" type="text" style="width:95%;" readOnly="true"/></td>
 						</tr>
 						<tr>
 							<td>TAPONES</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td><input id="capClean" type="text" style="width:95%;" readOnly="true"/></td>
+							<td><input id="capCleanStatus" type="text" style="width:95%;" readOnly="true"/></td>
+							<td><input id="capCleanComments" type="text" style="width:95%;" readOnly="true"/></td>
 						</tr>
 						<tr>
 							<td>TIERRA FÍSICA</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td><input id="groundClean" type="text" style="width:95%;" readOnly="true"/></td>
+							<td><input id="groundCleanStatus" type="text" style="width:95%;" readOnly="true"/></td>
+							<td><input id="groundCleanComments" type="text" style="width:95%;" readOnly="true"/></td>
 						</tr>
 						<tr>
 							<td>ESTANTE/GABINETE/RACK</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td><input id="rackClean" type="text" style="width:95%;" readOnly="true"/></td>
+							<td><input id="rackCleanStatus" type="text" style="width:95%;" readOnly="true"/></td>
+							<td><input id="rackCleanComments" type="text" style="width:95%;" readOnly="true"/></td>
 						</tr>
 						<tr>
 							<td>NO DE SERIE, LOTE, FECHA DE FABRICACIÓN</td>
 							<td></td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td><input id="serialNoDateManufact" type="text" style="width:95%;" readOnly="true"/></td>
 						</tr>
 						<tr>
 							<td>TEMPERATURA PROMEDIO BATERÍAS </td>
 							<td></td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+							<td><input id="batteryTemperature" type="text" style="width:95%;" readOnly="true"/></td>
 						</tr>
 					</table>
 					<br/>
@@ -191,9 +175,9 @@
 					<table>
 						<tr>
 							<td>VOLTAJE DE FLOTACIÓN DEL BUS:</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/>V.C.D.</td>
+							<td><input id="voltageBus" type="text" style="width:95%;" readOnly="true"/>V.C.D.</td>
 							<td>TEMPERATURA AMBIENTE::</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/> °C</td>
+							<td><input id="temperature" type="text" style="width:95%;" readOnly="true"/> °C</td>
 						</tr>
 					</table>
 					<table>
@@ -251,12 +235,12 @@
 							</td>
 						</tr>
 						<tr>
-							<td>Nombre</td><td><input id="lbNombreRealizado" type="text" style="width:95%;" readOnly="true" /></td>
-							<td>Nombre</td><td><input id="lbNombreRecibido" type="text" style="width:95%;"readOnly="true" /></td>
+							<td>Nombre</td><td><input id="lbNombreRealizado" type="text" style="width:95%;" /></td>
+							<td>Nombre</td><td><input id="lbNombreRecibido" type="text" style="width:95%;"/></td>
 						</tr>
 						<tr>
-							<td>Fecha y hora de salida</td><td><input id="lbFechaSalida" type="text" style="width:95%;" readOnly="true" /></td>
-							<td>Puesto</td><td><input type="text" id="lblPuesto" style="width:95%;" readOnly="true" /></td>
+							<td>Fecha y hora de salida</td><td><input id="lbFechaSalida" type="text" style="width:95%;" /></td>
+							<td>Puesto</td><td><input type="text" id="lblPuesto" style="width:95%;" /></td>
 						</tr>						
 						<tr>
 							<td style="height:40px;"></td>
@@ -273,5 +257,6 @@
 			<!-- Signature capture box # 2 -->
 			<input type="hidden" id="rightSignJSON" />
 		</div>
+		</form>
 	</body>
 </html>
