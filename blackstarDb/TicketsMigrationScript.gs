@@ -14,6 +14,8 @@
 ** 2    05/11/2013  SAG  	Se agrega job de sincronizacion
 ** --   --------   -------  ------------------------------------
 ** 3    12/11/2013  SAG  	Se agrega deteccion de ultimo ticket en BD
+** --   --------   -------  ------------------------------------
+** 4    19/11/2013  SAG  	Correccion de AutoComit
 *****************************************************************************/
 
 function main() {
@@ -263,8 +265,9 @@ function startSyncJob(conn, sqlLog){
 		var thisTktNum = currTicket[21];
 		var thisFollowUp = currTicket[25];
 
-		if(thisTktNum != null || thisTktNum != ""){
+		if(thisTktNum != null && thisTktNum != ""){
 			fuBuffer = accumulateFollowUpUdate(thisTktNum, thisFollowUp, fuBuffer);
+			blanks = 0;
 		}
 		else{
 			blanks++;
@@ -353,6 +356,7 @@ function executeFollowUpUpdate(conn, buffer){
 	
 	var res = stmt.executeBatch();
 	conn.commit();
+	conn.setAutoCommit(true);
 	Logger.log("Ticket followUps updated");
 }
 
