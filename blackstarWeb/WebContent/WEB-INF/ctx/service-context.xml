@@ -10,11 +10,15 @@
    <bean id ="abstractService" class="com.blackstar.services.AbstractService">
    </bean>
    
-   
+   <!--::::::::::::::::::::::::::::::: Commons :::::::::::::::::::::::::::::::-->
   <bean id="userDomainService" class="com.blackstar.services.impl.UserDomainServiceImpl" parent="abstractService">
       <property name="dao" ref="userDomainDAO" />
   </bean>
   
+  <bean id="googleDriveService" class="com.blackstar.services.impl.GoogleDriveServiceImpl" parent="abstractService"/>
+  
+  
+  <!--::::::::::::::::::::::::::::::: Service Controller :::::::::::::::::::::::::::::::-->
   <bean id="dashboardService" class="com.blackstar.services.impl.DashboardServiceImpl" parent="abstractService">
       <property name="dao" ref="dashboardDAO" />
   </bean>

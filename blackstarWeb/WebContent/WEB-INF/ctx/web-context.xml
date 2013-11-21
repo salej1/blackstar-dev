@@ -21,6 +21,7 @@
    <!--::::::::::::::::::::::::::::::: Template :::::::::::::::::::::::::::::::-->
    <bean id ="abstractController" class="com.blackstar.web.AbstractController">
       <property name="udService" ref="userDomainService" />
+      <property name="gdService" ref="googleDriveService" />
    </bean>
    
    <!--::::::::::::::::::::::::::::::: Controllers :::::::::::::::::::::::::::::::-->

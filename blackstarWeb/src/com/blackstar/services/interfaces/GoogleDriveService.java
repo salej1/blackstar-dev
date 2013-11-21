@@ -1,9 +1,9 @@
 package com.blackstar.services.interfaces;
 
-import java.io.InputStream;
-
 public interface GoogleDriveService {
 	
-	//public int upload(InputStream stream) throws Exception;
+  public String getFolderId(String folderName, String parentId, boolean createIfNot) throws Exception;
+  public String createFolder(String title, String parentId, String description) throws Exception;
+  public String getAttachmentFolderId(Integer serviceOrderId) throws Exception;
 
 }

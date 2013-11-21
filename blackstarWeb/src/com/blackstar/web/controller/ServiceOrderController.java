@@ -1,5 +1,7 @@
 package com.blackstar.web.controller;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,16 +24,19 @@ public class ServiceOrderController extends AbstractController {
   }
 
   @RequestMapping("/osDetail/show.do")
-  public String  setup(@RequestParam(required = false) Integer serviceOrderId
-		             , @RequestParam(required = false) String osNum, ModelMap model) {
-	OrderserviceDTO serviceOrder = null; 
+  public String  setup(@RequestParam(required = true) Integer serviceOrderId
+		             , @RequestParam(required = false) String osNum
+		             , ModelMap model, HttpServletRequest req) {
 	try {
-		 serviceOrder = service.getServiceOrderByIdOrNumber(serviceOrderId, osNum);
-		 model.addAttribute("serviceOrderDetail", serviceOrder);
-		 model.addAttribute("followUps", service.getFollows(serviceOrder.getServiceOrderId()));
+		 model.addAttribute("serviceOrderDetail", service.getServiceOrderByIdOrNumber(serviceOrderId
+				                                                                          , osNum));
+		 model.addAttribute("followUps", service.getFollows(serviceOrderId));
 		 model.addAttribute("employees", udService.getStaff());
-	} catch (NumberFormatException e) {
+		 model.addAttribute("osAttachmentFolder", gdService.getAttachmentFolderId(serviceOrderId));
+	} catch (Exception e) {
 		 Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
+		 e.printStackTrace();
+		 return "error";
 	}
 	return "osDetail";
   }
