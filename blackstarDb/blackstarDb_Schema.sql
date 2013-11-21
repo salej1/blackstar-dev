@@ -402,6 +402,7 @@ IF (SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackst
 		verifyFuzz bit not null,
 		chargerReview bit not null,
 		fanStatus nvarchar(50) not null,
+		observations nvarchar(250) not null,
 		created DATETIME NULL,
 		createdBy NVARCHAR(50) NULL,
 		createdByUsr NVARCHAR(50) NULL,
