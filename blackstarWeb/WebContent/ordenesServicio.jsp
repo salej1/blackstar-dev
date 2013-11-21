@@ -41,7 +41,7 @@
 						  { "mData": "serialNumber" }
 
 					  ],
-				"aoColumnDefs" : [{"mRender" : function(data, type, row){return "<div align='center' style='width:70px;' ><a href='/osDetail?serviceOrderId=" + row.DT_RowId + "'>" + data + "</a></div>";}, "aTargets" : [0]},
+				"aoColumnDefs" : [{"mRender" : function(data, type, row){return "<div align='center' style='width:70px;' ><a href='//osDetail/show.do?serviceOrderId=" + row.DT_RowId + "'>" + data + "</a></div>";}, "aTargets" : [0]},
 								  {"mRender" : function(data){return "<img src='img/pdf.png' onclick='return false';/>" ;}, "aTargets" : [1]},
 								  {"mRender" : function(data){return "<div align='center'><a href='/ticketDetail?ticketId=" + data + "'>" + data + "</a></div>";}, "aTargets" : [2]}	    		    	       
 								   ]}
@@ -72,7 +72,7 @@
 						  { "mData": "serialNumber" }
 
 						  ],
-				"aoColumnDefs" : [{"mRender" : function(data, type, row){return "<div align='center' style='width:70px;' ><a href='/osDetail?serviceOrderId=" + row.DT_RowId + "'>" + data + "</a></div>";}, "aTargets" : [0]},
+				"aoColumnDefs" : [{"mRender" : function(data, type, row){return "<div align='center' style='width:70px;' ><a href='/osDetail/show.do?serviceOrderId=" + row.DT_RowId + "'>" + data + "</a></div>";}, "aTargets" : [0]},
 								  {"mRender" : function(data, type, row){return "<img src='img/pdf.png' onclick='return false';/>" ;}, "aTargets" : [1]},
 								  {"mRender" : function(data, type, row){return "<div align='center'><a href='/ticketDetail?ticketNumber=" + data + "'>" + data + "</a></div>";}, "aTargets" : [2]}	    		    	       
 								   ]}

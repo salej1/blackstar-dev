@@ -66,7 +66,7 @@ public class Login
     }
 
      // Send the results as the response
-    resp.sendRedirect("/dashboard");
+    resp.sendRedirect("/dashboard/show.do");
   }
   @Override
   protected AuthorizationCodeFlow initializeFlow() throws ServletException, IOException {

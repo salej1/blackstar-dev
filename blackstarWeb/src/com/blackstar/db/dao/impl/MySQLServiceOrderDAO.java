@@ -12,6 +12,8 @@ import com.blackstar.db.dao.interfaces.ServiceOrderDAO;
 import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
 import com.blackstar.model.Serviceorder;
+import com.blackstar.model.dto.FollowUpDTO;
+import com.blackstar.model.dto.OrderserviceDTO;
 
 public class MySQLServiceOrderDAO implements ServiceOrderDAO, Serializable {
 
@@ -148,6 +150,19 @@ public class MySQLServiceOrderDAO implements ServiceOrderDAO, Serializable {
 		}
 		// TODO Auto-generated method stub
 		return serviceOrder;
+	}
+
+	@Override
+	public OrderserviceDTO getServiceOrderByIdOrNumber(Integer serviceOrderId,
+			String orderNumber) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<FollowUpDTO> getFollows (Integer serviceOrderId) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

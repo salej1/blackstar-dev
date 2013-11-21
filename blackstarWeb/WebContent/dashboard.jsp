@@ -8,11 +8,11 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<link rel="stylesheet" href="css/jquery.ui.theme.css"/>
-<link rel="stylesheet" href="css/jquery-ui.min.css"/>
-<script src="js/jquery-1.10.1.min.js"></script>
-<script src="js/jquery-ui.js"></script>
-<script src="DataTables-1.9.4/media/js/jquery.dataTables.js"></script>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery.ui.theme.css"/>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery-ui.min.css"/>
+<script src="${pageContext.request.contextPath}/js/jquery-1.10.1.min.js"></script>
+<script src="${pageContext.request.contextPath}/js/jquery-ui.js"></script>
+<script src="${pageContext.request.contextPath}/DataTables-1.9.4/media/js/jquery.dataTables.js"></script>
 
 <script type="text/javascript" charset="utf-8">
 	var strSO = '${serviceOrdersPendingDashboard}';
@@ -51,7 +51,7 @@
 						  { "mData": "Asignar" }
 
 					  ],
-			"aoColumnDefs" : [{"mRender" : function(data, type, row){return "<div align=center style='width:60px;'><a href=/ticketDetail?ticketId=" + row.DT_RowId + ">" + data + "</a></div>";}, "aTargets" : [0]},
+			"aoColumnDefs" : [{"mRender" : function(data, type, row){return "<div align=center style='width:60px;'><a href=${pageContext.request.contextPath}/ticketDetail?ticketId=" + row.DT_RowId + ">" + data + "</a></div>";}, "aTargets" : [0]},
 							  {"mRender" : function(data, type, row){return "<a href='#' class='edit' onclick='javascript: assignTicket(" + row.DT_RowId + ", \"" + data + "\"); return false;'>Asignar</a>";}, "aTargets" : [7]}	    		    	       
 							 ]}
 		);
@@ -83,9 +83,9 @@
 						  { "mData": "serialNumber" }
 
 					  ],
-				"aoColumnDefs" : [{"mRender" : function(data, type, row){return "<div align='center' style='width:70px;' ><a href='/osDetail?serviceOrderId=" + row.DT_RowId + "'>" + data + "</a></div>";}, "aTargets" : [0]},
-								  {"mRender" : function(data){return "<img src='img/pdf.png' onclick='return false';/>" ;}, "aTargets" : [1]},
-								  {"mRender" : function(data){return "<div align='center'><a href='/ticketDetail?ticketId=" + data + "'>" + data + "</a></div>";}, "aTargets" : [2]}	    		    	       
+				"aoColumnDefs" : [{"mRender" : function(data, type, row){return "<div align='center' style='width:70px;' ><a href='${pageContext.request.contextPath}/osDetail/show.do?serviceOrderId=" + row.DT_RowId + "'>" + data + "</a></div>";}, "aTargets" : [0]},
+								  {"mRender" : function(data){return "<img src='${pageContext.request.contextPath}/img/pdf.png' onclick='return false';/>" ;}, "aTargets" : [1]},
+								  {"mRender" : function(data){return "<div align='center'><a href='${pageContext.request.contextPath}/ticketDetail?ticketId=" + data + "'>" + data + "</a></div>";}, "aTargets" : [2]}	    		    	       
 								   ]}
 		);
 
@@ -115,9 +115,9 @@
 						  { "mData": "serialNumber" }
 
 						  ],
-				"aoColumnDefs" : [{"mRender" : function(data, type, row){return "<div align='center' style='width:70px;' ><a href='/osDetail?serviceOrderId=" + row.DT_RowId + "'>" + data + "</a></div>";}, "aTargets" : [0]},
-								  {"mRender" : function(data, type, row){return "<img src='img/pdf.png' onclick='return false';/>" ;}, "aTargets" : [1]},
-								  {"mRender" : function(data, type, row){return "<div align='center'><a href='/ticketDetail?ticketNumber=" + data + "'>" + data + "</a></div>";}, "aTargets" : [2]}	    		    	       
+				"aoColumnDefs" : [{"mRender" : function(data, type, row){return "<div align='center' style='width:70px;' ><a href='${pageContext.request.contextPath}/osDetail/show.do?serviceOrderId=" + row.DT_RowId + "'>" + data + "</a></div>";}, "aTargets" : [0]},
+								  {"mRender" : function(data, type, row){return "<img src='${pageContext.request.contextPath}/img/pdf.png' onclick='return false';/>" ;}, "aTargets" : [1]},
+								  {"mRender" : function(data, type, row){return "<div align='center'><a href='${pageContext.request.contextPath}/ticketDetail?ticketNumber=" + data + "'>" + data + "</a></div>";}, "aTargets" : [2]}	    		    	       
 								   ]}
 		);
 	 }
@@ -252,10 +252,10 @@
 		<p>Asignar ticket<label id="lblTicketBeignAssigned"></label></p>
 			<select id="employeeSelect">
 				<c:forEach var="employee" items="${employees}">
-					<option value = "${employee.key}">${employee.value}</option>
+					<option value = "${employee.email}">${employee.name}</option>
 				</c:forEach>
 			</select>
-		<form id="ticksetSelect" action="dashboard" method="post">
+		<form id="ticksetSelect" action="${pageContext.request.contextPath}/dashboard/asignTicket.do" method="post">
 			<input id="ticketId" name="ticketId" type="hidden"/>
 			<input id="employee" name="employee" type="hidden"/>
 		</form>

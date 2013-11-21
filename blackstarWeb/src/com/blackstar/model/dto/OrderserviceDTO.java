@@ -51,6 +51,9 @@ public class OrderserviceDTO {
 	private Integer serviceOrderId;
 	private String ticketNo;
 	private Integer ticketId;
+	private Integer policyId;
+	private String serviceTypeId;
+	private String equipmentTypeId;
 	private String customer;
 	private String equipmentAddress;
 	private Date serviceDate;
@@ -250,5 +253,29 @@ public class OrderserviceDTO {
 
 	public void setCoordinator(String coordinator) {
 		this.coordinator = coordinator;
+	}
+
+	public Integer getPolicyId() {
+		return policyId;
+	}
+
+	public void setPolicyId(Integer policyId) {
+		this.policyId = policyId;
+	}
+
+	public String getServiceTypeId() {
+		return serviceTypeId;
+	}
+
+	public void setServiceTypeId(String serviceTypeId) {
+		this.serviceTypeId = serviceTypeId;
+	}
+
+	public String getEquipmentTypeId() {
+		return equipmentTypeId;
+	}
+
+	public void setEquipmentTypeId(String equipmentTypeId) {
+		this.equipmentTypeId = equipmentTypeId;
 	}
 }

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+ 
+  
+  <!--::::::::::::::::::::::::::::::: Template :::::::::::::::::::::::::::::::-->
+   <bean id ="abstractService" class="com.blackstar.services.AbstractService">
+   </bean>
+   
+   
+  <bean id="userDomainService" class="com.blackstar.services.impl.UserDomainServiceImpl" parent="abstractService">
+      <property name="dao" ref="userDomainDAO" />
+  </bean>
+  
+  <bean id="dashboardService" class="com.blackstar.services.impl.DashboardServiceImpl" parent="abstractService">
+      <property name="dao" ref="dashboardDAO" />
+  </bean>
+  
+  <bean id="serviceOrderService" class="com.blackstar.services.impl.ServiceOrderServiceImpl" parent="abstractService">
+      <property name="dao" ref="serviceOrderDAO" />
+  </bean>
+</beans>
