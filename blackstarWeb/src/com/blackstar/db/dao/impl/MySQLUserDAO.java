@@ -20,7 +20,6 @@ public class MySQLUserDAO implements UserDAO {
 		try {
 			conn = MySQLDAOFactory.createConnection();
 			ResultSet rs = conn.createStatement().executeQuery(String.format("CALL GetUserData('%s')", email));
-			System.out.println("Email => " + email);
 			while(rs.next()) {
 				if(user == null){
 					user = new User(

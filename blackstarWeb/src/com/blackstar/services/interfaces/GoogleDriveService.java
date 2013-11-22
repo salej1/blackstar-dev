@@ -1,9 +1,9 @@
 package com.blackstar.services.interfaces;
 
+import com.google.api.client.auth.oauth2.Credential;
+
 public interface GoogleDriveService {
 	
-  public String getFolderId(String folderName, String parentId, boolean createIfNot) throws Exception;
-  public String createFolder(String title, String parentId, String description) throws Exception;
-  public String getAttachmentFolderId(Integer serviceOrderId) throws Exception;
+  public String getAttachmentFolderId(Integer serviceOrderId, Credential credential) throws Exception;
 
 }

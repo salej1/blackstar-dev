@@ -11,6 +11,13 @@
    <!--:::::::::::::::::::::::::: MVC Annnotations ::::::::::::::::::::::::::-->
    <mvc:annotation-driven />
    
+   
+   <mvc:interceptors>
+      <bean class="com.blackstar.web.interceptor.HttpInterceptor">
+          <property name="service" ref="securityService" />
+      </bean>
+    </mvc:interceptors> 
+    
    <!--:::::::::::::::::::::::::::: JSP View Resolver ::::::::::::::::::::::::::::-->
    <bean id="jspViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
      <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
@@ -25,6 +32,10 @@
    </bean>
    
    <!--::::::::::::::::::::::::::::::: Controllers :::::::::::::::::::::::::::::::-->
+   <bean id ="securityController" class="com.blackstar.web.controller.SecurityController">
+      <property name="service" ref="securityService" />
+   </bean>
+   
    <bean class="com.blackstar.web.controller.DashboardController" parent="abstractController">
       <property name="service" ref="dashboardService" />
    </bean>

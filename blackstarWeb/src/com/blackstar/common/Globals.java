@@ -13,6 +13,8 @@ import com.google.api.client.util.store.DataStoreFactory;
 
 public class Globals {
 	
+	public static final String SESSION_KEY_PARAM = "uSession";
+	
 	  public static final String GOOGLE_DRIVER_CLASS = "com.mysql.jdbc.GoogleDriver";
 	  public static final String CONNECTION_STRING_TEMPLATE = "jdbc:google:rdbms://salej1-blackstar-dev:salej1-blackstar-dev/%s";
 	  public static final String DEFAULT_DRIVER_CLASS = "com.mysql.jdbc.Driver";

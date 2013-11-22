@@ -24,7 +24,7 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
   </filter-mapping>
   <filter-mapping>
     <filter-name>UserFilter</filter-name>
-    <url-pattern>/*</url-pattern>
+    <url-pattern>/see</url-pattern>
     <dispatcher>REQUEST</dispatcher>
   </filter-mapping>
   <listener>

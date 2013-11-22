@@ -6,8 +6,8 @@
       gapi.load('picker', {'callback': createPicker});
     }
 
-    function createPicker(attachmentFolderId) {
-      alert(attachmentFolderId);
+    function createPicker() {
+      var attachmentFolderId = '${osAttachmentFolder}';
       var docsView = new google.picker.View(google.picker.ViewId.DOCS_IMAGES);
       var uploadView = new google.picker.DocsUploadView().setParent(attachmentFolderId);
       docsView.setParent(attachmentFolderId);
@@ -45,7 +45,7 @@
 			<td id="imgPH"></td>
 		</tr>
 		<tr>
-			<td colspan="2"><button class="searchButton" onclick="showPicker('${osAttachmentFolder}');">Archivos Adjuntos</button></td>
+			<td colspan="2"><button class="searchButton" onclick="showPicker();">Archivos Adjuntos</button></td>
 		</tr>
 	</tbody>
 </table>
