@@ -13,4 +13,8 @@
   <bean id="serviceOrderService" class="com.blackstar.services.impl.ServiceOrderServiceImpl">
       <property name="dao" ref="serviceOrderDAO" />
   </bean>
+  
+  <bean id="googleUserService" class="com.blackstar.services.impl.ServiceOrderServiceImpl">
+      <property name="dao" ref="serviceOrderDAO" />
+  </bean>
 </beans>

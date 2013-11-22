@@ -44,7 +44,7 @@ public class Seguimiento extends HttpServlet {
 		
 		try
 		{
-			if(myUser.belongsToGroup("Call Center")){
+			if(myUser.getBelongsToGroup().get("Call Center") != null){
 				processCallCenterFollowUp(da, request);
 				request.getRequestDispatcher("/seguimientoCal.jsp").forward(request, response);
 			}

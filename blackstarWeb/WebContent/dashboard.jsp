@@ -16,46 +16,10 @@
 
 <script type="text/javascript" charset="utf-8">
 	var strSO = '${serviceOrdersPendingDashboard}';
-	var str = '${ticketsToAssignDashboard}';
 	var strSOTR = '${serviceOrdersToReviewDashboard}';
 	var assignedTicket = 0;
 	
-	 function assignTicket(tktId, tktNumber){
-		assignedTicket = tktId;
-		$('#lblTicketBeignAssigned').html(tktNumber);
-		$('#tktAssignDlg').dialog('open');
-	 }
-	 
-	 function refreshTicketList(){
-	 
-		// Tabla de tickets
-		 var data = $.parseJSON(str);
-		
-		$('#dtTicketsPorAsignar').dataTable({	    		
-			"bProcessing": true,
-			"bFilter": true,
-			"bLengthChange": false,
-			"iDisplayLength": 10,
-			"bInfo": false,
-			"sPaginationType": "full_numbers",
-			"aaData": data,
-			"sDom": '<"top"i>rt<"bottom"flp><"clear">',
-			"aoColumns": [
-						  { "mData": "ticketNumber" },
-						  { "mData": "created" },
-						  { "mData": "customer" },
-						  { "mData": "equipmentType" },
-						  { "mData": "responseTimeHR" },
-						  { "mData": "project" }, 	              
-						  { "mData": "ticketStatus" },
-						  { "mData": "Asignar" }
-
-					  ],
-			"aoColumnDefs" : [{"mRender" : function(data, type, row){return "<div align=center style='width:60px;'><a href=${pageContext.request.contextPath}/ticketDetail?ticketId=" + row.DT_RowId + ">" + data + "</a></div>";}, "aTargets" : [0]},
-							  {"mRender" : function(data, type, row){return "<a href='#' class='edit' onclick='javascript: assignTicket(" + row.DT_RowId + ", \"" + data + "\"); return false;'>Asignar</a>";}, "aTargets" : [7]}	    		    	       
-							 ]}
-		);
-  
+	function refreshTicketList(){
   
 		// Tabla de Ordenes de servicio nuevas
 		 var dataSOTR  = $.parseJSON(strSOTR);
@@ -122,33 +86,10 @@
 		);
 	 }
 	 
-	 function postAssignedTicket(pTicketId, pEmployee){
-		$('#ticketId').val(pTicketId);
-		$('#employee').val(pEmployee);
-		$('#ticksetSelect').submit();
-	}
  
  $(document).ready(function() {
-	 
-	 $("#tktAssignDlg").dialog({
-			autoOpen: false,
-			height: 200,
-			width: 260,
-			modal: true,
-			buttons: {
-				"Aceptar": function() {
-					var employee = $("#employeeSelect option:selected").val();
 
-					postAssignedTicket(assignedTicket, employee);
-					
-					$( this ).dialog( "close" );
-				},
-				
-				"Cancelar": function() {
-				$( this ).dialog( "close" );
-			}}
-	});
-
+	
 	refreshTicketList();
 	
 });
@@ -159,106 +100,74 @@
 <div id="content" class="container_16 clearfix">
 
 <!--   CONTENT COLUMN   -->		
-				<div class="grid_16">
-					<div class="box">
-						<h2>Tickets por asignar</h2>
-						<div class="utils">
-							
-						</div>
-						<div id= ticketTablaContainer>
-							<table cellpadding="0" cellspacing="0" border="0" class="display" id="dtTicketsPorAsignar">
-								<thead>
-									<tr> 
-										<th>Ticket</th>
-										<th>Fecha/Hora</th>
-										<th>Cliente</th>
-										<th>Equipo</th>
-										<th>Tiem. R</th>
-										<th>Proyecto</th>
-										<th>Estatus</th>
-										<th>Asignar</th>
-									</tr>
-								</thead>
-								<tbody>  
-								</tbody> 
-							</table>
-						</div>
-					</div>
-				</div>
+	<c:set var="sysCallCenter" scope="request" value="${user.belongsToGroup['sysCallCenter']}" />
+	<c:if test="${sysCallCenter == true}">
+		<c:import url="unassignedTickets.jsp"></c:import>
+		<script type="text/javascript">
+			$(function(){
+				unassignedTickets_init();
+			});
+		</script>
+	</c:if>
 
-				<div class="grid_16">
-					<div class="box">
-						<h2>Ordenes de servicio por revisar</h2>
-						<div class="utils">
-							
-						</div>
-						<table cellpadding="0" cellspacing="0" border="0" class="display" id="dtOrdenesPorRevisar">
-							<thead>
-								<tr>
-									<th style="width=250px;">Folio</th>
-									<th style="width=50px;"></th>
-									<th>Ticket</th>
-									<th>Tipo</th>
-									<th>Fecha</th>
-									<th>Cliente</th>
-									<th>Equipo</th>
-									<th>Proyecto</th>
-									<th>Oficina</th>
-									<th>Marca</th>
-									<th>No. Serie</th>
-								</tr>
-							</thead>
-							<tbody>
+	<div class="grid_16">
+		<div class="box">
+			<h2>Ordenes de servicio por revisar</h2>
+			<div class="utils">
+				
+			</div>
+			<table cellpadding="0" cellspacing="0" border="0" class="display" id="dtOrdenesPorRevisar">
+				<thead>
+					<tr>
+						<th style="width=250px;">Folio</th>
+						<th style="width=50px;"></th>
+						<th>Ticket</th>
+						<th>Tipo</th>
+						<th>Fecha</th>
+						<th>Cliente</th>
+						<th>Equipo</th>
+						<th>Proyecto</th>
+						<th>Oficina</th>
+						<th>Marca</th>
+						<th>No. Serie</th>
+					</tr>
+				</thead>
+				<tbody>
 
-							</tbody>
-						</table>
-					</div>
+				</tbody>
+			</table>
+		</div>
 
-				</div>
-
-				<div class="grid_16">
-					<div class="box">
-						<h2>Ordenes de servicio con pendientes</h2>
-						<div class="utils">
-							
-						</div>
-						<table cellpadding="0" cellspacing="0" border="0" class="display" id="dtOrdenesPendientes">
-							<thead>
-								<tr>
-									<th>Folio</th>
-									<th></th>
-									<th>Ticket</th>
-									<th>Tipo</th>
-									<th>Fecha</th>
-									<th>Cliente</th>
-									<th>Equipo</th>
-									<th>Proyecto</th>
-									<th>Oficina</th>
-									<th>Marca</th>
-									<th>No. Serie</th>
-								</tr>
-							</thead>
-							<tbody>
-
-							</tbody>
-						</table>
-					</div>
-
-				</div>
-
-</div>
-	<!-- Assign Ticket section -->
-	<div id="tktAssignDlg" title="Asignar Ticket" >
-		<p>Asignar ticket<label id="lblTicketBeignAssigned"></label></p>
-			<select id="employeeSelect">
-				<c:forEach var="employee" items="${employees}">
-					<option value = "${employee.key}">${employee.value}</option>
-				</c:forEach>
-			</select>
-		<form id="ticksetSelect" action="dashboard" method="post">
-			<input id="ticketId" name="ticketId" type="hidden"/>
-			<input id="employee" name="employee" type="hidden"/>
-		</form>
 	</div>
+
+	<div class="grid_16">
+		<div class="box">
+			<h2>Ordenes de servicio con pendientes</h2>
+			<div class="utils">
+				
+			</div>
+			<table cellpadding="0" cellspacing="0" border="0" class="display" id="dtOrdenesPendientes">
+				<thead>
+					<tr>
+						<th>Folio</th>
+						<th></th>
+						<th>Ticket</th>
+						<th>Tipo</th>
+						<th>Fecha</th>
+						<th>Cliente</th>
+						<th>Equipo</th>
+						<th>Proyecto</th>
+						<th>Oficina</th>
+						<th>Marca</th>
+						<th>No. Serie</th>
+					</tr>
+				</thead>
+				<tbody>
+
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
 </body>
 </html>

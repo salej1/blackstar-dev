@@ -1,8 +1,10 @@
 package com.blackstar.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import com.blackstar.logging.*;
 
@@ -50,15 +52,14 @@ public class User implements java.io.Serializable {
 		return name + ": " + mainGroup;
 	}
 
-	public boolean belongsToGroup(String queryGroup) {
+	public Map<String, Boolean> getBelongsToGroup() {
 		Iterator<String> git = userGroups.iterator();
-		boolean retval = false;
+		Map<String, Boolean> retval = new HashMap<String, Boolean>();
 		
 		while(git.hasNext()){
 			String groupName = git.next().toString();
-			if(groupName.equals(queryGroup)){
-				retval = true;
-				break;
+			if(!retval.containsKey(groupName)){
+				retval.put(groupName, true);
 			}
 		}
 		
