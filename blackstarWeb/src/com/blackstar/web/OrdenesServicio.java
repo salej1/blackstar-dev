@@ -37,23 +37,17 @@ public class OrdenesServicio extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		JSONArray jsServiceOrdersToReview = new JSONArray();
-		JSONArray jsServiceOrdersPending = new JSONArray();
+		JSONArray jsServiceOrders = new JSONArray();
 		
-		ResultSet rsServiceOrdersToReview;
-		ResultSet rsServiceOrdersPending;
+		ResultSet rsServiceOrders;
 
 		try
 		{		
 			BlackstarDataAccess da = new BlackstarDataAccess();
-			rsServiceOrdersToReview = da.executeQuery(String.format("CALL GetServiceOrders('%s')", "NUEVO"));
-			jsServiceOrdersToReview = ResultSetConverter.convertResultSetToJSONArray(rsServiceOrdersToReview);
-
-			rsServiceOrdersPending = da.executeQuery(String.format("CALL GetServiceOrders ('%s')", "PENDIENTE"));
-			jsServiceOrdersPending = ResultSetConverter.convertResultSetToJSONArray(rsServiceOrdersPending);
-			
-			request.setAttribute("serviceOrdersToReview", jsServiceOrdersToReview.toString());
-			request.setAttribute("serviceOrdersPending", jsServiceOrdersPending.toString());
+			rsServiceOrders = da.executeQuery("CALL GetAllServiceOrders()");
+			jsServiceOrders = ResultSetConverter.convertResultSetToJSONArray(rsServiceOrders);
+		
+			request.setAttribute("serviceOrders", jsServiceOrders.toString());
 			
 			da.closeConnection();
 		}
