@@ -78,6 +78,14 @@
 			$("#isWrong").val(0);
 		}
 		
+		$("#action").val("save");
+		osUpdateForm.submit();
+	}
+	
+	function closeOs(){
+		var osUpdateForm = $("#osUpdateForm");
+		
+		$("#action").val("close");
 		osUpdateForm.submit();
 	}
  </script> 
@@ -257,7 +265,10 @@
 										<td>
 											<button class="searchButton" onclick="addSeguimiento(${serviceOrderDetail.serviceOrderId}, '${serviceOrderDetail.serviceOrderNo}');">Agregar seguimiento</button>
 											<button class="searchButton" onclick="updateOs();">Guardar</button>
-											<button class="searchButton" onclick="window.location = 'dashboard'">Cerrar OS</button>
+											<c:if test="${empty serviceOrderDetail.closed}">
+												<button class="searchButton" onclick="closeOs();">Cerrar OS</button>
+											</c:if>
+											
 										</td>
 									</tr>
 								<tbody>
@@ -266,6 +277,7 @@
 							<form id="osUpdateForm" action="/osDetail" method="POST">
 								<input type="hidden" name="serviceOrderId" id="serviceOrderId" value="${serviceOrderDetail.serviceOrderId}"/>
 								<input type="hidden" name="isWrong" id="isWrong"/>
+								<input type="hidden" name="action" id="action"/>
 							</form>
 
 					</div>					

@@ -169,6 +169,23 @@ BEGIN
 	UPDATE blackstarDb.serviceOrder SET
 		serviceStatusId = CASE WHEN (closed IS NULL) THEN 'E' ELSE 'C' END;
 		
+	-- CAMBIAR OBSERVATIONS POR FOLLOW UPS SOLO EN LOS TICKETS QUE NO TIENEN
+	INSERT INTO blackstarDb.followUp(
+		serviceOrderId,
+		asignee,
+		followup,
+		isSource,
+		created,
+		createdBy,
+		createdByUsr
+	)
+	SELECT o.serviceOrderId, 'angeles.avila@gposac.com.mx', st.followUp, 1, NOW(), 'TicketTransfer', 'sergio.aga'
+	FROM blackstarDbTransfer.serviceTx st 
+		INNER JOIN blackstarDb.serviceOrder o ON st.serviceNumber = o.serviceOrderNumber
+		LEFT OUTER JOIN blackstarDb.followUp f ON o.serviceOrderId = f.serviceOrderId
+	WHERE st.followUp IS NOT NULL
+	AND f.followUpId IS NULL;
+	
 	-- ACTUALIZACION DEL SERVICE ID DE CIERRE DEL TICKET
 	UPDATE blackstarDb.ticket t
 		INNER JOIN blackstarDbTransfer.ticket tt ON t.ticketNumber = tt.ticketNumber

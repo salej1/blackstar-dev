@@ -68,12 +68,66 @@
 --							Se Reescribe:
 -- 								blackstarDb.GetServicesSchedule
 -- -----------------------------------------------------------------------------
-
+-- 11   21/11/2013	SAG		Se Integra:
+-- 								blackstarDb.GetAllServiceOrders
+-- 								blackstarDb.CloseOS
+-- -----------------------------------------------------------------------------
 
 use blackstarDb;
 
 
 DELIMITER $$
+
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.CloseOS
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.CloseOS$$
+CREATE PROCEDURE blackstarDb.CloseOS(pServiceOrderId INTEGER, pUser VARCHAR(100))
+BEGIN
+
+	UPDATE serviceOrder SET
+		serviceStatusId = 'C',
+		closed = NOW(),
+		modified = NOW(),
+		modifiedBy = 'CloseOS',
+		modifiedByUsr = pUser
+	WHERE
+		serviceOrderId = pServiceOrderId;
+	
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetAllServiceOrders
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetAllServiceOrders$$
+CREATE PROCEDURE blackstarDb.GetAllServiceOrders()
+BEGIN
+
+	SELECT 
+		so.ServiceOrderId AS DT_RowId,
+		so.serviceOrderNumber AS serviceOrderNumber,
+		'' AS placeHolder,
+		IFNULL(t.ticketNumber, '') AS ticketNumber,
+		st.serviceType AS serviceType,
+		DATE(so.created) AS created,
+		p.customer AS customer,
+		et.equipmentType AS equipmentType,
+		p.project AS project,
+		of.officeName AS officeName,
+		p.brand AS brand,
+		p.serialNumber AS serialNumber,
+		ss.serviceStatus AS serviceStatus
+	FROM serviceOrder so 
+		INNER JOIN serviceType st ON so.servicetypeId = st.servicetypeId
+		INNER JOIN serviceStatus ss ON so.serviceStatusId = ss.serviceStatusId
+		INNER JOIN policy p ON so.policyId = p.policyId
+		INNER JOIN equipmentType et ON p.equipmenttypeId = et.equipmenttypeId
+		INNER JOIN office of on p.officeId = of.officeId
+     LEFT OUTER JOIN ticket t on t.ticketId = so.ticketId
+	ORDER BY so.ServiceOrderId DESC;
+	
+END$$
 
 
 -- -----------------------------------------------------------------------------
@@ -197,7 +251,8 @@ BEGIN
 	FROM blackstarUser_userGroup ug
 		INNER JOIN blackstarUser u ON u.blackstarUserId = ug.blackstarUserId
 		INNER JOIN userGroup g ON g.userGroupId = ug.userGroupId
-	WHERE g.externalId = pUserGroup;
+	WHERE g.externalId = pUserGroup
+	ORDER BY u.name;
 	
 END$$
 
@@ -418,8 +473,8 @@ BEGIN
 		u.name AS asignee,
 		followup AS followUp
 	FROM followUp f
-		INNER JOIN blackstarUser u ON f.asignee = u.email
-		INNER JOIN blackstarUser u2 ON f.createdByUsr = u2.email
+		LEFT OUTER JOIN blackstarUser u ON f.asignee = u.email
+		LEFT OUTER JOIN blackstarUser u2 ON f.createdByUsr = u2.email
 	WHERE serviceOrderId = pServiceOrderId
 	ORDER BY f.created;
 	
