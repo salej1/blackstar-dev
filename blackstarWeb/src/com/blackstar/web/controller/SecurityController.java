@@ -8,26 +8,20 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.blackstar.common.Globals;
 import com.blackstar.model.UserSession;
-import com.blackstar.services.interfaces.SecurityService;
-
+import com.blackstar.web.AbstractController;
 
 
 @Controller
 @RequestMapping("/security")
-public class SecurityController {
-	
-  private SecurityService service;
+public class SecurityController extends AbstractController {
 
-  public void setService(SecurityService service) {
-	this.service = service;
-  }
-  
   @RequestMapping("/loginCallback.do")
   public String handleLoginCallback(@RequestParam(required = false) String code
 			                   , HttpServletRequest request) throws Exception {
 	UserSession userSession = null;
 	if (code != null) {
-		userSession = service.getSession(code);
+		userSession = secService.getSession(code);
+		System.out.println("bsMessage = > New gId : " + userSession.getGoogleId());
 		request.getSession().setAttribute(Globals.SESSION_KEY_PARAM, userSession);
 		//TODO Se mantienen de forma provisional por compatibilidad con version actual
 		request.getSession().setAttribute("user_id", userSession.getUser().getUserEmail());

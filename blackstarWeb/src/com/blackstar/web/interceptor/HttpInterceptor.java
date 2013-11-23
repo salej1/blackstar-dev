@@ -7,6 +7,8 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import com.blackstar.common.Globals;
 import com.blackstar.services.interfaces.SecurityService;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 
 public class HttpInterceptor extends HandlerInterceptorAdapter {
 	
@@ -18,7 +20,11 @@ public class HttpInterceptor extends HandlerInterceptorAdapter {
   
   public boolean preHandle(HttpServletRequest request, HttpServletResponse response
 			                                   , Object handler) throws Exception {
-    if(request.getSession().getAttribute(Globals.SESSION_KEY_PARAM) == null){
+	UserService userService = UserServiceFactory.getUserService();
+	System.out.println("bsMessage => CurrentUser : " + userService.getCurrentUser());
+    if((userService.getCurrentUser() == null) || (request.getSession().getAttribute(Globals
+    		                                                .SESSION_KEY_PARAM) == null)) {
+    	System.out.println("bsMessage => No Logged");
     	response.sendRedirect(service.getAuthorizationUrl());
     }	  
 	return true;		

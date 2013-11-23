@@ -34,15 +34,18 @@ public class ServiceOrderController extends AbstractController {
 		             , @ModelAttribute(Globals.SESSION_KEY_PARAM)  UserSession userSession
 		             , ModelMap model, HttpServletRequest req, HttpServletResponse resp) {
 	try {
+		 System.out.println("2. gId = > " + userSession.getGoogleId());
 		 model.addAttribute("serviceOrderDetail", service.getServiceOrderByIdOrNumber(serviceOrderId
 				                                                                          , osNum));
 		 model.addAttribute("followUps", service.getFollows(serviceOrderId));
 		 model.addAttribute("employees", udService.getStaff());
 		 model.addAttribute("osAttachmentFolder", gdService.getAttachmentFolderId(serviceOrderId
-				                                                , userSession.getCredential()));
+				                   , secService.getStoredCredential(userSession.getGoogleId())));
 	} catch (Exception e) {
 		 Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
-		 e.printStackTrace();
+		 
+		 model.addAttribute("stackTrace", e.getStackTrace());
+		 model.addAttribute("errMessage", e.toString());
 		 return "error";
 	}
 	return "osDetail";

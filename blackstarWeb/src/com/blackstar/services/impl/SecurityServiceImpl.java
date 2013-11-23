@@ -10,6 +10,7 @@ import com.blackstar.model.UserSession;
 import com.blackstar.services.AbstractService;
 import com.blackstar.services.interfaces.SecurityService;
 import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.extensions.appengine.auth.oauth2.AppEngineCredentialStore;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeRequestUrl;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeTokenRequest;
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
@@ -23,7 +24,8 @@ public class SecurityServiceImpl extends AbstractService implements SecurityServ
   private GoogleClientSecrets clientSecrets;
   
   private String secretsPath;
-  public  List<String> authorities;
+  private  List<String> authorities;
+  private static AppEngineCredentialStore credentialStore = new AppEngineCredentialStore();
 
   public void setSecretsPath(String secretsPath) {
 	this.secretsPath = SecurityServiceImpl.class.getClassLoader().getResource(secretsPath).getPath();
@@ -44,15 +46,23 @@ public class SecurityServiceImpl extends AbstractService implements SecurityServ
 	try{
 		credential = getCredential(code);
 		userInfo = getOauth2Service(credential).userinfo().get().execute();
-		userSession.setCredential(credential);
-		userSession.setUserInfo(userInfo);
+		userSession.setGoogleId(userInfo.getId());
 		userSession.setUser(DAOFactory.getDAOFactory(DAOFactory.MYSQL).getUserDAO()
 				                                .getUserById(userInfo.getEmail()));
+		credentialStore.store(userSession.getGoogleId(), credential);
 	} catch(Exception e){
 		
 	}
 	return userSession;
   }
+  
+  public Credential getStoredCredential(String userId) {
+	Credential credential = buildEmpty();
+	if (credentialStore.load(userId, credential)) {
+	  return credential;
+	}
+	return null;
+	}
   
   public String getAuthorizationUrl() {
 	GoogleAuthorizationCodeRequestUrl urlBuilder = new GoogleAuthorizationCodeRequestUrl(

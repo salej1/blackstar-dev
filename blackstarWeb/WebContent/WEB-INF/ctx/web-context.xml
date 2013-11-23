@@ -29,12 +29,11 @@
    <bean id ="abstractController" class="com.blackstar.web.AbstractController">
       <property name="udService" ref="userDomainService" />
       <property name="gdService" ref="googleDriveService" />
+      <property name="secService" ref="securityService" />
    </bean>
    
    <!--::::::::::::::::::::::::::::::: Controllers :::::::::::::::::::::::::::::::-->
-   <bean id ="securityController" class="com.blackstar.web.controller.SecurityController">
-      <property name="service" ref="securityService" />
-   </bean>
+   <bean id ="securityController" class="com.blackstar.web.controller.SecurityController" parent="abstractController"/>
    
    <bean class="com.blackstar.web.controller.DashboardController" parent="abstractController">
       <property name="service" ref="dashboardService" />
