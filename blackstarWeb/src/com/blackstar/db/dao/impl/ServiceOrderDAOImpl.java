@@ -5,8 +5,13 @@ import java.util.List;
 import com.blackstar.db.dao.AbstractDAO;
 import com.blackstar.db.dao.interfaces.ServiceOrderDAO;
 import com.blackstar.model.Serviceorder;
+import com.blackstar.model.dto.AirCoServiceDTO;
+import com.blackstar.model.dto.BatteryServiceDTO;
+import com.blackstar.model.dto.EmergencyPlantServiceDTO;
 import com.blackstar.model.dto.FollowUpDTO;
 import com.blackstar.model.dto.OrderserviceDTO;
+import com.blackstar.model.dto.PlainServiceDTO;
+import com.blackstar.model.dto.UpsServiceDTO;
 
 
 @SuppressWarnings("unchecked")
@@ -106,4 +111,74 @@ public class ServiceOrderDAOImpl extends AbstractDAO implements ServiceOrderDAO 
 	// TODO Auto-generated method stub
 	return false;
   }
+
+
+@Override
+public AirCoServiceDTO getAirCoService(Integer aaServiceId) {
+	// TODO Auto-generated method stub
+	return null;
+}
+
+
+@Override
+public BatteryServiceDTO getBateryService(Integer bbServiceId) {
+	// TODO Auto-generated method stub
+	return null;
+}
+
+
+@Override
+public EmergencyPlantServiceDTO getEmergencyPlantService(Integer epServiceId) {
+	// TODO Auto-generated method stub
+	return null;
+}
+
+
+@Override
+public PlainServiceDTO getPlainService(Integer plainServiceId) {
+	// TODO Auto-generated method stub
+	return null;
+}
+
+
+@Override
+public UpsServiceDTO getUpsService(Integer upsServiceId) {
+	// TODO Auto-generated method stub
+	return null;
+}
+
+
+@Override
+public void saveAirCoService(AirCoServiceDTO service) {
+	// TODO Auto-generated method stub
+	
+}
+
+
+@Override
+public void saveBateryService(BatteryServiceDTO service) {
+	// TODO Auto-generated method stub
+	
+}
+
+
+@Override
+public void saveEmergencyPlantService(EmergencyPlantServiceDTO service) {
+	// TODO Auto-generated method stub
+	
+}
+
+
+@Override
+public void savePlainService(PlainServiceDTO service) {
+	// TODO Auto-generated method stub
+	
+}
+
+
+@Override
+public void saveUpsService(UpsServiceDTO service) {
+	// TODO Auto-generated method stub
+	
+}
 }
