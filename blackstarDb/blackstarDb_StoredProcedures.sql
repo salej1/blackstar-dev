@@ -52,6 +52,14 @@
 -- 								blackstarDb.AssignServiceOrder
 -- 								blackstarDb.GetEquipmentByCustomer
 -- -----------------------------------------------------------------------------
+-- 9   20/11/2013	JAGH		Se Integra:
+-- 								blackstarDb.GetAirCoServiceByIdService
+-- 								blackstarDb.GetBatteryServiceByIdService
+--                              blackstarDb.GetCellBatteryServiceByIdBatteryService
+-- 								blackstarDb.GetEmergencyPlantServiceByIdService
+-- 								blackstarDb.GetPlainServiceServiceByIdService
+-- 								blackstarDb.GetUPSServiceByIdService
+-- -----------------------------------------------------------------------------
 
 use blackstarDb;
 
@@ -637,6 +645,138 @@ BEGIN
 		modifiedByUsr = usr
 	WHERE ticketId = pTicketId;
 	
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetAirCoServiceByIdService
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetAirCoServiceByIdService$$
+CREATE PROCEDURE blackstarDb.GetAirCoServiceByIdService (idService INTEGER)
+BEGIN	
+	select 
+		aaServiceId, serviceOrderId, evaDescription, evaValTemp, evaValHum, evaSetpointTemp, evaSetpointHum, 
+		evaFlagCalibration, evaReviewFilter, evaReviewStrip, evaCleanElectricSystem, evaCleanControlCard, evaCleanTray, 
+		evaLectrurePreasureHigh, evaLectrurePreasureLow, evaLectureTemp, evaLectureOilColor, evaLectureOilLevel, evaLectureCoolerColor, 
+		evaLectureCoolerLevel, evaCheckOperatation, evaCheckNoise, evaCheckIsolated, evaLectureVoltageGroud, evaLectureVoltagePhases, 
+		evaLectureVoltageControl, evaLectureCurrentMotor1, evaLectureCurrentMotor2, evaLectureCurrentMotor3, evaLectureCurrentCompressor1, 
+		evaLectureCurrentCompressor2, evaLectureCurrentCompressor3, evaLectureCurrentHumidifier1, evaLectureCurrentHumidifier2, 
+		evaLectureCurrentHumidifier3, evaLectureCurrentHeater1, evaLectureCurrentHeater2, evaLectureCurrentHeater3, evaCheckFluidSensor,
+		evaRequirMaintenance, condReview, condCleanElectricSystem, condClean, condLectureVoltageGroud, condLectureVoltagePhases,
+		condLectureVoltageControl, condLectureMotorCurrent, condReviewThermostat, condModel, condSerialNumber, condBrand, observations
+	from aaService 
+	where 
+		aaServiceId = idService;
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetBatteryServiceByIdService
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetBatteryServiceByIdService$$
+CREATE PROCEDURE blackstarDb.GetBatteryServiceByIdService (idService INTEGER)
+BEGIN
+	select 
+		bbServiceId, serviceOrderId, plugClean, plugCleanStatus, plugCleanComments, coverClean, coverCleanStatus, 
+		coverCleanComments, capClean, capCleanStatus, capCleanComments, groundClean, groundCleanStatus, groundCleanComments, 
+		rackClean, rackCleanStatus, rackCleanComments, serialNoDateManufact, batteryTemperature, voltageBus, temperature
+	from bbService 
+	where 
+		bbServiceId = idService;
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetCellBatteryServiceByIdBatteryService
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetCellBatteryServiceByIdBatteryService$$
+CREATE PROCEDURE blackstarDb.GetCellBatteryServiceByIdBatteryService (idBatteryService INTEGER)
+BEGIN
+	select 
+		bbCellServiceId, bbServiceId, cellNumber, floatVoltage, chargeVoltage
+	from bbCellService 
+	where 
+		bbServiceId = idBatteryService;
+
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetEmergencyPlantServiceByIdService
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetEmergencyPlantServiceByIdService$$
+CREATE PROCEDURE blackstarDb.GetEmergencyPlantServiceByIdService (idService INTEGER)
+BEGIN
+	select 
+		A.epServiceId, serviceOrderId, transferType, modelTransfer, modelControl, modelRegVoltage, modelRegVelocity, 
+		modelCharger, oilChange, brandMotor, modelMotor, serialMotor, cplMotor, brandGenerator, modelGenerator, serialGenerator, 
+		powerWattGenerator, tensionGenerator, tuningDate, tankCapacity, pumpFuelModel, filterFuelFlag, filterOilFlag, filterWaterFlag, 
+		filterAirFlag, brandGear, brandBattery, clockLecture, serviceCorrective, observations, 
+
+		epServiceSurveyId, levelOilFlag, levelWaterFlag, levelBattery, tubeLeak, batteryCap, batterySulfate, levelOil, 
+		heatEngine, hoseOil, hoseWater, tubeValve, stripBlades, 
+
+		epServiceWorkBasicId, washEngine, washRadiator, cleanWorkArea, conectionCheck, cleanTransfer, cleanCardControl, 
+		checkConectionControl, checkWinding, batteryTests, checkCharger, checkPaint, cleanGenerator, 
+
+		epServiceDynamicTestId, vacuumFrequency, chargeFrequency, bootTryouts, vacuumVoltage, chargeVoltage, qualitySmoke, 
+		startTime, transferTime, stopTime, 
+
+		epServiceTestProtectionId, tempSensor, oilSensor, voltageSensor, overSpeedSensor, oilPreasureSensor, waterLevelSensor, 
+		
+		epServiceTransferSwitchId, mechanicalStatus, boardClean, screwAdjust, conectionAdjust, systemMotors, electricInterlock, 
+		mechanicalInterlock, capacityAmp, 
+
+		epServiceLecturesId, voltageABAN, voltageACCN, voltageBCBN, voltageNT, currentA, currentB, currentC, frequency, oilPreassure, temp, 
+
+		epServiceParamsId, adjsutmentTherm, current, batteryCurrent, clockStatus, trasnferTypeProtection, generatorTypeProtection
+
+	from epService A
+	inner join  epServiceSurvey  B on  A.epServiceId  = B.epServiceId 
+	inner join  epServiceWorkBasic  C on  A.epServiceId  = C.epServiceId 
+	inner join  epServiceDynamicTest  D on  A.epServiceId  = D.epServiceId 
+	inner join  epServiceTestProtection E on  A.epServiceId  = E.epServiceId 
+	inner join  epServiceTransferSwitch F on  A.epServiceId  = F.epServiceId 
+	inner join  epServiceLectures G on  A.epServiceId  = G.epServiceId 
+	inner join  epServiceParams H on  A.epServiceId  = H.epServiceId 
+	where 
+		A.epServiceId  = idService;
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetPlainServiceServiceByIdService
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetPlainServiceServiceByIdService$$
+CREATE PROCEDURE blackstarDb.GetPlainServiceServiceByIdService (idService INTEGER)
+BEGIN	
+	select 
+		plainServiceId, serviceOrderId, troubleDescription, techParam, workDone, materialUsed, observations
+	from plainService 
+	where 
+		plainServiceId = idService;
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetUPSServiceByIdService
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetUPSServiceByIdService$$
+CREATE PROCEDURE blackstarDb.GetUPSServiceByIdService (idService INTEGER)
+BEGIN
+
+	select 
+		A.upsServiceId, serviceOrderId, estatusEquipment, cleaned, hooverClean, verifyConnections, capacitorStatus, verifyFuzz, 
+		chargerReview, fanStatus,
+		
+		upsServiceBatteryBankId, checkConnectors, cverifyOutflow, numberBatteries, manufacturedDateSerial, damageBatteries, 
+		other, temp, chargeTest, brandModel, batteryVoltage, 
+		
+		upsServiceGeneralTestId, trasferLine, transferEmergencyPlant, backupBatteries, verifyVoltage, 
+		
+		upsServiceParamsId, inputVoltagePhase, inputVoltageNeutro, inputVoltageNeutroGround, percentCharge, outputVoltagePhase, 
+		outputVoltageNeutro, inOutFrecuency, busVoltage
+	from upsService A
+	inner join  upsServiceBatteryBank  B on  A.upsServiceId = B.upsServiceId
+	inner join  upsServiceGeneralTest  C on  A.upsServiceId = C.upsServiceId
+	inner join  upsServiceParams  D on  A.upsServiceId = D.upsServiceId
+	where 
+		A.upsServiceId = idService;
+
 END$$
 
 -- -----------------------------------------------------------------------------

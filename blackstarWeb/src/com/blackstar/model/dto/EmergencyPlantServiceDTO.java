@@ -16,39 +16,13 @@ public class EmergencyPlantServiceDTO {
 	public EmergencyPlantServiceDTO()
 	{}
 	
-	public EmergencyPlantServiceDTO(OrderserviceDTO serviceOrder, EmergencyPlantService emergencyPlantService, EmergencyPlantServiceSurvey emergencyPlantServiceSurvey, EmergencyPlantServiceWorkBasic emergencyPlantServiceWorkBasic, 
+	public EmergencyPlantServiceDTO( EmergencyPlantService emergencyPlantService, EmergencyPlantServiceSurvey emergencyPlantServiceSurvey, EmergencyPlantServiceWorkBasic emergencyPlantServiceWorkBasic, 
 									EmergencyPlantServiceDynamicTest emergencyPlantServiceDynamicTest, EmergencyPlantServiceTestProtection emergencyPlantServiceTestProtection,
 									EmergencyPlantServiceTransferSwitch emergencyPlantServiceTransferSwitch, EmergencyPlantServiceLectures emergencyPlantServiceLectures,
 									EmergencyPlantServiceParams emergencyPlantServiceParams)
 	{
 		this.epServiceId = emergencyPlantService.getEpServiceId();
 		this.serviceOrderId = emergencyPlantService.getServiceOrderId();
-		
-		this.coordinator = serviceOrder.getCoordinator();
-		this.serviceOrderNo = serviceOrder.getServiceOrderNo();
-		this.ticketNo = serviceOrder.getTicketNo();
-		this.ticketId = serviceOrder.getTicketId();
-		this.policyId = serviceOrder.getPolicyId();
-		this.serviceTypeId = serviceOrder.getServiceTypeId();
-		this.equipmentTypeId = serviceOrder.getEquipmentTypeId();
-		this.customer = serviceOrder.getCustomer();
-		this.equipmentAddress = serviceOrder.getEquipmentAddress();
-		this.serviceDate = serviceOrder.getServiceDate();
-		this.contactName = serviceOrder.getContactName();
-		this.contactPhone = serviceOrder.getContactPhone();
-		this.equipmentType = serviceOrder.getEquipmentType();
-		this.equipmentBrand = serviceOrder.getEquipmentBrand();
-		this.equipmentModel = serviceOrder.getEquipmentModel();
-		this.equipmentSerialNo = serviceOrder.getEquipmentSerialNo();
-		this.failureDescription = serviceOrder.getFailureDescription();
-		this.serviceType = serviceOrder.getServiceType();
-		this.proyectNumber = serviceOrder.getProyectNumber();
-		this.signCreated = serviceOrder.getSignCreated();
-		this.signReceivedBy = serviceOrder.getSignReceivedBy();
-		this.receivedBy = serviceOrder.getReceivedBy();
-		this.receivedByPosition = serviceOrder.getReceivedByPosition();
-		this.responsible = serviceOrder.getResponsible();
-		this.closed = serviceOrder.getClosed();
 		
 		this.brandPE = emergencyPlantService.getBrandPE();
 		this.modelPE  = emergencyPlantService.getModelPE();
@@ -161,15 +135,6 @@ public class EmergencyPlantServiceDTO {
 	}
 	
 	public EmergencyPlantServiceDTO(Integer epServiceId, Integer serviceOrderId,
-			String coordinator, String serviceOrderNo, String ticketNo,
-			Integer ticketId, Integer policyId, String serviceTypeId,
-			String equipmentTypeId, String customer, String equipmentAddress,
-			Date serviceDate, String contactName, String contactPhone,
-			String equipmentType, String equipmentBrand, String equipmentModel,
-			String equipmentSerialNo, String failureDescription,
-			String serviceType, String proyectNumber, String signCreated,
-			String signReceivedBy, String receivedBy,
-			String receivedByPosition, String responsible, Date closed,
 			String transferType, String modelTransfer, String modelControl,
 			String modelRegVoltage, String modelRegVelocity,
 			String modelCharger, Date oilChange, String brandMotor,
@@ -211,31 +176,6 @@ public class EmergencyPlantServiceDTO {
 			String trasnferTypeProtection, String generatorTypeProtection, String brandPE, String modelPE , String serialPE ) {
 		this.epServiceId = epServiceId;
 		this.serviceOrderId = serviceOrderId;
-		this.coordinator = coordinator;
-		this.serviceOrderNo = serviceOrderNo;
-		this.ticketNo = ticketNo;
-		this.ticketId = ticketId;
-		this.policyId = policyId;
-		this.serviceTypeId = serviceTypeId;
-		this.equipmentTypeId = equipmentTypeId;
-		this.customer = customer;
-		this.equipmentAddress = equipmentAddress;
-		this.serviceDate = serviceDate;
-		this.contactName = contactName;
-		this.contactPhone = contactPhone;
-		this.equipmentType = equipmentType;
-		this.equipmentBrand = equipmentBrand;
-		this.equipmentModel = equipmentModel;
-		this.equipmentSerialNo = equipmentSerialNo;
-		this.failureDescription = failureDescription;
-		this.serviceType = serviceType;
-		this.proyectNumber = proyectNumber;
-		this.signCreated = signCreated;
-		this.signReceivedBy = signReceivedBy;
-		this.receivedBy = receivedBy;
-		this.receivedByPosition = receivedByPosition;
-		this.responsible = responsible;
-		this.closed = closed;
 		this.transferType = transferType;
 		this.modelTransfer = modelTransfer;
 		this.modelControl = modelControl;
@@ -344,33 +284,7 @@ public class EmergencyPlantServiceDTO {
 	
 	private Integer epServiceId;
 	private Integer serviceOrderId;
-	
-	private String coordinator;
-	private String serviceOrderNo;
-	private String ticketNo;
-	private Integer ticketId;
-	private Integer policyId;
-	private String serviceTypeId;
-	private String equipmentTypeId;
-	private String customer;
-	private String equipmentAddress;
-	private Date serviceDate;
-	private String contactName;
-	private String contactPhone;
-	private String equipmentType;
-	private String equipmentBrand;
-	private String equipmentModel;
-	private String equipmentSerialNo;
-	private String failureDescription;
-	private String serviceType;
-	private String proyectNumber;
-	private String signCreated;
-	private String signReceivedBy;
-	private String receivedBy;
-	private String receivedByPosition;
-	private String responsible;
-	private Date closed;
-	
+
 	private String brandPE;
 	private String modelPE;
 	private String serialPE;
@@ -491,156 +405,6 @@ public class EmergencyPlantServiceDTO {
 	}
 	public void setServiceOrderId(Integer serviceOrderId) {
 		this.serviceOrderId = serviceOrderId;
-	}
-	public String getCoordinator() {
-		return coordinator;
-	}
-	public void setCoordinator(String coordinator) {
-		this.coordinator = coordinator;
-	}
-	public String getServiceOrderNo() {
-		return serviceOrderNo;
-	}
-	public void setServiceOrderNo(String serviceOrderNo) {
-		this.serviceOrderNo = serviceOrderNo;
-	}
-	public String getTicketNo() {
-		return ticketNo;
-	}
-	public void setTicketNo(String ticketNo) {
-		this.ticketNo = ticketNo;
-	}
-	public Integer getTicketId() {
-		return ticketId;
-	}
-	public void setTicketId(Integer ticketId) {
-		this.ticketId = ticketId;
-	}
-	public Integer getPolicyId() {
-		return policyId;
-	}
-	public void setPolicyId(Integer policyId) {
-		this.policyId = policyId;
-	}
-	public String getServiceTypeId() {
-		return serviceTypeId;
-	}
-	public void setServiceTypeId(String serviceTypeId) {
-		this.serviceTypeId = serviceTypeId;
-	}
-	public String getEquipmentTypeId() {
-		return equipmentTypeId;
-	}
-	public void setEquipmentTypeId(String equipmentTypeId) {
-		this.equipmentTypeId = equipmentTypeId;
-	}
-	public String getCustomer() {
-		return customer;
-	}
-	public void setCustomer(String customer) {
-		this.customer = customer;
-	}
-	public String getEquipmentAddress() {
-		return equipmentAddress;
-	}
-	public void setEquipmentAddress(String equipmentAddress) {
-		this.equipmentAddress = equipmentAddress;
-	}
-	public Date getServiceDate() {
-		return serviceDate;
-	}
-	public void setServiceDate(Date serviceDate) {
-		this.serviceDate = serviceDate;
-	}
-	public String getContactName() {
-		return contactName;
-	}
-	public void setContactName(String contactName) {
-		this.contactName = contactName;
-	}
-	public String getContactPhone() {
-		return contactPhone;
-	}
-	public void setContactPhone(String contactPhone) {
-		this.contactPhone = contactPhone;
-	}
-	public String getEquipmentType() {
-		return equipmentType;
-	}
-	public void setEquipmentType(String equipmentType) {
-		this.equipmentType = equipmentType;
-	}
-	public String getEquipmentBrand() {
-		return equipmentBrand;
-	}
-	public void setEquipmentBrand(String equipmentBrand) {
-		this.equipmentBrand = equipmentBrand;
-	}
-	public String getEquipmentModel() {
-		return equipmentModel;
-	}
-	public void setEquipmentModel(String equipmentModel) {
-		this.equipmentModel = equipmentModel;
-	}
-	public String getEquipmentSerialNo() {
-		return equipmentSerialNo;
-	}
-	public void setEquipmentSerialNo(String equipmentSerialNo) {
-		this.equipmentSerialNo = equipmentSerialNo;
-	}
-	public String getFailureDescription() {
-		return failureDescription;
-	}
-	public void setFailureDescription(String failureDescription) {
-		this.failureDescription = failureDescription;
-	}
-	public String getServiceType() {
-		return serviceType;
-	}
-	public void setServiceType(String serviceType) {
-		this.serviceType = serviceType;
-	}
-	public String getProyectNumber() {
-		return proyectNumber;
-	}
-	public void setProyectNumber(String proyectNumber) {
-		this.proyectNumber = proyectNumber;
-	}
-	public String getSignCreated() {
-		return signCreated;
-	}
-	public void setSignCreated(String signCreated) {
-		this.signCreated = signCreated;
-	}
-	public String getSignReceivedBy() {
-		return signReceivedBy;
-	}
-	public void setSignReceivedBy(String signReceivedBy) {
-		this.signReceivedBy = signReceivedBy;
-	}
-	public String getReceivedBy() {
-		return receivedBy;
-	}
-	public void setReceivedBy(String receivedBy) {
-		this.receivedBy = receivedBy;
-	}
-	public String getReceivedByPosition() {
-		return receivedByPosition;
-	}
-	public void setReceivedByPosition(String receivedByPosition) {
-		this.receivedByPosition = receivedByPosition;
-	}
-	public String getResponsible() {
-		return responsible;
-	}
-	public void setResponsible(String responsible) {
-		this.responsible = responsible;
-	}
-	public Date getClosed() {
-		return closed;
-	}
-	public void setClosed(Date closed) {
-		this.closed = closed;
 	}
 	public String getTransferType() {
 		return transferType;

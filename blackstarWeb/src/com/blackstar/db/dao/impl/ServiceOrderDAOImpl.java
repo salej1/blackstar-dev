@@ -6,6 +6,7 @@ import com.blackstar.db.dao.AbstractDAO;
 import com.blackstar.db.dao.interfaces.ServiceOrderDAO;
 import com.blackstar.model.Serviceorder;
 import com.blackstar.model.dto.AirCoServiceDTO;
+import com.blackstar.model.dto.BatteryCellServiceDTO;
 import com.blackstar.model.dto.BatteryServiceDTO;
 import com.blackstar.model.dto.EmergencyPlantServiceDTO;
 import com.blackstar.model.dto.FollowUpDTO;
@@ -112,73 +113,94 @@ public class ServiceOrderDAOImpl extends AbstractDAO implements ServiceOrderDAO 
 	return false;
   }
 
-
-@Override
-public AirCoServiceDTO getAirCoService(Integer aaServiceId) {
-	// TODO Auto-generated method stub
-	return null;
-}
-
-
-@Override
-public BatteryServiceDTO getBateryService(Integer bbServiceId) {
-	// TODO Auto-generated method stub
-	return null;
-}
-
-
-@Override
-public EmergencyPlantServiceDTO getEmergencyPlantService(Integer epServiceId) {
-	// TODO Auto-generated method stub
-	return null;
-}
-
-
-@Override
-public PlainServiceDTO getPlainService(Integer plainServiceId) {
-	// TODO Auto-generated method stub
-	return null;
-}
-
-
-@Override
-public UpsServiceDTO getUpsService(Integer upsServiceId) {
-	// TODO Auto-generated method stub
-	return null;
-}
-
-
-@Override
-public void saveAirCoService(AirCoServiceDTO service) {
-	// TODO Auto-generated method stub
 	
-}
-
-
-@Override
-public void saveBateryService(BatteryServiceDTO service) {
-	// TODO Auto-generated method stub
+	@Override
+	public AirCoServiceDTO getAirCoService(Integer aaServiceId) {
+		
+		StringBuilder sqlBuilder = new StringBuilder();
+		sqlBuilder.append("CALL GetAirCoServiceByIdService(?)");
+		return (AirCoServiceDTO) getJdbcTemplate().query(sqlBuilder.toString() 
+				, new Object []{aaServiceId}, getMapperFor(AirCoServiceDTO.class));
+	}
 	
-}
-
-
-@Override
-public void saveEmergencyPlantService(EmergencyPlantServiceDTO service) {
-	// TODO Auto-generated method stub
 	
-}
-
-
-@Override
-public void savePlainService(PlainServiceDTO service) {
-	// TODO Auto-generated method stub
+	@Override
+	public BatteryServiceDTO getBateryService(Integer bbServiceId) {
+		StringBuilder sqlBuilder = new StringBuilder();
+		sqlBuilder.append("CALL GetBatteryServiceByIdService(?)");
+		return (BatteryServiceDTO) getJdbcTemplate().query(sqlBuilder.toString() 
+				, new Object []{bbServiceId}, getMapperFor(BatteryServiceDTO.class));
+	}
 	
-}
-
-
-@Override
-public void saveUpsService(UpsServiceDTO service) {
-	// TODO Auto-generated method stub
 	
-}
+	@Override
+	public EmergencyPlantServiceDTO getEmergencyPlantService(Integer epServiceId) {
+		StringBuilder sqlBuilder = new StringBuilder();
+		sqlBuilder.append("CALL GetEmergencyPlantServiceByIdService(?)");
+		return (EmergencyPlantServiceDTO) getJdbcTemplate().query(sqlBuilder.toString() 
+				, new Object []{epServiceId}, getMapperFor(EmergencyPlantServiceDTO.class));
+	}
+	
+	
+	@Override
+	public PlainServiceDTO getPlainService(Integer plainServiceId) {
+		StringBuilder sqlBuilder = new StringBuilder();
+		sqlBuilder.append("CALL GetPlainServiceServiceByIdService(?)");
+		return (PlainServiceDTO) getJdbcTemplate().query(sqlBuilder.toString() 
+				, new Object []{plainServiceId}, getMapperFor(PlainServiceDTO.class));
+	}
+	
+	
+	@Override
+	public UpsServiceDTO getUpsService(Integer upsServiceId) {
+		StringBuilder sqlBuilder = new StringBuilder();
+		sqlBuilder.append("CALL GetUPSServiceByIdService(?)");
+		return (UpsServiceDTO) getJdbcTemplate().query(sqlBuilder.toString() 
+				, new Object []{upsServiceId}, getMapperFor(UpsServiceDTO.class));
+	}
+	
+	@Override
+	public List<BatteryCellServiceDTO> getBatteryCells(Integer bbServiceId) {
+		StringBuilder sqlBuilder = new StringBuilder();
+		sqlBuilder.append("CALL GetCellBatteryServiceByIdBatteryService(?)");
+		return (List<BatteryCellServiceDTO>) getJdbcTemplate().query(sqlBuilder.toString() 
+				, new Object []{bbServiceId}, getMapperFor(FollowUpDTO.class));
+	}
+	
+	@Override
+	public void saveAirCoService(AirCoServiceDTO service) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	
+	@Override
+	public void saveBateryService(BatteryServiceDTO service) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	
+	@Override
+	public void saveEmergencyPlantService(EmergencyPlantServiceDTO service) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	
+	@Override
+	public void savePlainService(PlainServiceDTO service) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	
+	@Override
+	public void saveUpsService(UpsServiceDTO service) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
 }

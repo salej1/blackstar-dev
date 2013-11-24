@@ -32,4 +32,20 @@
       <property name="service" ref="serviceOrderService" />
    </bean>
    
+   <bean class="com.blackstar.web.controller.UpsServiceController" parent="abstractController">
+      <property name="service" ref="serviceOrderService" />
+   </bean>
+   <bean class="com.blackstar.web.controller.PlainServiceController" parent="abstractController">
+      <property name="service" ref="serviceOrderService" />
+   </bean>
+   <bean class="com.blackstar.web.controller.EmergencyPlantServiceController" parent="abstractController">
+      <property name="service" ref="serviceOrderService" />
+   </bean>
+   <bean class="com.blackstar.web.controller.BatteryServiceController" parent="abstractController">
+      <property name="service" ref="serviceOrderService" />
+   </bean>
+   <bean class="com.blackstar.web.controller.AirCoServiceController" parent="abstractController">
+      <property name="service" ref="serviceOrderService" />
+   </bean>   
+   
 </beans>

@@ -32,32 +32,29 @@ public class ServiceOrderServiceImpl extends AbstractService
 
 @Override
 public AirCoServiceDTO getAirCoService(Integer aaServiceId) {
-	// TODO Auto-generated method stub
-	return null;
+	return dao.getAirCoService(aaServiceId);
 }
 
 @Override
 public BatteryServiceDTO getBateryService(Integer bbServiceId) {
-	// TODO Auto-generated method stub
-	return null;
+	BatteryServiceDTO batteryService = dao.getBateryService(bbServiceId);
+	batteryService.setCells(dao.getBatteryCells(bbServiceId));
+	return batteryService;
 }
 
 @Override
 public EmergencyPlantServiceDTO getEmergencyPlantService(Integer epServiceId) {
-	// TODO Auto-generated method stub
-	return null;
+	return dao.getEmergencyPlantService(epServiceId);
 }
 
 @Override
 public PlainServiceDTO getPlainService(Integer plainServiceId) {
-	// TODO Auto-generated method stub
-	return null;
+	return dao.getPlainService(plainServiceId);
 }
 
 @Override
 public UpsServiceDTO getUpsService(Integer upsServiceId) {
-	// TODO Auto-generated method stub
-	return null;
+	return dao.getUpsService(upsServiceId);
 }
 
 @Override
