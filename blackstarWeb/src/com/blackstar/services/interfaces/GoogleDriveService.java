@@ -1,9 +1,9 @@
 package com.blackstar.services.interfaces;
 
-import java.io.InputStream;
+import com.google.api.client.auth.oauth2.Credential;
 
 public interface GoogleDriveService {
 	
-	//public int upload(InputStream stream) throws Exception;
+  public String getAttachmentFolderId(Integer serviceOrderId, Credential credential) throws Exception;
 
 }

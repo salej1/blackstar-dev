@@ -107,7 +107,7 @@
 	<div> Asignar a:
 		<select id="employeeSelect">
 			<c:forEach var="employee" items="${employees}">
-				<option value = "${employee.key}">${employee.value}</option>
+				<option value = "${employee.email}">${employee.name}</option>
 			</c:forEach>
 		</select>
 		<p></p>

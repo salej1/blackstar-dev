@@ -10,9 +10,26 @@
    <bean id ="abstractService" class="com.blackstar.services.AbstractService">
    </bean>
    
-   
+   <!--::::::::::::::::::::::::::::::: Commons :::::::::::::::::::::::::::::::-->
   <bean id="userDomainService" class="com.blackstar.services.impl.UserDomainServiceImpl" parent="abstractService">
       <property name="dao" ref="userDomainDAO" />
+  </bean>
+  
+  <bean id="googleDriveService" class="com.blackstar.services.impl.GoogleDriveServiceImpl" parent="abstractService"/>
+  
+  
+  <!--::::::::::::::::::::::::::::::: Service Controller :::::::::::::::::::::::::::::::-->
+  <bean id="securityService" class="com.blackstar.services.impl.SecurityServiceImpl" parent="abstractService" init-method="init">
+      <property name="secretsPath" value="#{ systemProperties['com.google.appengine.runtime.environment'] == 'Production'? 'config/prod_client_secrets.json' : 'config/dev_client_secrets.json' }" 
+      />
+      <property name="authorities">
+		<list value-type="java.lang.String" >
+		    <value>https://www.googleapis.com/auth/drive.file</value>
+		    <value>https://www.googleapis.com/auth/drive</value>
+		    <value>https://www.googleapis.com/auth/userinfo.email</value>
+		    <value>https://www.googleapis.com/auth/userinfo.profile</value>
+		</list>
+	  </property>
   </bean>
   
   <bean id="dashboardService" class="com.blackstar.services.impl.DashboardServiceImpl" parent="abstractService">
