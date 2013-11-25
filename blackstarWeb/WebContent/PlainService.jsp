@@ -21,7 +21,56 @@
 	<script type="text/javascript" charset="utf-8">
 	
 		$(document).ready(function () {
+
+			// Signature capture box # 1 
+			$('#signCapture').signature({syncField: '#leftSignJSON'});
+			$('#leftSign').signature({disabled: true}); 
+			$("#signCapDialog").dialog({
+				autoOpen: false,
+				height: 220,
+				width: 370,
+				modal: true,
+				buttons: {
+					"Aceptar": function() {
+						$('#leftSign').signature('draw', $('#leftSignJSON').val()); 
+						$( this ).dialog( "close" );
+					},
+					
+					"Borrar": function() {
+						$('#signCapture').signature('clear'); 
+					},
+					
+					"Cancelar": function() {
+					$( this ).dialog( "close" );
+				}}
+			});
+			
+			// Signature capture box # 2 
+			$('#signCapture2').signature({syncField: '#leftSignJSON2'});
+			$('#rightSign').signature({disabled: true}); 
+			$("#signCapDialog2").dialog({
+				autoOpen: false,
+				height: 220,
+				width: 370,
+				modal: true,
+				buttons: {
+					"Aceptar": function() {
+						$('#rightSign').signature('draw', $('#leftSignJSON2').val()); 
+						$( this ).dialog( "close" );
+					},
+					
+					"Borrar": function() {
+						$('#signCapture2').signature('clear'); 
+					},
+					
+					"Cancelar": function() {
+					$( this ).dialog( "close" );
+				}}
+			});
 		
+			// inicializando el dialogo para agregar seguimientos
+			initFollowUpDlg("serviceOrder", "osDetail?serviceOrderId=${serviceOrderDetail.serviceOrderId}");
+			
 			$('#lbCoordinador').val('${serviceOrderDetail.coordinator}');
 			$('#linkTicket').text('Consultar Ticket ' + '${serviceOrderDetail.ticketNo}');
 			$('#lbNoTicket').val('${serviceOrderDetail.ticketNo}');
@@ -154,7 +203,6 @@
 								</td>
 							</tr>
 						</table>
-						<p><label>&nbsp;</label></p>
 						<table>
 							<thead>
 								<tr>
@@ -177,7 +225,6 @@
 								</td>
 							</tr>
 						</table>
-						<p><label>&nbsp;</label></p>
 						<table>
 							<thead>
 								<tr>
@@ -188,12 +235,12 @@
 							<tr>
 								<td colspan="2">
 									<span>Firma</span>
-									<div id="leftSign" class="signBox">
+									<div id="leftSign" class="signBox" onclick="$('#signCapDialog').dialog('open');">
 									</div>
 								</td>
 								<td colspan="2" >
 									<span>Firma</span>
-									<div id="rightSign" class="signBox">
+									<div id="rightSign" class="signBox" onclick="$('#signCapDialog2').dialog('open');">
 									</div>
 								</td>
 							</tr>
@@ -205,11 +252,6 @@
 								<td>Fecha y hora de salida</td><td><input id="lbFechaSalida" type="text" style="width:95%;" readOnly="true" /></td>
 								<td>Puesto</td><td><input type="text" id="lblPuesto" style="width:95%;" readOnly="true" /></td>
 							</tr>						
-							<tr>
-								<td style="height:40px;"></td>
-								<td></td>
-								<td></td>
-							</tr>
 						</table>
 							<table>
 								<tbody>
@@ -221,13 +263,43 @@
 									</tr>
 								<tbody>
 							</table>
+							<br/>
+							<br/>
+							<!-- Control de secuencia y captura de seguimiento -->
+							<c:import url="followUpControl.jsp"></c:import>
+							<table>
+								<tbody>
+									<tr>
+										<td>
+											<button class="searchButton" onclick="addSeguimiento(${serviceOrderDetail.serviceOrderId}, '${serviceOrderDetail.serviceOrderNo}');">Agregar seguimiento</button>
+											<button class="searchButton" onclick="window.location = 'dashboard'">Cerrar</button>
+										</td>
+									</tr>
+								<tbody>
+							</table>
+							
+							<!-- Adjuntos -->
+							<c:import url="_attachments.jsp"></c:import>
 						</div>					
 					</div>		
 				
 				<!-- Signature capture box # 1 -->
-				<input type="hidden" id="leftSignJSON" />
+				<hidden id="leftSignJSON"></hidden>
+				<hidden id="rightSignJSON"></hidden>
+				<div id="signCapDialog" title="Capture su firma en el cuadro" class="signBoxDlg">
+					<div id="signCapture">
+					
+					</div>
+				</div>
+				
 				<!-- Signature capture box # 2 -->
-				<input type="hidden" id="rightSignJSON" />
+				<hidden id="leftSignJSON2"></hidden>
+				<hidden id="rightSignJSON2"></hidden>
+				<div id="signCapDialog2" title="Capture su firma en el cuadro" class="signBoxDlg">
+					<div id="signCapture2">
+					
+					</div>
+				</div>
 			</div>
 		</form>
 	</body>

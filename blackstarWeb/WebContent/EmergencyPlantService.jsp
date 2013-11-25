@@ -21,7 +21,57 @@
 	<script type="text/javascript" charset="utf-8">
 	
 		$(document).ready(function () {
+
+			// Signature capture box # 1 
+			$('#signCapture').signature({syncField: '#leftSignJSON'});
+			$('#leftSign').signature({disabled: true}); 
+			$("#signCapDialog").dialog({
+				autoOpen: false,
+				height: 220,
+				width: 370,
+				modal: true,
+				buttons: {
+					"Aceptar": function() {
+						$('#leftSign').signature('draw', $('#leftSignJSON').val()); 
+						$( this ).dialog( "close" );
+					},
+					
+					"Borrar": function() {
+						$('#signCapture').signature('clear'); 
+					},
+					
+					"Cancelar": function() {
+					$( this ).dialog( "close" );
+				}}
+			});
+			
+			// Signature capture box # 2 
+			$('#signCapture2').signature({syncField: '#leftSignJSON2'});
+			$('#rightSign').signature({disabled: true}); 
+			$("#signCapDialog2").dialog({
+				autoOpen: false,
+				height: 220,
+				width: 370,
+				modal: true,
+				buttons: {
+					"Aceptar": function() {
+						$('#rightSign').signature('draw', $('#leftSignJSON2').val()); 
+						$( this ).dialog( "close" );
+					},
+					
+					"Borrar": function() {
+						$('#signCapture2').signature('clear'); 
+					},
+					
+					"Cancelar": function() {
+					$( this ).dialog( "close" );
+				}}
+			});
 		
+
+			// inicializando el dialogo para agregar seguimientos
+			initFollowUpDlg("serviceOrder", "osDetail?serviceOrderId=${serviceOrderDetail.serviceOrderId}");
+			
 			$('#lbFolio').val('${serviceOrderDetail.serviceOrderNo}');
 			$('#lbCliente').val('${serviceOrderDetail.customer}');
 			$('#lbDomicilio').val('${serviceOrderDetail.equipmentAddress}');
@@ -166,7 +216,7 @@
 		 
 	</head>
 	<body>
-	<form id = "formServicio" action="/crear" method="POST">
+	<form id = "formServicio" action="batteryService/add" method="POST">
 		<div id="content" class="container_16 clearfix">
 			<div class="grid_16">					
 				<div class="box">
@@ -205,12 +255,10 @@
 			</div>
 			<div class="grid_16">
 				<div class="box">
-					<p><label>&nbsp;</label></p>
-					
 					<table>
 						<thead>
-							<tr>
-								<th>DATOS DEL EQUIPO</th>
+							<tr >
+								<th  colspan="6">DATOS DEL EQUIPO</th>
 							</tr>
 						</thead>
 						<tr>
@@ -295,9 +343,9 @@
 						</tr>
 					</table>
 					<table>
-						<thead>
+						<thead >
 							<tr>
-								<th>INSPECCION BASICA</th>
+								<th  colspan="6">INSPECCION BASICA</th>
 							</tr>
 						</thead>
 						<tr>
@@ -335,8 +383,8 @@
 					</table>
 					<table>
 						<thead>
-							<tr>
-								<th>SERVICIOS BÁSICOS</th>
+							<tr >
+								<th  colspan="6">SERVICIOS BÁSICOS</th>
 							</tr>
 						</thead>
 						<tr>
@@ -373,9 +421,9 @@
 						</tr>
 					</table>
 					<table>
-						<thead>
-							<tr>
-								<th>PRUEBAS DINAMICAS MOTOR DE COMBUSTION (Solicitar autorización para pruebas con carga)</th>
+						<thead >
+							<tr >
+								<th  colspan="6">PRUEBAS DINAMICAS MOTOR DE COMBUSTION (Solicitar autorización para pruebas con carga)</th>
 							</tr>
 						</thead>
 						<tr>
@@ -404,9 +452,9 @@
 						</tr>
 					</table>
 					<table>
-						<thead>
-							<tr>
-								<th>PRUEBAS PROTECCIÓN DEL EQUIPO</th>
+						<thead >
+							<tr >
+								<th colspan="6">PRUEBAS PROTECCIÓN DEL EQUIPO</th>
 							</tr>
 						</thead>
 						<tr>
@@ -427,9 +475,9 @@
 						</tr>
 					</table>
 					<table>
-						<thead>
-							<tr>
-								<th>INTERRUPTOR DE TRANSFERENCIA AUTOMATICO</th>
+						<thead >
+							<tr >
+								<th colspan="6">INTERRUPTOR DE TRANSFERENCIA AUTOMATICO</th>
 							</tr>
 						</thead>
 						<tr>
@@ -458,9 +506,9 @@
 						</tr>
 					</table>
 					<table>
-						<thead>
-							<tr>
-								<th>LECTURAS DEL SISTEMA (CON CARGA/SIN CARGA)</th>
+						<thead >
+							<tr >
+								<th colspan="6">LECTURAS DEL SISTEMA (CON CARGA/SIN CARGA)</th>
 							</tr>
 						</thead>
 						<tr>
@@ -493,9 +541,9 @@
 						</tr>
 					</table>
 					<table>
-						<thead>
-							<tr>
-								<th>OTROS PARAMETROS</th>
+						<thead >
+							<tr >
+								<th colspan="6">OTROS PARAMETROS</th>
 							</tr>
 						</thead>
 						<tr>
@@ -517,13 +565,13 @@
 					</table>
 					<table>
 						<thead>
-							<tr>
+							<tr >
 								<th>Observaciones (HISTORIAL DE ALARMAS CUANDO APLIQUE)</th>
 							</tr>
 						</thead>
 						<tr>
 							<td style="height:140px;">
-								<textarea id="observations"   style="width:100%;height:100%;"></textarea>
+								<textarea id="observations"   style="width:100%;height:99%;"></textarea>
 							</td>
 						</tr>
 					</table>
@@ -538,12 +586,12 @@
 						<tr>
 							<td colspan="2">
 								<span>Firma</span>
-								<div id="leftSign" class="signBox">
+								<div id="leftSign" class="signBox" onclick="$('#signCapDialog').dialog('open');">
 								</div>
 							</td>
 							<td colspan="2" >
 								<span>Firma</span>
-								<div id="rightSign" class="signBox">
+								<div id="rightSign" class="signBox" onclick="$('#signCapDialog2').dialog('open');">
 								</div>
 							</td>
 						</tr>
@@ -571,13 +619,42 @@
 							</tr>
 						<tbody>
 					</table>
+					<br/>
+					<br/>
+					<!-- Control de secuencia y captura de seguimiento -->
+					<c:import url="followUpControl.jsp"></c:import>
+					<table>
+						<tbody>
+							<tr>
+								<td>
+									<button class="searchButton" onclick="addSeguimiento(${serviceOrderDetail.serviceOrderId}, '${serviceOrderDetail.serviceOrderNo}');">Agregar seguimiento</button>
+									<button class="searchButton" onclick="window.location = 'dashboard'">Cerrar</button>
+								</td>
+							</tr>
+						<tbody>
+					</table>
+					
+					<!-- Adjuntos -->
+					<c:import url="_attachments.jsp"></c:import>
 				</div>					
 			</div>		
-			
-			<!-- Signature capture box # 1 -->
-			<input type="hidden" id="leftSignJSON" />
-			<!-- Signature capture box # 2 -->
-			<input type="hidden" id="rightSignJSON" />
+				<!-- Signature capture box # 1 -->
+				<hidden id="leftSignJSON"></hidden>
+				<hidden id="rightSignJSON"></hidden>
+				<div id="signCapDialog" title="Capture su firma en el cuadro" class="signBoxDlg">
+					<div id="signCapture">
+					
+					</div>
+				</div>
+				
+				<!-- Signature capture box # 2 -->
+				<hidden id="leftSignJSON2"></hidden>
+				<hidden id="rightSignJSON2"></hidden>
+				<div id="signCapDialog2" title="Capture su firma en el cuadro" class="signBoxDlg">
+					<div id="signCapture2">
+					
+					</div>
+				</div>
 		</div>
 		</form>
 	</body>

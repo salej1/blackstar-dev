@@ -22,6 +22,55 @@
 	
 		$(document).ready(function () {
 
+			// Signature capture box # 1 
+			$('#signCapture').signature({syncField: '#leftSignJSON'});
+			$('#leftSign').signature({disabled: true}); 
+			$("#signCapDialog").dialog({
+				autoOpen: false,
+				height: 220,
+				width: 370,
+				modal: true,
+				buttons: {
+					"Aceptar": function() {
+						$('#leftSign').signature('draw', $('#leftSignJSON').val()); 
+						$( this ).dialog( "close" );
+					},
+					
+					"Borrar": function() {
+						$('#signCapture').signature('clear'); 
+					},
+					
+					"Cancelar": function() {
+					$( this ).dialog( "close" );
+				}}
+			});
+			
+			// Signature capture box # 2 
+			$('#signCapture2').signature({syncField: '#leftSignJSON2'});
+			$('#rightSign').signature({disabled: true}); 
+			$("#signCapDialog2").dialog({
+				autoOpen: false,
+				height: 220,
+				width: 370,
+				modal: true,
+				buttons: {
+					"Aceptar": function() {
+						$('#rightSign').signature('draw', $('#leftSignJSON2').val()); 
+						$( this ).dialog( "close" );
+					},
+					
+					"Borrar": function() {
+						$('#signCapture2').signature('clear'); 
+					},
+					
+					"Cancelar": function() {
+					$( this ).dialog( "close" );
+				}}
+			});
+
+			// inicializando el dialogo para agregar seguimientos
+			initFollowUpDlg("serviceOrder", "osDetail?serviceOrderId=${serviceOrderDetail.serviceOrderId}");
+
 			$('#lbFolio').val('${serviceOrderDetail.serviceOrderNo}');
 			$('#lbCliente').val('${serviceOrderDetail.customer}');
 			$('#lbDomicilio').val('${serviceOrderDetail.equipmentAddress}');
@@ -142,12 +191,10 @@
 			</div>
 			<div class="grid_16">
 				<div class="box">
-					<p><label>&nbsp;</label></p>
-					
 					<table>
 						<thead>
 							<tr>
-								<th>ACTIVIDADES DESAROOLLADAS:</th>
+								<th colspan="4">ACTIVIDADES DESAROOLLADAS:</th>
 							</tr>
 						</thead>
 						<tr>
@@ -175,7 +222,7 @@
 							<td><input id="fanStatus" type="text" style="width:95%;" /></td>
 						</tr>
 						<tr>
-							<td>BANCO DE BATERIAS:</td>
+							<td><b>BANCO DE BATERIAS:</b></td>
 						</tr>
 						<tr>
 							<td>Reapriete de puentes/conectores:</td>
@@ -203,14 +250,14 @@
 						</tr>
 						<tr>
 							<td>Baterías dañadas (cant y voltaje de c/carga):</td>
-							<td><input id="damageBatteries" type="text" style="width:95%;" /></td>
+							<td colspan="3"><input id="damageBatteries" type="text" style="width:95%;" /></td>
 						</tr>
 						<tr>
 							<td>Otro (modelo banco externo)):</td>
-							<td><input id="other" type="text" style="width:95%;" /></td>
+							<td colspan="3"><input id="other" type="text" style="width:95%;" /></td>
 						</tr>
 						<tr>
-							<td>PRUEBAS GENERALES: (Solicitar autorización para pruebas)</td>
+							<td colspan="4"><b>PRUEBAS GENERALES: (Solicitar autorización para pruebas)</b></td>
 						</tr>
 						<tr>
 							<td>Transferencia  y re-transferencia a línea comercial:</td>
@@ -225,7 +272,7 @@
 							<td><input id="verifyVoltage" type="text" style="width:95%;" /></td>
 						</tr>
 						<tr>
-							<td>PARÁMETROS DE OPERACIÓN:</td>
+							<td><b>PARÁMETROS DE OPERACIÓN:</b></td>
 						</tr>
 						<tr>
 							<td>Voltaje entrada fase a fase:</td>
@@ -242,17 +289,16 @@
 						<tr>
 							<td>Voltaje entre neutro y tierra:</td>
 							<td><input id="inputVoltageNeutroGround" type="text" style="width:95%;" /></td>
-							<td>Frec. Entrada/salida:</td>
+							<td>Frec. entrada/salida:</td>
 							<td><input id="inOutFrecuency" type="text" style="width:95%;" /></td>
 						</tr>
 						<tr>
 							<td>Porcentaje de carga o corriente:</td>
 							<td><input id="percentCharge" type="text" style="width:95%;" /></td>
-							<td>Frec. Entrada/salida:</td>
+							<td>Frec. entrada/salida:</td>
 							<td><input id="busVoltage" type="text" style="width:95%;" /></td>
 						</tr>
 					</table>
-					<p><label>&nbsp;</label></p>
 					<table>
 						<thead>
 							<tr>
@@ -263,11 +309,12 @@
 							<td>Anotar comentarios del usuario. Anotar alarmas inusuales. Indicar condiciones del lugar y estado final del equipo. Otras observaciones.</td>
 						</tr>
 						<tr>
-							<td><input id="observations" type="text" style="width:95%;" /></td>
+							<td style="height:140px;">
+								<textarea id="fldObserv"  readOnly="true" style="width:100%;height:100%;"></textarea>
+							</td>
 						</tr>
 						
 					</table>
-					<p><label>&nbsp;</label></p>
 					<table>
 						<thead>
 							<tr>
@@ -278,12 +325,12 @@
 						<tr>
 							<td colspan="2">
 								<span>Firma</span>
-								<div id="leftSign" class="signBox">
+								<div id="leftSign" class="signBox" onclick="$('#signCapDialog').dialog('open');">
 								</div>
 							</td>
 							<td colspan="2" >
 								<span>Firma</span>
-								<div id="rightSign" class="signBox">
+								<div id="rightSign" class="signBox" onclick="$('#signCapDialog2').dialog('open');">
 								</div>
 							</td>
 						</tr>
@@ -292,14 +339,11 @@
 							<td>Nombre</td><td><input id="lbNombreRecibido" type="text" style="width:95%;" /></td>
 						</tr>
 						<tr>
-							<td>Fecha y hora de salida</td><td><input id="lbFechaSalida" type="text" style="width:95%;"  /></td>
-							<td>Puesto</td><td><input type="text" id="lblPuesto" style="width:95%;"  /></td>
+							<td>Fecha y hora de salida</td>
+							<td><input id="lbFechaSalida" type="text" style="width:95%;"  /></td>
+							<td>Puesto</td>
+							<td><input type="text" id="lblPuesto" style="width:95%;"  /></td>
 						</tr>						
-						<tr>
-							<td style="height:40px;"></td>
-							<td></td>
-							<td></td>
-						</tr>
 					</table>
 					<table>
 						<tbody>
@@ -311,13 +355,43 @@
 							</tr>
 						<tbody>
 					</table>
+					<br/>
+					<br/>
+					<!-- Control de secuencia y captura de seguimiento -->
+					<c:import url="followUpControl.jsp"></c:import>
+					<table>
+						<tbody>
+							<tr>
+								<td>
+									<button class="searchButton" onclick="addSeguimiento(${serviceOrderDetail.serviceOrderId}, '${serviceOrderDetail.serviceOrderNo}');">Agregar seguimiento</button>
+									<button class="searchButton" onclick="window.location = 'dashboard'">Cerrar</button>
+								</td>
+							</tr>
+						<tbody>
+					</table>
+					
+					<!-- Adjuntos -->
+					<c:import url="_attachments.jsp"></c:import>
 				</div>					
 			</div>		
 			
-			<!-- Signature capture box # 1 -->
-			<input type="hidden" id="leftSignJSON" />
-			<!-- Signature capture box # 2 -->
-			<input type="hidden" id="rightSignJSON" />
+				<!-- Signature capture box # 1 -->
+				<hidden id="leftSignJSON"></hidden>
+				<hidden id="rightSignJSON"></hidden>
+				<div id="signCapDialog" title="Capture su firma en el cuadro" class="signBoxDlg">
+					<div id="signCapture">
+					
+					</div>
+				</div>
+				
+				<!-- Signature capture box # 2 -->
+				<hidden id="leftSignJSON2"></hidden>
+				<hidden id="rightSignJSON2"></hidden>
+				<div id="signCapDialog2" title="Capture su firma en el cuadro" class="signBoxDlg">
+					<div id="signCapture2">
+					
+					</div>
+				</div>
 		</div>
 		</form>
 	</body>

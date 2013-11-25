@@ -22,6 +22,54 @@
 	
 		$(document).ready(function () {
 		
+			// Signature capture box # 1 
+			$('#signCapture').signature({syncField: '#leftSignJSON'});
+			$('#leftSign').signature({disabled: true}); 
+			$("#signCapDialog").dialog({
+				autoOpen: false,
+				height: 220,
+				width: 370,
+				modal: true,
+				buttons: {
+					"Aceptar": function() {
+						$('#leftSign').signature('draw', $('#leftSignJSON').val()); 
+						$( this ).dialog( "close" );
+					},
+					
+					"Borrar": function() {
+						$('#signCapture').signature('clear'); 
+					},
+					
+					"Cancelar": function() {
+					$( this ).dialog( "close" );
+				}}
+			});
+			
+			// Signature capture box # 2 
+			$('#signCapture2').signature({syncField: '#leftSignJSON2'});
+			$('#rightSign').signature({disabled: true}); 
+			$("#signCapDialog2").dialog({
+				autoOpen: false,
+				height: 220,
+				width: 370,
+				modal: true,
+				buttons: {
+					"Aceptar": function() {
+						$('#rightSign').signature('draw', $('#leftSignJSON2').val()); 
+						$( this ).dialog( "close" );
+					},
+					
+					"Borrar": function() {
+						$('#signCapture2').signature('clear'); 
+					},
+					
+					"Cancelar": function() {
+					$( this ).dialog( "close" );
+				}}
+			});
+
+			// inicializando el dialogo para agregar seguimientos
+			initFollowUpDlg("serviceOrder", "osDetail?serviceOrderId=${serviceOrderDetail.serviceOrderId}");
 			
 			$('#lbNoTicket').val('${serviceOrderDetail.ticketNo}');
 			$('#lbFolio').val('${serviceOrderDetail.serviceOrderNo}');
@@ -79,7 +127,7 @@
 		 
 	</head>
 	<body>
-	<form id = "formServicio" action="/crear" method="POST">
+	<form id = "formServicio" action="batteryService/add" method="POST">
 		<div id="content" class="container_16 clearfix">
 			<div class="grid_16">					
 				<div class="box">
@@ -117,57 +165,52 @@
 				</div>					
 			</div>
 			<div class="grid_16">
-				<div class="box">
-					<p><label>&nbsp;</label></p>
-					
+				<div class="box">				
 					<table>
 						<thead>
 							<tr>
-								<th>LIMPIEZA</th>
-								<th></th>
+								<th colspan="2">LIMPIEZA</th>
 								<th>ESTADO FÍSICO </th>
 								<th>OBSERVACIONES</th>
 							</tr>
 						</thead>
 						<tr>
 							<td>CONECTORES / TERMINALES</td>
-							<td><input id="plugClean" type="text" style="width:95%;" readOnly="true"/></td>
-							<td><input id="plugCleanStatus" type="text" style="width:95%;" readOnly="true"/></td>
-							<td><input id="plugCleanComments" type="text" style="width:95%;" readOnly="true"/></td>
+							<td><input id="plugClean" type="text" style="width:95%;" /></td>
+							<td><input id="plugCleanStatus" type="text" style="width:95%;" /></td>
+							<td><input id="plugCleanComments" type="text" style="width:95%;" /></td>
 						</tr>
 						<tr>
 							<td>CUBIERTA</td>
-							<td><input id="coverClean" type="text" style="width:95%;" readOnly="true"/></td>
-							<td><input id="coverCleanStatus" type="text" style="width:95%;" readOnly="true"/></td>
-							<td><input id="coverCleanComments" type="text" style="width:95%;" readOnly="true"/></td>
+							<td><input id="coverClean" type="text" style="width:95%;" /></td>
+							<td><input id="coverCleanStatus" type="text" style="width:95%;" /></td>
+							<td><input id="coverCleanComments" type="text" style="width:95%;" /></td>
 						</tr>
 						<tr>
 							<td>TAPONES</td>
-							<td><input id="capClean" type="text" style="width:95%;" readOnly="true"/></td>
-							<td><input id="capCleanStatus" type="text" style="width:95%;" readOnly="true"/></td>
-							<td><input id="capCleanComments" type="text" style="width:95%;" readOnly="true"/></td>
+							<td><input id="capClean" type="text" style="width:95%;" /></td>
+							<td><input id="capCleanStatus" type="text" style="width:95%;" /></td>
+							<td><input id="capCleanComments" type="text" style="width:95%;" /></td>
 						</tr>
 						<tr>
 							<td>TIERRA FÍSICA</td>
-							<td><input id="groundClean" type="text" style="width:95%;" readOnly="true"/></td>
-							<td><input id="groundCleanStatus" type="text" style="width:95%;" readOnly="true"/></td>
-							<td><input id="groundCleanComments" type="text" style="width:95%;" readOnly="true"/></td>
+							<td><input id="groundClean" type="text" style="width:95%;" /></td>
+							<td><input id="groundCleanStatus" type="text" style="width:95%;" /></td>
+							<td><input id="groundCleanComments" type="text" style="width:95%;" /></td>
 						</tr>
 						<tr>
 							<td>ESTANTE/GABINETE/RACK</td>
-							<td><input id="rackClean" type="text" style="width:95%;" readOnly="true"/></td>
-							<td><input id="rackCleanStatus" type="text" style="width:95%;" readOnly="true"/></td>
-							<td><input id="rackCleanComments" type="text" style="width:95%;" readOnly="true"/></td>
+							<td><input id="rackClean" type="text" style="width:95%;" /></td>
+							<td><input id="rackCleanStatus" type="text" style="width:95%;" /></td>
+							<td><input id="rackCleanComments" type="text" style="width:95%;" /></td>
 						</tr>
 						<tr>
 							<td>NO DE SERIE, LOTE, FECHA DE FABRICACIÓN</td>
-							<td></td>
-							<td><input id="serialNoDateManufact" type="text" style="width:95%;" readOnly="true"/></td>
+							<td colspan="2"><input id="serialNoDateManufact" type="text" style="width:98%;" /></td>
 						</tr>
 						<tr>
 							<td>TEMPERATURA PROMEDIO BATERÍAS </td>
-							<td></td>
-							<td><input id="batteryTemperature" type="text" style="width:95%;" readOnly="true"/></td>
+							<td colspan="2"><input id="batteryTemperature" type="text" style="width:98%;" /></td>
 						</tr>
 					</table>
 					<br/>
@@ -175,22 +218,24 @@
 					<table>
 						<tr>
 							<td>VOLTAJE DE FLOTACIÓN DEL BUS:</td>
-							<td><input id="voltageBus" type="text" style="width:95%;" readOnly="true"/>V.C.D.</td>
+							<td><input id="voltageBus" type="text" style="width:95%;" /></td>
+							<td>V.C.D.</td>
 							<td>TEMPERATURA AMBIENTE::</td>
-							<td><input id="temperature" type="text" style="width:95%;" readOnly="true"/> °C</td>
+							<td><input id="temperature" type="text" style="width:95%;" /> </td>
+							<td>°C</td>
 						</tr>
 					</table>
-					<table>
+					<table style="font-size:xx-small;">
 						<tr>
 							<td>BAT. CELDA No.</td>
-							<td>VOLTAJE FLOTACIÓN</td>
-							<td>VOLTAJE CON CARGA</td>
+							<td >VOLTAJE FLOTACIÓN</td>
+							<td >VOLTAJE CON CARGA</td>
 							<td>BAT. CELDA No.</td>
 							<td>VOLTAJE FLOTACIÓN</td>
-							<td>VOLTAJE CON CARGA</td>
+							<td >VOLTAJE CON CARGA</td>
 							<td>BAT. CELDA No.</td>
 							<td>VOLTAJE FLOTACIÓN</td>
-							<td>VOLTAJE CON CARGA</td>
+							<td >VOLTAJE CON CARGA</td>
 							<td>BAT. CELDA No.</td>
 							<td>VOLTAJE FLOTACIÓN</td>
 							<td>VOLTAJE CON CARGA</td>
@@ -199,22 +244,21 @@
 						<c:forEach var="i" begin="1" end="22">
 							<tr>
 								<td><c:out value="${i}"/></td>
-								<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/>V.C.D.</td>
-								<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/>V.C.D.</td>
+								<td><input id='VF${i}' type="text" style="width:95%;" /></td>
+								<td><input id='VC${i}' type="text" style="width:95%;" /></td>
 								<td><c:out value="${i+22}"/></td>
-								<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/>V.C.D.</td>
-								<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/>V.C.D.</td>
+								<td><input id='VF${i+22}' type="text" style="width:95%;" /></td>
+								<td><input id='VC${i+22}' type="text" style="width:95%;" /></td>
 								<td><c:out value="${i+44}"/></td>
-								<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/>V.C.D.</td>
-								<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/>V.C.D.</td>
+								<td><input id='VF${i+44}' type="text" style="width:95%;" /></td>
+								<td><input id='VC${i+44}' type="text" style="width:95%;" /></td>
 								<td><c:out value="${i+66}"/></td>
-								<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/>V.C.D.</td>
-								<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/>V.C.D.</td>
+								<td><input id='VF${i+66}' type="text" style="width:95%;" /></td>
+								<td><input id='VC${i+66}' type="text" style="width:95%;" /></td>
 					   		</tr>
 						</c:forEach>
 					</table>
 					
-					<p><label>&nbsp;</label></p>
 					<table>
 						<thead>
 							<tr>
@@ -225,12 +269,12 @@
 						<tr>
 							<td colspan="2">
 								<span>Firma</span>
-								<div id="leftSign" class="signBox">
+								<div id="leftSign" class="signBox" onclick="$('#signCapDialog').dialog('open');">
 								</div>
 							</td>
 							<td colspan="2" >
 								<span>Firma</span>
-								<div id="rightSign" class="signBox">
+								<div id="rightSign" class="signBox" onclick="$('#signCapDialog2').dialog('open');">
 								</div>
 							</td>
 						</tr>
@@ -258,13 +302,43 @@
 							</tr>
 						<tbody>
 					</table>
+					<br/>
+					<br/>
+					<!-- Control de secuencia y captura de seguimiento -->
+					<c:import url="followUpControl.jsp"></c:import>
+					<table>
+						<tbody>
+							<tr>
+								<td>
+									<button class="searchButton" onclick="addSeguimiento(${serviceOrderDetail.serviceOrderId}, '${serviceOrderDetail.serviceOrderNo}');">Agregar seguimiento</button>
+									<button class="searchButton" onclick="window.location = 'dashboard'">Cerrar</button>
+								</td>
+							</tr>
+						<tbody>
+					</table>
+					
+					<!-- Adjuntos -->
+					<c:import url="_attachments.jsp"></c:import>
 				</div>					
 			</div>		
 			
-			<!-- Signature capture box # 1 -->
-			<input type="hidden" id="leftSignJSON" />
-			<!-- Signature capture box # 2 -->
-			<input type="hidden" id="rightSignJSON" />
+				<!-- Signature capture box # 1 -->
+				<hidden id="leftSignJSON"></hidden>
+				<hidden id="rightSignJSON"></hidden>
+				<div id="signCapDialog" title="Capture su firma en el cuadro" class="signBoxDlg">
+					<div id="signCapture">
+					
+					</div>
+				</div>
+				
+				<!-- Signature capture box # 2 -->
+				<hidden id="leftSignJSON2"></hidden>
+				<hidden id="rightSignJSON2"></hidden>
+				<div id="signCapDialog2" title="Capture su firma en el cuadro" class="signBoxDlg">
+					<div id="signCapture2">
+					
+					</div>
+				</div>
 		</div>
 		</form>
 	</body>
