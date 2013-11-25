@@ -60,6 +60,9 @@
 -- 								blackstarDb.GetPlainServiceServiceByIdService
 -- 								blackstarDb.GetUPSServiceByIdService
 -- -----------------------------------------------------------------------------
+-- 10   25/12/2013	JAGH		Se Integra:
+-- 								blackstarDb.GetPolicyBySerialNo
+-- -----------------------------------------------------------------------------
 
 use blackstarDb;
 
@@ -778,7 +781,15 @@ BEGIN
 		A.upsServiceId = idService;
 
 END$$
-
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetPolicyBySerialNo
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetPolicyBySerialNo$$
+CREATE PROCEDURE blackstarDb.GetPolicyBySerialNo (noSerial VARCHAR(100))
+BEGIN
+	SELECT * FROM blackstardb.policy
+	where startDate < CURDATE() and endDate > CURDATE() and serialNumber = noSerial;
+END$$
 -- -----------------------------------------------------------------------------
 	-- FIN DE LOS STORED PROCEDURES
 -- -----------------------------------------------------------------------------

@@ -23,7 +23,7 @@ import com.blackstar.web.AbstractController;
 public class ServiceOrderController extends AbstractController {
 	
   private ServiceOrderService service = null;
-    
+	
   public void setService(ServiceOrderService service) {
 	this.service = service;
   }
