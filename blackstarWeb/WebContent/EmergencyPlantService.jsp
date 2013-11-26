@@ -185,7 +185,6 @@
 			 $('#electricInterlock').val('${serviceOrder.electricInterlock}');
 			 $('#mechanicalInterlock').val('${serviceOrder.mechanicalInterlock}');
 			 $('#capacityAmp').val('${serviceOrder.capacityAmp}');
-			 $('#lampTest').val('${serviceOrder.lampTest}');
 
 			 $('#epServiceLecturesId').val('${serviceOrder.epServiceLecturesId}');
 			 $('#epServiceId').val('${serviceOrder.epServiceId}');

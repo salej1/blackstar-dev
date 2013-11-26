@@ -19,6 +19,10 @@ public class PlainServiceDTO {
 		this.observations = observations;
 	}
 	
+	public PlainServiceDTO() {
+		// TODO Auto-generated constructor stub
+	}
+
 	private Integer plainServiceId;
 	private Integer serviceOrderId;
 	

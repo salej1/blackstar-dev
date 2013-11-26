@@ -156,7 +156,7 @@
 		 
 	</head>
 	<body>
-		<form id = "formServicio" action="/crear" method="POST">
+		
 			<div id="content" class="container_16 clearfix">
 				<div class="grid_16">					
 					<div class="box">
@@ -201,6 +201,7 @@
 					</div>
 					<div class="grid_16">
 						<div class="box">
+						<form id = "formServicio" action="/crear" method="POST">
 							<table>
 								<thead>
 									<tr>
@@ -430,6 +431,23 @@
 							</table>
 							<br/>
 							<br/>
+							<!-- Signature capture box # 1 -->
+							<hidden id="leftSignJSON"></hidden>
+							<hidden id="rightSignJSON"></hidden>
+							<div id="signCapDialog" title="Capture su firma en el cuadro" class="signBoxDlg">
+								<div id="signCapture">
+								
+								</div>
+							</div>
+							
+							<!-- Signature capture box # 2 -->
+							<hidden id="leftSignJSON2"></hidden>
+							<hidden id="rightSignJSON2"></hidden>
+							<div id="signCapDialog2" title="Capture su firma en el cuadro" class="signBoxDlg">
+								<div id="signCapture2">
+								</div>
+							</div>
+							</form>
 							<!-- Control de secuencia y captura de seguimiento -->
 							<c:import url="followUpControl.jsp"></c:import>
 							<table>
@@ -445,29 +463,9 @@
 							
 							<!-- Adjuntos -->
 							<c:import url="_attachments.jsp"></c:import>
-							
-
 						</div>
 					</div>		
-
-				<!-- Signature capture box # 1 -->
-				<hidden id="leftSignJSON"></hidden>
-				<hidden id="rightSignJSON"></hidden>
-				<div id="signCapDialog" title="Capture su firma en el cuadro" class="signBoxDlg">
-					<div id="signCapture">
-					
-					</div>
-				</div>
-				
-				<!-- Signature capture box # 2 -->
-				<hidden id="leftSignJSON2"></hidden>
-				<hidden id="rightSignJSON2"></hidden>
-				<div id="signCapDialog2" title="Capture su firma en el cuadro" class="signBoxDlg">
-					<div id="signCapture2">
-					
-					</div>
-				</div>
 			</div>
-		</form>
+		
 	</body>
 </html>
