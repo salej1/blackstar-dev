@@ -1,5 +1,6 @@
 package com.blackstar.model.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.blackstar.model.BatteryService;
@@ -8,7 +9,7 @@ public class BatteryServiceDTO {
 
 	public BatteryServiceDTO()
 	{
-		
+		this.setCells(new ArrayList<BatteryCellServiceDTO>());
 	}
 	
 	public BatteryServiceDTO(BatteryService batteryService, List<BatteryCellServiceDTO> cells )
@@ -34,6 +35,7 @@ public class BatteryServiceDTO {
 		this.batteryTemperature = batteryService.getBatteryTemperature();
 		this.voltageBus = batteryService.getVoltageBus();
 		this.temperature = batteryService.getTemperature();
+		this.cells = cells;
 	}
 	
 	public BatteryServiceDTO(Integer bbServiceId, Integer serviceOrderId,

@@ -113,11 +113,11 @@
 			 $('#voltageBus').val('${serviceOrder.voltageBus}');
 			 $('#temperature').val('${serviceOrder.temperature}');
 
-			 $('#bbCellServiceId').val('${serviceOrder.bbCellServiceId}');
-			 $('#bbServiceId').val('${serviceOrder.bbServiceId}');
-			 $('#cellNumber').val('${serviceOrder.cellNumber}');
-			 $('#floatVoltage').val('${serviceOrder.floatVoltage}');
-			 $('#chargeVoltage').val('${serviceOrder.chargeVoltage}');
+			 $('#bbCellServiceId').val('${BatteryCellServiceDTO.cells[0].bbCellServiceId}');
+			 $('#bbServiceId').val('${serviceOrderCell.bbServiceId}');
+			 $('#cellNumber').val('${serviceOrderCell.cellNumber}');
+			 $('#floatVoltage').val('${serviceOrderCell.floatVoltage}');
+			 $('#chargeVoltage').val('${serviceOrderCell.chargeVoltage}');
 						 
 						
 		});

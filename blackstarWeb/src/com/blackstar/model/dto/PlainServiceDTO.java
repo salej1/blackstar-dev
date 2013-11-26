@@ -3,8 +3,6 @@
  */
 package com.blackstar.model.dto;
 
-import java.util.Date;
-
 public class PlainServiceDTO {
 		
 	public PlainServiceDTO(Integer plainServiceId, Integer serviceOrderId,

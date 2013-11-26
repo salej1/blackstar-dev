@@ -1,7 +1,5 @@
 package com.blackstar.model.dto;
 
-import java.util.Date;
-
 import com.blackstar.model.UpsService;
 import com.blackstar.model.UpsServiceBatteryBank;
 import com.blackstar.model.UpsServiceGeneralTest;

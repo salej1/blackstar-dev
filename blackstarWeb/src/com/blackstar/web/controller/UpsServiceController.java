@@ -13,9 +13,7 @@ import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
 import com.blackstar.model.Policy;
 import com.blackstar.model.Ticket;
-import com.blackstar.model.dto.AirCoServiceDTO;
 import com.blackstar.model.dto.OrderserviceDTO;
-import com.blackstar.model.dto.PlainServiceDTO;
 import com.blackstar.model.dto.UpsServiceDTO;
 import com.blackstar.services.interfaces.ServiceOrderService;
 import com.blackstar.web.AbstractController;
@@ -42,7 +40,7 @@ public class UpsServiceController extends AbstractController {
 				  //si la operation es 1, el idObject es el id de un ticket
 				  //si la operation es 2, el idObject es el id de un servicio
 				  //si la operation es 3, el idObject es el no de serie del equipo
-				  //si la operation es 4, el idObject es el id del aircoservice
+				  //si la operation es 4, el idObject es el id del upsservice
 		  		  if(operation==1)
 		  		  {
 		  			  Integer idTicket = Integer.parseInt(idObject);
