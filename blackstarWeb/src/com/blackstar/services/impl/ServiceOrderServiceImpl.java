@@ -1,8 +1,10 @@
 package com.blackstar.services.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import com.blackstar.db.dao.interfaces.ServiceOrderDAO;
+import com.blackstar.model.Serviceorder;
 import com.blackstar.model.dto.AirCoServiceDTO;
 import com.blackstar.model.dto.BatteryServiceDTO;
 import com.blackstar.model.dto.EmergencyPlantServiceDTO;
@@ -58,33 +60,52 @@ public UpsServiceDTO getUpsService(Integer upsServiceId) {
 }
 
 @Override
-public void saveAirCoService(AirCoServiceDTO service) {
-	// TODO Auto-generated method stub
+public void saveAirCoService(AirCoServiceDTO service, String createdBy, String createdByUsr) {
 	
+	dao.saveAirCoService(service, new Date(), createdBy, createdByUsr);
 }
 
 @Override
-public void saveBateryService(BatteryServiceDTO service) {
+public void saveBateryService(BatteryServiceDTO service, String createdBy, String createdByUsr) {
 	// TODO Auto-generated method stub
-	
+	dao.saveBateryService(service, new Date(), createdBy, createdByUsr);
 }
 
 @Override
-public void saveEmergencyPlantService(EmergencyPlantServiceDTO service) {
+public void saveEmergencyPlantService(EmergencyPlantServiceDTO service, String createdBy, String createdByUsr) {
 	// TODO Auto-generated method stub
-	
+	dao.saveEmergencyPlantService(service, new Date(), createdBy, createdByUsr);
 }
 
 @Override
-public void savePlainService(PlainServiceDTO service) {
+public void savePlainService(PlainServiceDTO service, String createdBy, String createdByUsr) {
 	// TODO Auto-generated method stub
-	
+	dao.savePlainService(service, new Date(), createdBy, createdByUsr);
 }
 
 @Override
-public void saveUpsService(UpsServiceDTO service) {
+public void saveUpsService(UpsServiceDTO service, String createdBy, String createdByUsr) {
 	// TODO Auto-generated method stub
-	
+	dao.saveUpsService(service, new Date(), createdBy, createdByUsr);
+}
+
+@Override
+public int saveServiceOrder(Serviceorder service, String createdBy,
+		String createdByUsr) {
+	service.setCreated(new Date());
+	service.setCreatedBy(createdBy);
+	service.setCreatedByUsr(createdByUsr);
+	 return dao.insertServiceOrder(service);
+}
+
+@Override
+public void updateServiceOrder(Serviceorder service, String modifiedBy,
+		String modifiedByUsr) {
+	// TODO Auto-generated method stub
+	service.setModified(new Date());
+	service.setModifiedBy(modifiedBy);
+	service.setModifiedByUsr(modifiedByUsr);
+	dao.updateServiceOrder(service);
 }
   
   

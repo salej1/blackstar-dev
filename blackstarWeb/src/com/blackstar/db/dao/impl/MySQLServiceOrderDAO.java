@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.blackstar.db.dao.interfaces.ServiceOrderDAO;
@@ -110,13 +111,13 @@ public class MySQLServiceOrderDAO implements ServiceOrderDAO, Serializable {
 	}
 
 	@Override
-	public int insertServiceOrder() {
+	public int insertServiceOrder(Serviceorder orderService) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
-	public boolean updateServiceOrder() {
+	public boolean updateServiceOrder(Serviceorder orderService) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -208,33 +209,33 @@ public class MySQLServiceOrderDAO implements ServiceOrderDAO, Serializable {
 	}
 
 	@Override
-	public void saveAirCoService(AirCoServiceDTO service) {
+	public int saveAirCoService(AirCoServiceDTO service, Date created ,String createdBy,String createdByUsr) {
 		// TODO Auto-generated method stub
-		
+		return 0;
 	}
 
 	@Override
-	public void saveBateryService(BatteryServiceDTO service) {
+	public int saveBateryService(BatteryServiceDTO service, Date created ,String createdBy,String createdByUsr) {
 		// TODO Auto-generated method stub
-		
+		return 0;
 	}
 
 	@Override
-	public void saveEmergencyPlantService(EmergencyPlantServiceDTO service) {
+	public int saveEmergencyPlantService(EmergencyPlantServiceDTO service, Date created ,String createdBy,String createdByUsr) {
 		// TODO Auto-generated method stub
-		
+		return 0;
 	}
 
 	@Override
-	public void savePlainService(PlainServiceDTO service) {
+	public int savePlainService(PlainServiceDTO service, Date created ,String createdBy,String createdByUsr) {
 		// TODO Auto-generated method stub
-		
+		return 0;
 	}
 
 	@Override
-	public void saveUpsService(UpsServiceDTO service) {
+	public int saveUpsService(UpsServiceDTO service, Date created ,String createdBy,String createdByUsr) {
 		// TODO Auto-generated method stub
-		
+		return 0;
 	}
 
 }

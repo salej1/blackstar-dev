@@ -1,5 +1,6 @@
 package com.blackstar.db.dao.interfaces;
 
+import java.util.Date;
 import java.util.List;
 
 import com.blackstar.model.Serviceorder;
@@ -18,8 +19,8 @@ public interface ServiceOrderDAO {
 	public List<Serviceorder> selectAllServiceOrder();
 	public Serviceorder getServiceOrderById(int id);
 	public Serviceorder getServiceOrderByNum(String num);
-	public int insertServiceOrder();
-	public boolean updateServiceOrder();
+	public int insertServiceOrder(Serviceorder orderService);
+	public boolean updateServiceOrder(Serviceorder orderService);
 	
 	public OrderserviceDTO getServiceOrderByIdOrNumber(Integer serviceOrderId, String orderNumber);
 	public List<FollowUpDTO> getFollows (Integer serviceOrderId);
@@ -31,9 +32,9 @@ public interface ServiceOrderDAO {
   	public PlainServiceDTO getPlainService(Integer plainServiceId);
   	public UpsServiceDTO getUpsService(Integer upsServiceId);
   	
-    public void saveAirCoService (AirCoServiceDTO service);
-    public void saveBateryService (BatteryServiceDTO service);
-    public void saveEmergencyPlantService (EmergencyPlantServiceDTO service);
-    public void savePlainService (PlainServiceDTO service);
-    public void saveUpsService (UpsServiceDTO service);
+    public int saveAirCoService (AirCoServiceDTO service, Date created ,String createdBy,String createdByUsr);
+    public int saveBateryService (BatteryServiceDTO service, Date created ,String createdBy,String createdByUsr);
+    public int saveEmergencyPlantService (EmergencyPlantServiceDTO service, Date created ,String createdBy,String createdByUsr);
+    public int savePlainService (PlainServiceDTO service, Date created ,String createdBy,String createdByUsr);
+    public int saveUpsService (UpsServiceDTO service, Date created ,String createdBy,String createdByUsr);
 }

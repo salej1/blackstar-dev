@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.blackstar.common.Globals;
 import com.blackstar.db.DAOFactory;
@@ -114,9 +113,16 @@ public class AirCoServiceController extends AbstractController {
 	  }
 	  
 	    @RequestMapping(value = "/save.do", method = RequestMethod.POST)
-	    public String save( @ModelAttribute("airCoService") AirCoServiceDTO airCoService	    )
+	    public String save( 
+	    		@ModelAttribute("airCoService") AirCoServiceDTO airCoService,
+	    		@ModelAttribute(Globals.SESSION_KEY_PARAM)  UserSession userSession,
+                ModelMap model, HttpServletRequest req, HttpServletResponse resp
+	    		)
 	    {
-	    	
+	    	if(airCoService.getAaServiceId()!=0)
+	    	{
+	    		service.saveAirCoService(airCoService,  userSession.getUser().getUserName(), userSession.getUser().getUserEmail());
+	    	}
 	    	return "dashboard";
 	    }
 

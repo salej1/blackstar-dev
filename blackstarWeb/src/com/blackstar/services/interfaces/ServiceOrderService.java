@@ -2,6 +2,7 @@ package com.blackstar.services.interfaces;
 
 import java.util.List;
 
+import com.blackstar.model.Serviceorder;
 import com.blackstar.model.dto.FollowUpDTO;
 import com.blackstar.model.dto.OrderserviceDTO;
 import com.blackstar.model.dto.AirCoServiceDTO;
@@ -21,10 +22,13 @@ public interface ServiceOrderService {
   public PlainServiceDTO getPlainService(Integer plainServiceId);
   public UpsServiceDTO getUpsService(Integer upsServiceId);
   
-  public void saveAirCoService (AirCoServiceDTO service);
-  public void saveBateryService (BatteryServiceDTO service);
-  public void saveEmergencyPlantService (EmergencyPlantServiceDTO service);
-  public void savePlainService (PlainServiceDTO service);
-  public void saveUpsService (UpsServiceDTO service);
+  public int saveServiceOrder (Serviceorder service,String createdBy, String createdByUsr);
+  public void updateServiceOrder (Serviceorder service,String modifiedBy, String modifiedByUsr);
+  
+  public void saveAirCoService (AirCoServiceDTO service,String createdBy, String createdByUsr);
+  public void saveBateryService (BatteryServiceDTO service,String createdBy, String createdByUsr);
+  public void saveEmergencyPlantService (EmergencyPlantServiceDTO service,String createdBy, String createdByUsr);
+  public void savePlainService (PlainServiceDTO service,String createdBy, String createdByUsr);
+  public void saveUpsService (UpsServiceDTO service,String createdBy, String createdByUsr);
   
 }

@@ -1,5 +1,6 @@
 package com.blackstar.db.dao.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import com.blackstar.db.dao.AbstractDAO;
@@ -80,6 +81,7 @@ public class ServiceOrderDAOImpl extends AbstractDAO implements ServiceOrderDAO 
   @Override
   public Serviceorder findServiceOrder() {
 	// TODO Auto-generated method stub
+	  
 	return null;
   }
 
@@ -102,15 +104,76 @@ public class ServiceOrderDAOImpl extends AbstractDAO implements ServiceOrderDAO 
   }
 
   @Override
-  public int insertServiceOrder() {
-	// TODO Auto-generated method stub
-	return 0;
+  public int insertServiceOrder(Serviceorder orderService) {
+	  
+	StringBuilder sqlBuilder = new StringBuilder();
+	sqlBuilder.append("CALL AddserviceOrder(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+	
+	Object[] args = new Object []{
+									"'"+orderService.getServiceOrderNumber()+ "'",
+									orderService.getServiceTypeId(),
+									orderService.getTicketId(),
+									orderService.getPolicyId(),
+									"'"+orderService.getServiceUnit()+ "'",
+									"'"+orderService.getServiceDate()+ "'",
+									"'"+orderService.getResponsible()+ "'",
+									"",
+									"'"+orderService.getReceivedBy()+ "'",
+									"'"+orderService.getServiceComments()+ "'",
+									"'"+orderService.getStatusId()+ "'",
+									"'"+orderService.getClosed()+ "'",
+									"'"+orderService.getConsultant()+ "'",
+									"'"+orderService.getCoordinator()+ "'",
+									"'"+orderService.getAsignee()+ "'",
+									0,
+									0,
+									"'"+orderService.getSignCreated()+ "'",
+									"'"+orderService.getsignReceivedBy()+ "'",
+									"'"+orderService.getReceivedByPosition()+ "'",
+									"'"+orderService.getCreated()+ "'",
+									"'"+orderService.getCreatedBy()+ "'",
+									"'"+orderService.getCreatedByUsr()+ "'"
+								};
+	
+	Integer idOS = getJdbcTemplate().update(sqlBuilder.toString() ,args);
+	return idOS;
   }
 
   @Override
-  public boolean updateServiceOrder() {
-	// TODO Auto-generated method stub
-	return false;
+  public boolean updateServiceOrder(Serviceorder orderService) {
+		StringBuilder sqlBuilder = new StringBuilder();
+		sqlBuilder.append("CALL AddserviceOrder(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+		
+		Object[] args = new Object []{
+										orderService.getServiceOrderId(),
+										"'"+orderService.getServiceOrderNumber()+ "'",
+										orderService.getServiceTypeId(),
+										orderService.getTicketId(),
+										orderService.getPolicyId(),
+										"'"+orderService.getServiceUnit()+ "'",
+										"'"+orderService.getServiceDate()+ "'",
+										"'"+orderService.getResponsible()+ "'",
+										"",
+										"'"+orderService.getReceivedBy()+ "'",
+										"'"+orderService.getServiceComments()+ "'",
+										"'"+orderService.getStatusId()+ "'",
+										"'"+orderService.getClosed()+ "'",
+										"'"+orderService.getConsultant()+ "'",
+										"'"+orderService.getCoordinator()+ "'",
+										"'"+orderService.getAsignee()+ "'",
+										0,
+										0,
+										"'"+orderService.getSignCreated()+ "'",
+										"'"+orderService.getsignReceivedBy()+ "'",
+										"'"+orderService.getReceivedByPosition()+ "'",
+										"'"+orderService.getModified()+ "'",
+										"'"+orderService.getModifiedBy()+ "'",
+										"'"+orderService.getModifiedByUsr()+ "'"
+									};
+		
+		 getJdbcTemplate().update(sqlBuilder.toString() ,args);
+		
+	return true;
   }
 
 	
@@ -168,37 +231,366 @@ public class ServiceOrderDAOImpl extends AbstractDAO implements ServiceOrderDAO 
 	}
 	
 	@Override
-	public void saveAirCoService(AirCoServiceDTO service) {
-		// TODO Auto-generated method stub
+	public int saveAirCoService(AirCoServiceDTO service , Date created ,String createdBy,String createdByUsr) {
+		StringBuilder sqlBuilder = new StringBuilder();
+		sqlBuilder.append("CALL AddAAservice(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+
+		Object[] args = new Object []{		
+										service.getServiceOrderId(),
+										"'"+service.getEvaDescription()+"'",
+										service.getEvaValTemp(),
+										service.getEvaValHum(),
+										service.getEvaSetpointTemp(),
+										service.getEvaSetpointHum(),
+										service.getEvaFlagCalibration(),
+										service.getEvaReviewFilter(),
+										service.getEvaReviewStrip(),
+										service.getEvaCleanElectricSystem(),
+										service.getEvaCleanControlCard(),
+										service.getEvaCleanTray(),
+										service.getEvaLectrurePreasureHigh(),
+										service.getEvaLectrurePreasureLow(),
+										service.getEvaLectureTemp(),
+										"'"+service.getEvaLectureOilColor()+"'",
+										service.getEvaLectureOilLevel(),
+										"'"+service.getEvaLectureCoolerColor()+"'",
+										service.getEvaLectureCoolerLevel(),
+										"'"+service.getEvaCheckOperatation()+"'",
+										"'"+service.getEvaCheckNoise()+"'",
+										"'"+service.getEvaCheckIsolated()+"'",
+										service.getEvaLectureVoltageGroud(),
+										service.getEvaLectureVoltagePhases(),
+										service.getEvaLectureVoltageControl(),
+										service.getEvaLectureCurrentMotor1(),
+										service.getEvaLectureCurrentMotor2(),
+										service.getEvaLectureCurrentMotor3(),
+										service.getEvaLectureCurrentCompressor1(),
+										service.getEvaLectureCurrentCompressor2(),
+										service.getEvaLectureCurrentCompressor3(),
+										service.getEvaLectureCurrentHumidifier1(),
+										service.getEvaLectureCurrentHumidifier2(),
+										service.getEvaLectureCurrentHumidifier3(),
+										service.getEvaLectureCurrentHeater1(),
+										service.getEvaLectureCurrentHeater2(),
+										service.getEvaLectureCurrentHeater3(),
+										service.getEvaCheckFluidSensor(),
+										service.getEvaRequirMaintenance(),
+										"'"+service.getCondReview()+"'",
+										service.getCondCleanElectricSystem(),
+										service.getCondClean(),
+										service.getCondLectureVoltageGroud(),
+										service.getCondLectureVoltagePhases(),
+										service.getCondLectureVoltageControl(),
+										service.getCondLectureMotorCurrent(),
+										"'"+service.getCondReviewThermostat()+"'",
+										"'"+service.getCondModel()+"'",
+										"'"+service.getCondSerialNumber()+"'",
+										"'"+service.getCondBrand()+"'",
+										"'"+service.getObservations()+"'",
+										"'"+created+"'",
+										"'"+createdBy+"'",
+										"'"+createdByUsr+"'"
+									};
 		
+		int idOs = getJdbcTemplate().update(sqlBuilder.toString() ,args);
+		return idOs;	
 	}
 	
 	
 	@Override
-	public void saveBateryService(BatteryServiceDTO service) {
+	public int saveBateryService(BatteryServiceDTO service, Date created ,String createdBy,String createdByUsr) {
 		// TODO Auto-generated method stub
+		StringBuilder sqlBuilder = new StringBuilder();
+		sqlBuilder.append("CALL AddBBservice(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+		Object[] args = new Object []{	
+										service.getServiceOrderId(),
+										service.getPlugClean(),
+										"'"+service.getPlugCleanStatus()+"'",
+										"'"+service.getPlugCleanComments()+"'",
+										service.getCoverClean(),
+										"'"+service.getCoverCleanStatus()+"'",
+										"'"+service.getCoverCleanComments()+"'",
+										service.getCapClean(),
+										"'"+service.getCapCleanStatus()+"'",
+										"'"+service.getCapCleanComments()+"'",
+										service.getGroundClean(),
+										"'"+service.getGroundCleanStatus()+"'",
+										"'"+service.getGroundCleanComments()+"'",
+										service.getRackClean(),
+										"'"+service.getRackCleanStatus()+"'",
+										"'"+service.getRackCleanComments()+"'",
+										"'"+service.getSerialNoDateManufact()+"'",
+										"'"+service.getBatteryTemperature()+"'",
+										service.getVoltageBus(),
+										service.getTemperature(),
+										"'"+created+"'",
+										"'"+createdBy+"'",
+										"'"+createdByUsr+"'"	
+									};
+		int idOs = getJdbcTemplate().update(sqlBuilder.toString() ,args);
 		
+		// insertar los registros de las cells
+		for (BatteryCellServiceDTO cell : service.getCells()) {
+			
+			sqlBuilder = new StringBuilder();
+			sqlBuilder.append("CALL AddBBcellservice(?,?,?,?)");
+			Object[] argsCell = new Object []{	idOs,cell.getCellNumber(),cell.getFloatVoltage(),cell.getChargeVoltage() };
+			getJdbcTemplate().update(sqlBuilder.toString() ,argsCell);
+		}
+		return idOs;	
 	}
 	
 	
 	@Override
-	public void saveEmergencyPlantService(EmergencyPlantServiceDTO service) {
-		// TODO Auto-generated method stub
+	public int saveEmergencyPlantService(EmergencyPlantServiceDTO service, Date created ,String createdBy,String createdByUsr) {
+		StringBuilder sqlBuilder = new StringBuilder();
+		sqlBuilder.append("CALL AddepService(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+		Object[] args = new Object []{
+										service.getServiceOrderId(),
+										"'"+service.getBrandPE()+"'",
+										"'"+service.getModelPE()+"'",
+										"'"+service.getSerialPE()+"'",
+										"'"+service.getTransferType()+"'",
+										"'"+service.getModelTransfer()+"'",
+										"'"+service.getModelControl()+"'",
+										"'"+service.getModelRegVoltage()+"'",
+										"'"+service.getModelRegVelocity()+"'",
+										"'"+service.getModelCharger()+"'",
+										"'"+service.getOilChange()+"'",
+										"'"+service.getBrandMotor()+"'",
+										"'"+service.getModelMotor()+"'",
+										"'"+service.getSerialMotor()+"'",
+										"'"+service.getCplMotor()+"'",
+										"'"+service.getBrandGenerator()+"'",
+										"'"+service.getModelGenerator()+"'",
+										"'"+service.getSerialGenerator()+"'",
+										service.getPowerWattGenerator(),
+										service.getTensionGenerator(),
+										"'"+service.getTuningDate()+"'",
+										service.getTankCapacity(),
+										"'"+service.getPumpFuelModel()+"'",
+										service.getFilterFuelFlag(),
+										service.getFilterOilFlag(),
+										service.getFilterWaterFlag(),
+										service.getFilterAirFlag(),
+										"'"+service.getBrandGear()+"'",
+										"'"+service.getBrandBattery()+"'",
+										"'"+service.getClockLecture()+"'",
+										"'"+service.getServiceCorrective()+"'",
+										"'"+service.getObservations()+"'",
+										"'"+created+"'",
+										"'"+createdBy+"'",
+										"'"+createdByUsr+"'"
+									};
+		int idOs = getJdbcTemplate().update(sqlBuilder.toString() ,args);
 		
+		sqlBuilder = new StringBuilder();
+		sqlBuilder.append("CALL AddepServiceSurvey(?,?,?,?,?,?,?,?,?,?,?,?,?)");
+		args = new Object []{
+								idOs,
+								service.getLevelOilFlag(),
+								service.getLevelWaterFlag(),
+								service.getLevelBattery(),
+								service.getTubeLeak(),
+								"'"+service.getBatteryCap()+"'",
+								"'"+service.getBatterySulfate()+"'",
+								service.getLevelOil(),
+								"'"+service.getHeatEngine()+"'",
+								"'"+service.getHoseOil()+"'",
+								"'"+service.getHoseWater()+"'",
+								"'"+service.getTubeValve()+"'",
+								"'"+service.getStripBlades()+"'"
+							};
+		getJdbcTemplate().update(sqlBuilder.toString() ,args);
+		
+		
+		sqlBuilder = new StringBuilder();
+		sqlBuilder.append("CALL AddepServiceWorkBasic(?,?,?,?,?,?,?,?,?,?,?,?,?)");
+		args = new Object []{
+								idOs,
+								service.getWashEngine(),
+								service.getWashRadiator(),
+								service.getCleanWorkArea(),
+								service.getConectionCheck(),
+								service.getCleanTransfer(),
+								service.getCleanCardControl(),
+								service.getCheckConectionControl(),
+								service.getCheckWinding(),
+								service.getBatteryTests(),
+								service.getCheckCharger(),
+								service.getCheckPaint(),
+								service.getCleanGenerator()
+							};
+		getJdbcTemplate().update(sqlBuilder.toString() ,args);
+		
+		
+		sqlBuilder = new StringBuilder();
+		sqlBuilder.append("CALL AddepServiceDynamicTest(?,?,?,?,?,?,?,?,?,?)");
+		args = new Object []{
+								idOs,
+								service.getVacuumFrequency(),
+								service.getChargeFrequency(),
+								service.getBootTryouts(),
+								service.getVacuumVoltage(),
+								service.getChargeVoltage(),
+								service.getQualitySmoke(),
+								service.getStartTime(),
+								service.getTransferTime(),
+								service.getStopTime()
+							};
+		getJdbcTemplate().update(sqlBuilder.toString() ,args);
+		
+		sqlBuilder = new StringBuilder();
+		sqlBuilder.append("CALL AddepServiceTestProtection(?,?,?,?,?,?,?)");
+		args = new Object []{
+								idOs,
+								service.getTempSensor(),
+								service.getOilSensor(),
+								service.getVoltageSensor(),
+								service.getOverSpeedSensor(),
+								service.getOilPreasureSensor(),
+								service.getWaterLevelSensor()
+							};
+		getJdbcTemplate().update(sqlBuilder.toString() ,args);
+		
+		sqlBuilder = new StringBuilder();
+		sqlBuilder.append("CALL AddepServiceTransferSwitch(?,?,?,?,?,?,?,?,?)");
+		args = new Object []{
+								idOs,
+								"'"+service.getMechanicalStatus(),
+								service.getBoardClean(),
+								service.getScrewAdjust(),
+								service.getConectionAdjust(),
+								"'"+service.getSystemMotors()+"'",
+								"'"+service.getElectricInterlock()+"'",
+								"'"+service.getMechanicalInterlock()+"'",
+								service.getCapacityAmp()
+							};
+		getJdbcTemplate().update(sqlBuilder.toString() ,args);
+		
+		sqlBuilder = new StringBuilder();
+		sqlBuilder.append("CALL AddepServiceLectures(?,?,?,?,?,?,?,?,?,?,?)");
+		args = new Object []{
+								idOs,
+								service.getVoltageABAN(),
+								service.getVoltageACCN(),
+								service.getVoltageBCBN(),
+								service.getVoltageNT(),
+								service.getCurrentA(),
+								service.getCurrentB(),
+								service.getCurrentC(),
+								service.getFrequency(),
+								service.getOilPreassure(),
+								service.getTemp()
+							};
+		getJdbcTemplate().update(sqlBuilder.toString() ,args);
+		
+		sqlBuilder = new StringBuilder();
+		sqlBuilder.append("CALL AddepServiceParams(?,?,?,?,?,?,?)");
+		args = new Object []{
+								idOs,
+								"'"+service.getAdjsutmentTherm()+"'",
+								"'"+service.getCurrent()+"'",
+								"'"+service.getBatteryCurrent()+"'",
+								"'"+service.getClockStatus()+"'",
+								"'"+service.getTrasnferTypeProtection()+"'",
+								"'"+service.getGeneratorTypeProtection()+"'"
+							};
+		getJdbcTemplate().update(sqlBuilder.toString() ,args);
+
+		return idOs;	
 	}
 	
 	
 	@Override
-	public void savePlainService(PlainServiceDTO service) {
+	public int savePlainService(PlainServiceDTO service, Date created ,String createdBy,String createdByUsr) {
 		// TODO Auto-generated method stub
-		
+		StringBuilder sqlBuilder = new StringBuilder();
+		sqlBuilder.append("CALL AddplainService(?,?,?,?,?,?,?,?,?)");
+		Object[] args = new Object []{	
+										service.getServiceOrderId(),
+										"'"+service.getTroubleDescription()+"'",
+										"'"+service.getTechParam()+"'",
+										"'"+service.getWorkDone()+"'",
+										"'"+service.getMaterialUsed()+"'",
+										"'"+service.getObservations()+"'",
+										"'"+created+"'",
+										"'"+createdBy+"'",
+										"'"+createdByUsr+"'"
+									};
+		int idOs = getJdbcTemplate().update(sqlBuilder.toString() ,args);
+		return idOs;	
 	}
 	
 	
 	@Override
-	public void saveUpsService(UpsServiceDTO service) {
+	public int saveUpsService(UpsServiceDTO service, Date created ,String createdBy,String createdByUsr) {
 		// TODO Auto-generated method stub
+		StringBuilder sqlBuilder = new StringBuilder();
+		sqlBuilder.append("CALL AddupsService(?,?,?,?,?,?,?,?,?,?,?,?,?)");
+		Object[] args = new Object []{
+										service.getServiceOrderId(),
+										"'"+service.getEstatusEquipment()+"'",
+										service.getCleaned(),
+										service.getHooverClean(),
+										service.getVerifyConnections(),
+										"'"+service.getCapacitorStatus()+"'",
+										service.getVerifyFuzz(),
+										service.getChargerReview(),
+										"'"+service.getFanStatus()+"'",
+										"'"+service.getObservations()+"'",
+										"'"+created+"'",
+										"'"+createdBy+"'",
+										"'"+createdByUsr+"'"
+									};
+		int idOs = getJdbcTemplate().update(sqlBuilder.toString() ,args);
 		
+		sqlBuilder = new StringBuilder();
+		sqlBuilder.append("CALL AddupsServiceBatteryBank(?,?,?,?,?,?,?,?,?,?,?)");
+		args = new Object []{
+								idOs,
+								service.getCheckConnectors(),
+								service.getCverifyOutflow(),
+								service.getNumberBatteries(),
+								"'"+service.getManufacturedDateSerial()+"'",
+								"'"+service.getDamageBatteries()+"'",
+								"'"+service.getOther()+"'",
+								service.getTemp(),
+								service.getChargeTest(),
+								"'"+service.getBrandModel()+"'",
+								service.getBatteryVoltage()
+							};
+		getJdbcTemplate().update(sqlBuilder.toString() ,args);
+		
+		
+		sqlBuilder = new StringBuilder();
+		sqlBuilder.append("CALL AddupsServiceGeneralTest(?,?,?,?,?)");
+		args = new Object []{
+								idOs,
+								service.getTrasferLine(),
+								service.getTransferEmergencyPlant(),
+								service.getBackupBatteries(),
+								service.getVerifyVoltage()
+							};
+		getJdbcTemplate().update(sqlBuilder.toString() ,args);
+		
+		
+		sqlBuilder = new StringBuilder();
+		sqlBuilder.append("CALL AddupsServiceParams(?,?,?,?,?,?,?,?,?)");
+		args = new Object []{
+								idOs,
+								service.getInputVoltagePhase(),
+								service.getInputVoltageNeutro(),
+								service.getInputVoltageNeutroGround(),
+								service.getPercentCharge(),
+								service.getOutputVoltagePhase(),
+								service.getOutputVoltageNeutro(),
+								service.getInOutFrecuency(),
+								service.getBusVoltage()
+							};
+		getJdbcTemplate().update(sqlBuilder.toString() ,args);
+
+		return idOs;	
 	}
 
 

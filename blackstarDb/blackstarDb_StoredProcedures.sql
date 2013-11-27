@@ -76,6 +76,12 @@
 -- 								blackstarDb.AddepServiceLectures
 -- 								blackstarDb.AddepServiceParams
 -- 								blackstarDb.AddplainService
+-- 								blackstarDb.AddupsService
+-- 								blackstarDb.AddupsServiceBatteryBank
+--								blackstarDb.AddupsServiceGeneralTest
+-- 								blackstarDb.AddupsServiceParams
+-- 								blackstarDb.AddserviceOrder
+-- 								blackstarDb.UpdateServiceOrder
 -- -----------------------------------------------------------------------------
 
 use blackstarDb;
@@ -862,10 +868,7 @@ CREATE PROCEDURE blackstarDb.AddAAservice (
   observations varchar(255) ,
   created datetime ,
   createdBy varchar(50) ,
-  createdByUsr varchar(50) ,
-  modified datetime ,
-  modifiedBy varchar(50) ,
-  modifiedByUsr varchar(50))
+  createdByUsr varchar(50))
 BEGIN
 	INSERT INTO aaService
 (serviceOrderId,evaDescription,evaValTemp,evaValHum,evaSetpointTemp,
@@ -879,8 +882,7 @@ evaLectureCurrentHumidifier1,evaLectureCurrentHumidifier2,evaLectureCurrentHumid
 evaLectureCurrentHeater1,evaLectureCurrentHeater2,evaLectureCurrentHeater3,evaCheckFluidSensor,
 evaRequirMaintenance,condReview,condCleanElectricSystem,condClean,condLectureVoltageGroud,
 condLectureVoltagePhases,condLectureVoltageControl,condLectureMotorCurrent,condReviewThermostat,
-condModel,condSerialNumber,condBrand,observations,created,createdBy,createdByUsr,
-modified,modifiedBy,modifiedByUsr)
+condModel,condSerialNumber,condBrand,observations,created,createdBy,createdByUsr)
 VALUES
 (
 serviceOrderId,evaDescription,evaValTemp,evaValHum,evaSetpointTemp,
@@ -896,9 +898,9 @@ evaLectureCurrentHeater2,evaLectureCurrentHeater3,evaCheckFluidSensor,
 evaRequirMaintenance,condReview,condCleanElectricSystem,condClean,
 condLectureVoltageGroud,condLectureVoltagePhases,condLectureVoltageControl,
 condLectureMotorCurrent,condReviewThermostat,condModel,condSerialNumber,
-condBrand,observations,created,createdBy,createdByUsr,modified,
-modifiedBy,modifiedByUsr
+condBrand,observations,created,createdBy,createdByUsr
 );
+select LAST_INSERT_ID();
 END$$
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.AddBBcellservice
@@ -938,22 +940,20 @@ CREATE PROCEDURE blackstarDb.AddBBservice (
    temperature  int(11)  ,
    created  datetime , 
    createdBy  varchar(50)  ,
-   createdByUsr  varchar(50)  ,
-   modified  datetime  ,
-   modifiedBy  varchar(50)  ,
-   modifiedByUsr  varchar(50) 
+   createdByUsr  varchar(50)
 )
 BEGIN
 INSERT INTO bbService
 (serviceOrderId,plugClean,plugCleanStatus,plugCleanComments,coverClean,coverCleanStatus,coverCleanComments,
 capClean,capCleanStatus,capCleanComments,groundClean,groundCleanStatus,groundCleanComments,rackClean,
 rackCleanStatus,rackCleanComments,serialNoDateManufact,batteryTemperature,voltageBus,temperature,
-created,createdBy,createdByUsr,modified,modifiedBy,modifiedByUsr)
+created,createdBy,createdByUsr)
 VALUES
 (serviceOrderId ,plugClean ,plugCleanStatus ,plugCleanComments ,coverClean ,coverCleanStatus ,
 coverCleanComments ,capClean ,capCleanStatus ,capCleanComments ,groundClean ,groundCleanStatus ,
 groundCleanComments ,rackClean ,rackCleanStatus ,rackCleanComments ,serialNoDateManufact ,batteryTemperature ,
-voltageBus ,temperature ,created ,createdBy ,createdByUsr ,modified ,modifiedBy ,modifiedByUsr);
+voltageBus ,temperature ,created ,createdBy ,createdByUsr );
+select LAST_INSERT_ID();
 END$$
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.AddepService
@@ -991,18 +991,15 @@ CREATE PROCEDURE blackstarDb.AddepService (
    observations  varchar(50)  ,
    created  datetime  ,
    createdBy  varchar(50)  ,
-   createdByUsr  varchar(50)  ,
-   modified  datetime  ,
-   modifiedBy  varchar(50)  ,
-   modifiedByUsr  varchar(50) 
+   createdByUsr  varchar(50)
 )
 BEGIN
 
 insert into epService
-(serviceOrderId,brandPE,modelPE,serialPE,transferType,modelTransfer,modelControl,modelRegVoltage,modelRegVelocity,modelCharger,oilChange,brandMotor,modelMotor,serialMotor,cplMotor,brandGenerator,modelGenerator,serialGenerator,powerWattGenerator,tensionGenerator,tuningDate,tankCapacity,pumpFuelModel,filterFuelFlag,filterOilFlag,filterWaterFlag,filterAirFlag,brandGear,brandBattery,clockLecture,serviceCorrective,observations,created,createdBy,createdByUsr,modified,modifiedBy,modifiedByUsr)
+(serviceOrderId,brandPE,modelPE,serialPE,transferType,modelTransfer,modelControl,modelRegVoltage,modelRegVelocity,modelCharger,oilChange,brandMotor,modelMotor,serialMotor,cplMotor,brandGenerator,modelGenerator,serialGenerator,powerWattGenerator,tensionGenerator,tuningDate,tankCapacity,pumpFuelModel,filterFuelFlag,filterOilFlag,filterWaterFlag,filterAirFlag,brandGear,brandBattery,clockLecture,serviceCorrective,observations,created,createdBy,createdByUsr)
 VALUES
-(serviceOrderId,brandPE,modelPE,serialPE,transferType,modelTransfer,modelControl,modelRegVoltage,modelRegVelocity,modelCharger,oilChange,brandMotor,modelMotor,serialMotor,cplMotor,brandGenerator,modelGenerator,serialGenerator,powerWattGenerator,tensionGenerator,tuningDate,tankCapacity,pumpFuelModel,filterFuelFlag,filterOilFlag,filterWaterFlag,filterAirFlag,brandGear,brandBattery,clockLecture,serviceCorrective,observations,created,createdBy,createdByUsr,modified,modifiedBy,modifiedByUsr);
-
+(serviceOrderId,brandPE,modelPE,serialPE,transferType,modelTransfer,modelControl,modelRegVoltage,modelRegVelocity,modelCharger,oilChange,brandMotor,modelMotor,serialMotor,cplMotor,brandGenerator,modelGenerator,serialGenerator,powerWattGenerator,tensionGenerator,tuningDate,tankCapacity,pumpFuelModel,filterFuelFlag,filterOilFlag,filterWaterFlag,filterAirFlag,brandGear,brandBattery,clockLecture,serviceCorrective,observations,created,createdBy,createdByUsr);
+select LAST_INSERT_ID();
 END$$
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.AddepServiceSurvey
@@ -1112,9 +1109,9 @@ CREATE PROCEDURE blackstarDb.AddepServiceTransferSwitch (
 )
 BEGIN
 insert into epServiceTransferSwitch
-(epServiceId,mechanicalStatus,boardClean,screwAdjust,conectionAdjust,systemMotors,electricInterlock,mechanicalInterlock,capacityAmp,lampTest)
+(epServiceId,mechanicalStatus,boardClean,screwAdjust,conectionAdjust,systemMotors,electricInterlock,mechanicalInterlock,capacityAmp)
 values
-(epServiceId,mechanicalStatus,boardClean,screwAdjust,conectionAdjust,systemMotors,electricInterlock,mechanicalInterlock,capacityAmp,lampTest);
+(epServiceId,mechanicalStatus,boardClean,screwAdjust,conectionAdjust,systemMotors,electricInterlock,mechanicalInterlock,capacityAmp);
 END$$
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.AddepServiceLectures
@@ -1171,17 +1168,202 @@ CREATE PROCEDURE blackstarDb.AddplainService (
    observations  varchar(255)  ,
    created  datetime  ,
    createdBy  varchar(50)  ,
-   createdByUsr  varchar(50)  ,
-   modified  datetime  ,
-   modifiedBy  varchar(50)  ,
-   modifiedByUsr  varchar(50)  
+   createdByUsr  varchar(50) 
 )
 BEGIN
 insert into plainService
-(serviceOrderId,troubleDescription,techParam,workDone,materialUsed,observations,created,createdBy,createdByUsr,modified,modifiedBy,modifiedByUsr)
+(serviceOrderId,troubleDescription,techParam,workDone,materialUsed,observations,created,createdBy,createdByUsr)
 values
-(serviceOrderId,troubleDescription,techParam,workDone,materialUsed,observations,created,createdBy,createdByUsr,modified,modifiedBy,modifiedByUsr);
+(serviceOrderId,troubleDescription,techParam,workDone,materialUsed,observations,created,createdBy,createdByUsr);
+select LAST_INSERT_ID();
 END$$
+
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.AddupsService
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.AddupsService$$
+CREATE PROCEDURE blackstarDb.AddupsService (
+  serviceOrderId int(11) ,
+  estatusEquipment varchar(50) ,
+  cleaned bit(1) ,
+  hooverClean bit(1) ,
+  verifyConnections bit(1) ,
+  capacitorStatus varchar(50) ,
+  verifyFuzz bit(1) ,
+  chargerReview bit(1) ,
+  fanStatus varchar(50) ,
+  created datetime ,
+  createdBy varchar(50) ,
+  createdByUsr varchar(50) 
+)
+BEGIN
+insert into upsService
+(serviceOrderId,estatusEquipment,cleaned,hooverClean,verifyConnections,capacitorStatus,verifyFuzz,chargerReview,fanStatus,observations,created,createdBy,createdByUsr)
+values
+(serviceOrderId,estatusEquipment,cleaned,hooverClean,verifyConnections,capacitorStatus,verifyFuzz,chargerReview,fanStatus,observations,created,createdBy,createdByUsr);
+select LAST_INSERT_ID();
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.AddupsServiceBatteryBank
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.AddupsServiceBatteryBank$$
+CREATE PROCEDURE blackstarDb.AddupsServiceBatteryBank (
+   upsServiceId int(11) ,
+  checkConnectors bit(1) ,
+  cverifyOutflow bit(1) ,
+  numberBatteries int(11) ,
+  manufacturedDateSerial varchar(10) ,
+  damageBatteries varchar(50) ,
+  other varchar(250) ,
+  temp decimal(10,0) ,
+  chargeTest bit(1) ,
+  brandModel varchar(250) ,
+  batteryVoltage decimal(10,0) 
+)
+BEGIN
+insert into upsServiceBatteryBank
+(upsServiceId,checkConnectors,cverifyOutflow,numberBatteries,manufacturedDateSerial,damageBatteries,other,temp,chargeTest,brandModel,batteryVoltage)
+values
+(upsServiceId,checkConnectors,cverifyOutflow,numberBatteries,manufacturedDateSerial,damageBatteries,other,temp,chargeTest,brandModel,batteryVoltage);
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.AddupsServiceGeneralTest
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.AddupsServiceGeneralTest$$
+CREATE PROCEDURE blackstarDb.AddupsServiceGeneralTest (
+  upsServiceId int(11) ,
+  trasferLine decimal(10,0) ,
+  transferEmergencyPlant decimal(10,0) ,
+  backupBatteries decimal(10,0) ,
+  verifyVoltage decimal(10,0) 
+)
+BEGIN
+insert into upsServiceGeneralTest
+(upsServiceId,trasferLine,transferEmergencyPlant,backupBatteries,verifyVoltage)
+values
+(upsServiceId,trasferLine,transferEmergencyPlant,backupBatteries,verifyVoltage);
+END$$
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.AddupsServiceParams
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.AddupsServiceParams$$
+CREATE PROCEDURE blackstarDb.AddupsServiceParams (
+  upsServiceId int(11) ,
+  inputVoltagePhase decimal(10,0) ,
+  inputVoltageNeutro decimal(10,0) ,
+  inputVoltageNeutroGround decimal(10,0) ,
+  percentCharge decimal(10,0) ,
+  outputVoltagePhase decimal(10,0) ,
+  outputVoltageNeutro decimal(10,0) ,
+  inOutFrecuency decimal(10,0) ,
+  busVoltage decimal(10,0) 
+)
+BEGIN
+insert into upsServiceParams
+(upsServiceId,inputVoltagePhase,inputVoltageNeutro,inputVoltageNeutroGround,percentCharge,outputVoltagePhase,outputVoltageNeutro,inOutFrecuency,busVoltage)
+values
+(upsServiceId,inputVoltagePhase,inputVoltageNeutro,inputVoltageNeutroGround,percentCharge,outputVoltagePhase,outputVoltageNeutro,inOutFrecuency,busVoltage);
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.AddserviceOrder
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.AddserviceOrder$$
+CREATE PROCEDURE blackstarDb.AddserviceOrder (
+  serviceOrderNumber varchar(50) ,
+  serviceTypeId char(1) ,
+  ticketId int(11) ,
+  policyId int(11) ,
+  serviceUnit varchar(10) ,
+  serviceDate datetime ,
+  responsible varchar(100) ,
+  additionalEmployees varchar(400) ,
+  receivedBy varchar(100) ,
+  serviceComments text,
+  serviceStatusId char(1) ,
+  closed datetime ,
+  consultant varchar(100) ,
+  coordinator varchar(100) ,
+  asignee varchar(50) ,
+  hasErrors tinyint(4) ,
+  isWrong tinyint(4) ,
+  signCreated text,
+  signReceivedBy text,
+  receivedByPosition varchar(50) ,
+  created datetime ,
+  createdBy varchar(50) ,
+  createdByUsr varchar(50) 
+)
+BEGIN
+insert into serviceOrder
+(serviceOrderNumber,serviceTypeId,ticketId,policyId,serviceUnit,serviceDate,responsible,additionalEmployees,receivedBy,serviceComments,serviceStatusId,closed,consultant,coordinator,asignee,hasErrors,isWrong,signCreated,signReceivedBy,receivedByPosition,created,createdBy,createdByUsr)
+values
+(serviceOrderNumber,serviceTypeId,ticketId,policyId,serviceUnit,serviceDate,responsible,additionalEmployees,receivedBy,serviceComments,serviceStatusId,closed,consultant,coordinator,asignee,hasErrors,isWrong,signCreated,signReceivedBy,receivedByPosition,created,createdBy,createdByUsr);
+select LAST_INSERT_ID();
+END$$
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.UpdateServiceOrder
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.UpdateServiceOrder$$
+CREATE PROCEDURE blackstarDb.UpdateServiceOrder (
+	serviceOrderId int(11),
+  serviceOrderNumber varchar(50) ,
+  serviceTypeId char(1) ,
+  ticketId int(11) ,
+  policyId int(11) ,
+  serviceUnit varchar(10) ,
+  serviceDate datetime ,
+  responsible varchar(100) ,
+  additionalEmployees varchar(400) ,
+  receivedBy varchar(100) ,
+  serviceComments text,
+  serviceStatusId char(1) ,
+  closed datetime ,
+  consultant varchar(100) ,
+  coordinator varchar(100) ,
+  asignee varchar(50) ,
+  hasErrors tinyint(4) ,
+  isWrong tinyint(4) ,
+  signCreated text,
+  signReceivedBy text,
+  receivedByPosition varchar(50) ,
+  modified datetime ,
+  modifiedBy varchar(50) ,
+  modifiedByUsr varchar(50) 
+)
+BEGIN
+UPDATE serviceOrder
+SET
+serviceOrderNumber = serviceOrderNumber ,
+serviceTypeId = serviceTypeId ,
+ticketId = ticketId ,
+policyId = policyId ,
+serviceUnit = serviceUnit ,
+serviceDate = serviceDate ,
+responsible = responsible ,
+additionalEmployees = additionalEmployees ,
+receivedBy = receivedBy ,
+serviceComments = serviceComments ,
+serviceStatusId = serviceStatusId ,
+closed = closed ,
+consultant = consultant ,
+coordinator = coordinator ,
+asignee = asignee ,
+hasErrors = hasErrors ,
+isWrong = isWrong,
+signCreated = signCreated ,
+signReceivedBy = signReceivedBy ,
+receivedByPosition = receivedByPosition ,
+modified = modified ,
+modifiedBy = modifiedBy ,
+modifiedByUsr = modifiedByUsr 
+where serviceOrderId = serviceOrderId;
+END$$
+
+
 -- -----------------------------------------------------------------------------
 	-- FIN DE LOS STORED PROCEDURES
 -- -----------------------------------------------------------------------------
