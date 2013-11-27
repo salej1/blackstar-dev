@@ -12,12 +12,15 @@ import com.google.api.services.drive.Drive.Files;
 import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.FileList;
 import com.google.api.services.drive.model.ParentReference;
+import com.google.api.services.drive.model.Permission;
 import com.blackstar.services.AbstractService;
 import com.blackstar.services.interfaces.GoogleDriveService;
 
 public class GoogleDriveServiceImpl extends AbstractService 
                                     implements GoogleDriveService {
 	
+  public static final String FOLDER_FILE_TYPE = "application/vnd.google-apps.folder";
+  
   private static final HttpTransport TRANSPORT = new NetHttpTransport();
   private static final JsonFactory JSON_FACTORY = new JacksonFactory();
 
@@ -26,17 +29,37 @@ public class GoogleDriveServiceImpl extends AbstractService
   
   public String getAttachmentFolderId(Integer serviceOrderId, Credential credential) throws Exception {
 	String osAttachmentFolderId = null; 
-	osAttachmentFolderId = getFolderId("os_attachment", null, true, credential);
-	osAttachmentFolderId = getFolderId("os_" + serviceOrderId, osAttachmentFolderId, true, credential);			
+	Drive service = new Drive.Builder(TRANSPORT, JSON_FACTORY, credential).build();
+	osAttachmentFolderId = getFolderId(service, "os_attachment", null);
+	if(osAttachmentFolderId == null){
+	  osAttachmentFolderId = createFile(service, "os_attachment", null , FOLDER_FILE_TYPE);
+	  setPermissions(service, osAttachmentFolderId);
+	}
+	osAttachmentFolderId = getFolderId(service, "os_" + serviceOrderId, osAttachmentFolderId);		
+	if(osAttachmentFolderId == null){
+	  osAttachmentFolderId = createFile(service, "os_" + serviceOrderId , null , FOLDER_FILE_TYPE);
+	}
 	return osAttachmentFolderId;
   }	
   
-  public String getFolderId(String folderName, String parentId, boolean createIfNot, Credential credential) 
-			                                                    throws Exception {
+  
+  private void setPermissions(Drive service, String fileId) throws Exception{
+	Permission p = new Permission();
+	p.setRole("owner");
+	p.setType("user");
+	p.setValue("angela.bermudez.hdez@gmail.com");
+	service.permissions().insert(fileId, p).execute();
+	p = new Permission();
+	p.setRole("writer");
+	p.setType("domain");
+	p.setValue("gmail.com");
+	service.permissions().insert(fileId, p).execute();
+  }
+  
+  public String getFolderId(Drive service, String folderName, String parentId) throws Exception {
 	Files.List request = null;
 	FileList files = null;
 	String id = null;
-	Drive service = new Drive.Builder(TRANSPORT, JSON_FACTORY, credential).build();
 	StringBuilder criteria = new StringBuilder().append("title='").append(folderName).append("'")
 			                           .append(" and mimeType='application/vnd.google-apps.folder'")
 			                           .append(" and trashed = false");
@@ -46,22 +69,17 @@ public class GoogleDriveServiceImpl extends AbstractService
 	request = service.files().list();
 	request.setQ(criteria.toString());
 	files = request.execute();
-	if(files.getItems().size() == 0){
-	  if(createIfNot){
-	    id = createFolder(folderName, parentId, "BlackStar System Folder", credential);
-	  }
-    } else {
+	if(files.getItems().size() > 0){
 		id = files.getItems().get(0).getId();
     }
 	return id;
   }
 	
-  public String createFolder(String title, String parentId, String description, Credential credential) throws Exception {
+  public String createFile(Drive service, String title, String parentId, String type
+		                                                        ) throws Exception {
 	File file = new File();
-	Drive service = new Drive.Builder(TRANSPORT, JSON_FACTORY, credential).build();
 	file.setTitle(title);
-	file.setDescription(description);
-	file.setMimeType("application/vnd.google-apps.folder");
+	file.setMimeType(type);
 	if(parentId != null){
 	  file.setParents(Arrays.asList(new ParentReference().setId(parentId)));
 	}
