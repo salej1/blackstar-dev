@@ -60,8 +60,22 @@
 -- 								blackstarDb.GetPlainServiceServiceByIdService
 -- 								blackstarDb.GetUPSServiceByIdService
 -- -----------------------------------------------------------------------------
--- 10   25/12/2013	JAGH		Se Integra:
+-- 10   25/11/2013	JAGH		Se Integra:
 -- 								blackstarDb.GetPolicyBySerialNo
+-- -----------------------------------------------------------------------------
+-- 11   26/11/2013	JAGH		Se Integra:
+-- 								blackstarDb.AddAAservice
+-- 								blackstarDb.AddBBcellservice
+-- 								blackstarDb.AddBBservice
+-- 								blackstarDb.AddepService
+--                              blackstarDb.AddepServiceSurvey
+--                              blackstarDb.AddepServiceWorkBasic
+--                              blackstarDb.AddepServiceDynamicTest
+-- 								blackstarDb.AddepServiceTestProtection
+-- 								blackstarDb.AddepServiceTransferSwitch
+-- 								blackstarDb.AddepServiceLectures
+-- 								blackstarDb.AddepServiceParams
+-- 								blackstarDb.AddplainService
 -- -----------------------------------------------------------------------------
 
 use blackstarDb;
@@ -789,6 +803,384 @@ CREATE PROCEDURE blackstarDb.GetPolicyBySerialNo (noSerial VARCHAR(100))
 BEGIN
 	SELECT * FROM blackstardb.policy
 	where startDate < CURDATE() and endDate > CURDATE() and serialNumber = noSerial;
+END$$
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.AddAAservice
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.AddAAservice$$
+CREATE PROCEDURE blackstarDb.AddAAservice (  
+  serviceOrderId int(11) ,
+  evaDescription varchar(250) ,
+  evaValTemp decimal(10,0) ,
+  evaValHum decimal(10,0) ,
+  evaSetpointTemp decimal(10,0) ,
+  evaSetpointHum decimal(10,0) ,
+  evaFlagCalibration bit(1) ,
+  evaReviewFilter bit(1) ,
+  evaReviewStrip bit(1) ,
+  evaCleanElectricSystem bit(1) ,
+  evaCleanControlCard bit(1) ,
+  evaCleanTray bit(1) ,
+  evaLectrurePreasureHigh decimal(10,0) ,
+  evaLectrurePreasureLow decimal(10,0) ,
+  evaLectureTemp decimal(10,0) ,
+  evaLectureOilColor varchar(10) ,
+  evaLectureOilLevel decimal(10,0) ,
+  evaLectureCoolerColor varchar(10) ,
+  evaLectureCoolerLevel decimal(10,0) ,
+  evaCheckOperatation varchar(10) ,
+  evaCheckNoise varchar(10) ,
+  evaCheckIsolated varchar(10) ,
+  evaLectureVoltageGroud decimal(10,0) ,
+  evaLectureVoltagePhases decimal(10,0) ,
+  evaLectureVoltageControl decimal(10,0) ,
+  evaLectureCurrentMotor1 decimal(10,0) ,
+  evaLectureCurrentMotor2 decimal(10,0) ,
+  evaLectureCurrentMotor3 decimal(10,0) ,
+  evaLectureCurrentCompressor1 decimal(10,0) ,
+  evaLectureCurrentCompressor2 decimal(10,0) ,
+  evaLectureCurrentCompressor3 decimal(10,0) ,
+  evaLectureCurrentHumidifier1 decimal(10,0) ,
+  evaLectureCurrentHumidifier2 decimal(10,0) ,
+  evaLectureCurrentHumidifier3 decimal(10,0) ,
+  evaLectureCurrentHeater1 decimal(10,0) ,
+  evaLectureCurrentHeater2 decimal(10,0) ,
+  evaLectureCurrentHeater3 decimal(10,0) ,
+  evaCheckFluidSensor bit(1) ,
+  evaRequirMaintenance bit(1) ,
+  condReview varchar(50) ,
+  condCleanElectricSystem bit(1) ,
+  condClean bit(1) ,
+  condLectureVoltageGroud decimal(10,0) ,
+  condLectureVoltagePhases decimal(10,0) ,
+  condLectureVoltageControl decimal(10,0) ,
+  condLectureMotorCurrent decimal(10,0) ,
+  condReviewThermostat varchar(50) ,
+  condModel varchar(50) ,
+  condSerialNumber varchar(50) ,
+  condBrand varchar(50) ,
+  observations varchar(255) ,
+  created datetime ,
+  createdBy varchar(50) ,
+  createdByUsr varchar(50) ,
+  modified datetime ,
+  modifiedBy varchar(50) ,
+  modifiedByUsr varchar(50))
+BEGIN
+	INSERT INTO aaService
+(serviceOrderId,evaDescription,evaValTemp,evaValHum,evaSetpointTemp,
+evaSetpointHum,evaFlagCalibration,evaReviewFilter,evaReviewStrip,evaCleanElectricSystem,
+evaCleanControlCard,evaCleanTray,evaLectrurePreasureHigh,evaLectrurePreasureLow,evaLectureTemp,
+evaLectureOilColor,evaLectureOilLevel,evaLectureCoolerColor,evaLectureCoolerLevel,
+evaCheckOperatation,evaCheckNoise,evaCheckIsolated,evaLectureVoltageGroud,evaLectureVoltagePhases,
+evaLectureVoltageControl,evaLectureCurrentMotor1,evaLectureCurrentMotor2,evaLectureCurrentMotor3,
+evaLectureCurrentCompressor1,evaLectureCurrentCompressor2,evaLectureCurrentCompressor3,
+evaLectureCurrentHumidifier1,evaLectureCurrentHumidifier2,evaLectureCurrentHumidifier3,
+evaLectureCurrentHeater1,evaLectureCurrentHeater2,evaLectureCurrentHeater3,evaCheckFluidSensor,
+evaRequirMaintenance,condReview,condCleanElectricSystem,condClean,condLectureVoltageGroud,
+condLectureVoltagePhases,condLectureVoltageControl,condLectureMotorCurrent,condReviewThermostat,
+condModel,condSerialNumber,condBrand,observations,created,createdBy,createdByUsr,
+modified,modifiedBy,modifiedByUsr)
+VALUES
+(
+serviceOrderId,evaDescription,evaValTemp,evaValHum,evaSetpointTemp,
+evaSetpointHum,evaFlagCalibration,evaReviewFilter,evaReviewStrip,
+evaCleanElectricSystem,evaCleanControlCard,evaCleanTray,evaLectrurePreasureHigh,
+evaLectrurePreasureLow,evaLectureTemp,evaLectureOilColor,evaLectureOilLevel,
+evaLectureCoolerColor,evaLectureCoolerLevel,evaCheckOperatation,evaCheckNoise,
+evaCheckIsolated,evaLectureVoltageGroud,evaLectureVoltagePhases,evaLectureVoltageControl,
+evaLectureCurrentMotor1,evaLectureCurrentMotor2,evaLectureCurrentMotor3,evaLectureCurrentCompressor1,
+evaLectureCurrentCompressor2,evaLectureCurrentCompressor3,evaLectureCurrentHumidifier1,
+evaLectureCurrentHumidifier2,evaLectureCurrentHumidifier3,evaLectureCurrentHeater1,
+evaLectureCurrentHeater2,evaLectureCurrentHeater3,evaCheckFluidSensor,
+evaRequirMaintenance,condReview,condCleanElectricSystem,condClean,
+condLectureVoltageGroud,condLectureVoltagePhases,condLectureVoltageControl,
+condLectureMotorCurrent,condReviewThermostat,condModel,condSerialNumber,
+condBrand,observations,created,createdBy,createdByUsr,modified,
+modifiedBy,modifiedByUsr
+);
+END$$
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.AddBBcellservice
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.AddBBcellservice$$
+CREATE PROCEDURE blackstarDb.AddBBcellservice (bbServiceId int(11) , cellNumber int(11) , floatVoltage int(11) , chargeVoltage int(11))
+BEGIN
+INSERT INTO bbCellService
+(bbServiceId,cellNumber,floatVoltage,chargeVoltage)
+VALUES
+(bbServiceId,cellNumber,floatVoltage,chargeVoltage);
+END$$
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.AddBBservice
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.AddBBservice$$
+CREATE PROCEDURE blackstarDb.AddBBservice (
+   serviceOrderId  int(11)  ,
+   plugClean  bit(1)  ,
+   plugCleanStatus  varchar(50) , 
+   plugCleanComments  varchar(50) , 
+   coverClean  bit(1)  ,
+   coverCleanStatus  varchar(50)  ,
+   coverCleanComments  varchar(50) , 
+   capClean  bit(1)  ,
+   capCleanStatus  varchar(50)  ,
+   capCleanComments  varchar(50) , 
+   groundClean  bit(1)  ,
+   groundCleanStatus  varchar(50) , 
+   groundCleanComments  varchar(50) , 
+   rackClean  bit(1)  ,
+   rackCleanStatus  varchar(50) , 
+   rackCleanComments  varchar(50) , 
+   serialNoDateManufact  varchar(50)  ,
+   batteryTemperature  varchar(50)  ,
+   voltageBus  int(11)  ,
+   temperature  int(11)  ,
+   created  datetime , 
+   createdBy  varchar(50)  ,
+   createdByUsr  varchar(50)  ,
+   modified  datetime  ,
+   modifiedBy  varchar(50)  ,
+   modifiedByUsr  varchar(50) 
+)
+BEGIN
+INSERT INTO bbService
+(serviceOrderId,plugClean,plugCleanStatus,plugCleanComments,coverClean,coverCleanStatus,coverCleanComments,
+capClean,capCleanStatus,capCleanComments,groundClean,groundCleanStatus,groundCleanComments,rackClean,
+rackCleanStatus,rackCleanComments,serialNoDateManufact,batteryTemperature,voltageBus,temperature,
+created,createdBy,createdByUsr,modified,modifiedBy,modifiedByUsr)
+VALUES
+(serviceOrderId ,plugClean ,plugCleanStatus ,plugCleanComments ,coverClean ,coverCleanStatus ,
+coverCleanComments ,capClean ,capCleanStatus ,capCleanComments ,groundClean ,groundCleanStatus ,
+groundCleanComments ,rackClean ,rackCleanStatus ,rackCleanComments ,serialNoDateManufact ,batteryTemperature ,
+voltageBus ,temperature ,created ,createdBy ,createdByUsr ,modified ,modifiedBy ,modifiedByUsr);
+END$$
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.AddepService
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.AddepService$$
+CREATE PROCEDURE blackstarDb.AddepService (
+   serviceOrderId  int(11)  ,
+   transferType  varchar(50)  ,
+   modelTransfer  varchar(50)  ,
+   modelControl  varchar(50)  ,
+   modelRegVoltage  varchar(50)  ,
+   modelRegVelocity  varchar(50)  ,
+   modelCharger  varchar(50)  ,
+   oilChange  date  ,
+   brandMotor  varchar(50)  ,
+   modelMotor  varchar(50)  ,
+   serialMotor  varchar(50)  ,
+   cplMotor  varchar(50)  ,
+   brandGenerator  varchar(50)  ,
+   modelGenerator  varchar(50)  ,
+   serialGenerator  varchar(50)  ,
+   powerWattGenerator  int(11)  ,
+   tensionGenerator  int(11)  ,
+   tuningDate  date  ,
+   tankCapacity  int(11)  ,
+   pumpFuelModel  varchar(50)  ,
+   filterFuelFlag  bit(1)  ,
+   filterOilFlag  bit(1)  ,
+   filterWaterFlag  bit(1)  ,
+   filterAirFlag  bit(1)  ,
+   brandGear  varchar(50)  ,
+   brandBattery  varchar(50)  ,
+   clockLecture  varchar(50)  ,
+   serviceCorrective  date  ,
+   observations  varchar(50)  ,
+   created  datetime  ,
+   createdBy  varchar(50)  ,
+   createdByUsr  varchar(50)  ,
+   modified  datetime  ,
+   modifiedBy  varchar(50)  ,
+   modifiedByUsr  varchar(50) 
+)
+BEGIN
+
+insert into epService
+(serviceOrderId,brandPE,modelPE,serialPE,transferType,modelTransfer,modelControl,modelRegVoltage,modelRegVelocity,modelCharger,oilChange,brandMotor,modelMotor,serialMotor,cplMotor,brandGenerator,modelGenerator,serialGenerator,powerWattGenerator,tensionGenerator,tuningDate,tankCapacity,pumpFuelModel,filterFuelFlag,filterOilFlag,filterWaterFlag,filterAirFlag,brandGear,brandBattery,clockLecture,serviceCorrective,observations,created,createdBy,createdByUsr,modified,modifiedBy,modifiedByUsr)
+VALUES
+(serviceOrderId,brandPE,modelPE,serialPE,transferType,modelTransfer,modelControl,modelRegVoltage,modelRegVelocity,modelCharger,oilChange,brandMotor,modelMotor,serialMotor,cplMotor,brandGenerator,modelGenerator,serialGenerator,powerWattGenerator,tensionGenerator,tuningDate,tankCapacity,pumpFuelModel,filterFuelFlag,filterOilFlag,filterWaterFlag,filterAirFlag,brandGear,brandBattery,clockLecture,serviceCorrective,observations,created,createdBy,createdByUsr,modified,modifiedBy,modifiedByUsr);
+
+END$$
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.AddepServiceSurvey
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.AddepServiceSurvey$$
+CREATE PROCEDURE blackstarDb.AddepServiceSurvey (
+	epServiceId  int(11)  ,
+   levelOilFlag  bit(1)  ,
+   levelWaterFlag  bit(1)  ,
+   levelBattery  int(11)  ,
+   tubeLeak  bit(1)  ,
+   batteryCap  varchar(50)  ,
+   batterySulfate  varchar(50)  ,
+   levelOil  int(11)  ,
+   heatEngine  varchar(50)  ,
+   hoseOil  varchar(50)  ,
+   hoseWater  varchar(50)  ,
+   tubeValve  varchar(50)  ,
+   stripBlades  varchar(50) 
+)
+BEGIN
+insert into epServiceSurvey
+(epServiceId,levelOilFlag,levelWaterFlag,levelBattery,tubeLeak,batteryCap,batterySulfate,levelOil,heatEngine,hoseOil,hoseWater,tubeValve,stripBlades)
+values
+(epServiceId,levelOilFlag,levelWaterFlag,levelBattery,tubeLeak,batteryCap,batterySulfate,levelOil,heatEngine,hoseOil,hoseWater,tubeValve,stripBlades);
+
+END$$
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.AddepServiceWorkBasic
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.AddepServiceWorkBasic$$
+CREATE PROCEDURE blackstarDb.AddepServiceWorkBasic (
+   epServiceId  int(11)  ,
+   washEngine  bit(1)  ,
+   washRadiator  bit(1)  ,
+   cleanWorkArea  bit(1)  ,
+   conectionCheck  bit(1)  ,
+   cleanTransfer  bit(1)  ,
+   cleanCardControl  bit(1)  ,
+   checkConectionControl  bit(1)  ,
+   checkWinding  bit(1)  ,
+   batteryTests  bit(1)  ,
+   checkCharger  bit(1)  ,
+   checkPaint  bit(1)  ,
+   cleanGenerator  bit(1) 
+)
+BEGIN
+insert into epServiceWorkBasic
+(epServiceId,washEngine,washRadiator,cleanWorkArea,conectionCheck,cleanTransfer,cleanCardControl,checkConectionControl,checkWinding,batteryTests,checkCharger,checkPaint,cleanGenerator)
+values
+(epServiceId,washEngine,washRadiator,cleanWorkArea,conectionCheck,cleanTransfer,cleanCardControl,checkConectionControl,checkWinding,batteryTests,checkCharger,checkPaint,cleanGenerator);
+END$$
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.AddepServiceDynamicTest
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.AddepServiceDynamicTest$$
+CREATE PROCEDURE blackstarDb.AddepServiceDynamicTest (
+   epServiceId  int(11)  ,
+   vacuumFrequency  decimal(10,0)  ,
+   chargeFrequency  decimal(10,0)  ,
+   bootTryouts  int(11)  ,
+   vacuumVoltage  decimal(10,0)  ,
+   chargeVoltage  decimal(10,0)  ,
+   qualitySmoke  decimal(10,0)  ,
+   startTime  int(11)  ,
+   transferTime  int(11)  ,
+   stopTime  int(11) 
+)
+BEGIN
+insert into epServiceDynamicTest
+(epServiceId,vacuumFrequency,chargeFrequency,bootTryouts,vacuumVoltage,chargeVoltage,qualitySmoke,startTime,transferTime,stopTime)
+values
+(epServiceId,vacuumFrequency,chargeFrequency,bootTryouts,vacuumVoltage,chargeVoltage,qualitySmoke,startTime,transferTime,stopTime);
+END$$
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.AddepServiceTestProtection
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.AddepServiceTestProtection$$
+CREATE PROCEDURE blackstarDb.AddepServiceTestProtection (
+   epServiceId  int(11)  ,
+   tempSensor  int(11)  ,
+   oilSensor  int(11)  ,
+   voltageSensor  int(11)  ,
+   overSpeedSensor  int(11)  ,
+   oilPreasureSensor  int(11)  
+)
+BEGIN
+insert into epServiceTestProtection
+(epServiceId,tempSensor,oilSensor,voltageSensor,overSpeedSensor,oilPreasureSensor,waterLevelSensor)
+values
+(epServiceId,tempSensor,oilSensor,voltageSensor,overSpeedSensor,oilPreasureSensor,waterLevelSensor);
+END$$
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.AddepServiceTransferSwitch
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.AddepServiceTransferSwitch$$
+CREATE PROCEDURE blackstarDb.AddepServiceTransferSwitch (
+   epServiceId  int(11)  ,
+   mechanicalStatus  varchar(10)  ,
+   boardClean  bit(1)  ,
+   screwAdjust  bit(1)  ,
+   conectionAdjust  bit(1)  ,
+   systemMotors  varchar(10)  ,
+   electricInterlock  varchar(10)  ,
+   mechanicalInterlock  varchar(10)  ,
+   capacityAmp  int(11)  
+)
+BEGIN
+insert into epServiceTransferSwitch
+(epServiceId,mechanicalStatus,boardClean,screwAdjust,conectionAdjust,systemMotors,electricInterlock,mechanicalInterlock,capacityAmp,lampTest)
+values
+(epServiceId,mechanicalStatus,boardClean,screwAdjust,conectionAdjust,systemMotors,electricInterlock,mechanicalInterlock,capacityAmp,lampTest);
+END$$
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.AddepServiceLectures
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.AddepServiceLectures$$
+CREATE PROCEDURE blackstarDb.AddepServiceLectures (
+   epServiceId  int(11)  ,
+   voltageABAN  int(11)  ,
+   voltageACCN  int(11)  ,
+   voltageBCBN  int(11)  ,
+   voltageNT  int(11)  ,
+   currentA  int(11)  ,
+   currentB  int(11)  ,
+   currentC  int(11)  ,
+   frequency  int(11)  ,
+   oilPreassure  int(11)  ,
+   temp  int(11)  
+)
+BEGIN
+insert into epServiceLectures
+(epServiceId,voltageABAN,voltageACCN,voltageBCBN,voltageNT,currentA,currentB,currentC,frequency,oilPreassure,temp)
+values
+(epServiceId,voltageABAN,voltageACCN,voltageBCBN,voltageNT,currentA,currentB,currentC,frequency,oilPreassure,temp);
+END$$
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.AddepServiceParams
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.AddepServiceParams$$
+CREATE PROCEDURE blackstarDb.AddepServiceParams (
+   epServiceId  int(11)  ,
+   adjsutmentTherm  varchar(10)  ,
+   current  varchar(10)  ,
+   batteryCurrent  varchar(10)  ,
+   clockStatus  varchar(10)  ,
+   trasnferTypeProtection  varchar(10)  ,
+   generatorTypeProtection  varchar(10)  
+)
+BEGIN
+insert into epServiceParams
+(epServiceId,adjsutmentTherm,current,batteryCurrent,clockStatus,trasnferTypeProtection,generatorTypeProtection)
+values
+(epServiceId,adjsutmentTherm,current,batteryCurrent,clockStatus,trasnferTypeProtection,generatorTypeProtection);
+END$$
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.AddplainService
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.AddplainService$$
+CREATE PROCEDURE blackstarDb.AddplainService (
+   serviceOrderId  int(11)  ,
+   troubleDescription  varchar(255)  ,
+   techParam  varchar(255)  ,
+   workDone  varchar(255)  ,
+   materialUsed  varchar(255)  ,
+   observations  varchar(255)  ,
+   created  datetime  ,
+   createdBy  varchar(50)  ,
+   createdByUsr  varchar(50)  ,
+   modified  datetime  ,
+   modifiedBy  varchar(50)  ,
+   modifiedByUsr  varchar(50)  
+)
+BEGIN
+insert into plainService
+(serviceOrderId,troubleDescription,techParam,workDone,materialUsed,observations,created,createdBy,createdByUsr,modified,modifiedBy,modifiedByUsr)
+values
+(serviceOrderId,troubleDescription,techParam,workDone,materialUsed,observations,created,createdBy,createdByUsr,modified,modifiedBy,modifiedByUsr);
 END$$
 -- -----------------------------------------------------------------------------
 	-- FIN DE LOS STORED PROCEDURES
