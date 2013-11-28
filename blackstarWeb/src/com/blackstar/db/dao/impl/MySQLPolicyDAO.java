@@ -155,7 +155,7 @@ public class MySQLPolicyDAO implements PolicyDAO, Serializable {
 
 			ResultSet rs = conn.createStatement().executeQuery(String.format("CALL blackstarDb.GetPolicyBySerialNo('%s');", serialNo));
 			while(rs.next()) {
-				policy = new Policy(rs.getString("officeId").charAt(0), rs.getString("policyTypeId").charAt(0), rs.getString("customerContract"),
+				policy = new Policy( rs.getString("officeId").charAt(0), rs.getString("policyTypeId").charAt(0), rs.getString("customerContract"),
 						rs.getString("customer"), rs.getString("finalUser"), rs.getString("project"), rs.getString("cst"),
 						rs.getString("equipmentTypeId").charAt(0), rs.getString( "brand"), rs.getString("model"),
 						rs.getString("serialNumber"), rs.getString("capacity"), rs.getString("equipmentAddress"),
@@ -167,6 +167,7 @@ public class MySQLPolicyDAO implements PolicyDAO, Serializable {
 						rs.getString("serviceCenterId").charAt(0), rs.getString("observations"), rs.getDate("created"),
 						rs.getString("createdBy"), rs.getString("crratedByUsr"), rs.getDate("modified"),
 						rs.getString("modifiedBy"), rs.getString("modifiedByUsr"));
+				policy.setPolicyId(rs.getInt("policyId"));
 			}
 			
 		}

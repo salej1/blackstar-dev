@@ -50,12 +50,17 @@ public class AirCoServiceController extends AbstractController {
 		  		  {
 		  			  Integer idTicket = Integer.parseInt(idObject);
 		  			  Ticket ticket = daoFactory.getTicketDAO().getTicketById(idTicket);
-		  			  
 		  			  if(ticket.getPolicyId()!=0)
 		  			  {	
 		  				  Policy policy = this.daoFactory.getPolicyDAO().getPolicyById(ticket.getPolicyId());
+		  				  
+		  				  AirCoServiceDTO airCoServiceDTO =new AirCoServiceDTO();
+		  				
+		  				  if(ticket.getServiceId()!=null)
+		  					airCoServiceDTO.setServiceOrderId(Integer.parseInt(ticket.getServiceId().toString()));
+		  				  
 		  				  model.addAttribute("policyDetail", policy);
-		  				  model.addAttribute("serviceOrder", new AirCoServiceDTO());
+		  				  model.addAttribute("serviceOrder", airCoServiceDTO);
 		  			  }
 		  		  }
 		  		  else if( operation==2)
@@ -65,11 +70,15 @@ public class AirCoServiceController extends AbstractController {
 		  			  Integer idOrderService = Integer.parseInt(idObject);
 		  			  serviceOrderDetail = service.getServiceOrderByIdOrNumber(idOrderService,"");
 		  			  			  
+		  			  
 		  			  if(serviceOrderDetail.getPolicyId()!=0)
 		  			  {	
+		  				  AirCoServiceDTO airCoServiceDTO =new AirCoServiceDTO();
+		  				airCoServiceDTO.setServiceOrderId(idOrderService);
+		  				  
 		  				  Policy policy = this.daoFactory.getPolicyDAO().getPolicyById(serviceOrderDetail.getPolicyId());
 		  				  model.addAttribute("policyDetail", policy);
-		  				  model.addAttribute("serviceOrder", new AirCoServiceDTO());
+		  				  model.addAttribute("serviceOrder", airCoServiceDTO);
 		  				  model.addAttribute("serviceOrderDetail", serviceOrderDetail);
 		  			  }  
 		  		  }
@@ -85,16 +94,16 @@ public class AirCoServiceController extends AbstractController {
 		  		  else if(operation ==4)
 		  		  {
 		  			  Integer idOrderService = Integer.parseInt(idObject);
-		  			  AirCoServiceDTO aircoService = service.getAirCoService(idOrderService);
+		  			  AirCoServiceDTO airCoServiceDTO = service.getAirCoService(idOrderService);
 		  			  
 		  			  OrderserviceDTO serviceOrderDetail = null;
-		  			  serviceOrderDetail = service.getServiceOrderByIdOrNumber(aircoService.getServiceOrderId(),"");
+		  			  serviceOrderDetail = service.getServiceOrderByIdOrNumber(airCoServiceDTO.getServiceOrderId(),"");
 		  			  			  
 		  			  if(serviceOrderDetail.getPolicyId()!=0)
 		  			  {	
 		  				  Policy policy = this.daoFactory.getPolicyDAO().getPolicyById(serviceOrderDetail.getPolicyId());
 		  				  model.addAttribute("policyDetail", policy);
-		  				  model.addAttribute("serviceOrder", aircoService);
+		  				  model.addAttribute("serviceOrder", airCoServiceDTO);
 		  				  model.addAttribute("serviceOrderDetail", serviceOrderDetail);
 		  			  }  
 		  		  }

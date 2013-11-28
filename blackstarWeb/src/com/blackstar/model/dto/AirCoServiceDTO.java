@@ -2,7 +2,6 @@ package com.blackstar.model.dto;
 
 import com.blackstar.model.AirCoService;
 
-
 public class AirCoServiceDTO {
 	
 	public AirCoServiceDTO()
@@ -151,6 +150,8 @@ public class AirCoServiceDTO {
 	
 	private Integer aaServiceId;
 	private Integer serviceOrderId;
+	
+	 @NotBlank
 	private String evaDescription;
 	private Double evaValTemp;
 	private Double evaValHum;

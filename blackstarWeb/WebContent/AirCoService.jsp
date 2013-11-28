@@ -45,7 +45,8 @@
 						
 						"Cancelar": function() {
 						$( this ).dialog( "close" );
-					}}
+						}
+						}
 				});
 				
 				// Signature capture box # 2 
@@ -71,86 +72,6 @@
 					}}
 				});
 
-				// inicializando el dialogo para agregar seguimientos
-				initFollowUpDlg("serviceOrder", "osDetail?serviceOrderId=${serviceOrderDetail.serviceOrderId}");
-
-				$('#lbFolio').val('${serviceOrderDetail.serviceOrderNo}');
-				$('#lbCliente').val('${serviceOrderDetail.customer}');
-				$('#lbDomicilio').val('${serviceOrderDetail.equipmentAddress}');
-				$('#fechaLlegada').val('${serviceOrderDetail.serviceDate}');
-				$('#lbTelefono').val('${serviceOrderDetail.contactPhone}');
-				$('#lbEquipo').val('${serviceOrderDetail.equipmentType}');
-				$('#lbMarca').val('${serviceOrderDetail.equipmentBrand}');
-				$('#lbModelo').val('${serviceOrderDetail.equipmentModel}');
-				$('#lbSerie').val('${serviceOrderDetail.equipmentSerialNo}');
-				$('#lbTipoServicio').val('${serviceOrderDetail.serviceType}');
-				$('#lbProyecto').val('${serviceOrderDetail.proyectNumber}');
-				$('#fldObserv').val('${serviceOrderDetail.detailStatus}');
-				$('#lbNombreRecibido').val('${serviceOrderDetail.receivedBy}');
-				$('#lbNombreRealizado').val('${serviceOrderDetail.responsible}');
-				$('#lbFechaSalida').val('${serviceOrderDetail.closed}');
-				$('#lblPuesto').val('${serviceOrderDetail.receivedByPosition}');
-
-				// Signature capture box # 1 
-				$('#leftSign').signature({disabled: true}); 
-				$('#leftSign').signature('draw', '${serviceOrderDetail.signCreated}'); 
-
-				// Signature capture box # 2 
-				$('#rightSign').signature({disabled: true}); 
-				$('#rightSign').signature('draw', '${serviceOrderDetail.signReceivedBy}'); 
-					
-				 $('#evaDescription').val('${serviceOrder.evaDescription}');
-				 $('#evaValTemp').val('${serviceOrder.evaValTemp}');
-				 $('#evaValHum').val('${serviceOrder.evaValHum}');
-				 $('#evaSetpointTemp').val('${serviceOrder.evaSetpointTemp}');
-				 $('#evaSetpointHum').val('${serviceOrder.evaSetpointHum}');
-				 $('#evaFlagCalibration').val('${serviceOrder.evaFlagCalibration}');
-				 $('#evaReviewFilter').val('${serviceOrder.evaReviewFilter}');
-				 $('#evaReviewStrip').val('${serviceOrder.evaReviewStrip}');
-				 $('#evaCleanElectricSystem').val('${serviceOrder.evaCleanElectricSystem}');
-				 $('#evaCleanControlCard').val('${serviceOrder.evaCleanControlCard}');
-				 $('#evaCleanTray').val('${serviceOrder.evaCleanTray}');
-				 $('#evaLectrurePreasureHigh').val('${serviceOrder.evaLectrurePreasureHigh}');
-				 $('#evaLectrurePreasureLow').val('${serviceOrder.evaLectrurePreasureLow}');
-				 $('#evaLectureTemp').val('${serviceOrder.evaLectureTemp}');
-				 $('#evaLectureOilColor').val('${serviceOrder.evaLectureOilColor}');
-				 $('#evaLectureOilLevel').val('${serviceOrder.evaLectureOilLevel}');
-				 $('#evaLectureCoolerColor').val('${serviceOrder.evaLectureCoolerColor}');
-				 $('#evaLectureCoolerLevel').val('${serviceOrder.evaLectureCoolerLevel}');
-				 $('#evaCheckOperatation').val('${serviceOrder.evaCheckOperatation}');
-				 $('#evaCheckNoise').val('${serviceOrder.evaCheckNoise}');
-				 $('#evaCheckIsolated').val('${serviceOrder.evaCheckIsolated}');
-				 $('#evaLectureVoltageGroud').val('${serviceOrder.evaLectureVoltageGroud}');
-				 $('#evaLectureVoltagePhases').val('${serviceOrder.evaLectureVoltagePhases}');
-				 $('#evaLectureVoltageControl').val('${serviceOrder.evaLectureVoltageControl}');
-				 $('#evaLectureCurrentMotor1').val('${serviceOrder.evaLectureCurrentMotor1}');
-				 $('#evaLectureCurrentMotor2').val('${serviceOrder.evaLectureCurrentMotor2}');
-				 $('#evaLectureCurrentMotor3').val('${serviceOrder.evaLectureCurrentMotor3}');
-				 $('#evaLectureCurrentCompressor1').val('${serviceOrder.evaLectureCurrentCompressor1}');
-				 $('#evaLectureCurrentCompressor2').val('${serviceOrder.evaLectureCurrentCompressor2}');
-				 $('#evaLectureCurrentCompressor3').val('${serviceOrder.evaLectureCurrentCompressor3}');
-				 $('#evaLectureCurrentHumidifier1').val('${serviceOrder.evaLectureCurrentHumidifier1}');
-				 $('#evaLectureCurrentHumidifier2').val('${serviceOrder.evaLectureCurrentHumidifier2}');
-				 $('#evaLectureCurrentHumidifier3').val('${serviceOrder.evaLectureCurrentHumidifier3}');
-				 $('#evaLectureCurrentHeater1').val('${serviceOrder.evaLectureCurrentHeater1}');
-				 $('#evaLectureCurrentHeater2').val('${serviceOrder.evaLectureCurrentHeater2}');
-				 $('#evaLectureCurrentHeater3').val('${serviceOrder.evaLectureCurrentHeater3}');
-				 $('#evaCheckFluidSensor').val('${serviceOrder.evaCheckFluidSensor}');
-				 $('#evaRequirMaintenance').val('${serviceOrder.evaRequirMaintenance}');
-				 $('#condReview').val('${serviceOrder.condReview}');
-				 $('#condCleanElectricSystem').val('${serviceOrder.condCleanElectricSystem}');
-				 $('#condClean').val('${serviceOrder.condClean}');
-				 $('#condLectureVoltageGroud').val('${serviceOrder.condLectureVoltageGroud}');
-				 $('#condLectureVoltagePhases').val('${serviceOrder.condLectureVoltagePhases}');
-				 $('#condLectureVoltageControl').val('${serviceOrder.condLectureVoltageControl}');
-				 $('#condLectureMotorCurrent').val('${serviceOrder.condLectureMotorCurrent}');
-				 $('#condReviewThermostat').val('${serviceOrder.condReviewThermostat}');
-				 $('#condModel').val('${serviceOrder.condModel}');
-				 $('#condSerialNumber').val('${serviceOrder.condSerialNumber}');
-				 $('#condBrand').val('${serviceOrder.condBrand}');
-				 $('#observations').val('${serviceOrder.observations}');	
-					
-	 					 
 		});
 	
 	</script> 
@@ -160,47 +81,49 @@
 	<body>
 		
 			<div id="content" class="container_16 clearfix">
+				<form:form  commandName="policyDetail" >
 				<div class="grid_16">					
 					<div class="box">
 						<h2>AIRES ACONDICIONADOS / CHILLER</h2>
 							<table>
 								<tr>
 									<td>Folio:</td>
-									<td><input  id="lbFolio" type="text" style="width:95%;" readOnly="true" /></td>
+									<td><form:input path="customerContract" type="text" style="width:95%;" readOnly="true" /></td>
 									<td colspan="2"><small></small>
 										
 									</td>
 								</tr>
 								<tr>
 									<td>Cliente</td>
-									<td colspan="5"><input id="lbCliente" type="text" style="width:95%;" readOnly="true" /></td>
+									<td colspan="5"><form:input path="customer" type="text" style="width:95%;" readOnly="true" /></td>
 									<td>Contrato/Proyecto</td>
-									<td colspan="3"><input id="lbProyecto" type="text" style="width:95%;" readOnly="true" /></td>
+									<td colspan="3"><form:input path="project" type="text" style="width:95%;" readOnly="true" /></td>
 								</tr>
 								<tr>
 									<td>Domicilio</td>
-									<td colspan="5"><textarea  id="lbDomicilio" style="width:95%;height:50px;" readOnly="true"></textarea></td>
+									<td colspan="5"><form:textarea path="equipmentAddress" style="width:95%;height:50px;" readOnly="true"></form:textarea></td>
 									<td>Telefono</td>
-									<td><input type="text" id="lbTelefono" style="width:95%;" readOnly="true" /></td>
+									<td><form:input type="text" path="contactPhone" style="width:95%;" readOnly="true" /></td>
 								</tr>
 								<tr>
 									<td>Equipo</td>
-									<td><input id="lbEquipo" type="text" style="width:95%;" readOnly="true" /></td>
+									<td><form:input path="equipmentTypeId" type="text" style="width:95%;" readOnly="true" /></td>
 									<td style="padding-left:10px;">Marca</td>
-									<td><input id="lbMarca" type="text" style="width:95%;" readOnly="true" /></td>
+									<td><form:input path="brand" type="text" style="width:95%;" readOnly="true" /></td>
 									<td>Modelo</td>
-									<td><input id="lbModelo" type="text" style="width:95%;" readOnly="true" /></td>
+									<td><form:input path="model" type="text" style="width:95%;" readOnly="true" /></td>
 									<td>Serie</td>
-									<td><input id="lbSerie" type="text" style="width:95%;" readOnly="true" /></td>
+									<td><form:input path="serialNumber" type="text" style="width:95%;" readOnly="true" /></td>
 										
 								</tr>
 								<tr>
 									<td>Fecha y hora de llegada</td>
-									<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true" /></td>
+									<td><form:input path="created" type="text" style="width:95%;" readOnly="true" /></td>
 								</tr>
 							</table>
 						</div>					
 					</div>
+					</form:form>
 					<div class="grid_16">
 						<div class="box">
 						<form:form  commandName="serviceOrder" action="save.do" method="POST">
