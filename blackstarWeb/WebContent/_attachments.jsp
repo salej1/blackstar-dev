@@ -12,7 +12,6 @@
       var uploadView = new google.picker.DocsUploadView().setParent(attachmentFolderId);
       docsView.setParent(attachmentFolderId);
       picker = new google.picker.PickerBuilder()
-          .setAppId("salej1-blackstar-dev")
           .addView(docsView)
           .addView(uploadView)
           .setCallback(pickerCallback)

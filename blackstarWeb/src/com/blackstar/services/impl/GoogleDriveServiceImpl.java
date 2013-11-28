@@ -38,6 +38,7 @@ public class GoogleDriveServiceImpl extends AbstractService
 	osAttachmentFolderId = getFolderId(service, "os_" + serviceOrderId, osAttachmentFolderId);		
 	if(osAttachmentFolderId == null){
 	  osAttachmentFolderId = createFile(service, "os_" + serviceOrderId , null , FOLDER_FILE_TYPE);
+	  setPermissions(service, osAttachmentFolderId);
 	}
 	return osAttachmentFolderId;
   }	
@@ -47,12 +48,12 @@ public class GoogleDriveServiceImpl extends AbstractService
 	Permission p = new Permission();
 	p.setRole("owner");
 	p.setType("user");
-	p.setValue("angela.bermudez.hdez@gmail.com");
+	p.setValue("sergio.gomez@innso.com.mx");
 	service.permissions().insert(fileId, p).execute();
 	p = new Permission();
 	p.setRole("writer");
 	p.setType("domain");
-	p.setValue("gmail.com");
+	p.setValue("innso.com.mx");
 	service.permissions().insert(fileId, p).execute();
   }
   

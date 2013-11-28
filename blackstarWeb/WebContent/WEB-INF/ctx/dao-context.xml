@@ -23,7 +23,7 @@
        
        <bean id="dsBlackStartProd" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">  
              <property name="driverClassName" value="com.mysql.jdbc.GoogleDriver"/>  
-             <property name="url" value="jdbc:google:rdbms://salej1-blackstar-dev:salej1-blackstar-dev/blackstarDb"/>  
+             <property name="url" value="jdbc:google:rdbms://innso-blackstar-dev:innso-blackstar-dev/blackstarDb"/>  
        </bean>
        
        <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
