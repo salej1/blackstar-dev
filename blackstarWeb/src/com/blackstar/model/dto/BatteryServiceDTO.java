@@ -9,7 +9,34 @@ public class BatteryServiceDTO {
 
 	public BatteryServiceDTO()
 	{
-		this.setCells(new ArrayList<BatteryCellServiceDTO>());
+		this.setCells(new ArrayList<BatteryCellServiceDTO>(88));
+	}
+
+	
+	public BatteryServiceDTO(BatteryServicePolicyDTO batteryService)
+	{
+		this.bbServiceId = batteryService.getBbServiceId();
+		this.serviceOrderId = batteryService.getServiceOrderId();		
+		this.plugClean = batteryService.getPlugClean();
+		this.plugCleanStatus = batteryService.getPlugCleanStatus();
+		this.plugCleanComments = batteryService.getPlugCleanComments();
+		this.coverClean = batteryService.getCoverClean();
+		this.coverCleanStatus = batteryService.getCoverCleanStatus();
+		this.coverCleanComments = batteryService.getCoverCleanComments();
+		this.capClean = batteryService.getCapClean();
+		this.capCleanStatus = batteryService.getCapCleanStatus();
+		this.capCleanComments = batteryService.getCapCleanComments();
+		this.groundClean = batteryService.getGroundClean();
+		this.groundCleanStatus = batteryService.getGroundCleanStatus();
+		this.groundCleanComments = batteryService.getGroundCleanComments();
+		this.rackClean = batteryService.getRackClean();
+		this.rackCleanStatus = batteryService.getRackCleanStatus();
+		this.rackCleanComments = batteryService.getRackCleanComments();
+		this.serialNoDateManufact = batteryService.getSerialNoDateManufact();
+		this.batteryTemperature = batteryService.getBatteryTemperature();
+		this.voltageBus = batteryService.getVoltageBus();
+		this.temperature = batteryService.getTemperature();
+		this.cells = batteryService.getCells();
 	}
 	
 	public BatteryServiceDTO(BatteryService batteryService, List<BatteryCellServiceDTO> cells )

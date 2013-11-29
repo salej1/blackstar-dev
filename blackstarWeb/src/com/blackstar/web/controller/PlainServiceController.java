@@ -20,10 +20,8 @@ import com.blackstar.model.Policy;
 import com.blackstar.model.Serviceorder;
 import com.blackstar.model.Ticket;
 import com.blackstar.model.UserSession;
-import com.blackstar.model.dto.AirCoServiceDTO;
-import com.blackstar.model.dto.AirCoServicePolicyDTO;
-import com.blackstar.model.dto.OrderserviceDTO;
 import com.blackstar.model.dto.PlainServiceDTO;
+import com.blackstar.model.dto.PlainServicePolicyDTO;
 import com.blackstar.services.interfaces.ServiceOrderService;
 import com.blackstar.web.AbstractController;
 
@@ -40,9 +38,9 @@ public class PlainServiceController extends AbstractController {
 	  }
 	  
 	  @RequestMapping(value= "/show.do", method = RequestMethod.GET)
-	  public String  aircoservice(@RequestParam(required = true) Integer operation, @RequestParam(required = true) String idObject, ModelMap model)
+	  public String  plainservice(@RequestParam(required = true) Integer operation, @RequestParam(required = true) String idObject, ModelMap model)
 	  {
-		  AirCoServicePolicyDTO airCoServicePolicyDTO =null;
+		  PlainServicePolicyDTO plainServicePolicyDTO =null;
 		  try
 		  {
 			  if(operation!= null && idObject!=null)
@@ -57,8 +55,8 @@ public class PlainServiceController extends AbstractController {
 		  			  Ticket ticket = daoFactory.getTicketDAO().getTicketById(idTicket);
 	  				  Policy policy = this.daoFactory.getPolicyDAO().getPolicyById(ticket.getPolicyId());
 	  				  Equipmenttype equipType = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
-	  				  airCoServicePolicyDTO = new AirCoServicePolicyDTO(policy, equipType.getEquipmentType());
-	  				  model.addAttribute("serviceOrder", airCoServicePolicyDTO);
+	  				  plainServicePolicyDTO = new PlainServicePolicyDTO(policy, equipType.getEquipmentType());
+	  				  model.addAttribute("serviceOrder", plainServicePolicyDTO);
 		  		  }
 		  		  else if( operation==2)
 		  		  {
@@ -66,25 +64,25 @@ public class PlainServiceController extends AbstractController {
 		  			  Serviceorder serviceOrder = this.daoFactory.getServiceOrderDAO().getServiceOrderById(idOrder);
 		  			  Policy policy = this.daoFactory.getPolicyDAO().getPolicyById(serviceOrder.getPolicyId());
 	  				  Equipmenttype equipType = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
-	  				  airCoServicePolicyDTO = new AirCoServicePolicyDTO(policy, equipType.getEquipmentType(), serviceOrder );
-	  				  model.addAttribute("serviceOrder", airCoServicePolicyDTO);
+	  				  plainServicePolicyDTO = new PlainServicePolicyDTO(policy, equipType.getEquipmentType(), serviceOrder );
+	  				  model.addAttribute("serviceOrder", plainServicePolicyDTO);
 		  		  }
 		  		  else if(operation==3)
 		  		  {
 		  			  Policy policy  = this.daoFactory.getPolicyDAO().getPolicyBySerialNo(idObject);
 	  				  Equipmenttype equipType = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
-	  				  airCoServicePolicyDTO = new AirCoServicePolicyDTO(policy, equipType.getEquipmentType());
-	  				  model.addAttribute("serviceOrder", airCoServicePolicyDTO);
+	  				  plainServicePolicyDTO = new PlainServicePolicyDTO(policy, equipType.getEquipmentType());
+	  				  model.addAttribute("serviceOrder", plainServicePolicyDTO);
 		  		  }
 		  		  else if(operation ==4)
 		  		  {
 		  			  Integer idOrderService = Integer.parseInt(idObject);
-		  			  AirCoServiceDTO airCoServiceDTO = service.getAirCoService(idOrderService);
-		  			  Serviceorder serviceOrder = this.daoFactory.getServiceOrderDAO().getServiceOrderById(airCoServiceDTO.getServiceOrderId());
+		  			  PlainServiceDTO plainServiceDTO = service.getPlainService(idOrderService);
+		  			  Serviceorder serviceOrder = this.daoFactory.getServiceOrderDAO().getServiceOrderById(plainServiceDTO.getServiceOrderId());
 		  			  Policy policy = this.daoFactory.getPolicyDAO().getPolicyById(serviceOrder.getPolicyId());
 	  				  Equipmenttype equipType = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
-	  				  airCoServicePolicyDTO = new AirCoServicePolicyDTO(policy, equipType.getEquipmentType(), serviceOrder,  airCoServiceDTO);
-	  				  model.addAttribute("serviceOrder", airCoServicePolicyDTO);
+	  				  plainServicePolicyDTO = new PlainServicePolicyDTO(policy, equipType.getEquipmentType(), serviceOrder,  plainServiceDTO);
+	  				  model.addAttribute("serviceOrder", plainServicePolicyDTO);
 		  		  }
 	  		  }
 			  else
@@ -97,12 +95,12 @@ public class PlainServiceController extends AbstractController {
 				 Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
 		  }
 		  
-		  return "aircoservice";
+		  return "plainservice";
 	  }
 	  
 	    @RequestMapping(value = "/save.do", method = RequestMethod.POST)
 	    public String save( 
-	    		@ModelAttribute("serviceOrder") AirCoServicePolicyDTO serviceOrder,
+	    		@ModelAttribute("serviceOrder") PlainServicePolicyDTO serviceOrder,
 	    		@ModelAttribute(Globals.SESSION_KEY_PARAM)  UserSession userSession,
               ModelMap model, HttpServletRequest req, HttpServletResponse resp)
 	    {
@@ -124,7 +122,7 @@ public class PlainServiceController extends AbstractController {
 	    		servicioOrderSave.setSignCreated(serviceOrder.getSignCreated());
 	    		servicioOrderSave.setSignReceivedBy(serviceOrder.getSignReceivedBy());
 	    		servicioOrderSave.setStatusId("N");
-	    		idServicio = service.saveServiceOrder(servicioOrderSave, "AirCoServiceController", userSession.getUser().getUserName());
+	    		idServicio = service.saveServiceOrder(servicioOrderSave, "PlainServiceController", userSession.getUser().getUserName());
 	    	}
 	    	else
 	    	{
@@ -142,17 +140,16 @@ public class PlainServiceController extends AbstractController {
 	    		servicioOrderSave.setSignCreated(serviceOrder.getSignCreated());
 	    		servicioOrderSave.setSignReceivedBy(serviceOrder.getSignReceivedBy());
 	    		servicioOrderSave.setStatusId("N");
-	    		service.updateServiceOrder(servicioOrderSave, "AirCoServiceController", userSession.getUser().getUserName());
+	    		service.updateServiceOrder(servicioOrderSave, "PlainServiceController", userSession.getUser().getUserName());
 	    	}
 	    	
-	    	if(serviceOrder.getAaServiceId()==null)
+	    	if(serviceOrder.getPlainServiceId()==null)
 	    	{
 	    		serviceOrder.setServiceOrderId(idServicio);
 	    		//Crear orden de servicio de AirCo
-	    		service.saveAirCoService(new AirCoServiceDTO(serviceOrder), "AirCoServiceController", userSession.getUser().getUserName());
+	    		service.savePlainService(new PlainServiceDTO(serviceOrder), "PlainServiceController", userSession.getUser().getUserName());
 	    	}
 
 	    	return "dashboard";
 	    }
-
 	}

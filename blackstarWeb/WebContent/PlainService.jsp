@@ -81,9 +81,7 @@
 	});
 
 	function isNumberKey(evt){
-
-
-	      var charCode = (evt.which) ? evt.which : event.keyCode
+	      var charCode = (evt.which) ? evt.which : event.keyCode;
 	    	         if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57))
 	    	            return false;
 
@@ -97,65 +95,56 @@
 	<body>
 		<div id="content" class="container_16 clearfix">
 		<form:form  commandName="serviceOrder" action="save.do" method="POST">			
-		<!--   CONTENT COLUMN   -->			
 			<div class="grid_16">					
-				<div class="box">
-					<h2>Órden de servicio</h2>
-						<c:if test="${serviceOrderDetail.ticketId gt 0}">
-							<div class="utils">
-									<a id="linkTicket" href="ticketDetail?ticketId=${serviceOrderDetail.ticketId}"> </a>
-							</div>
-						</c:if>
-					<table>
-						<tr>
-							<td>Folio:</td>
-							<td><input  id="lbFolio" type="text" style="width:95%;" readOnly="true" /></td>
-							<td colspan="2"><small></small>
+					<div class="box">
+						<h2>ORDEN DE SERVICIO</h2>
+							<table>
+								<tr>
+									<td>Folio:</td>
+									<td><form:input path="serviceOrderNumber" type="text" style="width:95%;" maxlength="5" /></td>
+									<td colspan="2"><small></small>
+										
+									</td>
+								</tr>
+								<tr>
+									<td>Cliente</td>
+									<td colspan="5"><form:input path="customer" type="text" style="width:95%;" readOnly="true" /></td>
+									<td>No. de ticket</td>
+									<td colspan="3"><form:input path="ticketId" type="text" style="width:95%;" readOnly="true" /></td>
+								</tr>
+								<tr>
+									<td>Domicilio</td>
+									<td colspan="5"><form:textarea path="equipmentAddress" style="width:95%;height:50px;" readOnly="true"></form:textarea></td>
+									<td>Fecha y hora de llegada</td>
+									<td colspan="3"><form:input path="serviceDate" type="text" style="width:95%;" readOnly="true" /></td>
+								</tr>
+								<tr>
+									<td>Solicitante</td>
+									<td colspan="5"><form:textarea path="finalUser" style="width:95%;height:50px;" readOnly="true"></form:textarea></td>
+									<td>Teléfono</td>
+									<td><form:input type="text" path="contactPhone" style="width:95%;" readOnly="true" /></td>
+								</tr>
 								
-							</td>
-						</tr>
-						<tr>
-							<td>Cliente</td>
-							<td colspan="5"><input id="lbCliente" type="text" style="width:95%;" readOnly="true" /></td>
-							<td>No Ticket</td>
-							<td><input  id="lbNoTicket" type="text" style="width:95%;" readOnly="true" /></td>
-						</tr>
-						<tr>
-							<td>Domicilio</td>
-							<td colspan="5"><textarea  id="lbDomicilio" style="width:95%;height:50px;"></textarea></td>
-							<td>Fecha y hora de llegada</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-						</tr>
-						<tr>
-							<td>Solicitante</td>
-							<td colspan="5"><input id="lbSolicitante" type="text" style="width:95%;" readOnly="true" /></td>
-							<td>Telefono</td>
-							<td><input type="text" id="lbTelefono" style="width:95%;" readOnly="true" /></td>
-						</tr>
-						<tr>
-							<td>Equipo</td>
-							<td><input id="lbEquipo" type="text" style="width:95%;" readOnly="true" /></td>
-							<td style="padding-left:10px;">Marca</td>
-							<td><input id="lbMarca" type="text" style="width:95%;" readOnly="true" /></td>
-							<td>Modelo</td>
-							<td><input id="lbModelo" type="text" style="width:95%;" readOnly="true" /></td>
-							<td>Serie</td>
-							<td><input id="lbSerie" type="text" style="width:95%;" readOnly="true" /></td>
-							
-						</tr>
-						<tr>
-							<td>Reporte de falla</td>
-							<td colspan="7"><input id="lbFalla" type="text" style="width:95%;" readOnly="true" /></td>
-						</tr>
-						<tr>
-							<td>Tipo de servicio</td>
-							<td colspan="3"><input id="lbTipoServicio" type="text" style="width:95%;" readOnly="true" /></td>
-							<td>Contrato/Proyecto</td>
-							<td colspan="3"><input id="lbProyecto" type="text" style="width:95%;" readOnly="true" /></td>
-						</tr>							
-					</table>
-				</div>					
-			</div>	
+								<tr>
+									<td>Equipo</td>
+									<td><form:input path="equipmentType" type="text" style="width:95%;" readOnly="true" /></td>
+									<td style="padding-left:10px;">Marca</td>
+									<td><form:input path="brand" type="text" style="width:95%;" readOnly="true" /></td>
+									<td>Modelo</td>
+									<td><form:input path="model" type="text" style="width:95%;" readOnly="true" /></td>
+									<td>Serie</td>
+									<td><form:input path="serialNumber" type="text" style="width:95%;" readOnly="true" /></td>								
+								</tr>
+								<tr>
+									<td>Tipo de servicio:</td>
+									<td colspan="5"><form:input path="customer" type="text" style="width:95%;" readOnly="true" /></td>
+									<td>Contrato / Proyecto</td>
+									<td colspan="3"><form:input path="project" type="text" style="width:95%;" readOnly="true" /></td>
+								</tr>
+
+							</table>
+						</div>					
+					</div>
 			<div class="grid_16">
 				<div class="box">
 					<h2>Detalles</h2>
@@ -168,10 +157,10 @@
 							</thead>
 							<tr>
 								<td style="height:100px;">
-									<textarea id="fldSitEnc" readOnly="true" style="width:100%;height:100%;"></textarea>
+									<form:textarea path="troubleDescription"  style="width:100%;height:100%;"></form:textarea>
 								</td>
 								<td rowspan="3" style="height:100px;">
-									<textarea id="fldTrabReal"  readOnly="true" style="width:100%;height:100%;"></textarea>
+									<form:textarea path="workDone"  style="width:100%;height:100%;"></form:textarea>
 								</td>
 							</tr>
 							<thead>
@@ -181,7 +170,7 @@
 							</thead>
 							<tr>
 								<td style="height:100px;">
-									<textarea  id="lbParametros" readOnly="true" style="width:100%;height:100%;"></textarea>
+									<form:textarea path="techParam"  style="width:100%;height:100%;"></form:textarea>
 								</td>
 							</tr>
 						</table>
@@ -193,7 +182,7 @@
 							</thead>
 							<tr>
 								<td style="height:140px;">
-									<textarea  id="fldReq"  readOnly="true" style="width:100%;height:100%;"></textarea>
+									<form:textarea path="materialUsed"   style="width:100%;height:100%;"></form:textarea>
 								</td>
 							</tr>
 							<thead>
@@ -203,7 +192,7 @@
 							</thead>
 							<tr>
 								<td style="height:140px;">
-									<textarea id="fldObserv"  readOnly="true" style="width:100%;height:100%;"></textarea>
+									<form:textarea path="observations"   style="width:100%;height:100%;"></form:textarea>
 								</td>
 							</tr>
 						</table>

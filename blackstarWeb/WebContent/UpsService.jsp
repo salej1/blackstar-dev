@@ -78,9 +78,7 @@
 	});
 
 	function isNumberKey(evt){
-
-
-	      var charCode = (evt.which) ? evt.which : event.keyCode
+	      var charCode = (evt.which) ? evt.which : event.keyCode;
 	    	         if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57))
 	    	            return false;
 
@@ -94,51 +92,47 @@
 	<body>
 		<div id="content" class="container_16 clearfix">
 		<form:form  commandName="serviceOrder" action="save.do" method="POST">			
-			<div class="grid_16">					
-				<div class="box">
-					<h2>Órden de servicio</h2>
-						<c:if test="${serviceOrderDetail.ticketId gt 0}">
-							<div class="utils">
-									<a id="linkTicket" href="ticketDetail?ticketId=${serviceOrderDetail.ticketId}"> </a>
-							</div>
-						</c:if>
-					<table>
-						<tr>
-							<td>Folio:</td>
-							<td><input  id="lbFolio" type="text" style="width:95%;" readOnly="true" /></td>
-							<td colspan="2"><small></small>
-								
-							</td>
-						</tr>
-						<tr>
-							<td>Cliente</td>
-							<td colspan="5"><input id="lbCliente" type="text" style="width:95%;" readOnly="true" /></td>
-							<td>No Ticket</td>
-							<td><input  id="lbNoTicket" type="text" style="width:95%;" readOnly="true" /></td>
-						</tr>
-						<tr>
-							<td>Domicilio</td>
-							<td colspan="5"><textarea  id="lbDomicilio" style="width:95%;height:50px;"></textarea></td>
-							<td>Telefono</td>
-							<td><input type="text" id="lbTelefono" style="width:95%;" readOnly="true" /></td>
-						</tr>
-						<tr>
-							<td>Marca</td>
-							<td colspan="5"><textarea  id="lbDomicilio" style="width:95%;height:50px;"></textarea></td>
-							<td>Modelo</td>
-							<td><input type="text" id="lbTelefono" style="width:95%;" readOnly="true" /></td>
-							<td>Capacidad</td>
-							<td><input type="text" id="lbTelefono" style="width:95%;" readOnly="true" /></td>
-						</tr>
-						<tr>
-							<td>No. de serie</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-							<td>Fecha y hora de llegada</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-						</tr>
-					</table>
-				</div>					
-			</div>
+				<div class="grid_16">					
+					<div class="box">
+						<h2>UPS</h2>
+							<table>
+								<tr>
+									<td>Folio:</td>
+									<td><form:input path="serviceOrderNumber" type="text" style="width:95%;" maxlength="5" /></td>
+									<td colspan="2"><small></small>
+										
+									</td>
+								</tr>
+								<tr>
+									<td>Cliente</td>
+									<td colspan="5"><form:input path="customer" type="text" style="width:95%;" readOnly="true" /></td>
+									<td>Contrato/Proyecto</td>
+									<td colspan="3"><form:input path="project" type="text" style="width:95%;" readOnly="true" /></td>
+								</tr>
+								<tr>
+									<td>Domicilio</td>
+									<td colspan="5"><form:textarea path="equipmentAddress" style="width:95%;height:50px;" readOnly="true"></form:textarea></td>
+									<td>Telefono</td>
+									<td><form:input type="text" path="contactPhone" style="width:95%;" readOnly="true" /></td>
+								</tr>
+								<tr>
+									<td>Marca</td>
+									<td><form:input path="brand" type="text" style="width:95%;" readOnly="true" /></td>
+									<td>Modelo</td>
+									<td><form:input path="model" type="text" style="width:95%;" readOnly="true" /></td>
+									<td>Capacidad</td>
+									<td><form:input path="capacity" type="text" style="width:95%;" readOnly="true" /></td>
+										
+								</tr>
+								<tr>
+									<td>NO. DE SERIE</td>
+									<td><form:input path="serialNumber" type="text" style="width:95%;" readOnly="true" /></td>
+									<td>Fecha y hora de llegada</td>
+									<td><form:input path="serviceDate" type="text" style="width:95%;"  /></td>
+								</tr>
+							</table>
+						</div>					
+					</div>
 			<div class="grid_16">
 				<div class="box">
 					<table>
@@ -149,104 +143,104 @@
 						</thead>
 						<tr>
 							<td>Estado del equipo encontrado:</td>
-							<td><input id="estatusEquipment" type="text" style="width:95%;" /></td>
+							<td><form:input path="estatusEquipment" type="text" style="width:95%;" /></td>
 							<td>Estado de los capacitores:</td>
-							<td><input id="capacitorStatus" type="text" style="width:95%;" /></td>
+							<td><form:input path="capacitorStatus" type="text" style="width:95%;" /></td>
 						</tr>
 						<tr>
 							<td>Sopleteado:</td>
-							<td><input id="cleaned" type="text" style="width:95%;" /></td>
+							<td><form:checkbox path="cleaned"  style="width:95%;" /></td>
 							<td>Verificación de fusibles y conexiones eléctricas:</td>
-							<td><input id="verifyFuzz" type="text" style="width:95%;" /></td>
+							<td><form:checkbox path="verifyFuzz"  style="width:95%;" /></td>
 						</tr>
 						<tr>
 							<td>Limpieza por aspirado y brocha:</td>
-							<td><input id="hooverClean" type="text" style="width:95%;" /></td>
+							<td><form:checkbox path="hooverClean"  style="width:95%;" /></td>
 							<td>Revisión y verificación del rectificador/cargador:</td>
-							<td><input id="chargerReview" type="text" style="width:95%;" /></td>
+							<td><form:checkbox path="chargerReview"  style="width:95%;" /></td>
 						</tr>
 						<tr>
 							<td>Verificación de conexiones y reapriete tornillería:</td>
-							<td><input id="verifyConnections" type="text" style="width:95%;" /></td>
+							<td><form:checkbox path="verifyConnections"  style="width:95%;" /></td>
 							<td>Estado de ventiladores:</td>
-							<td><input id="fanStatus" type="text" style="width:95%;" /></td>
+							<td><form:input path="fanStatus" type="text" style="width:95%;" /></td>
 						</tr>
 						<tr>
 							<td><b>BANCO DE BATERIAS:</b></td>
 						</tr>
 						<tr>
 							<td>Reapriete de puentes/conectores:</td>
-							<td><input id="checkConnectors" type="text" style="width:95%;" /></td>
+							<td><form:checkbox path="checkConnectors"  style="width:95%;" /></td>
 							<td>Temperatura ambiente:</td>
-							<td><input id="temp" type="text" style="width:95%;" /></td>
+							<td><form:input path="temp" type="text" style="width:95%;" onkeypress='return isNumberKey(event)'/></td>
 						</tr>
 						<tr>
 							<td>Verificación de fugas/sulfataciones:</td>
-							<td><input id="cverifyOutflow" type="text" style="width:95%;" /></td>
+							<td><form:checkbox path="cverifyOutflow"  style="width:95%;" /></td>
 							<td>Pruebas de carga y descarga:</td>
-							<td><input id="chargeTest" type="text" style="width:95%;" /></td>
+							<td><form:input path="chargeTest" type="text" style="width:95%;" /></td>
 						</tr>
 						<tr>
 							<td>No de baterías:</td>
-							<td><input id="numberBatteries" type="text" style="width:95%;" /></td>
+							<td><form:input path="numberBatteries" type="text" style="width:95%;" onkeypress='return isNumberKey(event)'/></td>
 							<td>Marca, modelo, capacidad:</td>
-							<td><input id="brandModel" type="text" style="width:95%;" /></td>
+							<td><form:input path="brandModel" type="text" style="width:95%;" /></td>
 						</tr>
 						<tr>
 							<td>Fecha o serie de fabricación:</td>
-							<td><input id="manufacturedDateSerial" type="text" style="width:95%;" /></td>
+							<td><form:input path="manufacturedDateSerial" type="text" style="width:95%;" /></td>
 							<td>Voltaje promedio de baterías:</td>
-							<td><input id="batteryVoltage" type="text" style="width:95%;" /></td>
+							<td><form:input path="batteryVoltage" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' /></td>
 						</tr>
 						<tr>
 							<td>Baterías dañadas (cant y voltaje de c/carga):</td>
-							<td colspan="3"><input id="damageBatteries" type="text" style="width:95%;" /></td>
+							<td colspan="3"><form:input path="damageBatteries" type="text" style="width:95%;" /></td>
 						</tr>
 						<tr>
 							<td>Otro (modelo banco externo)):</td>
-							<td colspan="3"><input id="other" type="text" style="width:95%;" /></td>
+							<td colspan="3"><form:input path="other" type="text" style="width:95%;" /></td>
 						</tr>
 						<tr>
 							<td colspan="4"><b>PRUEBAS GENERALES: (Solicitar autorización para pruebas)</b></td>
 						</tr>
 						<tr>
 							<td>Transferencia  y re-transferencia a línea comercial:</td>
-							<td><input id="trasferLine" type="text" style="width:95%;" /></td>
+							<td><form:input path="trasferLine" type="text" style="width:95%;" onkeypress='return isNumberKey(event)'/></td>
 							<td>Respaldo de baterías con falla en línea:</td>
-							<td><input id="backupBatteries" type="text" style="width:95%;" /></td>
+							<td><form:input path="backupBatteries" type="text" style="width:95%;" onkeypress='return isNumberKey(event)'/></td>
 						</tr>
 						<tr>
 							<td>Transferencia y re-transferencia con planta de emergencia:</td>
-							<td><input id="transferEmergencyPlant" type="text" style="width:95%;" /></td>
+							<td><form:input path="transferEmergencyPlant" type="text" style="width:95%;" onkeypress='return isNumberKey(event)'/></td>
 							<td>Verificación de voltaje de baterías y de salida durante las pruebas:</td>
-							<td><input id="verifyVoltage" type="text" style="width:95%;" /></td>
+							<td><form:input path="verifyVoltage" type="text" style="width:95%;" onkeypress='return isNumberKey(event)'/></td>
 						</tr>
 						<tr>
 							<td><b>PARÁMETROS DE OPERACIÓN:</b></td>
 						</tr>
 						<tr>
 							<td>Voltaje entrada fase a fase:</td>
-							<td><input id="inputVoltagePhase" type="text" style="width:95%;" /></td>
+							<td><form:input path="inputVoltagePhase" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' /></td>
 							<td>Voltaje salida fase a fase:</td>
-							<td><input id="outputVoltagePhase" type="text" style="width:95%;" /></td>
+							<td><form:input path="outputVoltagePhase" type="text" style="width:95%;" onkeypress='return isNumberKey(event)'/></td>
 						</tr>
 						<tr>
 							<td>Voltaje entrada fase a neutro:</td>
-							<td><input id="inputVoltageNeutro" type="text" style="width:95%;" /></td>
+							<td><form:input path="inputVoltageNeutro" type="text" style="width:95%;" onkeypress='return isNumberKey(event)'/></td>
 							<td>Voltaje salida fase a neutro:</td>
-							<td><input id="outputVoltageNeutro" type="text" style="width:95%;" /></td>
+							<td><form:input path="outputVoltageNeutro" type="text" style="width:95%;" onkeypress='return isNumberKey(event)'/></td>
 						</tr>
 						<tr>
 							<td>Voltaje entre neutro y tierra:</td>
-							<td><input id="inputVoltageNeutroGround" type="text" style="width:95%;" /></td>
+							<td><form:input path="inputVoltageNeutroGround" type="text" style="width:95%;" onkeypress='return isNumberKey(event)'/></td>
 							<td>Frec. entrada/salida:</td>
-							<td><input id="inOutFrecuency" type="text" style="width:95%;" /></td>
+							<td><form:input path="inOutFrecuency" type="text" style="width:95%;" onkeypress='return isNumberKey(event)'/></td>
 						</tr>
 						<tr>
 							<td>Porcentaje de carga o corriente:</td>
-							<td><input id="percentCharge" type="text" style="width:95%;" /></td>
+							<td><form:input path="percentCharge" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' /></td>
 							<td>Frec. entrada/salida:</td>
-							<td><input id="busVoltage" type="text" style="width:95%;" /></td>
+							<td><form:input path="busVoltage" type="text" style="width:95%;"  onkeypress='return isNumberKey(event)'/></td>
 						</tr>
 					</table>
 					<table>
@@ -260,7 +254,7 @@
 						</tr>
 						<tr>
 							<td style="height:140px;">
-								<textarea id="fldObserv"  readOnly="true" style="width:100%;height:100%;"></textarea>
+								<form:textarea path="observations" readOnly="true" style="width:100%;height:100%;"></form:textarea>
 							</td>
 						</tr>
 						

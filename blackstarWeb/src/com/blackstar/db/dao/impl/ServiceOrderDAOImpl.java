@@ -461,11 +461,12 @@ public class ServiceOrderDAOImpl extends AbstractDAO implements ServiceOrderDAO 
 		getJdbcTemplate().update(sqlBuilder.toString() ,args);
 		
 		sqlBuilder = new StringBuilder();
-		sqlBuilder.append("CALL AddepServiceTransferSwitch(?,?,?,?,?,?,?,?,?)");
+		sqlBuilder.append("CALL AddepServiceTransferSwitch(?,?,?,?,?,?,?,?,?,?)");
 		args = new Object []{
 								idOs,
 								""+service.getMechanicalStatus(),
 								service.getBoardClean(),
+								service.getLampTest(),
 								service.getScrewAdjust(),
 								service.getConectionAdjust(),
 								""+service.getSystemMotors()+"",

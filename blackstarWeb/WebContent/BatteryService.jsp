@@ -79,9 +79,7 @@
 	});
 
 	function isNumberKey(evt){
-
-
-	      var charCode = (evt.which) ? evt.which : event.keyCode
+	      var charCode = (evt.which) ? evt.which : event.keyCode;
 	    	         if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57))
 	    	            return false;
 
@@ -95,41 +93,47 @@
 	<body>
 		<div id="content" class="container_16 clearfix">
 		<form:form  commandName="serviceOrder" action="save.do" method="POST">			
-			<div class="grid_16">					
-				<div class="box">
-					<h2>Órden de servicio</h2>
-						<c:if test="${serviceOrderDetail.ticketId gt 0}">
-							<div class="utils">
-									<a id="linkTicket" href="ticketDetail?ticketId=${serviceOrderDetail.ticketId}"> </a>
-							</div>
-						</c:if>
-					<table>
-						<tr>
-							<td>Folio:</td>
-							<td><input  id="lbFolio" type="text" style="width:95%;" readOnly="true" /></td>
-							<td colspan="2"><small></small>
-								
-							</td>
-						</tr>
-						<tr>
-							<td>Cliente</td>
-							<td colspan="5"><input id="lbCliente" type="text" style="width:95%;" readOnly="true" /></td>
-							<td>No Ticket</td>
-							<td><input  id="lbNoTicket" type="text" style="width:95%;" readOnly="true" /></td>
-						</tr>
-						<tr>
-							<td>Domicilio</td>
-							<td colspan="5"><textarea  id="lbDomicilio" style="width:95%;height:50px;"></textarea></td>
-							<td>Telefono</td>
-							<td><input type="text" id="lbTelefono" style="width:95%;" readOnly="true" /></td>
-						</tr>
-						<tr>
-							<td>Fecha y hora de llegada</td>
-							<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
-						</tr>
-					</table>
-				</div>					
-			</div>
+							<div class="grid_16">					
+					<div class="box">
+						<h2>BATERIAS</h2>
+							<table>
+								<tr>
+									<td>Folio:</td>
+									<td><form:input path="serviceOrderNumber" type="text" style="width:95%;" maxlength="5" /></td>
+									<td colspan="2"><small></small>
+										
+									</td>
+								</tr>
+								<tr>
+									<td>Cliente</td>
+									<td colspan="5"><form:input path="customer" type="text" style="width:95%;" readOnly="true" /></td>
+									<td>Contrato/Proyecto</td>
+									<td colspan="3"><form:input path="project" type="text" style="width:95%;" readOnly="true" /></td>
+								</tr>
+								<tr>
+									<td>Domicilio</td>
+									<td colspan="5"><form:textarea path="equipmentAddress" style="width:95%;height:50px;" readOnly="true"></form:textarea></td>
+									<td>Telefono</td>
+									<td><form:input type="text" path="contactPhone" style="width:95%;" readOnly="true" /></td>
+								</tr>
+								<tr>
+									<td>Marca</td>
+									<td><form:input path="brand" type="text" style="width:95%;" readOnly="true" /></td>
+									<td>Modelo</td>
+									<td><form:input path="model" type="text" style="width:95%;" readOnly="true" /></td>
+									<td>Capacidad</td>
+									<td><form:input path="capacity" type="text" style="width:95%;" readOnly="true" /></td>
+										
+								</tr>
+								<tr>
+									<td>NO. DE SERIE</td>
+									<td><form:input path="serialNumber" type="text" style="width:95%;" readOnly="true" /></td>
+									<td>Fecha y hora de llegada</td>
+									<td><form:input path="serviceDate" type="text" style="width:95%;"  /></td>
+								</tr>
+							</table>
+						</div>					
+					</div>
 			<div class="grid_16">
 				<div class="box">				
 					<table>
@@ -142,41 +146,41 @@
 						</thead>
 						<tr>
 							<td>CONECTORES / TERMINALES</td>
-							<td><input id="plugClean" type="text" style="width:95%;" /></td>
-							<td><input id="plugCleanStatus" type="text" style="width:95%;" /></td>
-							<td><input id="plugCleanComments" type="text" style="width:95%;" /></td>
+							<td><form:checkbox path="plugClean"  style="width:95%;" /></td>
+							<td><form:input path="plugCleanStatus" type="text" style="width:95%;" /></td>
+							<td><form:input path="plugCleanComments" type="text" style="width:95%;" /></td>
 						</tr>
 						<tr>
 							<td>CUBIERTA</td>
-							<td><input id="coverClean" type="text" style="width:95%;" /></td>
-							<td><input id="coverCleanStatus" type="text" style="width:95%;" /></td>
-							<td><input id="coverCleanComments" type="text" style="width:95%;" /></td>
+							<td><form:checkbox path="coverClean"  style="width:95%;" /></td>
+							<td><form:input path="coverCleanStatus" type="text" style="width:95%;" /></td>
+							<td><form:input path="coverCleanComments" type="text" style="width:95%;" /></td>
 						</tr>
 						<tr>
 							<td>TAPONES</td>
-							<td><input id="capClean" type="text" style="width:95%;" /></td>
-							<td><input id="capCleanStatus" type="text" style="width:95%;" /></td>
-							<td><input id="capCleanComments" type="text" style="width:95%;" /></td>
+							<td><form:checkbox path="capClean"  style="width:95%;" /></td>
+							<td><form:input path="capCleanStatus" type="text" style="width:95%;" /></td>
+							<td><form:input path="capCleanComments" type="text" style="width:95%;" /></td>
 						</tr>
 						<tr>
 							<td>TIERRA FÍSICA</td>
-							<td><input id="groundClean" type="text" style="width:95%;" /></td>
-							<td><input id="groundCleanStatus" type="text" style="width:95%;" /></td>
-							<td><input id="groundCleanComments" type="text" style="width:95%;" /></td>
+							<td><form:checkbox path="groundClean"  style="width:95%;" /></td>
+							<td><form:input path="groundCleanStatus" type="text" style="width:95%;" /></td>
+							<td><form:input path="groundCleanComments" type="text" style="width:95%;" /></td>
 						</tr>
 						<tr>
 							<td>ESTANTE/GABINETE/RACK</td>
-							<td><input id="rackClean" type="text" style="width:95%;" /></td>
-							<td><input id="rackCleanStatus" type="text" style="width:95%;" /></td>
-							<td><input id="rackCleanComments" type="text" style="width:95%;" /></td>
+							<td><form:checkbox path="rackClean"  style="width:95%;" /></td>
+							<td><form:input path="rackCleanStatus" type="text" style="width:95%;" /></td>
+							<td><form:input path="rackCleanComments" type="text" style="width:95%;" /></td>
 						</tr>
 						<tr>
 							<td>NO DE SERIE, LOTE, FECHA DE FABRICACIÓN</td>
-							<td colspan="2"><input id="serialNoDateManufact" type="text" style="width:98%;" /></td>
+							<td colspan="2"><form:input path="serialNoDateManufact" type="text" style="width:98%;" /></td>
 						</tr>
 						<tr>
 							<td>TEMPERATURA PROMEDIO BATERÍAS </td>
-							<td colspan="2"><input id="batteryTemperature" type="text" style="width:98%;" /></td>
+							<td colspan="2"><form:input path="batteryTemperature" type="text" style="width:98%;" /></td>
 						</tr>
 					</table>
 					<br/>
@@ -184,10 +188,10 @@
 					<table>
 						<tr>
 							<td>VOLTAJE DE FLOTACIÓN DEL BUS:</td>
-							<td><input id="voltageBus" type="text" style="width:95%;" /></td>
+							<td><form:input path="voltageBus" type="text" style="width:95%;"  onkeypress='return isNumberKey(event)'/></td>
 							<td>V.C.D.</td>
 							<td>TEMPERATURA AMBIENTE::</td>
-							<td><input id="temperature" type="text" style="width:95%;" /> </td>
+							<td><form:input path="temperature" type="text" style="width:95%;" onkeypress='return isNumberKey(event)'/> </td>
 							<td>°C</td>
 						</tr>
 					</table>
@@ -210,17 +214,41 @@
 						<c:forEach var="i" begin="1" end="22">
 							<tr>
 								<td><c:out value="${i}"/></td>
-								<td><input id='VF${i}' type="text" style="width:95%;" /></td>
-								<td><input id='VC${i}' type="text" style="width:95%;" /></td>
+								<td>
+									<form:hidden path="cells[${i}].cellNumber" value="${i}"/>
+									<form:input path="cells[${i}].floatVoltage"  type="text" style="width:95%;" onkeypress='return isNumberKey(event)'/>
+								</td>
+								<td>
+									<form:input path="cells[${i}].chargeVoltage"  type="text" style="width:95%;" onkeypress='return isNumberKey(event)'/>
+								</td>
+								
 								<td><c:out value="${i+22}"/></td>
-								<td><input id='VF${i+22}' type="text" style="width:95%;" /></td>
-								<td><input id='VC${i+22}' type="text" style="width:95%;" /></td>
+								<td>
+									<form:hidden path="cells[${i+22}].cellNumber" value="${i+22}"/>
+									<form:input path="cells[${i+22}].floatVoltage"  type="text" style="width:95%;" onkeypress='return isNumberKey(event)'/>
+								</td>
+								<td>
+									<form:input path="cells[${i+22}].chargeVoltage"  type="text" style="width:95%;" onkeypress='return isNumberKey(event)'/>
+								</td>
+								
 								<td><c:out value="${i+44}"/></td>
-								<td><input id='VF${i+44}' type="text" style="width:95%;" /></td>
-								<td><input id='VC${i+44}' type="text" style="width:95%;" /></td>
+								<td>
+									<form:hidden path="cells[${i+44}].cellNumber" value="${i+44}"/>
+									<form:input path="cells[${i+44}].floatVoltage"  type="text" style="width:95%;" onkeypress='return isNumberKey(event)'/>
+								</td>
+								<td>
+									<form:input path="cells[${i+44}].chargeVoltage"  type="text" style="width:95%;" onkeypress='return isNumberKey(event)'/>
+								</td>
+								
 								<td><c:out value="${i+66}"/></td>
-								<td><input id='VF${i+66}' type="text" style="width:95%;" /></td>
-								<td><input id='VC${i+66}' type="text" style="width:95%;" /></td>
+								<td>
+									<form:hidden path="cells[${i+66}].cellNumber" value="${i+66}"/>
+									<form:input path="cells[${i+66}].floatVoltage"  type="text" style="width:95%;" onkeypress='return isNumberKey(event)'/>
+								</td>
+								<td>
+									<form:input path="cells[${i+66}].chargeVoltage"  type="text" style="width:95%;" onkeypress='return isNumberKey(event)'/>
+								</td>
+								
 					   		</tr>
 						</c:forEach>
 					</table>

@@ -2,25 +2,104 @@ package com.blackstar.model.dto;
 
 import java.util.Date;
 
-import com.blackstar.model.EmergencyPlantService;
-import com.blackstar.model.EmergencyPlantServiceDynamicTest;
-import com.blackstar.model.EmergencyPlantServiceLectures;
-import com.blackstar.model.EmergencyPlantServiceParams;
-import com.blackstar.model.EmergencyPlantServiceSurvey;
-import com.blackstar.model.EmergencyPlantServiceTestProtection;
-import com.blackstar.model.EmergencyPlantServiceTransferSwitch;
-import com.blackstar.model.EmergencyPlantServiceWorkBasic;
+import com.blackstar.model.Policy;
+import com.blackstar.model.Serviceorder;
 
-public class EmergencyPlantServiceDTO {
+public class EmergencyPlantServicePolicyDTO {
 	
-	public EmergencyPlantServiceDTO()
-	{}
-	
-	
-	
-	public EmergencyPlantServiceDTO(EmergencyPlantServicePolicyDTO emergencyPlantService)
+	public EmergencyPlantServicePolicyDTO()
 	{
-		this.serviceOrderId = emergencyPlantService.getServiceOrderId();
+		this.closed = new Date();
+		this.serviceDate = new Date();
+	}
+	
+	public EmergencyPlantServicePolicyDTO(Policy policy, String equipmentType)
+	{
+		this.policyId = policy.getPolicyId();
+		this.customer = policy.getCustomer();
+		this.finalUser = policy.getFinalUser();
+		this.project = policy.getProject();
+		this.equipmentTypeId = policy.getEquipmentTypeId();
+		this.equipmentType =equipmentType;
+		this.brand = policy.getBrand();
+		this.model =policy.getModel();
+		this.serialNumber = policy.getSerialNumber();
+		this.capacity = policy.getCapacity();
+		this.equipmentAddress = policy.getEquipmentAddress();
+		this.officeId = policy.getOfficeId();
+		this.contactName = policy.getContactName();
+		this.contactPhone = policy.getContactPhone();
+		
+		this.closed = new Date();
+		this.serviceDate = new Date();
+	}
+	
+	public EmergencyPlantServicePolicyDTO(Policy policy, String equipmentType, Serviceorder serviceOrder)
+	{
+		this.policyId = policy.getPolicyId();
+		this.customer = policy.getCustomer();
+		this.finalUser = policy.getFinalUser();
+		this.project = policy.getProject();
+		this.equipmentTypeId = policy.getEquipmentTypeId();
+		this.equipmentType =equipmentType;
+		this.brand = policy.getBrand();
+		this.model =policy.getModel();
+		this.serialNumber = policy.getSerialNumber();
+		this.capacity = policy.getCapacity();
+		this.equipmentAddress = policy.getEquipmentAddress();
+		this.officeId = policy.getOfficeId();
+		this.contactName = policy.getContactName();
+		this.contactPhone = policy.getContactPhone();
+		
+		this.serviceOrderId = serviceOrder.getServiceOrderId();
+		this.ticketId = serviceOrder.getTicketId();
+		this.serviceDate = serviceOrder.getServiceDate();
+		this.responsible = serviceOrder.getResponsible();
+		this.receivedBy = serviceOrder.getReceivedBy();
+		this.serviceStatusId = serviceOrder.getStatusId();
+		this.closed = serviceOrder.getClosed();
+		this.consultant = serviceOrder.getConsultant();
+		this.coordinator = serviceOrder.getCoordinator();
+		this.asignee = serviceOrder.getAsignee();
+		this.signCreated = serviceOrder.getSignCreated();
+		this.signReceivedBy = serviceOrder.getsignReceivedBy();
+		this.receivedByPosition = serviceOrder.getReceivedByPosition();
+		this.serviceOrderNumber = serviceOrder.getServiceOrderNumber();
+		
+	}
+	
+	public EmergencyPlantServicePolicyDTO(Policy policy, String equipmentType, Serviceorder serviceOrder,  EmergencyPlantServiceDTO emergencyPlantService)
+	{
+		this.policyId = policy.getPolicyId();
+		this.customer = policy.getCustomer();
+		this.finalUser = policy.getFinalUser();
+		this.project = policy.getProject();
+		this.equipmentTypeId = policy.getEquipmentTypeId();
+		this.equipmentType =equipmentType;
+		this.brand = policy.getBrand();
+		this.model =policy.getModel();
+		this.serialNumber = policy.getSerialNumber();
+		this.capacity = policy.getCapacity();
+		this.equipmentAddress = policy.getEquipmentAddress();
+		this.officeId = policy.getOfficeId();
+		this.contactName = policy.getContactName();
+		this.contactPhone = policy.getContactPhone();
+		
+		this.serviceOrderId = serviceOrder.getServiceOrderId();
+		this.ticketId = serviceOrder.getTicketId();
+		this.serviceDate = serviceOrder.getServiceDate();
+		this.responsible = serviceOrder.getResponsible();
+		this.receivedBy = serviceOrder.getReceivedBy();
+		this.serviceStatusId = serviceOrder.getStatusId();
+		this.closed = serviceOrder.getClosed();
+		this.consultant = serviceOrder.getConsultant();
+		this.coordinator = serviceOrder.getCoordinator();
+		this.asignee = serviceOrder.getAsignee();
+		this.signCreated = serviceOrder.getSignCreated();
+		this.signReceivedBy = serviceOrder.getsignReceivedBy();
+		this.receivedByPosition = serviceOrder.getReceivedByPosition();
+		this.serviceOrderNumber = serviceOrder.getServiceOrderNumber();
+		
 		this.epServiceId = emergencyPlantService.getEpServiceId();
 		this.brandPE = emergencyPlantService.getBrandPE();
 		this.modelPE  = emergencyPlantService.getModelPE();
@@ -133,280 +212,37 @@ public class EmergencyPlantServiceDTO {
 		this.generatorTypeProtection = emergencyPlantService.getGeneratorTypeProtection();
 	}
 	
-	
-	
-	
-	public EmergencyPlantServiceDTO( EmergencyPlantService emergencyPlantService, EmergencyPlantServiceSurvey emergencyPlantServiceSurvey, EmergencyPlantServiceWorkBasic emergencyPlantServiceWorkBasic, 
-									EmergencyPlantServiceDynamicTest emergencyPlantServiceDynamicTest, EmergencyPlantServiceTestProtection emergencyPlantServiceTestProtection,
-									EmergencyPlantServiceTransferSwitch emergencyPlantServiceTransferSwitch, EmergencyPlantServiceLectures emergencyPlantServiceLectures,
-									EmergencyPlantServiceParams emergencyPlantServiceParams)
-	{
-		this.epServiceId = emergencyPlantService.getEpServiceId();
-		this.serviceOrderId = emergencyPlantService.getServiceOrderId();
-		
-		this.brandPE = emergencyPlantService.getBrandPE();
-		this.modelPE  = emergencyPlantService.getModelPE();
-		this.serialPE  = emergencyPlantService.getSerialPE();
-		this.transferType = emergencyPlantService.getTransferType();
-		this.modelTransfer = emergencyPlantService.getModelTransfer();
-		this.modelControl = emergencyPlantService.getModelControl();
-		this.modelRegVoltage = emergencyPlantService.getModelRegVoltage();
-		this.modelRegVelocity = emergencyPlantService.getModelRegVelocity();
-		this.modelCharger = emergencyPlantService.getModelCharger();
-		this.oilChange = emergencyPlantService.getOilChange();
-		this.brandMotor = emergencyPlantService.getBrandMotor();
-		this.modelMotor = emergencyPlantService.getModelMotor();
-		this.serialMotor = emergencyPlantService.getSerialMotor();
-		this.cplMotor = emergencyPlantService.getCplMotor();
-		this.brandGenerator = emergencyPlantService.getBrandGenerator();
-		this.modelGenerator = emergencyPlantService.getModelGenerator();
-		this.serialGenerator = emergencyPlantService.getSerialGenerator();
-		this.powerWattGenerator = emergencyPlantService.getPowerWattGenerator();
-		this.tensionGenerator = emergencyPlantService.getTensionGenerator();
-		this.tuningDate = emergencyPlantService.getTuningDate();
-		this.tankCapacity = emergencyPlantService.getTankCapacity();
-		this.pumpFuelModel = emergencyPlantService.getPumpFuelModel();
-		this.filterFuelFlag = emergencyPlantService.getFilterFuelFlag();
-		this.filterOilFlag = emergencyPlantService.getFilterOilFlag();
-		this.filterWaterFlag = emergencyPlantService.getFilterWaterFlag();
-		this.filterAirFlag = emergencyPlantService.getFilterAirFlag();
-		this.brandGear = emergencyPlantService.getBrandGear();
-		this.brandBattery = emergencyPlantService.getBrandBattery();
-		this.clockLecture = emergencyPlantService.getClockLecture();
-		this.serviceCorrective = emergencyPlantService.getServiceCorrective();
-		this.observations = emergencyPlantService.getObservations();
-		
-		this.epServiceSurveyId = emergencyPlantServiceSurvey.getEpServiceSurveyId();
-		this.levelOilFlag =  emergencyPlantServiceSurvey.getLevelOilFlag();
-		this.levelWaterFlag =  emergencyPlantServiceSurvey.getLevelWaterFlag();
-		this.levelBattery =  emergencyPlantServiceSurvey.getLevelBattery();
-		this.tubeLeak =  emergencyPlantServiceSurvey.getTubeLeak();
-		this.batteryCap =  emergencyPlantServiceSurvey.getBatteryCap();
-		this.batterySulfate =  emergencyPlantServiceSurvey.getBatterySulfate();
-		this.levelOil =  emergencyPlantServiceSurvey.getLevelOil();
-		this.heatEngine =  emergencyPlantServiceSurvey.getHeatEngine();
-		this.hoseOil =  emergencyPlantServiceSurvey.getHoseOil();
-		this.hoseWater =  emergencyPlantServiceSurvey.getHoseWater();
-		this.tubeValve =  emergencyPlantServiceSurvey.getTubeValve();
-		this.stripBlades =  emergencyPlantServiceSurvey.getStripBlades();
-		
-		this.epServiceWorkBasicId = emergencyPlantServiceWorkBasic.getEpServiceWorkBasicId();
-		this.washEngine = emergencyPlantServiceWorkBasic.getWashEngine();
-		this.washRadiator = emergencyPlantServiceWorkBasic.getWashRadiator();
-		this.cleanWorkArea = emergencyPlantServiceWorkBasic.getCleanWorkArea();
-		this.conectionCheck = emergencyPlantServiceWorkBasic.getConectionCheck();
-		this.cleanTransfer = emergencyPlantServiceWorkBasic.getCleanTransfer();
-		this.cleanCardControl = emergencyPlantServiceWorkBasic.getCleanCardControl();
-		this.checkConectionControl = emergencyPlantServiceWorkBasic.getCheckConectionControl();
-		this.checkWinding = emergencyPlantServiceWorkBasic.getCheckWinding();
-		this.batteryTests = emergencyPlantServiceWorkBasic.getBatteryTests();
-		this.checkCharger = emergencyPlantServiceWorkBasic.getCheckCharger();
-		this.checkPaint = emergencyPlantServiceWorkBasic.getCheckPaint();
-		this.cleanGenerator = emergencyPlantServiceWorkBasic.getCleanGenerator();
-		
-		this.epServiceDynamicTestId = emergencyPlantServiceDynamicTest.getEpServiceDynamicTestId();
-		this.vacuumFrequency = emergencyPlantServiceDynamicTest.getVacuumFrequency();
-		this.chargeFrequency = emergencyPlantServiceDynamicTest.getChargeFrequency();
-		this.bootTryouts = emergencyPlantServiceDynamicTest.getBootTryouts();
-		this.vacuumVoltage = emergencyPlantServiceDynamicTest.getVacuumVoltage();
-		this.chargeVoltage = emergencyPlantServiceDynamicTest.getChargeVoltage();
-		this.qualitySmoke = emergencyPlantServiceDynamicTest.getQualitySmoke();
-		this.startTime = emergencyPlantServiceDynamicTest.getStartTime();
-		this.transferTime = emergencyPlantServiceDynamicTest.getTransferTime();
-		this.stopTime = emergencyPlantServiceDynamicTest.getStopTime();
-		
-		this.epServiceTestProtectionId = emergencyPlantServiceTestProtection.getEpServiceTestProtectionId();
-		this.tempSensor = emergencyPlantServiceTestProtection.getTempSensor();
-		this.oilSensor = emergencyPlantServiceTestProtection.getOilSensor();
-		this.voltageSensor = emergencyPlantServiceTestProtection.getVoltageSensor();
-		this.overSpeedSensor = emergencyPlantServiceTestProtection.getOverSpeedSensor();
-		this.oilPreasureSensor = emergencyPlantServiceTestProtection.getOilPreasureSensor();
-		this.waterLevelSensor = emergencyPlantServiceTestProtection.getWaterLevelSensor();
-		
-		this.epServiceTransferSwitchId = emergencyPlantServiceTransferSwitch.getEpServiceTransferSwitchId();
-		this.mechanicalStatus = emergencyPlantServiceTransferSwitch.getMechanicalStatus();
-		this.boardClean = emergencyPlantServiceTransferSwitch.getBoardClean();
-		this.lampTest = emergencyPlantServiceTransferSwitch.getLampTest();
-		this.screwAdjust = emergencyPlantServiceTransferSwitch.getScrewAdjust();
-		this.conectionAdjust = emergencyPlantServiceTransferSwitch.getConectionAdjust();
-		this.systemMotors = emergencyPlantServiceTransferSwitch.getSystemMotors();
-		this.electricInterlock = emergencyPlantServiceTransferSwitch.getElectricInterlock();
-		this.mechanicalInterlock = emergencyPlantServiceTransferSwitch.getMechanicalInterlock();
-		this.capacityAmp = emergencyPlantServiceTransferSwitch.getCapacityAmp();
-		
-		this.epServiceLecturesId = emergencyPlantServiceLectures.getEpServiceLecturesId();
-		this.voltageABAN = emergencyPlantServiceLectures.getVoltageABAN();
-		this.voltageACCN = emergencyPlantServiceLectures.getVoltageACCN();
-		this.voltageBCBN = emergencyPlantServiceLectures.getVoltageBCBN();
-		this.voltageNT = emergencyPlantServiceLectures.getVoltageNT();
-		this.currentA = emergencyPlantServiceLectures.getCurrentA();
-		this.currentB = emergencyPlantServiceLectures.getCurrentB();
-		this.currentC = emergencyPlantServiceLectures.getCurrentC();
-		this.frequency = emergencyPlantServiceLectures.getFrequency();
-		this.oilPreassure = emergencyPlantServiceLectures.getOilPreassure();
-		this.temp = emergencyPlantServiceLectures.getTemp();
-		
-		this.epServiceParamsId = emergencyPlantServiceParams.getEpServiceParamsId();
-		this.adjsutmentTherm = emergencyPlantServiceParams.getAdjsutmentTherm();
-		this.current = emergencyPlantServiceParams.getCurrent();
-		this.batteryCurrent = emergencyPlantServiceParams.getBatteryCurrent();
-		this.clockStatus = emergencyPlantServiceParams.getClockStatus();
-		this.trasnferTypeProtection = emergencyPlantServiceParams.getTrasnferTypeProtection();
-		this.generatorTypeProtection = emergencyPlantServiceParams.getGeneratorTypeProtection();
-	}
-	
-	public EmergencyPlantServiceDTO(Integer epServiceId, Integer serviceOrderId,
-			String transferType, String modelTransfer, String modelControl,
-			String modelRegVoltage, String modelRegVelocity,
-			String modelCharger, Date oilChange, String brandMotor,
-			String modelMotor, String serialMotor, String cplMotor,
-			String brandGenerator, String modelGenerator,
-			String serialGenerator, Integer powerWattGenerator,
-			Integer tensionGenerator, Date tuningDate, Integer tankCapacity,
-			String pumpFuelModel, Boolean filterFuelFlag,
-			Boolean filterOilFlag, Boolean filterWaterFlag,
-			Boolean filterAirFlag, String brandGear, String brandBattery,
-			String clockLecture, Date serviceCorrective, String observations,
-			Integer epServiceSurveyId, Boolean levelOilFlag,
-			Boolean levelWaterFlag, Integer levelBattery, Boolean tubeLeak,
-			String batteryCap, String batterySulfate, Integer levelOil,
-			String heatEngine, String hoseOil, String hoseWater,
-			String tubeValve, String stripBlades, Integer epServiceWorkBasicId,
-			Boolean washEngine, Boolean washRadiator, Boolean cleanWorkArea,
-			Boolean conectionCheck, Boolean cleanTransfer,
-			Boolean cleanCardControl, Boolean checkConectionControl,
-			Boolean checkWinding, Boolean batteryTests, Boolean checkCharger,
-			Boolean checkPaint, Boolean cleanGenerator,
-			Integer epServiceDynamicTestId, Double vacuumFrequency,
-			Double chargeFrequency, Double bootTryouts, Double vacuumVoltage,
-			Double chargeVoltage, Double qualitySmoke, Integer startTime,
-			Integer transferTime, Integer stopTime,
-			Integer epServiceTestProtectionId, Integer tempSensor,
-			Integer oilSensor, Integer voltageSensor, Integer overSpeedSensor,
-			Integer oilPreasureSensor, Integer waterLevelSensor,
-			Integer epServiceTransferSwitchId, String mechanicalStatus,
-			Boolean boardClean, Boolean screwAdjust, Boolean conectionAdjust,
-			String systemMotors, String electricInterlock,
-			String mechanicalInterlock, Integer capacityAmp,
-			Integer epServiceLecturesId, Integer voltageABAN,
-			Integer voltageACCN, Integer voltageBCBN, Integer voltageNT,
-			Integer currentA, Integer currentB, Integer currentC,
-			Integer frequency, Integer oilPreassure, Integer temp,
-			Integer epServiceParamsId, String adjsutmentTherm, String current,
-			String batteryCurrent, String clockStatus,
-			String trasnferTypeProtection, String generatorTypeProtection, String brandPE, String modelPE , String serialPE , Boolean lampTest) {
-		this.epServiceId = epServiceId;
-		this.serviceOrderId = serviceOrderId;
-		this.transferType = transferType;
-		this.modelTransfer = modelTransfer;
-		this.modelControl = modelControl;
-		this.modelRegVoltage = modelRegVoltage;
-		this.modelRegVelocity = modelRegVelocity;
-		this.modelCharger = modelCharger;
-		this.oilChange = oilChange;
-		this.brandMotor = brandMotor;
-		this.modelMotor = modelMotor;
-		this.serialMotor = serialMotor;
-		this.cplMotor = cplMotor;
-		this.brandGenerator = brandGenerator;
-		this.modelGenerator = modelGenerator;
-		this.serialGenerator = serialGenerator;
-		this.powerWattGenerator = powerWattGenerator;
-		this.tensionGenerator = tensionGenerator;
-		this.tuningDate = tuningDate;
-		this.tankCapacity = tankCapacity;
-		this.pumpFuelModel = pumpFuelModel;
-		this.filterFuelFlag = filterFuelFlag;
-		this.filterOilFlag = filterOilFlag;
-		this.filterWaterFlag = filterWaterFlag;
-		this.filterAirFlag = filterAirFlag;
-		this.brandGear = brandGear;
-		this.brandBattery = brandBattery;
-		this.clockLecture = clockLecture;
-		this.serviceCorrective = serviceCorrective;
-		this.observations = observations;
-		this.epServiceSurveyId = epServiceSurveyId;
-		this.levelOilFlag = levelOilFlag;
-		this.levelWaterFlag = levelWaterFlag;
-		this.levelBattery = levelBattery;
-		this.tubeLeak = tubeLeak;
-		this.batteryCap = batteryCap;
-		this.batterySulfate = batterySulfate;
-		this.levelOil = levelOil;
-		this.heatEngine = heatEngine;
-		this.hoseOil = hoseOil;
-		this.hoseWater = hoseWater;
-		this.tubeValve = tubeValve;
-		this.stripBlades = stripBlades;
-		this.epServiceWorkBasicId = epServiceWorkBasicId;
-		this.washEngine = washEngine;
-		this.washRadiator = washRadiator;
-		this.cleanWorkArea = cleanWorkArea;
-		this.conectionCheck = conectionCheck;
-		this.cleanTransfer = cleanTransfer;
-		this.cleanCardControl = cleanCardControl;
-		this.checkConectionControl = checkConectionControl;
-		this.checkWinding = checkWinding;
-		this.batteryTests = batteryTests;
-		this.checkCharger = checkCharger;
-		this.checkPaint = checkPaint;
-		this.cleanGenerator = cleanGenerator;
-		this.epServiceDynamicTestId = epServiceDynamicTestId;
-		this.vacuumFrequency = vacuumFrequency;
-		this.chargeFrequency = chargeFrequency;
-		this.bootTryouts = bootTryouts;
-		this.vacuumVoltage = vacuumVoltage;
-		this.chargeVoltage = chargeVoltage;
-		this.qualitySmoke = qualitySmoke;
-		this.startTime = startTime;
-		this.transferTime = transferTime;
-		this.stopTime = stopTime;
-		this.epServiceTestProtectionId = epServiceTestProtectionId;
-		this.tempSensor = tempSensor;
-		this.oilSensor = oilSensor;
-		this.voltageSensor = voltageSensor;
-		this.overSpeedSensor = overSpeedSensor;
-		this.oilPreasureSensor = oilPreasureSensor;
-		this.waterLevelSensor = waterLevelSensor;
-		this.epServiceTransferSwitchId = epServiceTransferSwitchId;
-		this.mechanicalStatus = mechanicalStatus;
-		this.boardClean = boardClean;
-		this.screwAdjust = screwAdjust;
-		this.conectionAdjust = conectionAdjust;
-		this.systemMotors = systemMotors;
-		this.electricInterlock = electricInterlock;
-		this.mechanicalInterlock = mechanicalInterlock;
-		this.capacityAmp = capacityAmp;
-		this.epServiceLecturesId = epServiceLecturesId;
-		this.voltageABAN = voltageABAN;
-		this.voltageACCN = voltageACCN;
-		this.voltageBCBN = voltageBCBN;
-		this.voltageNT = voltageNT;
-		this.currentA = currentA;
-		this.currentB = currentB;
-		this.currentC = currentC;
-		this.frequency = frequency;
-		this.oilPreassure = oilPreassure;
-		this.temp = temp;
-		this.epServiceParamsId = epServiceParamsId;
-		this.adjsutmentTherm = adjsutmentTherm;
-		this.current = current;
-		this.batteryCurrent = batteryCurrent;
-		this.clockStatus = clockStatus;
-		this.trasnferTypeProtection = trasnferTypeProtection;
-		this.generatorTypeProtection = generatorTypeProtection;
-		this.brandPE = brandPE;
-		this.modelPE = modelPE;
-		this.serialPE = serialPE;
-		this.brandPE = brandPE;
-		this.modelPE = modelPE;
-		this.serialPE = serialPE;
-		this.lampTest =lampTest;
-	}
+	private Integer policyId;
+	private String customer;
+	private String finalUser;
+	private String project;
+	private Character equipmentTypeId;
+	private String equipmentType;
+	private String brand;
+	private String model;
+	private String serialNumber;
+	private String capacity;
+	private String equipmentAddress;
+	private char officeId;
+	private String contactName;
+	private String contactPhone;
+
+	private Integer serviceOrderId;
+	private Integer ticketId;
+	private Date serviceDate;
+	private String responsible;
+	private String receivedBy;
+	private String serviceStatusId;
+	private Date closed;
+	private String consultant;
+	private String coordinator;
+	private String asignee;
+	private String signCreated;
+	private String signReceivedBy;
+	private String receivedByPosition;
+	private String serviceOrderNumber;
 	
 	private Integer epServiceId;
-	private Integer serviceOrderId;
-
 	private String brandPE;
 	private String modelPE;
 	private String serialPE;
@@ -517,17 +353,197 @@ public class EmergencyPlantServiceDTO {
 	private String trasnferTypeProtection;
 	private String generatorTypeProtection;
 	
-	public Integer getEpServiceId() {
-		return epServiceId;
+	public Integer getPolicyId() {
+		return policyId;
 	}
-	public void setEpServiceId(Integer epServiceId) {
-		this.epServiceId = epServiceId;
+	public void setPolicyId(Integer policyId) {
+		this.policyId = policyId;
+	}
+	public String getCustomer() {
+		return customer;
+	}
+	public void setCustomer(String customer) {
+		this.customer = customer;
+	}
+	public String getFinalUser() {
+		return finalUser;
+	}
+	public void setFinalUser(String finalUser) {
+		this.finalUser = finalUser;
+	}
+	public String getProject() {
+		return project;
+	}
+	public void setProject(String project) {
+		this.project = project;
+	}
+	public Character getEquipmentTypeId() {
+		return equipmentTypeId;
+	}
+	public void setEquipmentTypeId(Character equipmentTypeId) {
+		this.equipmentTypeId = equipmentTypeId;
+	}
+	public String getEquipmentType() {
+		return equipmentType;
+	}
+	public void setEquipmentType(String equipmentType) {
+		this.equipmentType = equipmentType;
+	}
+	public String getBrand() {
+		return brand;
+	}
+	public void setBrand(String brand) {
+		this.brand = brand;
+	}
+	public String getModel() {
+		return model;
+	}
+	public void setModel(String model) {
+		this.model = model;
+	}
+	public String getSerialNumber() {
+		return serialNumber;
+	}
+	public void setSerialNumber(String serialNumber) {
+		this.serialNumber = serialNumber;
+	}
+	public String getCapacity() {
+		return capacity;
+	}
+	public void setCapacity(String capacity) {
+		this.capacity = capacity;
+	}
+	public String getEquipmentAddress() {
+		return equipmentAddress;
+	}
+	public void setEquipmentAddress(String equipmentAddress) {
+		this.equipmentAddress = equipmentAddress;
+	}
+	public char getOfficeId() {
+		return officeId;
+	}
+	public void setOfficeId(char officeId) {
+		this.officeId = officeId;
+	}
+	public String getContactName() {
+		return contactName;
+	}
+	public void setContactName(String contactName) {
+		this.contactName = contactName;
+	}
+	public String getContactPhone() {
+		return contactPhone;
+	}
+	public void setContactPhone(String contactPhone) {
+		this.contactPhone = contactPhone;
 	}
 	public Integer getServiceOrderId() {
 		return serviceOrderId;
 	}
 	public void setServiceOrderId(Integer serviceOrderId) {
 		this.serviceOrderId = serviceOrderId;
+	}
+	public Integer getTicketId() {
+		return ticketId;
+	}
+	public void setTicketId(Integer ticketId) {
+		this.ticketId = ticketId;
+	}
+	public Date getServiceDate() {
+		return serviceDate;
+	}
+	public void setServiceDate(Date serviceDate) {
+		this.serviceDate = serviceDate;
+	}
+	public String getResponsible() {
+		return responsible;
+	}
+	public void setResponsible(String responsible) {
+		this.responsible = responsible;
+	}
+	public String getReceivedBy() {
+		return receivedBy;
+	}
+	public void setReceivedBy(String receivedBy) {
+		this.receivedBy = receivedBy;
+	}
+	public String getServiceStatusId() {
+		return serviceStatusId;
+	}
+	public void setServiceStatusId(String serviceStatusId) {
+		this.serviceStatusId = serviceStatusId;
+	}
+	public Date getClosed() {
+		return closed;
+	}
+	public void setClosed(Date closed) {
+		this.closed = closed;
+	}
+	public String getConsultant() {
+		return consultant;
+	}
+	public void setConsultant(String consultant) {
+		this.consultant = consultant;
+	}
+	public String getCoordinator() {
+		return coordinator;
+	}
+	public void setCoordinator(String coordinator) {
+		this.coordinator = coordinator;
+	}
+	public String getAsignee() {
+		return asignee;
+	}
+	public void setAsignee(String asignee) {
+		this.asignee = asignee;
+	}
+	public String getSignCreated() {
+		return signCreated;
+	}
+	public void setSignCreated(String signCreated) {
+		this.signCreated = signCreated;
+	}
+	public String getSignReceivedBy() {
+		return signReceivedBy;
+	}
+	public void setSignReceivedBy(String signReceivedBy) {
+		this.signReceivedBy = signReceivedBy;
+	}
+	public String getReceivedByPosition() {
+		return receivedByPosition;
+	}
+	public void setReceivedByPosition(String receivedByPosition) {
+		this.receivedByPosition = receivedByPosition;
+	}
+	public String getServiceOrderNumber() {
+		return serviceOrderNumber;
+	}
+	public void setServiceOrderNumber(String serviceOrderNumber) {
+		this.serviceOrderNumber = serviceOrderNumber;
+	}
+	public Integer getEpServiceId() {
+		return epServiceId;
+	}
+	public void setEpServiceId(Integer epServiceId) {
+		this.epServiceId = epServiceId;
+	}
+	public String getBrandPE() {
+		return brandPE;
+	}
+	public void setBrandPE(String brandPE) {
+		this.brandPE = brandPE;
+	}
+	public String getModelPE() {
+		return modelPE;
+	}
+	public void setModelPE(String modelPE) {
+		this.modelPE = modelPE;
+	}
+	public String getSerialPE() {
+		return serialPE;
+	}
+	public void setSerialPE(String serialPE) {
+		this.serialPE = serialPE;
 	}
 	public String getTransferType() {
 		return transferType;
@@ -1118,40 +1134,12 @@ public class EmergencyPlantServiceDTO {
 		this.generatorTypeProtection = generatorTypeProtection;
 	}
 
-	public String getBrandPE() {
-		return brandPE;
-	}
-
-	public void setBrandPE(String brandPE) {
-		this.brandPE = brandPE;
-	}
-
-	public String getModelPE() {
-		return modelPE;
-	}
-
-	public void setModelPE(String modelPE) {
-		this.modelPE = modelPE;
-	}
-
-	public String getSerialPE() {
-		return serialPE;
-	}
-
-	public void setSerialPE(String serialPE) {
-		this.serialPE = serialPE;
-	}
-
-
-
 	public Boolean getLampTest() {
 		return lampTest;
 	}
 
-
-
 	public void setLampTest(Boolean lampTest) {
 		this.lampTest = lampTest;
 	}
-	
+
 }

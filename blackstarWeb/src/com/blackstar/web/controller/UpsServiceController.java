@@ -20,10 +20,8 @@ import com.blackstar.model.Policy;
 import com.blackstar.model.Serviceorder;
 import com.blackstar.model.Ticket;
 import com.blackstar.model.UserSession;
-import com.blackstar.model.dto.AirCoServiceDTO;
-import com.blackstar.model.dto.AirCoServicePolicyDTO;
-import com.blackstar.model.dto.OrderserviceDTO;
 import com.blackstar.model.dto.UpsServiceDTO;
+import com.blackstar.model.dto.UpsServicePolicyDTO;
 import com.blackstar.services.interfaces.ServiceOrderService;
 import com.blackstar.web.AbstractController;
 
@@ -39,9 +37,9 @@ public class UpsServiceController extends AbstractController {
 	  }
 	  
 	  @RequestMapping(value= "/show.do", method = RequestMethod.GET)
-	  public String  aircoservice(@RequestParam(required = true) Integer operation, @RequestParam(required = true) String idObject, ModelMap model)
+	  public String  upsservice(@RequestParam(required = true) Integer operation, @RequestParam(required = true) String idObject, ModelMap model)
 	  {
-		  AirCoServicePolicyDTO airCoServicePolicyDTO =null;
+		  UpsServicePolicyDTO upsServicePolicyDTO =null;
 		  try
 		  {
 			  if(operation!= null && idObject!=null)
@@ -56,8 +54,8 @@ public class UpsServiceController extends AbstractController {
 		  			  Ticket ticket = daoFactory.getTicketDAO().getTicketById(idTicket);
 	  				  Policy policy = this.daoFactory.getPolicyDAO().getPolicyById(ticket.getPolicyId());
 	  				  Equipmenttype equipType = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
-	  				  airCoServicePolicyDTO = new AirCoServicePolicyDTO(policy, equipType.getEquipmentType());
-	  				  model.addAttribute("serviceOrder", airCoServicePolicyDTO);
+	  				  upsServicePolicyDTO = new UpsServicePolicyDTO(policy, equipType.getEquipmentType());
+	  				  model.addAttribute("serviceOrder", upsServicePolicyDTO);
 		  		  }
 		  		  else if( operation==2)
 		  		  {
@@ -65,30 +63,30 @@ public class UpsServiceController extends AbstractController {
 		  			  Serviceorder serviceOrder = this.daoFactory.getServiceOrderDAO().getServiceOrderById(idOrder);
 		  			  Policy policy = this.daoFactory.getPolicyDAO().getPolicyById(serviceOrder.getPolicyId());
 	  				  Equipmenttype equipType = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
-	  				  airCoServicePolicyDTO = new AirCoServicePolicyDTO(policy, equipType.getEquipmentType(), serviceOrder );
-	  				  model.addAttribute("serviceOrder", airCoServicePolicyDTO);
+	  				  upsServicePolicyDTO = new UpsServicePolicyDTO(policy, equipType.getEquipmentType(), serviceOrder );
+	  				  model.addAttribute("serviceOrder", upsServicePolicyDTO);
 		  		  }
 		  		  else if(operation==3)
 		  		  {
 		  			  Policy policy  = this.daoFactory.getPolicyDAO().getPolicyBySerialNo(idObject);
 	  				  Equipmenttype equipType = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
-	  				  airCoServicePolicyDTO = new AirCoServicePolicyDTO(policy, equipType.getEquipmentType());
-	  				  model.addAttribute("serviceOrder", airCoServicePolicyDTO);
+	  				  upsServicePolicyDTO = new UpsServicePolicyDTO(policy, equipType.getEquipmentType());
+	  				  model.addAttribute("serviceOrder", upsServicePolicyDTO);
 		  		  }
 		  		  else if(operation ==4)
 		  		  {
 		  			  Integer idOrderService = Integer.parseInt(idObject);
-		  			  AirCoServiceDTO airCoServiceDTO = service.getAirCoService(idOrderService);
-		  			  Serviceorder serviceOrder = this.daoFactory.getServiceOrderDAO().getServiceOrderById(airCoServiceDTO.getServiceOrderId());
+		  			  UpsServiceDTO upsServiceDTO = service.getUpsService(idOrderService);
+		  			  Serviceorder serviceOrder = this.daoFactory.getServiceOrderDAO().getServiceOrderById(upsServiceDTO.getServiceOrderId());
 		  			  Policy policy = this.daoFactory.getPolicyDAO().getPolicyById(serviceOrder.getPolicyId());
 	  				  Equipmenttype equipType = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
-	  				  airCoServicePolicyDTO = new AirCoServicePolicyDTO(policy, equipType.getEquipmentType(), serviceOrder,  airCoServiceDTO);
-	  				  model.addAttribute("serviceOrder", airCoServicePolicyDTO);
+	  				  upsServicePolicyDTO = new UpsServicePolicyDTO(policy, equipType.getEquipmentType(), serviceOrder,  upsServiceDTO);
+	  				  model.addAttribute("serviceOrder", upsServicePolicyDTO);
 		  		  }
 	  		  }
 			  else
 			  {
-				  Logger.Log(LogLevel.WARNING, "AirCoServiceController", "Parametros de navegacion nulos." , "" );
+				  Logger.Log(LogLevel.WARNING, "UpsServiceController", "Parametros de navegacion nulos." , "" );
 			  }
 		  } 
 		  catch (Exception e) 
@@ -96,12 +94,12 @@ public class UpsServiceController extends AbstractController {
 				 Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
 		  }
 		  
-		  return "aircoservice";
+		  return "upsservice";
 	  }
 	  
 	    @RequestMapping(value = "/save.do", method = RequestMethod.POST)
 	    public String save( 
-	    		@ModelAttribute("serviceOrder") AirCoServicePolicyDTO serviceOrder,
+	    		@ModelAttribute("serviceOrder") UpsServicePolicyDTO serviceOrder,
 	    		@ModelAttribute(Globals.SESSION_KEY_PARAM)  UserSession userSession,
               ModelMap model, HttpServletRequest req, HttpServletResponse resp)
 	    {
@@ -123,7 +121,7 @@ public class UpsServiceController extends AbstractController {
 	    		servicioOrderSave.setSignCreated(serviceOrder.getSignCreated());
 	    		servicioOrderSave.setSignReceivedBy(serviceOrder.getSignReceivedBy());
 	    		servicioOrderSave.setStatusId("N");
-	    		idServicio = service.saveServiceOrder(servicioOrderSave, "AirCoServiceController", userSession.getUser().getUserName());
+	    		idServicio = service.saveServiceOrder(servicioOrderSave, "UpsServiceController", userSession.getUser().getUserName());
 	    	}
 	    	else
 	    	{
@@ -141,14 +139,14 @@ public class UpsServiceController extends AbstractController {
 	    		servicioOrderSave.setSignCreated(serviceOrder.getSignCreated());
 	    		servicioOrderSave.setSignReceivedBy(serviceOrder.getSignReceivedBy());
 	    		servicioOrderSave.setStatusId("N");
-	    		service.updateServiceOrder(servicioOrderSave, "AirCoServiceController", userSession.getUser().getUserName());
+	    		service.updateServiceOrder(servicioOrderSave, "UpsServiceController", userSession.getUser().getUserName());
 	    	}
 	    	
-	    	if(serviceOrder.getAaServiceId()==null)
+	    	if(serviceOrder.getUpsServiceId()==null)
 	    	{
 	    		serviceOrder.setServiceOrderId(idServicio);
-	    		//Crear orden de servicio de AirCo
-	    		service.saveAirCoService(new AirCoServiceDTO(serviceOrder), "AirCoServiceController", userSession.getUser().getUserName());
+	    		//Crear orden de servicio de UpsService
+	    		service.saveUpsService(new UpsServiceDTO(serviceOrder), "UpsServiceController", userSession.getUser().getUserName());
 	    	}
 
 	    	return "dashboard";

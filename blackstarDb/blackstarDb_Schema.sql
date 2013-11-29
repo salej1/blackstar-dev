@@ -337,6 +337,7 @@ IF (SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackst
 		mechanicalStatus nvarchar(10) not null,
 		boardClean bit not null,
 		screwAdjust bit not null,
+		lampTest bit not null,
 		conectionAdjust bit not null,
 		systemMotors nvarchar(10) not null,
 		electricInterlock nvarchar(10) not null,

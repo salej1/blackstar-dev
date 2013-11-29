@@ -21,6 +21,17 @@ public class PlainServiceDTO {
 		// TODO Auto-generated constructor stub
 	}
 
+	public PlainServiceDTO(PlainServicePolicyDTO plainServiceDTO) {
+		this.serviceOrderId = plainServiceDTO.getServiceOrderId();
+		this.plainServiceId = plainServiceDTO.getPlainServiceId();
+		this.troubleDescription = plainServiceDTO.getTroubleDescription();
+		this.techParam = plainServiceDTO.getTechParam();
+		this.workDone = plainServiceDTO.getWorkDone();
+		this.materialUsed = plainServiceDTO.getMaterialUsed();
+		this.observations = plainServiceDTO.getObservations();
+	}
+
+	
 	private Integer plainServiceId;
 	private Integer serviceOrderId;
 	

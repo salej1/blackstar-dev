@@ -83,7 +83,7 @@
 		function isNumberKey(evt){
 
 
-		      var charCode = (evt.which) ? evt.which : event.keyCode
+		      var charCode = (evt.which) ? evt.which : event.keyCode;
 		    	         if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57))
 		    	            return false;
 
@@ -160,9 +160,9 @@
 								<tr>
 									<td colspan="5">1.2.1 SETPOINTS</td>
 									<td>Temp.</td>
-									<td><form:input path="evaSetpointTemp" type="text" style="width:95%;" /></td>
+									<td><form:input path="evaSetpointTemp" type="text" style="width:95%;" onkeypress='return isNumberKey(event)'/></td>
 									<td>Hum.</td>
-									<td><form:input path="evaSetpointHum" type="text" style="width:95%;" /></td>
+									<td><form:input path="evaSetpointHum" type="text" style="width:95%;" onkeypress='return isNumberKey(event)'/></td>
 								</tr>
 								<tr>
 									<td colspan="5">1.3 SE REALIZÓ COMPARACION Y CALIBRACION T/H MEDIDO</td>
@@ -191,27 +191,27 @@
 								<tr>
 									<td colspan="5">1.9	LECTURA DE PRESIÓN DE COMPRESIÓN EN OPERACIÓN NORMAL</td>
 									<td>Alta</td>
-									<td><form:input path="evaLectrurePreasureHigh" type="text" style="width:95%;" /></td>
+									<td><form:input path="evaLectrurePreasureHigh" type="text" style="width:95%;" onkeypress='return isNumberKey(event)'/></td>
 									<td>Baja(60 psig min)</td>
-									<td><form:input path="evaLectrurePreasureLow" type="text" style="width:95%;" /></td>
+									<td><form:input path="evaLectrurePreasureLow" type="text" style="width:95%;" onkeypress='return isNumberKey(event)'/></td>
 								</tr>
 								<tr>
 									<td colspan="5">1.10 LECTURA DE TEMPERATURA EN SUCCIÓN Y ENTRADA DE VÁLVULA DE EXPANSIÓN</td>
-									<td colspan="4"><form:input path="evaLectureTemp" type="text" style="width:99%;" /></td>
+									<td colspan="4"><form:input path="evaLectureTemp" type="text" style="width:99%;" onkeypress='return isNumberKey(event)'/></td>
 								</tr>
 								<tr>
 									<td colspan="5">1.11 ESTADO DE ACEITE EN EL COMPRESOR</td>
 									<td>Color</td>
 									<td><form:input path="evaLectureOilColor" type="text" style="width:95%;" /></td>
 									<td>Nivel</td>
-									<td><form:input path="evaLectureOilLevel" type="text" style="width:95%;" /></td>
+									<td><form:input path="evaLectureOilLevel" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' /></td>
 								</tr>
 								<tr>
 									<td colspan="5">1.12 VERIFICAR MIRILLA DEL SISTEMA DE REFRIGERACIÓN</td>
 									<td>Color</td>
 									<td><form:input path="evaLectureCoolerColor" type="text" style="width:95%;" /></td>
 									<td>Nivel</td>
-									<td><form:input path="evaLectureCoolerLevel" type="text" style="width:95%;" /></td>
+									<td><form:input path="evaLectureCoolerLevel" type="text" style="width:95%;" onkeypress='return isNumberKey(event)'/></td>
 								</tr>
 								<tr>
 									<td colspan="5">1.13 REVISIÓN DE OPERACIÓN DE PROTECCIONES POR ALTA Y BAJA PRESIÓN</td>
@@ -228,33 +228,33 @@
 								<tr>
 									<td colspan="3">1.16 TOMA DE LECTURAS DE VOLTAJE</td>
 									<td>Tomas a tierra</td>
-									<td><form:input path="evaLectureVoltageGroud" type="text" style="width:95%;" /></td>
+									<td><form:input path="evaLectureVoltageGroud" type="text" style="width:95%;" onkeypress='return isNumberKey(event)'/></td>
 									<td>Entre fases</td>
-									<td><form:input path="evaLectureVoltagePhases" type="text" style="width:95%;" /></td>
+									<td><form:input path="evaLectureVoltagePhases" type="text" style="width:95%;" onkeypress='return isNumberKey(event)'/></td>
 									<td>Control</td>
-									<td><form:input path="evaLectureVoltageControl" type="text" style="width:95%;" /></td>
+									<td><form:input path="evaLectureVoltageControl" type="text" style="width:95%;" onkeypress='return isNumberKey(event)'/></td>
 								</tr>
 								<tr>
 									<td colspan="1">1.17 LECTURA DE CORRIENTE POR FASE</td>
 									<td>Motor</td>
-									<td><form:input path="evaLectureCurrentMotor1" type="text" style="width:95%;" /></td> 
-									<td><form:input path="evaLectureCurrentMotor2" type="text" style="width:95%;" /></td> 
-									<td><form:input path="evaLectureCurrentMotor3" type="text" style="width:95%;" /></td>
+									<td><form:input path="evaLectureCurrentMotor1" type="text" style="width:95%;" onkeypress='return isNumberKey(event)'/></td> 
+									<td><form:input path="evaLectureCurrentMotor2" type="text" style="width:95%;" onkeypress='return isNumberKey(event)'/></td> 
+									<td><form:input path="evaLectureCurrentMotor3" type="text" style="width:95%;" onkeypress='return isNumberKey(event)'/></td>
 									<td>Compresor</td>
-									<td><form:input path="evaLectureCurrentCompressor1" type="text" style="width:95%;" /></td> 
-									<td><form:input path="evaLectureCurrentCompressor2" type="text" style="width:95%;" /></td> 
-									<td><form:input path="evaLectureCurrentCompressor3" type="text" style="width:95%;" /></td>
+									<td><form:input path="evaLectureCurrentCompressor1" type="text" style="width:95%;" onkeypress='return isNumberKey(event)'/></td> 
+									<td><form:input path="evaLectureCurrentCompressor2" type="text" style="width:95%;" onkeypress='return isNumberKey(event)'/></td> 
+									<td><form:input path="evaLectureCurrentCompressor3" type="text" style="width:95%;" onkeypress='return isNumberKey(event)'/></td>
 								</tr>
 								<tr>
 									<td colspan="1"></td>
 									<td>Humidificador</td>
-									<td><form:input path="evaLectureCurrentHumidifier1" type="text" style="width:95%;" /></td>
-									<td><form:input path="evaLectureCurrentHumidifier2" type="text" style="width:95%;" /></td>
-									<td><form:input path="evaLectureCurrentHumidifier3" type="text" style="width:95%;" /></td>
+									<td><form:input path="evaLectureCurrentHumidifier1" type="text" style="width:95%;" onkeypress='return isNumberKey(event)'/></td>
+									<td><form:input path="evaLectureCurrentHumidifier2" type="text" style="width:95%;" onkeypress='return isNumberKey(event)'/></td>
+									<td><form:input path="evaLectureCurrentHumidifier3" type="text" style="width:95%;" onkeypress='return isNumberKey(event)'/></td>
 									<td>Calentador</td>
-									<td><form:input path="evaLectureCurrentHeater1" type="text" style="width:95%;" /></td>
-									<td><form:input path="evaLectureCurrentHeater2" type="text" style="width:95%;" /></td>
-									<td><form:input path="evaLectureCurrentHeater3" type="text" style="width:95%;" /></td>
+									<td><form:input path="evaLectureCurrentHeater1" type="text" style="width:95%;" onkeypress='return isNumberKey(event)'/></td>
+									<td><form:input path="evaLectureCurrentHeater2" type="text" style="width:95%;" onkeypress='return isNumberKey(event)'/></td>
+									<td><form:input path="evaLectureCurrentHeater3" type="text" style="width:95%;" onkeypress='return isNumberKey(event)'/></td>
 								</tr>
 								<tr>
 									<td colspan="5">1.18 PRUEBA DE SENSOR DE AIRE Y FILTRO SUCIO</td>
@@ -286,15 +286,15 @@
 								<tr>
 									<td>2.4	TOMA DE LECTURAS DE VOLTAJE</td>
 									<td>Fases a tierra</td>
-									<td><form:input path="condLectureVoltageGroud" type="text" style="width:90%;" /></td>
+									<td><form:input path="condLectureVoltageGroud" type="text" style="width:90%;" onkeypress='return isNumberKey(event)'/></td>
 									<td>Entre fases</td>
-									<td><form:input path="condLectureVoltagePhases" type="text" style="width:90%;" /></td>
+									<td><form:input path="condLectureVoltagePhases" type="text" style="width:90%;" onkeypress='return isNumberKey(event)'/></td>
 									<td>Control</td>
-									<td><form:input path="condLectureVoltageControl" type="text" style="width:90%;" /></td>
+									<td><form:input path="condLectureVoltageControl" type="text" style="width:90%;" onkeypress='return isNumberKey(event)'/></td>
 								</tr>
 								<tr>
 									<td>2.5	LECTURA DE CORRIENTE EN MONITORES DE CONDENSADOR</td>
-									<td colspan="6" ><form:input path="condLectureMotorCurrent" type="text" style="width:99%;" /></td>
+									<td colspan="6" ><form:input path="condLectureMotorCurrent" type="text" style="width:99%;" onkeypress='return isNumberKey(event)'/></td>
 								</tr>
 								<tr>
 									<td>2.6	REVISIÓN Y AJUSTE DE TERMOSTATO</td>

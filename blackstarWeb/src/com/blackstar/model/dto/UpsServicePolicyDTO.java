@@ -1,20 +1,106 @@
 package com.blackstar.model.dto;
 
-import com.blackstar.model.UpsService;
-import com.blackstar.model.UpsServiceBatteryBank;
-import com.blackstar.model.UpsServiceGeneralTest;
-import com.blackstar.model.UpsServiceParams;
+import java.util.Date;
 
-public class UpsServiceDTO {
-	
-	public UpsServiceDTO()
+import com.blackstar.model.Policy;
+import com.blackstar.model.Serviceorder;
+
+public class UpsServicePolicyDTO {
+
+	public UpsServicePolicyDTO()
 	{
+		this.closed = new Date();
+		this.serviceDate = new Date();
+	}
+	
+	public UpsServicePolicyDTO(Policy policy, String equipmentType)
+	{
+		this.policyId = policy.getPolicyId();
+		this.customer = policy.getCustomer();
+		this.finalUser = policy.getFinalUser();
+		this.project = policy.getProject();
+		this.equipmentTypeId = policy.getEquipmentTypeId();
+		this.equipmentType =equipmentType;
+		this.brand = policy.getBrand();
+		this.model =policy.getModel();
+		this.serialNumber = policy.getSerialNumber();
+		this.capacity = policy.getCapacity();
+		this.equipmentAddress = policy.getEquipmentAddress();
+		this.officeId = policy.getOfficeId();
+		this.contactName = policy.getContactName();
+		this.contactPhone = policy.getContactPhone();
+		
+		this.closed = new Date();
+		this.serviceDate = new Date();
+	}
+	
+
+	public UpsServicePolicyDTO(Policy policy, String equipmentType, Serviceorder serviceOrder)
+	{
+		this.policyId = policy.getPolicyId();
+		this.customer = policy.getCustomer();
+		this.finalUser = policy.getFinalUser();
+		this.project = policy.getProject();
+		this.equipmentTypeId = policy.getEquipmentTypeId();
+		this.equipmentType =equipmentType;
+		this.brand = policy.getBrand();
+		this.model =policy.getModel();
+		this.serialNumber = policy.getSerialNumber();
+		this.capacity = policy.getCapacity();
+		this.equipmentAddress = policy.getEquipmentAddress();
+		this.officeId = policy.getOfficeId();
+		this.contactName = policy.getContactName();
+		this.contactPhone = policy.getContactPhone();
+		
+		this.serviceOrderId = serviceOrder.getServiceOrderId();
+		this.ticketId = serviceOrder.getTicketId();
+		this.serviceDate = serviceOrder.getServiceDate();
+		this.responsible = serviceOrder.getResponsible();
+		this.receivedBy = serviceOrder.getReceivedBy();
+		this.serviceStatusId = serviceOrder.getStatusId();
+		this.closed = serviceOrder.getClosed();
+		this.consultant = serviceOrder.getConsultant();
+		this.coordinator = serviceOrder.getCoordinator();
+		this.asignee = serviceOrder.getAsignee();
+		this.signCreated = serviceOrder.getSignCreated();
+		this.signReceivedBy = serviceOrder.getsignReceivedBy();
+		this.receivedByPosition = serviceOrder.getReceivedByPosition();
+		this.serviceOrderNumber = serviceOrder.getServiceOrderNumber();
 		
 	}
 	
-	public UpsServiceDTO(UpsServicePolicyDTO upsService)
+	public UpsServicePolicyDTO(Policy policy, String equipmentType, Serviceorder serviceOrder,  UpsServiceDTO upsService)
 	{
-		this.serviceOrderId = upsService.getServiceOrderId();
+		this.policyId = policy.getPolicyId();
+		this.customer = policy.getCustomer();
+		this.finalUser = policy.getFinalUser();
+		this.project = policy.getProject();
+		this.equipmentTypeId = policy.getEquipmentTypeId();
+		this.equipmentType =equipmentType;
+		this.brand = policy.getBrand();
+		this.model =policy.getModel();
+		this.serialNumber = policy.getSerialNumber();
+		this.capacity = policy.getCapacity();
+		this.equipmentAddress = policy.getEquipmentAddress();
+		this.officeId = policy.getOfficeId();
+		this.contactName = policy.getContactName();
+		this.contactPhone = policy.getContactPhone();
+		
+		this.serviceOrderId = serviceOrder.getServiceOrderId();
+		this.ticketId = serviceOrder.getTicketId();
+		this.serviceDate = serviceOrder.getServiceDate();
+		this.responsible = serviceOrder.getResponsible();
+		this.receivedBy = serviceOrder.getReceivedBy();
+		this.serviceStatusId = serviceOrder.getStatusId();
+		this.closed = serviceOrder.getClosed();
+		this.consultant = serviceOrder.getConsultant();
+		this.coordinator = serviceOrder.getCoordinator();
+		this.asignee = serviceOrder.getAsignee();
+		this.signCreated = serviceOrder.getSignCreated();
+		this.signReceivedBy = serviceOrder.getsignReceivedBy();
+		this.receivedByPosition = serviceOrder.getReceivedByPosition();
+		this.serviceOrderNumber = serviceOrder.getServiceOrderNumber();
+		
 		this.upsServiceId = upsService.getUpsServiceId();
 		this.estatusEquipment = upsService.getEstatusEquipment();
 		this.cleaned = upsService.getCleaned();
@@ -55,108 +141,37 @@ public class UpsServiceDTO {
 		this.busVoltage = upsService.getBusVoltage();
 	}
 	
-	
-	
-	public UpsServiceDTO (UpsService upsService, UpsServiceBatteryBank upsServiceBatteryBank, UpsServiceGeneralTest upsServiceGeneralTest, UpsServiceParams upsServiceParams)
-	{
-		this.upsServiceId = upsService.getUpsServiceId();
-		this.serviceOrderId = upsService.getServiceOrderId();
-		
-		this.estatusEquipment = upsService.getEstatusEquipment();
-		this.cleaned = upsService.getCleaned();
-		this.hooverClean = upsService.getHooverClean();
-		this.verifyConnections = upsService.getVerifyConnections();
-		this.capacitorStatus = upsService.getCapacitorStatus();
-		this.verifyFuzz = upsService.getVerifyFuzz();
-		this.chargerReview = upsService.getChargerReview();
-		this.fanStatus = upsService.getFanStatus();
-		this.observations = upsService.getObservations();
-		
-		this.upsServiceBatteryBankId = upsServiceBatteryBank.getUpsServiceBatteryBankId();
-		this.checkConnectors = upsServiceBatteryBank.getCheckConnectors();
-		this.cverifyOutflow = upsServiceBatteryBank.getCverifyOutflow();
-		this.numberBatteries = upsServiceBatteryBank.getNumberBatteries();
-		this.manufacturedDateSerial = upsServiceBatteryBank.getManufacturedDateSerial();
-		this.damageBatteries = upsServiceBatteryBank.getDamageBatteries();
-		this.other = upsServiceBatteryBank.getOther();
-		this.temp = upsServiceBatteryBank.getTemp();
-		this.chargeTest = upsServiceBatteryBank.getChargeTest();
-		this.brandModel = upsServiceBatteryBank.getBrandModel();
-		this.batteryVoltage = upsServiceBatteryBank.getBatteryVoltage();
-		
-		this.upsServiceGeneralTestId = upsServiceGeneralTest.getUpsServiceGeneralTestId();
-		this.trasferLine = upsServiceGeneralTest.getTrasferLine();
-		this.transferEmergencyPlant = upsServiceGeneralTest.getTransferEmergencyPlant();
-		this.backupBatteries = upsServiceGeneralTest.getBackupBatteries();
-		this.verifyVoltage = upsServiceGeneralTest.getVerifyVoltage();
-		
-		this.upsServiceParamsId = upsServiceParams.getUpsServiceParamsId();
-		this.inputVoltagePhase = upsServiceParams.getInputVoltagePhase();
-		this.inputVoltageNeutro = upsServiceParams.getInputVoltageNeutro();
-		this.inputVoltageNeutroGround = upsServiceParams.getInputVoltageNeutroGround();
-		this.percentCharge = upsServiceParams.getPercentCharge();
-		this.outputVoltagePhase = upsServiceParams.getOutputVoltagePhase();
-		this.outputVoltageNeutro = upsServiceParams.getOutputVoltageNeutro();
-		this.inOutFrecuency = upsServiceParams.getInOutFrecuency();
-		this.busVoltage = upsServiceParams.getBusVoltage();
-	}
-			
-	public UpsServiceDTO(Integer upsServiceId, Integer serviceOrderId,
-			String estatusEquipment, Boolean cleaned, Boolean hooverClean,
-			Boolean verifyConnections, String capacitorStatus,
-			Boolean verifyFuzz, Boolean chargerReview, String fanStatus,
-			Integer upsServiceBatteryBankId, Boolean checkConnectors,
-			Boolean cverifyOutflow, Integer numberBatteries,
-			String manufacturedDateSerial, String damageBatteries,
-			String other, Double temp, Boolean chargeTest, String brandModel,
-			Double batteryVoltage, Integer upsServiceGeneralTestId,
-			Double trasferLine, Double transferEmergencyPlant,
-			Double backupBatteries, Double verifyVoltage,
-			Integer upsServiceParamsId, Double inputVoltagePhase,
-			Double inputVoltageNeutro, Double inputVoltageNeutroGround,
-			Double percentCharge, Double outputVoltagePhase,
-			Double outputVoltageNeutro, Double inOutFrecuency, Double busVoltage, String observations) {
-		this.upsServiceId = upsServiceId;
-		this.serviceOrderId = serviceOrderId;
-		this.estatusEquipment = estatusEquipment;
-		this.cleaned = cleaned;
-		this.hooverClean = hooverClean;
-		this.verifyConnections = verifyConnections;
-		this.capacitorStatus = capacitorStatus;
-		this.verifyFuzz = verifyFuzz;
-		this.chargerReview = chargerReview;
-		this.fanStatus = fanStatus;
-		this.upsServiceBatteryBankId = upsServiceBatteryBankId;
-		this.checkConnectors = checkConnectors;
-		this.cverifyOutflow = cverifyOutflow;
-		this.numberBatteries = numberBatteries;
-		this.manufacturedDateSerial = manufacturedDateSerial;
-		this.damageBatteries = damageBatteries;
-		this.other = other;
-		this.temp = temp;
-		this.chargeTest = chargeTest;
-		this.brandModel = brandModel;
-		this.batteryVoltage = batteryVoltage;
-		this.upsServiceGeneralTestId = upsServiceGeneralTestId;
-		this.trasferLine = trasferLine;
-		this.transferEmergencyPlant = transferEmergencyPlant;
-		this.backupBatteries = backupBatteries;
-		this.verifyVoltage = verifyVoltage;
-		this.upsServiceParamsId = upsServiceParamsId;
-		this.inputVoltagePhase = inputVoltagePhase;
-		this.inputVoltageNeutro = inputVoltageNeutro;
-		this.inputVoltageNeutroGround = inputVoltageNeutroGround;
-		this.percentCharge = percentCharge;
-		this.outputVoltagePhase = outputVoltagePhase;
-		this.outputVoltageNeutro = outputVoltageNeutro;
-		this.inOutFrecuency = inOutFrecuency;
-		this.busVoltage = busVoltage;
-		this.observations = observations;
-	}
-	
-	private Integer upsServiceId;
+	private Integer policyId;
+	private String customer;
+	private String finalUser;
+	private String project;
+	private Character equipmentTypeId;
+	private String equipmentType;
+	private String brand;
+	private String model;
+	private String serialNumber;
+	private String capacity;
+	private String equipmentAddress;
+	private char officeId;
+	private String contactName;
+	private String contactPhone;
+
 	private Integer serviceOrderId;
+	private Integer ticketId;
+	private Date serviceDate;
+	private String responsible;
+	private String receivedBy;
+	private String serviceStatusId;
+	private Date closed;
+	private String consultant;
+	private String coordinator;
+	private String asignee;
+	private String signCreated;
+	private String signReceivedBy;
+	private String receivedByPosition;
+	private String serviceOrderNumber;
 	
+	private Integer upsServiceId;	
 	private String estatusEquipment;
 	private Boolean cleaned;
 	private Boolean hooverClean;
@@ -195,17 +210,179 @@ public class UpsServiceDTO {
 	private Double inOutFrecuency;
 	private Double busVoltage;
 	
-	public Integer getUpsServiceId() {
-		return upsServiceId;
+	public Integer getPolicyId() {
+		return policyId;
 	}
-	public void setUpsServiceId(Integer upsServiceId) {
-		this.upsServiceId = upsServiceId;
+	public void setPolicyId(Integer policyId) {
+		this.policyId = policyId;
+	}
+	public String getCustomer() {
+		return customer;
+	}
+	public void setCustomer(String customer) {
+		this.customer = customer;
+	}
+	public String getFinalUser() {
+		return finalUser;
+	}
+	public void setFinalUser(String finalUser) {
+		this.finalUser = finalUser;
+	}
+	public String getProject() {
+		return project;
+	}
+	public void setProject(String project) {
+		this.project = project;
+	}
+	public Character getEquipmentTypeId() {
+		return equipmentTypeId;
+	}
+	public void setEquipmentTypeId(Character equipmentTypeId) {
+		this.equipmentTypeId = equipmentTypeId;
+	}
+	public String getEquipmentType() {
+		return equipmentType;
+	}
+	public void setEquipmentType(String equipmentType) {
+		this.equipmentType = equipmentType;
+	}
+	public String getBrand() {
+		return brand;
+	}
+	public void setBrand(String brand) {
+		this.brand = brand;
+	}
+	public String getModel() {
+		return model;
+	}
+	public void setModel(String model) {
+		this.model = model;
+	}
+	public String getSerialNumber() {
+		return serialNumber;
+	}
+	public void setSerialNumber(String serialNumber) {
+		this.serialNumber = serialNumber;
+	}
+	public String getCapacity() {
+		return capacity;
+	}
+	public void setCapacity(String capacity) {
+		this.capacity = capacity;
+	}
+	public String getEquipmentAddress() {
+		return equipmentAddress;
+	}
+	public void setEquipmentAddress(String equipmentAddress) {
+		this.equipmentAddress = equipmentAddress;
+	}
+	public char getOfficeId() {
+		return officeId;
+	}
+	public void setOfficeId(char officeId) {
+		this.officeId = officeId;
+	}
+	public String getContactName() {
+		return contactName;
+	}
+	public void setContactName(String contactName) {
+		this.contactName = contactName;
+	}
+	public String getContactPhone() {
+		return contactPhone;
+	}
+	public void setContactPhone(String contactPhone) {
+		this.contactPhone = contactPhone;
 	}
 	public Integer getServiceOrderId() {
 		return serviceOrderId;
 	}
 	public void setServiceOrderId(Integer serviceOrderId) {
 		this.serviceOrderId = serviceOrderId;
+	}
+	public Integer getTicketId() {
+		return ticketId;
+	}
+	public void setTicketId(Integer ticketId) {
+		this.ticketId = ticketId;
+	}
+	public Date getServiceDate() {
+		return serviceDate;
+	}
+	public void setServiceDate(Date serviceDate) {
+		this.serviceDate = serviceDate;
+	}
+	public String getResponsible() {
+		return responsible;
+	}
+	public void setResponsible(String responsible) {
+		this.responsible = responsible;
+	}
+	public String getReceivedBy() {
+		return receivedBy;
+	}
+	public void setReceivedBy(String receivedBy) {
+		this.receivedBy = receivedBy;
+	}
+	public String getServiceStatusId() {
+		return serviceStatusId;
+	}
+	public void setServiceStatusId(String serviceStatusId) {
+		this.serviceStatusId = serviceStatusId;
+	}
+	public Date getClosed() {
+		return closed;
+	}
+	public void setClosed(Date closed) {
+		this.closed = closed;
+	}
+	public String getConsultant() {
+		return consultant;
+	}
+	public void setConsultant(String consultant) {
+		this.consultant = consultant;
+	}
+	public String getCoordinator() {
+		return coordinator;
+	}
+	public void setCoordinator(String coordinator) {
+		this.coordinator = coordinator;
+	}
+	public String getAsignee() {
+		return asignee;
+	}
+	public void setAsignee(String asignee) {
+		this.asignee = asignee;
+	}
+	public String getSignCreated() {
+		return signCreated;
+	}
+	public void setSignCreated(String signCreated) {
+		this.signCreated = signCreated;
+	}
+	public String getSignReceivedBy() {
+		return signReceivedBy;
+	}
+	public void setSignReceivedBy(String signReceivedBy) {
+		this.signReceivedBy = signReceivedBy;
+	}
+	public String getReceivedByPosition() {
+		return receivedByPosition;
+	}
+	public void setReceivedByPosition(String receivedByPosition) {
+		this.receivedByPosition = receivedByPosition;
+	}
+	public String getServiceOrderNumber() {
+		return serviceOrderNumber;
+	}
+	public void setServiceOrderNumber(String serviceOrderNumber) {
+		this.serviceOrderNumber = serviceOrderNumber;
+	}
+	public Integer getUpsServiceId() {
+		return upsServiceId;
+	}
+	public void setUpsServiceId(Integer upsServiceId) {
+		this.upsServiceId = upsServiceId;
 	}
 	public String getEstatusEquipment() {
 		return estatusEquipment;
@@ -254,6 +431,12 @@ public class UpsServiceDTO {
 	}
 	public void setFanStatus(String fanStatus) {
 		this.fanStatus = fanStatus;
+	}
+	public String getObservations() {
+		return observations;
+	}
+	public void setObservations(String observations) {
+		this.observations = observations;
 	}
 	public Integer getUpsServiceBatteryBankId() {
 		return upsServiceBatteryBankId;
@@ -404,13 +587,5 @@ public class UpsServiceDTO {
 	}
 	public void setBusVoltage(Double busVoltage) {
 		this.busVoltage = busVoltage;
-	}
-
-	public String getObservations() {
-		return observations;
-	}
-
-	public void setObservations(String observations) {
-		this.observations = observations;
 	}
 }

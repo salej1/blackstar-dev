@@ -15,7 +15,7 @@
 --								blackstarDb.GetTickets
 -- 								blackstarDb.UpdateTicketStatus
 -- -----------------------------------------------------------------------------
--- 2    04/10/2013	SAG		Se Integra:
+-- 2    04/10/2013	SAG		Se Integra:evaDescription
 --								blackstarDb.GetUnassignedTickets
 -- -----------------------------------------------------------------------------
 -- 3    04/10/2013	SAG		Se Integra:
@@ -743,7 +743,7 @@ BEGIN
 
 		epServiceTestProtectionId, tempSensor, oilSensor, voltageSensor, overSpeedSensor, oilPreasureSensor, waterLevelSensor, 
 		
-		epServiceTransferSwitchId, mechanicalStatus, boardClean, screwAdjust, conectionAdjust, systemMotors, electricInterlock, 
+		epServiceTransferSwitchId, mechanicalStatus, boardClean, lampTest, screwAdjust, conectionAdjust, systemMotors, electricInterlock, 
 		mechanicalInterlock, capacityAmp, 
 
 		epServiceLecturesId, voltageABAN, voltageACCN, voltageBCBN, voltageNT, currentA, currentB, currentC, frequency, oilPreassure, temp, 
@@ -1100,6 +1100,7 @@ CREATE PROCEDURE blackstarDb.AddepServiceTransferSwitch (
    epServiceId  int(11)  ,
    mechanicalStatus  varchar(10)  ,
    boardClean  bit(1)  ,
+	lampTest  bit(1)  ,
    screwAdjust  bit(1)  ,
    conectionAdjust  bit(1)  ,
    systemMotors  varchar(10)  ,
@@ -1109,9 +1110,9 @@ CREATE PROCEDURE blackstarDb.AddepServiceTransferSwitch (
 )
 BEGIN
 insert into epServiceTransferSwitch
-(epServiceId,mechanicalStatus,boardClean,screwAdjust,conectionAdjust,systemMotors,electricInterlock,mechanicalInterlock,capacityAmp)
+(epServiceId,mechanicalStatus,boardClean,screwAdjust,lampTest,conectionAdjust,systemMotors,electricInterlock,mechanicalInterlock,capacityAmp)
 values
-(epServiceId,mechanicalStatus,boardClean,screwAdjust,conectionAdjust,systemMotors,electricInterlock,mechanicalInterlock,capacityAmp);
+(epServiceId,mechanicalStatus,boardClean,screwAdjust,lampTest,conectionAdjust,systemMotors,electricInterlock,mechanicalInterlock,capacityAmp);
 END$$
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.AddepServiceLectures

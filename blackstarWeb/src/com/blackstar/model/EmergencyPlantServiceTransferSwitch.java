@@ -4,7 +4,7 @@ public class EmergencyPlantServiceTransferSwitch {
 
 	public EmergencyPlantServiceTransferSwitch(Integer epServiceId,
 			Integer epServiceTransferSwitchId, String mechanicalStatus,
-			Boolean boardClean, Boolean screwAdjust, Boolean conectionAdjust,
+			Boolean boardClean, Boolean screwAdjust,Boolean lampTest, Boolean conectionAdjust,
 			String systemMotors, String electricInterlock,
 			String mechanicalInterlock, Integer capacityAmp) {
 		this.epServiceId = epServiceId;
@@ -17,6 +17,7 @@ public class EmergencyPlantServiceTransferSwitch {
 		this.electricInterlock = electricInterlock;
 		this.mechanicalInterlock = mechanicalInterlock;
 		this.capacityAmp = capacityAmp;
+		this.lampTest = lampTest;
 	}
 	
 	private Integer epServiceId;
@@ -24,6 +25,7 @@ public class EmergencyPlantServiceTransferSwitch {
 	private String mechanicalStatus;
 	private Boolean boardClean;
 	private Boolean screwAdjust;
+	private Boolean lampTest;
 	private Boolean conectionAdjust;
 	private String systemMotors;
 	private String electricInterlock;
@@ -89,5 +91,11 @@ public class EmergencyPlantServiceTransferSwitch {
 	}
 	public void setCapacityAmp(Integer capacityAmp) {
 		this.capacityAmp = capacityAmp;
+	}
+	public Boolean getLampTest() {
+		return lampTest;
+	}
+	public void setLampTest(Boolean lampTest) {
+		this.lampTest = lampTest;
 	}	
 }

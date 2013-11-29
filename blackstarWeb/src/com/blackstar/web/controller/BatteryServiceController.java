@@ -20,10 +20,8 @@ import com.blackstar.model.Policy;
 import com.blackstar.model.Serviceorder;
 import com.blackstar.model.Ticket;
 import com.blackstar.model.UserSession;
-import com.blackstar.model.dto.AirCoServiceDTO;
-import com.blackstar.model.dto.AirCoServicePolicyDTO;
 import com.blackstar.model.dto.BatteryServiceDTO;
-import com.blackstar.model.dto.OrderserviceDTO;
+import com.blackstar.model.dto.BatteryServicePolicyDTO;
 import com.blackstar.services.interfaces.ServiceOrderService;
 import com.blackstar.web.AbstractController;
 
@@ -40,9 +38,9 @@ public class BatteryServiceController extends AbstractController {
 	  }
 	  
 	  @RequestMapping(value= "/show.do", method = RequestMethod.GET)
-	  public String  aircoservice(@RequestParam(required = true) Integer operation, @RequestParam(required = true) String idObject, ModelMap model)
+	  public String  batteryservice(@RequestParam(required = true) Integer operation, @RequestParam(required = true) String idObject, ModelMap model)
 	  {
-		  AirCoServicePolicyDTO airCoServicePolicyDTO =null;
+		  BatteryServicePolicyDTO batteryServicePolicyDTO =null;
 		  try
 		  {
 			  if(operation!= null && idObject!=null)
@@ -57,8 +55,8 @@ public class BatteryServiceController extends AbstractController {
 		  			  Ticket ticket = daoFactory.getTicketDAO().getTicketById(idTicket);
 	  				  Policy policy = this.daoFactory.getPolicyDAO().getPolicyById(ticket.getPolicyId());
 	  				  Equipmenttype equipType = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
-	  				  airCoServicePolicyDTO = new AirCoServicePolicyDTO(policy, equipType.getEquipmentType());
-	  				  model.addAttribute("serviceOrder", airCoServicePolicyDTO);
+	  				batteryServicePolicyDTO = new BatteryServicePolicyDTO(policy, equipType.getEquipmentType());
+	  				  model.addAttribute("serviceOrder", batteryServicePolicyDTO);
 		  		  }
 		  		  else if( operation==2)
 		  		  {
@@ -66,25 +64,25 @@ public class BatteryServiceController extends AbstractController {
 		  			  Serviceorder serviceOrder = this.daoFactory.getServiceOrderDAO().getServiceOrderById(idOrder);
 		  			  Policy policy = this.daoFactory.getPolicyDAO().getPolicyById(serviceOrder.getPolicyId());
 	  				  Equipmenttype equipType = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
-	  				  airCoServicePolicyDTO = new AirCoServicePolicyDTO(policy, equipType.getEquipmentType(), serviceOrder );
-	  				  model.addAttribute("serviceOrder", airCoServicePolicyDTO);
+	  				batteryServicePolicyDTO = new BatteryServicePolicyDTO(policy, equipType.getEquipmentType(), serviceOrder );
+	  				  model.addAttribute("serviceOrder", batteryServicePolicyDTO);
 		  		  }
 		  		  else if(operation==3)
 		  		  {
 		  			  Policy policy  = this.daoFactory.getPolicyDAO().getPolicyBySerialNo(idObject);
 	  				  Equipmenttype equipType = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
-	  				  airCoServicePolicyDTO = new AirCoServicePolicyDTO(policy, equipType.getEquipmentType());
-	  				  model.addAttribute("serviceOrder", airCoServicePolicyDTO);
+	  				batteryServicePolicyDTO = new BatteryServicePolicyDTO(policy, equipType.getEquipmentType());
+	  				  model.addAttribute("serviceOrder", batteryServicePolicyDTO);
 		  		  }
 		  		  else if(operation ==4)
 		  		  {
 		  			  Integer idOrderService = Integer.parseInt(idObject);
-		  			  AirCoServiceDTO airCoServiceDTO = service.getAirCoService(idOrderService);
-		  			  Serviceorder serviceOrder = this.daoFactory.getServiceOrderDAO().getServiceOrderById(airCoServiceDTO.getServiceOrderId());
+		  			  BatteryServiceDTO batteryServiceDTO = service.getBateryService(idOrderService);
+		  			  Serviceorder serviceOrder = this.daoFactory.getServiceOrderDAO().getServiceOrderById(batteryServiceDTO.getServiceOrderId());
 		  			  Policy policy = this.daoFactory.getPolicyDAO().getPolicyById(serviceOrder.getPolicyId());
 	  				  Equipmenttype equipType = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
-	  				  airCoServicePolicyDTO = new AirCoServicePolicyDTO(policy, equipType.getEquipmentType(), serviceOrder,  airCoServiceDTO);
-	  				  model.addAttribute("serviceOrder", airCoServicePolicyDTO);
+	  				  batteryServicePolicyDTO = new BatteryServicePolicyDTO(policy, equipType.getEquipmentType(), serviceOrder,  batteryServiceDTO);
+	  				  model.addAttribute("serviceOrder", batteryServicePolicyDTO);
 		  		  }
 	  		  }
 			  else
@@ -97,12 +95,12 @@ public class BatteryServiceController extends AbstractController {
 				 Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
 		  }
 		  
-		  return "aircoservice";
+		  return "batteryservice";
 	  }
 	  
 	    @RequestMapping(value = "/save.do", method = RequestMethod.POST)
 	    public String save( 
-	    		@ModelAttribute("serviceOrder") AirCoServicePolicyDTO serviceOrder,
+	    		@ModelAttribute("serviceOrder") BatteryServicePolicyDTO serviceOrder,
 	    		@ModelAttribute(Globals.SESSION_KEY_PARAM)  UserSession userSession,
               ModelMap model, HttpServletRequest req, HttpServletResponse resp)
 	    {
@@ -145,11 +143,11 @@ public class BatteryServiceController extends AbstractController {
 	    		service.updateServiceOrder(servicioOrderSave, "AirCoServiceController", userSession.getUser().getUserName());
 	    	}
 	    	
-	    	if(serviceOrder.getAaServiceId()==null)
+	    	if(serviceOrder.getBbServiceId()==null)
 	    	{
 	    		serviceOrder.setServiceOrderId(idServicio);
 	    		//Crear orden de servicio de AirCo
-	    		service.saveAirCoService(new AirCoServiceDTO(serviceOrder), "AirCoServiceController", userSession.getUser().getUserName());
+	    		service.saveBateryService(new BatteryServiceDTO(serviceOrder), "AirCoServiceController", userSession.getUser().getUserName());
 	    	}
 
 	    	return "dashboard";

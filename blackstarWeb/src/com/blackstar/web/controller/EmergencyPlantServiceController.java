@@ -20,10 +20,8 @@ import com.blackstar.model.Policy;
 import com.blackstar.model.Serviceorder;
 import com.blackstar.model.Ticket;
 import com.blackstar.model.UserSession;
-import com.blackstar.model.dto.AirCoServiceDTO;
-import com.blackstar.model.dto.AirCoServicePolicyDTO;
 import com.blackstar.model.dto.EmergencyPlantServiceDTO;
-import com.blackstar.model.dto.OrderserviceDTO;
+import com.blackstar.model.dto.EmergencyPlantServicePolicyDTO;
 import com.blackstar.services.interfaces.ServiceOrderService;
 import com.blackstar.web.AbstractController;
 
@@ -39,9 +37,9 @@ public class EmergencyPlantServiceController extends AbstractController {
 	  }
 	  
 	  @RequestMapping(value= "/show.do", method = RequestMethod.GET)
-	  public String  aircoservice(@RequestParam(required = true) Integer operation, @RequestParam(required = true) String idObject, ModelMap model)
+	  public String  emergencyplantservice(@RequestParam(required = true) Integer operation, @RequestParam(required = true) String idObject, ModelMap model)
 	  {
-		  AirCoServicePolicyDTO airCoServicePolicyDTO =null;
+		  EmergencyPlantServicePolicyDTO emergencyPlantServicePolicyDTO =null;
 		  try
 		  {
 			  if(operation!= null && idObject!=null)
@@ -56,8 +54,8 @@ public class EmergencyPlantServiceController extends AbstractController {
 		  			  Ticket ticket = daoFactory.getTicketDAO().getTicketById(idTicket);
 	  				  Policy policy = this.daoFactory.getPolicyDAO().getPolicyById(ticket.getPolicyId());
 	  				  Equipmenttype equipType = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
-	  				  airCoServicePolicyDTO = new AirCoServicePolicyDTO(policy, equipType.getEquipmentType());
-	  				  model.addAttribute("serviceOrder", airCoServicePolicyDTO);
+	  				emergencyPlantServicePolicyDTO = new EmergencyPlantServicePolicyDTO(policy, equipType.getEquipmentType());
+	  				  model.addAttribute("serviceOrder", emergencyPlantServicePolicyDTO);
 		  		  }
 		  		  else if( operation==2)
 		  		  {
@@ -65,30 +63,30 @@ public class EmergencyPlantServiceController extends AbstractController {
 		  			  Serviceorder serviceOrder = this.daoFactory.getServiceOrderDAO().getServiceOrderById(idOrder);
 		  			  Policy policy = this.daoFactory.getPolicyDAO().getPolicyById(serviceOrder.getPolicyId());
 	  				  Equipmenttype equipType = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
-	  				  airCoServicePolicyDTO = new AirCoServicePolicyDTO(policy, equipType.getEquipmentType(), serviceOrder );
-	  				  model.addAttribute("serviceOrder", airCoServicePolicyDTO);
+	  				emergencyPlantServicePolicyDTO = new EmergencyPlantServicePolicyDTO(policy, equipType.getEquipmentType(), serviceOrder );
+	  				  model.addAttribute("serviceOrder", emergencyPlantServicePolicyDTO);
 		  		  }
 		  		  else if(operation==3)
 		  		  {
 		  			  Policy policy  = this.daoFactory.getPolicyDAO().getPolicyBySerialNo(idObject);
 	  				  Equipmenttype equipType = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
-	  				  airCoServicePolicyDTO = new AirCoServicePolicyDTO(policy, equipType.getEquipmentType());
-	  				  model.addAttribute("serviceOrder", airCoServicePolicyDTO);
+	  				emergencyPlantServicePolicyDTO = new EmergencyPlantServicePolicyDTO(policy, equipType.getEquipmentType());
+	  				  model.addAttribute("serviceOrder", emergencyPlantServicePolicyDTO);
 		  		  }
 		  		  else if(operation ==4)
 		  		  {
 		  			  Integer idOrderService = Integer.parseInt(idObject);
-		  			  AirCoServiceDTO airCoServiceDTO = service.getAirCoService(idOrderService);
-		  			  Serviceorder serviceOrder = this.daoFactory.getServiceOrderDAO().getServiceOrderById(airCoServiceDTO.getServiceOrderId());
+		  			EmergencyPlantServiceDTO emergencyPlantServiceDTO = service.getEmergencyPlantService(idOrderService);
+		  			  Serviceorder serviceOrder = this.daoFactory.getServiceOrderDAO().getServiceOrderById(emergencyPlantServiceDTO.getServiceOrderId());
 		  			  Policy policy = this.daoFactory.getPolicyDAO().getPolicyById(serviceOrder.getPolicyId());
 	  				  Equipmenttype equipType = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
-	  				  airCoServicePolicyDTO = new AirCoServicePolicyDTO(policy, equipType.getEquipmentType(), serviceOrder,  airCoServiceDTO);
-	  				  model.addAttribute("serviceOrder", airCoServicePolicyDTO);
+	  				emergencyPlantServicePolicyDTO = new EmergencyPlantServicePolicyDTO(policy, equipType.getEquipmentType(), serviceOrder,  emergencyPlantServiceDTO);
+	  				  model.addAttribute("serviceOrder", emergencyPlantServicePolicyDTO);
 		  		  }
 	  		  }
 			  else
 			  {
-				  Logger.Log(LogLevel.WARNING, "AirCoServiceController", "Parametros de navegacion nulos." , "" );
+				  Logger.Log(LogLevel.WARNING, "EmergencyPlantServiceController", "Parametros de navegacion nulos." , "" );
 			  }
 		  } 
 		  catch (Exception e) 
@@ -96,12 +94,12 @@ public class EmergencyPlantServiceController extends AbstractController {
 				 Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
 		  }
 		  
-		  return "aircoservice";
+		  return "emergencyplantservice";
 	  }
 	  
 	    @RequestMapping(value = "/save.do", method = RequestMethod.POST)
 	    public String save( 
-	    		@ModelAttribute("serviceOrder") AirCoServicePolicyDTO serviceOrder,
+	    		@ModelAttribute("serviceOrder") EmergencyPlantServicePolicyDTO serviceOrder,
 	    		@ModelAttribute(Globals.SESSION_KEY_PARAM)  UserSession userSession,
               ModelMap model, HttpServletRequest req, HttpServletResponse resp)
 	    {
@@ -123,7 +121,7 @@ public class EmergencyPlantServiceController extends AbstractController {
 	    		servicioOrderSave.setSignCreated(serviceOrder.getSignCreated());
 	    		servicioOrderSave.setSignReceivedBy(serviceOrder.getSignReceivedBy());
 	    		servicioOrderSave.setStatusId("N");
-	    		idServicio = service.saveServiceOrder(servicioOrderSave, "AirCoServiceController", userSession.getUser().getUserName());
+	    		idServicio = service.saveServiceOrder(servicioOrderSave, "EmergencyPlantServiceController", userSession.getUser().getUserName());
 	    	}
 	    	else
 	    	{
@@ -141,14 +139,14 @@ public class EmergencyPlantServiceController extends AbstractController {
 	    		servicioOrderSave.setSignCreated(serviceOrder.getSignCreated());
 	    		servicioOrderSave.setSignReceivedBy(serviceOrder.getSignReceivedBy());
 	    		servicioOrderSave.setStatusId("N");
-	    		service.updateServiceOrder(servicioOrderSave, "AirCoServiceController", userSession.getUser().getUserName());
+	    		service.updateServiceOrder(servicioOrderSave, "EmergencyPlantServiceController", userSession.getUser().getUserName());
 	    	}
 	    	
-	    	if(serviceOrder.getAaServiceId()==null)
+	    	if(serviceOrder.getEpServiceId()==null)
 	    	{
 	    		serviceOrder.setServiceOrderId(idServicio);
 	    		//Crear orden de servicio de AirCo
-	    		service.saveAirCoService(new AirCoServiceDTO(serviceOrder), "AirCoServiceController", userSession.getUser().getUserName());
+	    		service.saveEmergencyPlantService(new EmergencyPlantServiceDTO(serviceOrder), "EmergencyPlantServiceController", userSession.getUser().getUserName());
 	    	}
 
 	    	return "dashboard";
