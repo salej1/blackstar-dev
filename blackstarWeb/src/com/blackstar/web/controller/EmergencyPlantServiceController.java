@@ -54,7 +54,7 @@ public class EmergencyPlantServiceController extends AbstractController {
 		  			  Ticket ticket = daoFactory.getTicketDAO().getTicketById(idTicket);
 	  				  Policy policy = this.daoFactory.getPolicyDAO().getPolicyById(ticket.getPolicyId());
 	  				  Equipmenttype equipType = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
-	  				emergencyPlantServicePolicyDTO = new EmergencyPlantServicePolicyDTO(policy, equipType.getEquipmentType());
+	  				  emergencyPlantServicePolicyDTO = new EmergencyPlantServicePolicyDTO(policy, equipType.getEquipmentType());
 	  				  model.addAttribute("serviceOrder", emergencyPlantServicePolicyDTO);
 		  		  }
 		  		  else if( operation==2)
@@ -63,14 +63,14 @@ public class EmergencyPlantServiceController extends AbstractController {
 		  			  Serviceorder serviceOrder = this.daoFactory.getServiceOrderDAO().getServiceOrderById(idOrder);
 		  			  Policy policy = this.daoFactory.getPolicyDAO().getPolicyById(serviceOrder.getPolicyId());
 	  				  Equipmenttype equipType = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
-	  				emergencyPlantServicePolicyDTO = new EmergencyPlantServicePolicyDTO(policy, equipType.getEquipmentType(), serviceOrder );
+	  				  emergencyPlantServicePolicyDTO = new EmergencyPlantServicePolicyDTO(policy, equipType.getEquipmentType(), serviceOrder );
 	  				  model.addAttribute("serviceOrder", emergencyPlantServicePolicyDTO);
 		  		  }
 		  		  else if(operation==3)
 		  		  {
 		  			  Policy policy  = this.daoFactory.getPolicyDAO().getPolicyBySerialNo(idObject);
 	  				  Equipmenttype equipType = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
-	  				emergencyPlantServicePolicyDTO = new EmergencyPlantServicePolicyDTO(policy, equipType.getEquipmentType());
+	  				  emergencyPlantServicePolicyDTO = new EmergencyPlantServicePolicyDTO(policy, equipType.getEquipmentType());
 	  				  model.addAttribute("serviceOrder", emergencyPlantServicePolicyDTO);
 		  		  }
 		  		  else if(operation ==4)

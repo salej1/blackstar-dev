@@ -76,6 +76,11 @@
 			
 		// inicializando el dialogo para agregar seguimientos
 		initFollowUpDlg("serviceOrder", "osDetail?serviceOrderId=${serviceOrder.serviceOrderId}");
+
+		// Signature capture box # 1 
+		$('#leftSign').signature('draw', '${serviceOrder.signCreated}'); 
+		// Signature capture box # 2 
+		$('#rightSign').signature('draw', '${serviceOrder.signReceivedBy}'); 
 	});
 
 	function isNumberKey(evt){

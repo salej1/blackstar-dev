@@ -186,8 +186,16 @@ public class ServiceOrderDAOImpl extends AbstractDAO implements ServiceOrderDAO 
 		
 		StringBuilder sqlBuilder = new StringBuilder();
 		sqlBuilder.append("CALL GetAirCoServiceByIdService(?)");
-		return (AirCoServiceDTO) getJdbcTemplate().query(sqlBuilder.toString() 
-				, new Object []{aaServiceId}, getMapperFor(AirCoServiceDTO.class));
+		
+		List<AirCoServiceDTO> aircoServices = (List<AirCoServiceDTO>) getJdbcTemplate().query(sqlBuilder.toString() 
+					, new Object []{aaServiceId}, getMapperFor(AirCoServiceDTO.class));
+		
+		AirCoServiceDTO airService = null;
+		
+		if(aircoServices.size() >0)
+			airService  = aircoServices.get(0);
+		
+		return airService;
 	}
 	
 	
@@ -195,8 +203,16 @@ public class ServiceOrderDAOImpl extends AbstractDAO implements ServiceOrderDAO 
 	public BatteryServiceDTO getBateryService(Integer bbServiceId) {
 		StringBuilder sqlBuilder = new StringBuilder();
 		sqlBuilder.append("CALL GetBatteryServiceByIdService(?)");
-		return (BatteryServiceDTO) getJdbcTemplate().query(sqlBuilder.toString() 
+		
+		List<BatteryServiceDTO> batteryServices = (List<BatteryServiceDTO>) getJdbcTemplate().query(sqlBuilder.toString() 
 				, new Object []{bbServiceId}, getMapperFor(BatteryServiceDTO.class));
+	
+		BatteryServiceDTO batteryService = null;
+		
+		if(batteryServices.size() >0)
+			batteryService  = batteryServices.get(0);
+		
+		return batteryService;
 	}
 	
 	
@@ -204,8 +220,16 @@ public class ServiceOrderDAOImpl extends AbstractDAO implements ServiceOrderDAO 
 	public EmergencyPlantServiceDTO getEmergencyPlantService(Integer epServiceId) {
 		StringBuilder sqlBuilder = new StringBuilder();
 		sqlBuilder.append("CALL GetEmergencyPlantServiceByIdService(?)");
-		return (EmergencyPlantServiceDTO) getJdbcTemplate().query(sqlBuilder.toString() 
+		
+		List<EmergencyPlantServiceDTO> emergencyServices = (List<EmergencyPlantServiceDTO>) getJdbcTemplate().query(sqlBuilder.toString() 
 				, new Object []{epServiceId}, getMapperFor(EmergencyPlantServiceDTO.class));
+	
+		EmergencyPlantServiceDTO emergencyPlantService = null;
+		
+		if(emergencyServices.size() >0)
+			emergencyPlantService  = emergencyServices.get(0);
+		
+		return emergencyPlantService;
 	}
 	
 	
@@ -213,8 +237,17 @@ public class ServiceOrderDAOImpl extends AbstractDAO implements ServiceOrderDAO 
 	public PlainServiceDTO getPlainService(Integer plainServiceId) {
 		StringBuilder sqlBuilder = new StringBuilder();
 		sqlBuilder.append("CALL GetPlainServiceServiceByIdService(?)");
-		return (PlainServiceDTO) getJdbcTemplate().query(sqlBuilder.toString() 
+		
+		List<PlainServiceDTO> plainServices = (List<PlainServiceDTO>) getJdbcTemplate().query(sqlBuilder.toString() 
 				, new Object []{plainServiceId}, getMapperFor(PlainServiceDTO.class));
+	
+		PlainServiceDTO plainService = null;
+		
+		if(plainServices.size() >0)
+			plainService  = plainServices.get(0);
+		
+		return plainService;
+		
 	}
 	
 	
@@ -222,8 +255,16 @@ public class ServiceOrderDAOImpl extends AbstractDAO implements ServiceOrderDAO 
 	public UpsServiceDTO getUpsService(Integer upsServiceId) {
 		StringBuilder sqlBuilder = new StringBuilder();
 		sqlBuilder.append("CALL GetUPSServiceByIdService(?)");
-		return (UpsServiceDTO) getJdbcTemplate().query(sqlBuilder.toString() 
+		
+		List<UpsServiceDTO> upsServices = (List<UpsServiceDTO>) getJdbcTemplate().query(sqlBuilder.toString() 
 				, new Object []{upsServiceId}, getMapperFor(UpsServiceDTO.class));
+	
+		UpsServiceDTO upsService = null;
+		
+		if(upsServices.size() >0)
+			upsService  = upsServices.get(0);
+		
+		return upsService;
 	}
 	
 	@Override
