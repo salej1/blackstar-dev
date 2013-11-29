@@ -11,84 +11,99 @@
 	<title>Órden de servicio Aire Acondicionado</title>
 	
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<script src="js/jquery.ui.touch-punch.min.js"></script>
-	<script src="js/jquery.signature.min.js"></script>
-	<link rel="stylesheet" href="css/960.css" type="text/css" media="screen" charset="utf-8" />
-	<link rel="stylesheet" href="css/template.css" type="text/css" media="screen" charset="utf-8" />
-	<link rel="stylesheet" href="css/colour.css" type="text/css" media="screen" charset="utf-8" />
-	<link href="js/glow/1.7.0/widgets/widgets.css" type="text/css" rel="stylesheet" />
-	<link rel="stylesheet" href="css/jquery.ui.theme.css">
-	<link rel="stylesheet" href="css/jquery-ui.min.css">
-	<link rel="stylesheet" href="css/jquery.signature.css">
+	<script src="${pageContext.request.contextPath}/js/jquery.ui.touch-punch.min.js"></script>
+	<script src="${pageContext.request.contextPath}/js/jquery.signature.min.js"></script>
+	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/960.css" type="text/css" media="screen" charset="utf-8" />
+	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/template.css" type="text/css" media="screen" charset="utf-8" />
+	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/colour.css" type="text/css" media="screen" charset="utf-8" />
+	<link href="${pageContext.request.contextPath}/js/glow/1.7.0/widgets/widgets.css" type="text/css" rel="stylesheet" />
+	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery.ui.theme.css">
+	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery-ui.min.css">
+	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery.signature.css">
+	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery.datetimepicker.css">
+	<script src="${pageContext.request.contextPath}/js/jquery.datetimepicker.js"></script>
 	
 	<script type="text/javascript" charset="utf-8">
 	
 		$(document).ready(function () {
-		
+						
+			$( "#serviceDate" ).datetimepicker();
+			$( "#closed" ).datetimepicker();
+			
 			// Signature capture box # 1 
-				$('#signCapture').signature({syncField: '#leftSignJSON'});
-				$('#leftSign').signature({disabled: true}); 
-				$("#signCapDialog").dialog({
-					autoOpen: false,
-					height: 220,
-					width: 370,
-					modal: true,
-					buttons: {
-						"Aceptar": function() {
-							$('#leftSign').signature('draw', $('#leftSignJSON').val()); 
-							$( this ).dialog( "close" );
-						},
-						
-						"Borrar": function() {
-							$('#signCapture').signature('clear'); 
-						},
-						
-						"Cancelar": function() {
+			$('#signCapture').signature({syncField: '#signCreated'});
+			$('#leftSign').signature({disabled: true}); 
+			$("#signCapDialog").dialog({
+				autoOpen: false,
+				height: 220,
+				width: 370,
+				modal: true,
+				buttons: {
+					"Aceptar": function() {
+						$('#leftSign').signature('draw', $('#signCreated').val()); 
 						$( this ).dialog( "close" );
-						}
-						}
-				});
+					},
+					
+					"Borrar": function() {
+						$('#signCapture').signature('clear'); 
+					},
+					
+					"Cancelar": function() {
+					$( this ).dialog( "close" );
+				}}
+			});
+			
+			// Signature capture box # 2 
+			$('#signCapture2').signature({syncField: '#signReceivedBy'});
+			$('#rightSign').signature({disabled: true}); 
+			$("#signCapDialog2").dialog({
+				autoOpen: false,
+				height: 220,
+				width: 370,
+				modal: true,
+				buttons: {
+					"Aceptar": function() {
+						$('#rightSign').signature('draw', $('#signReceivedBy').val()); 
+						$( this ).dialog( "close" );
+					},
+					
+					"Borrar": function() {
+						$('#signCapture2').signature('clear'); 
+					},
+					
+					"Cancelar": function() {
+					$( this ).dialog( "close" );
+				}}
+			});
 				
-				// Signature capture box # 2 
-				$('#signCapture2').signature({syncField: '#leftSignJSON2'});
-				$('#rightSign').signature({disabled: true}); 
-				$("#signCapDialog2").dialog({
-					autoOpen: false,
-					height: 220,
-					width: 370,
-					modal: true,
-					buttons: {
-						"Aceptar": function() {
-							$('#rightSign').signature('draw', $('#leftSignJSON2').val()); 
-							$( this ).dialog( "close" );
-						},
-						
-						"Borrar": function() {
-							$('#signCapture2').signature('clear'); 
-						},
-						
-						"Cancelar": function() {
-						$( this ).dialog( "close" );
-					}}
-				});
-
+			// inicializando el dialogo para agregar seguimientos
+			initFollowUpDlg("serviceOrder", "osDetail?serviceOrderId=${serviceOrder.serviceOrderId}");
 		});
-	
+
+		function isNumberKey(evt){
+
+
+		      var charCode = (evt.which) ? evt.which : event.keyCode
+		    	         if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57))
+		    	            return false;
+
+		    	         return true;
+		}
+		
 	</script> 
 	
 		 
 	</head>
 	<body>
-		
-			<div id="content" class="container_16 clearfix">
-				<form:form  commandName="policyDetail" >
+		<div id="content" class="container_16 clearfix">
+			<form:form  commandName="serviceOrder" action="save.do" method="POST">			
 				<div class="grid_16">					
 					<div class="box">
 						<h2>AIRES ACONDICIONADOS / CHILLER</h2>
 							<table>
 								<tr>
 									<td>Folio:</td>
-									<td><form:input path="customerContract" type="text" style="width:95%;" readOnly="true" /></td>
+									<td><form:input path="serviceOrderNumber" type="text" style="width:95%;" maxlength="5" /></td>
 									<td colspan="2"><small></small>
 										
 									</td>
@@ -107,7 +122,7 @@
 								</tr>
 								<tr>
 									<td>Equipo</td>
-									<td><form:input path="equipmentTypeId" type="text" style="width:95%;" readOnly="true" /></td>
+									<td><form:input path="equipmentType" type="text" style="width:95%;" readOnly="true" /></td>
 									<td style="padding-left:10px;">Marca</td>
 									<td><form:input path="brand" type="text" style="width:95%;" readOnly="true" /></td>
 									<td>Modelo</td>
@@ -118,15 +133,13 @@
 								</tr>
 								<tr>
 									<td>Fecha y hora de llegada</td>
-									<td><form:input path="created" type="text" style="width:95%;" readOnly="true" /></td>
+									<td><form:input path="serviceDate" type="text" style="width:95%;"  /></td>
 								</tr>
 							</table>
 						</div>					
 					</div>
-					</form:form>
 					<div class="grid_16">
 						<div class="box">
-						<form:form  commandName="serviceOrder" action="save.do" method="POST">
 							<table>
 								<thead>
 									<tr>
@@ -140,9 +153,9 @@
 								<tr>
 									<td colspan="5">1.2 VALORES ACTUALES</td>
 									<td>Temp.</td>
-									<td><form:input path="evaValTemp" type="text" style="width:95%;" /></td>
+									<td><form:input path="evaValTemp" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' /></td>
 									<td>Hum.</td>
-									<td><form:input path="evaValHum" type="text" style="width:95%;" /></td>
+									<td><form:input path="evaValHum" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' /></td>
 								</tr>
 								<tr>
 									<td colspan="5">1.2.1 SETPOINTS</td>
@@ -333,64 +346,64 @@
 								</tr>
 								<tr>
 									<td>Nombre</td>
-									<td><input id="lbNombreRealizado" type="text" style="width:95%;"  /></td>
+									<td><form:input path="responsible" type="text" style="width:95%;"  /></td>
 									<td>Nombre</td>
-									<td><input id="lbNombreRecibido" type="text" style="width:95%;" /></td>
+									<td><form:input path="receivedBy" type="text" style="width:95%;" /></td>
 								</tr>
 								<tr>
 									<td>Fecha y hora de salida</td>
-									<td><input id="lbFechaSalida" type="text" style="width:95%;"  /></td>
+									<td><form:input path="closed" type="text" style="width:95%;"  /></td>
 									<td>Puesto</td>
-									<td><input type="text" id="lblPuesto" style="width:95%;"  /></td>
+									<td><form:input path="receivedByPosition"  style="width:95%;"  /></td>
 								</tr>						
 							</table>
+
 							<table>
 								<tbody>
 									<tr>
 										<td>
-											<button class="searchButton" >Guardar servicio</button>
-											<button class="searchButton" onclick="window.location = 'dashboard'">Cerrar</button>
+											<input class="searchButton" type="submit" value="Guardar servicio">
 										</td>
 									</tr>
 								<tbody>
 							</table>
-							<br/>
-							<br/>
-							<!-- Signature capture box # 1 -->
-							<hidden id="leftSignJSON"></hidden>
-							<hidden id="rightSignJSON"></hidden>
-							<div id="signCapDialog" title="Capture su firma en el cuadro" class="signBoxDlg">
-								<div id="signCapture">
-								
-								</div>
-							</div>
 							
-							<!-- Signature capture box # 2 -->
-							<hidden id="leftSignJSON2"></hidden>
-							<hidden id="rightSignJSON2"></hidden>
-							<div id="signCapDialog2" title="Capture su firma en el cuadro" class="signBoxDlg">
-								<div id="signCapture2">
-								</div>
-							</div>
-							</form:form>
+
+					</div>
+					</div>
+					
+					<form:hidden path="policyId"/>
+					
+					<!-- Signature capture box # 1 -->
+					<form:hidden path="signCreated"/>
+					<hidden id="rightSignJSON"/></hidden>
+					<div id="signCapDialog" title="Capture su firma en el cuadro" class="signBoxDlg">
+						<div id="signCapture">
+						</div>
+					</div>
+					
+					<!-- Signature capture box # 2 -->
+					<form:hidden path="signReceivedBy"/>
+					<hidden id="rightSignJSON2"></hidden>
+					<div id="signCapDialog2" title="Capture su firma en el cuadro" class="signBoxDlg">
+						<div id="signCapture2">
+						</div>
+					</div>
+			</form:form>
+							<!-- Adjuntos -->
+							<c:import url="_attachments.jsp"></c:import>
 							<!-- Control de secuencia y captura de seguimiento -->
 							<c:import url="followUpControl.jsp"></c:import>
 							<table>
 								<tbody>
 									<tr>
 										<td>
-											<button class="searchButton" onclick="addSeguimiento(${serviceOrderDetail.serviceOrderId}, '${serviceOrderDetail.serviceOrderNo}');">Agregar seguimiento</button>
+											<button class="searchButton" onclick="addSeguimiento(${serviceOrder.serviceOrderId}, '${serviceOrder.serviceOrderNumber}');">Agregar seguimiento</button>
 											<button class="searchButton" onclick="window.location = 'dashboard'">Cerrar</button>
 										</td>
 									</tr>
 								<tbody>
-							</table>
-							
-							<!-- Adjuntos -->
-							<c:import url="_attachments.jsp"></c:import>
-						</div>
-					</div>		
-			</div>
-		
+							</table>	
+		</div>
 	</body>
 </html>

@@ -145,7 +145,7 @@ public class EmergencyPlantServiceDTO {
 			String pumpFuelModel, Boolean filterFuelFlag,
 			Boolean filterOilFlag, Boolean filterWaterFlag,
 			Boolean filterAirFlag, String brandGear, String brandBattery,
-			String clockLecture, String serviceCorrective, String observations,
+			String clockLecture, Date serviceCorrective, String observations,
 			Integer epServiceSurveyId, Boolean levelOilFlag,
 			Boolean levelWaterFlag, Integer levelBattery, Boolean tubeLeak,
 			String batteryCap, String batterySulfate, Integer levelOil,
@@ -314,7 +314,7 @@ public class EmergencyPlantServiceDTO {
 	private String brandGear;
 	private String brandBattery;
 	private String clockLecture;
-	private String serviceCorrective;
+	private Date serviceCorrective;
 	private String observations;
 	
 	private Integer epServiceSurveyId;
@@ -562,10 +562,10 @@ public class EmergencyPlantServiceDTO {
 	public void setClockLecture(String clockLecture) {
 		this.clockLecture = clockLecture;
 	}
-	public String getServiceCorrective() {
+	public Date getServiceCorrective() {
 		return serviceCorrective;
 	}
-	public void setServiceCorrective(String serviceCorrective) {
+	public void setServiceCorrective(Date serviceCorrective) {
 		this.serviceCorrective = serviceCorrective;
 	}
 	public String getObservations() {

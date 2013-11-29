@@ -9,6 +9,62 @@ public class AirCoServiceDTO {
 		
 	}
 	
+	public AirCoServiceDTO(AirCoServicePolicyDTO  airCoServiceDTO)
+	{
+		this.aaServiceId = airCoServiceDTO.getAaServiceId();
+		this.serviceOrderId = airCoServiceDTO.getServiceOrderId();
+		this.evaDescription = airCoServiceDTO.getEvaDescription();
+		this.evaValTemp = airCoServiceDTO.getEvaValTemp();
+		this.evaValHum = airCoServiceDTO.getEvaValHum();
+		this.evaSetpointTemp = airCoServiceDTO.getEvaSetpointTemp();
+		this.evaSetpointHum = airCoServiceDTO.getEvaSetpointHum();
+		this.evaFlagCalibration = airCoServiceDTO.getEvaFlagCalibration();
+		this.evaReviewFilter = airCoServiceDTO.getEvaReviewFilter();
+		this.evaReviewStrip = airCoServiceDTO.getEvaReviewStrip();
+		this.evaCleanElectricSystem = airCoServiceDTO.getEvaCleanElectricSystem();
+		this.evaCleanControlCard = airCoServiceDTO.getEvaCleanControlCard();
+		this.evaCleanTray = airCoServiceDTO.getEvaCleanTray();
+		this.evaLectrurePreasureHigh = airCoServiceDTO.getEvaLectrurePreasureHigh();
+		this.evaLectrurePreasureLow = airCoServiceDTO.getEvaLectrurePreasureLow();
+		this.evaLectureTemp = airCoServiceDTO.getEvaLectureTemp();
+		this.evaLectureOilColor = airCoServiceDTO.getEvaLectureOilColor();
+		this.evaLectureOilLevel = airCoServiceDTO.getEvaLectureOilLevel();
+		this.evaLectureCoolerColor = airCoServiceDTO.getEvaLectureCoolerColor();
+		this.evaLectureCoolerLevel = airCoServiceDTO.getEvaLectureCoolerLevel();
+		this.evaCheckOperatation = airCoServiceDTO.getEvaCheckOperatation();
+		this.evaCheckNoise = airCoServiceDTO.getEvaCheckNoise();
+		this.evaCheckIsolated = airCoServiceDTO.getEvaCheckIsolated();
+		this.evaLectureVoltageGroud = airCoServiceDTO.getEvaLectureVoltageGroud();
+		this.evaLectureVoltagePhases = airCoServiceDTO.getEvaLectureVoltagePhases();
+		this.evaLectureVoltageControl = airCoServiceDTO.getEvaLectureVoltageControl();
+		this.evaLectureCurrentMotor1 = airCoServiceDTO.getEvaLectureCurrentMotor1();
+		this.evaLectureCurrentMotor2 = airCoServiceDTO.getEvaLectureCurrentMotor2();
+		this.evaLectureCurrentMotor3 = airCoServiceDTO.getEvaLectureCurrentMotor3();
+		this.evaLectureCurrentCompressor1 = airCoServiceDTO.getEvaLectureCurrentCompressor1();
+		this.evaLectureCurrentCompressor2 = airCoServiceDTO.getEvaLectureCurrentCompressor2();
+		this.evaLectureCurrentCompressor3 = airCoServiceDTO.getEvaLectureCurrentCompressor3();
+		this.evaLectureCurrentHumidifier1 = airCoServiceDTO.getEvaLectureCurrentHumidifier1();
+		this.evaLectureCurrentHumidifier2 = airCoServiceDTO.getEvaLectureCurrentHumidifier2();
+		this.evaLectureCurrentHumidifier3 = airCoServiceDTO.getEvaLectureCurrentHumidifier3();
+		this.evaLectureCurrentHeater1 = airCoServiceDTO.getEvaLectureCurrentHeater1();
+		this.evaLectureCurrentHeater2 = airCoServiceDTO.getEvaLectureCurrentHeater2();
+		this.evaLectureCurrentHeater3 = airCoServiceDTO.getEvaLectureCurrentHeater3();
+		this.evaCheckFluidSensor = airCoServiceDTO.getEvaCheckFluidSensor();
+		this.evaRequirMaintenance = airCoServiceDTO.getEvaRequirMaintenance();
+		this.condReview = airCoServiceDTO.getCondReview();
+		this.condCleanElectricSystem = airCoServiceDTO.getCondCleanElectricSystem();
+		this.condClean = airCoServiceDTO.getCondClean();
+		this.condLectureVoltageGroud = airCoServiceDTO.getCondLectureVoltageGroud();
+		this.condLectureVoltagePhases = airCoServiceDTO.getCondLectureVoltagePhases();
+		this.condLectureVoltageControl = airCoServiceDTO.getCondLectureVoltageControl();
+		this.condLectureMotorCurrent = airCoServiceDTO.getCondLectureMotorCurrent();
+		this.condReviewThermostat = airCoServiceDTO.getCondReviewThermostat();
+		this.condModel = airCoServiceDTO.getCondModel();
+		this.condSerialNumber = airCoServiceDTO.getCondSerialNumber();
+		this.condBrand = airCoServiceDTO.getCondBrand();
+		this.observations = airCoServiceDTO.getObservations();
+	}
+	
 	public AirCoServiceDTO(AirCoService airCoServiceModel )
 	{
 		this.aaServiceId = airCoServiceModel.getAaServiceId();
@@ -151,7 +207,6 @@ public class AirCoServiceDTO {
 	private Integer aaServiceId;
 	private Integer serviceOrderId;
 	
-	 @NotBlank
 	private String evaDescription;
 	private Double evaValTemp;
 	private Double evaValHum;

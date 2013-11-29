@@ -1,5 +1,7 @@
 package com.blackstar.db.dao.impl;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -109,33 +111,35 @@ public class ServiceOrderDAOImpl extends AbstractDAO implements ServiceOrderDAO 
 	StringBuilder sqlBuilder = new StringBuilder();
 	sqlBuilder.append("CALL AddserviceOrder(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 	
+	DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+	
 	Object[] args = new Object []{
-									"'"+orderService.getServiceOrderNumber()+ "'",
-									orderService.getServiceTypeId(),
+									"" + orderService.getServiceOrderNumber() + "",
+									""+orderService.getServiceTypeId()+"",
 									orderService.getTicketId(),
 									orderService.getPolicyId(),
-									"'"+orderService.getServiceUnit()+ "'",
-									"'"+orderService.getServiceDate()+ "'",
-									"'"+orderService.getResponsible()+ "'",
-									"",
-									"'"+orderService.getReceivedBy()+ "'",
-									"'"+orderService.getServiceComments()+ "'",
-									"'"+orderService.getStatusId()+ "'",
-									"'"+orderService.getClosed()+ "'",
-									"'"+orderService.getConsultant()+ "'",
-									"'"+orderService.getCoordinator()+ "'",
-									"'"+orderService.getAsignee()+ "'",
+									""+orderService.getServiceUnit()+ "",
+									""+df.format(orderService.getServiceDate())+ "",
+									""+orderService.getResponsible()+ "",
+									"''",
+									""+orderService.getReceivedBy()+ "",
+									""+orderService.getServiceComments()+ "",
+									""+orderService.getStatusId()+ "",
+									""+df.format(orderService.getClosed())+ "",
+									""+orderService.getConsultant()+ "",
+									""+orderService.getCoordinator()+ "",
+									""+orderService.getAsignee()+ "",
 									0,
 									0,
-									"'"+orderService.getSignCreated()+ "'",
-									"'"+orderService.getsignReceivedBy()+ "'",
-									"'"+orderService.getReceivedByPosition()+ "'",
-									"'"+orderService.getCreated()+ "'",
-									"'"+orderService.getCreatedBy()+ "'",
-									"'"+orderService.getCreatedByUsr()+ "'"
+									""+orderService.getSignCreated()+ "",
+									""+orderService.getsignReceivedBy()+ "",
+									""+orderService.getReceivedByPosition()+ "",
+									""+df.format(orderService.getCreated())+ "",
+									""+orderService.getCreatedBy()+ "",
+									""+orderService.getCreatedByUsr()+ ""
 								};
 	
-	Integer idOS = getJdbcTemplate().update(sqlBuilder.toString() ,args);
+	Integer idOS = getJdbcTemplate().queryForInt(sqlBuilder.toString() ,args);
 	return idOS;
   }
 
@@ -143,32 +147,32 @@ public class ServiceOrderDAOImpl extends AbstractDAO implements ServiceOrderDAO 
   public boolean updateServiceOrder(Serviceorder orderService) {
 		StringBuilder sqlBuilder = new StringBuilder();
 		sqlBuilder.append("CALL AddserviceOrder(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
-		
+		DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		Object[] args = new Object []{
 										orderService.getServiceOrderId(),
-										"'"+orderService.getServiceOrderNumber()+ "'",
+										""+orderService.getServiceOrderNumber()+ "",
 										orderService.getServiceTypeId(),
 										orderService.getTicketId(),
 										orderService.getPolicyId(),
-										"'"+orderService.getServiceUnit()+ "'",
-										"'"+orderService.getServiceDate()+ "'",
-										"'"+orderService.getResponsible()+ "'",
+										""+orderService.getServiceUnit()+ "",
+										""+orderService.getServiceDate()+ "",
+										""+orderService.getResponsible()+ "",
 										"",
-										"'"+orderService.getReceivedBy()+ "'",
-										"'"+orderService.getServiceComments()+ "'",
-										"'"+orderService.getStatusId()+ "'",
-										"'"+orderService.getClosed()+ "'",
-										"'"+orderService.getConsultant()+ "'",
-										"'"+orderService.getCoordinator()+ "'",
-										"'"+orderService.getAsignee()+ "'",
+										""+orderService.getReceivedBy()+ "",
+										""+orderService.getServiceComments()+ "",
+										""+orderService.getStatusId()+ "",
+										""+df.format(orderService.getClosed())+ "",
+										""+orderService.getConsultant()+ "",
+										""+orderService.getCoordinator()+ "",
+										""+orderService.getAsignee()+ "",
 										0,
 										0,
-										"'"+orderService.getSignCreated()+ "'",
-										"'"+orderService.getsignReceivedBy()+ "'",
-										"'"+orderService.getReceivedByPosition()+ "'",
-										"'"+orderService.getModified()+ "'",
-										"'"+orderService.getModifiedBy()+ "'",
-										"'"+orderService.getModifiedByUsr()+ "'"
+										""+orderService.getSignCreated()+ "",
+										""+orderService.getsignReceivedBy()+ "",
+										""+orderService.getReceivedByPosition()+ "",
+										""+df.format(orderService.getModified())+ "",
+										""+orderService.getModifiedBy()+ "",
+										""+orderService.getModifiedByUsr()+ ""
 									};
 		
 		 getJdbcTemplate().update(sqlBuilder.toString() ,args);
@@ -233,11 +237,12 @@ public class ServiceOrderDAOImpl extends AbstractDAO implements ServiceOrderDAO 
 	@Override
 	public int saveAirCoService(AirCoServiceDTO service , Date created ,String createdBy,String createdByUsr) {
 		StringBuilder sqlBuilder = new StringBuilder();
+		DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		sqlBuilder.append("CALL AddAAservice(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
 		Object[] args = new Object []{		
 										service.getServiceOrderId(),
-										"'"+service.getEvaDescription()+"'",
+										""+service.getEvaDescription()+"",
 										service.getEvaValTemp(),
 										service.getEvaValHum(),
 										service.getEvaSetpointTemp(),
@@ -251,13 +256,13 @@ public class ServiceOrderDAOImpl extends AbstractDAO implements ServiceOrderDAO 
 										service.getEvaLectrurePreasureHigh(),
 										service.getEvaLectrurePreasureLow(),
 										service.getEvaLectureTemp(),
-										"'"+service.getEvaLectureOilColor()+"'",
+										""+service.getEvaLectureOilColor()+"",
 										service.getEvaLectureOilLevel(),
-										"'"+service.getEvaLectureCoolerColor()+"'",
+										""+service.getEvaLectureCoolerColor()+"",
 										service.getEvaLectureCoolerLevel(),
-										"'"+service.getEvaCheckOperatation()+"'",
-										"'"+service.getEvaCheckNoise()+"'",
-										"'"+service.getEvaCheckIsolated()+"'",
+										""+service.getEvaCheckOperatation()+"",
+										""+service.getEvaCheckNoise()+"",
+										""+service.getEvaCheckIsolated()+"",
 										service.getEvaLectureVoltageGroud(),
 										service.getEvaLectureVoltagePhases(),
 										service.getEvaLectureVoltageControl(),
@@ -275,24 +280,24 @@ public class ServiceOrderDAOImpl extends AbstractDAO implements ServiceOrderDAO 
 										service.getEvaLectureCurrentHeater3(),
 										service.getEvaCheckFluidSensor(),
 										service.getEvaRequirMaintenance(),
-										"'"+service.getCondReview()+"'",
+										""+service.getCondReview()+"",
 										service.getCondCleanElectricSystem(),
 										service.getCondClean(),
 										service.getCondLectureVoltageGroud(),
 										service.getCondLectureVoltagePhases(),
 										service.getCondLectureVoltageControl(),
 										service.getCondLectureMotorCurrent(),
-										"'"+service.getCondReviewThermostat()+"'",
-										"'"+service.getCondModel()+"'",
-										"'"+service.getCondSerialNumber()+"'",
-										"'"+service.getCondBrand()+"'",
-										"'"+service.getObservations()+"'",
-										"'"+created+"'",
-										"'"+createdBy+"'",
-										"'"+createdByUsr+"'"
+										""+service.getCondReviewThermostat()+"",
+										""+service.getCondModel()+"",
+										""+service.getCondSerialNumber()+"",
+										""+service.getCondBrand()+"",
+										""+service.getObservations()+"",
+										""+df.format(created)+"",
+										""+createdBy+"",
+										""+createdByUsr+""
 									};
 		
-		int idOs = getJdbcTemplate().update(sqlBuilder.toString() ,args);
+		int idOs = getJdbcTemplate().queryForInt(sqlBuilder.toString() ,args);
 		return idOs;	
 	}
 	
@@ -301,33 +306,34 @@ public class ServiceOrderDAOImpl extends AbstractDAO implements ServiceOrderDAO 
 	public int saveBateryService(BatteryServiceDTO service, Date created ,String createdBy,String createdByUsr) {
 		// TODO Auto-generated method stub
 		StringBuilder sqlBuilder = new StringBuilder();
+		DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		sqlBuilder.append("CALL AddBBservice(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 		Object[] args = new Object []{	
 										service.getServiceOrderId(),
 										service.getPlugClean(),
-										"'"+service.getPlugCleanStatus()+"'",
-										"'"+service.getPlugCleanComments()+"'",
+										""+service.getPlugCleanStatus()+"",
+										""+service.getPlugCleanComments()+"",
 										service.getCoverClean(),
-										"'"+service.getCoverCleanStatus()+"'",
-										"'"+service.getCoverCleanComments()+"'",
+										""+service.getCoverCleanStatus()+"",
+										""+service.getCoverCleanComments()+"",
 										service.getCapClean(),
-										"'"+service.getCapCleanStatus()+"'",
-										"'"+service.getCapCleanComments()+"'",
+										""+service.getCapCleanStatus()+"",
+										""+service.getCapCleanComments()+"",
 										service.getGroundClean(),
-										"'"+service.getGroundCleanStatus()+"'",
-										"'"+service.getGroundCleanComments()+"'",
+										""+service.getGroundCleanStatus()+"",
+										""+service.getGroundCleanComments()+"",
 										service.getRackClean(),
-										"'"+service.getRackCleanStatus()+"'",
-										"'"+service.getRackCleanComments()+"'",
-										"'"+service.getSerialNoDateManufact()+"'",
-										"'"+service.getBatteryTemperature()+"'",
+										""+service.getRackCleanStatus()+"",
+										""+service.getRackCleanComments()+"",
+										""+service.getSerialNoDateManufact()+"",
+										""+service.getBatteryTemperature()+"",
 										service.getVoltageBus(),
 										service.getTemperature(),
-										"'"+created+"'",
-										"'"+createdBy+"'",
-										"'"+createdByUsr+"'"	
+										""+df.format(created)+"",
+										""+createdBy+"",
+										""+createdByUsr+""	
 									};
-		int idOs = getJdbcTemplate().update(sqlBuilder.toString() ,args);
+		int idOs = getJdbcTemplate().queryForInt(sqlBuilder.toString() ,args);
 		
 		// insertar los registros de las cells
 		for (BatteryCellServiceDTO cell : service.getCells()) {
@@ -344,45 +350,46 @@ public class ServiceOrderDAOImpl extends AbstractDAO implements ServiceOrderDAO 
 	@Override
 	public int saveEmergencyPlantService(EmergencyPlantServiceDTO service, Date created ,String createdBy,String createdByUsr) {
 		StringBuilder sqlBuilder = new StringBuilder();
+		DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		sqlBuilder.append("CALL AddepService(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 		Object[] args = new Object []{
 										service.getServiceOrderId(),
-										"'"+service.getBrandPE()+"'",
-										"'"+service.getModelPE()+"'",
-										"'"+service.getSerialPE()+"'",
-										"'"+service.getTransferType()+"'",
-										"'"+service.getModelTransfer()+"'",
-										"'"+service.getModelControl()+"'",
-										"'"+service.getModelRegVoltage()+"'",
-										"'"+service.getModelRegVelocity()+"'",
-										"'"+service.getModelCharger()+"'",
-										"'"+service.getOilChange()+"'",
-										"'"+service.getBrandMotor()+"'",
-										"'"+service.getModelMotor()+"'",
-										"'"+service.getSerialMotor()+"'",
-										"'"+service.getCplMotor()+"'",
-										"'"+service.getBrandGenerator()+"'",
-										"'"+service.getModelGenerator()+"'",
-										"'"+service.getSerialGenerator()+"'",
+										""+service.getBrandPE()+"",
+										""+service.getModelPE()+"",
+										""+service.getSerialPE()+"",
+										""+service.getTransferType()+"",
+										""+service.getModelTransfer()+"",
+										""+service.getModelControl()+"",
+										""+service.getModelRegVoltage()+"",
+										""+service.getModelRegVelocity()+"",
+										""+service.getModelCharger()+"",
+										""+df.format(service.getOilChange())+"",
+										""+service.getBrandMotor()+"",
+										""+service.getModelMotor()+"",
+										""+service.getSerialMotor()+"",
+										""+service.getCplMotor()+"",
+										""+service.getBrandGenerator()+"",
+										""+service.getModelGenerator()+"",
+										""+service.getSerialGenerator()+"",
 										service.getPowerWattGenerator(),
 										service.getTensionGenerator(),
-										"'"+service.getTuningDate()+"'",
+										""+df.format(service.getTuningDate())+"",
 										service.getTankCapacity(),
-										"'"+service.getPumpFuelModel()+"'",
+										""+service.getPumpFuelModel()+"",
 										service.getFilterFuelFlag(),
 										service.getFilterOilFlag(),
 										service.getFilterWaterFlag(),
 										service.getFilterAirFlag(),
-										"'"+service.getBrandGear()+"'",
-										"'"+service.getBrandBattery()+"'",
-										"'"+service.getClockLecture()+"'",
-										"'"+service.getServiceCorrective()+"'",
-										"'"+service.getObservations()+"'",
-										"'"+created+"'",
-										"'"+createdBy+"'",
-										"'"+createdByUsr+"'"
+										""+service.getBrandGear()+"",
+										""+service.getBrandBattery()+"",
+										""+service.getClockLecture()+"",
+										""+df.format(service.getServiceCorrective())+"",
+										""+service.getObservations()+"",
+										""+df.format(created)+"",
+										""+createdBy+"",
+										""+createdByUsr+""
 									};
-		int idOs = getJdbcTemplate().update(sqlBuilder.toString() ,args);
+		int idOs = getJdbcTemplate().queryForInt(sqlBuilder.toString() ,args);
 		
 		sqlBuilder = new StringBuilder();
 		sqlBuilder.append("CALL AddepServiceSurvey(?,?,?,?,?,?,?,?,?,?,?,?,?)");
@@ -392,14 +399,14 @@ public class ServiceOrderDAOImpl extends AbstractDAO implements ServiceOrderDAO 
 								service.getLevelWaterFlag(),
 								service.getLevelBattery(),
 								service.getTubeLeak(),
-								"'"+service.getBatteryCap()+"'",
-								"'"+service.getBatterySulfate()+"'",
+								""+service.getBatteryCap()+"",
+								""+service.getBatterySulfate()+"",
 								service.getLevelOil(),
-								"'"+service.getHeatEngine()+"'",
-								"'"+service.getHoseOil()+"'",
-								"'"+service.getHoseWater()+"'",
-								"'"+service.getTubeValve()+"'",
-								"'"+service.getStripBlades()+"'"
+								""+service.getHeatEngine()+"",
+								""+service.getHoseOil()+"",
+								""+service.getHoseWater()+"",
+								""+service.getTubeValve()+"",
+								""+service.getStripBlades()+""
 							};
 		getJdbcTemplate().update(sqlBuilder.toString() ,args);
 		
@@ -457,13 +464,13 @@ public class ServiceOrderDAOImpl extends AbstractDAO implements ServiceOrderDAO 
 		sqlBuilder.append("CALL AddepServiceTransferSwitch(?,?,?,?,?,?,?,?,?)");
 		args = new Object []{
 								idOs,
-								"'"+service.getMechanicalStatus(),
+								""+service.getMechanicalStatus(),
 								service.getBoardClean(),
 								service.getScrewAdjust(),
 								service.getConectionAdjust(),
-								"'"+service.getSystemMotors()+"'",
-								"'"+service.getElectricInterlock()+"'",
-								"'"+service.getMechanicalInterlock()+"'",
+								""+service.getSystemMotors()+"",
+								""+service.getElectricInterlock()+"",
+								""+service.getMechanicalInterlock()+"",
 								service.getCapacityAmp()
 							};
 		getJdbcTemplate().update(sqlBuilder.toString() ,args);
@@ -489,12 +496,12 @@ public class ServiceOrderDAOImpl extends AbstractDAO implements ServiceOrderDAO 
 		sqlBuilder.append("CALL AddepServiceParams(?,?,?,?,?,?,?)");
 		args = new Object []{
 								idOs,
-								"'"+service.getAdjsutmentTherm()+"'",
-								"'"+service.getCurrent()+"'",
-								"'"+service.getBatteryCurrent()+"'",
-								"'"+service.getClockStatus()+"'",
-								"'"+service.getTrasnferTypeProtection()+"'",
-								"'"+service.getGeneratorTypeProtection()+"'"
+								""+service.getAdjsutmentTherm()+"",
+								""+service.getCurrent()+"",
+								""+service.getBatteryCurrent()+"",
+								""+service.getClockStatus()+"",
+								""+service.getTrasnferTypeProtection()+"",
+								""+service.getGeneratorTypeProtection()+""
 							};
 		getJdbcTemplate().update(sqlBuilder.toString() ,args);
 
@@ -506,19 +513,20 @@ public class ServiceOrderDAOImpl extends AbstractDAO implements ServiceOrderDAO 
 	public int savePlainService(PlainServiceDTO service, Date created ,String createdBy,String createdByUsr) {
 		// TODO Auto-generated method stub
 		StringBuilder sqlBuilder = new StringBuilder();
+		DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		sqlBuilder.append("CALL AddplainService(?,?,?,?,?,?,?,?,?)");
 		Object[] args = new Object []{	
 										service.getServiceOrderId(),
-										"'"+service.getTroubleDescription()+"'",
-										"'"+service.getTechParam()+"'",
-										"'"+service.getWorkDone()+"'",
-										"'"+service.getMaterialUsed()+"'",
-										"'"+service.getObservations()+"'",
-										"'"+created+"'",
-										"'"+createdBy+"'",
-										"'"+createdByUsr+"'"
+										""+service.getTroubleDescription()+"",
+										""+service.getTechParam()+"",
+										""+service.getWorkDone()+"",
+										""+service.getMaterialUsed()+"",
+										""+service.getObservations()+"",
+										""+df.format(created)+"",
+										""+createdBy+"",
+										""+createdByUsr+""
 									};
-		int idOs = getJdbcTemplate().update(sqlBuilder.toString() ,args);
+		int idOs = getJdbcTemplate().queryForInt(sqlBuilder.toString() ,args);
 		return idOs;	
 	}
 	
@@ -527,23 +535,24 @@ public class ServiceOrderDAOImpl extends AbstractDAO implements ServiceOrderDAO 
 	public int saveUpsService(UpsServiceDTO service, Date created ,String createdBy,String createdByUsr) {
 		// TODO Auto-generated method stub
 		StringBuilder sqlBuilder = new StringBuilder();
+		DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		sqlBuilder.append("CALL AddupsService(?,?,?,?,?,?,?,?,?,?,?,?,?)");
 		Object[] args = new Object []{
 										service.getServiceOrderId(),
-										"'"+service.getEstatusEquipment()+"'",
+										""+service.getEstatusEquipment()+"",
 										service.getCleaned(),
 										service.getHooverClean(),
 										service.getVerifyConnections(),
-										"'"+service.getCapacitorStatus()+"'",
+										""+service.getCapacitorStatus()+"",
 										service.getVerifyFuzz(),
 										service.getChargerReview(),
-										"'"+service.getFanStatus()+"'",
-										"'"+service.getObservations()+"'",
-										"'"+created+"'",
-										"'"+createdBy+"'",
-										"'"+createdByUsr+"'"
+										""+service.getFanStatus()+"",
+										""+service.getObservations()+"",
+										""+df.format(created)+"",
+										""+createdBy+"",
+										""+createdByUsr+""
 									};
-		int idOs = getJdbcTemplate().update(sqlBuilder.toString() ,args);
+		int idOs = getJdbcTemplate().queryForInt(sqlBuilder.toString() ,args);
 		
 		sqlBuilder = new StringBuilder();
 		sqlBuilder.append("CALL AddupsServiceBatteryBank(?,?,?,?,?,?,?,?,?,?,?)");
@@ -552,12 +561,12 @@ public class ServiceOrderDAOImpl extends AbstractDAO implements ServiceOrderDAO 
 								service.getCheckConnectors(),
 								service.getCverifyOutflow(),
 								service.getNumberBatteries(),
-								"'"+service.getManufacturedDateSerial()+"'",
-								"'"+service.getDamageBatteries()+"'",
-								"'"+service.getOther()+"'",
+								""+service.getManufacturedDateSerial()+"",
+								""+service.getDamageBatteries()+"",
+								""+service.getOther()+"",
 								service.getTemp(),
 								service.getChargeTest(),
-								"'"+service.getBrandModel()+"'",
+								""+service.getBrandModel()+"",
 								service.getBatteryVoltage()
 							};
 		getJdbcTemplate().update(sqlBuilder.toString() ,args);

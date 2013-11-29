@@ -49,6 +49,7 @@ public class MySQLPolicyDAO implements PolicyDAO, Serializable {
 						rs.getString("serviceCenterId").charAt(0), rs.getString("observations"), rs.getDate("created"),
 						rs.getString("createdBy"), rs.getString("crratedByUsr"), rs.getDate("modified"),
 						rs.getString("modifiedBy"), rs.getString("modifiedByUsr"));
+				policy.setPolicyId(rs.getInt("policyId"));
 				lstPolicy.add(policy);
 						
 			}
@@ -103,6 +104,7 @@ public class MySQLPolicyDAO implements PolicyDAO, Serializable {
 						rs.getString("serviceCenterId").charAt(0), rs.getString("observations"), rs.getDate("created"),
 						rs.getString("createdBy"), rs.getString("crratedByUsr"), rs.getDate("modified"),
 						rs.getString("modifiedBy"), rs.getString("modifiedByUsr"));
+				policy.setPolicyId(rs.getInt("policyId"));
 						
 			}
 		} catch (ClassNotFoundException | SQLException e) {
@@ -187,4 +189,6 @@ public class MySQLPolicyDAO implements PolicyDAO, Serializable {
 		// TODO Auto-generated method stub
 		return policy;
 	}
+
 }
+

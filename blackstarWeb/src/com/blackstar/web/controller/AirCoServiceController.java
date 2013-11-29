@@ -1,5 +1,6 @@
 package com.blackstar.web.controller;
 
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -15,11 +16,13 @@ import com.blackstar.common.Globals;
 import com.blackstar.db.DAOFactory;
 import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
+import com.blackstar.model.Equipmenttype;
 import com.blackstar.model.Policy;
+import com.blackstar.model.Serviceorder;
 import com.blackstar.model.Ticket;
 import com.blackstar.model.UserSession;
 import com.blackstar.model.dto.AirCoServiceDTO;
-import com.blackstar.model.dto.OrderserviceDTO;
+import com.blackstar.model.dto.AirCoServicePolicyDTO;
 import com.blackstar.services.interfaces.ServiceOrderService;
 import com.blackstar.web.AbstractController;
 
@@ -38,6 +41,7 @@ public class AirCoServiceController extends AbstractController {
 	  @RequestMapping(value= "/show.do", method = RequestMethod.GET)
 	  public String  aircoservice(@RequestParam(required = true) Integer operation, @RequestParam(required = true) String idObject, ModelMap model)
 	  {
+		  AirCoServicePolicyDTO airCoServicePolicyDTO =null;
 		  try
 		  {
 			  if(operation!= null && idObject!=null)
@@ -50,62 +54,36 @@ public class AirCoServiceController extends AbstractController {
 		  		  {
 		  			  Integer idTicket = Integer.parseInt(idObject);
 		  			  Ticket ticket = daoFactory.getTicketDAO().getTicketById(idTicket);
-		  			  if(ticket.getPolicyId()!=0)
-		  			  {	
-		  				  Policy policy = this.daoFactory.getPolicyDAO().getPolicyById(ticket.getPolicyId());
-		  				  
-		  				  AirCoServiceDTO airCoServiceDTO =new AirCoServiceDTO();
-		  				
-		  				  if(ticket.getServiceId()!=null)
-		  					airCoServiceDTO.setServiceOrderId(Integer.parseInt(ticket.getServiceId().toString()));
-		  				  
-		  				  model.addAttribute("policyDetail", policy);
-		  				  model.addAttribute("serviceOrder", airCoServiceDTO);
-		  			  }
+	  				  Policy policy = this.daoFactory.getPolicyDAO().getPolicyById(ticket.getPolicyId());
+	  				  Equipmenttype equipType = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
+	  				  airCoServicePolicyDTO = new AirCoServicePolicyDTO(policy, equipType.getEquipmentType());
+	  				  model.addAttribute("serviceOrder", airCoServicePolicyDTO);
 		  		  }
 		  		  else if( operation==2)
 		  		  {
-		  			  OrderserviceDTO serviceOrderDetail = null;
-		  			
-		  			  Integer idOrderService = Integer.parseInt(idObject);
-		  			  serviceOrderDetail = service.getServiceOrderByIdOrNumber(idOrderService,"");
-		  			  			  
-		  			  
-		  			  if(serviceOrderDetail.getPolicyId()!=0)
-		  			  {	
-		  				  AirCoServiceDTO airCoServiceDTO =new AirCoServiceDTO();
-		  				airCoServiceDTO.setServiceOrderId(idOrderService);
-		  				  
-		  				  Policy policy = this.daoFactory.getPolicyDAO().getPolicyById(serviceOrderDetail.getPolicyId());
-		  				  model.addAttribute("policyDetail", policy);
-		  				  model.addAttribute("serviceOrder", airCoServiceDTO);
-		  				  model.addAttribute("serviceOrderDetail", serviceOrderDetail);
-		  			  }  
+		  			  Integer idOrder = Integer.parseInt(idObject);
+		  			  Serviceorder serviceOrder = this.daoFactory.getServiceOrderDAO().getServiceOrderById(idOrder);
+		  			  Policy policy = this.daoFactory.getPolicyDAO().getPolicyById(serviceOrder.getPolicyId());
+	  				  Equipmenttype equipType = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
+	  				  airCoServicePolicyDTO = new AirCoServicePolicyDTO(policy, equipType.getEquipmentType(), serviceOrder );
+	  				  model.addAttribute("serviceOrder", airCoServicePolicyDTO);
 		  		  }
 		  		  else if(operation==3)
 		  		  {
 		  			  Policy policy  = this.daoFactory.getPolicyDAO().getPolicyBySerialNo(idObject);
-		  			  if(policy.getPolicyId()!=0)
-		  			  {	
-		  				  model.addAttribute("policyDetail", policy);
-		  				  model.addAttribute("serviceOrder", new AirCoServiceDTO());
-		  			  }  
+	  				  Equipmenttype equipType = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
+	  				  airCoServicePolicyDTO = new AirCoServicePolicyDTO(policy, equipType.getEquipmentType());
+	  				  model.addAttribute("serviceOrder", airCoServicePolicyDTO);
 		  		  }
 		  		  else if(operation ==4)
 		  		  {
 		  			  Integer idOrderService = Integer.parseInt(idObject);
 		  			  AirCoServiceDTO airCoServiceDTO = service.getAirCoService(idOrderService);
-		  			  
-		  			  OrderserviceDTO serviceOrderDetail = null;
-		  			  serviceOrderDetail = service.getServiceOrderByIdOrNumber(airCoServiceDTO.getServiceOrderId(),"");
-		  			  			  
-		  			  if(serviceOrderDetail.getPolicyId()!=0)
-		  			  {	
-		  				  Policy policy = this.daoFactory.getPolicyDAO().getPolicyById(serviceOrderDetail.getPolicyId());
-		  				  model.addAttribute("policyDetail", policy);
-		  				  model.addAttribute("serviceOrder", airCoServiceDTO);
-		  				  model.addAttribute("serviceOrderDetail", serviceOrderDetail);
-		  			  }  
+		  			  Serviceorder serviceOrder = this.daoFactory.getServiceOrderDAO().getServiceOrderById(airCoServiceDTO.getServiceOrderId());
+		  			  Policy policy = this.daoFactory.getPolicyDAO().getPolicyById(serviceOrder.getPolicyId());
+	  				  Equipmenttype equipType = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
+	  				  airCoServicePolicyDTO = new AirCoServicePolicyDTO(policy, equipType.getEquipmentType(), serviceOrder,  airCoServiceDTO);
+	  				  model.addAttribute("serviceOrder", airCoServicePolicyDTO);
 		  		  }
 	  		  }
 			  else
@@ -123,15 +101,56 @@ public class AirCoServiceController extends AbstractController {
 	  
 	    @RequestMapping(value = "/save.do", method = RequestMethod.POST)
 	    public String save( 
-	    		@ModelAttribute("airCoService") AirCoServiceDTO airCoService,
+	    		@ModelAttribute("serviceOrder") AirCoServicePolicyDTO serviceOrder,
 	    		@ModelAttribute(Globals.SESSION_KEY_PARAM)  UserSession userSession,
-                ModelMap model, HttpServletRequest req, HttpServletResponse resp
-	    		)
+                ModelMap model, HttpServletRequest req, HttpServletResponse resp)
 	    {
-	    	if(airCoService.getAaServiceId()!=0)
+	    	int idServicio = 0;
+	    	// Verificar si existe una orden de servicio
+	    	if(serviceOrder.getServiceOrderId()==null)
 	    	{
-	    		service.saveAirCoService(airCoService,  userSession.getUser().getUserName(), userSession.getUser().getUserEmail());
+	    		//Crear orden de servicio
+	    		Serviceorder servicioOrderSave = new Serviceorder();
+	    		servicioOrderSave.setAsignee( serviceOrder.getResponsible());
+	    		servicioOrderSave.setClosed(serviceOrder.getClosed());
+	    		servicioOrderSave.setPolicyId((Short.parseShort(serviceOrder.getPolicyId().toString())));
+	    		servicioOrderSave.setReceivedBy(serviceOrder.getReceivedBy());
+	    		servicioOrderSave.setReceivedByPosition(serviceOrder.getReceivedByPosition());
+	    		servicioOrderSave.setResponsible(serviceOrder.getResponsible());
+	    		servicioOrderSave.setServiceDate(serviceOrder.getServiceDate());
+	    		servicioOrderSave.setServiceOrderNumber(serviceOrder.getServiceOrderNumber());
+	    		servicioOrderSave.setServiceTypeId('I');
+	    		servicioOrderSave.setSignCreated(serviceOrder.getSignCreated());
+	    		servicioOrderSave.setSignReceivedBy(serviceOrder.getSignReceivedBy());
+	    		servicioOrderSave.setStatusId("N");
+	    		idServicio = service.saveServiceOrder(servicioOrderSave, "AirCoServiceController", userSession.getUser().getUserName());
 	    	}
+	    	else
+	    	{
+	    		//Actualizar orden de servicio
+	    		Serviceorder servicioOrderSave = new Serviceorder();
+	    		servicioOrderSave.setAsignee( serviceOrder.getResponsible());
+	    		servicioOrderSave.setClosed(serviceOrder.getClosed());
+	    		servicioOrderSave.setPolicyId((Short.parseShort(serviceOrder.getPolicyId().toString())));
+	    		servicioOrderSave.setReceivedBy(serviceOrder.getReceivedBy());
+	    		servicioOrderSave.setReceivedByPosition(serviceOrder.getReceivedByPosition());
+	    		servicioOrderSave.setResponsible(serviceOrder.getResponsible());
+	    		servicioOrderSave.setServiceDate(serviceOrder.getServiceDate());
+	    		servicioOrderSave.setServiceOrderNumber(serviceOrder.getServiceOrderNumber());
+	    		servicioOrderSave.setServiceTypeId('I');
+	    		servicioOrderSave.setSignCreated(serviceOrder.getSignCreated());
+	    		servicioOrderSave.setSignReceivedBy(serviceOrder.getSignReceivedBy());
+	    		servicioOrderSave.setStatusId("N");
+	    		service.updateServiceOrder(servicioOrderSave, "AirCoServiceController", userSession.getUser().getUserName());
+	    	}
+	    	
+	    	if(serviceOrder.getAaServiceId()==null)
+	    	{
+	    		serviceOrder.setServiceOrderId(idServicio);
+	    		//Crear orden de servicio de AirCo
+	    		service.saveAirCoService(new AirCoServiceDTO(serviceOrder), "AirCoServiceController", userSession.getUser().getUserName());
+	    	}
+
 	    	return "dashboard";
 	    }
 
