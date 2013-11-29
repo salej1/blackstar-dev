@@ -259,7 +259,7 @@
 						</tr>
 						<tr>
 							<td style="height:140px;">
-								<form:textarea path="observations" readOnly="true" style="width:100%;height:100%;"></form:textarea>
+								<form:textarea path="observations" style="width:100%;height:100%;"></form:textarea>
 							</td>
 						</tr>
 						

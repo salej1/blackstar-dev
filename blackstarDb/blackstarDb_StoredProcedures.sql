@@ -1194,6 +1194,7 @@ CREATE PROCEDURE blackstarDb.AddupsService (
   verifyFuzz bit(1) ,
   chargerReview bit(1) ,
   fanStatus varchar(50) ,
+	observations nvarchar(250),
   created datetime ,
   createdBy varchar(50) ,
   createdByUsr varchar(50) 
