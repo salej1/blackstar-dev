@@ -183,7 +183,7 @@
 							<td>Verificación de fugas/sulfataciones:</td>
 							<td><form:checkbox path="cverifyOutflow"  style="width:95%;" /></td>
 							<td>Pruebas de carga y descarga:</td>
-							<td><form:input path="chargeTest" type="text" style="width:95%;" /></td>
+							<td><form:checkbox path="chargeTest" style="width:95%;" /></td>
 						</tr>
 						<tr>
 							<td>No de baterías:</td>
