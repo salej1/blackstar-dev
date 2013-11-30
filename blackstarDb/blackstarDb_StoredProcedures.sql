@@ -727,7 +727,7 @@ DROP PROCEDURE IF EXISTS blackstarDb.GetEmergencyPlantServiceByIdService$$
 CREATE PROCEDURE blackstarDb.GetEmergencyPlantServiceByIdService (idService INTEGER)
 BEGIN
 	select 
-		A.epServiceId, serviceOrderId, transferType, modelTransfer, modelControl, modelRegVoltage, modelRegVelocity, 
+		A.epServiceId, serviceOrderId, brandPE,modelPE,serialPE, transferType, modelTransfer, modelControl, modelRegVoltage, modelRegVelocity, 
 		modelCharger, oilChange, brandMotor, modelMotor, serialMotor, cplMotor, brandGenerator, modelGenerator, serialGenerator, 
 		powerWattGenerator, tensionGenerator, tuningDate, tankCapacity, pumpFuelModel, filterFuelFlag, filterOilFlag, filterWaterFlag, 
 		filterAirFlag, brandGear, brandBattery, clockLecture, serviceCorrective, observations, 
@@ -961,6 +961,9 @@ END$$
 DROP PROCEDURE IF EXISTS blackstarDb.AddepService$$
 CREATE PROCEDURE blackstarDb.AddepService (
    serviceOrderId  int(11)  ,
+   brandPE varchar(50) ,
+   modelPE varchar(50) ,
+   serialPE varchar(50) ,
    transferType  varchar(50)  ,
    modelTransfer  varchar(50)  ,
    modelControl  varchar(50)  ,
@@ -1084,7 +1087,8 @@ CREATE PROCEDURE blackstarDb.AddepServiceTestProtection (
    oilSensor  int(11)  ,
    voltageSensor  int(11)  ,
    overSpeedSensor  int(11)  ,
-   oilPreasureSensor  int(11)  
+   oilPreasureSensor  int(11) ,
+    waterLevelSensor  int(11) 
 )
 BEGIN
 insert into epServiceTestProtection
