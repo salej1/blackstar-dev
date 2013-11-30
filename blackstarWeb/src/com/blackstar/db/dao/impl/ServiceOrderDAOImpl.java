@@ -272,7 +272,7 @@ public class ServiceOrderDAOImpl extends AbstractDAO implements ServiceOrderDAO 
 		StringBuilder sqlBuilder = new StringBuilder();
 		sqlBuilder.append("CALL GetCellBatteryServiceByIdBatteryService(?)");
 		return (List<BatteryCellServiceDTO>) getJdbcTemplate().query(sqlBuilder.toString() 
-				, new Object []{bbServiceId}, getMapperFor(FollowUpDTO.class));
+				, new Object []{bbServiceId}, getMapperFor(BatteryCellServiceDTO.class));
 	}
 	
 	@Override
@@ -379,10 +379,18 @@ public class ServiceOrderDAOImpl extends AbstractDAO implements ServiceOrderDAO 
 		// insertar los registros de las cells
 		for (BatteryCellServiceDTO cell : service.getCells()) {
 			
-			sqlBuilder = new StringBuilder();
-			sqlBuilder.append("CALL AddBBcellservice(?,?,?,?)");
-			Object[] argsCell = new Object []{	idOs,cell.getCellNumber(),cell.getFloatVoltage(),cell.getChargeVoltage() };
-			getJdbcTemplate().update(sqlBuilder.toString() ,argsCell);
+			if(cell.getCellNumber()!=null)
+			{
+				if(cell.getFloatVoltage()==null)
+					cell.setFloatVoltage(0);
+				if(cell.getChargeVoltage()==null)
+					cell.setChargeVoltage(0);
+				
+				sqlBuilder = new StringBuilder();
+				sqlBuilder.append("CALL AddBBcellservice(?,?,?,?)");
+				Object[] argsCell = new Object []{	idOs,cell.getCellNumber(),cell.getFloatVoltage(),cell.getChargeVoltage() };
+				getJdbcTemplate().update(sqlBuilder.toString() ,argsCell);
+			}
 		}
 		return idOs;	
 	}

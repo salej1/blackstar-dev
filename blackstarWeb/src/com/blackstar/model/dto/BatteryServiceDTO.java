@@ -9,7 +9,7 @@ public class BatteryServiceDTO {
 
 	public BatteryServiceDTO()
 	{
-		this.setCells(new ArrayList<BatteryCellServiceDTO>(88));
+		this.setCells(new ArrayList<BatteryCellServiceDTO>(89));
 	}
 
 	
