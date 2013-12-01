@@ -39,8 +39,8 @@ public class ServiceOrderController extends AbstractController {
 				                                                                          , osNum));
 		 model.addAttribute("followUps", service.getFollows(serviceOrderId));
 		 model.addAttribute("employees", udService.getStaff());
-		 model.addAttribute("osAttachmentFolder", gdService.getAttachmentFolderId(serviceOrderId
-				                   , secService.getStoredCredential(userSession.getGoogleId())));
+		 model.addAttribute("osAttachmentFolder", gdService.getAttachmentFolderId(serviceOrderId));
+		 model.addAttribute("accessToken", gdService.getAccessToken());
 	} catch (Exception e) {
 		 Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
 		 

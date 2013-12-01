@@ -7,6 +7,7 @@
     }
 
     function createPicker() {
+    	alert('${accessToken}');
       var attachmentFolderId = '${osAttachmentFolder}';
       var docsView = new google.picker.View(google.picker.ViewId.DOCS_IMAGES);
       var uploadView = new google.picker.DocsUploadView().setParent(attachmentFolderId);
@@ -16,6 +17,7 @@
           .addView(uploadView)
           .setCallback(pickerCallback)
           .enableFeature(google.picker.Feature.MULTISELECT_ENABLED)
+          .setOAuthToken('${accessToken}')
           .build();
     }
 

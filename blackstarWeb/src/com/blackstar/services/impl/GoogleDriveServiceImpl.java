@@ -1,14 +1,16 @@
 package com.blackstar.services.impl;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
-import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson.JacksonFactory;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.Drive.Files;
+import com.google.api.services.drive.DriveScopes;
 import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.FileList;
 import com.google.api.services.drive.model.ParentReference;
@@ -16,48 +18,80 @@ import com.google.api.services.drive.model.Permission;
 import com.blackstar.services.AbstractService;
 import com.blackstar.services.interfaces.GoogleDriveService;
 
-public class GoogleDriveServiceImpl extends AbstractService 
-                                    implements GoogleDriveService {
+public class GoogleDriveServiceImpl extends AbstractService implements GoogleDriveService {
 	
   public static final String FOLDER_FILE_TYPE = "application/vnd.google-apps.folder";
   
-  private static final HttpTransport TRANSPORT = new NetHttpTransport();
-  private static final JsonFactory JSON_FACTORY = new JacksonFactory();
+  private static  Map<String, String> sysFolderIds = new HashMap<String, String>();
+  private static Drive drive = null;
+  private static GoogleCredential credential = null;
 
+  static {
+	String folderId = null;
+	try {
+	     setDriveService();
+	     folderId = getFolderId("os_attachment", null);
+	 	 if(folderId == null){
+	 	   folderId = createFile("os_attachment", null , FOLDER_FILE_TYPE);
+	 	   setPermissions(folderId);
+	 	 } 	
+	 	 sysFolderIds.put("OS_ATTACHMENTS", folderId);
+	} catch(Exception e){
+		e.printStackTrace();
+	}
+	
+  }
+  
   public GoogleDriveServiceImpl(){  
   }
   
-  public String getAttachmentFolderId(Integer serviceOrderId, Credential credential) throws Exception {
+  public static void setDriveService() throws Exception {
+    HttpTransport httpTransport = new NetHttpTransport();
+    JacksonFactory jsonFactory = new JacksonFactory();
+    credential = new GoogleCredential.Builder()
+                              .setTransport(httpTransport)
+                              .setJsonFactory(jsonFactory)
+                              .setServiceAccountId("1045304195726-4bscobcnja1npkifsseorp02rdb1casf@developer.gserviceaccount.com")
+                              .setServiceAccountScopes(Arrays.asList(DriveScopes.DRIVE))
+                              .setServiceAccountPrivateKeyFromP12File(new java.io.File("C:/key.p12"))
+                              .setServiceAccountUser("admin@somnustechnologies.com.mx")
+                              .build();
+    credential.refreshToken();
+    credential.getAccessToken();
+    drive = new Drive.Builder(httpTransport, jsonFactory, null)
+            .setHttpRequestInitializer(credential).build();
+  }
+
+  public String getAttachmentFolderId(Integer serviceOrderId) throws Exception {
 	String osAttachmentFolderId = null; 
-	Drive service = new Drive.Builder(TRANSPORT, JSON_FACTORY, credential).build();
-	osAttachmentFolderId = getFolderId(service, "os_attachment", null);
+	osAttachmentFolderId = getFolderId("os_" + serviceOrderId, sysFolderIds.get("OS_ATTACHMENTS"));		
 	if(osAttachmentFolderId == null){
-	  osAttachmentFolderId = createFile(service, "os_attachment", null , FOLDER_FILE_TYPE);
-	  setPermissions(service, osAttachmentFolderId);
-	}
-	osAttachmentFolderId = getFolderId(service, "os_" + serviceOrderId, osAttachmentFolderId);		
-	if(osAttachmentFolderId == null){
-	  osAttachmentFolderId = createFile(service, "os_" + serviceOrderId , null , FOLDER_FILE_TYPE);
-	  setPermissions(service, osAttachmentFolderId);
+	  osAttachmentFolderId = createFile("os_" + serviceOrderId , sysFolderIds.get("OS_ATTACHMENTS") 
+			                                                                   , FOLDER_FILE_TYPE);
+	  setPermissions(osAttachmentFolderId);
 	}
 	return osAttachmentFolderId;
   }	
   
+  public String getAccessToken() throws Exception {
+	credential.refreshToken();
+	return credential.getAccessToken();
+  }
   
-  private void setPermissions(Drive service, String fileId) throws Exception{
+  private static void setPermissions(String fileId) throws Exception{
 	Permission p = new Permission();
 	p.setRole("owner");
 	p.setType("user");
-	p.setValue("sergio.gomez@innso.com.mx");
-	service.permissions().insert(fileId, p).execute();
+	p.setValue("admin@somnustechnologies.com.mx");
+	drive.permissions().insert(fileId, p).execute();
 	p = new Permission();
 	p.setRole("writer");
 	p.setType("domain");
-	p.setValue("innso.com.mx");
-	service.permissions().insert(fileId, p).execute();
+	p.setValue("somnustechnologies.com.mx");
+	drive.permissions().insert(fileId, p).execute();
   }
   
-  public String getFolderId(Drive service, String folderName, String parentId) throws Exception {
+  public static String getFolderId(String folderName, String parentId) throws Exception {
 	Files.List request = null;
 	FileList files = null;
 	String id = null;
@@ -67,7 +101,7 @@ public class GoogleDriveServiceImpl extends AbstractService
     if(parentId != null){
     	criteria.append(" and '").append(parentId).append("' in parents");
     }			                           
-	request = service.files().list();
+	request = drive.files().list();
 	request.setQ(criteria.toString());
 	files = request.execute();
 	if(files.getItems().size() > 0){
@@ -76,15 +110,14 @@ public class GoogleDriveServiceImpl extends AbstractService
 	return id;
   }
 	
-  public String createFile(Drive service, String title, String parentId, String type
-		                                                        ) throws Exception {
+  public static String createFile(String title, String parentId, String type) throws Exception {
 	File file = new File();
 	file.setTitle(title);
 	file.setMimeType(type);
 	if(parentId != null){
 	  file.setParents(Arrays.asList(new ParentReference().setId(parentId)));
 	}
-	file = service.files().insert(file).execute();
+	file = drive.files().insert(file).execute();
     return file.getId();
   }
 	
