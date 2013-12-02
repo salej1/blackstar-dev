@@ -49,13 +49,14 @@ public class GoogleDriveServiceImpl extends AbstractService implements GoogleDri
     HttpTransport httpTransport = new NetHttpTransport();
     JacksonFactory jsonFactory = new JacksonFactory();
     credential = new GoogleCredential.Builder()
-                              .setTransport(httpTransport)
-                              .setJsonFactory(jsonFactory)
-                              .setServiceAccountId("1045304195726-4bscobcnja1npkifsseorp02rdb1casf@developer.gserviceaccount.com")
-                              .setServiceAccountScopes(Arrays.asList(DriveScopes.DRIVE))
-                              .setServiceAccountPrivateKeyFromP12File(new java.io.File("C:/key.p12"))
-                              .setServiceAccountUser("admin@somnustechnologies.com.mx")
-                              .build();
+                     .setTransport(httpTransport)
+                     .setJsonFactory(jsonFactory)
+                     .setServiceAccountId("1045304195726-4bscobcnja1npkifsseorp02rdb1casf@developer.gserviceaccount.com")
+                     .setServiceAccountScopes(Arrays.asList(DriveScopes.DRIVE))
+                     .setServiceAccountPrivateKeyFromP12File(new java.io.File(GoogleDriveServiceImpl
+                    		 .class.getClassLoader().getResource("auth/serviceKey.p12").getPath()))
+                     .setServiceAccountUser("admin@somnustechnologies.com.mx")
+                     .build();
     credential.refreshToken();
     credential.getAccessToken();
     drive = new Drive.Builder(httpTransport, jsonFactory, null)
