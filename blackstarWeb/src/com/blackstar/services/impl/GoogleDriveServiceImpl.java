@@ -1,11 +1,18 @@
 package com.blackstar.services.impl;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.HttpTransport;
+import com.google.api.client.http.InputStreamContent;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson.JacksonFactory;
 import com.google.api.services.drive.Drive;
@@ -36,6 +43,12 @@ public class GoogleDriveServiceImpl extends AbstractService implements GoogleDri
 	 	   setPermissions(folderId);
 	 	 } 	
 	 	 sysFolderIds.put("OS_ATTACHMENTS", folderId);
+	 	 folderId = getFolderId("os_reports", null);
+	 	 if(folderId == null){
+	 	   folderId = createFile("os_reports", null , FOLDER_FILE_TYPE);
+	 	   setPermissions(folderId);
+	 	 } 
+	 	sysFolderIds.put("OS_REPORTS", folderId);
 	} catch(Exception e){
 		e.printStackTrace();
 	}
@@ -64,15 +77,33 @@ public class GoogleDriveServiceImpl extends AbstractService implements GoogleDri
   }
 
   public String getAttachmentFolderId(Integer serviceOrderId) throws Exception {
-	String osAttachmentFolderId = null; 
-	osAttachmentFolderId = getFolderId("os_" + serviceOrderId, sysFolderIds.get("OS_ATTACHMENTS"));		
+	return getFolderId(serviceOrderId, sysFolderIds.get("OS_ATTACHMENTS"));
+  }	
+  
+  public String getReportsFolderId(Integer serviceOrderId) throws Exception {
+	return getFolderId(serviceOrderId, sysFolderIds.get("OS_REPORTS"));
+  }	
+  
+  public String getFolderId(Integer serviceOrderId, String parentId) throws Exception {
+	String osAttachmentFolderId = getFolderId("os_" + serviceOrderId, parentId);		
 	if(osAttachmentFolderId == null){
-	  osAttachmentFolderId = createFile("os_" + serviceOrderId , sysFolderIds.get("OS_ATTACHMENTS") 
-			                                                                   , FOLDER_FILE_TYPE);
+	  osAttachmentFolderId = createFile("os_" + serviceOrderId ,parentId , FOLDER_FILE_TYPE);
 	  setPermissions(osAttachmentFolderId);
 	}
 	return osAttachmentFolderId;
   }	
+  
+  public String insert(Integer serviceOrderId, ByteArrayOutputStream stream) throws Exception{
+	File body = new File();
+	body.setTitle("Test");
+	body.setMimeType("application/pdf");
+	body.setFileSize((long) stream.size());
+	  
+	InputStreamContent mediaContent = new InputStreamContent("application/pdf",
+		                   new BufferedInputStream(new ByteArrayInputStream(stream.toByteArray())));
+	mediaContent.setLength(stream.size());
+	return drive.files().insert(body, mediaContent).execute().getId();
+  }
   
   public String getAccessToken() throws Exception {
 	credential.refreshToken();
@@ -120,6 +151,15 @@ public class GoogleDriveServiceImpl extends AbstractService implements GoogleDri
 	}
 	file = drive.files().insert(file).execute();
     return file.getId();
+  }
+  
+  public static void main(String [] args) throws Exception{
+	ReporterServiceImpl serv = new ReporterServiceImpl();
+	ByteArrayOutputStream stream = serv.run();
+	new GoogleDriveServiceImpl().insert(45, serv.run());
+//	FileOutputStream see = new FileOutputStream("C:/Test.pdf");
+//	see.write(serv.run().toByteArray());
+//	see.close();
   }
 	
 }

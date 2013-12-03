@@ -39,4 +39,6 @@
   <bean id="serviceOrderService" class="com.blackstar.services.impl.ServiceOrderServiceImpl" parent="abstractService">
       <property name="dao" ref="serviceOrderDAO" />
   </bean>
+  
+  <bean id="reporterService" class="com.blackstar.services.impl.ReporterServiceImpl" parent="abstractService"/>
 </beans>

@@ -77,14 +77,14 @@
 						<h2>Orden de servicio</h2>
 							<c:if test="${serviceOrderDetail.ticketId gt 0}">
 								<div class="utils">
-										<a id="linkTicket" href="ticketDetail?ticketId=${serviceOrderDetail.ticketId}"> </a>
+										<a id="linkTicket" href="${pageContext.request.contextPath}/ticketDetail?ticketId=${serviceOrderDetail.ticketId}"> </a>
 								</div>
 							</c:if>
 						<table>
 							<tr>
 								<td>Folio:</td>
 								<td><input  id="lbFolio" type="text" style="width:95%;" readOnly="true" /></td>
-								<td colspan='2'><a href='#'>Ver PDF</a><img src='${pageContext.request.contextPath}/img/pdf.png'/></td>
+								<td colspan='2'><a href='${pageContext.request.contextPath}/osDetail/showReport.do?serviceOrderId=${serviceOrderDetail.serviceOrderId}' target="_blank">Ver PDF</a><img src='${pageContext.request.contextPath}/img/pdf.png'/></td>
 							</tr>
 							<tr>
 								<td>Cliente</td>

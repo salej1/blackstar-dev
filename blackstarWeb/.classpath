@@ -77,5 +77,6 @@
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/google-http-client-jackson-1.17.0-rc.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/google-api-services-oauth2-v2-rev51-1.17.0-rc.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/gson-2.2.4.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/PDFjet.jar"/>
 	<classpathentry kind="output" path="WebContent/WEB-INF/classes"/>
 </classpath>
