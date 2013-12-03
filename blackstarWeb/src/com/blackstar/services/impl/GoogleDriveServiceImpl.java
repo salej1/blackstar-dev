@@ -3,9 +3,6 @@ package com.blackstar.services.impl;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -151,15 +148,6 @@ public class GoogleDriveServiceImpl extends AbstractService implements GoogleDri
 	}
 	file = drive.files().insert(file).execute();
     return file.getId();
-  }
-  
-  public static void main(String [] args) throws Exception{
-	ReporterServiceImpl serv = new ReporterServiceImpl();
-	ByteArrayOutputStream stream = serv.run();
-	new GoogleDriveServiceImpl().insert(45, serv.run());
-//	FileOutputStream see = new FileOutputStream("C:/Test.pdf");
-//	see.write(serv.run().toByteArray());
-//	see.close();
   }
 	
 }
