@@ -26,6 +26,7 @@ public class HttpInterceptor extends HandlerInterceptorAdapter {
     		                                                .SESSION_KEY_PARAM) == null)) {
     	System.out.println("bsMessage => No Logged");
     	response.sendRedirect(service.getAuthorizationUrl());
+    	return false;
     }	  
 	return true;		
   }

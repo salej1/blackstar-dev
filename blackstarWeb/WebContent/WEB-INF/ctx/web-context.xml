@@ -11,12 +11,16 @@
    <!--:::::::::::::::::::::::::: MVC Annnotations ::::::::::::::::::::::::::-->
    <mvc:annotation-driven />
    
-   
    <mvc:interceptors>
-      <bean class="com.blackstar.web.interceptor.HttpInterceptor">
-          <property name="service" ref="securityService" />
-      </bean>
-    </mvc:interceptors> 
+  <mvc:interceptor>
+    <mvc:mapping path="/**"/>
+    <mvc:exclude-mapping path="/security/**"/>
+    <bean class="com.blackstar.web.interceptor.HttpInterceptor">
+       <property name="service" ref="securityService" />
+    </bean>
+  </mvc:interceptor>
+</mvc:interceptors>
+
     
    <!--:::::::::::::::::::::::::::: JSP View Resolver ::::::::::::::::::::::::::::-->
    <bean id="jspViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
