@@ -4,10 +4,10 @@ import java.io.FileOutputStream;
 import com.blackstar.services.report.AbstractReport;
 import com.pdfjet.Color;
 
-public class OSDetailReport extends AbstractReport {
+public class ServiceOrderReport extends AbstractReport {
 	
   public void run() throws Exception {
-    printHeader("ORDEN DE SERVICIO", "OS", "1245");
+    printHeader("ORDEN DE SERVICIO","", "OS", "1245");
 	printFeatures();
 	printDetails();
 	printRequerements();
