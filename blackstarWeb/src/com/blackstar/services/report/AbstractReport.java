@@ -31,10 +31,8 @@ public abstract class AbstractReport {
 	drawer.text("01800.0830203", 360,72, true);
 	drawer.box(435, 47, 120, 12, true);
 	drawer.text("FOLIO", 485, 56, true, Color.white);
-	drawer.text(title, 540 - (title.length() * 6), 30, true, 0x0155A5, 11);
-	
-	drawer.text(description, 345 - ((title.length() / 2 ) ), 30, true, 0, 11);
-	
+	drawer.text(title, 550 - (title.length() *6), 35, true, 0x0155A5, 10);
+	drawer.text(description, 345 - ((description.length() / 2 ) * 6), 30, true, 0, 8);
 	drawer.box(435, 47, 120, 40, false);
 	drawer.text(type + " - ", 440, 76, false, 0, 12);
 	drawer.text(number, 470, 76, true, 0, 12);
