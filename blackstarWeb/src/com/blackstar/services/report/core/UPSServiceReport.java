@@ -190,11 +190,11 @@ public class UPSServiceReport extends AbstractReport {
   }
 	  
 	
-  public static void main(String [] args) throws Exception{
-	UPSServiceReport serv = new UPSServiceReport();
-	FileOutputStream see = new FileOutputStream("C:/Test.pdf");
-	see.write(serv.getReport());
-	see.close();
-  }
+//	 public static void main(String [] args) throws Exception{
+//	 UPSServiceReport serv = new UPSServiceReport();
+//	 FileOutputStream see = new FileOutputStream("C:/Test.pdf");
+//	 see.write(serv.getReport());
+//	 see.close();
+//	 }
 
-	}
+  }

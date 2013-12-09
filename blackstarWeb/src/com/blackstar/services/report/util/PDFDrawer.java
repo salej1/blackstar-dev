@@ -79,7 +79,7 @@ public class PDFDrawer {
 	text(text, x, y, isBold, color, DEFAULT_FONT_SIZE);
   }
   
-  public void text(String text, float x, float y, boolean isBold, int color, int size) 
+  public void text(String text, float x, float y, boolean isBold, int color, float size) 
 		                                                            throws Exception {
 	TextLine box = new TextLine(getFont(isBold, size), text);
 	box.setColor(color == 0 ? DEFAULT_COLOR : color );
@@ -107,7 +107,7 @@ public class PDFDrawer {
 	box.drawOn(page);
   }
   
-  private Font getFont(boolean isBold, int size) throws Exception{
+  private Font getFont(boolean isBold, float size) throws Exception{
 	Font font = isBold ? new Font(pdf, CoreFont.HELVETICA_BOLD)
 	                   : new Font(pdf, CoreFont.HELVETICA);
 	font.setSize(size);
