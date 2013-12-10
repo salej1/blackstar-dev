@@ -1,0 +1,65 @@
+package com.blackstar.services.report;
+
+import java.io.ByteArrayOutputStream;
+
+import com.blackstar.services.report.util.PDFDrawer;
+import com.pdfjet.Color;
+
+public abstract class AbstractReport {
+	
+  protected PDFDrawer drawer = null;
+	
+  protected abstract void run() throws Exception;
+	
+  public byte [] getReport() throws Exception {
+	drawer = new PDFDrawer();
+	run();
+	drawer.close();
+	return drawer.getStream().toByteArray();
+  }
+	
+  protected void printHeader(String title, String type, String number) throws Exception {
+	drawer.image("pdf/logoSAC.jpg", 0, 10);
+	drawer.text("GUADALAJARA", 165,50, true);
+	drawer.text("Tel. 01(33) 37-93-01-38", 158,62);
+	drawer.text("Fax. 01(33) 37-93-01-44", 158,72);
+	drawer.text("MÉXICO", 275, 50, true);
+	drawer.text("Tel. 01(55) 50-20-21-60", 254,62);
+	drawer.text("Fax. 01(55) 50-20-21-63", 254,72);
+	drawer.text("QUERÉTARO", 360,50, true);
+	drawer.text("Tel. 01(442) 295-24-68", 349,62);
+	drawer.text("01800.0830203", 360,72, true);
+	drawer.box(435, 47, 120, 12, true);
+	drawer.text("FOLIO", 485, 56, true, Color.white);
+	drawer.text(title, 540 - (title.length() * 6), 30, true, 0x0155A5, 11);
+	drawer.box(435, 47, 120, 40, false);
+	drawer.text(type + " - ", 440, 76, false, 0, 12);
+	drawer.text(number, 470, 76, true, 0, 12);
+  }
+	
+  protected void printFooter() throws Exception {
+	drawer.box(0, 670, 555, 13, true);
+	drawer.text("REALIZADO POR:", 100, 679, true, Color.white);
+	drawer.text("SERVICIO Y/O EQUIPO RECIBIDO A MI ENTERA SATISFACCION:", 287, 679, true, Color.white);
+	drawer.vLine(670, 770, 275);
+	drawer.hLine(0, 555, 740);
+	drawer.hLine(0, 555, 755);
+	drawer.hLine(0, 555, 770);
+	drawer.vLine(670, 770, 0);
+	drawer.vLine(670, 770, 555);
+		
+	drawer.text("FIRMA:", 5, 695);
+	drawer.text("NOMBRE:", 5, 750);
+	drawer.text("FECHA Y HORA DE SALIDA:", 5, 765);
+		
+	drawer.text("FIRMA:", 281, 695);
+	drawer.text("NOMBRE:", 281, 750);
+	drawer.text("PUESTO:", 281, 765);	  
+	drawer.text("REV-1 31-12-2012", 0, 780);
+	drawer.text("TRA:MIENTRAS ESTE ACTIVO", 443, 780);
+	drawer.text("4-SE-08", 0, 790);
+	drawer.text("TRAM: 1 AÑO", 443, 790);
+	drawer.text("www.gposac.com.mx", 235, 785, true, 0x0155A5);
+  }
+
+}

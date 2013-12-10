@@ -55,6 +55,7 @@ public class UserFilter implements Filter {
 			    	UserDAO dao = this.daoFactory.getUserDAO();
 			    	myUser = dao.getUserById(id);
 			    	if(myUser != null){
+			    		req.getSession().setAttribute("user_id", gUser.getUserId());
 			        	req.getSession().setAttribute("user", myUser);
 			    	   	chain.doFilter(request, response);
 			    	}
