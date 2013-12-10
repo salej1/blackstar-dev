@@ -9,16 +9,16 @@
 <title>Detalle orden servicio</title>
 
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<script src="js/jquery.ui.touch-punch.min.js"></script>
-		<script src="js/jquery.signature.min.js"></script>
+		<script src="${pageContext.request.contextPath}/js/jquery.ui.touch-punch.min.js"></script>
+		<script src="${pageContext.request.contextPath}/js/jquery.signature.min.js"></script>
 		
-		<link rel="stylesheet" href="css/960.css" type="text/css" media="screen" charset="utf-8" />
-		<link rel="stylesheet" href="css/template.css" type="text/css" media="screen" charset="utf-8" />
-		<link rel="stylesheet" href="css/colour.css" type="text/css" media="screen" charset="utf-8" />
-		<link href="js/glow/1.7.0/widgets/widgets.css" type="text/css" rel="stylesheet" />
-		<link rel="stylesheet" href="css/jquery.ui.theme.css">
-		<link rel="stylesheet" href="css/jquery-ui.min.css">
-		<link rel="stylesheet" href="css/jquery.signature.css">
+		<link rel="stylesheet" href="${pageContext.request.contextPath}/css/960.css" type="text/css" media="screen" charset="utf-8" />
+		<link rel="stylesheet" href="${pageContext.request.contextPath}/css/template.css" type="text/css" media="screen" charset="utf-8" />
+		<link rel="stylesheet" href="${pageContext.request.contextPath}/css/colour.css" type="text/css" media="screen" charset="utf-8" />
+		<link href="${pageContext.request.contextPath}/js/glow/1.7.0/widgets/widgets.css" type="text/css" rel="stylesheet" />
+		<link rel="${pageContext.request.contextPath}/stylesheet" href="css/jquery.ui.theme.css">
+		<link rel="${pageContext.request.contextPath}/stylesheet" href="css/jquery-ui.min.css">
+		<link rel="${pageContext.request.contextPath}/stylesheet" href="css/jquery.signature.css">
  <script type="text/javascript" charset="utf-8">
  
 	$(document).ready(function () {
@@ -77,14 +77,14 @@
 						<h2>Orden de servicio</h2>
 							<c:if test="${serviceOrderDetail.ticketId gt 0}">
 								<div class="utils">
-										<a id="linkTicket" href="ticketDetail?ticketId=${serviceOrderDetail.ticketId}"> </a>
+										<a id="linkTicket" href="${pageContext.request.contextPath}/ticketDetail?ticketId=${serviceOrderDetail.ticketId}"> </a>
 								</div>
 							</c:if>
 						<table>
 							<tr>
 								<td>Folio:</td>
 								<td><input  id="lbFolio" type="text" style="width:95%;" readOnly="true" /></td>
-								<td colspan='2'><a href='#'>Ver PDF</a><img src='${pageContext.request.contextPath}/img/pdf.png'/></td>
+								<td colspan='2'><a href='${pageContext.request.contextPath}/osDetail/showReport.do?serviceOrderId=${serviceOrderDetail.serviceOrderId}' target="_blank">Ver PDF</a><img src='${pageContext.request.contextPath}/img/pdf.png'/></td>
 							</tr>
 							<tr>
 								<td>Cliente</td>
@@ -221,7 +221,6 @@
 							
 							<!-- Control de secuencia y captura de seguimiento -->
 							<c:import url="followUpControl.jsp"></c:import>
-							
 							<table>
 								<tbody>
 									<tr>
@@ -232,6 +231,10 @@
 									</tr>
 								<tbody>
 							</table>
+							
+							<!-- Adjuntos -->
+							<c:import url="_attachments.jsp"></c:import>
+							
 					</div>					
 				</div>				
 <!--   ~ CONTENT COLUMN   -->

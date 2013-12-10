@@ -28,6 +28,10 @@ public class User implements java.io.Serializable {
 		userEmail = _email;
 	}
 	
+	public User(){
+		
+	}
+	
 	public void addGroup(String group){
 		if(userGroups == null){
 			userGroups = new ArrayList<String>();

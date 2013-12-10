@@ -11,6 +11,13 @@
    <!--:::::::::::::::::::::::::: MVC Annnotations ::::::::::::::::::::::::::-->
    <mvc:annotation-driven />
    
+   
+   <mvc:interceptors>
+      <bean class="com.blackstar.web.interceptor.HttpInterceptor">
+          <property name="service" ref="securityService" />
+      </bean>
+    </mvc:interceptors> 
+    
    <!--:::::::::::::::::::::::::::: JSP View Resolver ::::::::::::::::::::::::::::-->
    <bean id="jspViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
      <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
@@ -18,14 +25,24 @@
      <property name="suffix" value=".jsp"/>
    </bean>
 
+   <!--::::::::::::::::::::::::::::::: Template :::::::::::::::::::::::::::::::-->
+   <bean id ="abstractController" class="com.blackstar.web.AbstractController">
+      <property name="udService" ref="userDomainService" />
+      <property name="gdService" ref="googleDriveService" />
+      <property name="secService" ref="securityService" />
+   </bean>
+   
    <!--::::::::::::::::::::::::::::::: Controllers :::::::::::::::::::::::::::::::-->
-   <bean class="com.blackstar.web.controller.DashboardController">
+   <bean id ="securityController" class="com.blackstar.web.controller.SecurityController" parent="abstractController"/>
+   
+   <bean class="com.blackstar.web.controller.DashboardController" parent="abstractController">
       <property name="service" ref="dashboardService" />
       <property name="userService" ref="userService" />
    </bean>
    
-   <bean class="com.blackstar.web.controller.ServiceOrderController">
+   <bean class="com.blackstar.web.controller.ServiceOrderController" parent="abstractController">
       <property name="service" ref="serviceOrderService" />
+      <property name="rrService" ref="reporterService" />
    </bean>
 
 </beans>

@@ -60,6 +60,7 @@ public class Login
     	UserDAO dao = this.daoFactory.getUserDAO();
     	myUser = dao.getUserById(id);
     	if(myUser != null){
+        	req.getSession().setAttribute("user_id", gUser.getUserId());
         	req.getSession().setAttribute("user", myUser);
         	req.getSession().setAttribute("access_token", credential.getAccessToken());
     	}

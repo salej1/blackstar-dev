@@ -63,6 +63,7 @@ public class UserFilter implements Filter {
 		    	if(id != null && ! id.equals("")){
 			    	User myUser = userService.gerUserById(id);
 			    	if(myUser != null){
+			    		req.getSession().setAttribute("user_id", gUser.getUserId());
 			        	req.getSession().setAttribute("user", myUser);
 			    	   	chain.doFilter(request, response);
 			    	}

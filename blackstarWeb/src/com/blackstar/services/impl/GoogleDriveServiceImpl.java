@@ -1,203 +1,153 @@
 package com.blackstar.services.impl;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Scanner;
- 
+import java.util.HashMap;
+import java.util.Map;
 
-
-
-import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse;
-import com.google.api.client.http.FileContent;
-import com.google.api.client.http.GenericUrl;
-import com.google.api.client.http.HttpResponse;
 import com.google.api.client.http.HttpTransport;
+import com.google.api.client.http.InputStreamContent;
 import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson.JacksonFactory;
 import com.google.api.services.drive.Drive;
-import com.google.api.services.drive.DriveScopes;
 import com.google.api.services.drive.Drive.Files;
+import com.google.api.services.drive.DriveScopes;
 import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.FileList;
+import com.google.api.services.drive.model.ParentReference;
+import com.google.api.services.drive.model.Permission;
+import com.blackstar.services.AbstractService;
 import com.blackstar.services.interfaces.GoogleDriveService;
 
-public class GoogleDriveServiceImpl implements GoogleDriveService {
+public class GoogleDriveServiceImpl extends AbstractService implements GoogleDriveService {
+	
+  public static final String FOLDER_FILE_TYPE = "application/vnd.google-apps.folder";
+  
+  private static  Map<String, String> sysFolderIds = new HashMap<String, String>();
+  private static Drive drive = null;
+  private static GoogleCredential credential = null;
 
-	private String redirectURI;
-	HttpTransport httpTransport;
-	JsonFactory jsonFactory;
-	GoogleAuthorizationCodeFlow flow;
-	Drive service;
- 
-	
-	/**
-	 * Initialize initials attributes.
-	 * 
-	 * @param String basic configuration parameters.
-	 */
-	public GoogleDriveServiceImpl(String CLIENT_ID, String CLIENT_SECRET, String REDIRECT_URI){
-		this.redirectURI=REDIRECT_URI;
-		httpTransport = new NetHttpTransport();
-		jsonFactory= new JacksonFactory();
-		
-		flow= new GoogleAuthorizationCodeFlow.Builder(
-				httpTransport, jsonFactory, 
-				CLIENT_ID, CLIENT_SECRET, 
-				Arrays.asList(DriveScopes.DRIVE))
-				.setAccessType("online")
-				.setApprovalPrompt("auto").build();
+  static {
+	String folderId = null;
+	try {
+	     setDriveService();
+	     folderId = getFolderId("os_attachment", null);
+	 	 if(folderId == null){
+	 	   folderId = createFile("os_attachment", null , FOLDER_FILE_TYPE);
+	 	   setPermissions(folderId);
+	 	 } 	
+	 	 sysFolderIds.put("OS_ATTACHMENTS", folderId);
+	 	 folderId = getFolderId("os_reports", null);
+	 	 if(folderId == null){
+	 	   folderId = createFile("os_reports", null , FOLDER_FILE_TYPE);
+	 	   setPermissions(folderId);
+	 	 } 
+	 	sysFolderIds.put("OS_REPORTS", folderId);
+	} catch(Exception e){
+		e.printStackTrace();
 	}
 	
-	/**
-	 * Get the authorization URL for authorize the application.
-	 *
-	 * @return String URL for authorize the application.
-	 */
-	public String getURL(){
-		String url = flow.newAuthorizationUrl().setRedirectUri(redirectURI).build();
-		return url;
+  }
+  
+  public GoogleDriveServiceImpl(){  
+  }
+  
+  public static void setDriveService() throws Exception {
+    HttpTransport httpTransport = new NetHttpTransport();
+    JacksonFactory jsonFactory = new JacksonFactory();
+    credential = new GoogleCredential.Builder()
+                     .setTransport(httpTransport)
+                     .setJsonFactory(jsonFactory)
+                     .setServiceAccountId("1045304195726-4bscobcnja1npkifsseorp02rdb1casf@developer.gserviceaccount.com")
+                     .setServiceAccountScopes(Arrays.asList(DriveScopes.DRIVE))
+                     .setServiceAccountPrivateKeyFromP12File(new java.io.File(GoogleDriveServiceImpl
+                    		 .class.getClassLoader().getResource("auth/serviceKey.p12").getPath()))
+                     .setServiceAccountUser("admin@somnustechnologies.com.mx")
+                     .build();
+    credential.refreshToken();
+    credential.getAccessToken();
+    drive = new Drive.Builder(httpTransport, jsonFactory, null)
+            .setHttpRequestInitializer(credential).build();
+  }
+
+  public String getAttachmentFolderId(Integer serviceOrderId) throws Exception {
+	return getFolderId(serviceOrderId, sysFolderIds.get("OS_ATTACHMENTS"));
+  }	
+  
+  public String getReportsFolderId(Integer serviceOrderId) throws Exception {
+	return getFolderId(serviceOrderId, sysFolderIds.get("OS_REPORTS"));
+  }	
+  
+  public String getFolderId(Integer serviceOrderId, String parentId) throws Exception {
+	String osAttachmentFolderId = getFolderId("os_" + serviceOrderId, parentId);		
+	if(osAttachmentFolderId == null){
+	  osAttachmentFolderId = createFile("os_" + serviceOrderId ,parentId , FOLDER_FILE_TYPE);
+	  setPermissions(osAttachmentFolderId);
 	}
+	return osAttachmentFolderId;
+  }	
+  
+  public String insert(Integer serviceOrderId, ByteArrayOutputStream stream) throws Exception{
+	File body = new File();
+	body.setTitle("Test");
+	body.setMimeType("application/pdf");
+	body.setFileSize((long) stream.size());
+	  
+	InputStreamContent mediaContent = new InputStreamContent("application/pdf",
+		                   new BufferedInputStream(new ByteArrayInputStream(stream.toByteArray())));
+	mediaContent.setLength(stream.size());
+	return drive.files().insert(body, mediaContent).execute().getId();
+  }
+  
+  public String getAccessToken() throws Exception {
+	credential.refreshToken();
+	return credential.getAccessToken();
+  }
+  
+  private static void setPermissions(String fileId) throws Exception{
+	Permission p = new Permission();
+	p.setRole("owner");
+	p.setType("user");
+	p.setValue("admin@somnustechnologies.com.mx");
+	drive.permissions().insert(fileId, p).execute();
+	p = new Permission();
+	p.setRole("writer");
+	p.setType("domain");
+	p.setValue("somnustechnologies.com.mx");
+	drive.permissions().insert(fileId, p).execute();
+  }
+  
+  public static String getFolderId(String folderName, String parentId) throws Exception {
+	Files.List request = null;
+	FileList files = null;
+	String id = null;
+	StringBuilder criteria = new StringBuilder().append("title='").append(folderName).append("'")
+			                           .append(" and mimeType='application/vnd.google-apps.folder'")
+			                           .append(" and trashed = false");
+    if(parentId != null){
+    	criteria.append(" and '").append(parentId).append("' in parents");
+    }			                           
+	request = drive.files().list();
+	request.setQ(criteria.toString());
+	files = request.execute();
+	if(files.getItems().size() > 0){
+		id = files.getItems().get(0).getId();
+    }
+	return id;
+  }
 	
-	
-	/**
-	 * Set the authorization code and create the service.
-	 *
-	 * @param String authorization code.
-	 */
-	public void setCode(String code) throws IOException{
-		GoogleTokenResponse response = flow.newTokenRequest(code).setRedirectUri(redirectURI).execute();
-		GoogleCredential credential = new GoogleCredential().setFromTokenResponse(response);
- 
-		//Create a new authorized API client
-		service = new Drive.Builder(httpTransport, jsonFactory, credential).build();
+  public static String createFile(String title, String parentId, String type) throws Exception {
+	File file = new File();
+	file.setTitle(title);
+	file.setMimeType(type);
+	if(parentId != null){
+	  file.setParents(Arrays.asList(new ParentReference().setId(parentId)));
 	}
-	
-	/**
-	 * Upload a text file.
-	 *
-	 * @param String path of the file.
-	 * @return String name of the file in google drive.
-	 */
-	public String uploadTextFile(String filePath, String title) throws IOException{
-		File body = new File();
-		body.setTitle(title);
-		body.setDescription("A test document");
-		body.setMimeType("text/plain");
-		java.io.File fileContent = new java.io.File(filePath);
-		FileContent mediaContent = new FileContent("text/plain", fileContent);
-		File file = service.files().insert(body, mediaContent).execute();
-		return file.getId();
-	}
-	
-	/**
-	 * Get the content of a file.
-	 *
-	 * @param File to get the content.
-	 * @return String content of the file.
-	 */
-	public String downloadTextFile(File file) throws IOException{
-		GenericUrl url = new GenericUrl(file.getDownloadUrl());
-		HttpResponse response = service.getRequestFactory().buildGetRequest(url).execute();
-		try {
-			return new Scanner(response.getContent()).useDelimiter("\\A").next();
-		} catch (java.util.NoSuchElementException e) {
-			return "";
-		}
-	}
-	
-	/**
-	 * Get the content of a file.
-	 *
-	 * @param String the file ID.
-	 * @return String content of the file.
-	 */
-	public String downloadTextFile(String fileID) throws IOException{
-		File file=service.files().get(fileID).execute();
-		return downloadTextFile(file);
-	}
-	
-	/**
-	 * Retrieve a list of File resources.
-	 *
-	 * @param service Drive API service instance.
-	 * @return List of File resources.
-	 * @author Google
-	 * @throws IOException 
-	 */
-	public List<File> retrieveAllFiles() throws IOException {
-		List<File> result = new ArrayList<File>();
-		Files.List request = null;
- 
-		request = service.files().list();
- 
- 
-		do {
-			try {
-				FileList files = request.execute();
- 
-				result.addAll(files.getItems());
-				request.setPageToken(files.getNextPageToken());
-			} catch (IOException e) {
-				request.setPageToken(null);
-			}
-		} while (request.getPageToken() != null &&
-				request.getPageToken().length() > 0);
- 
-		return result;
-	}
-	
-	
-	
-	
-	
-	private static final String CLIENT_ID = "1045304195726.apps.googleusercontent.com";
-	private static final String CLIENT_SECRET = "r7j-DfVgASWZoj6vwV0MOAw-";
-	private static final String REDIRECT_URI = "urn:ietf:wg:oauth:2.0:oob";
-	private static GoogleDriveServiceImpl gd;
-	
-	public static void main(String[] args) throws IOException{
-		// Para permitir a nuestra aplicacion conectarse con nuestro google drive
-		// primero tenemos que autorizarla abriendo una url en el navegador, darle
-		// a permitir y copiar y pegar el codigo de autorizacion en la aplicacion
-		gd=new GoogleDriveServiceImpl(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
-		
-		System.out.println("Abre la siguiente URL en tu navegador:");
-		System.out.println(" " + gd.getURL());
-		System.out.println("Escribe el codigo de autorizacion:");
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		String code = br.readLine();
-		gd.setCode(code);
-		
-		// Sube un fichero de texto a google drive
-		// El archivo document.txt se encuentra en la misma carpeta del proyecto
-		// En el primer argumento se pone la ruta al fichero, en la segunda el
-		// nombre del fichero en google drive
-		String fileID=gd.uploadTextFile("document.txt","documento.txt");
-		System.out.println("Fichero subido. ID del fichero:"+fileID);
-		
-		// Descarga el contenido del fichero de texto anteriormente subido
-		String contenido=gd.downloadTextFile(fileID);
-		System.out.println("Contenido:"+contenido);
-		
-		System.out.println("Pulse intro para listar los archivos de Google Drive");
-		new InputStreamReader(System.in);
-		
-		System.out.println("Realizando consulta...");
-		// Consulta los ficheros que hay actualmente en nuestro google drive
-		List<File> result = gd.retrieveAllFiles();
-		Iterator<File> iter = result.iterator();
-		while (iter.hasNext()){
-			System.out.println(iter.next().getTitle());
-		}
-		System.out.println("Ficheros encontrados:"+result.size());
-	}
+	file = drive.files().insert(file).execute();
+    return file.getId();
+  }
 	
 }

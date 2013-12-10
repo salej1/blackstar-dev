@@ -13,20 +13,7 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
     <param-name>javax.faces.PROJECT_STAGE</param-name>
     <param-value>Development</param-value>
   </context-param>
-  <filter>
-    <display-name>UserFilter</display-name>
-    <filter-name>UserFilter</filter-name>
-    <filter-class>com.blackstar.web.UserFilter</filter-class>
-  </filter>
-  <filter-mapping>
-    <filter-name>UserFilter</filter-name>
-    <url-pattern>/UserFilter</url-pattern>
-  </filter-mapping>
-  <filter-mapping>
-    <filter-name>UserFilter</filter-name>
-    <url-pattern>/*</url-pattern>
-    <dispatcher>REQUEST</dispatcher>
-  </filter-mapping>
+
   <listener>
     <listener-class>com.sun.faces.config.ConfigureListener</listener-class>
   </listener>
@@ -83,16 +70,6 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
     <servlet-class>com.blackstar.web.diagnostics</servlet-class>
   </servlet>
   <servlet>
-    <display-name>Login</display-name>
-    <servlet-name>Login</servlet-name>
-    <servlet-class>com.blackstar.web.Login</servlet-class>
-  </servlet>
-  <servlet>
-    <display-name>LoginCallBack</display-name>
-    <servlet-name>LoginCallBack</servlet-name>
-    <servlet-class>com.blackstar.web.LoginCallBack</servlet-class>
-  </servlet>
-  <servlet>
     <display-name>FollowUp</display-name>
     <servlet-name>FollowUp</servlet-name>
     <servlet-class>com.blackstar.web.FollowUp</servlet-class>
@@ -132,14 +109,6 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
   <servlet-mapping>
     <servlet-name>diagnostics</servlet-name>
     <url-pattern>/diagnostics</url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
-    <servlet-name>Login</servlet-name>
-    <url-pattern>/login</url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
-    <servlet-name>LoginCallBack</servlet-name>
-    <url-pattern>/oauth2callback</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>FollowUp</servlet-name>
