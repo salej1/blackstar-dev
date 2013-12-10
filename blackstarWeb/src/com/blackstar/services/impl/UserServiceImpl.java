@@ -3,9 +3,9 @@ package com.blackstar.services.impl;
 import java.util.List;
 
 import com.blackstar.db.dao.interfaces.UserDAO;
-import com.blackstar.interfaces.IUserService;
 import com.blackstar.model.User;
 import com.blackstar.services.AbstractService;
+import com.blackstar.services.IUserService;
 
 public class UserServiceImpl extends AbstractService implements IUserService {
 	private UserDAO dao;

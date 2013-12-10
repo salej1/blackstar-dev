@@ -22,9 +22,9 @@ import com.google.appengine.api.users.UserServiceFactory;
  * Servlet Filter implementation class UserFilter
  */
 public class UserFilter implements Filter {
-	private com.blackstar.interfaces.IUserService userService = new UserServiceImpl();
+	private com.blackstar.services.IUserService userService = new UserServiceImpl();
 
-	public void setUserService(com.blackstar.interfaces.IUserService userService) {
+	public void setUserService(com.blackstar.services.IUserService userService) {
 		this.userService = userService;
 	}
 	

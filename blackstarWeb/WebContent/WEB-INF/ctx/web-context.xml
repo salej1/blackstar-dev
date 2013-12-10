@@ -37,7 +37,6 @@
    
    <bean class="com.blackstar.web.controller.DashboardController" parent="abstractController">
       <property name="service" ref="dashboardService" />
-      <property name="userService" ref="userService" />
    </bean>
    
    <bean class="com.blackstar.web.controller.ServiceOrderController" parent="abstractController">

@@ -55,11 +55,6 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
     <servlet-class>com.blackstar.web.TicketDetail</servlet-class>
   </servlet>
   <servlet>
-    <display-name>dashboard</display-name>
-    <servlet-name>dashboard</servlet-name>
-    <servlet-class>com.blackstar.web.Dashboard</servlet-class>
-  </servlet>
-  <servlet>
     <display-name>dbtest</display-name>
     <servlet-name>dbtest</servlet-name>
     <servlet-class>com.blackstar.web.dbtest</servlet-class>
@@ -97,10 +92,6 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
   <servlet-mapping>
     <servlet-name>TicketDetail</servlet-name>
     <url-pattern>/ticketDetail</url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
-    <servlet-name>dashboard</servlet-name>
-    <url-pattern>/dashboard</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>dbtest</servlet-name>

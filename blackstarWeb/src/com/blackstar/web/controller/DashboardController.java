@@ -14,9 +14,10 @@ import com.blackstar.common.Globals;
 import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
 import com.blackstar.model.TicketController;
-import com.blackstar.model.User;
 import com.blackstar.model.UserSession;
+import com.blackstar.services.IUserService;
 import com.blackstar.services.interfaces.DashboardService;
+import com.blackstar.services.interfaces.UserDomainService;
 import com.blackstar.web.AbstractController;
 
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -27,16 +28,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class DashboardController extends AbstractController {
 
   private DashboardService service;
-  private IUserService userService;
 	
   public void setService(DashboardService service) {
 	this.service = service;
   }
-  
-  public void setUserService(IUserService userService) {
-	this.userService = userService;
-  }
-  
+    
   @RequestMapping(value= "/show.do", method = RequestMethod.GET)
   public String show(ModelMap model, HttpServletRequest req, HttpServletResponse resp) {
 	try {
@@ -55,7 +51,7 @@ public class DashboardController extends AbstractController {
   public String unnasignedTicketsJson(ModelMap model){
 	try {
 		model.addAttribute("ticketsToAssignDashboard", service.getUnassignedTickets());
-		model.addAttribute("employees", userService.getEmployeeList());
+		model.addAttribute("employees", udService.getStaff());
 	} catch (Exception ex) {	
 		Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), ex);
 		ex.printStackTrace();
@@ -79,4 +75,5 @@ public class DashboardController extends AbstractController {
 		return "error";
 	}	 
 	return show(model, req, resp);
+  }
 }

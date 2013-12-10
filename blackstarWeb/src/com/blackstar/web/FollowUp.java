@@ -16,11 +16,11 @@ import org.json.JSONArray;
 
 import com.blackstar.common.ResultSetConverter;
 import com.blackstar.db.BlackstarDataAccess;
-import com.blackstar.interfaces.IUserService;
 import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
 import com.blackstar.model.User;
 import com.blackstar.model.dto.OrderserviceDTO;
+import com.blackstar.services.IUserService;
 import com.blackstar.services.UserServiceFactory;
 import com.google.api.services.admin.directory.model.UserName;
 

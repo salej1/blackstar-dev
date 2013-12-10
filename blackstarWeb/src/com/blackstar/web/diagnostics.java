@@ -5,14 +5,15 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.blackstar.interfaces.IUserService;
 import com.blackstar.model.User;
 import com.blackstar.services.GmailService;
+import com.blackstar.services.IUserService;
 import com.blackstar.services.impl.UserServiceImpl;
 
 /**
