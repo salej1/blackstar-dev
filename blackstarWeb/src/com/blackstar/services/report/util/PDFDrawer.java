@@ -1,17 +1,7 @@
 package com.blackstar.services.report.util;
 import java.io.ByteArrayOutputStream;
 
-import com.pdfjet.A4;
-import com.pdfjet.Box;
-import com.pdfjet.Color;
-import com.pdfjet.CoreFont;
-import com.pdfjet.Font;
-import com.pdfjet.Image;
-import com.pdfjet.ImageType;
-import com.pdfjet.Line;
-import com.pdfjet.PDF;
-import com.pdfjet.Page;
-import com.pdfjet.TextLine;
+import com.pdfjet.*;
 
 public class PDFDrawer {
 	
@@ -85,6 +75,21 @@ public class PDFDrawer {
 	box.setColor(color == 0 ? DEFAULT_COLOR : color );
 	box.setPosition(x + LEFT_MARGIN, y + TOP_MARGIN);
 	box.drawOn(page);
+  }
+  
+  public void textBox(String text, float x, float y, float w, float h, boolean isBold, float size
+		                                                 , boolean showBorder) throws Exception {
+    TextBox box = new TextBox(getFont(isBold, size), text, w, h);
+    box.setPosition(x + LEFT_MARGIN, y + TOP_MARGIN);
+    if(! showBorder){
+      box.setNoBorders();
+    }
+    box.drawOn(page);
+  }
+  
+  public void textBox(String text, float x, float y, float w, float h, boolean isBold, boolean showBorder) 
+          throws Exception {
+	 textBox(text, x, y, w, h, isBold, DEFAULT_FONT_SIZE, showBorder);
   }
   
   public void image(String path, float x, float y) throws Exception {

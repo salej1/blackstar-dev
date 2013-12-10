@@ -10,6 +10,8 @@ public abstract class AbstractReport {
   protected PDFDrawer drawer = null;
 	
   protected abstract void run() throws Exception;
+  protected void setFillingData(Object data) throws Exception{
+  }
 	
   public byte [] getReport() throws Exception {
 	drawer = new PDFDrawer();
@@ -17,6 +19,8 @@ public abstract class AbstractReport {
 	drawer.close();
 	return drawer.getStream().toByteArray();
   }
+  
+  
 	
   protected void printHeader(String title,String description, String type, String number) throws Exception {
 	drawer.image("pdf/logoSAC.jpg", 0, 10);
