@@ -39,8 +39,8 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
                 /WEB-INF/ctx/dao-context.xml
                 /WEB-INF/ctx/service-context.xml
                 /WEB-INF/ctx/web-context.xml
-            </param-value>
-        </init-param>
+        </param-value>
+    </init-param>
   </servlet>
   <servlet>
     <display-name>EquipmentCollectionByCustomer</display-name>
@@ -175,6 +175,7 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
     <servlet-name>Logout</servlet-name>
     <url-pattern>/logout</url-pattern>
   </servlet-mapping>
+  <!-- 
   <security-constraint>
     <web-resource-collection>
       <web-resource-name>any</web-resource-name>
@@ -184,6 +185,7 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
       <role-name>*</role-name>
     </auth-constraint>
   </security-constraint>
+   -->
   <servlet>
     <description></description>
     <display-name>EquipmentService</display-name>

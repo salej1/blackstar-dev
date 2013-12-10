@@ -67,7 +67,7 @@ public class Dashboard extends HttpServlet {
 			
 			da.closeConnection();
 			// Recuperando la lista de empleados del directorio
-			IUserService dir = UserServiceFactory.getUserService();
+			IUserService dir = null;// = UserServiceFactory.getUserService();
 			request.setAttribute("employees", dir.getEmployeeList());
 			
 		} 

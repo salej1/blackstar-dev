@@ -42,4 +42,6 @@ public class Globals {
 	    }
 	    return clientSecrets;
 	  }
+	  
+	  public static final String HOMEPAGE_URL = "/";
 }

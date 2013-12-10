@@ -48,15 +48,34 @@
 -- 8   19/10/2013	SAG		Se Integra:
 -- 								blackstarDb.ReopenTicket
 -- -----------------------------------------------------------------------------
--- 8   24/10/2013	SAG		Se Integra:
+-- 9   24/10/2013	SAG		Se Integra:
 -- 								blackstarDb.AssignServiceOrder
 -- 								blackstarDb.GetEquipmentByCustomer
 -- -----------------------------------------------------------------------------
+-- 10   25/11/2013	SAG		Se Integra:
+-- 								blackstarDb.GetUserGroups
+-- -----------------------------------------------------------------------------
+
 
 use blackstarDb;
 
 
 DELIMITER $$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetUserGroups
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetUserGroups$$
+CREATE PROCEDURE blackstarDb.GetUserGroups(pEmail VARCHAR(100))
+BEGIN
+
+	SELECT g.name AS groupName
+	FROM blackstarUser_userGroup ug
+		INNER JOIN blackstarUser u ON u.blackstarUserId = ug.blackstarUserId
+		LEFT OUTER JOIN userGroup g ON g.userGroupId = ug.userGroupId
+	WHERE u.email = pEmail;
+	
+END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetEquipmentByCustomer
@@ -393,10 +412,8 @@ DROP PROCEDURE IF EXISTS blackstarDb.GetUserData$$
 CREATE PROCEDURE blackstarDb.GetUserData(pEmail VARCHAR(100))
 BEGIN
 
-	SELECT u.email AS userEmail, u.name AS userName, g.name AS groupName
-	FROM blackstarUser_userGroup ug
-		INNER JOIN blackstarUser u ON u.blackstarUserId = ug.blackstarUserId
-		LEFT OUTER JOIN userGroup g ON g.userGroupId = ug.userGroupId
+	SELECT u.email AS email, u.name AS name
+	FROM blackstarUser u 
 	WHERE u.email = pEmail;
 	
 END$$

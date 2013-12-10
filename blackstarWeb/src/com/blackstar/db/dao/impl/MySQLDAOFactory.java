@@ -81,7 +81,7 @@ public class MySQLDAOFactory extends DAOFactory {
 	@Override
 	public UserDAO getUserDAO() {
 		// TODO Auto-generated method stub
-		return new MySQLUserDAO();
+		return null;//new MySQLUserDAO();
 	}
 
 	@Override

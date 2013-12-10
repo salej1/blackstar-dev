@@ -108,7 +108,7 @@ public class TicketDetail extends HttpServlet{
 				Servicecenter Servicecenter =  this.daoFactory.getServiceCenterDAO().getServiceCenterById(policy.getServiceCenterId());
 				request.setAttribute("ServicecenterT", Servicecenter);
 					
-				Map<String, String> UsuariosAsignados = UserServiceFactory.getUserService().getEmployeeList(); 
+				List<User> UsuariosAsignados = UserServiceFactory.getUserService().getEmployeeList(); 
 				request.setAttribute("employees", UsuariosAsignados);
 					
 				// Obtener los followups asociados a la orden de servicio

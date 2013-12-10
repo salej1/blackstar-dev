@@ -21,14 +21,11 @@
    <!--::::::::::::::::::::::::::::::: Controllers :::::::::::::::::::::::::::::::-->
    <bean class="com.blackstar.web.controller.DashboardController">
       <property name="service" ref="dashboardService" />
-   </bean>
-   
-   <bean class="com.blackstar.web.controller.DashboardController">
-      <property name="userService" ref="googleUserService" />
+      <property name="userService" ref="userService" />
    </bean>
    
    <bean class="com.blackstar.web.controller.ServiceOrderController">
       <property name="service" ref="serviceOrderService" />
    </bean>
-   
+
 </beans>

@@ -14,7 +14,7 @@
       <property name="dao" ref="serviceOrderDAO" />
   </bean>
   
-  <bean id="googleUserService" class="com.blackstar.services.impl.ServiceOrderServiceImpl">
-      <property name="dao" ref="serviceOrderDAO" />
+  <bean id="userService" class="com.blackstar.services.impl.UserServiceImpl">
+      <property name="dao" ref="userDAO" />
   </bean>
 </beans>

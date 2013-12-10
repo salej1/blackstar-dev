@@ -55,7 +55,7 @@
 	}	
 	
 	function getUnassignedTickets(){
-		$.getJson("/dashboard/unassignedTicketsJson", function(data){
+		$.getJson("/dashboard/unassignedTicketsJson.do", function(data){
 			return data;
 		});
 	}
@@ -117,7 +117,7 @@
 	<p>Asignar ticket<label id="lblTicketBeignAssigned"></label></p>
 		<select id="employeeSelect">
 			<c:forEach var="employee" items="${employees}">
-				<option value = "${employee.key}">${employee.value}</option>
+				<option value = "${employee.userEmail}">${employee.userName}</option>
 			</c:forEach>
 		</select>
 	<form id="ticksetSelect" action="dashboard" method="post">

@@ -23,7 +23,7 @@ public class DashboardController {
   }
   
   public void setUserService(IUserService userService) {
-		this.userService = userService;
+	this.userService = userService;
   }
   
   @RequestMapping(value= "/show.do", method = RequestMethod.GET)
@@ -39,16 +39,16 @@ public class DashboardController {
 	return "dashboard";
   }
   
-  @RequestMapping(value="/unassignedTicketsJson", method=RequestMethod.GET)
+  @RequestMapping(value="/unassignedTicketsJson.do", method=RequestMethod.GET)
   public String unnasignedTicketsJson(ModelMap model){
-	  try {
-			 model.addAttribute("ticketsToAssignDashboard", service.getUnassignedTickets());
-			 model.addAttribute("employees", userService.getEmployeeList());
-		} catch (Exception ex) {	
-			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), ex);
-			ex.printStackTrace();
-			return "error";
-		}	 
-		return "unassignedTicketsJson";
+	try {
+		model.addAttribute("ticketsToAssignDashboard", service.getUnassignedTickets());
+		model.addAttribute("employees", userService.getEmployeeList());
+	} catch (Exception ex) {	
+		Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), ex);
+		ex.printStackTrace();
+		return "error";
+	}	 
+	return "unassignedTicketsJson";
   }
 }
