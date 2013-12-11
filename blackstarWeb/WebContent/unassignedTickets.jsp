@@ -1,5 +1,4 @@
 <script type="text/javascript">
-	var str = '${ticketsToAssignDashboard}';
 	
 	// Inicializacion de tabla de tickets y dialogo de asignacion
 	function unassignedTickets_init(){

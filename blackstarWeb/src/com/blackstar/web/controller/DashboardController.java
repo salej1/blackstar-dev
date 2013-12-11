@@ -8,6 +8,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.blackstar.common.Globals;
@@ -24,56 +25,125 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
 @RequestMapping("/dashboard")
-@SessionAttributes({Globals.SESSION_KEY_PARAM})
+@SessionAttributes({ Globals.SESSION_KEY_PARAM })
 public class DashboardController extends AbstractController {
 
-  private DashboardService service;
-	
-  public void setService(DashboardService service) {
-	this.service = service;
-  }
-    
-  @RequestMapping(value= "/show.do", method = RequestMethod.GET)
-  public String show(ModelMap model, HttpServletRequest req, HttpServletResponse resp) {
-	try {
-		 model.addAttribute("serviceOrdersToReviewDashboard", service.getServiceOrders("NUEVO"));
-		 model.addAttribute("serviceOrdersPendingDashboard", service.getServiceOrders("PENDIENTE"));
-		 model.addAttribute("employees", udService.getStaff());
-	} catch (Exception ex) {	
-		Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), ex);
-		ex.printStackTrace();
-		return "error";
-	}	 
-	return "dashboard";
-  }
-  
-  @RequestMapping(value="/unassignedTicketsJson.do", method=RequestMethod.GET)
-  public String unnasignedTicketsJson(ModelMap model){
-	try {
-		model.addAttribute("ticketsToAssignDashboard", service.getUnassignedTickets());
-		model.addAttribute("employees", udService.getStaff());
-	} catch (Exception ex) {	
-		Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), ex);
-		ex.printStackTrace();
-		return "error";
-	}	 
-	return "unassignedTicketsJson";
-  }
+	private DashboardService service;
 
-  @RequestMapping(value= "/asignTicket.do", method = RequestMethod.POST)
-  public String asignTicket(@RequestParam(required = true) Integer ticketId
-		                  , @RequestParam(required = true) String employee 
-		                  , @ModelAttribute(Globals.SESSION_KEY_PARAM)  UserSession userSession
-		                  , ModelMap model, HttpServletRequest req, HttpServletResponse resp) {
-    String who = userSession == null ? "portal-servicios@gposac.com.mx" 
-    		                    : userSession.getUser().getUserEmail();
-	try {
-		 TicketController.AssignTicket(ticketId, employee, who, null);
-	} catch (Exception ex) {	
-		Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), ex);
-		ex.printStackTrace();
-		return "error";
-	}	 
-	return show(model, req, resp);
-  }
+	public void setService(DashboardService service) {
+		this.service = service;
+	}
+
+	// Dashboard principal
+	@RequestMapping(value = "/show.do", method = RequestMethod.GET)
+	public String show(ModelMap model, HttpServletRequest req,
+			HttpServletResponse resp) {
+		try {
+			model.addAttribute("serviceOrdersPendingDashboard",
+					service.getServiceOrders("PENDIENTE"));
+		} catch (Exception ex) {
+			Logger.Log(LogLevel.ERROR,
+					Thread.currentThread().getStackTrace()[1].toString(), ex);
+			ex.printStackTrace();
+			return "error";
+		}
+		return "dashboard";
+	}
+
+	//================================================================================
+    //  CALL CENTER Y COORDINADORAS
+    //================================================================================
+
+	// Tickets por asignar
+	@RequestMapping(value = "/unassignedTicketsJson.do", method = RequestMethod.GET)
+	public @ResponseBody String unnasignedTicketsJson(ModelMap model) {
+		String retVal;
+		try {
+			model.addAttribute("employees", udService.getStaff());
+			retVal = service.getUnassignedTickets();
+		} catch (Exception ex) {
+			Logger.Log(LogLevel.ERROR,
+					Thread.currentThread().getStackTrace()[1].toString(), ex);
+			ex.printStackTrace();
+			return "error";
+		}
+		return retVal;
+	}
+
+	// Ordenes de servicio nuevas
+	@RequestMapping(value = "/newServiceOrdersJson.do", method = RequestMethod.GET)
+	public @ResponseBody String newServiceOrdersJson(ModelMap model) {
+		String retVal;
+		try {
+			retVal = service.getServiceOrders("NUEVO");
+		} catch (Exception ex) {
+			Logger.Log(LogLevel.ERROR,
+					Thread.currentThread().getStackTrace()[1].toString(), ex);
+			ex.printStackTrace();
+			return "error";
+		}
+		return retVal;
+	}
+
+	// Ordenes de servicio con pendientes
+	@RequestMapping(value = "/pendingServiceOrdersJson.do", method = RequestMethod.GET)
+	public @ResponseBody String pendingServiceOrdersJson(ModelMap model) {
+		String retVal;
+		try {
+			retVal = service.getServiceOrders("PENDIENTE");
+		} catch (Exception ex) {
+			Logger.Log(LogLevel.ERROR,
+					Thread.currentThread().getStackTrace()[1].toString(), ex);
+			ex.printStackTrace();
+			return "error";
+		}
+		return retVal;
+	}
+
+	// Asignacion de tickets - POST handler
+	@RequestMapping(value = "/asignTicket.do", method = RequestMethod.POST)
+	public String asignTicket(@RequestParam(required = true) Integer ticketId,
+			@RequestParam(required = true) String employee,
+			@ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession,
+			ModelMap model, HttpServletRequest req, HttpServletResponse resp) {
+		String who = userSession == null ? "portal-servicios@gposac.com.mx"
+				: userSession.getUser().getUserEmail();
+		try {
+			TicketController.AssignTicket(ticketId, employee, who, null);
+		} catch (Exception ex) {
+			Logger.Log(LogLevel.ERROR,
+					Thread.currentThread().getStackTrace()[1].toString(), ex);
+			ex.printStackTrace();
+			return "error";
+		}
+		return show(model, req, resp);
+	}
+
+	//================================================================================
+    //  FIN CALL CENTER Y COORDINADORAS
+    //================================================================================
+
+	//================================================================================
+    //  INGENIEROS DE SERVICIO
+    //================================================================================
+
+	// Servicios programados
+	@RequestMapping(value = "/scheduledPersonalServicesJson.do", method = RequestMethod.GET)
+	public @ResponseBody String scheduledPersonalServicesJson(ModelMap model) {
+		String retVal;
+		try {
+			model.addAttribute("employees", udService.getStaff());
+			retVal = service.getUnassignedTickets();
+		} catch (Exception ex) {
+			Logger.Log(LogLevel.ERROR,
+					Thread.currentThread().getStackTrace()[1].toString(), ex);
+			ex.printStackTrace();
+			return "error";
+		}
+		return retVal;
+	}
+	//================================================================================
+    //  FIN INGENIEROS DE SERVICIO
+    //================================================================================
+
 }

@@ -14,160 +14,59 @@
 <script src="${pageContext.request.contextPath}/js/jquery-ui.js"></script>
 <script src="${pageContext.request.contextPath}/DataTables-1.9.4/media/js/jquery.dataTables.js"></script>
 
-<script type="text/javascript" charset="utf-8">
-	var strSO = '${serviceOrdersPendingDashboard}';
-	var strSOTR = '${serviceOrdersToReviewDashboard}';
-	var assignedTicket = 0;
-	
-	function refreshTicketList(){
-  
-		// Tabla de Ordenes de servicio nuevas
-		 var dataSOTR  = $.parseJSON(strSOTR);
-		 
-		$('#dtOrdenesPorRevisar').dataTable({	    		
-			"bProcessing": true,
-			"bFilter": true,
-			"bLengthChange": false,
-			"iDisplayLength": 10,
-			"bInfo": false,
-			"sPaginationType": "full_numbers",
-			"aaData": dataSOTR,
-			"sDom": '<"top"i>rt<"bottom"flp><"clear">',
-			"aoColumns": [
-						  { "mData": "serviceOrderNumber" },
-						  { "mData": "placeHolder" },
-						  { "mData": "ticketNumber" },
-						  { "mData": "serviceType" },
-						  { "mData": "created" },
-						  { "mData": "customer" },
-						  { "mData": "equipmentType" },
-						  { "mData": "project" },
-						  { "mData": "officeName" },
-						  { "mData": "brand" },
-						  { "mData": "serialNumber" }
-
-					  ],
-				"aoColumnDefs" : [{"mRender" : function(data, type, row){return "<div align='center' style='width:70px;' ><a href='${pageContext.request.contextPath}/osDetail/show.do?serviceOrderId=" + row.DT_RowId + "'>" + data + "</a></div>";}, "aTargets" : [0]},
-								  {"mRender" : function(data){return "<img src='${pageContext.request.contextPath}/img/pdf.png' onclick='return false';/>" ;}, "aTargets" : [1]},
-								  {"mRender" : function(data){return "<div align='center'><a href='${pageContext.request.contextPath}/ticketDetail?ticketId=" + data + "'>" + data + "</a></div>";}, "aTargets" : [2]}	    		    	       
-								   ]}
-		);
-
-		// Tabla de ordenes de servicio pendientes
-		var dataSO = $.parseJSON(strSO);	
-
-		$('#dtOrdenesPendientes').dataTable({	
-				"bProcessing": true,
-				"bFilter": true,
-				"bLengthChange": false,
-				"iDisplayLength": 10,
-				"bInfo": false,
-				"sPaginationType": "full_numbers",
-				"aaData": dataSO,
-				"sDom": '<"top"i>rt<"bottom"flp><"clear">',
-				"aoColumns": [
-						  { "mData": "serviceOrderNumber" },
-						  { "mData": "placeHolder" },
-						  { "mData": "ticketNumber" },
-						  { "mData": "serviceType" },
-						  { "mData": "created" },
-						  { "mData": "customer" },
-						  { "mData": "equipmentType" },
-						  { "mData": "project" },
-						  { "mData": "officeName" },
-						  { "mData": "brand" },
-						  { "mData": "serialNumber" }
-
-						  ],
-				"aoColumnDefs" : [{"mRender" : function(data, type, row){return "<div align='center' style='width:70px;' ><a href='${pageContext.request.contextPath}/osDetail/show.do?serviceOrderId=" + row.DT_RowId + "'>" + data + "</a></div>";}, "aTargets" : [0]},
-								  {"mRender" : function(data, type, row){return "<img src='${pageContext.request.contextPath}/img/pdf.png' onclick='return false';/>" ;}, "aTargets" : [1]},
-								  {"mRender" : function(data, type, row){return "<div align='center'><a href='${pageContext.request.contextPath}/ticketDetail?ticketNumber=" + data + "'>" + data + "</a></div>";}, "aTargets" : [2]}	    		    	       
-								   ]}
-		);
-	 }
-	 
- 
- $(document).ready(function() {
-
-	
-	refreshTicketList();
-	
-});
-</script> 
-<title>Tickets</title>
 </head>
 <body>
 <div id="content" class="container_16 clearfix">
 
 <!--   CONTENT COLUMN   -->		
+<!-- INICIA CONTENIDO DE PERFILES sysCallCenter Y sysCoordinator-->
 	<c:set var="sysCallCenter" scope="request" value="${user.belongsToGroup['sysCallCenter']}" />
 	<c:if test="${sysCallCenter == true}">
+
+		<!-- TABLA DE TICKETS POR ASIGNAR - unassignedTickets.jsp -->
 		<c:import url="unassignedTickets.jsp"></c:import>
 		<script type="text/javascript">
 			$(function(){
 				unassignedTickets_init();
 			});
 		</script>
+
+		<!-- TABLA DE ORDENES DE SERVICIO POR REVISAR - newServiceOrders.jsp -->
+		<c:import url="newServiceOrders.jsp"></c:import>
+		<script type="text/javascript">
+			$(function(){
+				newServiceOrders_init();
+			});
+		</script>
+
+		<!-- TABLA DE ORDENES DE SERVICIO CON PENDIENTES - pendingServiceOrders.jsp -->
+		<c:import url="pendingServiceOrders.jsp"></c:import>
+		<script type="text/javascript">
+			$(function(){
+				pendingServiceOrders_init();
+			});
+		</script>
 	</c:if>
 
-	<div class="grid_16">
-		<div class="box">
-			<h2>Ordenes de servicio por revisar</h2>
-			<div class="utils">
-				
-			</div>
-			<table cellpadding="0" cellspacing="0" border="0" class="display" id="dtOrdenesPorRevisar">
-				<thead>
-					<tr>
-						<th style="width=250px;">Folio</th>
-						<th style="width=50px;"></th>
-						<th>Ticket</th>
-						<th>Tipo</th>
-						<th>Fecha</th>
-						<th>Cliente</th>
-						<th>Equipo</th>
-						<th>Proyecto</th>
-						<th>Oficina</th>
-						<th>Marca</th>
-						<th>No. Serie</th>
-					</tr>
-				</thead>
-				<tbody>
+<!-- FIN CONTENIDO DE PERFILES sysCallCenter Y sysCoordinator -->
 
-				</tbody>
-			</table>
-		</div>
+<!-- INICIA CONTENIDO DE PERFIL sysServicio -->
 
-	</div>
+	<c:set var="sysServicio" scope="request" value="${user.belongsToGroup['sysServicio']}" />
+	<c:if test="${sysServicio == true}">
 
-	<div class="grid_16">
-		<div class="box">
-			<h2>Ordenes de servicio con pendientes</h2>
-			<div class="utils">
-				
-			</div>
-			<table cellpadding="0" cellspacing="0" border="0" class="display" id="dtOrdenesPendientes">
-				<thead>
-					<tr>
-						<th>Folio</th>
-						<th></th>
-						<th>Ticket</th>
-						<th>Tipo</th>
-						<th>Fecha</th>
-						<th>Cliente</th>
-						<th>Equipo</th>
-						<th>Proyecto</th>
-						<th>Oficina</th>
-						<th>Marca</th>
-						<th>No. Serie</th>
-					</tr>
-				</thead>
-				<tbody>
+		<!-- TABLA DE SERVICIOS PROGRAMADOS - pendingServiceOrders.jsp -->
+		<c:import url="scheduledPersonalServices.jsp"></c:import>
+		<script type="text/javascript">
+			$(function(){
+				scheduledPersonalServices_init();
+			});
+		</script>
 
-				</tbody>
-			</table>
-		</div>
-	</div>
+	</c:if>
+
+<!-- FIN CONTENIDO DE PERFIL sysServicio -->
+
 </div>
 </body>
 </html>

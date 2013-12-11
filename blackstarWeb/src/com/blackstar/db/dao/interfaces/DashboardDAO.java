@@ -8,5 +8,5 @@ public interface DashboardDAO {
 	
 	public List<JSONObject> getServiceOrders (String type);
 	public List<JSONObject> getUnassignedTickets();
-
+	public List<JSONObject> getScheuldedServices();
 }
