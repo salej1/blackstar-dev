@@ -1,12 +1,14 @@
 package com.blackstar.services.report.core;
 
+import java.io.FileOutputStream;
+
 import com.blackstar.services.report.AbstractReport;
 import com.pdfjet.Color;
 
-public class ServiceReport extends AbstractReport {
+public class UPSServiceReport extends AbstractReport {
 	
   public void run() throws Exception {
-	printHeader("REPORTE DE SERVICIO", "UPS", "1254");
+	printHeader("REPORTE DE SERVICIO","UPS", "UPS", "1254");
 	printFeatures();
 	printActivities();
 	printComments();
@@ -188,11 +190,11 @@ public class ServiceReport extends AbstractReport {
   }
 	  
 	
-//  public static void main(String [] args) throws Exception{
-//	ServiceReport serv = new ServiceReport();
-//	FileOutputStream see = new FileOutputStream("C:/Test.pdf");
-//	see.write(serv.getReport());
-//	see.close();
-//  }
+//	 public static void main(String [] args) throws Exception{
+//	 UPSServiceReport serv = new UPSServiceReport();
+//	 FileOutputStream see = new FileOutputStream("C:/Test.pdf");
+//	 see.write(serv.getReport());
+//	 see.close();
+//	 }
 
-	}
+  }

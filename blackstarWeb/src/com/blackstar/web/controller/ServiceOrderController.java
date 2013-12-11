@@ -27,7 +27,7 @@ public class ServiceOrderController extends AbstractController {
 	
   private ServiceOrderService service = null;
   private ReporterService rrService = null;
-    
+
   public void setService(ServiceOrderService service) {
 	this.service = service;
   }

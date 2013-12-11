@@ -40,6 +40,10 @@ public class PDFDrawer {
   }
   
   
+  public void line(int x1, int y1, int x2, int y2) throws Exception {
+	 line(x1, y1, x2, y2 , DEFAULT_COLOR, DEFAULT_LINE_WIDTH);
+  }
+  
   public void line(int x1, int y1, int x2, int y2, int color, float width) throws Exception {
 	Line line = new Line(x1 + LEFT_MARGIN, y1 + TOP_MARGIN, x2 + LEFT_MARGIN, y2 + TOP_MARGIN);
 	line.setColor(color);
@@ -75,7 +79,7 @@ public class PDFDrawer {
 	text(text, x, y, isBold, color, DEFAULT_FONT_SIZE);
   }
   
-  public void text(String text, float x, float y, boolean isBold, int color, int size) 
+  public void text(String text, float x, float y, boolean isBold, int color, float size) 
 		                                                            throws Exception {
 	TextLine box = new TextLine(getFont(isBold, size), text);
 	box.setColor(color == 0 ? DEFAULT_COLOR : color );
@@ -103,9 +107,9 @@ public class PDFDrawer {
 	box.drawOn(page);
   }
   
-  private Font getFont(boolean isBold, int size) throws Exception{
-	Font font = isBold ? new Font(pdf, CoreFont.TIMES_BOLD)
-	                   : new Font(pdf, CoreFont.TIMES_ROMAN);
+  private Font getFont(boolean isBold, float size) throws Exception{
+	Font font = isBold ? new Font(pdf, CoreFont.HELVETICA_BOLD)
+	                   : new Font(pdf, CoreFont.HELVETICA);
 	font.setSize(size);
 	return font;
   }
