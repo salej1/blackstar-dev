@@ -132,6 +132,24 @@ public class DashboardController extends AbstractController {
 	public @ResponseBody String scheduledPersonalServicesJson(ModelMap model) {
 		String retVal;
 		try {
+			retVal = service.getUnassignedTickets();
+		} catch (Exception ex) {
+			Logger.Log(LogLevel.ERROR,
+					Thread.currentThread().getStackTrace()[1].toString(), ex);
+			ex.printStackTrace();
+			return "error";
+		}
+		return retVal;
+	}
+	
+	// Handler para creacion de nueva orden de servicio
+	@RequestMapping(value = "/createServiceOrder.do", method = RequestMethod.GET)
+	public String createServiceOrder(
+			@RequestParam(required = true) String equipmentType,
+			@RequestParam(required = false) Integer ticketId,
+			ModelMap model) {
+		String retVal;
+		try {
 			model.addAttribute("employees", udService.getStaff());
 			retVal = service.getUnassignedTickets();
 		} catch (Exception ex) {
@@ -142,6 +160,7 @@ public class DashboardController extends AbstractController {
 		}
 		return retVal;
 	}
+	
 	//================================================================================
     //  FIN INGENIEROS DE SERVICIO
     //================================================================================

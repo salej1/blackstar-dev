@@ -28,4 +28,9 @@ public class DashboardServiceImpl extends AbstractService implements
 		List<JSONObject> unassignedTickets = dao.getUnassignedTickets();
 		return unassignedTickets != null ? unassignedTickets.toString() : "";
 	}
+
+	@Override
+	public String getScheduledServices(String user) {
+		return null; //TODO - Implement
+	}
 }
