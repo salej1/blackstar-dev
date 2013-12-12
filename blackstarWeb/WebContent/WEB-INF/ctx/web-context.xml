@@ -45,7 +45,7 @@
    
    <bean class="com.blackstar.web.controller.ServiceOrderController" parent="abstractController">
       <property name="service" ref="serviceOrderService" />
-      <property name="rrService" ref="reporterService" />
+      <property name="rrService" ref="reportService" />
    </bean>
    
    <bean class="com.blackstar.web.controller.UpsServiceController" parent="abstractController">

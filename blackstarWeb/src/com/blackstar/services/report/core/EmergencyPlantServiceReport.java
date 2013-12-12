@@ -8,7 +8,7 @@ import com.pdfjet.Color;
 public class EmergencyPlantServiceReport extends AbstractReport {
 		
   public void run() throws Exception {
-	printHeader("REPORTE DE SERVICIO","PLANTAS DE EMERGENCIA", "PE", "1254");
+	printHeader("REPORTE DE SERVICIO","PLANTAS DE EMERGENCIA", "1254");
 	printFeatures();
 	printInformation();
 	printInspection();

@@ -8,7 +8,7 @@ import com.pdfjet.Color;
 public class BatteryMaintenanceReport extends AbstractReport {
 	
   public void run() throws Exception {
-	printHeader("REPORTE DE MANTENIMIENTO A BATERIAS","", "BB", "1245");
+	printHeader("REPORTE DE MANTENIMIENTO A BATERIAS","", "1245");
 	printFeatures();
 	printDetails();
 	printGrid();

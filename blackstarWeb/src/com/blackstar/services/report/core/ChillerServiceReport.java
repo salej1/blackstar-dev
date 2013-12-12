@@ -8,7 +8,7 @@ import com.pdfjet.Color;
 public class ChillerServiceReport extends AbstractReport {
 	
   public void run() throws Exception {
-	printHeader("REPORTE DE SERVICIO","AIRES ACONDICIONADOS / CHILLER", "AA", "1254");
+	printHeader("REPORTE DE SERVICIO","AIRES ACONDICIONADOS / CHILLER", "1254");
 	printFeatures();
 	printEvaporator();
 	printCondenser();

@@ -12,7 +12,7 @@ public class ServiceOrderReport extends AbstractReport {
   private OrderserviceDTO data = null;
   
   public void run() throws Exception {
-    printHeader("ORDEN DE SERVICIO","", "OS", data.getServiceOrderNo());
+    printHeader("ORDEN DE SERVICIO","", data.getServiceOrderNo());
 	printFeatures();
 	printDetails();
 	printRequerements();
@@ -21,7 +21,7 @@ public class ServiceOrderReport extends AbstractReport {
   }
   
   @Override
-  protected void setFillingData(Object data) throws Exception{
+  public void setFillingData(Object data) throws Exception{
 	this.data = (OrderserviceDTO) data;
   }
 
@@ -46,8 +46,8 @@ public class ServiceOrderReport extends AbstractReport {
 	drawer.text(data.getEquipmentType(), 43, 143, true);
 	drawer.text("MARCA : ", 155, 143, false);
 	drawer.text(data.getEquipmentBrand(), 190, 143, true);
-	drawer.text("MODELO : ", 305, 143, false);
-	drawer.text(data.getEquipmentModel(), 347, 143, true);
+	drawer.text("MODELO : ", 290, 143, false);
+	drawer.text(data.getEquipmentModel(), 332, 143, true);
 	drawer.text("SERIE : ", 407, 143, false);
 	drawer.text(data.getEquipmentSerialNo(), 438, 143, true);
 	drawer.hLine(0, 555, 147);
@@ -90,23 +90,23 @@ public class ServiceOrderReport extends AbstractReport {
   private void printObservations() throws Exception {
 	drawer.box(0, 560, 555, 13, 0x0155A5, true);
 	drawer.text("OBSERVACIONES / ESTATUS DEL EQUIPO", 190, 569, true, Color.white);
-	drawer.textBox(data.getDetailTechnicalJob(), 2, 575, 550, 82, true, false);
+	drawer.textBox(data.getDetailStatus(), 2, 575, 550, 82, true, false);
 	drawer.vLine(560, 660, 0, 0x0155A5);
 	drawer.vLine(560, 660, 555, 0x0155A5);
 	drawer.hLine(0, 555, 660, 0x0155A5);
   }
   
-  public static void main(String [] args) throws Exception{
-	ServiceOrderReport serv = new ServiceOrderReport();
-	FileOutputStream see = new FileOutputStream("C:/Test.pdf");
-	OrderserviceDTO data = new OrderserviceDTO("coordinator", 3215, "3215", "ticketNo", 5123, 
-			"customer", "equipmentAddress", "contactName", new Date(),"contactPhone", 
-			"equipmentType", "equipmentBrand", "Model", "equipmentSerialNo", "failureDescription", 
-			"serviceType", "proyectNumber", "Equipo apagado, presenta falla general del sistema. Se revisa estado de baterias encontrando las 4 dañadas ", "Se intenta poner en modo Bypass sin exito, se realiza un reset generaal a la configuraciond e fabrica sin exito. Se indica al cliente que se solicitara soporte al corporativo.", "detailTechnicalJob", 
-			"detailRequirments", "detailStatus", "signCreated", "signReceivedBy", "receivedBy", "responsible", new Date(), "receivedByPosition");
-	serv.setFillingData(data);
-	see.write(serv.getReport());
-	see.close();
-  }
+//  public static void main(String [] args) throws Exception{
+//	ServiceOrderReport serv = new ServiceOrderReport();
+//	FileOutputStream see = new FileOutputStream("C:/Test.pdf");
+//	OrderserviceDTO data = new OrderserviceDTO("coordinator", 3215, "3215", "ticketNo", 5123, 
+//			"customer", "equipmentAddress", "contactName", new Date(),"contactPhone", 
+//			"equipmentType", "equipmentBrand", "Model", "equipmentSerialNo", "failureDescription", 
+//			"serviceType", "proyectNumber", "Equipo apagado, presenta falla general del sistema. Se revisa estado de baterias encontrando las 4 dañadas ", "Se intenta poner en modo Bypass sin exito, se realiza un reset generaal a la configuraciond e fabrica sin exito. Se indica al cliente que se solicitara soporte al corporativo.", "detailTechnicalJob", 
+//			"detailRequirments", "detailStatus", "signCreated", "signReceivedBy", "receivedBy", "responsible", new Date(), "receivedByPosition");
+//	serv.setFillingData(data);
+//	see.write(serv.getReport());
+//	see.close();
+//  }
 
 }

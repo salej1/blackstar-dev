@@ -40,5 +40,7 @@
       <property name="dao" ref="serviceOrderDAO" />
   </bean>
   
-  <bean id="reporterService" class="com.blackstar.services.impl.ReporterServiceImpl" parent="abstractService"/>
+  <bean id="reportService" class="com.blackstar.services.impl.ReportServiceImpl" parent="abstractService">
+     <property name="soDAO" ref="serviceOrderDAO" />
+  </bean>
 </beans>

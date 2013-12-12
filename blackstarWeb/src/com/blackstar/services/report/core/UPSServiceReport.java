@@ -8,7 +8,7 @@ import com.pdfjet.Color;
 public class UPSServiceReport extends AbstractReport {
 	
   public void run() throws Exception {
-	printHeader("REPORTE DE SERVICIO","UPS", "UPS", "1254");
+	printHeader("REPORTE DE SERVICIO","UPS", "1254");
 	printFeatures();
 	printActivities();
 	printComments();

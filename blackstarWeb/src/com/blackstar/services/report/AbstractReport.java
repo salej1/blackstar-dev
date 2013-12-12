@@ -1,7 +1,5 @@
 package com.blackstar.services.report;
 
-import java.io.ByteArrayOutputStream;
-
 import com.blackstar.services.report.util.PDFDrawer;
 import com.pdfjet.Color;
 
@@ -22,7 +20,7 @@ public abstract class AbstractReport {
   
   
 	
-  protected void printHeader(String title,String description, String type, String number) throws Exception {
+  protected void printHeader(String title,String description, String number) throws Exception {
 	drawer.image("pdf/logoSAC.jpg", 0, 10);
 	drawer.text("GUADALAJARA", 165,50, true);
 	drawer.text("Tel. 01(33) 37-93-01-38", 158,62);
@@ -38,8 +36,7 @@ public abstract class AbstractReport {
 	drawer.text(title, 550 - (title.length() *6), 35, true, 0x0155A5, 10);
 	drawer.text(description, 345 - ((description.length() / 2 ) * 6), 30, true, 0, 8);
 	drawer.box(435, 47, 120, 40, false);
-	drawer.text(type + " - ", 440, 76, false, 0, 12);
-	drawer.text(number, 470, 76, true, 0, 12);
+	drawer.text(number, 440, 76, false, 0, 12);
   }
 	
   protected void printFooter() throws Exception {

@@ -1,6 +1,7 @@
 package com.blackstar.services.report.util;
 import java.io.ByteArrayOutputStream;
 
+import com.blackstar.common.StringUtils;
 import com.pdfjet.*;
 
 public class PDFDrawer {
@@ -89,7 +90,7 @@ public class PDFDrawer {
   
   public void textBox(String text, float x, float y, float w, float h, boolean isBold, boolean showBorder) 
           throws Exception {
-	 textBox(text, x, y, w, h, isBold, DEFAULT_FONT_SIZE, showBorder);
+	 textBox(StringUtils.notNull(text), x, y, w, h, isBold, DEFAULT_FONT_SIZE, showBorder);
   }
   
   public void image(String path, float x, float y) throws Exception {
