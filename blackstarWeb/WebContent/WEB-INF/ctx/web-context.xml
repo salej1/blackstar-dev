@@ -63,5 +63,4 @@
    <bean class="com.blackstar.web.controller.AirCoServiceController" parent="abstractController">
       <property name="service" ref="serviceOrderService" />
    </bean>   
-   
 </beans>
