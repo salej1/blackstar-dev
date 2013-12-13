@@ -37,4 +37,6 @@ public interface ServiceOrderDAO {
     public int saveEmergencyPlantService (EmergencyPlantServiceDTO service, Date created ,String createdBy,String createdByUsr);
     public int savePlainService (PlainServiceDTO service, Date created ,String createdBy,String createdByUsr);
     public int saveUpsService (UpsServiceDTO service, Date created ,String createdBy,String createdByUsr);
+    
+    public String getNewServiceNumber(Integer policyId);
 }

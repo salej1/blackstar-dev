@@ -55,12 +55,151 @@
 -- 10   25/11/2013	SAG		Se Integra:
 -- 								blackstarDb.GetUserGroups
 -- -----------------------------------------------------------------------------
-
+-- TODO: Integrar 11, 12
+-- -----------------------------------------------------------------------------
+-- 13   12/12/2013	SAG		Se Integra:
+-- 								blackstarDb.GetNextServiceOrderNumber 
+-- 								blackstarDb.CommitServiceOrderNumber 
+-- 								blackstarDb.LoadNewSequencePoolItems 
+-- 								blackstarDb.GetAndIncreaseSequence 
+-- 								blackstarDb.GetNextServiceNumberForEquipment 
+-- -----------------------------------------------------------------------------
 
 use blackstarDb;
 
 
 DELIMITER $$
+
+
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetNextServiceNumberForEquipment
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetNextServiceNumberForEquipment$$
+CREATE PROCEDURE blackstarDb.GetNextServiceNumberForEquipment(pPolicyId INTEGER)
+BEGIN
+
+	DECLARE eqType VARCHAR(10);
+	DECLARE prefix VARCHAR(10);
+	DECLARE newNumber INTEGER;
+
+	-- Obteniendo el tipo de equipo
+	SELECT equipmentTypeId into eqType FROM policy WHERE policyId = pPolicyId;
+	-- Cambiando a O por default
+	IF eqType NOT IN('A', 'B', 'P', 'U') THEN
+		SELECT 'O' into eqType;
+	END IF;
+
+	SET prefix = (SELECT CASE 
+		WHEN eqType = 'A' THEN 'AA-' 
+		WHEN eqType = 'B' THEN 'BB-'
+		WHEN eqType = 'P' THEN 'PE-'
+		WHEN eqType = 'U' THEN 'UPS-'
+		ELSE 'OS-' END);
+
+	-- Obteniendo el numero de folio
+	CALL blackstarDb.GetNextServiceOrderNumber(eqType, newNumber);
+
+	-- Regresando el numero de folio completo
+	SELECT CONCAT(prefix, lpad(cast(newNumber AS CHAR(50)), 5, '0'), '-e') AS ServiceNumber;
+
+END$$
+
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetAndIncreaseSequence
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetAndIncreaseSequence$$
+CREATE PROCEDURE blackstarDb.GetAndIncreaseSequence(pSequenceTypeId CHAR(1), OUT nextNum INTEGER)
+BEGIN
+
+	-- Recuperar el numero de secuencia actual
+	DECLARE seqNum INTEGER;
+	SELECT sequenceNumber into seqNum FROM sequence WHERE sequenceTypeId = pSequenceTypeId;
+
+	-- Incrementar el numero en la BD
+	UPDATE sequence SET
+		sequenceNumber = (seqNum + 1)
+	WHERE sequenceTypeId = pSequenceTypeId;
+
+	-- Regresar el numero actual
+	SELECT seqNum into nextNum;
+
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.LoadNewSequencePoolItems
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.LoadNewSequencePoolItems$$
+CREATE PROCEDURE blackstarDb.LoadNewSequencePoolItems(pSequenceNumberTypeId CHAR(1))
+BEGIN
+
+	-- Verificar cuantos numeros hay actualmente
+	DECLARE poolItems INTEGER;
+	DECLARE newNumber INTEGER;
+
+	SELECT count(*) into poolItems FROM sequenceNumberPool WHERE sequenceNumberTypeId = pSequenceNumberTypeId AND sequenceNumberStatus = 'U';
+
+	WHILE poolItems < 5 DO
+	    
+		-- Cargar nuevo numero en el pool
+		CALL blackstarDb.GetAndIncreaseSequence(pSequenceNumberTypeId, newNumber);
+
+		INSERT INTO sequenceNumberPool(sequenceNumberTypeId, sequenceNumber, sequenceNumberStatus)
+		SELECT pSequenceNumberTypeId, newNumber, 'U';
+  
+  		SELECT count(*) into poolItems FROM sequenceNumberPool WHERE sequenceNumberTypeId = pSequenceNumberTypeId AND sequenceNumberStatus = 'U';
+
+  	END WHILE;
+
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.CommitServiceOrderNumber
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.CommitServiceOrderNumber$$
+CREATE PROCEDURE blackstarDb.CommitServiceOrderNumber(pSequenceNumber INTEGER, pSequenceNumberTypeId CHAR(1))
+BEGIN
+
+	-- Borrar numero del pool
+	DELETE FROM sequenceNumberPool WHERE sequenceNumber = pSequenceNumber AND sequenceNumberTypeId = pSequenceNumberTypeId;
+
+	-- Cargar nuevos numeros
+	CALL blackstarDb.LoadNewSequencePoolItems(pSequenceNumberTypeId);
+	
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetNextServiceOrderNumber
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetNextServiceOrderNumber$$
+CREATE PROCEDURE blackstarDb.GetNextServiceOrderNumber(pSequenceNumberTypeId CHAR(1), OUT nextNumber INTEGER)
+BEGIN
+
+	DECLARE nextId INTEGER;
+
+	-- Recuperar el siguiente numero en la secuencia y su ID
+	SELECT min(sequenceNumber) into nextNumber
+	FROM sequenceNumberPool 
+	WHERE sequenceNumberTypeId = pSequenceNumberTypeId
+		AND sequenceNumberStatus = 'U';
+
+	SELECT sequenceNumberPoolId into nextId
+	FROM sequenceNumberPool 
+	WHERE sequenceNumber = nextNumber 
+		AND sequenceNumberTypeId = pSequenceNumberTypeId;
+
+	-- Bloquear el numero
+	UPDATE sequenceNumberPool SET sequenceNumberStatus = 'L'
+	WHERE sequenceNumberPoolId = nextId;
+	
+	-- Cargar nuevos numeros
+	CALL blackstarDb.LoadNewSequencePoolItems(pSequenceNumberTypeId);
+
+	-- Regresar el numero siguiente
+	SELECT nextNumber;
+
+END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetUserGroups

@@ -653,5 +653,11 @@ public class ServiceOrderDAOImpl extends AbstractDAO implements ServiceOrderDAO 
 	}
 
 
+	@Override
+	public String getNewServiceNumber(Integer policyId) {
+		return getJdbcTemplate().queryForObject(String.format("CALL blackstarDb.GetNextServiceNumberForEquipment(%s)", policyId), String.class);
+	}
+
+
 
 }

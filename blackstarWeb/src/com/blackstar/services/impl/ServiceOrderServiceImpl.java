@@ -107,6 +107,11 @@ public void updateServiceOrder(Serviceorder service, String modifiedBy,
 	service.setModifiedByUsr(modifiedByUsr);
 	dao.updateServiceOrder(service);
 }
+
+@Override
+public String getNewServiceNumber(Integer policyId) {
+	return dao.getNewServiceNumber(policyId);
+}
   
   
 }

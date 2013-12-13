@@ -9,6 +9,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.blackstar.common.Globals;
@@ -49,7 +50,7 @@ public class ServiceOrderController extends AbstractController {
 		 model.addAttribute("osAttachmentFolder", gdService.getAttachmentFolderId(serviceOrderId));
 		 model.addAttribute("accessToken", gdService.getAccessToken());
 	} catch (Exception e) {
-		 Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
+		 Logger.Log(LogLevel.FATAL, Thread.currentThread().getStackTrace()[1].toString(), e);
 		 model.addAttribute("stackTrace", e.getStackTrace());
 		 model.addAttribute("errMessage", e.toString());
 		 return "error";
@@ -70,12 +71,27 @@ public class ServiceOrderController extends AbstractController {
           response.setHeader("Content-Disposition","inline;filename=SACOrderService.pdf");
           response.getOutputStream().write(file.toByteArray(), 0, file.size());
       } catch (Exception e) {
- 		 Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
+ 		 Logger.Log(LogLevel.FATAL, Thread.currentThread().getStackTrace()[1].toString(), e);
  		 model.addAttribute("stackTrace", e.getStackTrace());
  		 model.addAttribute("errMessage", e.toString());
  		 return "error";
  	 }
 	return null;
   }
-
+  
+  @RequestMapping("/newServiceNumber.do")
+  public @ResponseBody String newServiceNumber(@RequestParam(required = true) Integer policyId,
+		  									ModelMap model, HttpServletResponse response){
+	  String serviceNumber = "";
+	  try{
+		  serviceNumber = service.getNewServiceNumber(policyId);
+		  return serviceNumber;
+	  }
+	  catch(Exception e){
+	 		 Logger.Log(LogLevel.FATAL, Thread.currentThread().getStackTrace()[1].toString(), e);
+	 		 model.addAttribute("stackTrace", e.getStackTrace());
+	 		 model.addAttribute("errMessage", e.toString());
+	 		 return "error";
+	  }
+  }
 }

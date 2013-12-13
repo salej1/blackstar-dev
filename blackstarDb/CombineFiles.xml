@@ -4,16 +4,12 @@
 
 	</dbs>	
 	<files>
-		<file name ="databaseReset.sql"/>
-		<file name ="blackstarDb_CreateSchema.sql"/>
+		<file name ="blackstarDb_Schema.sql"/>
 		<file name ="blackstarDb_StoredProcedures.sql"/>
-		<file name ="blackstarDbTransfer_LoadTransferData.sql"/>
-		<file name ="blackstarManage_CreateSchema.sql"/>
 		<file name ="blackstarManage_StoredProcedures.sql"/>
-		<file name ="blackstarDb_startupData.sql"/>
+		
 	</files>
 	<outputs>
 		<output prefix="" suffix="" name="DatabaseScripts.sql"/>
-		<!--<output prefix="Sony_" suffix="" name="Change Script Sony.sql"/>-->
 	</outputs>
 </configuration>

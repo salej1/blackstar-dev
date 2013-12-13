@@ -238,4 +238,10 @@ public class MySQLServiceOrderDAO implements ServiceOrderDAO, Serializable {
 		return 0;
 	}
 
+	@Override
+	public String getNewServiceNumber(Integer policyId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

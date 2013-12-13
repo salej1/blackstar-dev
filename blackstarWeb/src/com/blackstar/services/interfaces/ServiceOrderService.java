@@ -31,4 +31,6 @@ public interface ServiceOrderService {
   public void savePlainService (PlainServiceDTO service,String createdBy, String createdByUsr);
   public void saveUpsService (UpsServiceDTO service,String createdBy, String createdByUsr);
   
+  public String getNewServiceNumber(Integer policyId);
+  
 }

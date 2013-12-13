@@ -1,413 +1,168 @@
-drop database blackstarDb;
-drop database blackstarManage;
-
-create database blackstarDb;
-create database blackstarManage;
-
 -- -----------------------------------------------------------------------------
--- File:	blackstarDb_CreateSchema.sql    
--- Name:	blackstarDb_CreateSchema
--- Desc:	crea una version inicial de la base de datos de produccion
+-- File:	blackstarDb_ChangeSchema.sql    
+-- Name:	blackstarDb_ChangeSchema
+-- Desc:	Cambia el esquema de la bd
 -- Auth:	Sergio A Gomez
--- Date:	18/09/2013
+-- Date:	11/11/2013
 -- -----------------------------------------------------------------------------
 -- Change History
 -- -----------------------------------------------------------------------------
 -- PR   Date    	Author	Description
 -- --   --------   -------  ------------------------------------
--- 1    18/09/2013  SAG  	Version inicial. Tablas autogeneradas por EA
--- ---------------------------------------------------------------------------
+-- 1    11/11/2013  SAG  	Version inicial. Modificaciones a OS
 -- --   --------   -------  ------------------------------------
--- 2    8/10/2013  SAG  	Se agrega blackstarUser, userGroup
+-- 2    12/11/2013  SAG  	Modificaciones a followUp - isSource
+-- --   --------   -------  ------------------------------------
+-- 3    13/11/2013  SAG  	Se agrega scheduledService
+-- --   --------   -------  ------------------------------------
+-- 4    12/12/2013  SAG  	Se agrega sequence y sequenceNumberPool
 -- ---------------------------------------------------------------------------
 
+use blackstarDb;
+
+DELIMITER $$
+
+DROP PROCEDURE IF EXISTS blackstarDb.upgradeSchema$$
+CREATE PROCEDURE blackstarDb.upgradeSchema()
+BEGIN
+
+-- -----------------------------------------------------------------------------
+-- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
 
--- Seccion autogenerada por EA
+-- AGREGANDO TABLA POOL DE NUMEROS DE ORDEN
+	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'sequenceNumberPool') = 0 THEN
+		CREATE TABLE blackstarDb.sequenceNumberPool(
+			sequenceNumberPoolId INTEGER NOT NULL AUTO_INCREMENT, 
+			sequenceNumberTypeId CHAR(1), 
+			sequenceNumber INTEGER, 
+			sequenceNumberStatus CHAR(1), -- U: unlocked, L: locked
+			PRIMARY KEY(sequenceNumberPoolId),
+			UNIQUE UQ_sequenceNumberPool_sequenceNumberPoolId(sequenceNumberPoolId)
+		)ENGINE=INNODB;
 
--- -----------------------------------------------------------------------------
+	END IF;
 
-USE blackstarDb;
+-- AGREGANDO TABLA DE SECUENCIAS PARA ORDENES DE SERVICIO
+	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'sequence') = 0 THEN
+		CREATE TABLE blackstarDb.sequence(
+			sequenceTypeId CHAR(1), 
+			sequenceNumber INTEGER,
+			PRIMARY KEY(sequenceTypeId),
+			UNIQUE UQ_sequence_sequenceTypeId(sequenceTypeId)
+		)ENGINE=INNODB;
 
-SET FOREIGN_KEY_CHECKS=0;
+		-- INICIALIZANDO FOLIOS EN TABLA DE SECUENCIAS
+		INSERT INTO sequence(sequenceTypeId, sequenceNumber)
+		SELECT 'A', 1 union
+		SELECT 'B', 1 union
+		SELECT 'O', 1 union
+		SELECT 'P', 1 union
+		SELECT 'U', 1 ;
+	END IF;
 
-CREATE TABLE blackstarUser_userGroup(
-	blackstarUser_userGroupId INTEGER NOT NULL AUTO_INCREMENT,
-	blackstarUserId INTEGER NOT NULL,
-	userGroupId INTEGER NOT NULL,
-	PRIMARY KEY(blackstarUser_userGroupId),
-	UNIQUE UQ_blackstarUser_userGroup_blackstarUser_userGroupId(blackstarUser_userGroupId),
-	KEY(blackstarUserId),
-	KEY(userGroupId)
-)ENGINE=INNODB;
-
-CREATE TABLE userGroup
-(
-	userGroupId INTEGER NOT NULL AUTO_INCREMENT,
-	externalId VARCHAR(100) NOT NULL,
-	name VARCHAR(100),
-	PRIMARY KEY (userGroupId),
-	UNIQUE UQ_userGroup_userGroupId(userGroupId)
-) ENGINE=INNODB;
-
-
-CREATE TABLE blackstarUser
-(
-	blackstarUserId INTEGER NOT NULL AUTO_INCREMENT,
-	email VARCHAR(100),
-	name VARCHAR(100),
-	PRIMARY KEY (blackstarUserId),
-	UNIQUE UQ_blackstarUser_blackstarUserId(blackstarUserId)
-) ENGINE=INNODB;
-
-CREATE TABLE equipmentType
-(
-	equipmentTypeId CHAR(1) NOT NULL,
-	equipmentType NVARCHAR(50) NOT NULL,
-	PRIMARY KEY (equipmentTypeId),
-	UNIQUE UQ_equipmentType_equipmentTypeId(equipmentTypeId)
-) ENGINE=INNODB;
-
-CREATE TABLE followUp
-(
-	followUpId INTEGER NOT NULL AUTO_INCREMENT,
-	ticketId INTEGER NULL,
-	serviceOrderId INTEGER NULL,
-	asignee NVARCHAR(50) NULL,
-	followup TEXT NULL,
-	created DATETIME NULL,
-	createdBy NVARCHAR(50) NULL,
-	createdByUsr NVARCHAR(50) NULL,
-	modified DATETIME NULL,
-	modifiedBy NVARCHAR(50) NULL,
-	modifiedByUsr NVARCHAR(50) NULL,
-	PRIMARY KEY (followUpId),
-	UNIQUE UQ_followUp_followUpId(followUpId),
-	KEY (ticketId),
-	KEY (serviceOrderId)
-) ENGINE=INNODB;
-
-
-CREATE TABLE office
-(
-	officeId CHAR(1) NOT NULL,
-	officeName NVARCHAR(50) NULL,
-	officeEmail VARCHAR(100) NULL,
-	PRIMARY KEY (officeId),
-	UNIQUE UQ_office_officeId(officeId)
-) ENGINE=INNODB;
-
-
-CREATE TABLE policy
-(
-	policyId INTEGER NOT NULL AUTO_INCREMENT,
-	officeId CHAR(1) NOT NULL,
-	policyTypeId CHAR(1) NOT NULL,
-	customerContract NVARCHAR(50) NULL,
-	customer VARCHAR(100) NULL,
-	finalUser NVARCHAR(50) NULL,
-	project VARCHAR(50) NULL,
-	cst NVARCHAR(50) NULL,
-	equipmentTypeId CHAR(1) NULL,
-	brand VARCHAR(100) NULL,
-	model VARCHAR(100) NULL,
-	serialNumber VARCHAR(100) NULL,
-	capacity NVARCHAR(50) NULL,
-	equipmentAddress TEXT NULL,
-	equipmentLocation TEXT NULL,
-	contactName NVARCHAR(100) NOT NULL,
-	contactPhone NVARCHAR(300) NULL,
-	contactEmail NVARCHAR(200) NULL,
-	startDate DATE NULL,
-	endDate DATE NULL,
-	visitsPerYear INTEGER NULL,
-	responseTimeHR INTEGER NULL,
-	solutionTimeHR SMALLINT NULL,
-	penalty TEXT NULL,
-	service NVARCHAR(50) NULL,
-	includesParts TINYINT NOT NULL,
-	exceptionParts NVARCHAR(100) NULL,
-	serviceCenterId CHAR(1) NULL,
-	observations TEXT NULL,
-	created DATETIME NULL,
-	createdBy NVARCHAR(50) NULL,
-	crratedByUsr NVARCHAR(50) NULL,
-	modified DATETIME NULL,
-	modifiedBy NVARCHAR(50) NULL,
-	modifiedByUsr NVARCHAR(50) NULL,
-	PRIMARY KEY (policyId),
-	UNIQUE UQ_policyHeader_policyId(policyId),
-	KEY (equipmentTypeId),
-	KEY (officeId),
-	KEY (policyTypeId),
-	KEY (serviceCenterId),
-	KEY (customer),
-	KEY (officeId),
-	KEY (policyTypeId),
-	INDEX IX_serialNumber (serialNumber ASC)
-) ENGINE=INNODB;
-
-
-CREATE TABLE policyType
-(
-	policyTypeId CHAR(1) NOT NULL,
-	policyType NVARCHAR(50) NOT NULL,
-	PRIMARY KEY (policyTypeId),
-	UNIQUE UQ_policyType_policyTypeId(policyTypeId)
-) ENGINE=INNODB;
-
-
-CREATE TABLE serviceCenter
-(
-	serviceCenterId CHAR(1) NOT NULL,
-	serviceCenter VARCHAR(100) NOT NULL,
-	serviceCenterEmail VARCHAR(100) NULL,
-	PRIMARY KEY (serviceCenterId),
-	UNIQUE UQ_serviceCenter_serviceCenterId(serviceCenterId)
-) ENGINE=INNODB;
-
-
-CREATE TABLE serviceOrder
-(
-	serviceOrderId INTEGER NOT NULL AUTO_INCREMENT,
-	serviceOrderNumber VARCHAR(50),
-	serviceTypeId CHAR(1) NULL,
-	ticketId INTEGER NULL,
-	policyId INTEGER NULL,
-	serviceUnit NVARCHAR(10) NULL,
-	serviceDate DATETIME NULL,
-	responsible NVARCHAR(100) NULL,
-	additionalEmployees NVARCHAR(400) NULL,
-	receivedBy NVARCHAR(100) NULL,
-	serviceComments TEXT NULL,
-	serviceStatusId CHAR(1) NULL,
-	closed DATETIME NULL,
-	consultant NVARCHAR(100) NULL,
-	coordinator NVARCHAR(100) NULL,
-	asignee NVARCHAR(50) NULL,
-	hasErrors TINYINT NULL,
-	created DATETIME NULL,
-	createdBy NVARCHAR(50) NULL,
-	createdByUsr NVARCHAR(50) NULL,
-	modified DATETIME NULL,
-	modifiedBy NVARCHAR(50) NULL,
-	modifiedByUsr NVARCHAR(50) NULL,
-	signCreated text,
-	signReceivedBy text,
-	receivedByPosition NVARCHAR(50) NULL,
-	PRIMARY KEY (serviceOrderId),
-	UNIQUE UQ_serviceOrder_serviceOrderId(serviceOrderId),
-	KEY (serviceTypeId),
-	KEY (ticketId),
-	KEY (serviceTypeId),
-	KEY (serviceStatusId)
-) ENGINE=INNODB;
-
-
-CREATE TABLE serviceOrderAdditionalEngineer(
-	serviceOrderAdditionalEngineerId INTEGER NOT NULL AUTO_INCREMENT,
-	serviceOrderId INTEGER,
-	additionalEngineer VARCHAR(100),
-	PRIMARY KEY(serviceOrderAdditionalEngineerId),
-	KEY(serviceOrderId)
-) ENGINE=INNODB;
-
-
-CREATE TABLE serviceType
-(
-	serviceTypeId CHAR(1) NOT NULL,
-	serviceType NVARCHAR(50) NULL,
-	PRIMARY KEY (serviceTypeId),
-	UNIQUE UQ_serviceType_serviceTypeId(serviceTypeId)
-) ENGINE=INNODB;
-
-
-CREATE TABLE ticket
-(
-	ticketId INTEGER ZEROFILL NOT NULL AUTO_INCREMENT,
-	policyId INTEGER NULL,
-	serviceOrderId INTEGER NULL,
-	ticketNumber  VARCHAR(10) NOT NULL ,
-	user NVARCHAR(50) NULL,
-	observations TEXT NULL,
-	phoneResolved TINYINT(1) NULL DEFAULT NULL ,
-	ticketStatusId CHAR(1) NULL,
-	realResponseTime SMALLINT NULL,
-	responseTimeDeviationHr SMALLINT NULL,
-	arrival DATETIME NULL,
-	employee NVARCHAR(200) NULL,
-	asignee NVARCHAR(50) NULL,
-	closed DATETIME NULL,
-	solutionTime SMALLINT NULL,
-	solutionTimeDeviationHr SMALLINT NULL,
-	created DATETIME NULL,
-	createdBy NVARCHAR(50) NULL,
-	createdByUsr NVARCHAR(50) NULL,
-	modified DATETIME NULL,
-	modifiedBy NVARCHAR(50) NULL,
-	modifiedByUsr NVARCHAR(50) NULL,
-	PRIMARY KEY (ticketId),
-	UNIQUE UQ_ticket_ticketId(ticketId),
-	KEY (policyId),
-	KEY (ticketStatusId),
-	KEY (serviceOrderId),
-	KEY (ticketStatusId)
-) ENGINE=INNODB;
-
-
-CREATE TABLE ticketStatus
-(
-	ticketStatusId CHAR(1) NOT NULL,
-	ticketStatus NVARCHAR(50) NULL,
-	PRIMARY KEY (ticketStatusId),
-	UNIQUE UQ_ticketStatus_ticketStatusId(ticketStatusId)
-) ENGINE=INNODB;
-
-CREATE TABLE serviceStatus
-(
-	serviceStatusId CHAR(1) NOT NULL,
-	serviceStatus NVARCHAR(50) NULL,
-	PRIMARY KEY (serviceStatus),
-	UNIQUE UQ_serviceStatus_serviceStatusId(serviceStatusId)
-) ENGINE=INNODB;
-
-
-
-SET FOREIGN_KEY_CHECKS=1;
-
-
-ALTER TABLE followUp ADD CONSTRAINT FK_followUp_serviceOrder 
-	FOREIGN KEY (serviceOrderId) REFERENCES serviceOrder (serviceOrderId);
-
-ALTER TABLE policy ADD CONSTRAINT FK_policy_equipmentType 
-	FOREIGN KEY (equipmentTypeId) REFERENCES equipmentType (equipmentTypeId);
-
-ALTER TABLE policy ADD CONSTRAINT FK_policy_office 
-	FOREIGN KEY (officeId) REFERENCES office (officeId);
-
-ALTER TABLE policy ADD CONSTRAINT FK_policy_policyType 
-	FOREIGN KEY (policyTypeId) REFERENCES policyType (policyTypeId);
-
-ALTER TABLE policy ADD CONSTRAINT FK_policy_serviceCenter 
-	FOREIGN KEY (serviceCenterId) REFERENCES serviceCenter (serviceCenterId);
-
-ALTER TABLE serviceOrder ADD CONSTRAINT FK_serviceOrder_serviceType 
-	FOREIGN KEY (serviceTypeId) REFERENCES serviceType (serviceTypeId);
-
-ALTER TABLE ticket ADD CONSTRAINT FK_ticket_policy 
-	FOREIGN KEY (policyId) REFERENCES policy (policyId);
-
-ALTER TABLE ticket ADD CONSTRAINT FK_ticket_ticketStatus 
-	FOREIGN KEY (ticketStatusId) REFERENCES ticketStatus (ticketStatusId);
+-- AGREGANDO COLUMNA isWrong A serviceOrder
+	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'serviceOrder' AND COLUMN_NAME = 'isWrong') = 0 THEN
+		ALTER TABLE serviceOrder ADD isWrong TINYINT NOT NULL DEFAULT 0;
+	END IF;
 	
-ALTER TABLE ticket ADD CONSTRAINT FK_ticket_serviceOrder
-	FOREIGN KEY (serviceOrderId) REFERENCES serviceOrder (serviceOrderId);
+-- AGREGANDO COLUMNA isSource A followUp -- ESTA COLUMN INDICA SI EL FOLLOW UP ES IMPORTADO DE LA HOJA ORIGINAL DE TICKETS
+	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'followUp' AND COLUMN_NAME = 'isSource') =0  THEN
+		ALTER TABLE followUp ADD isSource TINYINT NOT NULL DEFAULT 0;
+	END IF;
 	
-ALTER TABLE serviceOrder ADD CONSTRAINT FK_serviceOrder_serviceStatus 
-	FOREIGN KEY (serviceStatusId) REFERENCES serviceStatus (serviceStatusId);
+-- CREANDO TABLA scheduledService
+	IF (SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'scheduledService') = 0 THEN
+		CREATE TABLE blackstarDb.scheduledService(
+			scheduledServiceId INTEGER NOT NULL AUTO_INCREMENT,
+			serviceStatusId CHAR(1) NOT NULL,
+			created DATETIME NULL,
+			createdBy NVARCHAR(50) NULL,
+			createdByUsr NVARCHAR(50) NULL,
+			modified DATETIME NULL,
+			modifiedBy NVARCHAR(50) NULL,
+			modifiedByUsr NVARCHAR(50) NULL,	
+			PRIMARY KEY (scheduledServiceId),
+			UNIQUE UQ_scheduledService_scheduledServiceId(scheduledServiceId),
+			KEY(serviceStatusId)
+		) ENGINE=INNODB;
+		
+		ALTER TABLE blackstarDb.scheduledService ADD CONSTRAINT FK_scheduledService_serviceStatus
+		FOREIGN KEY (serviceStatusId) REFERENCES serviceStatus (serviceStatusId);
+	END IF;
 
-ALTER TABLE blackstarUser_userGroup ADD CONSTRAINT FK_blackstarUser_userGroup
-	FOREIGN KEY (blackstarUserId) REFERENCES blackstarUser (blackstarUserId);
+
+-- CREANDO TABLA scheduledServicePolicy
+	IF (SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'scheduledServicePolicy') = 0 THEN
+		CREATE TABLE blackstarDb.scheduledServicePolicy(
+			scheduledServicePolicyId INTEGER NOT NULL AUTO_INCREMENT,
+			scheduledServiceId INTEGER NOT NULL,
+			policyId INTEGER NOT NULL,
+			created DATETIME NULL,
+			createdBy NVARCHAR(50) NULL,
+			createdByUsr NVARCHAR(50) NULL,
+			PRIMARY KEY (scheduledServicePolicyId),
+			UNIQUE UQ_scheduledServicePolicy_scheduledServicePolicyId(scheduledServicePolicyId),
+			KEY(scheduledServiceId),
+			KEY(policyId)
+		) ENGINE=INNODB;
+		
+		ALTER TABLE blackstarDb.scheduledServicePolicy ADD CONSTRAINT FK_scheduledServicePolicy_scheduledService
+		FOREIGN KEY (scheduledServiceId) REFERENCES scheduledService (scheduledServiceId);
+		
+		ALTER TABLE blackstarDb.scheduledServicePolicy ADD CONSTRAINT FK_scheduledServicePolicy_policy
+		FOREIGN KEY (policyId) REFERENCES policy (policyId);
+	END IF;
 	
-ALTER TABLE serviceOrderAdditionalEngineer ADD CONSTRAINT FK_serviceOrderAdditionalEngineer_serviceOrder
-	FOREIGN KEY (serviceOrderId) REFERENCES serviceOrder (serviceOrderId);
+
+-- CREANDO TABLA scheduledServiceEmployee
+	IF (SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'scheduledServiceEmployee') = 0 THEN
+		CREATE TABLE blackstarDb.scheduledServiceEmployee(
+			scheduledServiceEmployeeId INTEGER NOT NULL AUTO_INCREMENT,
+			scheduledServiceId INTEGER NOT NULL,
+			employeeId VARCHAR(100) NOT NULL,
+			isDefault TINYINT NOT NULL DEFAULT 0,
+			created DATETIME NULL,
+			createdBy NVARCHAR(50) NULL,
+			createdByUsr NVARCHAR(50) NULL,
+			PRIMARY KEY (scheduledServiceEmployeeId),
+			KEY(scheduledServiceId),
+			UNIQUE UQ_scheduledServiceEmployee_scheduledServiceEmployeeId(scheduledServiceEmployeeId)
+		) ENGINE=INNODB;
+		
+		ALTER TABLE blackstarDb.scheduledServiceEmployee ADD CONSTRAINT FK_scheduledServiceEmployee_scheduledService
+		FOREIGN KEY (scheduledServiceId) REFERENCES scheduledService (scheduledServiceId);
+	END IF;
+	
+-- CREANDO TABLA scheduledServiceDate
+	IF (SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'scheduledServiceDate') = 0 THEN
+		CREATE TABLE blackstarDb.scheduledServiceDate(
+			scheduledServiceDateId INTEGER NOT NULL AUTO_INCREMENT,
+			scheduledServiceId INTEGER NOT NULL,
+			serviceDate DATE NOT NULL,
+			created DATETIME NULL,
+			createdBy NVARCHAR(50) NULL,
+			createdByUsr NVARCHAR(50) NULL,
+			PRIMARY KEY (scheduledServiceDateId),
+			KEY(scheduledServiceId),
+			UNIQUE UQ_scheduledServiceDate_scheduledServiceDateId(scheduledServiceDateId)
+		) ENGINE=INNODB;
+		
+		ALTER TABLE blackstarDb.scheduledServiceDate ADD CONSTRAINT FK_scheduledServiceDate_scheduledService
+		FOREIGN KEY (scheduledServiceId) REFERENCES scheduledService (scheduledServiceId);
+	END IF;
+	
+-- -----------------------------------------------------------------------------
+-- FIN SECCION DE CAMBIOS - NO CAMBIAR CODIGO FUERA DE ESTA SECCION
 -- -----------------------------------------------------------------------------
 
--- FIN - Seccion autogenerada por EA
+END$$
 
--- -----------------------------------------------------------------------------
+DELIMITER ;
 
+CALL blackstarDb.upgradeSchema();
 
-
-
--- -----------------------------------------------------------------------------
-
--- Seccion de Datos
-
--- -----------------------------------------------------------------------------
-INSERT INTO `blackstarDb`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('U','UPS' );  
-INSERT INTO `blackstarDb`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('M','MONITOREO' );  
-INSERT INTO `blackstarDb`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('A','AA' );  
-INSERT INTO `blackstarDb`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('P','PE' );  
-INSERT INTO `blackstarDb`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('C','CA' );  
-INSERT INTO `blackstarDb`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('F','FUEGO' );  
-INSERT INTO `blackstarDb`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('V','VIDEO' );  
-INSERT INTO `blackstarDb`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('D','PDU' );  
-INSERT INTO `blackstarDb`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('O','MODULO DE POTENCIA' );  
-INSERT INTO `blackstarDb`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('S','SERVICIO DE DESCONTAMINACIÓN DATA CENTER' );  
-INSERT INTO `blackstarDb`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('B','BATERIAS' );  
-INSERT INTO `blackstarDb`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('E','SUBESTACION' );  
-INSERT INTO `blackstarDb`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('T','BATERIAS' );  
-INSERT INTO `blackstarDb`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('R','TARJETA ETHERNET' );  
-INSERT INTO `blackstarDb`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('Y','BYPASS' );  
-INSERT INTO `blackstarDb`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('H','MODULO SWITCH' );  
-INSERT INTO `blackstarDb`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('N','TRANSFORMADOR' );  
-INSERT INTO `blackstarDb`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('I','SUPRESOR' );  
-INSERT INTO `blackstarDb`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('G','TRANSFERENCIA' );   
-INSERT INTO `blackstarDb`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('J','CONDENSADORA' );    
-INSERT INTO `blackstarDb`.`equipmentType` (`equipmentTypeId`, `equipmentType`) VALUES ('K','EVAPORADORA' );    
-
-INSERT INTO `blackstarDb`.`ticketStatus` (`ticketStatusId`, `ticketStatus`) VALUES ('A','ABIERTO' );  
-INSERT INTO `blackstarDb`.`ticketStatus` (`ticketStatusId`, `ticketStatus`) VALUES ('C','CERRADO' );  
-INSERT INTO `blackstarDb`.`ticketStatus` (`ticketStatusId`, `ticketStatus`) VALUES ('R','RETRASADO' );  
-INSERT INTO `blackstarDb`.`ticketStatus` (`ticketStatusId`, `ticketStatus`) VALUES ('F','CERRADO FT' ); 
-
-INSERT INTO `blackstarDb`.`office` (`officeId`, `officeName`) VALUES ('M', 'MXO' );  
-INSERT INTO `blackstarDb`.`office` (`officeId`, `officeName`) VALUES ('G', 'GDL' );  
-INSERT INTO `blackstarDb`.`office` (`officeId`, `officeName`) VALUES ('Q', 'QRO' );  
-
-INSERT INTO `blackstarDb`.`serviceCenter` (`serviceCenterId`, `serviceCenter`) VALUES ( 'A', 'Altamira SH'); 
-INSERT INTO `blackstarDb`.`serviceCenter` (`serviceCenterId`, `serviceCenter`) VALUES ( 'P', 'APC'); 
-INSERT INTO `blackstarDb`.`serviceCenter` (`serviceCenterId`, `serviceCenter`) VALUES ( 'C', 'Carmen SI'); 
-INSERT INTO `blackstarDb`.`serviceCenter` (`serviceCenterId`, `serviceCenter`) VALUES ( 'H', 'Chihuahua ER'); 
-INSERT INTO `blackstarDb`.`serviceCenter` (`serviceCenterId`, `serviceCenter`) VALUES ( 'U', 'Culiacan ST'); 
-INSERT INTO `blackstarDb`.`serviceCenter` (`serviceCenterId`, `serviceCenter`) VALUES ( 'G', 'GDL'); 
-INSERT INTO `blackstarDb`.`serviceCenter` (`serviceCenterId`, `serviceCenter`) VALUES ( 'R', 'Merida AS'); 
-INSERT INTO `blackstarDb`.`serviceCenter` (`serviceCenterId`, `serviceCenter`) VALUES ( 'T', 'Monterrey LB'); 
-INSERT INTO `blackstarDb`.`serviceCenter` (`serviceCenterId`, `serviceCenter`) VALUES ( 'Y', 'Monterrey SF'); 
-INSERT INTO `blackstarDb`.`serviceCenter` (`serviceCenterId`, `serviceCenter`) VALUES ( 'M', 'MXO'); 
-INSERT INTO `blackstarDb`.`serviceCenter` (`serviceCenterId`, `serviceCenter`) VALUES ( 'N', 'NA'); 
-INSERT INTO `blackstarDb`.`serviceCenter` (`serviceCenterId`, `serviceCenter`) VALUES ( 'Q', 'QRO'); 
-INSERT INTO `blackstarDb`.`serviceCenter` (`serviceCenterId`, `serviceCenter`) VALUES ( 'J', 'Tijuana CS'); 
-INSERT INTO `blackstarDb`.`serviceCenter` (`serviceCenterId`, `serviceCenter`) VALUES ( 'V', 'Veracruz SA'); 
-INSERT INTO `blackstarDb`.`serviceCenter` (`serviceCenterId`, `serviceCenter`) VALUES ( 'L', 'Villahermosa IS'); 
-
-INSERT INTO `blackstarDb`.`policyType` (`policyTypeId`, `policyType`) VALUES ( 'P', 'POLIZA'); 
-INSERT INTO `blackstarDb`.`policyType` (`policyTypeId`, `policyType`) VALUES ( 'G', 'GARANTIA'); 
-
-INSERT INTO `blackstarDb`.`serviceType` (`serviceTypeId`, `serviceType`) VALUES ('A','ARRANQUE' );  
-INSERT INTO `blackstarDb`.`serviceType` (`serviceTypeId`, `serviceType`) VALUES ('P','PREVENTIVO' );  
-INSERT INTO `blackstarDb`.`serviceType` (`serviceTypeId`, `serviceType`) VALUES ('C','CORRECTIVO' );  
-INSERT INTO `blackstarDb`.`serviceType` (`serviceTypeId`, `serviceType`) VALUES ('I','INSPECCION' );  
-INSERT INTO `blackstarDb`.`serviceType` (`serviceTypeId`, `serviceType`) VALUES ('T','INSTALACION' );  
-INSERT INTO `blackstarDb`.`serviceType` (`serviceTypeId`, `serviceType`) VALUES ('L','LIMPIEZA' );  
-INSERT INTO `blackstarDb`.`serviceType` (`serviceTypeId`, `serviceType`) VALUES ('V','VISITA' );  
-INSERT INTO `blackstarDb`.`serviceType` (`serviceTypeId`, `serviceType`) VALUES ('D','DIAGNOSTICO' );  
-INSERT INTO `blackstarDb`.`serviceType` (`serviceTypeId`, `serviceType`) VALUES ('E','LEVANTAMIENTO' );  
-INSERT INTO `blackstarDb`.`serviceType` (`serviceTypeId`, `serviceType`) VALUES ('O','INSPECCION Y CORRECTIVO' );  
-INSERT INTO `blackstarDb`.`serviceType` (`serviceTypeId`, `serviceType`) VALUES ('M','PUESTA EN MARCHA' );  
-INSERT INTO `blackstarDb`.`serviceType` (`serviceTypeId`, `serviceType`) VALUES ('N','MANTENIMIENTO' );  
-INSERT INTO `blackstarDb`.`serviceType` (`serviceTypeId`, `serviceType`) VALUES ('R','REVISION' );  
-INSERT INTO `blackstarDb`.`serviceType` (`serviceTypeId`, `serviceType`) VALUES ('F','CONFIGURACION' );  
-
-INSERT INTO `blackstarDb`.`serviceStatus` (`serviceStatusId`, `serviceStatus`) VALUES ( 'P', 'PROGRAMADO' ); 
-INSERT INTO `blackstarDb`.`serviceStatus` (`serviceStatusId`, `serviceStatus`) VALUES ( 'N', 'NUEVO' ); 
-INSERT INTO `blackstarDb`.`serviceStatus` (`serviceStatusId`, `serviceStatus`) VALUES ( 'E', 'PENDIENTE' ); 
-INSERT INTO `blackstarDb`.`serviceStatus` (`serviceStatusId`, `serviceStatus`) VALUES ( 'C', 'CERRADO' ); 
-
-
-select * from equipmentType;
-select * from office;
-select * from serviceCenter;
-select * from policyType;
-select * from ticketStatus;
-select * from serviceType;
--- -----------------------------------------------------------------------------
-
--- FIN - Seccion de Datos
-
--- -----------------------------------------------------------------------------
-
+DROP PROCEDURE blackstarDb.upgradeSchema;
 
 -- -----------------------------------------------------------------------------
 -- File:	blackstarDb_StoredProcedures.sql   
@@ -459,11 +214,168 @@ select * from serviceType;
 -- 8   19/10/2013	SAG		Se Integra:
 -- 								blackstarDb.ReopenTicket
 -- -----------------------------------------------------------------------------
+-- 9   24/10/2013	SAG		Se Integra:
+-- 								blackstarDb.AssignServiceOrder
+-- 								blackstarDb.GetEquipmentByCustomer
+-- -----------------------------------------------------------------------------
+-- 10   25/11/2013	SAG		Se Integra:
+-- 								blackstarDb.GetUserGroups
+-- -----------------------------------------------------------------------------
+-- TODO: Integrar 11, 12
+-- -----------------------------------------------------------------------------
+-- 13   12/12/2013	SAG		Se Integra:
+-- 								blackstarDb.GetNextServiceOrderNumber 
+-- 								blackstarDb.CommitServiceOrderNumber 
+-- 								blackstarDb.LoadNewSequencePoolItems 
+-- 								blackstarDb.GetAndIncreaseSequence 
+-- -----------------------------------------------------------------------------
 
 use blackstarDb;
 
 
 DELIMITER $$
+
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetAndIncreaseSequence
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetAndIncreaseSequence$$
+CREATE PROCEDURE blackstarDb.GetAndIncreaseSequence(pSequenceTypeId CHAR(1))
+BEGIN
+
+	-- Recuperar el numero de secuencia actual
+	DECLARE seqNum INTEGER;
+	SELECT sequenceNumber into seqNum FROM sequence WHERE sequenceTypeId = pSequenceTypeId;
+
+	-- Incrementar el numero en la BD
+	UPDATE sequence SET
+		sequenceNumber = (seqNum + 1)
+	WHERE sequenceTypeId = pSequenceTypeId;
+
+	-- Regresar el numero actual
+	SELECT seqNum;
+
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.LoadNewSequencePoolItems
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.LoadNewSequencePoolItems$$
+CREATE PROCEDURE blackstarDb.LoadNewSequencePoolItems(pSequenceNumberTypeId CHAR(1))
+BEGIN
+
+	-- Verificar cuantos numeros hay actualmente
+	DECLARE poolItems INTEGER;
+	DECLARE newNumber INTEGER;
+
+	SELECT count(*) into poolItems FROM sequenceNumberPool WHERE sequenceNumberTypeId = pSequenceNumberTypeId AND sequenceNumberStatus = 'U';
+
+	WHILE poolItems < 5 DO
+	    
+		-- Cargar nuevo numero en el pool
+		SET newNumber = CALL blackstarDb.GetAndIncreaseSequence(pSequenceNumberTypeId);
+
+		INSERT INTO sequenceNumberPool(sequenceNumberTypeId, sequenceNumber, sequenceNumberStatus)
+		SELECT pSequenceNumberTypeId, newNumber, 'U';
+  
+  		SELECT count(*) into poolItems FROM sequenceNumberPool WHERE sequenceNumberTypeId = pSequenceNumberTypeId AND sequenceNumberStatus = 'U';
+
+  	END WHILE;
+
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.CommitServiceOrderNumber
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.CommitServiceOrderNumber$$
+CREATE PROCEDURE blackstarDb.CommitServiceOrderNumber(pSequenceNumber INTEGER, pSequenceNumberTypeId CHAR(1))
+BEGIN
+
+	-- Borrar numero del pool
+	DELETE FROM sequenceNumberPool WHERE sequenceNumber = pSequenceNumber AND sequenceNumberTypeId = pSequenceNumberTypeId;
+
+	-- Cargar nuevos numeros
+	CALL blackstarDb.LoadNewSequencePoolItems(pSequenceNumberTypeId);
+	
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetNextServiceOrderNumber
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetNextServiceOrderNumber$$
+CREATE PROCEDURE blackstarDb.GetNextServiceOrderNumber(pSequenceNumberTypeId CHAR(1))
+BEGIN
+
+	DECLARE nextNumber INTEGER;
+	DECLARE nextId INTEGER;
+
+	-- Recuperar el siguiente numero en la secuencia y su ID
+	SELECT min(sequenceNumber) into nextNumber
+	FROM sequenceNumberPool 
+	WHERE sequenceNumberTypeId = pSequenceNumberTypeId
+		AND sequenceNumberStatus = 'U';
+
+	SELECT sequenceNumberPoolId into nextId
+	FROM sequenceNumberPool 
+	WHERE sequenceNumber = nextNumber 
+		AND sequenceNumberTypeId = pSequenceNumberTypeId;
+
+	-- Bloquear el numero
+	UPDATE sequenceNumberPool SET sequenceNumberStatus = 'L'
+	WHERE sequenceNumberPoolId = nextId;
+	
+	-- Cargar nuevos numeros
+	CALL blackstarDb.LoadNewSequencePoolItems(pSequenceNumberTypeId);
+
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetUserGroups
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetUserGroups$$
+CREATE PROCEDURE blackstarDb.GetUserGroups(pEmail VARCHAR(100))
+BEGIN
+
+	SELECT g.name AS groupName
+	FROM blackstarUser_userGroup ug
+		INNER JOIN blackstarUser u ON u.blackstarUserId = ug.blackstarUserId
+		LEFT OUTER JOIN userGroup g ON g.userGroupId = ug.userGroupId
+	WHERE u.email = pEmail;
+	
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetEquipmentByCustomer
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetEquipmentByCustomer$$
+CREATE PROCEDURE blackstarDb.GetEquipmentByCustomer (pCustomerName VARCHAR(100))
+BEGIN
+
+	SELECT 
+		policyId as policyId,
+		serialNumber as serialNumber
+	FROM policy 
+	WHERE 
+		customer = pCustomerName
+	ORDER BY serialNumber;
+END$$
+
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.AssignServiceOrder
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.AssignServiceOrder$$
+CREATE PROCEDURE blackstarDb.AssignServiceOrder (pOsId INTEGER, pEmployee VARCHAR(100), usr VARCHAR(100), proc VARCHAR(100))
+BEGIN
+
+	UPDATE serviceOrder SET
+		asignee = pEmployee,
+		modified = NOW(),
+		modifiedBy = proc,
+		modifiedByUsr = usr
+	WHERE serviceOrderId = pOsId;
+	
+END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.ReopenTicket
@@ -476,8 +388,8 @@ BEGIN
 	UPDATE ticket t 
 		INNER JOIN policy p ON p.policyId = t.policyId
 	SET 
-		t.ticketStatusId = IF(TIMESTAMPDIFF(HOUR, t.created, CURRENT_DATE()) > p.solutionTimeHR, 'R', 'A'),
-		t.modified = CURRENT_DATE(),
+		t.ticketStatusId = IF(TIMESTAMPDIFF(HOUR, t.created, NOW()) > p.solutionTimeHR, 'R', 'A'),
+		t.modified = NOW(),
 		t.modifiedBy = 'ReopenTicket',
 		t.modifiedByUsr = pModifiedBy
 	WHERE t.ticketId = pTicketId;
@@ -498,7 +410,7 @@ BEGIN
 	SET 
 		t.ticketStatusId = IF(t2.ticketStatusId = 'R', 'F', 'C'),
 		t.serviceOrderId = pOsId,
-		t.modified = CURRENT_DATE(),
+		t.modified = NOW(),
 		t.modifiedBy = 'CloseTicket',
 		t.modifiedByUsr = pModifiedBy
 	WHERE t.ticketId = pTicketId;
@@ -529,14 +441,7 @@ BEGIN
 		pCreated,
 		'AddFollowUpToTicket',
 		pCreatedBy;
-		
-	-- ASIGNAR lA ORDEN DE SERVICIO
-	UPDATE serviceOrder SET	
-		asignee = pAsignee,
-		modified = CURRENT_DATE(),
-		modifiedBy = 'AddFollowUpToTicket',
-		modifiedByUsr = pCreatedBy
-	WHERE ticketId = pOsId;
+
 END$$
 
 
@@ -563,14 +468,7 @@ BEGIN
 		pCreated,
 		'AddFollowUpToTicket',
 		pCreatedBy;
-		
-	-- ASIGNAR EL TICKET
-	UPDATE ticket SET	
-		asignee = pAsignee,
-		modified = CURRENT_DATE(),
-		modifiedBy = 'AddFollowUpToTicket',
-		modifiedByUsr = pCreatedBy
-	WHERE ticketId = pTicketId;
+
 END$$
 
 
@@ -578,7 +476,7 @@ END$$
 	-- blackstarDb.UpsertScheduledService
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.UpsertScheduledService$$
-CREATE PROCEDURE blackstarDb.UpsertScheduledService(pPolicyId INTEGER, pScheduledDate DATETIME, engineer VARCHAR(100), pCreatedByUsr VARCHAR(100))
+CREATE PROCEDURE blackstarDb.UpsertScheduledService(pPolicyId INTEGER, pScheduledDate DATETIME, responsible VARCHAR(100), engineers VARCHAR(400), pCreatedByUsr VARCHAR(100))
 BEGIN
 
 	INSERT INTO serviceOrder(
@@ -586,6 +484,7 @@ BEGIN
 		serviceDate,
 		responsible,
 		asignee,
+		additionalEmployees,
 		serviceStatusId,
 		created,
 		createdBy,
@@ -594,10 +493,11 @@ BEGIN
 	SELECT
 		pPolicyId,
 		pScheduledDate,
-		engineer,
-		engineer,
+		responsible,
+		responsible,
+		engineers,
 		'P',
-		CURRENT_DATE(),
+		NOW(),
 		'UpsertScheduledService',
 		pCreatedByUsr;
 		
@@ -663,7 +563,7 @@ BEGIN
 		'FollowUp' AS followUp,
 		IFNULL(t.closed, '') AS closed,
 		IFNULL(so.serviceOrderNumber, '') AS serviceOrderNumber,
-		t.employee AS employee,
+		IFNULL(t.employee, '') AS employee,
 		t.solutionTime AS solutionTime,
 		t.solutionTimeDeviationHr AS solutionTimeDeviationHr,
 		ts.ticketStatus AS ticketStatus,
@@ -698,7 +598,7 @@ BEGIN
 		followup AS followUp
 	FROM followUp f
 		LEFT OUTER JOIN blackstarUser u ON f.asignee = u.email
-		LEFT OUTER JOIN blackstarUser u2 ON f.createdBy = u2.email
+		LEFT OUTER JOIN blackstarUser u2 ON f.createdByUsr = u2.email
 	WHERE ticketId = pTicketId
 	ORDER BY created;
 	
@@ -726,9 +626,9 @@ DROP PROCEDURE IF EXISTS blackstarDb.GetCustomerList$$
 CREATE PROCEDURE blackstarDb.GetCustomerList()
 BEGIN
 
-	SELECT customer
+	SELECT DISTINCT customer
 	FROM blackstarDb.policy
-		WHERE startDate <= CURRENT_DATE() AND CURRENT_DATE <= endDate
+		WHERE startDate <= NOW() AND NOW() <= endDate
 	ORDER BY customer;
 
 END$$
@@ -753,7 +653,7 @@ BEGIN
 		INNER JOIN blackstarDb.policy p ON s.policyId = p.policyId
 		INNER JOIN blackstarDb.equipmentType et ON et.equipmentTypeId = p.equipmentTypeId
 	WHERE serviceStatus = 'P'
-		AND serviceDate >= CURRENT_DATE()
+		AND serviceDate >= NOW()
 	ORDER BY serviceDate DESC;
 	
 END$$
@@ -779,10 +679,8 @@ DROP PROCEDURE IF EXISTS blackstarDb.GetUserData$$
 CREATE PROCEDURE blackstarDb.GetUserData(pEmail VARCHAR(100))
 BEGIN
 
-	SELECT u.email AS userEmail, u.name AS userName, g.name AS groupName
-	FROM blackstarUser_userGroup ug
-		INNER JOIN blackstarUser u ON u.blackstarUserId = ug.blackstarUserId
-		LEFT OUTER JOIN userGroup g ON g.userGroupId = ug.userGroupId
+	SELECT u.email AS email, u.name AS name
+	FROM blackstarUser u 
 	WHERE u.email = pEmail;
 	
 END$$
@@ -886,7 +784,7 @@ BEGIN
 		INNER JOIN equipmentType et ON p.equipmenttypeId = et.equipmenttypeId
 		INNER JOIN office of on p.officeId = of.officeId
 		LEFT OUTER JOIN blackstarUser bu ON bu.email = tk.asignee
-	WHERE tk.created > '01-01' + YEAR(CURRENT_DATE())
+	WHERE tk.created > '01-01' + YEAR(NOW())
     ORDER BY tk.created DESC;
 	
 END$$
@@ -964,7 +862,7 @@ BEGIN
 	SELECT serialNumber, brand, model 
 	FROM blackstarDb.policy
 	WHERE customer = pCustomer
-		AND endDate > CURRENT_DATE()
+		AND endDate > NOW()
 	ORDER BY serialNumber;
 	
 END$$
@@ -983,7 +881,7 @@ BEGIN
 	SET
 		ticketStatusId = 'A'
 	WHERE closed IS NULL
-		AND TIMESTAMPDIFF(HOUR, t.created, CURRENT_DATE()) <= p.solutionTimeHR;
+		AND TIMESTAMPDIFF(HOUR, t.created, NOW()) <= p.solutionTimeHR;
 			
 	-- RETRASADOS
 	UPDATE blackstarDb.ticket t
@@ -991,7 +889,7 @@ BEGIN
 	SET
 		ticketStatusId = 'R'
 	WHERE closed IS NULL
-		AND TIMESTAMPDIFF(HOUR, t.created, CURRENT_DATE()) > p.solutionTimeHR;
+		AND TIMESTAMPDIFF(HOUR, t.created, NOW()) > p.solutionTimeHR;
 
 	-- CERRADOS
 	UPDATE blackstarDb.ticket SET
@@ -1016,9 +914,9 @@ CREATE PROCEDURE blackstarDb.AssignTicket (pTicketId INTEGER, pEmployee VARCHAR(
 BEGIN
 
 	UPDATE ticket SET
-		employee = pEmployee,
+		employee = IFNULL(employee, pEmployee),
 		asignee = pEmployee,
-		modified = CURRENT_DATE(),
+		modified = NOW(),
 		modifiedBy = proc,
 		modifiedByUsr = usr
 	WHERE ticketId = pTicketId;
@@ -1029,252 +927,6 @@ END$$
 	-- FIN DE LOS STORED PROCEDURES
 -- -----------------------------------------------------------------------------
 DELIMITER ;
-
--- -----------------------------------------------------------------------------
--- File:	blackstarDbTransfer_LoadTransferData.sql   
--- Name:	blackstarDbTransfer_LoadTransferData
--- Desc:	Transfiere los datos de la BD temporal a la BD de produccion
--- Auth:	Sergio A Gomez
--- Date:	29/09/2013
--- -----------------------------------------------------------------------------
--- Change History
--- -----------------------------------------------------------------------------
--- PR   Date    	Author	Description
--- --   --------   -------  ------------------------------------
--- 1    29/09/2013  SAG  	Version inicial: Transfiere los datos de blackstarTransferDb a blackstarDb
--- -----------------------------------------------------------------------------
-
--- -----------------------------------------------------------------------------
-  -- LLENAR CATALOGO DE POLIZAS
-	INSERT INTO blackstarDb.policy(
-		officeId,
-		policyTypeId,
-		customerContract,
-		customer,
-		finalUser,
-		project,
-		cst,
-		equipmentTypeId,
-		brand,
-		model,
-		serialNumber,
-		capacity,
-		equipmentAddress,
-		equipmentLocation,
-		contactName,
-		contactPhone,
-		contactEmail,
-		startDate,
-		endDate,
-		visitsPerYear,
-		responseTimeHR,
-		solutionTimeHR,
-		penalty,
-		service,
-		includesParts,
-		exceptionParts,
-		serviceCenterId,
-		observations,
-		created,
-		createdBy,
-		crratedByUsr
-	)
-	SELECT o.officeId, policyType, customerContract, customer, finalUser, project, cst, equipmentTypeId, brand, model, 
-			serialNumber, capacity, equipmentAddress, equipmentLocation, contact, contactPhone, contactEmail, startDate, endDate, visitsPerYear, 
-			responseTimeHR, solutionTimeHR, penalty, service, includesParts, exceptionParts, serviceCenterId, observations,
-			CURRENT_DATE(), 'PolicyTransfer', 'sergio.aga'
-	FROM blackstarDbTransfer.policy p
-		INNER JOIN blackstarDb.office o ON p.office = o.officeName
-		INNER JOIN blackstarDb.serviceCenter s ON s.serviceCenter = p.serviceCenter
-	WHERE p.serialNumber NOT IN (SELECT DISTINCT serialNumber FROM blackstarDb.policy);
--- -----------------------------------------------------------------------------
-
-
--- -----------------------------------------------------------------------------
-	-- LLENAR BASE DE DATOS DE TICKETS
-	INSERT INTO blackstarDb.ticket(
-		policyId,
-		ticketNumber,
-		user,
-		observations,
-		phoneResolved,
-		arrival,
-		employee,
-		closed,
-		created,
-		createdBy,
-		createdByUsr
-	)
-	SELECT p.policyId, tt.ticketNumber, tt.user, tt.observations, phoneResolved, tt.arrival, tt.employee, tt.closed, tt.created, 'TicketTransfer', 'sergio.aga'
-	FROM blackstarDbTransfer.ticket tt
-		INNER JOIN blackstarDbTransfer.policy pt ON tt.policyId = pt.policyId	
-		INNER JOIN blackstarDb.policy p ON p.serialNumber = pt.serialNumber AND pt.serialNumber != 'NA'
-	WHERE tt.ticketNumber NOT IN (SELECT ticketNumber FROM blackstarDb.ticket);
-	
-	-- ACTUALIZAR TIEMPOS DE RESPUESTA
-	UPDATE blackstarDb.ticket SET 
-		realResponseTime =  TIMESTAMPDIFF(HOUR, created, IFNULL(arrival, CURRENT_DATE()));
-		
-	-- ACTUALIZAR DESVIACIONES DE TIEMPO DE RESPUESTA
-	UPDATE blackstarDb.ticket t 
-		INNER JOIN blackstarDb.policy p on p.policyId = t.policyId
-	SET 
-		responseTimeDeviationHr = CASE WHEN(realResponseTime < responseTimeHR) THEN 0 ELSE (realResponseTime - responseTimeHR) END;
-
-	-- ACTUALIZAR TIEMPOS DE SOLUCION
-	UPDATE blackstarDb.ticket SET 
-		solutionTime =  CASE WHEN (closed IS NULL) THEN NULL ELSE (TIMESTAMPDIFF(HOUR, created, closed)) END;
-		
-	-- ACTUALIZAR DESVIACIONES DE TIEMPO DE SOLUCION
-	UPDATE blackstarDb.ticket t 
-		INNER JOIN blackstarDb.policy p on p.policyId = t.policyId
-	SET 
-		solutionTimeDeviationHr = CASE WHEN(solutionTime < solutionTimeHR) THEN 0 ELSE (solutionTime - solutionTimeHR) END;
-		
-	-- CAMBIAR OBSERVATIONS POR FOLLOW UPS
-	INSERT INTO blackstarDb.followUp(
-		ticketId,
-		asignee,
-		followup,
-		created,
-		createdBy,
-		createdByUsr
-	)
-	SELECT ticketId, 'marlem.samano@gposac.com.mx', followUp, CURRENT_DATE(), 'TicketTransfer', 'sergio.aga'
-	FROM blackstarDbTransfer.ticket
-	WHERE followUp IS NOT NULL;
--- -----------------------------------------------------------------------------
-
-
--- -----------------------------------------------------------------------------
-	-- INSERTAR LAS ORDENES DE SERVICIO
-	INSERT INTO blackstarDb.serviceOrder(
-		serviceOrderNumber,
-		serviceTypeId,
-		ticketId,
-		policyId,
-		serviceUnit,
-		serviceDate,
-		responsible,
-		receivedBy,
-		serviceComments,
-		closed,
-		consultant,
-		created,
-		createdBy,
-		createdByUsr
-	)
-	SELECT ot.serviceNumber, ot.serviceTypeId, t.ticketId, p.policyId, ot.serviceUnit, ot.serviceDate, ot.responsible, ot.receivedBy, 
-		ot.serviceComments, ot.closed, ot.consultant, CURRENT_DATE(), 'ServiceOrderTransfer', 'sergio.aga'
-	FROM blackstarDbTransfer.serviceTx ot
-		LEFT OUTER JOIN blackstarDb.ticket t ON t.ticketNumber = ot.ticketNumber
-		LEFT OUTER JOIN blackstarDb.policy p ON p.serialNumber = ot.serialNumber AND ot.serialNumber != 'NA'
-	WHERE ot.serviceNumber NOT IN (SELECT serviceOrderNumber FROM blackstarDb.serviceOrder);
-		
-	-- ACTUALIZACION DEL STATUS
-	UPDATE blackstarDb.serviceOrder SET
-		serviceStatusId = CASE WHEN (closed IS NULL) THEN 'E' ELSE 'C' END;
-		
-	-- ACTUALIZACION DEL SERVICE ID DE CIERRE DEL TICKET
-	UPDATE blackstarDb.ticket t
-		INNER JOIN blackstarDbTransfer.ticket tt ON t.ticketNumber = tt.ticketNumber
-		INNER JOIN blackstarDb.serviceOrder so ON tt.serviceOrderNumber = so.serviceOrderNumber	
-	SET
-		t.serviceOrderId = so.serviceOrderId;	
-	
-	-- ACTUALIZACION DEL ESTADO DE LOS TICKETS
-	use blackstarDb;
-	CALL UpdateTicketStatus();
--- -----------------------------------------------------------------------------
-
-
--- -----------------------------------------------------------------------------
-	-- ELIMINACION DE COMILLAS QUE PROVOCAN PROBLEMAS AL CONVERTIR A JSON
-	UPDATE blackstarDb.policy SET	
-		equipmentAddress = REPLACE( equipmentAddress,'"','');
-		
-	UPDATE blackstarDb.policy SET	
-		equipmentLocation = REPLACE( equipmentLocation,'"','');
-		
-	UPDATE blackstarDb.policy SET	
-		penalty = REPLACE( penalty,'"','');
-		
-	UPDATE blackstarDb.policy SET	
-		observations = REPLACE( observations,'"','');
-		
-	UPDATE blackstarDb.serviceOrder SET	
-		serviceComments = REPLACE( serviceComments,'"','');
-		
-	UPDATE blackstarDb.ticket SET	
-		observations = REPLACE( observations,'"','');
-
-	UPDATE blackstarDb.followUp SET	
-		followUp = REPLACE( followUp,'"','');
-		
-	-- ELIMINACION DE RETORNOS DE CARRO QUE PROVOCAN PROBLEMAS AL CONVERTIR A JSON
-	UPDATE blackstarDb.policy SET	
-		equipmentAddress = REPLACE( equipmentAddress,'\n','');
-		
-	UPDATE blackstarDb.policy SET	
-		equipmentLocation = REPLACE( equipmentLocation,'\n','');
-		
-	UPDATE blackstarDb.policy SET	
-		penalty = REPLACE( penalty,'\n','');
-		
-	UPDATE blackstarDb.policy SET	
-		observations = REPLACE( observations,'\n','');
-		
-	UPDATE blackstarDb.serviceOrder SET	
-		serviceComments = REPLACE( serviceComments,'\n','');
-		
-	UPDATE blackstarDb.ticket SET	
-		observations = REPLACE( observations,'\n','');
-
-	UPDATE blackstarDb.followUp SET	
-		followUp = REPLACE( followUp,'\n','');
--- -----------------------------------------------------------------------------
-
-
--- -----------------------------------------------------
--- File:	blackstarManage_createSchema.sql    
--- Name:	blackstarManage_createSchema
--- Desc:	crea una version inicial de la base de datos administrativa
--- Auth:	Sergio A Gomez
--- Date:	18/09/2013
--- -----------------------------------------------------
--- Change History
--- -----------------------------------------------------
--- PR   Date    	Author	Description
--- --   --------   -------  ------------------------------------
--- 1    18/09/2013  SAG  	Version inicial. Error Log
--- -----------------------------------------------------
-
-
--- -----------------------------------------------------
-
--- Seccion de Administracion
-
--- -----------------------------------------------------
-
-use blackstarManage;
-
-CREATE TABLE IF NOT EXISTS blackstarManage.errorLog
-(
-	errorLogId INTEGER NOT NULL AUTO_INCREMENT,
-	severity VARCHAR(20),
-	created DATETIME,
-	error VARCHAR(400),
-	sender TEXT,
-	stackTrace TEXT,
-	PRIMARY KEY (errorLogId)
-)ENGINE=INNODB;
-
--- -----------------------------------------------------
-
--- FIN Seccion de Administracion
-
--- -----------------------------------------------------
-
 
 -- -----------------------------------------------------------------------------
 -- File:	blackstarManage_StoredProcedures.sql   
@@ -1315,7 +967,7 @@ BEGIN
 		stackTrace
 	)
 	SELECT 
-		pLevel, CURRENT_DATE(), pError, pSender, pStackTrace;
+		pLevel, NOW(), pError, pSender, pStackTrace;
 	
 END$$
 
@@ -1324,52 +976,6 @@ END$$
 	-- FIN DE LOS STORED PROCEDURES
 -- -----------------------------------------------------------------------------
 DELIMITER ;
-
--- -----------------------------------------------------------------------------
--- File:	blackstarDb_startupData.sql
--- Name:	blackstarDb_startupData
--- Desc:	Hace una carga inicial de usuarios para poder operar el sistema
--- Auth:	Sergio A Gomez
--- Date:	22/10/2013
--- -----------------------------------------------------------------------------
--- Change History
--- -----------------------------------------------------------------------------
--- PR   Date    	Author	Description
--- --   --------   -------  ------------------------------------
--- 1    22/10/2013  SAG  	Version inicial. Usuarios basicos de GPO Sac
--- ---------------------------------------------------------------------------
-use blackstarDb;
-
-Call UpsertUser('alberto.lopez.gomez@gposac.com.mx','Alberto Lopez Gomez');
-Call UpsertUser('alejandra.diaz@gposac.com.mx','Alejandra Diaz');
-Call UpsertUser('alejandro.monroy@gposac.com.mx','Alejandro Monroy');
-Call UpsertUser('marlem.samano@gposac.com.mx','Marlem Samano');
-Call UpsertUser('armando.perez.pinto@gposac.com.mx','Armando Perez Pinto');
-Call UpsertUser('gonzalo.ramirez@gposac.com.mx','Gonzalo Ramirez');
-Call UpsertUser('jose.alberto.jonguitud.gallardo@gposac.com.mx','Jose Alberto Jonguitud Gallardo');
-Call UpsertUser('marlem.samano@gposac.com.mx','Marlem Samano');
-Call UpsertUser('martin.vazquez@gposac.com.mx','Martin Vazquez');
-Call UpsertUser('reynaldo.garcia@gposac.com.mx','Reynaldo Garcia');
-Call UpsertUser('sergio.gallegos@gposac.com.mx','Sergio  Gallegos');
-Call UpsertUser('angeles.avila@gposac.com.mx','Angeles Avila');
-Call UpsertUser('sergio.aga@gmail.com','Sergio A. Gomez');
-Call UpsertUser('portal-servicios@gposac.com.mx','Portal Servicios');
-
-Call CreateUserGroup('sysServicio','Implementacion y Servicio','alberto.lopez.gomez@gposac.com.mx');
-Call CreateUserGroup('sysCallCenter','Call Center','alejandra.diaz@gposac.com.mx');
-Call CreateUserGroup('sysServicio','Implementacion y Servicio','alejandro.monroy@gposac.com.mx');
-Call CreateUserGroup('sysCallCenter','Call Center','marlem.samano@gposac.com.mx');
-Call CreateUserGroup('sysServicio','Implementacion y Servicio','armando.perez.pinto@gposac.com.mx');
-Call CreateUserGroup('sysServicio','Implementacion y Servicio','gonzalo.ramirez@gposac.com.mx');
-Call CreateUserGroup('sysServicio','Implementacion y Servicio','jose.alberto.jonguitud.gallardo@gposac.com.mx');
-Call CreateUserGroup('sysServicio','Implementacion y Servicio','martin.vazquez@gposac.com.mx');
-Call CreateUserGroup('sysServicio','Implementacion y Servicio','reynaldo.garcia@gposac.com.mx');
-Call CreateUserGroup('sysServicio','Implementacion y Servicio','sergio.gallegos@gposac.com.mx');
-Call CreateUserGroup('sysCoordinador','Coordinador','angeles.avila@gposac.com.mx');
-Call CreateUserGroup('sysCallCenter','Call Center','sergio.aga@gmail.com');
-Call CreateUserGroup('sysCallCenter','Call Center','portal-servicios@gposac.com.mx');
-
-
 
 
 
