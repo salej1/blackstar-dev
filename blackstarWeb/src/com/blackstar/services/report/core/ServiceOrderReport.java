@@ -11,20 +11,18 @@ public class ServiceOrderReport extends AbstractReport {
 	
   private OrderserviceDTO data = null;
   
-  public void run() throws Exception {
+  public void run(Object fillData) throws Exception {
+	data = (OrderserviceDTO) fillData;
     printHeader("ORDEN DE SERVICIO","", data.getServiceOrderNo());
 	printFeatures();
 	printDetails();
 	printRequerements();
 	printObservations();
-	printFooter();
+	printFooter(data.getSignCreated(), data.getResponsible(), data.getClosed()
+			              , data.getSignReceivedBy(), data.getReceivedBy(), data
+			                                          .getReceivedByPosition());
   }
   
-  @Override
-  public void setFillingData(Object data) throws Exception{
-	this.data = (OrderserviceDTO) data;
-  }
-
   private void printFeatures() throws Exception {
 	drawer.hLine(0, 555, 87);
 	drawer.text("CLIENTE: " , 5, 98, false);
@@ -96,17 +94,16 @@ public class ServiceOrderReport extends AbstractReport {
 	drawer.hLine(0, 555, 660, 0x0155A5);
   }
   
-//  public static void main(String [] args) throws Exception{
-//	ServiceOrderReport serv = new ServiceOrderReport();
-//	FileOutputStream see = new FileOutputStream("C:/Test.pdf");
-//	OrderserviceDTO data = new OrderserviceDTO("coordinator", 3215, "3215", "ticketNo", 5123, 
-//			"customer", "equipmentAddress", "contactName", new Date(),"contactPhone", 
-//			"equipmentType", "equipmentBrand", "Model", "equipmentSerialNo", "failureDescription", 
-//			"serviceType", "proyectNumber", "Equipo apagado, presenta falla general del sistema. Se revisa estado de baterias encontrando las 4 dañadas ", "Se intenta poner en modo Bypass sin exito, se realiza un reset generaal a la configuraciond e fabrica sin exito. Se indica al cliente que se solicitara soporte al corporativo.", "detailTechnicalJob", 
-//			"detailRequirments", "detailStatus", "signCreated", "signReceivedBy", "receivedBy", "responsible", new Date(), "receivedByPosition");
-//	serv.setFillingData(data);
-//	see.write(serv.getReport());
-//	see.close();
-//  }
+  public static void main(String [] args) throws Exception{
+	ServiceOrderReport serv = new ServiceOrderReport();
+	FileOutputStream see = new FileOutputStream("C:/Test.pdf");
+	OrderserviceDTO data = new OrderserviceDTO("coordinator", 3215, "3215", "ticketNo", 5123, 
+			"customer", "equipmentAddress", "contactName", new Date(),"contactPhone", 
+			"equipmentType", "equipmentBrand", "Model", "equipmentSerialNo", "failureDescription", 
+			"serviceType", "proyectNumber", "Equipo apagado, presenta falla general del sistema. Se revisa estado de baterias encontrando las 4 dañadas ", "Se intenta poner en modo Bypass sin exito, se realiza un reset generaal a la configuraciond e fabrica sin exito. Se indica al cliente que se solicitara soporte al corporativo.", "detailTechnicalJob", 
+			"detailRequirments", "detailStatus", "signCreated", "signReceivedBy", "receivedBy", "responsible", new Date(), "receivedByPosition");
+	see.write(serv.getReport(data));
+	see.close();
+  }
 
 }
