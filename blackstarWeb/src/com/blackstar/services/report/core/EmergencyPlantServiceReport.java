@@ -5,7 +5,6 @@ import java.util.Date;
 
 import com.blackstar.model.Policy;
 import com.blackstar.model.Serviceorder;
-import com.blackstar.model.dto.AirCoServicePolicyDTO;
 import com.blackstar.model.dto.EmergencyPlantServiceDTO;
 import com.blackstar.model.dto.EmergencyPlantServicePolicyDTO;
 import com.blackstar.services.report.AbstractReport;
@@ -17,7 +16,8 @@ public class EmergencyPlantServiceReport extends AbstractReport {
   
   public void run(Object fillData) throws Exception {
 	data = (EmergencyPlantServicePolicyDTO) fillData;
-	printHeader("REPORTE DE SERVICIO","PLANTAS DE EMERGENCIA", "1254");
+	printHeader("REPORTE DE SERVICIO","PLANTAS DE EMERGENCIA"
+			                 , data.getServiceOrderNumber());
 	printFeatures();
 	printInformation();
 	printInspection();

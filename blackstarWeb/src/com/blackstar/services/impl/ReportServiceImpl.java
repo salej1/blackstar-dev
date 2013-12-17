@@ -15,8 +15,8 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
   
   public byte[] getServiceOrderReport(Integer serviceOrderId) throws Exception {
 	ServiceOrderReport report = new ServiceOrderReport();
-	report.setFillingData(soDAO.getServiceOrderByIdOrNumber(serviceOrderId, null));
-	return report.getReport();
+	return report.getReport(soDAO.getServiceOrderByIdOrNumber(serviceOrderId
+			                                                       , null));
   }
 
 }

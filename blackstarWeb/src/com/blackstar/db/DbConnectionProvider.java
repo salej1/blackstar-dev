@@ -26,7 +26,7 @@ public class DbConnectionProvider {
 			  // Local MySQL instance to use during development.
 			  Class.forName(Globals.DEFAULT_DRIVER_CLASS);
 			  url = String.format(Globals.LOCAL_CONNECTION_STRING_TEMPLATE, db);
-			  conn =  (Connection) DriverManager.getConnection(url, "root", "");
+			  conn =  (Connection) DriverManager.getConnection(url, "root", "admin");
 			}
 		}
 		catch(Exception ex){

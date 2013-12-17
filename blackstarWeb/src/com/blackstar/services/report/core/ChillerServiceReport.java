@@ -7,7 +7,6 @@ import com.blackstar.model.Policy;
 import com.blackstar.model.Serviceorder;
 import com.blackstar.model.dto.AirCoServiceDTO;
 import com.blackstar.model.dto.AirCoServicePolicyDTO;
-import com.blackstar.model.dto.BatteryServicePolicyDTO;
 import com.blackstar.services.report.AbstractReport;
 import com.pdfjet.Color;
 
@@ -17,7 +16,8 @@ public class ChillerServiceReport extends AbstractReport {
   
   public void run(Object fillData) throws Exception {
 	data = (AirCoServicePolicyDTO) fillData;
-	printHeader("REPORTE DE SERVICIO","AIRES ACONDICIONADOS / CHILLER", "1254");
+	printHeader("REPORTE DE SERVICIO","AIRES ACONDICIONADOS / CHILLER"
+			                          , data.getServiceOrderNumber());
 	printFeatures();
 	printEvaporator();
 	printCondenser();

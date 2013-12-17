@@ -10,7 +10,6 @@ import com.blackstar.model.Serviceorder;
 import com.blackstar.model.dto.BatteryCellServiceDTO;
 import com.blackstar.model.dto.BatteryServiceDTO;
 import com.blackstar.model.dto.BatteryServicePolicyDTO;
-import com.blackstar.model.dto.OrderserviceDTO;
 import com.blackstar.services.report.AbstractReport;
 import com.pdfjet.Color;
 
