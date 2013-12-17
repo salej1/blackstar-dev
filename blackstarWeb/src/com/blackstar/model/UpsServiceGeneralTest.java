@@ -3,9 +3,9 @@ package com.blackstar.model;
 public class UpsServiceGeneralTest {
 	
 	public UpsServiceGeneralTest(Integer upsServiceGeneralTestId,
-			Integer upsServiceId, Double trasferLine,
-			Double transferEmergencyPlant, Double backupBatteries,
-			Double verifyVoltage) {
+			Integer upsServiceId, Boolean trasferLine,
+			Boolean transferEmergencyPlant, Boolean backupBatteries,
+			Boolean verifyVoltage) {
 		this.upsServiceGeneralTestId = upsServiceGeneralTestId;
 		this.upsServiceId = upsServiceId;
 		this.trasferLine = trasferLine;
@@ -16,10 +16,10 @@ public class UpsServiceGeneralTest {
 	
 	private Integer upsServiceGeneralTestId;
 	private Integer upsServiceId;
-	private Double trasferLine;
-	private Double transferEmergencyPlant;
-	private Double backupBatteries;
-	private Double verifyVoltage;
+	private Boolean trasferLine;
+	private Boolean transferEmergencyPlant;
+	private Boolean backupBatteries;
+	private Boolean verifyVoltage;
 	
 	public Integer getUpsServiceGeneralTestId() {
 		return upsServiceGeneralTestId;
@@ -33,28 +33,28 @@ public class UpsServiceGeneralTest {
 	public void setUpsServiceId(Integer upsServiceId) {
 		this.upsServiceId = upsServiceId;
 	}
-	public Double getTrasferLine() {
+	public Boolean getTrasferLine() {
 		return trasferLine;
 	}
-	public void setTrasferLine(Double trasferLine) {
+	public void setTrasferLine(Boolean trasferLine) {
 		this.trasferLine = trasferLine;
 	}
-	public Double getTransferEmergencyPlant() {
+	public Boolean getTransferEmergencyPlant() {
 		return transferEmergencyPlant;
 	}
-	public void setTransferEmergencyPlant(Double transferEmergencyPlant) {
+	public void setTransferEmergencyPlant(Boolean transferEmergencyPlant) {
 		this.transferEmergencyPlant = transferEmergencyPlant;
 	}
-	public Double getBackupBatteries() {
+	public Boolean getBackupBatteries() {
 		return backupBatteries;
 	}
-	public void setBackupBatteries(Double backupBatteries) {
+	public void setBackupBatteries(Boolean backupBatteries) {
 		this.backupBatteries = backupBatteries;
 	}
-	public Double getVerifyVoltage() {
+	public Boolean getVerifyVoltage() {
 		return verifyVoltage;
 	}
-	public void setVerifyVoltage(Double verifyVoltage) {
+	public void setVerifyVoltage(Boolean verifyVoltage) {
 		this.verifyVoltage = verifyVoltage;
 	}
 
