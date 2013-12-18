@@ -145,7 +145,7 @@ public class AirCoServiceController extends AbstractController {
 	      serviceOrder.setServiceOrderId(idServicio);
 	      //Crear orden de servicio de AirCo
 	      service.saveAirCoService(new AirCoServiceDTO(serviceOrder), "AirCoServiceController", userSession.getUser().getUserName());
-	      insertReport(serviceOrder);
+	      saveReport(serviceOrder);
 	    }
 	} catch(Exception ex){
 	    Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1]
@@ -156,7 +156,7 @@ public class AirCoServiceController extends AbstractController {
     return "dashboard";
   }
 	    
-  private void insertReport(AirCoServicePolicyDTO serviceOrder) throws Exception {
+  private void saveReport(AirCoServicePolicyDTO serviceOrder) throws Exception {
     Integer id = serviceOrder.getServiceOrderId();
 	String parentId = gdService.getReportsFolderId(id);
 	gdService.insertFileFromStream(id, "application/pdf", "ServiceOrder.pdf"

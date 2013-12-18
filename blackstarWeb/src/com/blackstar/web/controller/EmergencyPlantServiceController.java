@@ -1,8 +1,5 @@
 package com.blackstar.web.controller;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -22,6 +19,7 @@ import com.blackstar.model.Ticket;
 import com.blackstar.model.UserSession;
 import com.blackstar.model.dto.EmergencyPlantServiceDTO;
 import com.blackstar.model.dto.EmergencyPlantServicePolicyDTO;
+import com.blackstar.services.interfaces.ReportService;
 import com.blackstar.services.interfaces.ServiceOrderService;
 import com.blackstar.web.AbstractController;
 
@@ -31,6 +29,11 @@ import com.blackstar.web.AbstractController;
 public class EmergencyPlantServiceController extends AbstractController {
 	  private ServiceOrderService service = null;
 	  private DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.MYSQL);
+      private ReportService rpService = null;
+	  
+	  public void setRpService(ReportService rpService) {
+		this.rpService = rpService;
+	  }
 	  
 	  public void setService(ServiceOrderService service) {
 		this.service = service;
@@ -97,12 +100,10 @@ public class EmergencyPlantServiceController extends AbstractController {
 		  return "emergencyplantservice";
 	  }
 	  
-	    @RequestMapping(value = "/save.do", method = RequestMethod.POST)
-	    public String save( 
-	    		@ModelAttribute("serviceOrder") EmergencyPlantServicePolicyDTO serviceOrder,
-	    		@ModelAttribute(Globals.SESSION_KEY_PARAM)  UserSession userSession,
-              ModelMap model, HttpServletRequest req, HttpServletResponse resp)
-	    {
+  @RequestMapping(value = "/save.do", method = RequestMethod.POST)
+  public String save(@ModelAttribute("serviceOrder") EmergencyPlantServicePolicyDTO serviceOrder,
+	    		     @ModelAttribute(Globals.SESSION_KEY_PARAM)  UserSession userSession,
+                                              ModelMap model) throws Exception {
 	    	int idServicio = 0;
 	    	// Verificar si existe una orden de servicio
 	    	if(serviceOrder.getServiceOrderId()==null)
@@ -147,9 +148,17 @@ public class EmergencyPlantServiceController extends AbstractController {
 	    		serviceOrder.setServiceOrderId(idServicio);
 	    		//Crear orden de servicio de AirCo
 	    		service.saveEmergencyPlantService(new EmergencyPlantServiceDTO(serviceOrder), "EmergencyPlantServiceController", userSession.getUser().getUserName());
+	    		saveReport(serviceOrder);
 	    	}
 
 	    	return "dashboard";
 	    }
+	    
+  private void saveReport(EmergencyPlantServicePolicyDTO serviceOrder) throws Exception {
+	Integer id = serviceOrder.getServiceOrderId();
+	String parentId = gdService.getReportsFolderId(id);
+	gdService.insertFileFromStream(id, "application/pdf", "ServiceOrder.pdf"
+	    		   , parentId, rpService.getEmergencyPlantReport(serviceOrder));
+  }
 
 	}

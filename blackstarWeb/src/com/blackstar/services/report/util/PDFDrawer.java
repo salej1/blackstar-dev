@@ -1,14 +1,8 @@
 package com.blackstar.services.report.util;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.imageio.ImageIO;
 
 import com.blackstar.common.StringUtils;
 import com.pdfjet.*;
@@ -147,7 +141,7 @@ public class PDFDrawer {
   
   public void drawSignature(String jsonEncoding, Float scaleFactor, int x, int y) 
 		                                                      throws Exception {
-	  List<List<Point>> points = extractSignature(jsonEncoding, scaleFactor, x, y);
+	  List<List<Point>> points = getLines(jsonEncoding, scaleFactor, x, y);
 	  Point lastPoint = null;
 	  for (List<Point> line : points) { 
           for (Point point : line) { 
@@ -160,26 +154,24 @@ public class PDFDrawer {
       } 
   } 
   
-  private static List<List<Point>> extractSignature(String jsonEncoding
-		                           , Float scaleFactor, int x, int y) { 
-      List<List<Point>> lines = new ArrayList<List<Point>>(); 
-      Matcher lineMatcher = 
-              Pattern.compile("(\\[(?:,?\\[-?[\\d\\.]+,-?[\\d\\.]+\\])+\\])"). 
-              matcher(jsonEncoding); 
-      while (lineMatcher.find()) { 
-          Matcher pointMatcher = 
-                  Pattern.compile("\\[(-?[\\d\\.]+),(-?[\\d\\.]+)\\]"). 
-                  matcher(lineMatcher.group(1)); 
-          List<Point> line = new ArrayList<Point>(); 
-          lines.add(line); 
-          while (pointMatcher.find()) { 
-              line.add(new Point((Float.parseFloat(pointMatcher.group(1)) 
-            		  * scaleFactor) + x, (Float.parseFloat(pointMatcher.group(2)) 
-            				                               * scaleFactor) + y)); 
-          } 
-      } 
-      return lines; 
-  }
+  private List<List<Point>> getLines(String json, Float scale, int x, int y) {
+    List<List<Point>> lines = new ArrayList<List<Point>>();
+    List<Point> line = null;
+    String [] segments = json.substring(12).substring(0, json.length() - 16)
+    		                                       .split("\\]\\],\\[\\[");
+    String [] points = null, coordinates = null;
+    for(String segment : segments){
+      points = segment.split("\\],\\[");
+      line = new ArrayList<Point>();
+      for(int i = 0; i< points.length; i++){
+    	  coordinates =  points[i].split(",");
+    	  line.add(new Point((Float.parseFloat(coordinates[0]) * scale) + x
+    			             , (Float.parseFloat(coordinates[1]) * scale) + y));
+      }
+      lines.add(line);
+    }
+	return lines;
+  } 
   
 
 }

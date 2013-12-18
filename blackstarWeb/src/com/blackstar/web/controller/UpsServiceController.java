@@ -20,8 +20,10 @@ import com.blackstar.model.Policy;
 import com.blackstar.model.Serviceorder;
 import com.blackstar.model.Ticket;
 import com.blackstar.model.UserSession;
+import com.blackstar.model.dto.EmergencyPlantServicePolicyDTO;
 import com.blackstar.model.dto.UpsServiceDTO;
 import com.blackstar.model.dto.UpsServicePolicyDTO;
+import com.blackstar.services.interfaces.ReportService;
 import com.blackstar.services.interfaces.ServiceOrderService;
 import com.blackstar.web.AbstractController;
 
@@ -31,6 +33,11 @@ import com.blackstar.web.AbstractController;
 public class UpsServiceController extends AbstractController {
 	  private ServiceOrderService service = null;
 	  private DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.MYSQL);
+      private ReportService rpService = null;
+	  
+	  public void setRpService(ReportService rpService) {
+		this.rpService = rpService;
+	  }
 	  
 	  public void setService(ServiceOrderService service) {
 		this.service = service;
@@ -101,8 +108,7 @@ public class UpsServiceController extends AbstractController {
 	    public String save( 
 	    		@ModelAttribute("serviceOrder") UpsServicePolicyDTO serviceOrder,
 	    		@ModelAttribute(Globals.SESSION_KEY_PARAM)  UserSession userSession,
-              ModelMap model, HttpServletRequest req, HttpServletResponse resp)
-	    {
+              ModelMap model, HttpServletRequest req, HttpServletResponse resp) throws Exception{
 	    	int idServicio = 0;
 	    	// Verificar si existe una orden de servicio
 	    	if(serviceOrder.getServiceOrderId()==null)
@@ -147,9 +153,17 @@ public class UpsServiceController extends AbstractController {
 	    		serviceOrder.setServiceOrderId(idServicio);
 	    		//Crear orden de servicio de UpsService
 	    		service.saveUpsService(new UpsServiceDTO(serviceOrder), "UpsServiceController", userSession.getUser().getUserName());
+	    		saveReport(serviceOrder);
 	    	}
 
 	    	return "dashboard";
 	    }
+	    
+  private void saveReport(UpsServicePolicyDTO serviceOrder) throws Exception {
+	Integer id = serviceOrder.getServiceOrderId();
+	String parentId = gdService.getReportsFolderId(id);
+	gdService.insertFileFromStream(id, "application/pdf", "ServiceOrder.pdf"
+	    	      , parentId, rpService.getUPSReport(serviceOrder));
+  }
 
 	}

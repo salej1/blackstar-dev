@@ -20,9 +20,9 @@ import com.blackstar.model.Policy;
 import com.blackstar.model.Serviceorder;
 import com.blackstar.model.Ticket;
 import com.blackstar.model.UserSession;
-import com.blackstar.model.dto.AirCoServicePolicyDTO;
 import com.blackstar.model.dto.BatteryServiceDTO;
 import com.blackstar.model.dto.BatteryServicePolicyDTO;
+import com.blackstar.services.interfaces.ReportService;
 import com.blackstar.services.interfaces.ServiceOrderService;
 import com.blackstar.web.AbstractController;
 
@@ -33,6 +33,11 @@ import com.blackstar.web.AbstractController;
 public class BatteryServiceController extends AbstractController {
 	  private ServiceOrderService service = null;
 	  private DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.MYSQL);
+      private ReportService rpService = null;
+	  
+	  public void setRpService(ReportService rpService) {
+		this.rpService = rpService;
+	  }
 	  
 	  public void setService(ServiceOrderService service) {
 		this.service = service;
@@ -99,58 +104,65 @@ public class BatteryServiceController extends AbstractController {
 		  return "batteryservice";
 	  }
 	  
-	    @RequestMapping(value = "/save.do", method = RequestMethod.POST)
-	    public String save( 
-	    		@ModelAttribute("serviceOrder") BatteryServicePolicyDTO serviceOrder,
-	    		@ModelAttribute(Globals.SESSION_KEY_PARAM)  UserSession userSession,
-              ModelMap model, HttpServletRequest req, HttpServletResponse resp)
-	    {
-	    	int idServicio = 0;
-	    	// Verificar si existe una orden de servicio
-	    	if(serviceOrder.getServiceOrderId()==null)
-	    	{
-	    		//Crear orden de servicio
-	    		Serviceorder servicioOrderSave = new Serviceorder();
-	    		servicioOrderSave.setAsignee( serviceOrder.getResponsible());
-	    		servicioOrderSave.setClosed(serviceOrder.getClosed());
-	    		servicioOrderSave.setPolicyId((Short.parseShort(serviceOrder.getPolicyId().toString())));
-	    		servicioOrderSave.setReceivedBy(serviceOrder.getReceivedBy());
-	    		servicioOrderSave.setReceivedByPosition(serviceOrder.getReceivedByPosition());
-	    		servicioOrderSave.setResponsible(serviceOrder.getResponsible());
-	    		servicioOrderSave.setServiceDate(serviceOrder.getServiceDate());
-	    		servicioOrderSave.setServiceOrderNumber(serviceOrder.getServiceOrderNumber());
-	    		servicioOrderSave.setServiceTypeId('I');
-	    		servicioOrderSave.setSignCreated(serviceOrder.getSignCreated());
-	    		servicioOrderSave.setSignReceivedBy(serviceOrder.getSignReceivedBy());
-	    		servicioOrderSave.setStatusId("N");
-	    		idServicio = service.saveServiceOrder(servicioOrderSave, "AirCoServiceController", userSession.getUser().getUserName());
-	    	}
-	    	else
-	    	{
-	    		//Actualizar orden de servicio
-	    		Serviceorder servicioOrderSave = new Serviceorder();
-	    		servicioOrderSave.setAsignee( serviceOrder.getResponsible());
-	    		servicioOrderSave.setClosed(serviceOrder.getClosed());
-	    		servicioOrderSave.setPolicyId((Short.parseShort(serviceOrder.getPolicyId().toString())));
-	    		servicioOrderSave.setReceivedBy(serviceOrder.getReceivedBy());
-	    		servicioOrderSave.setReceivedByPosition(serviceOrder.getReceivedByPosition());
-	    		servicioOrderSave.setResponsible(serviceOrder.getResponsible());
-	    		servicioOrderSave.setServiceDate(serviceOrder.getServiceDate());
-	    		servicioOrderSave.setServiceOrderNumber(serviceOrder.getServiceOrderNumber());
-	    		servicioOrderSave.setServiceTypeId('I');
-	    		servicioOrderSave.setSignCreated(serviceOrder.getSignCreated());
-	    		servicioOrderSave.setSignReceivedBy(serviceOrder.getSignReceivedBy());
-	    		servicioOrderSave.setStatusId("N");
-	    		service.updateServiceOrder(servicioOrderSave, "AirCoServiceController", userSession.getUser().getUserName());
-	    	}
-	    	
-	    	if(serviceOrder.getBbServiceId()==null)
-	    	{
-	    		serviceOrder.setServiceOrderId(idServicio);
-	    		//Crear orden de servicio de AirCo
-	    		service.saveBateryService(new BatteryServiceDTO(serviceOrder), "AirCoServiceController", userSession.getUser().getUserName());
-	    	}
-
-	    	return "dashboard";
-	    }
+  @RequestMapping(value = "/save.do", method = RequestMethod.POST)
+  public String save(@ModelAttribute("serviceOrder") BatteryServicePolicyDTO serviceOrder,
+	    		     @ModelAttribute(Globals.SESSION_KEY_PARAM)  UserSession userSession,
+                     ModelMap model, HttpServletRequest req, HttpServletResponse resp) {
+    int idServicio = 0;
+	// Verificar si existe una orden de servicio
+    try {
+	     if(serviceOrder.getServiceOrderId()==null) {
+   	       //Crear orden de servicio
+	       Serviceorder servicioOrderSave = new Serviceorder();
+	       servicioOrderSave.setAsignee( serviceOrder.getResponsible());
+	       servicioOrderSave.setClosed(serviceOrder.getClosed());
+	       servicioOrderSave.setPolicyId((Short.parseShort(serviceOrder.getPolicyId().toString())));
+	       servicioOrderSave.setReceivedBy(serviceOrder.getReceivedBy());
+	       servicioOrderSave.setReceivedByPosition(serviceOrder.getReceivedByPosition());
+	       servicioOrderSave.setResponsible(serviceOrder.getResponsible());
+	       servicioOrderSave.setServiceDate(serviceOrder.getServiceDate());
+	       servicioOrderSave.setServiceOrderNumber(serviceOrder.getServiceOrderNumber());
+	       servicioOrderSave.setServiceTypeId('I');
+	       servicioOrderSave.setSignCreated(serviceOrder.getSignCreated());
+	       servicioOrderSave.setSignReceivedBy(serviceOrder.getSignReceivedBy());
+	       servicioOrderSave.setStatusId("N");
+	       idServicio = service.saveServiceOrder(servicioOrderSave, "AirCoServiceController", userSession.getUser().getUserName());
+	     } else {
+	    	  //Actualizar orden de servicio
+	    	  Serviceorder servicioOrderSave = new Serviceorder();
+	    	  servicioOrderSave.setAsignee( serviceOrder.getResponsible());
+	    	  servicioOrderSave.setClosed(serviceOrder.getClosed());
+	    	  servicioOrderSave.setPolicyId((Short.parseShort(serviceOrder.getPolicyId().toString())));
+	    	  servicioOrderSave.setReceivedBy(serviceOrder.getReceivedBy());
+	    	  servicioOrderSave.setReceivedByPosition(serviceOrder.getReceivedByPosition());
+	    	  servicioOrderSave.setResponsible(serviceOrder.getResponsible());
+	    	  servicioOrderSave.setServiceDate(serviceOrder.getServiceDate());
+	    	  servicioOrderSave.setServiceOrderNumber(serviceOrder.getServiceOrderNumber());
+	    	  servicioOrderSave.setServiceTypeId('I');
+	    	  servicioOrderSave.setSignCreated(serviceOrder.getSignCreated());
+	    	  servicioOrderSave.setSignReceivedBy(serviceOrder.getSignReceivedBy());
+	    	  servicioOrderSave.setStatusId("N");
+	    	  service.updateServiceOrder(servicioOrderSave, "AirCoServiceController", userSession.getUser().getUserName());
+	     }
+	     if(serviceOrder.getBbServiceId()==null) {
+	    	serviceOrder.setServiceOrderId(idServicio);
+	    	//Crear orden de servicio de AirCo
+	    	service.saveBateryService(new BatteryServiceDTO(serviceOrder), "AirCoServiceController", userSession.getUser().getUserName());
+	    	saveReport(serviceOrder);
+	     }
+    } catch(Exception ex){
+	    Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1]
+	    		                                           .toString(), ex);
+	    ex.printStackTrace();
+	    return "error";
 	}
+    return "dashboard";
+  }
+	    
+  private void saveReport(BatteryServicePolicyDTO serviceOrder) throws Exception {
+	Integer id = serviceOrder.getServiceOrderId();
+	String parentId = gdService.getReportsFolderId(id);
+	gdService.insertFileFromStream(id, "application/pdf", "ServiceOrder.pdf"
+	    			      , parentId, rpService.getBatteryReport(serviceOrder));
+  }
+}
