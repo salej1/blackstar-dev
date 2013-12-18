@@ -62,5 +62,6 @@
    </bean>
    <bean class="com.blackstar.web.controller.AirCoServiceController" parent="abstractController">
       <property name="service" ref="serviceOrderService" />
+      <property name="rpService" ref="reportService" />
    </bean>   
 </beans>

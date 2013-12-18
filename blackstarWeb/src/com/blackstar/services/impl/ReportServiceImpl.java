@@ -1,8 +1,10 @@
 package com.blackstar.services.impl;
 
 import com.blackstar.db.dao.interfaces.ServiceOrderDAO;
+import com.blackstar.model.dto.AirCoServicePolicyDTO;
 import com.blackstar.services.AbstractService;
 import com.blackstar.services.interfaces.ReportService;
+import com.blackstar.services.report.core.AirConditioningReport;
 import com.blackstar.services.report.core.ServiceOrderReport;
 
 public class ReportServiceImpl extends AbstractService implements ReportService {
@@ -14,9 +16,13 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
   }
   
   public byte[] getServiceOrderReport(Integer serviceOrderId) throws Exception {
-	ServiceOrderReport report = new ServiceOrderReport();
-	return report.getReport(soDAO.getServiceOrderByIdOrNumber(serviceOrderId
-			                                                       , null));
+	return new ServiceOrderReport().getReport(soDAO
+			                .getServiceOrderByIdOrNumber(serviceOrderId, null));
+  }
+  
+  public byte[] getAirCoReport(AirCoServicePolicyDTO serviceOrder) 
+		                                        throws Exception {
+	return new AirConditioningReport().getReport(serviceOrder);
   }
 
 }

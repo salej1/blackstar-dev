@@ -1,5 +1,14 @@
 package com.blackstar.services.report.util;
+
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.imageio.ImageIO;
 
 import com.blackstar.common.StringUtils;
 import com.pdfjet.*;
@@ -15,6 +24,18 @@ public class PDFDrawer {
   private static final int DEFAULT_COLOR = Color.black;
   private static final int LEFT_MARGIN = 20;
   private static final int TOP_MARGIN = 20;
+  
+  
+  private static class Point { 
+	  
+      private int x; 
+      private int y; 
+
+      public Point(float x, float y) { 
+          this.x = Math.round(x); 
+          this.y = Math.round(y); 
+      } 
+  } 
   
   public PDFDrawer() throws Exception {
 	stream = new ByteArrayOutputStream ();
@@ -94,10 +115,14 @@ public class PDFDrawer {
   }
   
   public void image(String path, float x, float y) throws Exception {
-	Image image = new Image(pdf, getClass().getClassLoader().getResourceAsStream(path)
-			                                                         , ImageType.JPG);
+	Image image = new Image(pdf, getClass().getClassLoader()
+			     .getResourceAsStream(path), ImageType.JPG);
 	image.setPosition(x + LEFT_MARGIN, y + TOP_MARGIN);
 	image.drawOn(page);
+  }
+  
+  public void jsonImage(String path, float x, float y) throws Exception {
+	  
   }
   
   public void box(int x, int y, int width, int height, boolean fill) throws Exception{
@@ -119,5 +144,39 @@ public class PDFDrawer {
 	font.setSize(size);
 	return font;
   }
+  
+  public void drawSignature(String jsonEncoding) throws Exception {
+	  List<List<Point>> points = extractSignature(jsonEncoding);
+	  Point lastPoint = null;
+	  for (List<Point> line : points) { 
+          for (Point point : line) { 
+              if (lastPoint != null) { 
+                  line(lastPoint.x, lastPoint.y, point.x, point.y); 
+              } 
+              lastPoint = point; 
+          } 
+          lastPoint = null; 
+      } 
+  } 
+  
+  private static List<List<Point>> extractSignature(String jsonEncoding) { 
+      List<List<Point>> lines = new ArrayList<List<Point>>(); 
+      Matcher lineMatcher = 
+              Pattern.compile("(\\[(?:,?\\[-?[\\d\\.]+,-?[\\d\\.]+\\])+\\])"). 
+              matcher(jsonEncoding); 
+      while (lineMatcher.find()) { 
+          Matcher pointMatcher = 
+                  Pattern.compile("\\[(-?[\\d\\.]+),(-?[\\d\\.]+)\\]"). 
+                  matcher(lineMatcher.group(1)); 
+          List<Point> line = new ArrayList<Point>(); 
+          lines.add(line); 
+          while (pointMatcher.find()) { 
+              line.add(new Point(Float.parseFloat(pointMatcher.group(1)), 
+                      Float.parseFloat(pointMatcher.group(2)))); 
+          } 
+      } 
+      return lines; 
+  }
+  
 
 }

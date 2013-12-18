@@ -2,7 +2,6 @@ package com.blackstar.services.impl;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -90,15 +89,17 @@ public class GoogleDriveServiceImpl extends AbstractService implements GoogleDri
 	return osAttachmentFolderId;
   }	
   
-  public String insert(Integer serviceOrderId, ByteArrayOutputStream stream) throws Exception{
+  public String insertFileFromStream(Integer serviceOrderId, String type
+		  , String fileName, String parentId,  byte[] report) throws Exception {
 	File body = new File();
-	body.setTitle("Test");
+	body.setParents(Arrays.asList(new ParentReference()
+	      .setId(getReportsFolderId(serviceOrderId))));
+	body.setTitle(fileName);
 	body.setMimeType("application/pdf");
-	body.setFileSize((long) stream.size());
-	  
+	body.setFileSize((long) report.length);
 	InputStreamContent mediaContent = new InputStreamContent("application/pdf",
-		                   new BufferedInputStream(new ByteArrayInputStream(stream.toByteArray())));
-	mediaContent.setLength(stream.size());
+		             new BufferedInputStream(new ByteArrayInputStream(report)));
+	mediaContent.setLength(report.length);
 	return drive.files().insert(body, mediaContent).execute().getId();
   }
   

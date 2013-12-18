@@ -10,7 +10,7 @@ import com.blackstar.model.dto.AirCoServicePolicyDTO;
 import com.blackstar.services.report.AbstractReport;
 import com.pdfjet.Color;
 
-public class ChillerServiceReport extends AbstractReport {
+public class AirConditioningReport extends AbstractReport {
 	
   private AirCoServicePolicyDTO data = null;
   
@@ -231,7 +231,7 @@ public class ChillerServiceReport extends AbstractReport {
   }
  
   public static void main(String [] args) throws Exception{
-	ChillerServiceReport serv = new ChillerServiceReport();
+	AirConditioningReport serv = new AirConditioningReport();
 	Policy policy = new Policy();
 	Serviceorder serviceOrder = new Serviceorder();
 	AirCoServiceDTO airCo = new AirCoServiceDTO();
@@ -321,6 +321,9 @@ public class ChillerServiceReport extends AbstractReport {
 	see.write(serv.getReport(new AirCoServicePolicyDTO(policy, "equipmentType"
 			                                        , serviceOrder,  airCo)));
 	see.close();
+	
+	
+	
   }
 
 }
