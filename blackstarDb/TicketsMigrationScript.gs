@@ -16,6 +16,8 @@
 ** 3    12/11/2013  SAG  	Se agrega deteccion de ultimo ticket en BD
 ** --   --------   -------  ------------------------------------
 ** 4    19/11/2013  SAG  	Correccion de AutoComit
+** --   --------   -------  ------------------------------------
+** 5    17/12/2013  SAG  	Soporte para lineas en blanco
 *****************************************************************************/
 
 function main() {
@@ -294,8 +296,15 @@ function startSyncJob(conn, sqlLog){
 		data = sheet.getRange(range).getValues();
 		currTicket = data[0];
 	
-		while(currTicket != null && currTicket[0] != null && currTicket[0].toString() != ""){
-			sqlLog = sendToDatabase(currTicket, conn, policies, sqlLog);
+		while(blanks < 5){
+			if(currTicket == null || currTicket[0] == null || currTicket[0].toString() == ""){
+				blanks++;
+			}
+			else{
+				sqlLog = sendToDatabase(currTicket, conn, policies, sqlLog);
+				blanks = 0;
+			}
+			
 			startRec++;
 			range = "A" + startRec.toString() + ":AF" + startRec.toString();
 			data = sheet.getRange(range).getValues();
