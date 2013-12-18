@@ -145,8 +145,9 @@ public class PDFDrawer {
 	return font;
   }
   
-  public void drawSignature(String jsonEncoding) throws Exception {
-	  List<List<Point>> points = extractSignature(jsonEncoding);
+  public void drawSignature(String jsonEncoding, Float scaleFactor, int x, int y) 
+		                                                      throws Exception {
+	  List<List<Point>> points = extractSignature(jsonEncoding, scaleFactor, x, y);
 	  Point lastPoint = null;
 	  for (List<Point> line : points) { 
           for (Point point : line) { 
@@ -159,7 +160,8 @@ public class PDFDrawer {
       } 
   } 
   
-  private static List<List<Point>> extractSignature(String jsonEncoding) { 
+  private static List<List<Point>> extractSignature(String jsonEncoding
+		                           , Float scaleFactor, int x, int y) { 
       List<List<Point>> lines = new ArrayList<List<Point>>(); 
       Matcher lineMatcher = 
               Pattern.compile("(\\[(?:,?\\[-?[\\d\\.]+,-?[\\d\\.]+\\])+\\])"). 
@@ -171,8 +173,9 @@ public class PDFDrawer {
           List<Point> line = new ArrayList<Point>(); 
           lines.add(line); 
           while (pointMatcher.find()) { 
-              line.add(new Point(Float.parseFloat(pointMatcher.group(1)), 
-                      Float.parseFloat(pointMatcher.group(2)))); 
+              line.add(new Point((Float.parseFloat(pointMatcher.group(1)) 
+            		  * scaleFactor) + x, (Float.parseFloat(pointMatcher.group(2)) 
+            				                               * scaleFactor) + y)); 
           } 
       } 
       return lines; 
