@@ -8,6 +8,35 @@
 <html>
 <head>
 	<script type="text/javascript">
+	
+		function applyCloseTicket(){
+			var osId = $("#closureOs option:selected").val();
+			
+			$("#osId").val(osId);
+			
+			$("#closeTicketSend").submit();
+		}
+		
+
+		function closeTicket(id, ticketNumber){
+			// mostrar el dialogo de seleccion de OS
+			$("#cerrarOSCapture").dialog({ title: "Cerrar Ticket " + ticketNumber });
+			$("#cerrarOSCapture").dialog("open");
+			$("#closeTicketId").val(id);
+		}
+
+		function reopenTicket(id, ticketNumber){
+			$("#reopenTicketConfirm").dialog({ title: "Reabrir Ticket " + ticketNumber });
+			$("#reopenTicketConfirmText").html("Desea reabrir el ticket " + ticketNumber + "?");
+			$("#reopenTicketConfirm").dialog("open");
+			$("#reopenTicketId").val(id);
+		}
+			
+		function applyReopenTicket(){
+			$("#reopenTicketSend").submit();
+		}
+			
+
 		$(document).ready(function () 
 		{
 			// Close ticket section
@@ -19,7 +48,24 @@
 				buttons: {
 					"Aceptar": function() {
 						$( this ).dialog( "close" );
-						$().selectedIndex = 2;
+						applyCloseTicket();
+					},
+					
+					"Cancelar": function() {
+					$( this ).dialog( "close" );
+				}}
+			});
+
+			// Dialogo de confirmacion para reabrir ticket
+			$("#reopenTicketConfirm").dialog({
+				autoOpen: false,
+				height: 180,
+				width: 230,
+				modal: true,
+				buttons: {
+					"Aceptar": function() {
+						applyReopenTicket();
+						$( this ).dialog( "close" );
 					},
 					
 					"Cancelar": function() {
@@ -156,7 +202,14 @@
 									<td>
 										<p></p>
 										<button class="searchButton" onclick="addSeguimiento(${ticketF.ticketId}, '${ticketF.ticketNumber}');">Agregar seguimiento</button>
-										<button class="searchButton" onclick="$('#cerrarOSCapture').dialog('open')">Cerrar Ticket</button>
+										<c:choose>
+											<c:when test="${ticketstatusT.ticketStatus == 'CERRADO' || ticketstatusT.ticketStatus == 'CERRADO FT'}">
+												<button class="searchButton" onclick="reopenTicket(${ticketF.ticketId}, '${ticketF.ticketNumber}');">Reabrir ticket</button>
+											</c:when>
+											<c:otherwise>
+												<button class="searchButton" onclick="closeTicket(${ticketF.ticketId}, '${ticketF.ticketNumber}');">Cerrar Ticket</button>
+											</c:otherwise>
+										</c:choose>
 									</td>
 								</tr>
 							<tbody>
@@ -171,11 +224,24 @@
 				
 			<div id="cerrarOSCapture" title="Cerrar Ticket ${ticketF.ticketNumber}">
 				<p>Por favor seleccione la OS que cierra el ticket:</p>
-				<select style="width:90%">
+				<select id = "closureOs" style="width:90%">
 					<c:forEach var="os" items="${ potentialOs }">
 						<option value="${ os.key }">${ os.value }</option>
 					</c:forEach>
 				</select>
+				<form id = "closeTicketSend" action="/ticketDetail" method="POST">
+					<input type="hidden" name="action" value = "closeTicket"/>
+					<input type="hidden" id="closeTicketId" name="closeTicketId"></input>
+					<input type="hidden" id="osId" name="osId"></input>
+				</form>
+			</div>
+
+			<div id="reopenTicketConfirm">
+				<strong id = "reopenTicketConfirmText"></strong>
+				<form id = "reopenTicketSend" action="/ticketDetail" method="POST">
+					<input type="hidden" name="action" value = "reopenTicket"/>
+					<input type="hidden" id="reopenTicketId" name="reopenTicketId"/>
+				</form>
 			</div>
 </div>
 </body>
