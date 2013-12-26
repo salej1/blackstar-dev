@@ -323,8 +323,6 @@
 						</div>
 					</div>
 			</form:form>
-							<!-- Adjuntos -->
-							<c:import url="_attachments.jsp"></c:import>
 							<!-- Control de secuencia y captura de seguimiento -->
 							<c:import url="followUpControl.jsp"></c:import>
 							<table>

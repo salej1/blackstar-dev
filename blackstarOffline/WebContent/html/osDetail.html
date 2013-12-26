@@ -3,7 +3,6 @@
 <head>
 <meta charset="ISO-8859-1">
 <title>Detalle orden servicio (Offline)</title>
-<link rel="import" href="./header.html">
 
 <title>Blackstar Offline</title>
 		<link rel="stylesheet" href="../css/960.css" type="text/css" media="screen" charset="utf-8" />
@@ -50,12 +49,8 @@
 		<script type="text/javascript" charset="utf-8">
  
 	$(document).ready(function () {
-		
-		// Signature capture box # 1 
-		$('#leftSign').signature({disabled: false}); 
-
-		// Signature capture box # 2 
-		$('#rightSign').signature({disabled: true}); 
+		$('#leftSign').signature({disabled: false});  
+		$('#rightSign').signature({disabled: false}); 
 	});
 
  </script> 
@@ -71,7 +66,7 @@
 						<table>
 							<tr>
 								<td>Folio:</td>
-								<td><input  id="lbFolio" type="text" style="width:95%;" readOnly="true" name="localStorage"/></td>
+								<td><input  id="lbFolio" type="text" style="width:95%;" readOnly="true" value="No disponible"/></td>
 								<td colspan='2'></td>
 							</tr>
 							<tr>
@@ -105,13 +100,13 @@
 							</tr>
 							<tr>
 								<td>Reporte de falla</td>
-								<td colspan="7"><input id="lbFalla" type="text" style="width:95%;" readOnly="true" /></td>
+								<td colspan="7"><input id="lbFalla" type="text" style="width:95%;" name="localStorage" /></td>
 							</tr>
 							<tr>
 								<td>Tipo de servicio</td>
-								<td colspan="3"><input id="lbTipoServicio" type="text" style="width:95%;" readOnly="true" /></td>
+								<td colspan="3"><input id="lbTipoServicio" type="text" style="width:95%;" name="localStorage"/></td>
 								<td>Contrato/Proyecto</td>
-								<td colspan="3"><input id="lbProyecto" type="text" style="width:95%;" readOnly="true" /></td>
+								<td colspan="3"><input id="lbProyecto" type="text" style="width:95%;" name="localStorage" /></td>
 							</tr>							
 						</table>
 					</div>					
@@ -132,10 +127,10 @@
 								</thead>
 								<tr>
 									<td style="height:100px;">
-										<textarea id="fldSitEnc" readOnly="true" style="width:100%;height:100%;"></textarea>
+										<textarea id="fldSitEnc" style="width:100%;height:100%;" name="localStorage"></textarea>
 									</td>
 									<td rowspan="3" style="height:100px;">
-										<textarea id="fldTrabReal"  readOnly="true" style="width:100%;height:100%;"></textarea>
+										<textarea id="fldTrabReal"  style="width:100%;height:100%;" name="localStorage"></textarea>
 									</td>
 								</tr>
 								<thead>
@@ -145,7 +140,7 @@
 								</thead>
 								<tr>
 									<td style="height:100px;">
-										<textarea  id="lbParametros" readOnly="true" style="width:100%;height:100%;"></textarea>
+										<textarea  id="lbParametros" name="localStorage" style="width:100%;height:100%;"></textarea>
 									</td>
 								</tr>
 							</table>
@@ -158,7 +153,7 @@
 								</thead>
 								<tr>
 									<td style="height:140px;">
-										<textarea  id="fldReq"  readOnly="true" style="width:100%;height:100%;"></textarea>
+										<textarea  id="fldReq" name="localStorage" style="width:100%;height:100%;"></textarea>
 									</td>
 								</tr>
 								<thead>
@@ -168,7 +163,7 @@
 								</thead>
 								<tr>
 									<td style="height:140px;">
-										<textarea id="fldObserv"  readOnly="true" style="width:100%;height:100%;"></textarea>
+										<textarea id="fldObserv"  name="localStorage" style="width:100%;height:100%;"></textarea>
 									</td>
 								</tr>
 							</table>
@@ -193,12 +188,12 @@
 								    <td>
 								</tr>
 								<tr>
-									<td>Nombre</td><td><input id="lbNombreRealizado" type="text" style="width:95%;" readOnly="true" /></td>
-									<td>Nombre</td><td><input id="lbNombreRecibido" type="text" style="width:95%;"readOnly="true" /></td>
+									<td>Nombre</td><td><input id="lbNombreRealizado" type="text" style="width:95%;" name="localStorage" /></td>
+									<td>Nombre</td><td><input id="lbNombreRecibido" type="text" style="width:95%;" name="localStorage" /></td>
 								</tr>
 								<tr>
-									<td>Fecha y hora de salida</td><td><input id="lbFechaSalida" type="text" style="width:95%;" readOnly="true" /></td>
-									<td>Puesto</td><td><input type="text" id="lblPuesto" style="width:95%;" readOnly="true" /></td>
+									<td>Fecha y hora de salida</td><td><input id="lbFechaSalida" type="text" style="width:95%;" name="localStorage" /></td>
+									<td>Puesto</td><td><input type="text" id="lblPuesto" style="width:95%;" name="localStorage" /></td>
 								</tr>						
 								<tr>
 									<td style="height:40px;"></td>
@@ -210,7 +205,7 @@
 								<tbody>
 									<tr>
 										<td>
-											<input class="searchButton" type="button" value="Guardar servicio" onclick="save()">
+											<input class="searchButton" type="submit" value="Guardar servicio" onclick="save()">
 										</td>
 									</tr>
 								<tbody>

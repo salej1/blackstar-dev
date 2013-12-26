@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	<title>Órden de servicio Aire Acondicionado (Offline)</title>
+	
+		<link rel="stylesheet" href="../css/960.css" type="text/css" media="screen" />
+		<link rel="stylesheet" href="../css/template.css" type="text/css" media="screen"/>
+		<link rel="stylesheet" href="../css/colour.css" type="text/css" media="screen"/>
+		<link href="../js/glow/1.7.0/widgets/widgets.css" type="text/css" rel="stylesheet" />
+		<link rel="stylesheet" href="../css/jquery.ui.theme.css">
+		<link rel="stylesheet" href="../css/jquery-ui.min.css">
+		<link rel="stylesheet" href="../css/jquery.signature.css">
+		<script src="../js/glow/1.7.0/core/core.js" type="text/javascript"></script>
+		<script src="../js/glow/1.7.0/widgets/widgets.js" type="text/javascript"></script>
+		<script src="../js/jquery-1.10.1.min.js"></script>
+		<script src="../js/jquery-ui.js"></script>
+		<script src="../js/jquery.ui.touch-punch.min.js"></script>
+		<script src="../js/jquery.signature.min.js"></script>
+		<link rel="stylesheet" href="../css/jquery.datetimepicker.css">
+	    <script src="../js/jquery.datetimepicker.js"></script>
+		<script type="text/javascript">
+			glow.ready(function(){
+				new glow.widgets.Sortable(
+					'#content .grid_5, #content .grid_6',
+					{
+						draggableOptions : {
+							handle : 'h2'
+						}
+					}
+				);
+			});
+			
+			function save(){
+				var localStorageObjects = $( "*[name='localStorage']");
+				var data = "airCoOS: {";
+				for(var i = 0; i<localStorageObjects.length; i++){
+				  data += localStorageObjects[i].id + " : " 
+					      + localStorageObjects[i].value +  ",";
+				}
+				data += "}";
+			    if(typeof (localStorage.localOSData) === "undefined"){
+					localStorage.localOSData = "";
+				}
+				localStorage.localOSData = localStorage.localOSData + data;
+				alert(localStorage.localOSData);
+			}
+		</script>
+	
+	<script type="text/javascript" charset="utf-8">
+	
+		$(document).ready(function () {
+						
+			$( "#serviceDate" ).datetimepicker();
+			$( "#closed" ).datetimepicker();
+
+			// Signature capture box # 1 
+			$('#signCapture').signature({syncField: '#signCreated'});
+			$('#leftSign').signature({disabled: true}); 
+			$("#signCapDialog").dialog({
+				autoOpen: false,
+				height: 220,
+				width: 370,
+				modal: true,
+				buttons: {
+					"Aceptar": function() {
+						$('#leftSign').signature('draw', $('#signCreated').val()); 
+						$( this ).dialog( "close" );
+					},
+					
+					"Borrar": function() {
+						$('#signCapture').signature('clear'); 
+					},
+					
+					"Cancelar": function() {
+					$( this ).dialog( "close" );
+				}}
+			});
+			
+			// Signature capture box # 2 
+			$('#signCapture2').signature({syncField: '#signReceivedBy'});
+			$('#rightSign').signature({disabled: true}); 
+			$("#signCapDialog2").dialog({
+				autoOpen: false,
+				height: 220,
+				width: 370,
+				modal: true,
+				buttons: {
+					"Aceptar": function() {
+						$('#rightSign').signature('draw', $('#signReceivedBy').val()); 
+						$( this ).dialog( "close" );
+					},
+					
+					"Borrar": function() {
+						$('#signCapture2').signature('clear'); 
+					},
+					
+					"Cancelar": function() {
+					$( this ).dialog( "close" );
+				}}
+			});
+		});
+
+		function isNumberKey(evt){
+
+
+		      var charCode = (evt.which) ? evt.which : event.keyCode;
+		    	         if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57))
+		    	            return false;
+
+		    	         return true;
+		}
+		
+	</script> 
+	
+		 
+	</head>
+	<body>
+		<div id="content" class="container_16 clearfix">	
+				<div class="grid_16">					
+					<div class="box">
+						<h2>AIRES ACONDICIONADOS / CHILLER (Offline)</h2>
+							<table>
+								<tr>
+									<td>Folio:</td>
+									<td><input id="serviceOrderNumber" type="text" style="width:95%;" maxlength="5" readOnly="true" value="No disponible"/></td>
+									<td colspan="2"><small></small>
+										
+									</td>
+								</tr>
+								<tr>
+									<td>Cliente</td>
+									<td colspan="5"><input id="customer" type="text" style="width:95%;" name="localStorage" /></td>
+									<td>Contrato/Proyecto</td>
+									<td colspan="3"><input id="project" type="text" style="width:95%;" name="localStorage" /></td>
+								</tr>
+								<tr>
+									<td>Domicilio</td>
+									<td colspan="5"><textarea id="equipmentAddress" style="width:95%;height:50px;" name="localStorage"></textarea></td>
+									<td>Telefono</td>
+									<td><input type="text" id="contactPhone" style="width:95%;" name="localStorage" /></td>
+								</tr>
+								<tr>
+									<td>Equipo</td>
+									<td><input id="equipmentType" type="text" style="width:95%;" name="localStorage" /></td>
+									<td style="padding-left:10px;">Marca</td>
+									<td><input id="brand" type="text" style="width:95%;" name="localStorage" /></td>
+									<td>Modelo</td>
+									<td><input id="model" type="text" style="width:95%;" name="localStorage" /></td>
+									<td>Serie</td>
+									<td><input id="serialNumber" type="text" style="width:95%;" name="localStorage" /></td>
+										
+								</tr>
+								<tr>
+									<td>Fecha y hora de llegada</td>
+									<td><input id="serviceDate" type="text" style="width:95%;"  name="localStorage"/></td>
+								</tr>
+							</table>
+						</div>					
+					</div>
+					<div class="grid_16">
+						<div class="box">
+							<table>
+								<thead>
+									<tr>
+										<th colspan="9">1. EVAPORADOR</th>
+									</tr>
+								</thead>
+								<tr>
+									<td colspan="5">1.1 OPERACIÓN Y ESTADO DE FUNCIONAMIENTO ENCONTRADO</td>
+									<td colspan="4"><input id="evaDescription" type="text" style="width:99%;" name="localStorage"/></td>
+								</tr>
+								<tr>
+									<td colspan="5">1.2 VALORES ACTUALES</td>
+									<td>Temp.</td>
+									<td><input id="evaValTemp" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' name="localStorage"/></td>
+									<td>Hum.</td>
+									<td><input id="evaValHum" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' name="localStorage"/></td>
+								</tr>
+								<tr>
+									<td colspan="5">1.2.1 SETPOINTS</td>
+									<td>Temp.</td>
+									<td><input id="evaSetpointTemp" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' name="localStorage"/></td>
+									<td>Hum.</td>
+									<td><input id="evaSetpointHum" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' name="localStorage"/></td>
+								</tr>
+								<tr>
+									<td colspan="5">1.3 SE REALIZÓ COMPARACION Y CALIBRACION T/H MEDIDO</td>
+									<td colspan="4"><input type="checkbox"  id="evaFlagCalibration"  style="width:99%;" name="localStorage"/></td>
+								</tr>
+								<tr>
+									<td colspan="5">1.4 REVISIÓN Y LIMPIEZA DE FILTROS, EVAPORADOR Y EQUIPO EN GRAL.</td>
+									<td colspan="4"><input type="checkbox"  id="evaReviewFilter"  style="width:99%;" name="localStorage"/></td>
+								</tr>
+								<tr>
+									<td colspan="5">1.5 REVISIÓN Y AJUSTE DE BANDAS, ALINEACIÓN Y BALANCEO DE TURBINAS</td>
+									<td colspan="4"><input type="checkbox"  id="evaReviewStrip" style="width:99%;" name="localStorage"/></td>
+								</tr>
+								<tr>
+									<td colspan="5">1.6 INSPECCIÓN Y LIMPIEZADEL SISTEMA ELECTRICO, PROTECCIONES, CABLEADO, TERMINALES Y CONTACTORES (PLATINOS)</td>
+									<td colspan="4"><input type="checkbox"  id="evaCleanElectricSystem" style="width:99%;" name="localStorage"/></td>
+								</tr>
+								<tr>
+									<td colspan="5">1.7	REVISIÓN Y LIMPIEZA DE TARJETA DE CONTROL Y SENSOR DE TEMP/HUMEDAD</td>
+									<td colspan="4"><input type="checkbox"  id="evaCleanControlCard"  style="width:99%;" name="localStorage"/></td>
+								</tr>
+								<tr>
+									<td colspan="5">1.8	REVISIÓN Y LIMPIEZA DE CHAROLA Y DRENAJE DE CONDENSADOS Y HUMIDIFICADOR</td>
+									<td colspan="4"><input type="checkbox"  id="evaCleanTray" style="width:99%;" name="localStorage"/></td>
+								</tr>
+								<tr>
+									<td colspan="5">1.9	LECTURA DE PRESIÓN DE COMPRESIÓN EN OPERACIÓN NORMAL</td>
+									<td>Alta</td>
+									<td><input id="evaLectrurePreasureHigh" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' name="localStorage"/></td>
+									<td>Baja(60 psig min)</td>
+									<td><input id="evaLectrurePreasureLow" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' name="localStorage"/></td>
+								</tr>
+								<tr>
+									<td colspan="5">1.10 LECTURA DE TEMPERATURA EN SUCCIÓN Y ENTRADA DE VÁLVULA DE EXPANSIÓN</td>
+									<td colspan="4"><input id="evaLectureTemp" type="text" style="width:99%;" onkeypress='return isNumberKey(event)' name="localStorage"/></td>
+								</tr>
+								<tr>
+									<td colspan="5">1.11 ESTADO DE ACEITE EN EL COMPRESOR</td>
+									<td>Color</td>
+									<td><input id="evaLectureOilColor" type="text" style="width:95%;" name="localStorage"/></td>
+									<td>Nivel</td>
+									<td><input id="evaLectureOilLevel" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' name="localStorage"/></td>
+								</tr>
+								<tr>
+									<td colspan="5">1.12 VERIFICAR MIRILLA DEL SISTEMA DE REFRIGERACIÓN</td>
+									<td>Color</td>
+									<td><input id="evaLectureCoolerColor" type="text" style="width:95%;" name="localStorage"/></td>
+									<td>Nivel</td>
+									<td><input id="evaLectureCoolerLevel" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' name="localStorage"/></td>
+								</tr>
+								<tr>
+									<td colspan="5">1.13 REVISIÓN DE OPERACIÓN DE PROTECCIONES POR ALTA Y BAJA PRESIÓN</td>
+									<td colspan="4"><input id="evaCheckOperatation" type="text" style="width:99%;" name="localStorage"/></td>
+								</tr>
+								<tr>
+									<td colspan="5">1.14 VERIFICAR RUIDOS EXTRAÑOS, VIBRACIÓN EXCESIVA, SENTADO DEL EQUIPO Y COMPONENTES Y POSIBLES FUGAS EN TODO EL SISTEMA</td>
+									<td colspan="4"><input id="evaCheckNoise" type="text" style="width:99%;" name="localStorage"/></td>
+								</tr>
+								<tr>
+									<td colspan="5">1.15 CORRECTO AISLAMIENTO DE TUBERÍA Y TAPAS DEL EQUIPO</td>
+									<td colspan="4"><input id="evaCheckIsolated" type="text" style="width:99%;" name="localStorage"/></td>
+								</tr>
+								<tr>
+									<td colspan="3">1.16 TOMA DE LECTURAS DE VOLTAJE</td>
+									<td>Tomas a tierra</td>
+									<td><input id="evaLectureVoltageGroud" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' name="localStorage"/></td>
+									<td>Entre fases</td>
+									<td><input id="evaLectureVoltagePhases" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' name="localStorage"/></td>
+									<td>Control</td>
+									<td><input id="evaLectureVoltageControl" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' name="localStorage"/></td>
+								</tr>
+								<tr>
+									<td colspan="1">1.17 LECTURA DE CORRIENTE POR FASE</td>
+									<td>Motor</td>
+									<td><input id="evaLectureCurrentMotor1" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' name="localStorage"/></td> 
+									<td><input id="evaLectureCurrentMotor2" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' name="localStorage"/></td> 
+									<td><input id="evaLectureCurrentMotor3" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' name="localStorage"/></td>
+									<td>Compresor</td>
+									<td><input id="evaLectureCurrentCompressor1" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' name="localStorage"/></td> 
+									<td><input id="evaLectureCurrentCompressor2" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' name="localStorage"/></td> 
+									<td><input id="evaLectureCurrentCompressor3" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' name="localStorage"/></td>
+								</tr>
+								<tr>
+									<td colspan="1"></td>
+									<td>Humidificador</td>
+									<td><input id="evaLectureCurrentHumidifier1" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' name="localStorage"/></td>
+									<td><input id="evaLectureCurrentHumidifier2" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' name="localStorage"/></td>
+									<td><input id="evaLectureCurrentHumidifier3" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' name="localStorage"/></td>
+									<td>Calentador</td>
+									<td><input id="evaLectureCurrentHeater1" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' name="localStorage"/></td>
+									<td><input id="evaLectureCurrentHeater2" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' name="localStorage"/></td>
+									<td><input id="evaLectureCurrentHeater3" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' name="localStorage"/></td>
+								</tr>
+								<tr>
+									<td colspan="5">1.18 PRUEBA DE SENSOR DE AIRE Y FILTRO SUCIO</td>
+									<td colspan="4"><input type="checkbox"  id="evaCheckFluidSensor"  style="width:99%;" name="localStorage"/></td>
+								</tr>	
+								<tr>
+									<td colspan="5">1.19 REQUERIMIENTO DE LAMINADO Y PINTURA EN EL EQUIPO</td>
+									<td colspan="4"><input type="checkbox"  id="evaRequirMaintenance" style="width:99%;" name="localStorage"/></td>
+								</tr>	
+							</table>
+							<table>
+								<thead>
+									<tr>
+									<th colspan="7"	>2. CONDENSADOR:</th>
+									</tr>
+								</thead>
+								<tr>
+									<td>2.1	REVISION DE CONDENSADOR (RUIDO, VIBRACIÓN, FUGAS) Y VERIFICACIÓN DE OPERACIONES DE PROPELAS (ROTACIÓN CORRECTA):</td>
+									<td  colspan="6"><input id="condReview" type="text" style="width:99%;" name="localStorage"/></td>
+								</tr>
+								<tr>
+									<td>2.2	INSPECCIÓN Y LIMPIEZA DEL SISTEMA ELÉCTRICO, PROTECCIONES, CABLEADO, TERMINALES Y CONTACTORES</td>
+									<td colspan="6"><input type="checkbox"  id="condCleanElectricSystem"  style="width:99%;" name="localStorage"/></td>
+								</tr>
+								<tr>
+									<td>2.3	LAVADO DE CONDENSADOR (DRY FLUID COOLER) CON LIQUIDO DESINCRUSTANTE Y AGUA A PRESIÓN</td>
+									<td colspan="6"><input type="checkbox"  id="condClean" style="width:99%;" name="localStorage"/></td>
+								</tr>
+								<tr>
+									<td>2.4	TOMA DE LECTURAS DE VOLTAJE</td>
+									<td>Fases a tierra</td>
+									<td><input id="condLectureVoltageGroud" type="text" style="width:90%;" onkeypress='return isNumberKey(event)' name="localStorage"/></td>
+									<td>Entre fases</td>
+									<td><input id="condLectureVoltagePhases" type="text" style="width:90%;" onkeypress='return isNumberKey(event)' name="localStorage"/></td>
+									<td>Control</td>
+									<td><input id="condLectureVoltageControl" type="text" style="width:90%;" onkeypress='return isNumberKey(event)' name="localStorage"/></td>
+								</tr>
+								<tr>
+									<td>2.5	LECTURA DE CORRIENTE EN MONITORES DE CONDENSADOR</td>
+									<td colspan="6" ><input id="condLectureMotorCurrent" type="text" style="width:99%;" onkeypress='return isNumberKey(event)' name="localStorage"/></td>
+								</tr>
+								<tr>
+									<td>2.6	REVISIÓN Y AJUSTE DE TERMOSTATO</td>
+									<td colspan="6"><input id="condReviewThermostat" type="text" style="width:99%;" name="localStorage"/></td>
+								</tr>
+								<tr>
+									<td></td>
+									<td>MODELO:</td>
+									<td><input id="condModel" type="text" style="width:90%;" name="localStorage"/></td>
+									<td>No. DE SERIE:</td>
+									<td><input id="condSerialNumber" type="text" style="width:90%;" name="localStorage"/></td>
+									<td>MARCA:</td>
+									<td><input id="condBrand" type="text" style="width:90%;" name="localStorage"/></td>
+								</tr>
+							</table>
+		
+							<table>
+								<thead>
+									<tr>
+										<th>OBSERVACIONES:</th>
+										<th> Mantenimiento y lecturas de otros accesorios (bombas, manómetros, termómetros, etc) Realizar pruebas de operación (COOL, REHEAT, HUMIF, DESHUMIF) , ajustes finales e historial de alarmas</th>
+									</tr>
+								</thead>
+								<tr>
+									<td colspan="2" style="height:140px;">
+										<textarea id="observations"   style="width:100%;height:99%;" name="localStorage"></textarea>
+									</td>
+								</tr>
+							</table>
+
+							<table>
+								<thead>
+									<tr>
+										<th colspan="2">Realizado Por</th>
+										<th colspan="2">Servicio y/o equipo recibido a mi entera satisfaccion</th>
+									</tr>
+								</thead>
+								<tr>
+									<td colspan="2">
+										<span>Firma</span>
+										<div id="leftSign" class="signBox" onclick="$('#signCapDialog').dialog('open');">
+										</div>
+									</td>
+									<td colspan="2" >
+										<span>Firma</span>
+										<div id="rightSign" class="signBox" onclick="$('#signCapDialog2').dialog('open');">
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<td>Nombre</td>
+									<td><input id="responsible" type="text" style="width:95%;"  name="localStorage"/></td>
+									<td>Nombre</td>
+									<td><input id="receivedBy" type="text" style="width:95%;" name="localStorage"/></td>
+								</tr>
+								<tr>
+									<td>Fecha y hora de salida</td>
+									<td><input id="closed" type="text" style="width:95%;"  name="localStorage"/></td>
+									<td>Puesto</td>
+									<td><input id="receivedByPosition"  style="width:95%;"  name="localStorage"/></td>
+								</tr>						
+							</table>
+
+							<table>
+								<tbody>
+									<tr>
+										<td>
+											<input class="searchButton" type="submit" value="Guardar servicio" onclick="save()">
+										</td>
+									</tr>
+								<tbody>
+							</table>
+							
+
+					</div>
+					</div>
+					
+					
+					<!-- Signature capture box # 1 -->
+					<input type="hidden" id="signCreated" name="localStorage"/>
+					<div id="signCapDialog" title="Capture su firma en el cuadro" class="signBoxDlg">
+						<div id="signCapture">
+						</div>
+					</div>
+					
+					<!-- Signature capture box # 2 -->
+					<input type="hidden" id="signReceivedBy" name="localStorage"/>
+					<div id="signCapDialog2" title="Capture su firma en el cuadro" class="signBoxDlg">
+						<div id="signCapture2">
+						</div>
+					</div>	
+		</div>
+	</body>
+</html>
