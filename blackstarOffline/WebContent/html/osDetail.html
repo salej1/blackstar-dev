@@ -30,6 +30,21 @@
 					}
 				);
 			});
+			
+			function save(){
+				var localStorageObjects = $( "*[name='localStorage']");
+				var data = "generalOS: {";
+				for(var i = 0; i<localStorageObjects.length; i++){
+				  data += localStorageObjects[i].id + " : " 
+					      + localStorageObjects[i].value +  ",";
+				}
+				data += "}";
+				if(localStorage.localOSData == "undefined" ){
+					localStorage.localOSData = "";
+				}
+				localStorage.localOSData = localStorage.localOSData + data;
+				alert(localStorage.localOSData);
+			}
 		</script>
 		
 		<script type="text/javascript" charset="utf-8">
@@ -56,36 +71,36 @@
 						<table>
 							<tr>
 								<td>Folio:</td>
-								<td><input  id="lbFolio" type="text" style="width:95%;" readOnly="true" /></td>
+								<td><input  id="lbFolio" type="text" style="width:95%;" readOnly="true" name="localStorage"/></td>
 								<td colspan='2'></td>
 							</tr>
 							<tr>
 								<td>Cliente</td>
-								<td colspan="5"><input id="lbCliente" type="text" style="width:95%;" readOnly="true" /></td>
+								<td colspan="5"><input id="lbCliente" type="text" style="width:95%;" name="localStorage" /></td>
 								<td>No Ticket</td>
-								<td><input  id="lbNoTicket" type="text" style="width:95%;" readOnly="true" /></td>
+								<td><input  id="lbNoTicket" type="text" style="width:95%;" name="localStorage" /></td>
 							</tr>
 							<tr>
 								<td>Domicilio</td>
-								<td colspan="5"><textarea  id="lbDomicilio" style="width:95%;height:50px;"></textarea></td>
+								<td colspan="5"><textarea  id="lbDomicilio" style="width:95%;height:50px;" name="localStorage"></textarea></td>
 								<td>Fecha y hora de llegada</td>
-								<td><input id="fechaLlegada" type="text" style="width:95%;" readOnly="true"/></td>
+								<td><input id="fechaLlegada" type="text" style="width:95%;" name="localStorage"/></td>
 							</tr>
 							<tr>
 								<td>Solicitante</td>
-								<td colspan="5"><input id="lbSolicitante" type="text" style="width:95%;" readOnly="true" /></td>
+								<td colspan="5"><input id="lbSolicitante" type="text" style="width:95%;" name="localStorage" /></td>
 								<td>Telefono</td>
-								<td><input type="text" id="lbTelefono" style="width:95%;" readOnly="true" /></td>
+								<td><input type="text" id="lbTelefono" style="width:95%;" name="localStorage" /></td>
 							</tr>
 							<tr>
 								<td>Equipo</td>
-								<td><input id="lbEquipo" type="text" style="width:95%;" readOnly="true" /></td>
+								<td><input id="lbEquipo" type="text" style="width:95%;" name="localStorage" /></td>
 								<td style="padding-left:10px;">Marca</td>
-								<td><input id="lbMarca" type="text" style="width:95%;" readOnly="true" /></td>
+								<td><input id="lbMarca" type="text" style="width:95%;" name="localStorage" /></td>
 								<td>Modelo</td>
-								<td><input id="lbModelo" type="text" style="width:95%;" readOnly="true" /></td>
+								<td><input id="lbModelo" type="text" style="width:95%;" name="localStorage" /></td>
 								<td>Serie</td>
-								<td><input id="lbSerie" type="text" style="width:95%;" readOnly="true" /></td>
+								<td><input id="lbSerie" type="text" style="width:95%;" name="localStorage" /></td>
 								
 							</tr>
 							<tr>
@@ -195,8 +210,7 @@
 								<tbody>
 									<tr>
 										<td>
-											<button class="searchButton" onclick="addSeguimiento(${serviceOrderDetail.serviceOrderId}, '${serviceOrderDetail.serviceOrderNo}');">Agregar seguimiento</button>
-											<button class="searchButton" onclick="window.location = 'dashboard'">Cerrar</button>
+											<input class="searchButton" type="button" value="Guardar servicio" onclick="save()">
 										</td>
 									</tr>
 								<tbody>
