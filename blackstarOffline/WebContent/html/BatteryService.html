@@ -32,17 +32,39 @@
 			
 			function save(){
 				var localStorageObjects = $( "*[name='localStorage']");
-				var data = "batteryOS: {";
+				var data = "$oflnOS-battery: {";
+				var floatVoltage, chargeVoltage;
 				for(var i = 0; i<localStorageObjects.length; i++){
-				  data += localStorageObjects[i].id + " : " 
-					      + localStorageObjects[i].value +  ",";
+				  if(localStorageObjects[i].value == "on"){
+					localStorageObjects[i].value = localStorageObjects[i].checked;
+				  }
+				  data += ("\"" + localStorageObjects[i].id + "\"") + ":" 
+					     + ("\"" + localStorageObjects[i].value.replace(/"/g, "'")  
+					    		                                   + "\"") +  ",";
 				}
-				data += "}";
-			    if(typeof (localStorage.localOSData) === "undefined"){
-					localStorage.localOSData = "";
+				data += "\"cells\":[";
+				for(var i = 1; i <= 88; i++){
+					floatVoltage = document.getElementById("cells" + i + ".floatVoltage").value;
+					if(floatVoltage == ""){
+						floatVoltage = 0;
+					}
+					chargeVoltage = document.getElementById("cells" + i + ".chargeVoltage").value;
+					if(chargeVoltage == ""){
+						chargeVoltage = 0;
+					}
+					data += "{\"cellNumber\":" + i + ","
+						 + "\"floatVoltage\":" + floatVoltage + ","
+					     + "\"chargeVoltage\":" + chargeVoltage + "}";
+					if(i!=88){
+						data+=", ";
+					}
 				}
-				localStorage.localOSData = localStorage.localOSData + data;
-				alert(localStorage.localOSData);
+				data += "]}";
+				if(typeof (localStorage.localOSData) === "undefined"){
+				  localStorage.localOSData = "";
+				}
+				localStorage.localOSData = localStorage.localOSData + data.replace(",}", "}");
+				alert(data.replace(",}", "}"));
 			}
 		</script>
 	
@@ -234,38 +256,38 @@
 						<tr>
 								<td>1</td>
 								<td>
-									<input id="cells1.cellNumber" name="localStorage" value="1" type="hidden" value=""/>
-									<input id="cells1.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells1.cellNumber" value="1" type="hidden" value=""/>
+									<input id="cells1.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells1.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells1.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 								<td>23</td>
 								<td>
-									<input id="cells23.cellNumber" name="localStorage" value="23" type="hidden" value=""/>
-									<input id="cells23.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells23.cellNumber" value="23" type="hidden" value=""/>
+									<input id="cells23.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells23.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells23.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 								<td>45</td>
 								<td>
-									<input id="cells45.cellNumber" name="localStorage" value="45" type="hidden" value=""/>
-									<input id="cells45.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells45.cellNumber" value="45" type="hidden" value=""/>
+									<input id="cells45.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells45.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells45.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 								<td>67</td>
 								<td>
-									<input id="cells67.cellNumber" name="localStorage" value="67" type="hidden" value=""/>
-									<input id="cells67.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells67.cellNumber" value="67" type="hidden" value=""/>
+									<input id="cells67.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells67.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells67.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 					   		</tr>
@@ -273,38 +295,38 @@
 							<tr>
 								<td>2</td>
 								<td>
-									<input id="cells2.cellNumber" name="localStorage" value="2" type="hidden" value=""/>
-									<input id="cells2.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells2.cellNumber" value="2" type="hidden" value=""/>
+									<input id="cells2.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells2.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells2.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 								<td>24</td>
 								<td>
-									<input id="cells24.cellNumber" name="localStorage" value="24" type="hidden" value=""/>
-									<input id="cells24.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells24.cellNumber" value="24" type="hidden" value=""/>
+									<input id="cells24.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells24.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells24.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 								<td>46</td>
 								<td>
-									<input id="cells46.cellNumber" name="localStorage" value="46" type="hidden" value=""/>
-									<input id="cells46.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells46.cellNumber" value="46" type="hidden" value=""/>
+									<input id="cells46.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells46.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells46.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 								<td>68</td>
 								<td>
-									<input id="cells68.cellNumber" name="localStorage" value="68" type="hidden" value=""/>
-									<input id="cells68.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells68.cellNumber" value="68" type="hidden" value=""/>
+									<input id="cells68.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells68.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells68.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 					   		</tr>
@@ -312,38 +334,38 @@
 							<tr>
 								<td>3</td>
 								<td>
-									<input id="cells3.cellNumber" name="localStorage" value="3" type="hidden" value=""/>
-									<input id="cells3.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells3.cellNumber" value="3" type="hidden" value=""/>
+									<input id="cells3.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells3.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells3.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 								<td>25</td>
 								<td>
-									<input id="cells25.cellNumber" name="localStorage" value="25" type="hidden" value=""/>
-									<input id="cells25.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells25.cellNumber" value="25" type="hidden" value=""/>
+									<input id="cells25.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells25.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells25.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 								<td>47</td>
 								<td>
-									<input id="cells47.cellNumber" name="localStorage" value="47" type="hidden" value=""/>
-									<input id="cells47.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells47.cellNumber" value="47" type="hidden" value=""/>
+									<input id="cells47.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells47.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells47.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 								<td>69</td>
 								<td>
-									<input id="cells69.cellNumber" name="localStorage" value="69" type="hidden" value=""/>
-									<input id="cells69.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells69.cellNumber" value="69" type="hidden" value=""/>
+									<input id="cells69.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells69.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells69.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 					   		</tr>
@@ -351,38 +373,38 @@
 							<tr>
 								<td>4</td>
 								<td>
-									<input id="cells4.cellNumber" name="localStorage" value="4" type="hidden" value=""/>
-									<input id="cells4.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells4.cellNumber" value="4" type="hidden" value=""/>
+									<input id="cells4.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells4.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells4.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 								<td>26</td>
 								<td>
-									<input id="cells26.cellNumber" name="localStorage" value="26" type="hidden" value=""/>
-									<input id="cells26.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells26.cellNumber" value="26" type="hidden" value=""/>
+									<input id="cells26.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells26.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells26.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 								<td>48</td>
 								<td>
-									<input id="cells48.cellNumber" name="localStorage" value="48" type="hidden" value=""/>
-									<input id="cells48.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells48.cellNumber" value="48" type="hidden" value=""/>
+									<input id="cells48.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells48.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells48.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 								<td>70</td>
 								<td>
-									<input id="cells70.cellNumber" name="localStorage" value="70" type="hidden" value=""/>
-									<input id="cells70.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells70.cellNumber" value="70" type="hidden" value=""/>
+									<input id="cells70.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells70.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells70.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 					   		</tr>
@@ -390,38 +412,38 @@
 							<tr>
 								<td>5</td>
 								<td>
-									<input id="cells5.cellNumber" name="localStorage" value="5" type="hidden" value=""/>
-									<input id="cells5.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells5.cellNumber" value="5" type="hidden" value=""/>
+									<input id="cells5.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells5.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells5.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 								<td>27</td>
 								<td>
-									<input id="cells27.cellNumber" name="localStorage" value="27" type="hidden" value=""/>
-									<input id="cells27.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells27.cellNumber" value="27" type="hidden" value=""/>
+									<input id="cells27.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells27.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells27.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 								<td>49</td>
 								<td>
-									<input id="cells49.cellNumber" name="localStorage" value="49" type="hidden" value=""/>
-									<input id="cells49.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells49.cellNumber" value="49" type="hidden" value=""/>
+									<input id="cells49.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells49.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells49.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 								<td>71</td>
 								<td>
-									<input id="cells71.cellNumber" name="localStorage" value="71" type="hidden" value=""/>
-									<input id="cells71.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells71.cellNumber" value="71" type="hidden" value=""/>
+									<input id="cells71.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells71.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells71.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 					   		</tr>
@@ -429,38 +451,38 @@
 							<tr>
 								<td>6</td>
 								<td>
-									<input id="cells6.cellNumber" name="localStorage" value="6" type="hidden" value=""/>
-									<input id="cells6.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells6.cellNumber" value="6" type="hidden" value=""/>
+									<input id="cells6.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells6.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells6.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 								<td>28</td>
 								<td>
-									<input id="cells28.cellNumber" name="localStorage" value="28" type="hidden" value=""/>
-									<input id="cells28.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells28.cellNumber" value="28" type="hidden" value=""/>
+									<input id="cells28.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells28.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells28.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 								<td>50</td>
 								<td>
-									<input id="cells50.cellNumber" name="localStorage" value="50" type="hidden" value=""/>
-									<input id="cells50.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells50.cellNumber" value="50" type="hidden" value=""/>
+									<input id="cells50.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells50.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells50.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 								<td>72</td>
 								<td>
-									<input id="cells72.cellNumber" name="localStorage" value="72" type="hidden" value=""/>
-									<input id="cells72.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells72.cellNumber" value="72" type="hidden" value=""/>
+									<input id="cells72.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells72.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells72.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 					   		</tr>
@@ -468,38 +490,38 @@
 							<tr>
 								<td>7</td>
 								<td>
-									<input id="cells7.cellNumber" name="localStorage" value="7" type="hidden" value=""/>
-									<input id="cells7.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells7.cellNumber" value="7" type="hidden" value=""/>
+									<input id="cells7.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells7.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells7.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 								<td>29</td>
 								<td>
-									<input id="cells29.cellNumber" name="localStorage" value="29" type="hidden" value=""/>
-									<input id="cells29.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells29.cellNumber" value="29" type="hidden" value=""/>
+									<input id="cells29.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells29.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells29.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 								<td>51</td>
 								<td>
-									<input id="cells51.cellNumber" name="localStorage" value="51" type="hidden" value=""/>
-									<input id="cells51.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells51.cellNumber" value="51" type="hidden" value=""/>
+									<input id="cells51.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells51.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells51.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 								<td>73</td>
 								<td>
-									<input id="cells73.cellNumber" name="localStorage" value="73" type="hidden" value=""/>
-									<input id="cells73.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells73.cellNumber" value="73" type="hidden" value=""/>
+									<input id="cells73.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells73.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells73.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 					   		</tr>
@@ -507,38 +529,38 @@
 							<tr>
 								<td>8</td>
 								<td>
-									<input id="cells8.cellNumber" name="localStorage" value="8" type="hidden" value=""/>
-									<input id="cells8.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells8.cellNumber" value="8" type="hidden" value=""/>
+									<input id="cells8.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells8.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells8.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 								<td>30</td>
 								<td>
-									<input id="cells30.cellNumber" name="localStorage" value="30" type="hidden" value=""/>
-									<input id="cells30.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells30.cellNumber" value="30" type="hidden" value=""/>
+									<input id="cells30.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells30.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells30.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 								<td>52</td>
 								<td>
-									<input id="cells52.cellNumber" name="localStorage" value="52" type="hidden" value=""/>
-									<input id="cells52.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells52.cellNumber" value="52" type="hidden" value=""/>
+									<input id="cells52.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells52.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells52.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 								<td>74</td>
 								<td>
-									<input id="cells74.cellNumber" name="localStorage" value="74" type="hidden" value=""/>
-									<input id="cells74.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells74.cellNumber" value="74" type="hidden" value=""/>
+									<input id="cells74.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells74.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells74.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 					   		</tr>
@@ -546,38 +568,38 @@
 							<tr>
 								<td>9</td>
 								<td>
-									<input id="cells9.cellNumber" name="localStorage" value="9" type="hidden" value=""/>
-									<input id="cells9.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells9.cellNumber" value="9" type="hidden" value=""/>
+									<input id="cells9.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells9.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells9.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 								<td>31</td>
 								<td>
-									<input id="cells31.cellNumber" name="localStorage" value="31" type="hidden" value=""/>
-									<input id="cells31.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells31.cellNumber" value="31" type="hidden" value=""/>
+									<input id="cells31.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells31.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells31.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 								<td>53</td>
 								<td>
-									<input id="cells53.cellNumber" name="localStorage" value="53" type="hidden" value=""/>
-									<input id="cells53.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells53.cellNumber" value="53" type="hidden" value=""/>
+									<input id="cells53.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells53.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells53.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 								<td>75</td>
 								<td>
-									<input id="cells75.cellNumber" name="localStorage" value="75" type="hidden" value=""/>
-									<input id="cells75.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells75.cellNumber" value="75" type="hidden" value=""/>
+									<input id="cells75.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells75.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells75.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 					   		</tr>
@@ -585,38 +607,38 @@
 							<tr>
 								<td>10</td>
 								<td>
-									<input id="cells10.cellNumber" name="localStorage" value="10" type="hidden" value=""/>
-									<input id="cells10.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells10.cellNumber" value="10" type="hidden" value=""/>
+									<input id="cells10.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells10.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells10.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 								<td>32</td>
 								<td>
-									<input id="cells32.cellNumber" name="localStorage" value="32" type="hidden" value=""/>
-									<input id="cells32.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells32.cellNumber" value="32" type="hidden" value=""/>
+									<input id="cells32.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells32.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells32.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 								<td>54</td>
 								<td>
-									<input id="cells54.cellNumber" name="localStorage" value="54" type="hidden" value=""/>
-									<input id="cells54.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells54.cellNumber" value="54" type="hidden" value=""/>
+									<input id="cells54.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells54.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells54.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 								<td>76</td>
 								<td>
-									<input id="cells76.cellNumber" name="localStorage" value="76" type="hidden" value=""/>
-									<input id="cells76.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells76.cellNumber" value="76" type="hidden" value=""/>
+									<input id="cells76.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells76.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells76.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 					   		</tr>
@@ -624,38 +646,38 @@
 							<tr>
 								<td>11</td>
 								<td>
-									<input id="cells11.cellNumber" name="localStorage" value="11" type="hidden" value=""/>
-									<input id="cells11.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells11.cellNumber" value="11" type="hidden" value=""/>
+									<input id="cells11.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells11.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells11.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 								<td>33</td>
 								<td>
-									<input id="cells33.cellNumber" name="localStorage" value="33" type="hidden" value=""/>
-									<input id="cells33.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells33.cellNumber" value="33" type="hidden" value=""/>
+									<input id="cells33.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells33.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells33.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 								<td>55</td>
 								<td>
-									<input id="cells55.cellNumber" name="localStorage" value="55" type="hidden" value=""/>
-									<input id="cells55.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells55.cellNumber" value="55" type="hidden" value=""/>
+									<input id="cells55.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells55.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells55.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 								<td>77</td>
 								<td>
-									<input id="cells77.cellNumber" name="localStorage" value="77" type="hidden" value=""/>
-									<input id="cells77.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells77.cellNumber" value="77" type="hidden" value=""/>
+									<input id="cells77.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells77.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells77.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 					   		</tr>
@@ -663,38 +685,38 @@
 							<tr>
 								<td>12</td>
 								<td>
-									<input id="cells12.cellNumber" name="localStorage" value="12" type="hidden" value=""/>
-									<input id="cells12.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells12.cellNumber" value="12" type="hidden" value=""/>
+									<input id="cells12.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells12.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells12.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 								<td>34</td>
 								<td>
-									<input id="cells34.cellNumber" name="localStorage" value="34" type="hidden" value=""/>
-									<input id="cells34.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells34.cellNumber" value="34" type="hidden" value=""/>
+									<input id="cells34.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells34.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells34.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 								<td>56</td>
 								<td>
-									<input id="cells56.cellNumber" name="localStorage" value="56" type="hidden" value=""/>
-									<input id="cells56.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells56.cellNumber" value="56" type="hidden" value=""/>
+									<input id="cells56.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells56.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells56.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 								<td>78</td>
 								<td>
-									<input id="cells78.cellNumber" name="localStorage" value="78" type="hidden" value=""/>
-									<input id="cells78.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells78.cellNumber" value="78" type="hidden" value=""/>
+									<input id="cells78.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells78.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells78.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 					   		</tr>
@@ -702,38 +724,38 @@
 							<tr>
 								<td>13</td>
 								<td>
-									<input id="cells13.cellNumber" name="localStorage" value="13" type="hidden" value=""/>
-									<input id="cells13.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells13.cellNumber" value="13" type="hidden" value=""/>
+									<input id="cells13.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells13.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells13.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 								<td>35</td>
 								<td>
-									<input id="cells35.cellNumber" name="localStorage" value="35" type="hidden" value=""/>
-									<input id="cells35.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells35.cellNumber" value="35" type="hidden" value=""/>
+									<input id="cells35.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells35.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells35.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 								<td>57</td>
 								<td>
-									<input id="cells57.cellNumber" name="localStorage" value="57" type="hidden" value=""/>
-									<input id="cells57.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells57.cellNumber" value="57" type="hidden" value=""/>
+									<input id="cells57.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells57.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells57.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 								<td>79</td>
 								<td>
-									<input id="cells79.cellNumber" name="localStorage" value="79" type="hidden" value=""/>
-									<input id="cells79.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells79.cellNumber" value="79" type="hidden" value=""/>
+									<input id="cells79.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells79.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells79.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 					   		</tr>
@@ -741,38 +763,38 @@
 							<tr>
 								<td>14</td>
 								<td>
-									<input id="cells14.cellNumber" name="localStorage" value="14" type="hidden" value=""/>
-									<input id="cells14.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells14.cellNumber" value="14" type="hidden" value=""/>
+									<input id="cells14.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells14.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells14.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 								<td>36</td>
 								<td>
-									<input id="cells36.cellNumber" name="localStorage" value="36" type="hidden" value=""/>
-									<input id="cells36.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells36.cellNumber" value="36" type="hidden" value=""/>
+									<input id="cells36.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells36.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells36.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 								<td>58</td>
 								<td>
-									<input id="cells58.cellNumber" name="localStorage" value="58" type="hidden" value=""/>
-									<input id="cells58.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells58.cellNumber" value="58" type="hidden" value=""/>
+									<input id="cells58.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells58.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells58.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 								<td>80</td>
 								<td>
-									<input id="cells80.cellNumber" name="localStorage" value="80" type="hidden" value=""/>
-									<input id="cells80.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells80.cellNumber" value="80" type="hidden" value=""/>
+									<input id="cells80.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells80.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells80.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 					   		</tr>
@@ -780,38 +802,38 @@
 							<tr>
 								<td>15</td>
 								<td>
-									<input id="cells15.cellNumber" name="localStorage" value="15" type="hidden" value=""/>
-									<input id="cells15.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells15.cellNumber" value="15" type="hidden" value=""/>
+									<input id="cells15.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells15.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells15.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 								<td>37</td>
 								<td>
-									<input id="cells37.cellNumber" name="localStorage" value="37" type="hidden" value=""/>
-									<input id="cells37.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells37.cellNumber" value="37" type="hidden" value=""/>
+									<input id="cells37.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells37.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells37.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 								<td>59</td>
 								<td>
-									<input id="cells59.cellNumber" name="localStorage" value="59" type="hidden" value=""/>
-									<input id="cells59.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells59.cellNumber" value="59" type="hidden" value=""/>
+									<input id="cells59.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells59.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells59.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 								<td>81</td>
 								<td>
-									<input id="cells81.cellNumber" name="localStorage" value="81" type="hidden" value=""/>
-									<input id="cells81.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells81.cellNumber" value="81" type="hidden" value=""/>
+									<input id="cells81.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells81.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells81.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 					   		</tr>
@@ -819,38 +841,38 @@
 							<tr>
 								<td>16</td>
 								<td>
-									<input id="cells16.cellNumber" name="localStorage" value="16" type="hidden" value=""/>
-									<input id="cells16.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells16.cellNumber" value="16" type="hidden" value=""/>
+									<input id="cells16.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells16.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells16.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 								<td>38</td>
 								<td>
-									<input id="cells38.cellNumber" name="localStorage" value="38" type="hidden" value=""/>
-									<input id="cells38.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells38.cellNumber" value="38" type="hidden" value=""/>
+									<input id="cells38.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells38.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells38.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 								<td>60</td>
 								<td>
-									<input id="cells60.cellNumber" name="localStorage" value="60" type="hidden" value=""/>
-									<input id="cells60.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells60.cellNumber" value="60" type="hidden" value=""/>
+									<input id="cells60.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells60.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells60.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 								<td>82</td>
 								<td>
-									<input id="cells82.cellNumber" name="localStorage" value="82" type="hidden" value=""/>
-									<input id="cells82.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells82.cellNumber" value="82" type="hidden" value=""/>
+									<input id="cells82.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells82.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells82.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 					   		</tr>
@@ -858,38 +880,38 @@
 							<tr>
 								<td>17</td>
 								<td>
-									<input id="cells17.cellNumber" name="localStorage" value="17" type="hidden" value=""/>
-									<input id="cells17.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells17.cellNumber" value="17" type="hidden" value=""/>
+									<input id="cells17.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells17.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells17.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 								<td>39</td>
 								<td>
-									<input id="cells39.cellNumber" name="localStorage" value="39" type="hidden" value=""/>
-									<input id="cells39.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells39.cellNumber" value="39" type="hidden" value=""/>
+									<input id="cells39.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells39.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells39.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 								<td>61</td>
 								<td>
-									<input id="cells61.cellNumber" name="localStorage" value="61" type="hidden" value=""/>
-									<input id="cells61.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells61.cellNumber" value="61" type="hidden" value=""/>
+									<input id="cells61.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells61.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells61.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 								<td>83</td>
 								<td>
-									<input id="cells83.cellNumber" name="localStorage" value="83" type="hidden" value=""/>
-									<input id="cells83.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells83.cellNumber" value="83" type="hidden" value=""/>
+									<input id="cells83.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells83.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells83.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 					   		</tr>
@@ -897,38 +919,38 @@
 							<tr>
 								<td>18</td>
 								<td>
-									<input id="cells18.cellNumber" name="localStorage" value="18" type="hidden" value=""/>
-									<input id="cells18.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells18.cellNumber" value="18" type="hidden" value=""/>
+									<input id="cells18.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells18.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells18.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 								<td>40</td>
 								<td>
-									<input id="cells40.cellNumber" name="localStorage" value="40" type="hidden" value=""/>
-									<input id="cells40.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells40.cellNumber" value="40" type="hidden" value=""/>
+									<input id="cells40.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells40.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells40.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 								<td>62</td>
 								<td>
-									<input id="cells62.cellNumber" name="localStorage" value="62" type="hidden" value=""/>
-									<input id="cells62.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells62.cellNumber" value="62" type="hidden" value=""/>
+									<input id="cells62.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells62.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells62.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 								<td>84</td>
 								<td>
-									<input id="cells84.cellNumber" name="localStorage" value="84" type="hidden" value=""/>
-									<input id="cells84.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells84.cellNumber" value="84" type="hidden" value=""/>
+									<input id="cells84.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells84.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells84.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 					   		</tr>
@@ -936,38 +958,38 @@
 							<tr>
 								<td>19</td>
 								<td>
-									<input id="cells19.cellNumber" name="localStorage" value="19" type="hidden" value=""/>
-									<input id="cells19.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells19.cellNumber" value="19" type="hidden" value=""/>
+									<input id="cells19.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells19.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells19.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 								<td>41</td>
 								<td>
-									<input id="cells41.cellNumber" name="localStorage" value="41" type="hidden" value=""/>
-									<input id="cells41.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells41.cellNumber" value="41" type="hidden" value=""/>
+									<input id="cells41.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells41.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells41.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 								<td>63</td>
 								<td>
-									<input id="cells63.cellNumber" name="localStorage" value="63" type="hidden" value=""/>
-									<input id="cells63.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells63.cellNumber" value="63" type="hidden" value=""/>
+									<input id="cells63.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells63.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells63.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 								<td>85</td>
 								<td>
-									<input id="cells85.cellNumber" name="localStorage" value="85" type="hidden" value=""/>
-									<input id="cells85.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells85.cellNumber" value="85" type="hidden" value=""/>
+									<input id="cells85.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells85.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells85.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 					   		</tr>
@@ -975,38 +997,38 @@
 							<tr>
 								<td>20</td>
 								<td>
-									<input id="cells20.cellNumber" name="localStorage" value="20" type="hidden" value=""/>
-									<input id="cells20.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells20.cellNumber" value="20" type="hidden" value=""/>
+									<input id="cells20.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells20.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells20.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 								<td>42</td>
 								<td>
-									<input id="cells42.cellNumber" name="localStorage" value="42" type="hidden" value=""/>
-									<input id="cells42.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells42.cellNumber" value="42" type="hidden" value=""/>
+									<input id="cells42.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells42.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells42.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 								<td>64</td>
 								<td>
-									<input id="cells64.cellNumber" name="localStorage" value="64" type="hidden" value=""/>
-									<input id="cells64.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells64.cellNumber" value="64" type="hidden" value=""/>
+									<input id="cells64.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells64.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells64.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 								<td>86</td>
 								<td>
-									<input id="cells86.cellNumber" name="localStorage" value="86" type="hidden" value=""/>
-									<input id="cells86.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells86.cellNumber" value="86" type="hidden" value=""/>
+									<input id="cells86.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells86.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells86.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 					   		</tr>
@@ -1014,38 +1036,38 @@
 							<tr>
 								<td>21</td>
 								<td>
-									<input id="cells21.cellNumber" name="localStorage" value="21" type="hidden" value=""/>
-									<input id="cells21.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells21.cellNumber" value="21" type="hidden" value=""/>
+									<input id="cells21.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells21.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells21.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 								<td>43</td>
 								<td>
-									<input id="cells43.cellNumber" name="localStorage" value="43" type="hidden" value=""/>
-									<input id="cells43.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells43.cellNumber" value="43" type="hidden" value=""/>
+									<input id="cells43.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells43.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells43.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 								<td>65</td>
 								<td>
-									<input id="cells65.cellNumber" name="localStorage" value="65" type="hidden" value=""/>
-									<input id="cells65.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells65.cellNumber" value="65" type="hidden" value=""/>
+									<input id="cells65.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells65.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells65.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 								<td>87</td>
 								<td>
-									<input id="cells87.cellNumber" name="localStorage" value="87" type="hidden" value=""/>
-									<input id="cells87.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells87.cellNumber" value="87" type="hidden" value=""/>
+									<input id="cells87.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells87.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells87.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 					   		</tr>
@@ -1053,38 +1075,38 @@
 							<tr>
 								<td>22</td>
 								<td>
-									<input id="cells22.cellNumber" name="localStorage" value="22" type="hidden" value=""/>
-									<input id="cells22.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells22.cellNumber" value="22" type="hidden" value=""/>
+									<input id="cells22.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells22.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells22.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 								<td>44</td>
 								<td>
-									<input id="cells44.cellNumber" name="localStorage" value="44" type="hidden" value=""/>
-									<input id="cells44.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells44.cellNumber" value="44" type="hidden" value=""/>
+									<input id="cells44.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells44.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells44.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 								<td>66</td>
 								<td>
-									<input id="cells66.cellNumber" name="localStorage" value="66" type="hidden" value=""/>
-									<input id="cells66.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells66.cellNumber" value="66" type="hidden" value=""/>
+									<input id="cells66.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells66.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells66.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 								<td>88</td>
 								<td>
-									<input id="cells88.cellNumber" name="localStorage" value="88" type="hidden" value=""/>
-									<input id="cells88.floatVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells88.cellNumber" value="88" type="hidden" value=""/>
+									<input id="cells88.floatVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								<td>
-									<input id="cells88.chargeVoltage" name="localStorage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
+									<input id="cells88.chargeVoltage" onkeypress="return isNumberKey(event)" style="width:95%;" type="text" value=""/>
 								</td>
 								
 					   		</tr>
@@ -1138,7 +1160,7 @@
 					</div>
 					</div>
 					
-					<input type="hidden" id="policyId" name="localStorage"/>
+					<input type="hidden" id="policyId"/>
 					
 					<!-- Signature capture box # 1 -->
 					<input type="hidden" id="signCreated" name="localStorage"/>

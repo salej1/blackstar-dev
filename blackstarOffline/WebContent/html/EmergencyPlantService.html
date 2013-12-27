@@ -32,17 +32,21 @@
 			
 			function save(){
 				var localStorageObjects = $( "*[name='localStorage']");
-				var data = "emergencyPlantOS: {";
+				var data = "$oflnOS-emrPlant: {";
 				for(var i = 0; i<localStorageObjects.length; i++){
-				  data += localStorageObjects[i].id + " : " 
-					      + localStorageObjects[i].value +  ",";
+				  if(localStorageObjects[i].value == "on"){
+					localStorageObjects[i].value = localStorageObjects[i].checked;
+				  }
+				  data += ("\"" + localStorageObjects[i].id + "\"") + ":" 
+					     + ("\"" + localStorageObjects[i].value.replace(/"/g, "'")  
+					    		                                   + "\"") +  ",";
 				}
 				data += "}";
-			    if(typeof (localStorage.localOSData) === "undefined"){
-					localStorage.localOSData = "";
+				if(typeof (localStorage.localOSData) === "undefined"){
+				  localStorage.localOSData = "";
 				}
-				localStorage.localOSData = localStorage.localOSData + data;
-				alert(data);
+				localStorage.localOSData = localStorage.localOSData + data.replace(",}", "}");
+				alert(data.replace(",}", "}"));
 			}
 		</script>
 	
@@ -519,7 +523,7 @@
 					</div>
 					</div>
 					
-					<input type="hidden" id="policyId" name="localStorage"/>
+					<input type="hidden" id="policyId"/>
 					
 					<!-- Signature capture box # 1 -->
 					<input type="hidden" id="signCreated" name="localStorage"/>
