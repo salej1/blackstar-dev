@@ -31,6 +31,13 @@ public class DashboardServiceImpl extends AbstractService implements
 
 	@Override
 	public String getScheduledServices(String user) {
-		return null; //TODO - Implement
+		List<JSONObject> scheduledServices = dao.getScheuldedServices(user);
+		return scheduledServices != null? scheduledServices.toString() : "";
+	}
+	
+	@Override
+	public String getAssignedTickets(String user){
+		List<JSONObject> assignedTickets = dao.getAssignedTickets(user);
+		return assignedTickets != null? assignedTickets.toString() : "";
 	}
 }

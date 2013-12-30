@@ -64,6 +64,10 @@
 -- 								blackstarDb.GetAndIncreaseSequence 
 -- 								blackstarDb.GetNextServiceNumberForEquipment 
 -- -----------------------------------------------------------------------------
+-- 14   26/12/2013	SAG		Se Integra:
+-- 								blackstarDb.GetScheduledServices 
+-- 								blackstarDb.GetAssignedTickets 
+-- -----------------------------------------------------------------------------
 
 use blackstarDb;
 
@@ -71,6 +75,59 @@ use blackstarDb;
 DELIMITER $$
 
 
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetAssignedTickets
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetAssignedTickets$$
+CREATE PROCEDURE blackstarDb.GetAssignedTickets(pUser VARCHAR(100))
+BEGIN
+
+	SELECT 
+		t.ticketId AS DT_RowId,
+		t.ticketNumber AS ticketNumber,
+		t.created AS ticketDate,
+		p.customer AS customer,
+		e.equipmentType AS equipmentType,
+		p.responseTimeHR AS responseTime,
+		p.project AS project,
+		ts.ticketStatus AS ticketStatus,
+		'crear os' AS crearOS
+FROM ticket t
+	INNER JOIN policy p ON p.policyId = t.policyId
+	INNER JOIN equipmentType e ON e.equipmentTypeId = p.equipmentTypeId
+	INNER JOIN ticketstatus ts ON t.ticketStatusId = ts.ticketStatusId
+WHERE t.asignee = pUser;
+
+END$$
+
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetScheduledServices
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetScheduledServices$$
+CREATE PROCEDURE blackstarDb.GetScheduledServices(pUser VARCHAR(100))
+BEGIN
+
+SELECT 
+	ss.scheduledServiceId AS DT_RowId,
+	sd.serviceDate AS serviceDate,
+	p.customer AS customer,
+	e.equipmentType AS equipmentType,
+	p.project AS project,
+	o.officeName AS office,
+	p.brand AS brand,
+	p.serialNumber AS serialNumber
+	FROM 
+		scheduledService ss
+		INNER JOIN scheduledServiceDate sd ON ss.scheduledServiceId = sd.scheduledServiceId
+		INNER JOIN scheduledServiceEmployee se ON se.scheduledServiceId = ss.scheduledServiceId
+		INNER JOIN scheduledServicePolicy sp ON sp.scheduledServiceId = ss.scheduledServiceId
+		INNER JOIN policy p ON p.policyId = sp.policyId
+		INNER JOIN equipmentType e ON e.equipmentTypeId = p.equipmentTypeId
+		INNER JOIN office o ON o.officeId = p.officeId
+	WHERE employeeId = pUser;
+
+END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetNextServiceNumberForEquipment

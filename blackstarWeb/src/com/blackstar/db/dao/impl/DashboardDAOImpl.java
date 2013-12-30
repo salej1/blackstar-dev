@@ -22,9 +22,14 @@ public class DashboardDAOImpl extends AbstractDAO implements DashboardDAO {
 	}
 
 	@Override
-	public List<JSONObject> getScheuldedServices() {
-		// TODO Auto-generated method stub
-		return null;
+	public List<JSONObject> getScheuldedServices(String user) {
+		String sqlQuery = "CALL GetScheduledServices(?);";
+		return getJdbcTemplate().query(sqlQuery, new Object[]{user}, new JSONRowMapper()); 
 	}
 
+	@Override
+	public List<JSONObject> getAssignedTickets(String user){
+		String sqlQuery = "CALL GetAssignedTickets();";
+		return getJdbcTemplate().query(sqlQuery, new Object[]{user}, new JSONRowMapper()); 
+	}
 }

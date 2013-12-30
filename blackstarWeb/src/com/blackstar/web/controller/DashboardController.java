@@ -16,9 +16,7 @@ import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
 import com.blackstar.model.TicketController;
 import com.blackstar.model.UserSession;
-import com.blackstar.services.IUserService;
 import com.blackstar.services.interfaces.DashboardService;
-import com.blackstar.services.interfaces.UserDomainService;
 import com.blackstar.web.AbstractController;
 
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -39,8 +37,7 @@ public class DashboardController extends AbstractController {
 	public String show(ModelMap model, HttpServletRequest req,
 			HttpServletResponse resp) {
 		try {
-			model.addAttribute("serviceOrdersPendingDashboard",
-					service.getServiceOrders("PENDIENTE"));
+
 		} catch (Exception ex) {
 			Logger.Log(LogLevel.ERROR,
 					Thread.currentThread().getStackTrace()[1].toString(), ex);
@@ -126,7 +123,22 @@ public class DashboardController extends AbstractController {
 	//================================================================================
     //  INGENIEROS DE SERVICIO
     //================================================================================
-
+	
+	// Tickets asignados
+	@RequestMapping(value="/assignedTicketsJson.do", method=RequestMethod.GET)
+	public @ResponseBody String assignedTicketsJson(ModelMap model, @ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession){
+		String retVal;
+		try{
+			retVal = service.getAssignedTickets(userSession.getUser().getUserEmail());
+		}
+		catch(Exception ex){
+			Logger.Log(LogLevel.ERROR,
+					Thread.currentThread().getStackTrace()[1].toString(), ex);
+			ex.printStackTrace();
+			return "error";
+		}
+		return retVal;
+	}
 	// Servicios programados
 	@RequestMapping(value = "/scheduledPersonalServicesJson.do", method = RequestMethod.GET)
 	public @ResponseBody String scheduledPersonalServicesJson(ModelMap model) {
