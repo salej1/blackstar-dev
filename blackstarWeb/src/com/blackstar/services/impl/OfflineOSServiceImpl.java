@@ -16,17 +16,27 @@ import com.blackstar.model.dto.EmergencyPlantServicePolicyDTO;
 import com.blackstar.model.dto.UpsServiceDTO;
 import com.blackstar.model.dto.UpsServicePolicyDTO;
 import com.blackstar.services.AbstractService;
+import com.blackstar.services.interfaces.OfflineOSService;
 import com.blackstar.services.interfaces.ReportService;
 import com.blackstar.services.interfaces.ServiceOrderService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 
-public class OfflineOSService extends AbstractService {
+public class OfflineOSServiceImpl extends AbstractService 
+                                  implements OfflineOSService {
 
-  private ServiceOrderService service = null;
+  private ServiceOrderService soService = null;
   private ReportService rpService = null;
 	
+  public void setSoService(ServiceOrderService soService) {
+	this.soService = soService;
+  }
+
+  public void setRpService(ReportService rpService) {
+	this.rpService = rpService;
+  }
+
   private static String TOKEN ="\\$oflnOS-";
   @SuppressWarnings("serial")
   private static HashMap<String, Class<?>> CLASS_TYPES = new HashMap<String, Class <?>>() {{
@@ -96,11 +106,11 @@ public class OfflineOSService extends AbstractService {
     servicioOrderSave.setSignCreated(serviceOrder.getSignCreated());
     servicioOrderSave.setSignReceivedBy(serviceOrder.getSignReceivedBy());
     servicioOrderSave.setStatusId("N");
-    idServicio = service.saveServiceOrder(servicioOrderSave, "OfflineOSService"
+    idServicio = soService.saveServiceOrder(servicioOrderSave, "OfflineOSService"
     		                                                       , userName);
     if(serviceOrder.getAaServiceId()==null) {
 	  serviceOrder.setServiceOrderId(idServicio);
-	  service.saveAirCoService(new AirCoServiceDTO(serviceOrder)
+	  soService.saveAirCoService(new AirCoServiceDTO(serviceOrder)
 	                            , "OfflineOSService", userName);
 	  saveReport(serviceOrder);
 	}
@@ -123,11 +133,11 @@ public class OfflineOSService extends AbstractService {
 	servicioOrderSave.setSignCreated(serviceOrder.getSignCreated());
 	servicioOrderSave.setSignReceivedBy(serviceOrder.getSignReceivedBy());
 	servicioOrderSave.setStatusId("N");
-	idServicio = service.saveServiceOrder(servicioOrderSave, "OfflineOSService"
+	idServicio = soService.saveServiceOrder(servicioOrderSave, "OfflineOSService"
 			                                                       , userName);
 	if(serviceOrder.getEpServiceId()==null){
 	  serviceOrder.setServiceOrderId(idServicio);
-	  service.saveEmergencyPlantService(new EmergencyPlantServiceDTO(serviceOrder)
+	  soService.saveEmergencyPlantService(new EmergencyPlantServiceDTO(serviceOrder)
 	                                            , "OfflineOSService", userName);
 	  saveReport(serviceOrder);
 	}
@@ -150,11 +160,11 @@ public class OfflineOSService extends AbstractService {
     servicioOrderSave.setSignCreated(serviceOrder.getSignCreated());
     servicioOrderSave.setSignReceivedBy(serviceOrder.getSignReceivedBy());
     servicioOrderSave.setStatusId("N");
-    idServicio = service.saveServiceOrder(servicioOrderSave, "OfflineOSService"
+    idServicio = soService.saveServiceOrder(servicioOrderSave, "OfflineOSService"
                                                                    , userName);
     if(serviceOrder.getUpsServiceId()==null){
        serviceOrder.setServiceOrderId(idServicio);
-       service.saveUpsService(new UpsServiceDTO(serviceOrder), "OfflineOSService"
+       soService.saveUpsService(new UpsServiceDTO(serviceOrder), "OfflineOSService"
     		                                                        , userName);
       saveReport(serviceOrder);
     }
@@ -177,11 +187,11 @@ public class OfflineOSService extends AbstractService {
     servicioOrderSave.setSignCreated(serviceOrder.getSignCreated());
     servicioOrderSave.setSignReceivedBy(serviceOrder.getSignReceivedBy());
     servicioOrderSave.setStatusId("N");
-    idServicio = service.saveServiceOrder(servicioOrderSave, "OfflineOSService"
+    idServicio = soService.saveServiceOrder(servicioOrderSave, "OfflineOSService"
                                                                    , userName);
     if(serviceOrder.getBbServiceId()==null){
       serviceOrder.setServiceOrderId(idServicio);
-      service.saveBateryService(new BatteryServiceDTO(serviceOrder)
+      soService.saveBateryService(new BatteryServiceDTO(serviceOrder)
                                    , "OfflineOSService", userName);
       saveReport(serviceOrder);
     }
@@ -213,7 +223,7 @@ public class OfflineOSService extends AbstractService {
   }
   
   public static void main(String [] args){
-	  OfflineOSService service = new OfflineOSService();
+	  OfflineOSServiceImpl service = new OfflineOSServiceImpl();
 	  service.getGridOrders("$oflnOS-airCo: {\"customer\":\"Cliente\",\"project\":\"proyecto\",\"equipmentAddress\":\"Domicilio\",\"contactPhone\":\"Telefono\",\"equipmentType\":\"Equipo\",\"brand\":\"Marca\",\"model\":\"Modelo\",\"serialNumber\":\"Serie\",\"serviceDate\":\"2013/12/27 04:00\",\"evaDescription\":\"Funcionamiento\",\"evaValTemp\":\"1\",\"evaValHum\":\"2\",\"evaSetpointTemp\":\"3\",\"evaSetpointHum\":\"2\",\"evaFlagCalibration\":\"true\",\"evaReviewFilter\":\"true\",\"evaReviewStrip\":\"true\",\"evaCleanElectricSystem\":\"true\",\"evaCleanControlCard\":\"true\",\"evaCleanTray\":\"true\",\"evaLectrurePreasureHigh\":\"3\",\"evaLectrurePreasureLow\":\"2\",\"evaLectureTemp\":\"1\",\"evaLectureOilColor\":\"33\",\"evaLectureOilLevel\":\"5345\",\"evaLectureCoolerColor\":\"23\",\"evaLectureCoolerLevel\":\"34\",\"evaCheckOperatation\":\"5552\",\"evaCheckNoise\":\"121\",\"evaCheckIsolated\":\"23\",\"evaLectureVoltageGroud\":\"545\",\"evaLectureVoltagePhases\":\"45\",\"evaLectureVoltageControl\":\"21\",\"evaLectureCurrentMotor1\":\"4\",\"evaLectureCurrentMotor2\":\"2\",\"evaLectureCurrentMotor3\":\"24\",\"evaLectureCurrentCompressor1\":\"123\",\"evaLectureCurrentCompressor2\":\"13\",\"evaLectureCurrentCompressor3\":\"123\",\"evaLectureCurrentHumidifier1\":\"34\",\"evaLectureCurrentHumidifier2\":\"33\",\"evaLectureCurrentHumidifier3\":\"23\",\"evaLectureCurrentHeater1\":\"123\",\"evaLectureCurrentHeater2\":\"32\",\"evaLectureCurrentHeater3\":\"321\",\"evaCheckFluidSensor\":\"true\",\"evaRequirMaintenance\":\"true\",\"condReview\":\"234\",\"condCleanElectricSystem\":\"true\",\"condClean\":\"true\",\"condLectureVoltageGroud\":\"434\",\"condLectureVoltagePhases\":\"3\",\"condLectureVoltageControl\":\"2\",\"condLectureMotorCurrent\":\"23\",\"condReviewThermostat\":\"43\",\"condModel\":\"4234\",\"condSerialNumber\":\"234\",\"condBrand\":\"2\",\"observations\":\"fsdfsf\",\"responsible\":\"54656\",\"receivedBy\":\"65465\",\"closed\":\"2013/12/27 04:00\",\"receivedByPosition\":\"4566\",\"signCreated\":\"{'lines':[[[222.4,51.3],[221.4,51.3],[218.4,52.3],[216.4,52.3],[214.4,53.3],[208.4,54.3],[201.4,54.3],[190.4,52.3],[178.4,49.3],[165.4,47.3],[154.4,44.3],[143.4,40.3],[134.4,38.3],[127.4,35.3],[120.4,32.3],[115.4,28.3],[112.4,26.3],[110.4,24.3],[109.4,24.3],[109.4,23.3],[109.4,22.3],[109.4,21.3],[110.4,20.3],[113.4,18.3],[116.4,16.3],[121.4,13.3],[126.4,11.3],[132.4,9.3],[135.4,8.3],[140.4,8.3],[142.4,8.3],[143.4,8.3],[144.4,8.3],[146.4,8.3],[150.4,9.3],[154.4,11.3],[160.4,14.3],[164.4,17.3],[171.4,22.3],[176.4,27.3],[181.4,33.3],[186.4,38.3],[192.4,43.3],[194.4,47.3],[197.4,51.3],[198.4,52.3],[199.4,54.3],[199.4,57.3],[199.4,59.3],[199.4,61.3],[198.4,64.3],[197.4,64.3],[197.4,66.3],[194.4,68.3],[191.4,69.3],[189.4,69.3],[187.4,70.3],[184.4,71.3],[179.4,73.3],[170.4,73.3],[163.4,73.3],[153.4,76.3],[145.4,77.3],[136.4,78.3],[128.4,80.3],[121.4,80.3],[117.4,80.3],[115.4,80.3],[112.4,80.3],[110.4,80.3],[107.4,80.3],[106.4,80.3],[106.4,79.3],[105.4,79.3],[106.4,78.3]]]}\",\"signReceivedBy\":\"{'lines':[[[248.4,36.3],[247.4,36.3],[244.4,36.3],[241.4,38.3],[239.4,38.3],[234.4,38.3],[227.4,39.3],[220.4,39.3],[212.4,40.3],[205.4,41.3],[199.4,41.3],[189.4,42.3],[181.4,43.3],[173.4,45.3],[166.4,46.3],[157.4,48.3],[155.4,49.3],[152.4,51.3],[150.4,52.3],[148.4,52.3],[147.4,54.3],[145.4,55.3],[145.4,56.3],[145.4,57.3],[145.4,60.3],[147.4,62.3],[152.4,66.3],[157.4,68.3],[166.4,70.3],[173.4,72.3],[182.4,72.3],[191.4,72.3],[198.4,72.3],[206.4,72.3],[213.4,71.3],[217.4,71.3],[218.4,70.3],[219.4,69.3],[220.4,69.3],[219.4,67.3],[217.4,66.3],[214.4,65.3],[212.4,64.3],[210.4,63.3],[206.4,62.3],[203.4,61.3],[198.4,59.3],[193.4,59.3],[188.4,58.3],[184.4,57.3],[180.4,57.3],[177.4,57.3],[173.4,57.3],[171.4,57.3],[170.4,56.3],[166.4,55.3],[164.4,54.3],[161.4,54.3],[159.4,52.3],[157.4,51.3],[154.4,49.3],[151.4,48.3],[149.4,46.3],[146.4,45.3],[140.4,43.3],[136.4,41.3],[133.4,41.3],[128.4,39.3],[125.4,39.3],[121.4,38.3],[119.4,38.3],[116.4,37.3],[114.4,37.3],[111.4,36.3]]]}\"}");
 	  service.getGridOrders("$oflnOS-emrPlant: {\"customer\":\"34535\",\"project\":\"54\",\"equipmentAddress\":\"345\",\"contactPhone\":\"345\",\"capacity\":\"435\",\"serviceDate\":\"2013/12/27 02:00\",\"brandPE\":\"345\",\"brandMotor\":\"345\",\"tankCapacity\":\"345\",\"modelPE\":\"345\",\"modelMotor\":\"345\",\"pumpFuelModel\":\"345\",\"serialPE\":\"345\",\"serialMotor\":\"345\",\"filterFuelFlag\":\"false\",\"transferType\":\"345\",\"cplMotor\":\"34345\",\"filterOilFlag\":\"false\",\"modelTransfer\":\"345\",\"brandGenerator\":\"345\",\"filterWaterFlag\":\"true\",\"modelControl\":\"345\",\"modelGenerator\":\"345345\",\"filterAirFlag\":\"true\",\"modelRegVoltage\":\"345\",\"serialGenerator\":\"345\",\"brandGear\":\"345\",\"modelRegVelocity\":\"345\",\"powerWattGenerator\":\"345\",\"brandBattery\":\"345\",\"modelCharger\":\"345\",\"tensionGenerator\":\"345\",\"clockLecture\":\"345\",\"oilChange\":\"2013/12/05 01:00\",\"tuningDate\":\"2013/12/27 03:00\",\"serviceCorrective\":\"2013/12/27 01:00\",\"levelOilFlag\":\"true\",\"batteryCap\":\"345\",\"hoseOil\":\"35\",\"levelWaterFlag\":\"false\",\"batterySulfate\":\"345\",\"hoseWater\":\"345\",\"levelBattery\":\"345\",\"levelOil\":\"345\",\"tubeValve\":\"345\",\"tubeLeak\":\"true\",\"heatEngine\":\"345\",\"stripBlades\":\"345\",\"washEngine\":\"false\",\"cleanTransfer\":\"false\",\"batteryTests\":\"false\",\"washRadiator\":\"true\",\"cleanCardControl\":\"false\",\"checkCharger\":\"false\",\"cleanWorkArea\":\"true\",\"checkConectionControl\":\"true\",\"checkPaint\":\"true\",\"conectionCheck\":\"false\",\"checkWinding\":\"false\",\"cleanGenerator\":\"false\",\"vacuumFrequency\":\"5345\",\"vacuumVoltage\":\"345\",\"startTime\":\"5345\",\"chargeFrequency\":\"345\",\"chargeVoltage\":\"34\",\"transferTime\":\"4\",\"bootTryouts\":\"3554\",\"qualitySmoke\":\"345\",\"stopTime\":\"543\",\"tempSensor\":\"89\",\"voltageSensor\":\"454\",\"oilPreasureSensor\":\"345\",\"oilSensor\":\"45\",\"overSpeedSensor\":\"345\",\"waterLevelSensor\":\"345\",\"mechanicalStatus\":\"345\",\"screwAdjust\":\"false\",\"electricInterlock\":\"354\",\"boardClean\":\"false\",\"conectionAdjust\":\"true\",\"mechanicalInterlock\":\"345\",\"lampTest\":\"false\",\"systemMotors\":\"345\",\"capacityAmp\":\"345\",\"voltageABAN\":\"345\",\"currentA\":\"345\",\"frequency\":\"35\",\"voltageACCN\":\"345\",\"currentB\":\"345\",\"oilPreassure\":\"43\",\"voltageBCBN\":\"345\",\"currentC\":\"345\",\"temp\":\"45\",\"voltageNT\":\"345\",\"adjsutmentTherm\":\"345\",\"batteryCurrent\":\"345\",\"trasnferTypeProtection\":\"345\",\"current\":\"345\",\"clockStatus\":\"345\",\"generatorTypeProtection\":\"345\",\"observations\":\"345\",\"responsible\":\"345\",\"receivedBy\":\"345\",\"closed\":\"2013/12/27 04:00\",\"receivedByPosition\":\"35\",\"signCreated\":\"{'lines':[[[147.4,62.3],[147.4,63.3],[148.4,63.3],[150.4,63.3],[153.4,63.3],[156.4,63.3],[157.4,63.3],[156.4,63.3],[155.4,63.3],[152.4,65.3],[147.4,66.3],[142.4,67.3],[132.4,68.3],[120.4,68.3],[111.4,65.3],[101.4,63.3],[90.4,60.3],[82.4,57.3],[72.4,54.3],[64.4,50.3],[57.4,47.3],[52.4,47.3],[51.4,45.3],[50.4,45.3],[50.4,44.3],[50.4,43.3],[51.4,43.3],[53.4,42.3],[55.4,40.3],[58.4,39.3],[63.4,38.3],[70.4,36.3],[79.4,36.3],[90.4,34.3],[103.4,34.3],[114.4,34.3],[124.4,35.3],[135.4,38.3],[145.4,40.3],[152.4,43.3],[157.4,46.3],[163.4,50.3],[168.4,52.3],[171.4,54.3],[175.4,56.3],[177.4,57.3],[180.4,57.3],[180.4,59.3],[182.4,59.3],[184.4,59.3],[184.4,60.3],[185.4,61.3],[185.4,62.3],[187.4,62.3],[189.4,63.3],[191.4,64.3],[193.4,65.3],[199.4,65.3],[208.4,66.3],[218.4,64.3],[227.4,63.3],[235.4,61.3],[241.4,59.3],[245.4,58.3],[247.4,56.3],[249.4,55.3],[250.4,55.3],[251.4,54.3],[251.4,52.3],[251.4,51.3],[249.4,51.3],[248.4,49.3],[246.4,48.3],[243.4,48.3],[238.4,47.3],[232.4,44.3],[224.4,42.3],[216.4,39.3],[202.4,35.3],[183.4,31.3],[162.4,29.3],[148.4,27.3],[132.4,27.3],[118.4,27.3],[113.4,27.3],[110.4,29.3],[107.4,29.3],[106.4,29.3],[105.4,30.3],[105.4,31.3]]]}\",\"signReceivedBy\":\"{'lines':[[[205.4,37.3],[204.4,37.3],[204.4,38.3],[204.4,40.3],[203.4,42.3],[203.4,43.3],[202.4,44.3],[202.4,46.3],[201.4,46.3],[200.4,46.3],[197.4,45.3],[194.4,44.3],[188.4,42.3],[181.4,41.3],[172.4,40.3],[164.4,40.3],[154.4,40.3],[145.4,41.3],[140.4,41.3],[137.4,43.3],[135.4,43.3],[134.4,43.3],[133.4,43.3],[131.4,43.3],[129.4,42.3],[127.4,40.3],[125.4,40.3],[122.4,38.3],[120.4,37.3],[118.4,37.3],[117.4,36.3],[116.4,36.3],[115.4,36.3],[114.4,36.3],[113.4,38.3],[113.4,40.3],[113.4,42.3],[114.4,46.3],[121.4,51.3],[131.4,56.3],[145.4,61.3],[172.4,67.3],[203.4,72.3],[229.4,75.3],[244.4,77.3],[254.4,77.3],[259.4,77.3],[260.4,77.3],[259.4,76.3],[257.4,75.3],[253.4,74.3],[251.4,73.3],[247.4,72.3],[242.4,70.3],[239.4,70.3],[236.4,69.3],[233.4,67.3],[231.4,67.3],[230.4,65.3],[230.4,64.3],[230.4,63.3],[228.4,63.3],[226.4,62.3],[224.4,61.3],[218.4,60.3],[209.4,58.3],[198.4,56.3],[187.4,56.3],[172.4,54.3],[159.4,54.3],[146.4,54.3],[135.4,56.3],[129.4,57.3],[126.4,57.3],[125.4,57.3],[125.4,56.3],[125.4,55.3],[124.4,53.3],[122.4,53.3],[122.4,51.3],[121.4,51.3],[118.4,50.3],[117.4,50.3],[115.4,49.3],[112.4,49.3],[111.4,49.3],[115.4,49.3],[121.4,49.3],[129.4,47.3],[138.4,45.3],[145.4,43.3],[148.4,42.3],[150.4,40.3],[151.4,39.3],[150.4,38.3],[147.4,38.3],[143.4,36.3],[138.4,35.3],[134.4,34.3],[131.4,34.3],[128.4,34.3],[127.4,34.3],[124.4,34.3],[122.4,33.3],[119.4,32.3],[116.4,32.3],[112.4,32.3],[109.4,32.3],[102.4,34.3],[98.4,37.3],[93.4,41.3],[91.4,43.3],[91.4,45.3],[91.4,46.3],[91.4,47.3],[92.4,47.3],[95.4,47.3],[98.4,49.3],[104.4,50.3],[111.4,51.3],[120.4,54.3],[129.4,57.3],[140.4,60.3],[155.4,65.3],[173.4,74.3],[188.4,81.3],[208.4,87.3],[224.4,92.3],[238.4,94.3],[247.4,94.3],[254.4,94.3],[258.4,93.3],[259.4,93.3],[260.4,92.3],[260.4,91.3],[260.4,90.3],[258.4,90.3],[256.4,90.3],[255.4,89.3],[253.4,87.3],[253.4,86.3],[253.4,84.3],[253.4,82.3],[253.4,79.3],[253.4,75.3],[253.4,72.3],[253.4,67.3],[251.4,64.3],[250.4,60.3],[247.4,55.3],[242.4,50.3],[237.4,45.3],[234.4,44.3],[229.4,41.3],[227.4,40.3],[223.4,40.3],[220.4,40.3],[219.4,40.3]]]}\"}");
 	  service.getGridOrders("$oflnOS-ups: {\"customer\":\"54\",\"project\":\"45\",\"equipmentAddress\":\"545\",\"contactPhone\":\"3455\",\"brand\":\"234\",\"model\":\"234\",\"capacity\":\"234\",\"serialNumber\":\"234\",\"serviceDate\":\"2013/12/27 04:00\",\"estatusEquipment\":\"23\",\"capacitorStatus\":\"24\",\"cleaned\":\"false\",\"verifyFuzz\":\"true\",\"hooverClean\":\"true\",\"chargerReview\":\"true\",\"verifyConnections\":\"true\",\"fanStatus\":\"234\",\"checkConnectors\":\"false\",\"temp\":\"234\",\"cverifyOutflow\":\"false\",\"chargeTest\":\"true\",\"numberBatteries\":\"23\",\"brandModel\":\"24\",\"manufacturedDateSerial\":\"234\",\"batteryVoltage\":\"234\",\"damageBatteries\":\"234\",\"other\":\"234\",\"trasferLine\":\"234\",\"backupBatteries\":\"24\",\"transferEmergencyPlant\":\"234\",\"verifyVoltage\":\"234\",\"inputVoltagePhase\":\"234\",\"outputVoltagePhase\":\"234\",\"inputVoltageNeutro\":\"234\",\"outputVoltageNeutro\":\"234\",\"inputVoltageNeutroGround\":\"234\",\"inOutFrecuency\":\"234\",\"percentCharge\":\"234\",\"busVoltage\":\"24\",\"responsible\":\"23424\",\"receivedBy\":\"234\",\"closed\":\"2013/12/27 02:00\",\"receivedByPosition\":\"234\",\"signCreated\":\"{'lines':[[[97.4,59.3],[102.4,59.3],[113.4,57.3],[122.4,57.3],[133.4,55.3],[142.4,54.3],[149.4,53.3],[159.4,52.3],[167.4,50.3],[172.4,48.3],[175.4,48.3],[175.4,46.3],[176.4,46.3],[174.4,45.3],[173.4,45.3],[173.4,44.3],[171.4,44.3],[170.4,44.3],[169.4,42.3],[166.4,42.3],[163.4,42.3],[159.4,42.3],[154.4,42.3],[148.4,41.3],[142.4,41.3],[133.4,38.3],[124.4,38.3],[117.4,35.3],[109.4,33.3],[99.4,32.3],[95.4,31.3],[89.4,30.3],[86.4,29.3],[84.4,27.3],[83.4,27.3],[82.4,27.3],[83.4,27.3],[84.4,27.3],[88.4,30.3],[98.4,34.3],[107.4,38.3],[118.4,43.3],[125.4,46.3],[133.4,48.3],[139.4,51.3],[147.4,52.3],[150.4,52.3],[153.4,52.3],[155.4,52.3],[156.4,52.3],[156.4,51.3]]]}\",\"signReceivedBy\":\"{'lines':[[[277.4,36.3],[274.4,36.3],[273.4,36.3],[271.4,37.3],[269.4,38.3],[262.4,39.3],[252.4,39.3],[241.4,39.3],[228.4,39.3],[215.4,39.3],[198.4,37.3],[185.4,36.3],[171.4,33.3],[156.4,29.3],[143.4,26.3],[129.4,24.3],[118.4,20.3],[107.4,17.3],[99.4,14.3],[87.4,12.3],[77.4,10.3],[69.4,9.3],[64.4,9.3],[59.4,9.3],[56.4,9.3],[54.4,9.3],[55.4,9.3],[55.4,8.3],[57.4,8.3],[62.4,6.3],[67.4,5.3],[71.4,5.3],[78.4,5.3],[84.4,5.3],[90.4,8.3],[99.4,11.3],[107.4,13.3],[113.4,16.3],[119.4,17.3],[125.4,20.3],[129.4,22.3],[131.4,24.3],[134.4,25.3],[137.4,28.3],[138.4,31.3],[142.4,35.3],[146.4,39.3],[148.4,43.3],[151.4,47.3],[155.4,50.3],[158.4,53.3],[160.4,54.3],[164.4,55.3],[166.4,56.3],[167.4,56.3],[168.4,56.3],[170.4,56.3],[172.4,56.3],[173.4,56.3],[174.4,56.3],[175.4,56.3],[176.4,55.3],[177.4,55.3],[178.4,55.3],[178.4,54.3]]]}\"}");

@@ -46,4 +46,9 @@
   <bean id="reportService" class="com.blackstar.services.impl.ReportServiceImpl" parent="abstractService">
      <property name="soDAO" ref="serviceOrderDAO" />
   </bean>
+    <bean id="offlineOSService" class="com.blackstar.services.impl.OfflineOSServiceImpl" parent="abstractService">
+     <property name="soService" ref="serviceOrderService" />
+     <property name="rpService" ref="reportService" />
+  </bean>
+
 </beans>
