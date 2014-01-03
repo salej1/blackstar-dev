@@ -40,4 +40,10 @@ public class DashboardServiceImpl extends AbstractService implements
 		List<JSONObject> assignedTickets = dao.getAssignedTickets(user);
 		return assignedTickets != null? assignedTickets.toString() : "";
 	}
+
+	@Override
+	public String getPersonalServiceOrders(String user, String status) {
+		List<JSONObject> personalOrders = dao.getPersonalServiceOrders(user, status);
+		return personalOrders != null? personalOrders.toString() : "";
+	}
 }

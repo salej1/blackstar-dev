@@ -20,7 +20,7 @@
 
 <!--   CONTENT COLUMN   -->		
 <!-- INICIA CONTENIDO DE PERFILES sysCallCenter Y sysCoordinator-->
-	<c:set var="sysCallCenter" scope="request" value="${user.belongsToGroup['sysCallCenter']}" />
+	<c:set var="sysCallCenter" scope="request" value="${user.belongsToGroup['Call Center']}" />
 	<c:if test="${sysCallCenter == true}">
 
 		<!-- TABLA DE TICKETS POR ASIGNAR - unassignedTickets.jsp -->
@@ -52,17 +52,57 @@
 
 <!-- INICIA CONTENIDO DE PERFIL sysServicio -->
 
-	<c:set var="sysServicio" scope="request" value="${user.belongsToGroup['sysServicio']}" />
+	<c:set var="sysServicio" scope="request" value="${user.belongsToGroup['Implementacion y Servicio']}" />
 	<c:if test="${sysServicio == true}">
 
-		<!-- TABLA DE SERVICIOS PROGRAMADOS - pendingServiceOrders.jsp -->
+<!-- LINKS PARA CREAR ORDENES DE SERVICIO -->
+	<div>
+		<div>
+			<img src="/img/navigate-right.png"/><a href="/dashboard/createServiceOrder.do?">Crear Orden de Servicio</a>
+		</div>
+		<div>
+			<img src="/img/navigate-right.png"/><a href="/dashboard/createServiceOrder.do?equipmentType=aa">Crear Reporte de Aire Acondicionado</a>
+		</div>
+		<div>
+			<img src="/img/navigate-right.png"/><a href="/dashboard/createServiceOrder.do?equipmentType=bb">Crear Reporte de Baterias</a>
+		</div>
+		<div>
+			<img src="/img/navigate-right.png"/><a href="/dashboard/createServiceOrder.do?equipmentType=pe">Crear Reporte de Planta de emergencia</a>
+		</div>
+		<div>
+			<img src="/img/navigate-right.png"/><a href="/dashboard/createServiceOrder.do?equipmentType=ups">Crear UPS</a>
+		</div>
+		<p><small>&nbsp;</small></p>
+	</div>
+
+<!-- FIN LINKS PARA CREAR ORDENES DE SERVICIO -->
+
+<!-- TABLA DE SERVICIOS PROGRAMADOS - pendingServiceOrders.jsp -->
 		<c:import url="scheduledPersonalServices.jsp"></c:import>
 		<script type="text/javascript">
 			$(function(){
 				scheduledPersonalServices_init();
 			});
 		</script>
+<!-- TABLA DE SERVICIOS PROGRAMADOS - pendingServiceOrders.jsp -->
 
+<!-- TABLA DE TICKETS ASIGNADOS -->
+		<c:import url="assignedTickets.jsp"></c:import>
+		<script type="text/javascript">
+			$(function(){
+				assignedTickets_init();
+			});
+		</script>
+<!-- FIN TABLA DE TICKETS ASIGNADOS -->
+
+<!-- TABLA DE ORDENES DE SERVICIO CON PENDIENTES -->
+		<c:import url="pendingPersonalServiceOrders.jsp"></c:import>
+		<script type="text/javascript">
+			$(function(){
+				pendingPersonalServiceOrders_init();
+			});
+		</script>
+<!-- FIN TABLA DE ORDENES DE SERVICIO CON PENDIENTES -->
 	</c:if>
 
 <!-- FIN CONTENIDO DE PERFIL sysServicio -->

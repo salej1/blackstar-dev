@@ -36,14 +36,8 @@ public class DashboardController extends AbstractController {
 	@RequestMapping(value = "/show.do", method = RequestMethod.GET)
 	public String show(ModelMap model, HttpServletRequest req,
 			HttpServletResponse resp) {
-		try {
-
-		} catch (Exception ex) {
-			Logger.Log(LogLevel.ERROR,
-					Thread.currentThread().getStackTrace()[1].toString(), ex);
-			ex.printStackTrace();
-			return "error";
-		}
+		
+		// Solo se invoca dashboard.jsp
 		return "dashboard";
 	}
 
@@ -141,10 +135,25 @@ public class DashboardController extends AbstractController {
 	}
 	// Servicios programados
 	@RequestMapping(value = "/scheduledPersonalServicesJson.do", method = RequestMethod.GET)
-	public @ResponseBody String scheduledPersonalServicesJson(ModelMap model) {
+	public @ResponseBody String scheduledPersonalServicesJson(ModelMap model, @ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession) {
 		String retVal;
 		try {
-			retVal = service.getUnassignedTickets();
+			retVal = service.getScheduledServices(userSession.getUser().getUserEmail());
+		} catch (Exception ex) {
+			Logger.Log(LogLevel.ERROR,
+					Thread.currentThread().getStackTrace()[1].toString(), ex);
+			ex.printStackTrace();
+			return "error";
+		}
+		return retVal;
+	}
+	
+	// Ordenes de servicio personales con pendientes
+	@RequestMapping(value = "/pendingPersonalServiceOrders.do", method = RequestMethod.GET)
+	public @ResponseBody String pendingPersonalServiceOrders(ModelMap model, @ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession) {
+		String retVal;
+		try {
+			retVal = service.getPersonalServiceOrders(userSession.getUser().getUserEmail(), "PENDIENTE");
 		} catch (Exception ex) {
 			Logger.Log(LogLevel.ERROR,
 					Thread.currentThread().getStackTrace()[1].toString(), ex);
@@ -172,6 +181,7 @@ public class DashboardController extends AbstractController {
 		}
 		return retVal;
 	}
+
 	
 	//================================================================================
     //  FIN INGENIEROS DE SERVICIO

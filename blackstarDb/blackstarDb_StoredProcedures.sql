@@ -68,12 +68,50 @@
 -- 								blackstarDb.GetScheduledServices 
 -- 								blackstarDb.GetAssignedTickets 
 -- -----------------------------------------------------------------------------
+-- 15   31/12/2013	SAG		Fix:
+-- 								blackstarDb.GetUserData 
+-- -----------------------------------------------------------------------------
+-- 16   02/01/2014	SAG		Se Integra:
+-- 								blackstarDb.GetPersonalServiceOrders 
+-- -----------------------------------------------------------------------------
 
 use blackstarDb;
 
 
 DELIMITER $$
 
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetPersonalServiceOrders
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetPersonalServiceOrders$$
+CREATE PROCEDURE blackstarDb.GetPersonalServiceOrders(pUser VARCHAR(100), pStatus VARCHAR(50))
+BEGIN
+
+	SELECT 
+		so.serviceOrderId AS DT_RowId,
+		so.serviceOrderNumber AS serviceOrderNumber,
+		'' AS placeHolder,
+		ifnull(t.ticketNumber, '') AS ticketNumber,
+		st.serviceType AS serviceType,
+		date(so.serviceDate) AS serviceDate,
+		p.customer AS customer,
+		et.equipmentType AS equipmentType,
+		p.project AS project,
+		o.officeName AS officeName,
+		p.brand AS brand,
+		p.serialNumber AS serialNumber
+	FROM serviceOrder so
+		INNER JOIN serviceStatus ss ON ss.serviceStatusId = so.serviceStatusId
+		LEFT OUTER JOIN ticket t ON t.ticketId = so.ticketId
+		INNER JOIN serviceType st ON st.serviceTypeId = so.serviceTypeId
+		INNER JOIN policy p ON p.policyId = so.policyId
+		INNER JOIN equipmentType et ON et.equipmentTypeId = p.equipmentTypeId
+		INNER JOIN office o ON p.officeId = o.officeId
+	where serviceStatus = pStatus
+	AND so.asignee = pUser;
+
+END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetAssignedTickets
@@ -91,12 +129,13 @@ BEGIN
 		p.responseTimeHR AS responseTime,
 		p.project AS project,
 		ts.ticketStatus AS ticketStatus,
-		'crear os' AS crearOS
+		'' AS placeHolder
 FROM ticket t
 	INNER JOIN policy p ON p.policyId = t.policyId
 	INNER JOIN equipmentType e ON e.equipmentTypeId = p.equipmentTypeId
 	INNER JOIN ticketstatus ts ON t.ticketStatusId = ts.ticketStatusId
-WHERE t.asignee = pUser;
+WHERE t.asignee = pUser
+AND t.closed IS NULL;
 
 END$$
 
@@ -602,16 +641,18 @@ END$$
 
 
 -- -----------------------------------------------------------------------------
-	-- blackstarDb.GetUserData
+        -- blackstarDb.GetUserData
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetUserData$$
 CREATE PROCEDURE blackstarDb.GetUserData(pEmail VARCHAR(100))
 BEGIN
 
-	SELECT u.email AS email, u.name AS name
-	FROM blackstarUser u 
-	WHERE u.email = pEmail;
-	
+        SELECT u.email AS userEmail, u.name AS userName, g.name AS groupName
+        FROM blackstarUser_userGroup ug
+                INNER JOIN blackstarUser u ON u.blackstarUserId = ug.blackstarUserId
+                LEFT OUTER JOIN userGroup g ON g.userGroupId = ug.userGroupId
+        WHERE u.email = pEmail;
+        
 END$$
 
 -- -----------------------------------------------------------------------------
