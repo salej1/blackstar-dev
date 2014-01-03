@@ -22,8 +22,8 @@ public class HttpInterceptor extends HandlerInterceptorAdapter {
 			                                   , Object handler) throws Exception {
 	UserService userService = UserServiceFactory.getUserService();
 	System.out.println("bsMessage => CurrentUser : " + userService.getCurrentUser());
-    if((userService.getCurrentUser() == null) || (request.getSession().getAttribute(Globals
-    		                                                .SESSION_KEY_PARAM) == null)) {
+    if((userService.getCurrentUser() == null) || (request.getSession()
+    		                .getAttribute(Globals.SESSION_KEY_PARAM) == null)) {
     	System.out.println("bsMessage => No Logged");
     	response.sendRedirect(service.getAuthorizationUrl());
     	return false;

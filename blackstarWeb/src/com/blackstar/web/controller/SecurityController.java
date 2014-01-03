@@ -27,13 +27,13 @@ public class SecurityController extends AbstractController {
 		request.getSession().setAttribute("user", userSession.getUser());
 		return ("forward:/dashboard/show.do");
 	} 
-	return ("/noUser");
+	return ("noUser");
   }
   
   @RequestMapping("/loadSession.do")
   public String loadSession(@RequestParam(required = false) String code
 			                   , HttpServletRequest request) throws Exception {
-	  return ("/noUser");
+	  return ("noUser");
   }
 	 
 }
