@@ -3,6 +3,8 @@ package com.blackstar.services.impl;
 import java.util.Date;
 import java.util.List;
 
+import org.json.JSONObject;
+
 import com.blackstar.db.dao.interfaces.ServiceOrderDAO;
 import com.blackstar.model.Serviceorder;
 import com.blackstar.model.dto.AirCoServiceDTO;
@@ -111,6 +113,18 @@ public void updateServiceOrder(Serviceorder service, String modifiedBy,
 @Override
 public String getNewServiceNumber(Integer policyId) {
 	return dao.getNewServiceNumber(policyId);
+}
+
+@Override
+public String getServiceOrdersByStatus(String status) {
+	List<JSONObject> orders = dao.getServiceOrdersByStatus(status);
+	return orders.toString();
+}
+
+@Override
+public String getServiceOrderHistory() {
+	List<JSONObject> history = dao.getServiceOrderHistory();
+	return history.toString();
 }
   
   

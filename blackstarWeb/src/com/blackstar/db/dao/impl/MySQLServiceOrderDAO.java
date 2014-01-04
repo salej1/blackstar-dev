@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.json.JSONObject;
+
 import com.blackstar.db.dao.interfaces.ServiceOrderDAO;
 import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
@@ -240,6 +242,18 @@ public class MySQLServiceOrderDAO implements ServiceOrderDAO, Serializable {
 
 	@Override
 	public String getNewServiceNumber(Integer policyId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<JSONObject> getServiceOrdersByStatus(String status) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<JSONObject> getServiceOrderHistory() {
 		// TODO Auto-generated method stub
 		return null;
 	}

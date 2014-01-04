@@ -19,11 +19,12 @@
 <div id="content" class="container_16 clearfix">
 
 <!--   CONTENT COLUMN   -->		
-<!-- INICIA CONTENIDO DE PERFILES sysCallCenter Y sysCoordinator-->
-	<c:set var="sysCallCenter" scope="request" value="${user.belongsToGroup['Call Center']}" />
+
+<!-- Inicia Contenido De Perfiles Syscallcenter Y Syscoordinador-->
+	<c:set var="sysCallCenter" scope="request" value="${user.belongsToGroup['Call Center'] || user.belongsToGroup['Coordinador']}" />
 	<c:if test="${sysCallCenter == true}">
 
-		<!-- TABLA DE TICKETS POR ASIGNAR - unassignedTickets.jsp -->
+		<!-- Tabla De Tickets Por Asignar - Unassignedtickets.jsp -->
 		<c:import url="unassignedTickets.jsp"></c:import>
 		<script type="text/javascript">
 			$(function(){
@@ -31,7 +32,7 @@
 			});
 		</script>
 
-		<!-- TABLA DE ORDENES DE SERVICIO POR REVISAR - newServiceOrders.jsp -->
+		<!-- Tabla De Ordenes De Servicio Por Revisar - Newserviceorders.jsp -->
 		<c:import url="newServiceOrders.jsp"></c:import>
 		<script type="text/javascript">
 			$(function(){
@@ -39,7 +40,7 @@
 			});
 		</script>
 
-		<!-- TABLA DE ORDENES DE SERVICIO CON PENDIENTES - pendingServiceOrders.jsp -->
+		<!-- Tabla De Ordenes De Servicio Con Pendientes - Pendingserviceorders.jsp -->
 		<c:import url="pendingServiceOrders.jsp"></c:import>
 		<script type="text/javascript">
 			$(function(){
@@ -48,14 +49,14 @@
 		</script>
 	</c:if>
 
-<!-- FIN CONTENIDO DE PERFILES sysCallCenter Y sysCoordinator -->
+<!-- Fin Contenido De Perfiles Syscallcenter Y Syscoordinator -->
 
-<!-- INICIA CONTENIDO DE PERFIL sysServicio -->
+<!-- Inicia Contenido De Perfil Sysservicio -->
 
 	<c:set var="sysServicio" scope="request" value="${user.belongsToGroup['Implementacion y Servicio']}" />
 	<c:if test="${sysServicio == true}">
 
-<!-- LINKS PARA CREAR ORDENES DE SERVICIO -->
+<!-- Links Para Crear Ordenes De Servicio -->
 	<div>
 		<div>
 			<img src="/img/navigate-right.png"/><a href="/dashboard/createServiceOrder.do?">Crear Orden de Servicio</a>
@@ -75,37 +76,37 @@
 		<p><small>&nbsp;</small></p>
 	</div>
 
-<!-- FIN LINKS PARA CREAR ORDENES DE SERVICIO -->
+<!-- Fin Links Para Crear Ordenes De Servicio -->
 
-<!-- TABLA DE SERVICIOS PROGRAMADOS - pendingServiceOrders.jsp -->
+<!-- Tabla De Servicios Programados - Pendingserviceorders.jsp -->
 		<c:import url="scheduledPersonalServices.jsp"></c:import>
 		<script type="text/javascript">
 			$(function(){
 				scheduledPersonalServices_init();
 			});
 		</script>
-<!-- TABLA DE SERVICIOS PROGRAMADOS - pendingServiceOrders.jsp -->
+<!-- Tabla De Servicios Programados - Pendingserviceorders.jsp -->
 
-<!-- TABLA DE TICKETS ASIGNADOS -->
+<!-- Tabla De Tickets Asignados -->
 		<c:import url="assignedTickets.jsp"></c:import>
 		<script type="text/javascript">
 			$(function(){
 				assignedTickets_init();
 			});
 		</script>
-<!-- FIN TABLA DE TICKETS ASIGNADOS -->
+<!-- Fin Tabla De Tickets Asignados -->
 
-<!-- TABLA DE ORDENES DE SERVICIO CON PENDIENTES -->
+<!-- Tabla De Ordenes De Servicio Con Pendientes -->
 		<c:import url="pendingPersonalServiceOrders.jsp"></c:import>
 		<script type="text/javascript">
 			$(function(){
 				pendingPersonalServiceOrders_init();
 			});
 		</script>
-<!-- FIN TABLA DE ORDENES DE SERVICIO CON PENDIENTES -->
+<!-- Fin Tabla De Ordenes De Servicio Con Pendientes -->
 	</c:if>
 
-<!-- FIN CONTENIDO DE PERFIL sysServicio -->
+<!-- Fin Contenido De Perfil Sysservicio -->
 
 </div>
 </body>

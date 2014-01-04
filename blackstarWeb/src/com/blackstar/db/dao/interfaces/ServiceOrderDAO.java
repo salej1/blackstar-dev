@@ -3,6 +3,8 @@ package com.blackstar.db.dao.interfaces;
 import java.util.Date;
 import java.util.List;
 
+import org.json.JSONObject;
+
 import com.blackstar.model.Serviceorder;
 import com.blackstar.model.dto.AirCoServiceDTO;
 import com.blackstar.model.dto.BatteryCellServiceDTO;
@@ -39,4 +41,7 @@ public interface ServiceOrderDAO {
     public int saveUpsService (UpsServiceDTO service, Date created ,String createdBy,String createdByUsr);
     
     public String getNewServiceNumber(Integer policyId);
+    
+	public List<JSONObject> getServiceOrdersByStatus(String status);
+	public List<JSONObject> getServiceOrderHistory();
 }

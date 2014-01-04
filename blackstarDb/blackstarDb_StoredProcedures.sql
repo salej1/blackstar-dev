@@ -74,12 +74,43 @@
 -- 16   02/01/2014	SAG		Se Integra:
 -- 								blackstarDb.GetPersonalServiceOrders 
 -- -----------------------------------------------------------------------------
-
+-- 17   93/01/2014	SAG		Se Integra:
+-- 								blackstarDb.GetAllServiceOrders 
+-- -----------------------------------------------------------------------------
 use blackstarDb;
 
 
 DELIMITER $$
 
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetAllServiceOrders
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetAllServiceOrders$$
+CREATE PROCEDURE blackstarDb.GetAllServiceOrders()
+BEGIN
+
+	SELECT 
+		so.serviceOrderId AS DT_RowId,
+		so.serviceOrderNumber AS serviceOrderNumber,
+		'' AS placeHolder,
+		ifnull(t.ticketNumber, '') AS ticketNumber,
+		st.serviceType AS serviceType,
+		date(so.serviceDate) AS serviceDate,
+		p.customer AS customer,
+		et.equipmentType AS equipmentType,
+		p.brand AS brand,
+		p.serialNumber AS serialNumber,
+		ss.serviceStatus AS serviceStatus
+	FROM serviceOrder so
+		INNER JOIN serviceStatus ss ON ss.serviceStatusId = so.serviceStatusId
+		LEFT OUTER JOIN ticket t ON t.ticketId = so.ticketId
+		INNER JOIN serviceType st ON st.serviceTypeId = so.serviceTypeId
+		INNER JOIN policy p ON p.policyId = so.policyId
+		INNER JOIN equipmentType et ON et.equipmentTypeId = p.equipmentTypeId
+	ORDER BY serviceDate DESC;
+
+END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetPersonalServiceOrders
@@ -109,7 +140,8 @@ BEGIN
 		INNER JOIN equipmentType et ON et.equipmentTypeId = p.equipmentTypeId
 		INNER JOIN office o ON p.officeId = o.officeId
 	where serviceStatus = pStatus
-	AND so.asignee = pUser;
+	AND so.asignee = pUser
+	ORDER BY serviceDate;
 
 END$$
 
@@ -135,7 +167,8 @@ FROM ticket t
 	INNER JOIN equipmentType e ON e.equipmentTypeId = p.equipmentTypeId
 	INNER JOIN ticketstatus ts ON t.ticketStatusId = ts.ticketStatusId
 WHERE t.asignee = pUser
-AND t.closed IS NULL;
+AND t.closed IS NULL
+ORDER BY ticketDate;
 
 END$$
 
@@ -164,7 +197,8 @@ SELECT
 		INNER JOIN policy p ON p.policyId = sp.policyId
 		INNER JOIN equipmentType e ON e.equipmentTypeId = p.equipmentTypeId
 		INNER JOIN office o ON o.officeId = p.officeId
-	WHERE employeeId = pUser;
+	WHERE employeeId = pUser
+	ORDER BY serviceDate;
 
 END$$
 

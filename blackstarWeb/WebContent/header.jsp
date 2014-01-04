@@ -40,7 +40,7 @@
 			<c:when test="${pageSection == 'dashboard'}">
 				<li><span class="active">Inicio</span></li>
 				<li><a href="${pageContext.request.contextPath}/tickets">Tickets</a></li>
-				<li><a href="${pageContext.request.contextPath}/ordenesServicio">Ordenes de servicio</a></li>
+				<li><a href="${pageContext.request.contextPath}/serviceOrders/show.do">Ordenes de servicio</a></li>
 				<li><a href="${pageContext.request.contextPath}/seguimiento">Seguimiento</a></li>
 				<li><a href="${pageContext.request.contextPath}/encuestas">Encuestas de servicio</a></li>
 				<li><a href="${pageContext.request.contextPath}/indicadores">Indicadores Serv.</a></li>
@@ -48,7 +48,7 @@
 			<c:when test="${pageSection == 'tickets'}">
 				<li><a href="${pageContext.request.contextPath}/dashboard/show.do">Inicio</a></li>
 				<li><span class="active">Tickets</span></li>
-				<li><a href="${pageContext.request.contextPath}/ordenesServicio">Ordenes de servicio</a></li>
+				<li><a href="${pageContext.request.contextPath}/serviceOrders/show.do">Ordenes de servicio</a></li>
 				<li><a href="${pageContext.request.contextPath}/seguimiento">Seguimiento</a></li>
 				<li><a href="${pageContext.request.contextPath}/encuestas">Encuestas de servicio</a></li>
 				<li><a href="${pageContext.request.contextPath}/indicadores">Indicadores Serv.</a></li>
@@ -64,7 +64,7 @@
 			<c:when test="${pageSection == 'seguimiento'}">
 				<li><a href="${pageContext.request.contextPath}/dashboard/show.do">Inicio</a></li>
 				<li><a href="${pageContext.request.contextPath}/tickets">Tickets</a></li>
-				<li><a href="${pageContext.request.contextPath}/ordenesServicio">Ordenes de servicio</a></li>
+				<li><a href="${pageContext.request.contextPath}/serviceOrders/show.do">Ordenes de servicio</a></li>
 				<li><span class="active">Seguimiento</span></li>
 				<li><a href="${pageContext.request.contextPath}/encuestas">Encuestas de servicio</a></li>
 				<li><a href="${pageContext.request.contextPath}/indicadores">Indicadores Serv.</a></li>
@@ -72,7 +72,7 @@
 			<c:when test="${pageSection == 'encuestas'}">
 				<li><a href="${pageContext.request.contextPath}/dashboard/show.do">Inicio</a></li>
 				<li><a href="${pageContext.request.contextPath}/tickets">Tickets</a></li>
-				<li><a href="${pageContext.request.contextPath}/ordenesServicio">Ordenes de servicio</a></li>
+				<li><a href="${pageContext.request.contextPath}/serviceOrders/show.do">Ordenes de servicio</a></li>
 				<li><a href="${pageContext.request.contextPath}/seguimiento">Seguimiento</a></li>
 				<li><span class="active">Encuestas de servicio</span></li>
 				<li><a href="${pageContext.request.contextPath}/indicadores">Indicadores Serv.</a></li>
@@ -80,7 +80,7 @@
 			<c:when test="${pageSection == 'indicadores'}">
 				<li><a href="${pageContext.request.contextPath}/dashboard/show.do">Inicio</a></li>
 				<li><a href="${pageContext.request.contextPath}/tickets">Tickets</a></li>
-				<li><a href="${pageContext.request.contextPath}/ordenesServicio">Ordenes de servicio</a></li>
+				<li><a href="${pageContext.request.contextPath}/serviceOrders/show.do">Ordenes de servicio</a></li>
 				<li><a href="${pageContext.request.contextPath}/seguimiento">Seguimiento</a></li>
 				<li><a href="${pageContext.request.contextPath}/encuestas">Encuestas de servicio</a></li>
 				<li><span class="active">Indicadores Serv.</span></li>
