@@ -674,4 +674,11 @@ public class ServiceOrderDAOImpl extends AbstractDAO implements ServiceOrderDAO 
 		String sqlQuery = "CALL GetAllServiceOrders();";
 		return getJdbcTemplate().query(sqlQuery, new JSONRowMapper()); 
 	}
+
+
+	@Override
+	public List<JSONObject> getEquipmentByType(String type) {
+		String sqlQuery = "CALL GetEquipmentByType(?);";
+		return getJdbcTemplate().query(sqlQuery, new Object[]{type}, new JSONRowMapper()); 
+	}
 }

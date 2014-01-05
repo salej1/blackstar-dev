@@ -44,4 +44,6 @@ public interface ServiceOrderDAO {
     
 	public List<JSONObject> getServiceOrdersByStatus(String status);
 	public List<JSONObject> getServiceOrderHistory();
+	
+	public List<JSONObject> getEquipmentByType(String type);
 }

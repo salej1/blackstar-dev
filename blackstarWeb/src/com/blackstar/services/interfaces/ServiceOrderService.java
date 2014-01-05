@@ -15,7 +15,7 @@ import com.blackstar.model.dto.UpsServiceDTO;
 
 public interface ServiceOrderService {
 	
-	// Servicios de desploegue y guardado de una orden de servicio
+	// Servicios de despliegue y guardado de una orden de servicio
 	public OrderserviceDTO getServiceOrderByIdOrNumber(Integer serviceOrderId, String orderNumber);
 	public List<FollowUpDTO> getFollows (Integer serviceOrderId);
 
@@ -41,4 +41,6 @@ public interface ServiceOrderService {
 	public String getServiceOrdersByStatus(String status);
 	public String getServiceOrderHistory();
   
+	// Servicios de recuperacion de equipos
+	public String getEquipmentByType(String type);
 }

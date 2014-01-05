@@ -48,41 +48,35 @@
 			</c:if>
 <!-- Fin Contenido De Perfiles SysCallCenter Y SysCoordinador-->
 
+<!-- Seccion compartida Servicio y Coordinador -->
+			<c:set var="sysServicio" scope="request" value="${user.belongsToGroup['Implementacion y Servicio'] || user.belongsToGroup['Coordinador']}" />
+			<c:if test="${sysServicio == true}">
+	
+<!-- Links Para Crear Ordenes De Servicio -->
+				<c:import url="newOSLinks.jsp"></c:import>
+				<script type="text/javascript">
+					$(function(){
+						newOSLinks_init();
+					});
+				</script>
+		<!-- Fin Links Para Crear Ordenes De Servicio -->
+
+			</c:if>
+<!-- Fin Seccion compartida Servicio y Coordinador -->
+
 <!-- Inicia Contenido De Perfil SysServicio -->
 
 			<c:set var="sysServicio" scope="request" value="${user.belongsToGroup['Implementacion y Servicio']}" />
 			<c:if test="${sysServicio == true}">
 
-<!-- Links Para Crear Ordenes De Servicio -->
-			<div>
-				<div>
-					<img src="/img/navigate-right.png"/><a href="/dashboard/createServiceOrder.do?">Crear Orden de Servicio</a>
-				</div>
-				<div>
-					<img src="/img/navigate-right.png"/><a href="/dashboard/createServiceOrder.do?equipmentType=aa">Crear Reporte de Aire Acondicionado</a>
-				</div>
-				<div>
-					<img src="/img/navigate-right.png"/><a href="/dashboard/createServiceOrder.do?equipmentType=bb">Crear Reporte de Baterias</a>
-				</div>
-				<div>
-					<img src="/img/navigate-right.png"/><a href="/dashboard/createServiceOrder.do?equipmentType=pe">Crear Reporte de Planta de emergencia</a>
-				</div>
-				<div>
-					<img src="/img/navigate-right.png"/><a href="/dashboard/createServiceOrder.do?equipmentType=ups">Crear UPS</a>
-				</div>
-				<p><small>&nbsp;</small></p>
-			</div>
-
-<!-- Fin Links Para Crear Ordenes De Servicio -->
-
 <!-- Inicia Historial De Ordenes De Servicio -->
-		<c:import url="serviceOrdersHistory.jsp"></c:import>
-			<script type="text/javascript">
-				$(function(){
-					serviceOrdersHistory_init();
-				});
-			</script>
-		</c:if>
+				<c:import url="serviceOrdersHistory.jsp"></c:import>
+				<script type="text/javascript">
+					$(function(){
+						serviceOrdersHistory_init();
+					});
+				</script>
+			</c:if>
 <!-- Fin Historial De Ordenes De Servicio -->
 
 		</div>

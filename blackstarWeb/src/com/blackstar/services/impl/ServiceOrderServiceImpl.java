@@ -126,6 +126,12 @@ public String getServiceOrderHistory() {
 	List<JSONObject> history = dao.getServiceOrderHistory();
 	return history.toString();
 }
+
+@Override
+public String getEquipmentByType(String type) {
+	List<JSONObject> equipment = dao.getEquipmentByType(type);
+	return equipment.toString();
+}
   
   
 }

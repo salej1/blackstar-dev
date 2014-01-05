@@ -57,35 +57,13 @@
 	<c:if test="${sysServicio == true}">
 
 <!-- Links Para Crear Ordenes De Servicio -->
-	<div>
-		<div>
-			<img src="/img/navigate-right.png"/><a href="/dashboard/createServiceOrder.do?">Crear Orden de Servicio</a>
-		</div>
-		<div>
-			<img src="/img/navigate-right.png"/><a href="/dashboard/createServiceOrder.do?equipmentType=aa">Crear Reporte de Aire Acondicionado</a>
-		</div>
-		<div>
-			<img src="/img/navigate-right.png"/><a href="/dashboard/createServiceOrder.do?equipmentType=bb">Crear Reporte de Baterias</a>
-		</div>
-		<div>
-			<img src="/img/navigate-right.png"/><a href="/dashboard/createServiceOrder.do?equipmentType=pe">Crear Reporte de Planta de emergencia</a>
-		</div>
-		<div>
-			<img src="/img/navigate-right.png"/><a href="/dashboard/createServiceOrder.do?equipmentType=ups">Crear UPS</a>
-		</div>
-		<p><small>&nbsp;</small></p>
-	</div>
-
-<!-- Fin Links Para Crear Ordenes De Servicio -->
-
-<!-- Tabla De Servicios Programados - Pendingserviceorders.jsp -->
-		<c:import url="scheduledPersonalServices.jsp"></c:import>
+		<c:import url="newOSLinks.jsp"></c:import>
 		<script type="text/javascript">
 			$(function(){
-				scheduledPersonalServices_init();
+				newOSLinks_init();
 			});
 		</script>
-<!-- Tabla De Servicios Programados - Pendingserviceorders.jsp -->
+<!-- Fin Links Para Crear Ordenes De Servicio -->
 
 <!-- Tabla De Tickets Asignados -->
 		<c:import url="assignedTickets.jsp"></c:import>

@@ -258,4 +258,10 @@ public class MySQLServiceOrderDAO implements ServiceOrderDAO, Serializable {
 		return null;
 	}
 
+	@Override
+	public List<JSONObject> getEquipmentByType(String type) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

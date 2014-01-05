@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
@@ -32,7 +33,8 @@ public class ServiceOrdersController extends AbstractController{
 	public String show(ModelMap model, HttpServletRequest req,
 			HttpServletResponse resp) {
 		
-		// Solo se invoca dashboard.jsp
+		// Solo se invoca serviceOrders.jsp
+		// La pagina contiene llamadas ajax que cargan el contenido segun el usuario
 		return "serviceOrders";
 	}
 	
@@ -58,5 +60,21 @@ public class ServiceOrdersController extends AbstractController{
 			return "error";
 		}
 		return retVal;
+	}
+	
+	@RequestMapping(value = "/getEquipmentByTypeJson.do", method = RequestMethod.GET)
+	public @ResponseBody String getEquipmentByType(
+		@RequestParam(required = true) String type,
+		ModelMap model) {
+			String retVal;
+			try {
+				retVal = service.getEquipmentByType(type);
+			} catch (Exception ex) {
+				Logger.Log(LogLevel.ERROR,
+						Thread.currentThread().getStackTrace()[1].toString(), ex);
+				ex.printStackTrace();
+				return "error";
+			}
+			return retVal;
 	}
 }

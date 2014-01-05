@@ -74,14 +74,44 @@
 -- 16   02/01/2014	SAG		Se Integra:
 -- 								blackstarDb.GetPersonalServiceOrders 
 -- -----------------------------------------------------------------------------
--- 17   93/01/2014	SAG		Se Integra:
+-- 17   03/01/2014	SAG		Se Integra:
 -- 								blackstarDb.GetAllServiceOrders 
+-- 								blackstarDb.GetEquipmentByType 
 -- -----------------------------------------------------------------------------
 use blackstarDb;
 
 
 DELIMITER $$
 
+
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetEquipmentByType
+	--
+	-- Este SP se utiliza especificamente para recuperar valores destinados
+	-- a poblar un campo autocomplete. No cambiar las etiquetas
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetEquipmentByType$$
+CREATE PROCEDURE blackstarDb.GetEquipmentByType(pEquipmentTypeId CHAR(1))
+BEGIN
+	
+	IF(pEquipmentTypeId = 'x') THEN
+		SELECT 
+			concat_ws(' - ', brand, model, serialNumber) AS label,
+			serialNumber AS value
+		FROM policy p
+		WHERE equipmentTypeId NOT IN('a', 'b', 'p', 'u')
+		ORDER BY brand, model, serialNumber;
+	ELSE
+		SELECT 
+			concat_ws(' - ', brand, model, serialNumber) AS label,
+			serialNumber AS value
+		FROM policy p
+		WHERE equipmentTypeId = pEquipmentTypeId
+		ORDER BY brand, model, serialNumber;
+	END IF;
+
+END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetAllServiceOrders
