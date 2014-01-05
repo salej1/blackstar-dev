@@ -101,9 +101,9 @@ public class ServiceOrderDAOImpl extends AbstractDAO implements ServiceOrderDAO 
 	return 0;
   }
 
-  @Override
-  public boolean updateServiceOrder() {
-	// TODO Auto-generated method stub
-	return false;
-  }
+	@Override
+	public boolean updateServiceOrder(Serviceorder so) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

@@ -11,8 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONArray;
-import org.json.JSONException;
-
 import com.blackstar.common.ResultSetConverter;
 import com.blackstar.db.BlackstarDataAccess;
 import com.blackstar.interfaces.IUserService;

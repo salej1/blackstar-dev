@@ -16,13 +16,13 @@
 
 <script type="text/javascript" charset="utf-8">
  $(document).ready(function() {
-	 var str = '${serviceOrdersToReview}';
+	 var str = '${serviceOrders}';
 	 var dataSOTR = $.parseJSON(str);
-	    $('#ordenesPorRevisar').dataTable({	    		
+	    $('#allServiceOrders').dataTable({	    		
 			"bProcessing": true,
 			"bFilter": true,
 			"bLengthChange": false,
-			"iDisplayLength": 10,
+			"iDisplayLength": 20,
 			"bInfo": false,
 			"sPaginationType": "full_numbers",
 			"aaData": dataSOTR,
@@ -79,76 +79,50 @@
 		);
 	    } 
  );
- </script> 
+ </script>
  
 <title>Ordenes de servicio</title>
 </head>
 <body>
 <div id="content" class="container_16 clearfix">
 
-<div class="grid_16">	
-					<div>
-						<div>
-							<img src="img/navigate-right.png"/><a href="scheduleStatus">Programa de servicios preventivos</a>
-						</div>
-					</div>
-					<p><small>&nbsp;</small></p>
-</div>	
-<div class="grid_16">					
-					<div class="box">
-						<h2>Ordenes de servicio por revisar</h2>
-						<div class="utils">
-							
-						</div>
-						<table cellpadding="0" cellspacing="0" border="0" class="display" id="ordenesPorRevisar">
-							<thead>
-								<tr>
-									<th style="width=250px;">Folio</th>
-									<th style="width=50px;"></th>
-									<th>Ticket</th>
-									<th>Tipo</th>
-									<th>Fecha</th>
-									<th>Cliente</th>
-									<th>Equipo</th>
-									<th>Proyecto</th>
-									<th>Oficina</th>
-									<th>Marca</th>
-									<th>No. Serie</th>
-									</tr>
-							</thead>
-							<tbody>
-								
-							</tbody>
-						</table>
-					</div>	
-					<div class="box">
-						<h2>Ordenes de servicio con pendientes</h2>
-						<div class="utils">
-							
-						</div>
-						<table  cellpadding="0" cellspacing="0" border="0" class="display" id="ordenesPendientes">
-							<thead>
-								<tr>
-									<th>Folio</th>
-									<th></th>
-									<th>Ticket</th>
-									<th>Tipo</th>
-									<th>Fecha</th>
-									<th>Cliente</th>
-									<th>Equipo</th>
-									<th>Proyecto</th>
-									<th>Oficina</th>
-									<th>Marca</th>
-									<th>No. Serie</th>
-								</tr>
-							</thead>
-							<tbody>
-								
-							</tbody>
-						</table>
-					</div>					
-				</div>
-
+	<div class="grid_16">	
+		<div>
+			<div>
+				<img src="img/navigate-right.png"/><a href="scheduleStatus">Programa de servicios preventivos</a>
+			</div>
+		</div>
+		<p><small>&nbsp;</small></p>
+	</div>	
+	
+	<div class="grid_16">					
+		<div class="box">
+			<h2>Ordenes de servicio</h2>
+			<div class="utils">
+				
+			</div>
+			<table cellpadding="0" cellspacing="0" border="0" class="display" id="allServiceOrders">
+				<thead>
+					<tr>
+						<th style="width=250px;">Folio</th>
+						<th style="width=50px;"></th>
+						<th>Ticket</th>
+						<th>Tipo</th>
+						<th>Fecha</th>
+						<th>Cliente</th>
+						<th>Equipo</th>
+						<th>Proyecto</th>
+						<th>Oficina</th>
+						<th>Marca</th>
+						<th>No. Serie</th>
+						</tr>
+				</thead>
+				<tbody>
+					
+				</tbody>
+			</table>
+		</div>					
+	</div>
 </div>
 </body>
 </body>

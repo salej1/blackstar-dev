@@ -13,7 +13,8 @@ public class OrderserviceDTO {
 							String customer, String equipmentAddress, String contactName, Date serviceDate, String contactPhone, 
 							String equipmentType, String equipmentBrand, String equipmentModel, String equipmentSerialNo, String failureDescription, 
 							String serviceType, String proyectNumber, String detailIssue, String detailWorkDone, String detailTechnicalJob, 
-							String detailRequirments, String detailStatus, String signCreated, String signReceivedBy, String receivedBy, String responsible, Date closed, String receivedByPosition)
+							String detailRequirments, String detailStatus, String signCreated, String signReceivedBy, String receivedBy, String responsible, Date closed, String receivedByPosition,
+							Integer isWrong)
 	{
 		this.coordinator = coordinator;
 		this.serviceOrderNo = serviceOrderNo;
@@ -43,6 +44,7 @@ public class OrderserviceDTO {
 		this.responsible = responsible;
 		this.closed = closed;
 		this.receivedByPosition = receivedByPosition;
+		this.isWrong = isWrong;
 	}
 	
 	
@@ -77,7 +79,7 @@ public class OrderserviceDTO {
 	private String receivedByPosition;
 	private String responsible;
 	private Date closed;
-	
+	private Integer isWrong;
 
     
     public String getServiceOrderNo() {
@@ -255,6 +257,14 @@ public class OrderserviceDTO {
 		this.coordinator = coordinator;
 	}
 
+	public Integer getIsWrong() {
+		return isWrong;
+	}
+	
+	public void setIsWrong(Integer isWrong) {
+		this.isWrong = isWrong;
+	}
+	
 	public Integer getPolicyId() {
 		return policyId;
 	}

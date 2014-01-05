@@ -10,4 +10,5 @@ public interface IUserService {
 	String getCurrentUserName(HttpServletResponse resp);
 	List<String> getCurrentUserGroups(HttpServletResponse resp);
 	Map<String, String> getEmployeeList();
+	Map<String, String> getEmployeeListByGroup(String group);
 }

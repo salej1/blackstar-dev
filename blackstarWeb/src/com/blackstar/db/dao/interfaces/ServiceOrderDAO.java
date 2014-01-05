@@ -13,8 +13,7 @@ public interface ServiceOrderDAO {
 	public Serviceorder getServiceOrderById(int id);
 	public Serviceorder getServiceOrderByNum(String num);
 	public int insertServiceOrder();
-	public boolean updateServiceOrder();
-	
+	public boolean updateServiceOrder(Serviceorder so);
 	public OrderserviceDTO getServiceOrderByIdOrNumber(Integer serviceOrderId, String orderNumber);
 	public List<FollowUpDTO> getFollows (Integer serviceOrderId);
 }

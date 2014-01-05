@@ -41,12 +41,16 @@ public class UserFilter implements Filter {
 	 */
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 		HttpServletRequest req = (HttpServletRequest) request;
-		
+		HttpServletResponse resp = (HttpServletResponse) response;
 		User usr = (User) req.getSession().getAttribute("user");
 		if(usr == null){
 			// Estamos asumiendo que la configuracion google forzara al usuario a logearse
 			UserService userService = UserServiceFactory.getUserService();
 		    com.google.appengine.api.users.User gUser = userService.getCurrentUser();
+		    
+		    if(gUser == null){
+		    	request.getRequestDispatcher(userService.createLoginURL("/dashboard")).forward(req, resp);
+		    }
 		    if(gUser != null){
 		    	String id = gUser.getEmail();
 

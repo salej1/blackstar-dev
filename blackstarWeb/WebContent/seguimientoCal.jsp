@@ -104,7 +104,7 @@
 					"fnDrawCallback": function ( oSettings ) {
 						for ( var i=0, iLen=oSettings.aiDisplay.length ; i<iLen ; i++ )
 						{
-							$('td:eq(0), td:eq(6)', oSettings.aoData[ oSettings.aiDisplay[i] ].nTr ).html( i+1 );
+							$('td:eq(0), td:eq(34)', oSettings.aoData[ oSettings.aiDisplay[i] ].nTr ).html( i+1 );
 						}
 					},				
 					"bProcessing": true,
@@ -266,7 +266,9 @@
 	<!--   ~ CONTENT COLUMN   -->
 
 	<!--   CONTENT ADDS  -->
-		<c:import url="followUpControl.jsp"></c:import>
+		<div style="display:none;">
+			<c:import url="followUpControl.jsp"></c:import>
+		</div>
 		<script type="text/javascript">
 			$(function() {
 				

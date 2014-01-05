@@ -94,4 +94,10 @@ public class GoogleUserServiceImpl implements IUserService{
 		
 		return empList;
 	}
+
+	@Override
+	public Map<String, String> getEmployeeListByGroup(String group) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

@@ -16,7 +16,7 @@ public class Globals {
 	public static final String SESSION_KEY_PARAM = "uSession";
 	
 	  public static final String GOOGLE_DRIVER_CLASS = "com.mysql.jdbc.GoogleDriver";
-	  public static final String CONNECTION_STRING_TEMPLATE = "jdbc:google:rdbms://salej1-blackstar-dev:salej1-blackstar-dev/%s";
+	  public static final String CONNECTION_STRING_TEMPLATE = "jdbc:google:rdbms://innso-blackstar-dev:innso-blackstar-dev2/%s";
 	  public static final String DEFAULT_DRIVER_CLASS = "com.mysql.jdbc.Driver";
 	  public static final String LOCAL_CONNECTION_STRING_TEMPLATE = "jdbc:mysql://localhost:3306/%s";
 	  /**
@@ -44,4 +44,9 @@ public class Globals {
 	    }
 	    return clientSecrets;
 	  }
+	  
+	  // User Groups
+	  public static final String GROUP_SERVICE = "sysServicio";
+	  public static final String GROUP_CALL_CENTER = "sysCallCenter";
+	  public static final String GROUP_COORDINATOR = "sysCoordinador";
 }

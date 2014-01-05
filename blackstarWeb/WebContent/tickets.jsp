@@ -108,8 +108,8 @@
 				<thead>
 					<tr>
 						<th>Ticket</th>
-						<th>Fecha/Hora</th>
-						<th>Cliente</th>
+						<th style="width:140px;">Fecha/Hora</th>
+						<th style="width:120px;">Cliente</th>
 						<th>Equipo</th>
 						<th>Tiem. R</th>
 						<th>Proyecto</th>

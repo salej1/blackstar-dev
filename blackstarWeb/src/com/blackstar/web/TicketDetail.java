@@ -26,6 +26,7 @@ import com.blackstar.model.Policy;
 import com.blackstar.model.Servicecenter;
 import com.blackstar.model.Serviceorder;
 import com.blackstar.model.Ticket;
+import com.blackstar.model.TicketController;
 import com.blackstar.model.Ticketstatus;
 import com.blackstar.model.User;
 import com.blackstar.model.dto.EmployeeDTO;
@@ -130,7 +131,47 @@ public class TicketDetail extends HttpServlet{
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String action = request.getParameter("action");
+		String ticketId = request.getParameter("closeTicketId");
+		User thisUser = (User)request.getSession().getAttribute("user");
+		String userId = null;
 		
+		if(action.equals("closeTicket")){
+			String closureOs = request.getParameter("osId");
+
+			if(thisUser != null){
+				userId = thisUser.getUserEmail();
+			}
+			
+			String sql = "CALL CloseTicket(%s, %s, '%s')";
+			sql = String.format(sql, ticketId, closureOs, userId);
+			
+			BlackstarDataAccess da = new BlackstarDataAccess();
+			try {
+				da.executeQuery(sql);
+			} catch (Exception e) {
+				Logger.Log(LogLevel.FATAL, Thread.currentThread().getStackTrace()[1].toString(), e);
+			}
+		}
+		else if(action.endsWith("reopenTicket")){
+			ticketId = request.getParameter("reopenTicketId");
+			
+			if(thisUser != null){
+				userId = thisUser.getUserEmail();
+			}
+			
+			String sql = "CALL ReopenTicket(%s, '%s')";
+			sql = String.format(sql, ticketId, userId);
+			
+			BlackstarDataAccess da = new BlackstarDataAccess();
+			try {
+				da.executeQuery(sql);
+			} catch (Exception e) {
+				Logger.Log(LogLevel.FATAL, Thread.currentThread().getStackTrace()[1].toString(), e);
+			}
+		}
+		
+		response.sendRedirect("/ticketDetail?ticketId="+ticketId);
 				
 	}
 

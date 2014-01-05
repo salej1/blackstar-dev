@@ -2,7 +2,9 @@ package com.blackstar.web;
 
 import java.io.IOException;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -64,7 +66,7 @@ public class Dashboard extends HttpServlet {
 			request.setAttribute("ticketsToAssignDashboard", jsticketsToAssign.toString());
 			request.setAttribute("serviceOrdersToReviewDashboard", jsServiceOrdersToReview.toString());
 			request.setAttribute("serviceOrdersPendingDashboard", jsServiceOrdersPending.toString());
-			
+			request.setAttribute("offices", getOfficesList(da));
 			da.closeConnection();
 			// Recuperando la lista de empleados del directorio
 			IUserService dir = UserServiceFactory.getUserService();
@@ -120,4 +122,18 @@ public class Dashboard extends HttpServlet {
 			response.sendRedirect("/dashboard");
 		}
 	}
-}
+	
+	private List<String> getOfficesList(BlackstarDataAccess da){
+		ArrayList<String> list = new ArrayList<String>();
+		try{
+			ResultSet rs = da.executeQuery("CALL GetOfficesList();");
+			
+			while(rs.next()){
+				list.add(rs.getString("officeName"));
+			}
+		}
+		catch(Exception ex){
+			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), ex);
+		}
+		return list;
+	}}

@@ -19,7 +19,55 @@
 	var strSOTR = '${serviceOrdersToReviewDashboard}';
 	var assignedTicket = 0;
 	
-	function refreshTicketList(){
+	 function assignTicket(tktId, tktNumber){
+		assignedTicket = tktId;
+		$('#lblTicketBeignAssigned').html(tktNumber);
+		$('#tktAssignDlg').dialog('open');
+	 }
+	 
+	 function refreshSoListByOffice(office){
+		// tabla de OS nuevas
+		var newSOTable = $('#dtOrdenesPorRevisar').dataTable();
+			newSOTable.fnFilter(office, 8);
+
+		// tabla de OS con pendientes
+		var pendingSOTable = $('#dtOrdenesPendientes').dataTable();
+			pendingSOTable.fnFilter(office, 8);
+			
+		// se guarda la preferencia del usuario
+		$.cookie('blackstar_office_pref', office, { expires: 365 });
+	 }
+	 
+	 function refreshTicketList(){
+	 
+		// Tabla de tickets
+		 var data = $.parseJSON(str);
+		
+		$('#dtTicketsPorAsignar').dataTable({	    		
+			"bProcessing": true,
+			"bFilter": true,
+			"bLengthChange": false,
+			"iDisplayLength": 10,
+			"bInfo": false,
+			"sPaginationType": "full_numbers",
+			"aaData": data,
+			"sDom": '<"top"i>rt<"bottom"flp><"clear">',
+			"aoColumns": [
+						  { "mData": "ticketNumber" },
+						  { "mData": "created" },
+						  { "mData": "customer" },
+						  { "mData": "equipmentType" },
+						  { "mData": "responseTimeHR" },
+						  { "mData": "project" }, 	              
+						  { "mData": "ticketStatus" },
+						  { "mData": "Asignar" }
+
+					  ],
+			"aoColumnDefs" : [{"mRender" : function(data, type, row){return "<div align=center style='width:60px;'><a href=/ticketDetail?ticketId=" + row.DT_RowId + ">" + data + "</a></div>";}, "aTargets" : [0]},
+							  {"mRender" : function(data, type, row){return "<a href='#' class='edit' onclick='javascript: assignTicket(" + row.DT_RowId + ", \"" + data + "\"); return false;'>Asignar</a>";}, "aTargets" : [7]}	    		    	       
+							 ]}
+		);
+  
   
 		// Tabla de Ordenes de servicio nuevas
 		 var dataSOTR  = $.parseJSON(strSOTR);
@@ -92,6 +140,12 @@
 	
 	refreshTicketList();
 	
+	// se filtran las oficinas de acuerdo a la ultima preferencia del usuario
+	var officePref = $.cookie('blackstar_office_pref');
+	if(officePref != null){
+		$("#optOffices").val(officePref);
+		refreshSoListByOffice(officePref);
+	}
 });
 </script> 
 <title>Tickets</title>

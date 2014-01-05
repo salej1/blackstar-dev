@@ -38,7 +38,7 @@
 		<ul id="navigation">
 		<c:choose>
 			<c:when test="${pageSection == 'dashboard'}">
-				<li><span class="active">Inicio</span></li>
+				<li><span class="active" onclick="window.location = '/dashboard/show.do'">Inicio</span></li>
 				<li><a href="${pageContext.request.contextPath}/tickets">Tickets</a></li>
 				<li><a href="${pageContext.request.contextPath}/ordenesServicio">Ordenes de servicio</a></li>
 				<li><a href="${pageContext.request.contextPath}/seguimiento">Seguimiento</a></li>
@@ -47,7 +47,7 @@
 			</c:when>
 			<c:when test="${pageSection == 'tickets'}">
 				<li><a href="${pageContext.request.contextPath}/dashboard/show.do">Inicio</a></li>
-				<li><span class="active">Tickets</span></li>
+				<li><span class="active" onclick="window.location = '/tickets'">Tickets</span></li>
 				<li><a href="${pageContext.request.contextPath}/ordenesServicio">Ordenes de servicio</a></li>
 				<li><a href="${pageContext.request.contextPath}/seguimiento">Seguimiento</a></li>
 				<li><a href="${pageContext.request.contextPath}/encuestas">Encuestas de servicio</a></li>
@@ -56,7 +56,7 @@
 			<c:when test="${pageSection == 'ordenesServicio'}">  
 				<li><a href="${pageContext.request.contextPath}/dashboard/show.do">Inicio</a></li>
 				<li><a href="${pageContext.request.contextPath}/tickets">Tickets</a></li>
-				<li><span class="active">Ordenes de servicio</span></li>
+				<li><span class="active" onclick="window.location = '/ordenesServicio'">Ordenes de servicio</span></li>
 				<li><a href="${pageContext.request.contextPath}/seguimiento">Seguimiento</a></li>
 				<li><a href="${pageContext.request.contextPath}/encuestas">Encuestas de servicio</a></li>
 				<li><a href="${pageContext.request.contextPath}/indicadores">Indicadores Serv.</a></li>
@@ -65,7 +65,7 @@
 				<li><a href="${pageContext.request.contextPath}/dashboard/show.do">Inicio</a></li>
 				<li><a href="${pageContext.request.contextPath}/tickets">Tickets</a></li>
 				<li><a href="${pageContext.request.contextPath}/ordenesServicio">Ordenes de servicio</a></li>
-				<li><span class="active">Seguimiento</span></li>
+				<li><span class="active"" onclick="window.location = '/seguimiento'">Seguimiento</span></li>
 				<li><a href="${pageContext.request.contextPath}/encuestas">Encuestas de servicio</a></li>
 				<li><a href="${pageContext.request.contextPath}/indicadores">Indicadores Serv.</a></li>
 			</c:when>			
@@ -74,7 +74,7 @@
 				<li><a href="${pageContext.request.contextPath}/tickets">Tickets</a></li>
 				<li><a href="${pageContext.request.contextPath}/ordenesServicio">Ordenes de servicio</a></li>
 				<li><a href="${pageContext.request.contextPath}/seguimiento">Seguimiento</a></li>
-				<li><span class="active">Encuestas de servicio</span></li>
+				<li><span class="active" onclick="window.location = '/encuestas'">Encuestas de servicio</span></li>
 				<li><a href="${pageContext.request.contextPath}/indicadores">Indicadores Serv.</a></li>
 			</c:when>			
 			<c:when test="${pageSection == 'indicadores'}">
@@ -83,7 +83,7 @@
 				<li><a href="${pageContext.request.contextPath}/ordenesServicio">Ordenes de servicio</a></li>
 				<li><a href="${pageContext.request.contextPath}/seguimiento">Seguimiento</a></li>
 				<li><a href="${pageContext.request.contextPath}/encuestas">Encuestas de servicio</a></li>
-				<li><span class="active">Indicadores Serv.</span></li>
+				<li><span class="active" onclick="window.location = '/indicadores'">Indicadores Serv.</span></li>
 			</c:when>			
 		</c:choose>
 			<li><span style="width:15px;"></span></li>

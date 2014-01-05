@@ -43,7 +43,8 @@ public class Serviceorder implements java.io.Serializable {
 	private String signReceivedBy;
 	private String receivedByPosition;
 	private String serviceOrderNumber;
-
+	private Integer isWrong;
+	
 	public Serviceorder() {
 	}
 
@@ -53,7 +54,8 @@ public class Serviceorder implements java.io.Serializable {
 			String statusId, Date closed, String consultant, String coordinator,
 			String asignee, Date created, String createdBy,
 			String createdByUsr, Date modified, String modifiedBy,
-			String modifiedByUsr, String signCreated, String signReceivedBy, String receivedByPosition, String serviceOrderNumber, Integer serviceOrderId) {
+			String modifiedByUsr, String signCreated, String signReceivedBy, String receivedByPosition, String serviceOrderNumber, Integer serviceOrderId,
+			Integer isWrong) {
 		this.serviceOrderId = serviceOrderId;
 		this.serviceTypeId = serviceTypeId;
 		this.ticketId = ticketId;
@@ -78,6 +80,7 @@ public class Serviceorder implements java.io.Serializable {
 		this.signReceivedBy = signReceivedBy;
 		this.receivedByPosition = receivedByPosition;
 		this.serviceOrderNumber = serviceOrderNumber;
+		this.isWrong = isWrong;
 	}
 
 	@Id
@@ -302,6 +305,23 @@ public class Serviceorder implements java.io.Serializable {
 		this.serviceOrderNumber = serviceOrderNumber;
 	}
 
-	
-	
+	public String getServiceStatusId() {
+		return serviceStatusId;
+	}
+
+	public void setServiceStatusId(String serviceStatusId) {
+		this.serviceStatusId = serviceStatusId;
+	}
+
+	public Integer getIsWrong() {
+		return isWrong;
+	}
+
+	public void setIsWrong(Integer isWrong) {
+		this.isWrong = isWrong;
+	}
+
+	public String getSignReceivedBy() {
+		return signReceivedBy;
+	}
 }

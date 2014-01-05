@@ -45,7 +45,8 @@ public class MySQLServiceOrderDAO implements ServiceOrderDAO, Serializable {
 						rs.getString("servicestatusId"), rs.getDate("closed"), rs.getString("consultant"), rs.getString("coordinator"),
 						rs.getString("asignee"), rs.getDate("created"), rs.getString("createdBy"),
 						rs.getString("createdByUsr"), rs.getDate("modified"), rs.getString("modifiedBy"),
-						rs.getString("modifiedByUsr"), rs.getString("signCreated"), rs.getString("signReceivedBy"),rs.getString("receivedByPosition"),rs.getString("serviceOrderNumber"), rs.getInt("serviceOrderId"));
+						rs.getString("modifiedByUsr"), rs.getString("signCreated"), rs.getString("signReceivedBy"),rs.getString("receivedByPosition"),rs.getString("serviceOrderNumber"), rs.getInt("serviceOrderId"),
+						rs.getInt("isWrong"));
 				lstServiceOrder.add(serviceOrder);
 						
 			}
@@ -83,7 +84,8 @@ public class MySQLServiceOrderDAO implements ServiceOrderDAO, Serializable {
 						rs.getString("servicestatusId"), rs.getDate("closed"), rs.getString("consultant"), rs.getString("coordinator"),
 						rs.getString("asignee"), rs.getDate("created"), rs.getString("createdBy"),
 						rs.getString("createdByUsr"), rs.getDate("modified"), rs.getString("modifiedBy"),
-						rs.getString("modifiedByUsr"), rs.getString("signCreated"), rs.getString("signReceivedBy"),rs.getString("receivedByPosition"),rs.getString("serviceOrderNumber"),rs.getInt("serviceOrderId"));
+						rs.getString("modifiedByUsr"), rs.getString("signCreated"), rs.getString("signReceivedBy"),rs.getString("receivedByPosition"),rs.getString("serviceOrderNumber"),rs.getInt("serviceOrderId"),
+						rs.getInt("isWrong"));
 						
 			}
 		} catch (ClassNotFoundException | SQLException e) {
@@ -94,8 +96,7 @@ public class MySQLServiceOrderDAO implements ServiceOrderDAO, Serializable {
 				try {
 					conn.close();
 				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
 				}
 			}
 		}
@@ -110,9 +111,34 @@ public class MySQLServiceOrderDAO implements ServiceOrderDAO, Serializable {
 	}
 
 	@Override
-	public boolean updateServiceOrder() {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean updateServiceOrder(Serviceorder so) {
+		StringBuilder sql = new StringBuilder("Update serviceOrder set ");
+		Boolean retVal = false;
+		
+		sql.append(String.format("isWrong = %s", so.getIsWrong()));
+		
+		sql.append(String.format(" Where serviceOrderId = %s;", so.getServiceOrderId()));
+		
+		Connection conn = null;
+		
+		try{
+			conn = MySQLDAOFactory.createConnection();
+			conn.createStatement().executeUpdate(sql.toString());
+			retVal = true;
+		}
+		catch(Exception ex){
+			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), ex);
+		}
+		finally{
+			if(conn != null){
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
+				}
+			}
+		}
+		return retVal;
 	}
 
 	@Override
@@ -132,7 +158,8 @@ public class MySQLServiceOrderDAO implements ServiceOrderDAO, Serializable {
 						rs.getString("servicestatusId"), rs.getDate("closed"), rs.getString("consultant"), rs.getString("coordinator"),
 						rs.getString("asignee"), rs.getDate("created"), rs.getString("createdBy"),
 						rs.getString("createdByUsr"), rs.getDate("modified"), rs.getString("modifiedBy"),
-						rs.getString("modifiedByUsr"), rs.getString("signCreated"), rs.getString("signReceivedBy"),rs.getString("receivedByPosition"),rs.getString("serviceOrderNumber"),rs.getInt("serviceOrderId"));
+						rs.getString("modifiedByUsr"), rs.getString("signCreated"), rs.getString("signReceivedBy"),rs.getString("receivedByPosition"),rs.getString("serviceOrderNumber"),rs.getInt("serviceOrderId"),
+						rs.getInt("IsWrong"));
 						
 			}
 		} catch (ClassNotFoundException | SQLException e) {

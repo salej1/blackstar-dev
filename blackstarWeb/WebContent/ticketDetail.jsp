@@ -8,6 +8,35 @@
 <html>
 <head>
 	<script type="text/javascript">
+	
+		function applyCloseTicket(){
+			var osId = $("#closureOs option:selected").val();
+			
+			$("#osId").val(osId);
+			
+			$("#closeTicketSend").submit();
+		}
+		
+
+		function closeTicket(id, ticketNumber){
+			// mostrar el dialogo de seleccion de OS
+			$("#cerrarOSCapture").dialog({ title: "Cerrar Ticket " + ticketNumber });
+			$("#cerrarOSCapture").dialog("open");
+			$("#closeTicketId").val(id);
+		}
+
+		function reopenTicket(id, ticketNumber){
+			$("#reopenTicketConfirm").dialog({ title: "Reabrir Ticket " + ticketNumber });
+			$("#reopenTicketConfirmText").html("Desea reabrir el ticket " + ticketNumber + "?");
+			$("#reopenTicketConfirm").dialog("open");
+			$("#reopenTicketId").val(id);
+		}
+			
+		function applyReopenTicket(){
+			$("#reopenTicketSend").submit();
+		}
+			
+
 		$(document).ready(function () 
 		{
 			// Close ticket section
@@ -19,7 +48,24 @@
 				buttons: {
 					"Aceptar": function() {
 						$( this ).dialog( "close" );
-						$().selectedIndex = 2;
+						applyCloseTicket();
+					},
+					
+					"Cancelar": function() {
+					$( this ).dialog( "close" );
+				}}
+			});
+
+			// Dialogo de confirmacion para reabrir ticket
+			$("#reopenTicketConfirm").dialog({
+				autoOpen: false,
+				height: 180,
+				width: 230,
+				modal: true,
+				buttons: {
+					"Aceptar": function() {
+						applyReopenTicket();
+						$( this ).dialog( "close" );
 					},
 					
 					"Cancelar": function() {
@@ -33,7 +79,7 @@
 			$('#lbTelContacto').val('${policyt.contactPhone}');
 			$('#lbMailContacto').val('${policyt.contactEmail}');
 			$('#lbNoSerie').val('${policyt.serialNumber}');
-			$('#lbObservaciones').val('${policyt.observations}');
+			$('#lbObservaciones').html('${ticketF.observations}');
 			$('#lbCliente').val('${policyt.customer}');
 			$('#lbEquipo').val('${EquipmenttypeT.equipmentType}');
 			$('#lbMarca').val('${policyt.brand}');
@@ -56,8 +102,8 @@
 			$('#lbNoReporte').val('${serviceOrderT.serviceOrderNumber}');
 			$('#lbIngeniero').val('${ticketF.employee}');
 			$('#lbTS').val('${ticketF.solutionTime}');
-			$('#lbDesviacion').val('${serviceOrderDetail.solutionTimeDeviationHr}');
-			$('#lbEstatus').val('${ticketstatusT.ticketstatus}');
+			$('#lbDesviacionTS').val('${ticketF.solutionTimeDeviationHr}');
+			$('#lbEstatus').val('${ticketstatusT.ticketStatus}');
 			
 			// inicializando el dialogo para agregar seguimientos
 			initFollowUpDlg("ticket", "ticketDetail?ticketId=${ticketF.ticketId}");
@@ -117,7 +163,7 @@
 								<tr><td>Telefóno de Contacto</td><td><input id="lbTelContacto" type="text" readonly="true"  style="width:95%;" /></td></tr>
 								<tr><td>E-mail</td><td><input type="text" id="lbMailContacto" readonly="true"  style="width:95%;" /></td></tr>
 								<tr><td>Número de serie del Equipo</td><td><input id="lbNoSerie" type="text" readonly="true"  style="width:95%;"/></td></tr>
-								<tr><td>Observaciones</td><td><input type="text" id="lbObservaciones" readonly="true"  style="width:95%;" /></td></tr>
+								<tr><td>Observaciones</td><td><textarea id="lbObservaciones" readonly="true"  style="width:95%;" rows="7"></textarea></td></tr>
 								<tr><td>Cliente</td><td><input type="text" id="lbCliente" readonly="true"  style="width:95%;" /></td></tr>
 								<tr><td>Equipo</td><td><input type="text" id="lbEquipo"  readonly="true"  style="width:95%;" /></td></tr>
 								<tr><td>Marca</td><td><input type="text" id="lbMarca" readonly="true"  style="width:95%;" /></td></tr>
@@ -140,7 +186,7 @@
 								<tr><td>Numero de Reporte de Servicio</td><td><input type="text" readonly="true" id="lbNoReporte" style="width:95%;"/></td></tr>
 								<tr><td>Ingeniero que atendió</td><td><input type="text" readonly="true" id="lbIngeniero" style="width:95%;" /></td></tr>
 								<tr><td>T S Brindado en HR</td><td><input type="text" readonly="true" id="lbTS"  style="width:95%;" /></td></tr>
-								<tr><td>Desviación en Horas TS</td><td><input type="text" readonly="true" id="lbDesviacion" style="width:95%;" /></td></tr>
+								<tr><td>Desviación en Horas TS</td><td><input type="text" readonly="true" id="lbDesviacionTS" style="width:95%;" /></td></tr>
 								<tr><td>Estatus</td><td><input id="lbEstatus" type="text" style="width:95%;" readonly="true"/>
 								</td>
 								</tr>
@@ -156,7 +202,14 @@
 									<td>
 										<p></p>
 										<button class="searchButton" onclick="addSeguimiento(${ticketF.ticketId}, '${ticketF.ticketNumber}');">Agregar seguimiento</button>
-										<button class="searchButton" onclick="$('#cerrarOSCapture').dialog('open')">Cerrar Ticket</button>
+										<c:choose>
+											<c:when test="${ticketstatusT.ticketStatus == 'CERRADO' || ticketstatusT.ticketStatus == 'CERRADO FT'}">
+												<button class="searchButton" onclick="reopenTicket(${ticketF.ticketId}, '${ticketF.ticketNumber}');">Reabrir ticket</button>
+											</c:when>
+											<c:otherwise>
+												<button class="searchButton" onclick="closeTicket(${ticketF.ticketId}, '${ticketF.ticketNumber}');">Cerrar Ticket</button>
+											</c:otherwise>
+										</c:choose>
 									</td>
 								</tr>
 							<tbody>
@@ -171,11 +224,24 @@
 				
 			<div id="cerrarOSCapture" title="Cerrar Ticket ${ticketF.ticketNumber}">
 				<p>Por favor seleccione la OS que cierra el ticket:</p>
-				<select style="width:90%">
+				<select id = "closureOs" style="width:90%">
 					<c:forEach var="os" items="${ potentialOs }">
 						<option value="${ os.key }">${ os.value }</option>
 					</c:forEach>
 				</select>
+				<form id = "closeTicketSend" action="/ticketDetail" method="POST">
+					<input type="hidden" name="action" value = "closeTicket"/>
+					<input type="hidden" id="closeTicketId" name="closeTicketId"></input>
+					<input type="hidden" id="osId" name="osId"></input>
+				</form>
+			</div>
+
+			<div id="reopenTicketConfirm">
+				<strong id = "reopenTicketConfirmText"></strong>
+				<form id = "reopenTicketSend" action="/ticketDetail" method="POST">
+					<input type="hidden" name="action" value = "reopenTicket"/>
+					<input type="hidden" id="reopenTicketId" name="reopenTicketId"/>
+				</form>
 			</div>
 </div>
 </body>
