@@ -45,7 +45,8 @@ public class DashboardController extends AbstractController {
 		 model.addAttribute("employees", udService.getStaff());
 	} catch (Exception ex) {	
 		Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), ex);
-		ex.printStackTrace();
+		model.addAttribute("stackTrace", ex.getStackTrace());
+		model.addAttribute("errMessage", ex.toString());
 		return "error";
 	}	 
 	return "dashboard";
@@ -75,7 +76,8 @@ public class DashboardController extends AbstractController {
 		 TicketController.AssignTicket(ticketId, employee, who, null);
 	} catch (Exception ex) {	
 		Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), ex);
-		ex.printStackTrace();
+		model.addAttribute("stackTrace", ex.getStackTrace());
+		model.addAttribute("errMessage", ex.toString());
 		return "error";
 	}	 
 	return show(model, req, resp);

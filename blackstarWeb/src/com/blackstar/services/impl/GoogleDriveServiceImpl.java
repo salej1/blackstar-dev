@@ -2,7 +2,6 @@ package com.blackstar.services.impl;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,59 +17,75 @@ import com.google.api.services.drive.DriveScopes;
 import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.FileList;
 import com.google.api.services.drive.model.ParentReference;
-import com.google.api.services.drive.model.Permission;
 import com.blackstar.services.AbstractService;
 import com.blackstar.services.interfaces.GoogleDriveService;
+import com.google.api.services.drive.model.Permission;
 
-public class GoogleDriveServiceImpl extends AbstractService implements GoogleDriveService {
+public class GoogleDriveServiceImpl extends AbstractService 
+                                    implements GoogleDriveService {
 	
   public static final String FOLDER_FILE_TYPE = "application/vnd.google-apps.folder";
+  public static final String P12_KEY_PATH = "auth/serviceKey.p12";
   
   private static  Map<String, String> sysFolderIds = new HashMap<String, String>();
   private static Drive drive = null;
   private static GoogleCredential credential = null;
+  
+  private String serviceAccountId = null;
+  private String serviceAccountUser = null;
+  
+  public void setServiceAccountId(String serviceAccountId) {
+	this.serviceAccountId = serviceAccountId;
+  }
 
-  static {
+  public void setServiceAccountUser(String serviceAccountUser) {
+	this.serviceAccountUser = serviceAccountUser;
+  }
+
+  public GoogleDriveServiceImpl(){  
+  }
+  
+  public void init(){
 	String folderId = null;
 	try {
 	     setDriveService();
 	     folderId = getFolderId("os_attachment", null);
 	 	 if(folderId == null){
-	 	   folderId = createFile("os_attachment", null , FOLDER_FILE_TYPE);
+	 	   folderId = insertFile("os_attachment", null , FOLDER_FILE_TYPE);
 	 	   setPermissions(folderId);
 	 	 } 	
 	 	 sysFolderIds.put("OS_ATTACHMENTS", folderId);
 	 	 folderId = getFolderId("os_reports", null);
 	 	 if(folderId == null){
-	 	   folderId = createFile("os_reports", null , FOLDER_FILE_TYPE);
-	 	   setPermissions(folderId);
+	 	   folderId = insertFile("os_reports", null , FOLDER_FILE_TYPE);
+	 	  setPermissions(folderId);
 	 	 } 
 	 	sysFolderIds.put("OS_REPORTS", folderId);
 	} catch(Exception e){
 		e.printStackTrace();
 	}
-	
   }
   
-  public GoogleDriveServiceImpl(){  
-  }
-  
-  public static void setDriveService() throws Exception {
+  private void setDriveService() {
     HttpTransport httpTransport = new NetHttpTransport();
     JacksonFactory jsonFactory = new JacksonFactory();
-    credential = new GoogleCredential.Builder()
-                     .setTransport(httpTransport)
-                     .setJsonFactory(jsonFactory)
-                     .setServiceAccountId("1045304195726-4bscobcnja1npkifsseorp02rdb1casf@developer.gserviceaccount.com")
-                     .setServiceAccountScopes(Arrays.asList(DriveScopes.DRIVE))
-                     .setServiceAccountPrivateKeyFromP12File(new java.io.File(GoogleDriveServiceImpl
-                    		 .class.getClassLoader().getResource("auth/serviceKey.p12").getPath()))
-                     .setServiceAccountUser("admin@somnustechnologies.com.mx")
-                     .build();
+    try {
+         credential = new GoogleCredential.Builder()
+             .setTransport(httpTransport)
+             .setJsonFactory(jsonFactory)
+             .setServiceAccountId(serviceAccountId)
+             .setServiceAccountScopes(Arrays.asList(DriveScopes.DRIVE))
+             .setServiceAccountPrivateKeyFromP12File(new java.io.File(getClass()
+                    	 .getClassLoader().getResource(P12_KEY_PATH).getPath()))
+             .setServiceAccountUser(serviceAccountUser)
+             .build();
     credential.refreshToken();
     credential.getAccessToken();
     drive = new Drive.Builder(httpTransport, jsonFactory, null)
             .setHttpRequestInitializer(credential).build();
+    } catch(Exception e){
+    	e.printStackTrace();
+    }
   }
 
   public String getAttachmentFolderId(Integer serviceOrderId) throws Exception {
@@ -81,24 +96,28 @@ public class GoogleDriveServiceImpl extends AbstractService implements GoogleDri
 	return getFolderId(serviceOrderId, sysFolderIds.get("OS_REPORTS"));
   }	
   
-  public String getFolderId(Integer serviceOrderId, String parentId) throws Exception {
+  public String getFolderId(Integer serviceOrderId, String parentId) 
+		                                          throws Exception {
 	String osAttachmentFolderId = getFolderId("os_" + serviceOrderId, parentId);		
 	if(osAttachmentFolderId == null){
-	  osAttachmentFolderId = createFile("os_" + serviceOrderId ,parentId , FOLDER_FILE_TYPE);
+	  osAttachmentFolderId = insertFile("os_" + serviceOrderId ,parentId 
+			                                        , FOLDER_FILE_TYPE);
 	  setPermissions(osAttachmentFolderId);
 	}
 	return osAttachmentFolderId;
   }	
-  
-  public String insert(Integer serviceOrderId, ByteArrayOutputStream stream) throws Exception{
+
+  public String insertFileFromStream(Integer serviceOrderId, String type
+		  , String fileName, String parentId,  byte[] report) throws Exception {
 	File body = new File();
-	body.setTitle("Test");
+	body.setParents(Arrays.asList(new ParentReference()
+	      .setId(getReportsFolderId(serviceOrderId))));
+	body.setTitle(fileName);
 	body.setMimeType("application/pdf");
-	body.setFileSize((long) stream.size());
-	  
+	body.setFileSize((long) report.length);
 	InputStreamContent mediaContent = new InputStreamContent("application/pdf",
-		                   new BufferedInputStream(new ByteArrayInputStream(stream.toByteArray())));
-	mediaContent.setLength(stream.size());
+		             new BufferedInputStream(new ByteArrayInputStream(report)));
+	mediaContent.setLength(report.length);
 	return drive.files().insert(body, mediaContent).execute().getId();
   }
   
@@ -107,26 +126,28 @@ public class GoogleDriveServiceImpl extends AbstractService implements GoogleDri
 	return credential.getAccessToken();
   }
   
-  private static void setPermissions(String fileId) throws Exception{
+  private void setPermissions(String fileId) throws Exception{
 	Permission p = new Permission();
 	p.setRole("owner");
 	p.setType("user");
-	p.setValue("admin@somnustechnologies.com.mx");
+	p.setValue(serviceAccountUser);
 	drive.permissions().insert(fileId, p).execute();
 	p = new Permission();
 	p.setRole("writer");
 	p.setType("domain");
-	p.setValue("somnustechnologies.com.mx");
+	p.setValue(serviceAccountUser.split("@")[1]);
 	drive.permissions().insert(fileId, p).execute();
   }
   
-  public static String getFolderId(String folderName, String parentId) throws Exception {
+  public static String getFolderId(String folderName, String parentId) 
+		                                            throws Exception {
 	Files.List request = null;
 	FileList files = null;
 	String id = null;
-	StringBuilder criteria = new StringBuilder().append("title='").append(folderName).append("'")
-			                           .append(" and mimeType='application/vnd.google-apps.folder'")
-			                           .append(" and trashed = false");
+	StringBuilder criteria = new StringBuilder().append("title='")
+			      .append(folderName).append("'").append(" and trashed = false")
+			      .append(" and mimeType='application/vnd.google-apps.folder'");
+			                
     if(parentId != null){
     	criteria.append(" and '").append(parentId).append("' in parents");
     }			                           
@@ -139,7 +160,8 @@ public class GoogleDriveServiceImpl extends AbstractService implements GoogleDri
 	return id;
   }
 	
-  public static String createFile(String title, String parentId, String type) throws Exception {
+  public static String insertFile(String title, String parentId, String type) 
+		                                                   throws Exception {
 	File file = new File();
 	file.setTitle(title);
 	file.setMimeType(type);

@@ -1,7 +1,5 @@
 package com.blackstar.web.controller;
 
-import java.io.ByteArrayOutputStream;
-
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
@@ -15,7 +13,7 @@ import com.blackstar.common.Globals;
 import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
 import com.blackstar.model.UserSession;
-import com.blackstar.services.interfaces.ReporterService;
+import com.blackstar.services.interfaces.ReportService;
 import com.blackstar.services.interfaces.ServiceOrderService;
 import com.blackstar.web.AbstractController;
 
@@ -26,13 +24,13 @@ import com.blackstar.web.AbstractController;
 public class ServiceOrderController extends AbstractController {
 	
   private ServiceOrderService service = null;
-  private ReporterService rrService = null;
-    
+  private ReportService rrService = null;
+
   public void setService(ServiceOrderService service) {
 	this.service = service;
   }
   
-  public void setRrService(ReporterService rrService) {
+  public void setRrService(ReportService rrService) {
 	this.rrService = rrService;
   }
 
@@ -62,19 +60,6 @@ public class ServiceOrderController extends AbstractController {
 		             , @RequestParam(required = false) String osNum
 		             , @ModelAttribute(Globals.SESSION_KEY_PARAM)  UserSession userSession
 		             , ModelMap model, HttpServletResponse response) {
-	  ByteArrayOutputStream file = null;
-      try {
-    	  file = rrService.run();
-    	  response.setHeader("Content-Type", "application/pdf");
-    	  response.setHeader("Content-Length", String.valueOf(file.size()));	
-          response.setHeader("Content-Disposition","inline;filename=SACOrderService.pdf");
-          response.getOutputStream().write(file.toByteArray(), 0, file.size());
-      } catch (Exception e) {
- 		 Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
- 		 model.addAttribute("stackTrace", e.getStackTrace());
- 		 model.addAttribute("errMessage", e.toString());
- 		 return "error";
- 	 }
 	return null;
   }
 

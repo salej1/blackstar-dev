@@ -52,7 +52,7 @@
 -- 								blackstarDb.AssignServiceOrder
 -- 								blackstarDb.GetEquipmentByCustomer
 -- -----------------------------------------------------------------------------
--- 10   20/11/2013	JAGH		Se Integra:
+-- 10   20/11/2013	JAGH	Se Integra:
 -- 								blackstarDb.GetAirCoServiceByIdService
 -- 								blackstarDb.GetBatteryServiceByIdService
 --                              blackstarDb.GetCellBatteryServiceByIdBatteryService
@@ -60,10 +60,13 @@
 -- 								blackstarDb.GetPlainServiceServiceByIdService
 -- 								blackstarDb.GetUPSServiceByIdService
 -- -----------------------------------------------------------------------------
--- 11   13/11/2013	SAG		Se Integra:
+-- 11   25/11/2013	JAGH	Se Integra:
+-- 								blackstarDb.GetPolicyBySerialNo
+-- -----------------------------------------------------------------------------
+-- 12   13/11/2013	SAG		Se Integra:
 -- 								blackstarDb.GetOfficesList
 -- -----------------------------------------------------------------------------
--- 12   13/11/2013	SAG		Se Sustituye:
+-- 13   13/11/2013	SAG		Se Sustituye:
 -- 								blackstarDb.GetEquipmentByCustomer por
 -- 								blackstarDb.GetEquipmentList
 --							Se Integra:
@@ -76,9 +79,29 @@
 --							Se Reescribe:
 -- 								blackstarDb.GetServicesSchedule
 -- -----------------------------------------------------------------------------
--- 13   21/11/2013	SAG		Se Integra:
+-- 14   21/11/2013	SAG		Se Integra:
 -- 								blackstarDb.GetAllServiceOrders
 -- 								blackstarDb.CloseOS
+-- -----------------------------------------------------------------------------
+-- 15   26/11/2013	JAGH	Se Integra:
+-- 								blackstarDb.AddAAservice
+-- 								blackstarDb.AddBBcellservice
+-- 								blackstarDb.AddBBservice
+-- 								blackstarDb.AddepService
+--                              blackstarDb.AddepServiceSurvey
+--                              blackstarDb.AddepServiceWorkBasic
+--                              blackstarDb.AddepServiceDynamicTest
+-- 								blackstarDb.AddepServiceTestProtection
+-- 								blackstarDb.AddepServiceTransferSwitch
+-- 								blackstarDb.AddepServiceLectures
+-- 								blackstarDb.AddepServiceParams
+-- 								blackstarDb.AddplainService
+-- 								blackstarDb.AddupsService
+-- 								blackstarDb.AddupsServiceBatteryBank
+--								blackstarDb.AddupsServiceGeneralTest
+-- 								blackstarDb.AddupsServiceParams
+-- 								blackstarDb.AddserviceOrder
+-- 								blackstarDb.UpdateServiceOrder
 -- -----------------------------------------------------------------------------
 
 use blackstarDb;

@@ -210,15 +210,15 @@
 						</tr>
 						<tr>
 							<td>Transferencia  y re-transferencia a línea comercial:</td>
-							<td><form:checkbox path="trasferLine" style="width:95%;"/></td>
+							<td><form:input path="trasferLine" type="text" style="width:95%;" onkeypress='return isNumberKey(event)'/></td>
 							<td>Respaldo de baterías con falla en línea:</td>
-							<td><form:checkbox path="backupBatteries" style="width:95%;"/></td>
+							<td><form:input path="backupBatteries" type="text" style="width:95%;" onkeypress='return isNumberKey(event)'/></td>
 						</tr>
 						<tr>
 							<td>Transferencia y re-transferencia con planta de emergencia:</td>
-							<td><form:checkbox path="transferEmergencyPlant" style="width:95%;" /></td>
+							<td><form:input path="transferEmergencyPlant" type="text" style="width:95%;" onkeypress='return isNumberKey(event)'/></td>
 							<td>Verificación de voltaje de baterías y de salida durante las pruebas:</td>
-							<td><form:checkbox path="verifyVoltage" style="width:95%;" /></td>
+							<td><form:input path="verifyVoltage" type="text" style="width:95%;" onkeypress='return isNumberKey(event)'/></td>
 						</tr>
 						<tr>
 							<td><b>PARÁMETROS DE OPERACIÓN:</b></td>

@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.blackstar.common.Globals;
 import com.blackstar.db.DAOFactory;
+import com.blackstar.model.User;
 import com.blackstar.model.UserSession;
 import com.blackstar.services.AbstractService;
 import com.blackstar.services.interfaces.SecurityService;
@@ -39,19 +40,25 @@ public class SecurityServiceImpl extends AbstractService implements SecurityServ
 	  clientSecrets = GoogleClientSecrets.load(Globals.JSON_FACTORY, new FileReader(secretsPath));
   }
   
+  @SuppressWarnings("deprecation")
   public UserSession getSession(String code) throws Exception{
 	UserSession userSession = new UserSession();
 	Credential credential = null;
 	Userinfo userInfo = null;
+	User user = null;
 	try{
 		credential = getCredential(code);
 		userInfo = getOauth2Service(credential).userinfo().get().execute();
+		if((user = DAOFactory.getDAOFactory(DAOFactory.MYSQL).getUserDAO()
+				.getUserById(userInfo.getEmail())) == null){
+			return null;
+		}
 		userSession.setGoogleId(userInfo.getId());
-		userSession.setUser(DAOFactory.getDAOFactory(DAOFactory.MYSQL).getUserDAO()
-				                                .getUserById(userInfo.getEmail()));
+		userSession.setUser(user);
 		credentialStore.store(userSession.getGoogleId(), credential);
 	} catch(Exception e){
-		
+		e.printStackTrace();
+		return null;
 	}
 	return userSession;
   }

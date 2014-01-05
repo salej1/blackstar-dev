@@ -1,6 +1,6 @@
 package com.blackstar.services.report;
 
-import java.io.ByteArrayOutputStream;
+import java.util.Date;
 
 import com.blackstar.services.report.util.PDFDrawer;
 import com.pdfjet.Color;
@@ -9,16 +9,16 @@ public abstract class AbstractReport {
 	
   protected PDFDrawer drawer = null;
 	
-  protected abstract void run() throws Exception;
+  protected abstract void run(Object data) throws Exception;
 	
-  public byte [] getReport() throws Exception {
+  public byte [] getReport(Object data) throws Exception {
 	drawer = new PDFDrawer();
-	run();
+	run(data);
 	drawer.close();
 	return drawer.getStream().toByteArray();
   }
 	
-  protected void printHeader(String title, String type, String number) throws Exception {
+  protected void printHeader(String title,String description, String number) throws Exception {
 	drawer.image("pdf/logoSAC.jpg", 0, 10);
 	drawer.text("GUADALAJARA", 165,50, true);
 	drawer.text("Tel. 01(33) 37-93-01-38", 158,62);
@@ -31,13 +31,15 @@ public abstract class AbstractReport {
 	drawer.text("01800.0830203", 360,72, true);
 	drawer.box(435, 47, 120, 12, true);
 	drawer.text("FOLIO", 485, 56, true, Color.white);
-	drawer.text(title, 540 - (title.length() * 6), 30, true, 0x0155A5, 11);
+	drawer.text(title, 550 - (title.length() *6), 35, true, 0x0155A5, 10);
+	drawer.text(description, 345 - ((description.length() / 2 ) * 6), 30, true, 0, 8);
 	drawer.box(435, 47, 120, 40, false);
-	drawer.text(type + " - ", 440, 76, false, 0, 12);
-	drawer.text(number, 470, 76, true, 0, 12);
+	drawer.text(number, 440, 76, false, 0, 12);
   }
-	
-  protected void printFooter() throws Exception {
+	  
+  protected void printFooter(String signCreated, String responsible, Date closed
+		  , String signReceivedBy, String receivedBy, String receivedByPosition) 
+				                                              throws Exception {
 	drawer.box(0, 670, 555, 13, true);
 	drawer.text("REALIZADO POR:", 100, 679, true, Color.white);
 	drawer.text("SERVICIO Y/O EQUIPO RECIBIDO A MI ENTERA SATISFACCION:", 287, 679, true, Color.white);
@@ -49,12 +51,19 @@ public abstract class AbstractReport {
 	drawer.vLine(670, 770, 555);
 		
 	drawer.text("FIRMA:", 5, 695);
+	drawer.drawSignature(signCreated, .7F, 40,678);
 	drawer.text("NOMBRE:", 5, 750);
+	drawer.text(responsible, 45, 750, true);
 	drawer.text("FECHA Y HORA DE SALIDA:", 5, 765);
+	drawer.text(closed.toString(), 113, 765, true);
 		
 	drawer.text("FIRMA:", 281, 695);
+	drawer.drawSignature(signReceivedBy, .7F, 320,678);
 	drawer.text("NOMBRE:", 281, 750);
+	drawer.text(receivedBy, 321, 750, true);
 	drawer.text("PUESTO:", 281, 765);	  
+	drawer.text(receivedByPosition, 321, 765, true);
+	
 	drawer.text("REV-1 31-12-2012", 0, 780);
 	drawer.text("TRA:MIENTRAS ESTE ACTIVO", 443, 780);
 	drawer.text("4-SE-08", 0, 790);
