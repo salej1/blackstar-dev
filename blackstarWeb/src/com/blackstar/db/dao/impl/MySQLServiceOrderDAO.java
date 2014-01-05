@@ -6,14 +6,21 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.blackstar.db.dao.interfaces.ServiceOrderDAO;
 import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
 import com.blackstar.model.Serviceorder;
+import com.blackstar.model.dto.AirCoServiceDTO;
+import com.blackstar.model.dto.BatteryCellServiceDTO;
+import com.blackstar.model.dto.BatteryServiceDTO;
+import com.blackstar.model.dto.EmergencyPlantServiceDTO;
 import com.blackstar.model.dto.FollowUpDTO;
 import com.blackstar.model.dto.OrderserviceDTO;
+import com.blackstar.model.dto.PlainServiceDTO;
+import com.blackstar.model.dto.UpsServiceDTO;
 
 public class MySQLServiceOrderDAO implements ServiceOrderDAO, Serializable {
 
@@ -105,7 +112,7 @@ public class MySQLServiceOrderDAO implements ServiceOrderDAO, Serializable {
 	}
 
 	@Override
-	public int insertServiceOrder() {
+	public int insertServiceOrder(Serviceorder orderService) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
@@ -190,6 +197,72 @@ public class MySQLServiceOrderDAO implements ServiceOrderDAO, Serializable {
 	public List<FollowUpDTO> getFollows (Integer serviceOrderId) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public AirCoServiceDTO getAirCoService(Integer aaServiceId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public BatteryServiceDTO getBateryService(Integer bbServiceId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<BatteryCellServiceDTO> getBatteryCells(Integer bbServiceId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public EmergencyPlantServiceDTO getEmergencyPlantService(Integer epServiceId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public PlainServiceDTO getPlainService(Integer plainServiceId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public UpsServiceDTO getUpsService(Integer upsServiceId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int saveAirCoService(AirCoServiceDTO service, Date created ,String createdBy,String createdByUsr) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int saveBateryService(BatteryServiceDTO service, Date created ,String createdBy,String createdByUsr) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int saveEmergencyPlantService(EmergencyPlantServiceDTO service, Date created ,String createdBy,String createdByUsr) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int savePlainService(PlainServiceDTO service, Date created ,String createdBy,String createdByUsr) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int saveUpsService(UpsServiceDTO service, Date created ,String createdBy,String createdByUsr) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }
