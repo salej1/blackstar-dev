@@ -16,7 +16,7 @@
   </bean>
   
   <bean id="googleDriveService" class="com.blackstar.services.impl.GoogleDriveServiceImpl" parent="abstractService" init-method="init">
-    <property name="serviceAccountId" value="885930748241-i18ge3gvhchghl39ucfoshb6chmbduf0@developer.gserviceaccount.com"/>
+    <property name="serviceAccountId" value="435070024686-gclpdp2tt6aqo11nqfs0rfj1mpcp4iu1.apps.googleusercontent.com"/>
     <property name="serviceAccountUser" value="sergio.gomez@innso.com.mx"/>
   </bean>
   
@@ -41,6 +41,7 @@
   
   <bean id="serviceOrderService" class="com.blackstar.services.impl.ServiceOrderServiceImpl" parent="abstractService">
       <property name="dao" ref="serviceOrderDAO" />
+      <property name="typeDao" ref="serviceTypeDAO" />
   </bean>
   
   <bean id="reportService" class="com.blackstar.services.impl.ReportServiceImpl" parent="abstractService">

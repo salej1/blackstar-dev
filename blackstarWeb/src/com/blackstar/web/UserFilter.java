@@ -1,6 +1,7 @@
 package com.blackstar.web;
 
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -11,9 +12,9 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.blackstar.db.DAOFactory;
-import com.blackstar.db.dao.interfaces.UserDAO;
+import com.blackstar.common.Globals;
 import com.blackstar.model.User;
+import com.blackstar.services.impl.UserServiceImpl;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 
@@ -21,7 +22,12 @@ import com.google.appengine.api.users.UserServiceFactory;
  * Servlet Filter implementation class UserFilter
  */
 public class UserFilter implements Filter {
-	DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.MYSQL);
+	private com.blackstar.services.IUserService userService = new UserServiceImpl();
+
+	public void setUserService(com.blackstar.services.IUserService userService) {
+		this.userService = userService;
+	}
+	
 	/**
      * Default constructor. 
      */
@@ -45,19 +51,17 @@ public class UserFilter implements Filter {
 		User usr = (User) req.getSession().getAttribute("user");
 		if(usr == null){
 			// Estamos asumiendo que la configuracion google forzara al usuario a logearse
-			UserService userService = UserServiceFactory.getUserService();
-		    com.google.appengine.api.users.User gUser = userService.getCurrentUser();
+			UserService gUserService = UserServiceFactory.getUserService();
+		    com.google.appengine.api.users.User gUser = gUserService.getCurrentUser();
 		    
 		    if(gUser == null){
-		    	request.getRequestDispatcher(userService.createLoginURL("/dashboard")).forward(req, resp);
+		    	request.getRequestDispatcher(gUserService.createLoginURL(Globals.HOMEPAGE_URL)).forward(req, resp);
 		    }
 		    if(gUser != null){
 		    	String id = gUser.getEmail();
 
 		    	if(id != null && ! id.equals("")){
-			    	User myUser; 
-			    	UserDAO dao = this.daoFactory.getUserDAO();
-			    	myUser = dao.getUserById(id);
+			    	User myUser = userService.gerUserById(id);
 			    	if(myUser != null){
 			    		req.getSession().setAttribute("user_id", gUser.getUserId());
 			        	req.getSession().setAttribute("user", myUser);
@@ -67,8 +71,6 @@ public class UserFilter implements Filter {
 			    		req.getRequestDispatcher("noUser.jsp");
 			    	}
 		    	}
-		    } else {
-		    	chain.doFilter(request, response);
 		    }
 		}
 		else{
@@ -83,5 +85,4 @@ public class UserFilter implements Filter {
 	public void init(FilterConfig fConfig) throws ServletException {
 		// TODO Auto-generated method stub
 	}
-
 }

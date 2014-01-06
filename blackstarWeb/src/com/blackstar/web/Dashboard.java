@@ -18,7 +18,6 @@ import com.blackstar.db.BlackstarDataAccess;
 import com.blackstar.db.DAOFactory;
 import com.blackstar.db.dao.interfaces.TicketDAO;
 import com.blackstar.interfaces.IEmailService;
-import com.blackstar.interfaces.IUserService;
 import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
 import com.blackstar.model.*;
@@ -69,7 +68,7 @@ public class Dashboard extends HttpServlet {
 			request.setAttribute("offices", getOfficesList(da));
 			da.closeConnection();
 			// Recuperando la lista de empleados del directorio
-			IUserService dir = UserServiceFactory.getUserService();
+			IUserService dir = null;// = UserServiceFactory.getUserService();
 			request.setAttribute("employees", dir.getEmployeeList());
 			
 		} 

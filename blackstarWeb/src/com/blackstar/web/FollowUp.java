@@ -14,13 +14,15 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONArray;
 
+import com.blackstar.common.Globals;
 import com.blackstar.common.ResultSetConverter;
 import com.blackstar.db.BlackstarDataAccess;
-import com.blackstar.interfaces.IUserService;
 import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
 import com.blackstar.model.User;
+import com.blackstar.model.UserSession;
 import com.blackstar.model.dto.OrderserviceDTO;
+import com.blackstar.services.IUserService;
 import com.blackstar.services.UserServiceFactory;
 import com.google.api.services.admin.directory.model.UserName;
 
@@ -43,12 +45,12 @@ public class FollowUp extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		User myUser = (User)request.getSession().getAttribute("user");
+		UserSession myUser = (UserSession)request.getSession().getAttribute(Globals.SESSION_KEY_PARAM);
 		BlackstarDataAccess da = new BlackstarDataAccess();
 		
 		try
 		{
-			if(myUser.getBelongsToGroup().get("Call Center") != null){
+			if(myUser.getUser().getBelongsToGroup().get("Call Center") != null){
 				processCallCenterFollowUp(da, request);
 				request.getRequestDispatcher("/seguimientoCal.jsp").forward(request, response);
 			}
@@ -69,7 +71,7 @@ public class FollowUp extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String action = request.getParameter("action");
-		User thisUser = (User)request.getSession().getAttribute("user");
+		UserSession thisUser = (UserSession)request.getSession().getAttribute(Globals.SESSION_KEY_PARAM);
 		String userId = null;
 		
 		if(action.equals("closeTicket")){
@@ -77,7 +79,7 @@ public class FollowUp extends HttpServlet {
 			String closureOs = request.getParameter("osId");
 
 			if(thisUser != null){
-				userId = thisUser.getUserEmail();
+				userId = thisUser.getUser().getUserEmail();
 			}
 			
 			String sql = "CALL CloseTicket(%s, %s, '%s')";
@@ -94,7 +96,7 @@ public class FollowUp extends HttpServlet {
 			String ticketId = request.getParameter("reopenTicketId");
 			
 			if(thisUser != null){
-				userId = thisUser.getUserEmail();
+				userId = thisUser.getUser().getUserEmail();
 			}
 			
 			String sql = "CALL ReopenTicket(%s, '%s')";

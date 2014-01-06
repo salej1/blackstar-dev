@@ -20,8 +20,10 @@ import com.blackstar.model.Policy;
 import com.blackstar.model.Serviceorder;
 import com.blackstar.model.Ticket;
 import com.blackstar.model.UserSession;
+import com.blackstar.model.dto.AirCoServicePolicyDTO;
 import com.blackstar.model.dto.PlainServiceDTO;
 import com.blackstar.model.dto.PlainServicePolicyDTO;
+import com.blackstar.services.interfaces.ReportService;
 import com.blackstar.services.interfaces.ServiceOrderService;
 import com.blackstar.web.AbstractController;
 
@@ -32,7 +34,11 @@ public class PlainServiceController extends AbstractController {
 	
 	  private ServiceOrderService service = null;
 	  private DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.MYSQL);
+	  private ReportService rpService = null;
 	  
+	  public void setRpService(ReportService rpService) {
+		this.rpService = rpService;
+	  }
 	  public void setService(ServiceOrderService service) {
 		this.service = service;
 	  }
@@ -48,7 +54,7 @@ public class PlainServiceController extends AbstractController {
 				  //si la operation es 1, el idObject es el id de un ticket
 				  //si la operation es 2, el idObject es el id de un servicio
 				  //si la operation es 3, el idObject es el no de serie del equipo
-				  //si la operation es 4, el idObject es el id del aircoservice
+
 		  		  if(operation==1)
 		  		  {
 		  			  Integer idTicket = Integer.parseInt(idObject);
@@ -57,24 +63,10 @@ public class PlainServiceController extends AbstractController {
 	  				  Equipmenttype equipType = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
 	  				  plainServicePolicyDTO = new PlainServicePolicyDTO(policy, equipType.getEquipmentType());
 	  				  model.addAttribute("serviceOrder", plainServicePolicyDTO);
+	  				  model.addAttribute("serviceTypes", service.getServiceTypeList());
+	  				  model.addAttribute("mode", "new");
 		  		  }
 		  		  else if( operation==2)
-		  		  {
-		  			  Integer idOrder = Integer.parseInt(idObject);
-		  			  Serviceorder serviceOrder = this.daoFactory.getServiceOrderDAO().getServiceOrderById(idOrder);
-		  			  Policy policy = this.daoFactory.getPolicyDAO().getPolicyById(serviceOrder.getPolicyId());
-	  				  Equipmenttype equipType = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
-	  				  plainServicePolicyDTO = new PlainServicePolicyDTO(policy, equipType.getEquipmentType(), serviceOrder );
-	  				  model.addAttribute("serviceOrder", plainServicePolicyDTO);
-		  		  }
-		  		  else if(operation==3)
-		  		  {
-		  			  Policy policy  = this.daoFactory.getPolicyDAO().getPolicyBySerialNo(idObject);
-	  				  Equipmenttype equipType = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
-	  				  plainServicePolicyDTO = new PlainServicePolicyDTO(policy, equipType.getEquipmentType());
-	  				  model.addAttribute("serviceOrder", plainServicePolicyDTO);
-		  		  }
-		  		  else if(operation ==4)
 		  		  {
 		  			  Integer idOrderService = Integer.parseInt(idObject);
 		  			  PlainServiceDTO plainServiceDTO = service.getPlainService(idOrderService);
@@ -83,6 +75,18 @@ public class PlainServiceController extends AbstractController {
 	  				  Equipmenttype equipType = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
 	  				  plainServicePolicyDTO = new PlainServicePolicyDTO(policy, equipType.getEquipmentType(), serviceOrder,  plainServiceDTO);
 	  				  model.addAttribute("serviceOrder", plainServicePolicyDTO);
+	  				  model.addAttribute("serviceTypes", service.getServiceTypeList());
+	  				  model.addAttribute("mode", "detail");
+		  		  }
+		  		  else if(operation==3)
+		  		  {
+		  			  Policy policy  = this.daoFactory.getPolicyDAO().getPolicyBySerialNo(idObject);
+	  				  Equipmenttype equipType = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
+	  				  plainServicePolicyDTO = new PlainServicePolicyDTO(policy, equipType.getEquipmentType());
+	  				  plainServicePolicyDTO.setServiceOrderNumber(service.getNewServiceNumber(policy));
+	  				  model.addAttribute("serviceOrder", plainServicePolicyDTO);
+	  				  model.addAttribute("serviceTypes", service.getServiceTypeList());
+	  				  model.addAttribute("mode", "new");
 		  		  }
 	  		  }
 			  else
@@ -93,6 +97,7 @@ public class PlainServiceController extends AbstractController {
 		  catch (Exception e) 
 		  {
 				 Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
+				 return "error";
 		  }
 		  
 		  return "plainservice";
@@ -104,52 +109,64 @@ public class PlainServiceController extends AbstractController {
 	    		@ModelAttribute(Globals.SESSION_KEY_PARAM)  UserSession userSession,
               ModelMap model, HttpServletRequest req, HttpServletResponse resp)
 	    {
-	    	int idServicio = 0;
-	    	// Verificar si existe una orden de servicio
-	    	if(serviceOrder.getServiceOrderId()==null)
-	    	{
-	    		//Crear orden de servicio
-	    		Serviceorder servicioOrderSave = new Serviceorder();
-	    		servicioOrderSave.setAsignee( serviceOrder.getResponsible());
-	    		servicioOrderSave.setClosed(serviceOrder.getClosed());
-	    		servicioOrderSave.setPolicyId((Short.parseShort(serviceOrder.getPolicyId().toString())));
-	    		servicioOrderSave.setReceivedBy(serviceOrder.getReceivedBy());
-	    		servicioOrderSave.setReceivedByPosition(serviceOrder.getReceivedByPosition());
-	    		servicioOrderSave.setResponsible(serviceOrder.getResponsible());
-	    		servicioOrderSave.setServiceDate(serviceOrder.getServiceDate());
-	    		servicioOrderSave.setServiceOrderNumber(serviceOrder.getServiceOrderNumber());
-	    		servicioOrderSave.setServiceTypeId('I');
-	    		servicioOrderSave.setSignCreated(serviceOrder.getSignCreated());
-	    		servicioOrderSave.setSignReceivedBy(serviceOrder.getSignReceivedBy());
-	    		servicioOrderSave.setStatusId("N");
-	    		idServicio = service.saveServiceOrder(servicioOrderSave, "PlainServiceController", userSession.getUser().getUserName());
+	    	try{
+		    	int idServicio = 0;
+		    	// Verificar si existe una orden de servicio
+		    	if(serviceOrder.getServiceOrderId()==null)
+		    	{
+		    		//Crear orden de servicio
+		    		Serviceorder servicioOrderSave = new Serviceorder();
+		    		servicioOrderSave.setAsignee( serviceOrder.getResponsible());
+		    		servicioOrderSave.setClosed(serviceOrder.getClosed());
+		    		servicioOrderSave.setPolicyId((Short.parseShort(serviceOrder.getPolicyId().toString())));
+		    		servicioOrderSave.setReceivedBy(serviceOrder.getReceivedBy());
+		    		servicioOrderSave.setReceivedByPosition(serviceOrder.getReceivedByPosition());
+		    		servicioOrderSave.setResponsible(serviceOrder.getResponsible());
+		    		servicioOrderSave.setServiceDate(serviceOrder.getServiceDate());
+		    		servicioOrderSave.setServiceOrderNumber(serviceOrder.getServiceOrderNumber());
+		    		servicioOrderSave.setServiceTypeId('I');
+		    		servicioOrderSave.setSignCreated(serviceOrder.getSignCreated());
+		    		servicioOrderSave.setSignReceivedBy(serviceOrder.getSignReceivedBy());
+		    		servicioOrderSave.setStatusId("N");
+		    		idServicio = service.saveServiceOrder(servicioOrderSave, "PlainServiceController", userSession.getUser().getUserName());
+		    	}
+		    	else
+		    	{
+		    		//Actualizar orden de servicio
+		    		Serviceorder servicioOrderSave = new Serviceorder();
+		    		servicioOrderSave.setAsignee( serviceOrder.getResponsible());
+		    		servicioOrderSave.setClosed(serviceOrder.getClosed());
+		    		servicioOrderSave.setPolicyId((Short.parseShort(serviceOrder.getPolicyId().toString())));
+		    		servicioOrderSave.setReceivedBy(serviceOrder.getReceivedBy());
+		    		servicioOrderSave.setReceivedByPosition(serviceOrder.getReceivedByPosition());
+		    		servicioOrderSave.setResponsible(serviceOrder.getResponsible());
+		    		servicioOrderSave.setServiceDate(serviceOrder.getServiceDate());
+		    		servicioOrderSave.setServiceOrderNumber(serviceOrder.getServiceOrderNumber());
+		    		servicioOrderSave.setServiceTypeId('I');
+		    		servicioOrderSave.setSignCreated(serviceOrder.getSignCreated());
+		    		servicioOrderSave.setSignReceivedBy(serviceOrder.getSignReceivedBy());
+		    		servicioOrderSave.setStatusId("N");
+		    		service.updateServiceOrder(servicioOrderSave, "PlainServiceController", userSession.getUser().getUserName());
+		    	}
+		    	
+		    	 if(serviceOrder.getPlainServiceId()==null)
+                 {
+                         serviceOrder.setServiceOrderId(idServicio);
+                         //Crear orden de servicio de AirCo
+                         service.savePlainService(new PlainServiceDTO(serviceOrder), "PlainServiceController", userSession.getUser().getUserName());
+                         saveReport(idServicio);
+                 }
 	    	}
-	    	else
-	    	{
-	    		//Actualizar orden de servicio
-	    		Serviceorder servicioOrderSave = new Serviceorder();
-	    		servicioOrderSave.setAsignee( serviceOrder.getResponsible());
-	    		servicioOrderSave.setClosed(serviceOrder.getClosed());
-	    		servicioOrderSave.setPolicyId((Short.parseShort(serviceOrder.getPolicyId().toString())));
-	    		servicioOrderSave.setReceivedBy(serviceOrder.getReceivedBy());
-	    		servicioOrderSave.setReceivedByPosition(serviceOrder.getReceivedByPosition());
-	    		servicioOrderSave.setResponsible(serviceOrder.getResponsible());
-	    		servicioOrderSave.setServiceDate(serviceOrder.getServiceDate());
-	    		servicioOrderSave.setServiceOrderNumber(serviceOrder.getServiceOrderNumber());
-	    		servicioOrderSave.setServiceTypeId('I');
-	    		servicioOrderSave.setSignCreated(serviceOrder.getSignCreated());
-	    		servicioOrderSave.setSignReceivedBy(serviceOrder.getSignReceivedBy());
-	    		servicioOrderSave.setStatusId("N");
-	    		service.updateServiceOrder(servicioOrderSave, "PlainServiceController", userSession.getUser().getUserName());
+	    	catch(Exception e){
+				 Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
+				 return "error";
 	    	}
-	    	
-	    	if(serviceOrder.getPlainServiceId()==null)
-	    	{
-	    		serviceOrder.setServiceOrderId(idServicio);
-	    		//Crear orden de servicio de AirCo
-	    		service.savePlainService(new PlainServiceDTO(serviceOrder), "PlainServiceController", userSession.getUser().getUserName());
-	    	}
-
 	    	return "dashboard";
 	    }
+	    
+	    private void saveReport(Integer serviceOrderId) throws Exception {
+	    	String parentId = gdService.getReportsFolderId(serviceOrderId);
+	    	gdService.insertFileFromStream(serviceOrderId, "application/pdf", "ServiceOrder.pdf"
+	    			            , parentId, rpService.getGeneralReport(serviceOrderId));
+	      }
 	}

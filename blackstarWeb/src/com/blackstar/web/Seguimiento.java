@@ -13,9 +13,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONArray;
 import com.blackstar.common.ResultSetConverter;
 import com.blackstar.db.BlackstarDataAccess;
-import com.blackstar.interfaces.IUserService;
 import com.blackstar.logging.*;
 import com.blackstar.model.User;
+import com.blackstar.services.IUserService;
 import com.blackstar.services.UserServiceFactory;
 
 /**

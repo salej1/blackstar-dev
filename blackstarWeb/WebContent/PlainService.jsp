@@ -2,7 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@page isELIgnored="false"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <c:set var="pageSection" scope="request" value="ordenesServicio" />
 <c:import url="header.jsp"></c:import>
 <html>
@@ -21,15 +21,48 @@
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery-ui.min.css">
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery.signature.css">
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery.datetimepicker.css">
-	<script src="${pageContext.request.contextPath}/js/jquery.datetimepicker.js"></script>
+	<script src="${pageContext.request.contextPath}/js/dateFormat.js"></script>
 	
 	<script type="text/javascript" charset="utf-8">
 	
 	$(document).ready(function () {
-		
-		$( "#serviceDate" ).datetimepicker();
-		$( "#closed" ).datetimepicker();
-		
+			
+		// Binding serviceTypes con campo oculto de tipo de servicio
+		$("#serviceTypes").bind("change", function(){
+			$("#serviceTypeId").val($(this).val());
+		});
+
+		// Bloqueo de los campos si la pantalla es de consulta
+		var mode = "${mode}";
+		if(mode == "detail"){
+			$("#serviceTypes").attr("disabled", "");
+			$("#troubleDescription").attr("disabled", "");
+			$("#workDone").attr("disabled", "");
+			$("#techParam").attr("disabled", "");
+			$("#materialUsed").attr("disabled", "");
+			$("#observations").attr("disabled", "");
+			$("#receivedBy").attr("disabled", "");
+			$("#receivedByPosition").attr("disabled", "");
+			var isEng = "${ user.belongsToGroup['Implementacion y Servicio']}";
+			if(isEng == "true"){
+				$("#guardarServicio").hide();
+			}
+		}
+		else{
+			$("#serviceDate").val(dateNow());
+			$("#closed").val(dateNow());
+			$("#closed").bind("click", function(){
+				$(this).val(dateNow());
+			});
+			$("#responsible").val("${ user.userName }");
+			$("#leftSign").bind("click", function(){
+				$('#signCapDialog').dialog('open');
+			});
+			$("#rightSign").bind("click", function(){
+				$('#signCapDialog2').dialog('open');
+			});
+		}
+
 		// Signature capture box # 1 
 		$('#signCapture').signature({syncField: '#signCreated'});
 		$('#leftSign').signature({disabled: true}); 
@@ -93,6 +126,7 @@
 	    	         return true;
 	}
 	
+
 	</script> 
 	
 		 
@@ -106,7 +140,7 @@
 							<table>
 								<tr>
 									<td>Folio:</td>
-									<td><form:input path="serviceOrderNumber" type="text" style="width:95%;" maxlength="5" /></td>
+									<td><form:input path="serviceOrderNumber" type="text" style="width:95%;" maxlength="5" readOnly="true"/></td>
 									<td colspan="2"><small></small>
 										
 									</td>
@@ -121,7 +155,7 @@
 									<td>Domicilio</td>
 									<td colspan="5"><form:textarea path="equipmentAddress" style="width:95%;height:50px;" readOnly="true"></form:textarea></td>
 									<td>Fecha y hora de llegada</td>
-									<td colspan="3"><form:input path="serviceDate" type="text" style="width:95%;" readOnly="true" /></td>
+									<td colspan="3"><form:input path="serviceDate" type="text" style="width:95%;" readOnly="true"/></td>
 								</tr>
 								<tr>
 									<td>Solicitante</td>
@@ -142,7 +176,18 @@
 								</tr>
 								<tr>
 									<td>Tipo de servicio:</td>
-									<td colspan="5"><form:input path="customer" type="text" style="width:95%;" readOnly="true" /></td>
+									<td colspan="5">
+										<form:hidden path="serviceTypeId" />
+										<select id="serviceTypes">
+											<c:forEach var="stype" items="${serviceTypes}">
+										        <option value="${stype.serviceTypeId}" 
+										        <c:if test="${stype.serviceTypeId == serviceOrder.serviceTypeId}">
+										        	selected
+										    	</c:if>
+										        >${stype.serviceType}</option>
+										    </c:forEach>
+										</select>
+									</td>
 									<td>Contrato / Proyecto</td>
 									<td colspan="3"><form:input path="project" type="text" style="width:95%;" readOnly="true" /></td>
 								</tr>
@@ -162,10 +207,10 @@
 							</thead>
 							<tr>
 								<td style="height:100px;">
-									<form:textarea path="troubleDescription"  style="width:100%;height:100%;"></form:textarea>
+									<form:textarea path="troubleDescription"  style="width:100%;height:100%;" required="true"></form:textarea>
 								</td>
 								<td rowspan="3" style="height:100px;">
-									<form:textarea path="workDone"  style="width:100%;height:100%;"></form:textarea>
+									<form:textarea path="workDone"  style="width:100%;height:100%;" required="true"></form:textarea>
 								</td>
 							</tr>
 							<thead>
@@ -175,7 +220,7 @@
 							</thead>
 							<tr>
 								<td style="height:100px;">
-									<form:textarea path="techParam"  style="width:100%;height:100%;"></form:textarea>
+									<form:textarea path="techParam"  style="width:100%;height:100%;" required="true"></form:textarea>
 								</td>
 							</tr>
 						</table>
@@ -187,7 +232,7 @@
 							</thead>
 							<tr>
 								<td style="height:140px;">
-									<form:textarea path="materialUsed"   style="width:100%;height:100%;"></form:textarea>
+									<form:textarea path="materialUsed"   style="width:100%;height:100%;" required="true"></form:textarea>
 								</td>
 							</tr>
 							<thead>
@@ -197,7 +242,7 @@
 							</thead>
 							<tr>
 								<td style="height:140px;">
-									<form:textarea path="observations"   style="width:100%;height:100%;"></form:textarea>
+									<form:textarea path="observations"   style="width:100%;height:100%;" required="true"></form:textarea>
 								</td>
 							</tr>
 						</table>
@@ -211,34 +256,42 @@
 								<tr>
 									<td colspan="2">
 										<span>Firma</span>
-										<div id="leftSign" class="signBox" onclick="$('#signCapDialog').dialog('open');">
+										<div id="leftSign" class="signBox">
 										</div>
 									</td>
 									<td colspan="2" >
 										<span>Firma</span>
-										<div id="rightSign" class="signBox" onclick="$('#signCapDialog2').dialog('open');">
+										<div id="rightSign" class="signBox">
 										</div>
 									</td>
 								</tr>
 								<tr>
 									<td>Nombre</td>
-									<td><form:input path="responsible" type="text" style="width:95%;"  /></td>
+									<td><form:input path="responsible" type="text" style="width:95%;" readOnly="true" /></td>
 									<td>Nombre</td>
-									<td><form:input path="receivedBy" type="text" style="width:95%;" /></td>
+									<td><form:input path="receivedBy" type="text" style="width:95%;" required="true"/></td>
 								</tr>
 								<tr>
 									<td>Fecha y hora de salida</td>
-									<td><form:input path="closed" type="text" style="width:95%;"  /></td>
+									<td><form:input path="closed" type="text" style="width:95%;" readOnly="true"/></td>
 									<td>Puesto</td>
-									<td><form:input path="receivedByPosition"  style="width:95%;"  /></td>
-								</tr>						
+									<td><form:input path="receivedByPosition"  style="width:95%;" required="true" /></td>
+								</tr>	
+								<c:if test="${ user.belongsToGroup['Coordinador']}">
+									<tr>
+										<td>Errores de captura<form:checkbox path="isWrong" /></td>
+										<td></td>
+										<td></td>
+										<td></td>
+									</tr>					
+								</c:if>
 							</table>
 
 							<table>
 								<tbody>
 									<tr>
 										<td>
-											<input class="searchButton" type="submit" value="Guardar servicio">
+											<input class="searchButton" id="guardarServicio" type="submit" value="Guardar servicio">
 										</td>
 									</tr>
 								<tbody>
@@ -275,7 +328,9 @@
 									<tr>
 										<td>
 											<button class="searchButton" onclick="addSeguimiento(${serviceOrder.serviceOrderId}, '${serviceOrder.serviceOrderNumber}');">Agregar seguimiento</button>
-											<button class="searchButton" onclick="window.location = 'dashboard'">Cerrar</button>
+											<c:if test="${ user.belongsToGroup['Coordinador']}">
+												<button class="searchButton" onclick="window.location = 'dashboard'">Cerrar</button>
+											</c:if>
 										</td>
 									</tr>
 								<tbody>

@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 import com.blackstar.db.dao.interfaces.UserDAO;
 import com.blackstar.logging.LogLevel;
@@ -20,6 +21,7 @@ public class MySQLUserDAO implements UserDAO {
 		try {
 			conn = MySQLDAOFactory.createConnection();
 			ResultSet rs = conn.createStatement().executeQuery(String.format("CALL GetUserData('%s')", email));
+			System.out.println("Email => " + email);
 			while(rs.next()) {
 				if(user == null){
 					user = new User(
@@ -52,6 +54,12 @@ public class MySQLUserDAO implements UserDAO {
 		}
 		// TODO Auto-generated method stub
 		return user;
+	}
+
+	@Override
+	public List<User> getDomainUserList() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

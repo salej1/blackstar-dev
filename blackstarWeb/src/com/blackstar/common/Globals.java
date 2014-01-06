@@ -45,6 +45,7 @@ public class Globals {
 	    return clientSecrets;
 	  }
 	  
+	  public static final String HOMEPAGE_URL = "/";
 	  // User Groups
 	  public static final String GROUP_SERVICE = "sysServicio";
 	  public static final String GROUP_CALL_CENTER = "sysCallCenter";

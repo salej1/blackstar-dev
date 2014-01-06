@@ -11,8 +11,8 @@
 	function initFollowUpDlg(type, sender) {		
 		$("#seguimientoCaptureDlg").dialog({
 			autoOpen: false,
-			height: 400,
-			width: 550,
+			height: 340,
+			width: 480,
 			modal: true,
 			buttons: {
 				"Agregar": function() {
@@ -107,11 +107,11 @@
 	<div> Asignar a:
 		<select id="employeeSelect">
 			<c:forEach var="employee" items="${employees}">
-				<option value = "${employee.email}">${employee.name}</option>
+				<option value = "${employee.userEmail}">${employee.userName}</option>
 			</c:forEach>
 		</select>
 		<p></p>
-		<textarea id="seguimientoText" rows="10"cols="60"></textarea>
+		<textarea id="seguimientoText" rows="8" style="width:95%;"></textarea>
 	</div>
 	<form id = "formAddFollowUp" action="/addFollowUp" method="POST">
 		<input id="id" name="id" type="hidden"/>

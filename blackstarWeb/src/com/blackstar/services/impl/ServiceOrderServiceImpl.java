@@ -3,7 +3,11 @@ package com.blackstar.services.impl;
 import java.util.Date;
 import java.util.List;
 
+import org.json.JSONObject;
+
 import com.blackstar.db.dao.interfaces.ServiceOrderDAO;
+import com.blackstar.db.dao.interfaces.ServiceTypeDAO;
+import com.blackstar.model.Policy;
 import com.blackstar.model.Serviceorder;
 import com.blackstar.model.dto.AirCoServiceDTO;
 import com.blackstar.model.dto.BatteryServiceDTO;
@@ -11,6 +15,7 @@ import com.blackstar.model.dto.EmergencyPlantServiceDTO;
 import com.blackstar.model.dto.FollowUpDTO;
 import com.blackstar.model.dto.OrderserviceDTO;
 import com.blackstar.model.dto.PlainServiceDTO;
+import com.blackstar.model.dto.ServiceTypeDTO;
 import com.blackstar.model.dto.UpsServiceDTO;
 import com.blackstar.services.AbstractService;
 import com.blackstar.services.interfaces.ServiceOrderService;
@@ -23,8 +28,14 @@ public class ServiceOrderServiceImpl extends AbstractService
   public void setDao(ServiceOrderDAO dao) {
 	this.dao = dao;
   }
+  
+  private ServiceTypeDAO typeDao = null;
 
-  public OrderserviceDTO getServiceOrderByIdOrNumber(Integer serviceOrderId, String orderNumber){
+  public void setTypeDao(ServiceTypeDAO typeDao) {
+	this.typeDao = typeDao;
+  }
+
+public OrderserviceDTO getServiceOrderByIdOrNumber(Integer serviceOrderId, String orderNumber){
 	return dao.getServiceOrderByIdOrNumber(serviceOrderId, orderNumber);
   }
   
@@ -33,30 +44,30 @@ public class ServiceOrderServiceImpl extends AbstractService
   }
 
 @Override
-public AirCoServiceDTO getAirCoService(Integer aaServiceId) {
-	return dao.getAirCoService(aaServiceId);
+public AirCoServiceDTO getAirCoService(Integer serviceOrderId) {
+	return dao.getAirCoService(serviceOrderId);
 }
 
 @Override
-public BatteryServiceDTO getBateryService(Integer bbServiceId) {
-	BatteryServiceDTO batteryService = dao.getBateryService(bbServiceId);
-	batteryService.setCells(dao.getBatteryCells(bbServiceId));
+public BatteryServiceDTO getBateryService(Integer serviceOrderId) {
+	BatteryServiceDTO batteryService = dao.getBateryService(serviceOrderId);
+	batteryService.setCells(dao.getBatteryCells(batteryService.getBbServiceId()));
 	return batteryService;
 }
 
 @Override
-public EmergencyPlantServiceDTO getEmergencyPlantService(Integer epServiceId) {
-	return dao.getEmergencyPlantService(epServiceId);
+public EmergencyPlantServiceDTO getEmergencyPlantService(Integer serviceOrderId) {
+	return dao.getEmergencyPlantService(serviceOrderId);
 }
 
 @Override
-public PlainServiceDTO getPlainService(Integer plainServiceId) {
-	return dao.getPlainService(plainServiceId);
+public PlainServiceDTO getPlainService(Integer serviceOrderId) {
+	return dao.getPlainService(serviceOrderId);
 }
 
 @Override
-public UpsServiceDTO getUpsService(Integer upsServiceId) {
-	return dao.getUpsService(upsServiceId);
+public UpsServiceDTO getUpsService(Integer serviceOrderId) {
+	return dao.getUpsService(serviceOrderId);
 }
 
 @Override
@@ -106,6 +117,55 @@ public void updateServiceOrder(Serviceorder service, String modifiedBy,
 	service.setModifiedBy(modifiedBy);
 	service.setModifiedByUsr(modifiedByUsr);
 	dao.updateServiceOrder(service);
+}
+
+@Override
+public String getNewServiceNumber(Policy policy) {
+	String num = dao.getNewServiceNumber(policy.getPolicyId());
+	String prefix;
+	String postFix = "-e";
+
+	switch(policy.getEquipmentTypeId()){
+		case 'A': prefix = "AA-";
+			break;
+		case 'B': prefix = "BB-";
+			break;
+		case 'P': prefix = "PE-";
+			break;
+		case 'U': prefix = "UPS-";
+			break;
+		default: prefix = "OS-";
+	}
+	
+	return prefix + num + postFix;
+}
+
+@Override
+public String getServiceOrdersByStatus(String status) {
+	List<JSONObject> orders = dao.getServiceOrdersByStatus(status);
+	return orders.toString();
+}
+
+@Override
+public String getServiceOrderHistory() {
+	List<JSONObject> history = dao.getServiceOrderHistory();
+	return history.toString();
+}
+
+@Override
+public String getEquipmentByType(String type) {
+	List<JSONObject> equipment = dao.getEquipmentByType(type);
+	return equipment.toString();
+}
+
+@Override
+public List<ServiceTypeDTO> getServiceTypeList() {
+	return typeDao.getServiceTypeList();
+}
+
+@Override
+public String getEquipmentTypeBySOId(Integer serviceOrderId) {
+	return dao.getEquipmentTypeBySOId(serviceOrderId);
 }
   
   

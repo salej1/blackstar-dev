@@ -71,4 +71,7 @@
    <bean class="com.blackstar.web.controller.OfflineOSController" parent="abstractController">
       <property name="service" ref="offlineOSService" />
    </bean>    
+   <bean class="com.blackstar.web.controller.ServiceOrdersController" parent="abstractController">
+      <property name="service" ref="serviceOrderService" />
+   </bean>
 </beans>

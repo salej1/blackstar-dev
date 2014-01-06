@@ -1,12 +1,14 @@
 package com.blackstar.db.dao.impl;
 
 import java.sql.ResultSet;
+import java.util.List;
 
 import com.blackstar.db.BlackstarDataAccess;
 import com.blackstar.db.dao.interfaces.ServiceTypeDAO;
 import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
 import com.blackstar.model.Servicetype;
+import com.blackstar.model.dto.ServiceTypeDTO;
 
 public class MySQLServiceTypeDAO implements ServiceTypeDAO{
 
@@ -39,6 +41,12 @@ public class MySQLServiceTypeDAO implements ServiceTypeDAO{
 			}
 		}
 		return st;
+	}
+
+	@Override
+	public List<ServiceTypeDTO> getServiceTypeList() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

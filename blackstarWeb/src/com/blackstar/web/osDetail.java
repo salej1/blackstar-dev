@@ -16,7 +16,6 @@ import java.util.List;
 
 import com.blackstar.db.BlackstarDataAccess;
 import com.blackstar.db.DAOFactory;
-import com.blackstar.interfaces.IUserService;
 import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
 import com.blackstar.model.Equipmenttype;
@@ -29,6 +28,7 @@ import com.blackstar.model.User;
 import com.blackstar.model.dto.EmployeeDTO;
 import com.blackstar.model.dto.FollowUpDTO;
 import com.blackstar.model.dto.OrderserviceDTO;
+import com.blackstar.services.IUserService;
 import com.blackstar.services.UserServiceFactory;
 
 /**

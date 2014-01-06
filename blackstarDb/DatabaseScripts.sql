@@ -14,6 +14,10 @@
 -- 2    12/11/2013  SAG  	Modificaciones a followUp - isSource
 -- --   --------   -------  ------------------------------------
 -- 3    13/11/2013  SAG  	Se agrega scheduledService
+-- --   --------   -------  ------------------------------------
+-- 4    28/11/2013  JAGH  	Se agregan tablas para captura de OS
+-- --   --------   -------  ------------------------------------
+-- 5   12/12/2013  SAG  	Se agrega sequence y sequenceNumberPool
 -- ---------------------------------------------------------------------------
 
 use blackstarDb;
@@ -27,6 +31,37 @@ BEGIN
 -- -----------------------------------------------------------------------------
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
+
+-- AGREGANDO TABLA POOL DE NUMEROS DE ORDEN
+	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'sequenceNumberPool') = 0 THEN
+		CREATE TABLE blackstarDb.sequenceNumberPool(
+			sequenceNumberPoolId INTEGER NOT NULL AUTO_INCREMENT, 
+			sequenceNumberTypeId CHAR(1), 
+			sequenceNumber INTEGER, 
+			sequenceNumberStatus CHAR(1), -- U: unlocked, L: locked
+			PRIMARY KEY(sequenceNumberPoolId),
+			UNIQUE UQ_sequenceNumberPool_sequenceNumberPoolId(sequenceNumberPoolId)
+		)ENGINE=INNODB;
+
+	END IF;
+
+-- AGREGANDO TABLA DE SECUENCIAS PARA ORDENES DE SERVICIO
+	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'sequence') = 0 THEN
+		CREATE TABLE blackstarDb.sequence(
+			sequenceTypeId CHAR(1), 
+			sequenceNumber INTEGER,
+			PRIMARY KEY(sequenceTypeId),
+			UNIQUE UQ_sequence_sequenceTypeId(sequenceTypeId)
+		)ENGINE=INNODB;
+
+		-- INICIALIZANDO FOLIOS EN TABLA DE SECUENCIAS
+		INSERT INTO sequence(sequenceTypeId, sequenceNumber)
+		SELECT 'A', 1 union
+		SELECT 'B', 1 union
+		SELECT 'O', 1 union
+		SELECT 'P', 1 union
+		SELECT 'U', 1 ;
+	END IF;
 
 -- AGREGANDO COLUMNA isWrong A serviceOrder
 	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'serviceOrder' AND COLUMN_NAME = 'isWrong') = 0 THEN
@@ -119,6 +154,448 @@ BEGIN
 		FOREIGN KEY (scheduledServiceId) REFERENCES scheduledService (scheduledServiceId);
 	END IF;
 	
+-- CREANDO TABLA plainService
+	IF (SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'plainService') = 0 THEN
+	CREATE TABLE plainService (
+		plainServiceId  INTEGER NOT NULL AUTO_INCREMENT,
+		serviceOrderId Integer not null,
+		troubleDescription NVARCHAR(255) NULL,
+		techParam NVARCHAR(255) NULL,
+		workDone NVARCHAR(255) NULL,
+		materialUsed NVARCHAR(255) NULL,
+		observations NVARCHAR(255) NULL,
+		created DATETIME NULL,
+		createdBy NVARCHAR(50) NULL,
+		createdByUsr NVARCHAR(50) NULL,
+		modified DATETIME NULL,
+		modifiedBy NVARCHAR(50) NULL,
+		modifiedByUsr NVARCHAR(50) NULL,
+		PRIMARY KEY (plainServiceId),
+			UNIQUE UQ_plainService_plainServiceId(plainServiceId),
+			KEY (serviceOrderId),
+		FOREIGN KEY (serviceOrderId) REFERENCES serviceOrder (serviceOrderId)
+	)ENGINE=INNODB; 		
+END IF;
+
+-- CREANDO TABLA bbService
+IF (SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'bbService') = 0 THEN
+	CREATE TABLE  bbService
+		(
+		bbServiceId INTEGER NOT NULL AUTO_INCREMENT,
+		serviceOrderId Integer not null,
+		plugClean BIT NOT NULL,
+		plugCleanStatus nvarchar(50) null,
+		plugCleanComments nvarchar(50) null,
+		coverClean BIT NOT NULL,
+		coverCleanStatus nvarchar(50) null,
+		coverCleanComments nvarchar(50) null,
+		capClean BIT NOT NULL,
+		capCleanStatus nvarchar(50) null,
+		capCleanComments nvarchar(50) null,
+		groundClean BIT NOT NULL,
+		groundCleanStatus nvarchar(50) null,
+		groundCleanComments nvarchar(50) null,
+		rackClean BIT NOT NULL,
+		rackCleanStatus nvarchar(50) null,
+		rackCleanComments nvarchar(50) null,
+		serialNoDateManufact nvarchar(50) null,
+		batteryTemperature nvarchar(50) null,
+		voltageBus integer not null,
+		temperature integer not null,
+		created DATETIME NULL,
+		createdBy NVARCHAR(50) NULL,
+		createdByUsr NVARCHAR(50) NULL,
+		modified DATETIME NULL,
+		modifiedBy NVARCHAR(50) NULL,
+		modifiedByUsr NVARCHAR(50) NULL,
+		PRIMARY KEY (bbServiceId),
+		UNIQUE UQ_bbService_bbServiceId(bbServiceId),
+		KEY (serviceOrderId),
+		FOREIGN KEY (serviceOrderId) REFERENCES serviceOrder (serviceOrderId)
+	)ENGINE=INNODB; 		
+END IF;
+
+-- CREANDO TABLA bbCellService
+IF (SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'bbCellService') = 0 THEN
+	CREATE TABLE  bbCellService
+	(
+		bbCellServiceId INTEGER NOT NULL AUTO_INCREMENT,
+		bbServiceId INTEGER NOT NULL ,
+		cellNumber integer Not null,
+		floatVoltage integer not null,
+		chargeVoltage integer not null,
+		PRIMARY KEY (bbCellServiceId),
+		UNIQUE UQ_bbCellService_bbCellServiceId(bbCellServiceId),
+		KEY (bbCellServiceId),
+		FOREIGN KEY (bbServiceId) REFERENCES bbService (bbServiceId)
+	)ENGINE=INNODB; 		
+END IF;
+
+-- CREANDO TABLA epService
+IF (SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'epService') = 0 THEN
+	CREATE TABLE epService
+	(
+		epServiceId INTEGER NOT NULL AUTO_INCREMENT,
+		serviceOrderId Integer not null,
+		brandPE nvarchar (50) null,
+		modelPE nvarchar (50) null,
+		serialPE nvarchar (50) null,
+		transferType nvarchar(50) null,
+		modelTransfer nvarchar(50) null,
+		modelControl nvarchar(50) null,
+		modelRegVoltage nvarchar(50) null,
+		modelRegVelocity nvarchar(50) null,
+		modelCharger nvarchar(50) null,
+		oilChange date null,
+		brandMotor nvarchar(50) null,
+		modelMotor nvarchar(50) null,
+		serialMotor nvarchar(50) null,
+		cplMotor nvarchar(50) null,
+		brandGenerator nvarchar(50) null,
+		modelGenerator nvarchar(50) null,
+		serialGenerator nvarchar(50) null,
+		powerWattGenerator integer null,
+		tensionGenerator integer null,
+		tuningDate date null,
+		tankCapacity integer null,
+		pumpFuelModel nvarchar(50) null,
+		filterFuelFlag bit not null,
+		filterOilFlag bit not null,
+		filterWaterFlag bit not null,
+		filterAirFlag bit not null,
+		brandGear nvarchar(50) null,
+		brandBattery nvarchar(50) null,
+		clockLecture nvarchar(50) null,
+		serviceCorrective date null,
+		observations nvarchar(50) null,
+		created DATETIME NULL,
+		createdBy NVARCHAR(50) NULL,
+		createdByUsr NVARCHAR(50) NULL,
+		modified DATETIME NULL,
+		modifiedBy NVARCHAR(50) NULL,
+		modifiedByUsr NVARCHAR(50) NULL,
+		PRIMARY KEY (epServiceId),
+		UNIQUE UQ_epService_epServiceId(epServiceId),
+		KEY (serviceOrderId),
+		FOREIGN KEY (serviceOrderId) REFERENCES serviceOrder (serviceOrderId)
+	)ENGINE=INNODB; 		
+END IF;
+
+-- CREANDO TABLA epServiceSurvey
+IF (SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'epServiceSurvey') = 0 THEN
+	CREATE TABLE epServiceSurvey
+	(
+		epServiceSurveyId INTEGER NOT NULL AUTO_INCREMENT,
+		epServiceId INTEGER NOT NULL ,
+		levelOilFlag bit not null,
+		levelWaterFlag bit not null,
+		levelBattery integer not null,
+		tubeLeak bit not null,
+		batteryCap nvarchar(50) null,
+		batterySulfate nvarchar(50) null,
+		levelOil integer null,
+		heatEngine nvarchar(50) null,
+		hoseOil nvarchar(50) null,
+		hoseWater nvarchar(50) null,
+		tubeValve nvarchar(50) null,
+		stripBlades nvarchar(50) null,
+		PRIMARY KEY (epServiceSurveyId),
+		UNIQUE UQ_epServiceSurvey_epServiceSurveyId(epServiceSurveyId),
+		KEY (epServiceId),
+		FOREIGN KEY (epServiceId) REFERENCES epService (epServiceId)
+	)ENGINE=INNODB; 		
+END IF;
+
+-- CREANDO TABLA epServiceWorkBasic
+IF (SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'epServiceWorkBasic') = 0 THEN
+	CREATE TABLE epServiceWorkBasic
+	(
+		epServiceWorkBasicId INTEGER NOT NULL AUTO_INCREMENT,
+		epServiceId INTEGER NOT NULL ,
+		washEngine bit null,
+		washRadiator bit null,
+		cleanWorkArea bit null,
+		conectionCheck bit null,
+		cleanTransfer bit null,
+		cleanCardControl bit null,
+		checkConectionControl bit null,
+		checkWinding bit null,
+		batteryTests bit null,
+		checkCharger bit null,
+		checkPaint bit null,
+		cleanGenerator bit null,
+		PRIMARY KEY (epServiceWorkBasicId),
+		UNIQUE UQ_epServiceWorkBasic_epServiceWorkBasicId(epServiceWorkBasicId),
+		KEY (epServiceId),
+		FOREIGN KEY (epServiceId) REFERENCES epService (epServiceId)
+	)ENGINE=INNODB; 		
+END IF;
+
+-- CREANDO TABLA epServiceDynamicTest
+IF (SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'epServiceDynamicTest') = 0 THEN
+	CREATE TABLE epServiceDynamicTest
+	(
+		epServiceDynamicTestId INTEGER NOT NULL AUTO_INCREMENT,
+		epServiceId INTEGER NOT NULL ,
+		vacuumFrequency decimal not null,
+		chargeFrequency decimal not null,
+		bootTryouts integer not null,
+		vacuumVoltage decimal not null,
+		chargeVoltage decimal not null,
+		qualitySmoke decimal not null,
+		startTime integer not null,
+		transferTime integer not null,
+		stopTime integer not null,
+		PRIMARY KEY (epServiceDynamicTestId),
+		UNIQUE UQ_bepServiceDynamicTest_epServiceDynamicTestId(epServiceDynamicTestId),
+		KEY (epServiceId),
+		FOREIGN KEY (epServiceId) REFERENCES epService (epServiceId)
+	)ENGINE=INNODB; 		
+END IF;
+
+-- CREANDO TABLA epServiceTestProtection
+IF (SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'epServiceTestProtection') = 0 THEN
+	CREATE TABLE epServiceTestProtection
+	(
+		epServiceTestProtectionId INTEGER NOT NULL AUTO_INCREMENT,
+		epServiceId INTEGER NOT NULL ,
+		tempSensor integer not null,
+		oilSensor integer not null,
+		voltageSensor integer not null,
+		overSpeedSensor integer not null,
+		oilPreasureSensor integer not null,
+		waterLevelSensor integer not null,
+		PRIMARY KEY (epServiceTestProtectionId),
+		UNIQUE UQ_epServiceTestProtection_epServiceTestProtectionId(epServiceTestProtectionId),
+		KEY (epServiceId),
+		FOREIGN KEY (epServiceId) REFERENCES epService (epServiceId)
+	)ENGINE=INNODB; 		
+END IF;
+
+-- CREANDO TABLA epServiceTransferSwitch
+IF (SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'epServiceTransferSwitch') = 0 THEN
+	CREATE TABLE epServiceTransferSwitch
+	(
+		epServiceTransferSwitchId INTEGER NOT NULL AUTO_INCREMENT,
+		epServiceId INTEGER NOT NULL ,
+		mechanicalStatus nvarchar(10) not null,
+		boardClean bit not null,
+		screwAdjust bit not null,
+		lampTest bit not null,
+		conectionAdjust bit not null,
+		systemMotors nvarchar(10) not null,
+		electricInterlock nvarchar(10) not null,
+		mechanicalInterlock nvarchar(10) not null,
+		capacityAmp integer not null,
+		PRIMARY KEY (epServiceTransferSwitchId),
+		UNIQUE UQ_epServiceTransferSwitch_epServiceTransferSwitchId(epServiceTransferSwitchId),
+		KEY (epServiceId),
+		FOREIGN KEY (epServiceId) REFERENCES epService (epServiceId)
+	)ENGINE=INNODB; 		
+END IF;
+
+-- CREANDO TABLA epServiceLectures
+IF (SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'epServiceLectures') = 0 THEN
+	CREATE TABLE epServiceLectures
+	(
+		epServiceLecturesId INTEGER NOT NULL AUTO_INCREMENT,
+		epServiceId INTEGER NOT NULL ,
+		voltageABAN integer not null,
+		voltageACCN integer not null,
+		voltageBCBN integer not null,
+		voltageNT integer not null,
+		currentA integer not null,
+		currentB integer not null,
+		currentC integer not null,
+		frequency integer not null,
+		oilPreassure integer not null,
+		temp integer not null,
+		PRIMARY KEY (epServiceLecturesId),
+		UNIQUE UQ_epServiceLectures_epServiceLecturesId(epServiceLecturesId),
+		KEY (epServiceId),
+		FOREIGN KEY (epServiceId) REFERENCES epService (epServiceId)
+	)ENGINE=INNODB; 		
+END IF;
+
+-- CREANDO TABLA epServiceParams
+IF (SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'epServiceParams') = 0 THEN
+	CREATE TABLE epServiceParams
+	(
+		epServiceParamsId INTEGER NOT NULL AUTO_INCREMENT,
+		epServiceId INTEGER NOT NULL ,
+		adjsutmentTherm nvarchar(10) not null,
+		current nvarchar(10) not null,
+		batteryCurrent nvarchar(10) not null,
+		clockStatus nvarchar(10) not null,
+		trasnferTypeProtection nvarchar(10) not null,
+		generatorTypeProtection nvarchar(10) not null,
+		PRIMARY KEY (epServiceParamsId),
+		UNIQUE UQ_epServiceParams_epServiceParamsId(epServiceParamsId),
+		KEY (epServiceId),
+		FOREIGN KEY (epServiceId) REFERENCES epService (epServiceId)
+	)ENGINE=INNODB; 		
+END IF;
+
+-- CREANDO TABLA upsService
+IF (SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'upsService') = 0 THEN
+	CREATE TABLE upsService
+	(
+		upsServiceId INTEGER NOT NULL AUTO_INCREMENT,
+		serviceOrderId Integer not null,
+		estatusEquipment nvarchar(50) not null,
+		cleaned bit not null,
+		hooverClean bit not null,
+		verifyConnections bit not null,
+		capacitorStatus nvarchar(50) not null,
+		verifyFuzz bit not null,
+		chargerReview bit not null,
+		fanStatus nvarchar(50) not null,
+		observations nvarchar(250) not null,
+		created DATETIME NULL,
+		createdBy NVARCHAR(50) NULL,
+		createdByUsr NVARCHAR(50) NULL,
+		modified DATETIME NULL,
+		modifiedBy NVARCHAR(50) NULL,
+		modifiedByUsr NVARCHAR(50) NULL,
+		PRIMARY KEY (upsServiceId),
+		UNIQUE UQ_upsService_upsServiceId(upsServiceId),
+		KEY (serviceOrderId),
+		FOREIGN KEY (serviceOrderId) REFERENCES serviceOrder (serviceOrderId)
+	)ENGINE=INNODB; 		
+END IF;
+
+-- CREANDO TABLA upsServiceBatteryBank
+IF (SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'upsServiceBatteryBank') = 0 THEN
+	CREATE TABLE upsServiceBatteryBank
+	(
+		upsServiceBatteryBankId INTEGER NOT NULL AUTO_INCREMENT,
+		upsServiceId INTEGER NOT NULL ,
+		checkConnectors bit not null,
+		cverifyOutflow bit not null,
+		numberBatteries integer not null,
+		manufacturedDateSerial nvarchar(10) not null,
+		damageBatteries nvarchar(50) not null,
+		other nvarchar(250) not null,
+		temp decimal not null,
+		chargeTest bit not null,
+		brandModel nvarchar(250) not null,
+		batteryVoltage decimal not null,
+		PRIMARY KEY (upsServiceBatteryBankId),
+		UNIQUE UQ_upsServiceBatteryBank_upsServiceBatteryBankId(upsServiceBatteryBankId),
+		KEY (upsServiceId),
+		FOREIGN KEY (upsServiceId) REFERENCES upsService (upsServiceId)
+	)ENGINE=INNODB; 		
+END IF;
+
+-- CREANDO TABLA upsServiceGeneralTest
+IF (SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'upsServiceGeneralTest') = 0 THEN
+	CREATE TABLE upsServiceGeneralTest
+	(
+		upsServiceGeneralTestId INTEGER NOT NULL AUTO_INCREMENT,
+		upsServiceId INTEGER NOT NULL ,
+		trasferLine decimal not null,
+		transferEmergencyPlant decimal not null,
+		backupBatteries decimal not null,
+		verifyVoltage decimal not null,
+		PRIMARY KEY (upsServiceGeneralTestId),
+		UNIQUE UQ_upsServiceGeneralTestId_upsServiceGeneralTestId(upsServiceGeneralTestId),
+		KEY (upsServiceId),
+		FOREIGN KEY (upsServiceId) REFERENCES upsService (upsServiceId)
+	)ENGINE=INNODB; 		
+END IF;
+
+-- CREANDO TABLA upsServiceParams
+IF (SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'upsServiceParams') = 0 THEN
+	CREATE TABLE upsServiceParams
+	(
+		upsServiceParamsId INTEGER NOT NULL AUTO_INCREMENT,
+		upsServiceId INTEGER NOT NULL ,
+		inputVoltagePhase decimal not null,
+		inputVoltageNeutro decimal not null,
+		inputVoltageNeutroGround decimal not null,
+		percentCharge decimal not null,
+		outputVoltagePhase decimal not null,
+		outputVoltageNeutro decimal not null,
+		inOutFrecuency decimal not null,
+		busVoltage decimal not null,
+		PRIMARY KEY (upsServiceParamsId),
+		UNIQUE UQ_upsServiceParams_eupsServiceParamsId(upsServiceParamsId),
+		KEY (upsServiceId),
+		FOREIGN KEY (upsServiceId) REFERENCES upsService (upsServiceId)
+	)ENGINE=INNODB; 		
+END IF;
+
+-- CREANDO TABLA aaService
+IF (SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'aaService') = 0 THEN
+	create table aaService
+	(
+		aaServiceId INTEGER NOT NULL AUTO_INCREMENT,
+		serviceOrderId Integer not null,
+		evaDescription nvarchar(250) not null,
+		evaValTemp decimal not null,
+		evaValHum decimal not null,
+		evaSetpointTemp decimal not null,
+		evaSetpointHum decimal not null,
+		evaFlagCalibration bit not null,
+		evaReviewFilter bit not null,
+		evaReviewStrip bit not null,
+		evaCleanElectricSystem bit not null,
+		evaCleanControlCard bit not null,
+		evaCleanTray bit not null,
+		evaLectrurePreasureHigh decimal not null,
+		evaLectrurePreasureLow decimal not null,
+		evaLectureTemp decimal not null,
+		evaLectureOilColor nvarchar(10) not null,
+		evaLectureOilLevel decimal not null,
+		evaLectureCoolerColor nvarchar(10) not null,
+		evaLectureCoolerLevel decimal not null,
+		evaCheckOperatation nvarchar(10) not null,
+		evaCheckNoise nvarchar(10) not null,
+		evaCheckIsolated nvarchar(10)not null,
+		evaLectureVoltageGroud decimal not null,
+		evaLectureVoltagePhases decimal not null,
+		evaLectureVoltageControl decimal not null,
+		evaLectureCurrentMotor1 decimal not null,
+		evaLectureCurrentMotor2 decimal not null,
+		evaLectureCurrentMotor3 decimal not null,
+		evaLectureCurrentCompressor1 decimal not null,
+		evaLectureCurrentCompressor2 decimal not null,
+		evaLectureCurrentCompressor3 decimal not null,
+		evaLectureCurrentHumidifier1 decimal not null,
+		evaLectureCurrentHumidifier2 decimal not null,
+		evaLectureCurrentHumidifier3 decimal not null,
+		evaLectureCurrentHeater1 decimal not null,
+		evaLectureCurrentHeater2 decimal not null,
+		evaLectureCurrentHeater3 decimal not null,
+		evaCheckFluidSensor  bit not null,
+		evaRequirMaintenance  bit not null,
+		condReview varchar(50) not null,
+		condCleanElectricSystem bit not null,
+		condClean bit not null,
+		condLectureVoltageGroud decimal not null,
+		condLectureVoltagePhases decimal not null,
+		condLectureVoltageControl decimal not null,
+		condLectureMotorCurrent decimal not null,
+		condReviewThermostat nvarchar(50) not null,
+		condModel nvarchar(50) not null,
+		condSerialNumber nvarchar(50) not null,
+		condBrand nvarchar(50) not null,
+		observations nvarchar(255) not null,
+		created DATETIME NULL,
+		createdBy NVARCHAR(50) NULL,
+		createdByUsr NVARCHAR(50) NULL,
+		modified DATETIME NULL,
+		modifiedBy NVARCHAR(50) NULL,
+		modifiedByUsr NVARCHAR(50) NULL,
+		PRIMARY KEY (aaServiceId),
+		UNIQUE UQ_aaService_aaServiceId(aaServiceId),
+		KEY (serviceOrderId),
+		FOREIGN KEY (serviceOrderId) REFERENCES serviceOrder (serviceOrderId)
+	)ENGINE=INNODB; 		
+END IF;
+
+
+	
 -- -----------------------------------------------------------------------------
 -- FIN SECCION DE CAMBIOS - NO CAMBIAR CODIGO FUERA DE ESTA SECCION
 -- -----------------------------------------------------------------------------
@@ -148,7 +625,7 @@ DROP PROCEDURE blackstarDb.upgradeSchema;
 --								blackstarDb.GetTickets
 -- 								blackstarDb.UpdateTicketStatus
 -- -----------------------------------------------------------------------------
--- 2    04/10/2013	SAG		Se Integra:
+-- 2    04/10/2013	SAG		Se Integra:evaDescription
 --								blackstarDb.GetUnassignedTickets
 -- -----------------------------------------------------------------------------
 -- 3    04/10/2013	SAG		Se Integra:
@@ -185,10 +662,21 @@ DROP PROCEDURE blackstarDb.upgradeSchema;
 -- 								blackstarDb.AssignServiceOrder
 -- 								blackstarDb.GetEquipmentByCustomer
 -- -----------------------------------------------------------------------------
--- 10   13/11/2013	SAG		Se Integra:
+-- 10   20/11/2013	JAGH	Se Integra:
+-- 								blackstarDb.GetAirCoServiceByIdService
+-- 								blackstarDb.GetBatteryServiceByIdService
+--                              blackstarDb.GetCellBatteryServiceByIdBatteryService
+-- 								blackstarDb.GetEmergencyPlantServiceByIdService
+-- 								blackstarDb.GetPlainServiceServiceByIdService
+-- 								blackstarDb.GetUPSServiceByIdService
+-- -----------------------------------------------------------------------------
+-- 11   25/11/2013	JAGH	Se Integra:
+-- 								blackstarDb.GetPolicyBySerialNo
+-- -----------------------------------------------------------------------------
+-- 12   13/11/2013	SAG		Se Integra:
 -- 								blackstarDb.GetOfficesList
 -- -----------------------------------------------------------------------------
--- 11   13/11/2013	SAG		Se Sustituye:
+-- 13   13/11/2013	SAG		Se Sustituye:
 -- 								blackstarDb.GetEquipmentByCustomer por
 -- 								blackstarDb.GetEquipmentList
 --							Se Integra:
@@ -201,16 +689,106 @@ DROP PROCEDURE blackstarDb.upgradeSchema;
 --							Se Reescribe:
 -- 								blackstarDb.GetServicesSchedule
 -- -----------------------------------------------------------------------------
--- 11   21/11/2013	SAG		Se Integra:
+-- 14   21/11/2013	SAG		Se Integra:
 -- 								blackstarDb.GetAllServiceOrders
 -- 								blackstarDb.CloseOS
 -- -----------------------------------------------------------------------------
-
+-- 15   26/11/2013	JAGH	Se Integra:
+-- 								blackstarDb.AddAAservice
+-- 								blackstarDb.AddBBcellservice
+-- 								blackstarDb.AddBBservice
+-- 								blackstarDb.AddepService
+--                              blackstarDb.AddepServiceSurvey
+--                              blackstarDb.AddepServiceWorkBasic
+--                              blackstarDb.AddepServiceDynamicTest
+-- 								blackstarDb.AddepServiceTestProtection
+-- 								blackstarDb.AddepServiceTransferSwitch
+-- 								blackstarDb.AddepServiceLectures
+-- 								blackstarDb.AddepServiceParams
+-- 								blackstarDb.AddplainService
+-- 								blackstarDb.AddupsService
+-- 								blackstarDb.AddupsServiceBatteryBank
+--								blackstarDb.AddupsServiceGeneralTest
+-- 								blackstarDb.AddupsServiceParams
+-- 								blackstarDb.AddserviceOrder
+-- 								blackstarDb.UpdateServiceOrder
+-- -----------------------------------------------------------------------------
+-- 16   25/11/2013	SAG		Se Integra:
+-- 								blackstarDb.GetUserGroups
+-- -----------------------------------------------------------------------------
+-- 17   12/12/2013	SAG		Se Integra:
+-- 								blackstarDb.GetNextServiceOrderNumber 
+-- 								blackstarDb.CommitServiceOrderNumber 
+-- 								blackstarDb.LoadNewSequencePoolItems 
+-- 								blackstarDb.GetAndIncreaseSequence 
+-- 								blackstarDb.GetNextServiceNumberForEquipment 
+-- -----------------------------------------------------------------------------
+-- 18   26/12/2013	SAG		Se Integra:
+-- 								blackstarDb.GetScheduledServices 
+-- 								blackstarDb.GetAssignedTickets 
+-- -----------------------------------------------------------------------------
+-- 19   31/12/2013	SAG		Fix:
+-- 								blackstarDb.GetUserData 
+-- -----------------------------------------------------------------------------
+-- 21   02/01/2014	SAG		Se Integra:
+-- 								blackstarDb.GetPersonalServiceOrders 
+-- -----------------------------------------------------------------------------
+-- 22   03/01/2014	SAG		Se Integra:
+-- 								blackstarDb.GetAllServiceOrders 
+-- 								blackstarDb.GetEquipmentByType 
+-- -----------------------------------------------------------------------------
+-- 23   05/01/2014	SAG		Se Integra:
+-- 								blackstarDb.GetServiceTypeList
+-- 								blackstarDb.GetServiceTypeById
+-- 								blackstarDb.GetEquipmentTypeBySOId
+-- -----------------------------------------------------------------------------
 use blackstarDb;
 
 
 DELIMITER $$
 
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetEquipmentTypeBySOId
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetEquipmentTypeBySOId$$
+CREATE PROCEDURE blackstarDb.GetEquipmentTypeBySOId(pServiceOrderId INT)
+BEGIN
+
+	SELECT 
+		equipmentTypeId AS equipmentTypeId
+	FROM serviceOrder so
+		INNER JOIN policy p ON so.policyId = p.policyId
+	WHERE serviceOrderId = pServiceOrderId;
+
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetServiceTypeById
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetServiceTypeById$$
+CREATE PROCEDURE blackstarDb.GetServiceTypeById(pType CHAR(1))
+BEGIN
+
+	-- TODO: codigo heredado, revisar SELECT
+	SELECT * FROM serviceType WHERE serviceTypeId = pType;
+
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetServiceTypeList
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetServiceTypeList$$
+CREATE PROCEDURE blackstarDb.GetServiceTypeList()
+BEGIN
+
+	SELECT 
+		serviceTypeId AS serviceTypeId,
+		serviceType AS serviceType
+	FROM serviceType
+	ORDER BY serviceType;
+
+END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.CloseOS
@@ -227,7 +805,36 @@ BEGIN
 		modifiedByUsr = pUser
 	WHERE
 		serviceOrderId = pServiceOrderId;
+END$$
 	
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetEquipmentByType
+	--
+	-- Este SP se utiliza especificamente para recuperar valores destinados
+	-- a poblar un campo autocomplete. No cambiar las etiquetas
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetEquipmentByType$$
+CREATE PROCEDURE blackstarDb.GetEquipmentByType(pEquipmentTypeId CHAR(1))
+BEGIN
+	
+	IF(pEquipmentTypeId = 'X') THEN
+		SELECT 
+			concat_ws(' - ', brand, model, serialNumber) AS label,
+			serialNumber AS value
+		FROM policy p
+		WHERE equipmentTypeId NOT IN('A', 'B', 'P', 'U')
+		AND p.startDate < CURDATE() AND p.endDate > CURDATE()
+		ORDER BY brand, model, serialNumber;
+	ELSE
+		SELECT 
+			concat_ws(' - ', brand, model, serialNumber) AS label,
+			serialNumber AS value
+		FROM policy p
+		WHERE equipmentTypeId = pEquipmentTypeId
+		AND p.startDate < CURDATE() AND p.endDate > CURDATE()
+		ORDER BY brand, model, serialNumber;
+	END IF;
+
 END$$
 
 -- -----------------------------------------------------------------------------
@@ -243,7 +850,7 @@ BEGIN
 		'' AS placeHolder,
 		IFNULL(t.ticketNumber, '') AS ticketNumber,
 		st.serviceType AS serviceType,
-		DATE(so.created) AS created,
+		DATE(so.serviceDate) AS serviceDate,
 		p.customer AS customer,
 		et.equipmentType AS equipmentType,
 		p.project AS project,
@@ -319,6 +926,66 @@ BEGIN
 	
 END$$
 
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetPersonalServiceOrders
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetPersonalServiceOrders$$
+CREATE PROCEDURE blackstarDb.GetPersonalServiceOrders(pUser VARCHAR(100), pStatus VARCHAR(50))
+BEGIN
+
+	SELECT 
+		so.serviceOrderId AS DT_RowId,
+		so.serviceOrderNumber AS serviceOrderNumber,
+		'' AS placeHolder,
+		ifnull(t.ticketNumber, '') AS ticketNumber,
+		st.serviceType AS serviceType,
+		date(so.serviceDate) AS serviceDate,
+		p.customer AS customer,
+		et.equipmentType AS equipmentType,
+		p.project AS project,
+		o.officeName AS officeName,
+		p.brand AS brand,
+		p.serialNumber AS serialNumber
+	FROM serviceOrder so
+		INNER JOIN serviceStatus ss ON ss.serviceStatusId = so.serviceStatusId
+		LEFT OUTER JOIN ticket t ON t.ticketId = so.ticketId
+		INNER JOIN serviceType st ON st.serviceTypeId = so.serviceTypeId
+		INNER JOIN policy p ON p.policyId = so.policyId
+		INNER JOIN equipmentType et ON et.equipmentTypeId = p.equipmentTypeId
+		INNER JOIN office o ON p.officeId = o.officeId
+	where serviceStatus = pStatus
+	AND so.asignee = pUser
+	ORDER BY serviceDate;
+
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetAssignedTickets
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetAssignedTickets$$
+CREATE PROCEDURE blackstarDb.GetAssignedTickets(pUser VARCHAR(100))
+BEGIN
+
+	SELECT 
+		t.ticketId AS DT_RowId,
+		t.ticketNumber AS ticketNumber,
+		t.created AS ticketDate,
+		p.customer AS customer,
+		e.equipmentType AS equipmentType,
+		p.responseTimeHR AS responseTime,
+		p.project AS project,
+		ts.ticketStatus AS ticketStatus,
+		'' AS placeHolder
+FROM ticket t
+	INNER JOIN policy p ON p.policyId = t.policyId
+	INNER JOIN equipmentType e ON e.equipmentTypeId = p.equipmentTypeId
+	INNER JOIN ticketstatus ts ON t.ticketStatusId = ts.ticketStatusId
+WHERE t.asignee = pUser
+AND t.closed IS NULL
+ORDER BY ticketDate;
+
+END$$
+
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.AddScheduledServiceEmployee
@@ -366,7 +1033,68 @@ BEGIN
 		NOW(),
 		'AddScheduledServicePolicy',
 		pUser;
+END$$
 	
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetScheduledServices
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetScheduledServices$$
+CREATE PROCEDURE blackstarDb.GetScheduledServices(pUser VARCHAR(100))
+BEGIN
+
+SELECT 
+	ss.scheduledServiceId AS DT_RowId,
+	sd.serviceDate AS serviceDate,
+	p.customer AS customer,
+	e.equipmentType AS equipmentType,
+	p.project AS project,
+	o.officeName AS office,
+	p.brand AS brand,
+	p.serialNumber AS serialNumber
+	FROM 
+		scheduledService ss
+		INNER JOIN scheduledServiceDate sd ON ss.scheduledServiceId = sd.scheduledServiceId
+		INNER JOIN scheduledServiceEmployee se ON se.scheduledServiceId = ss.scheduledServiceId
+		INNER JOIN scheduledServicePolicy sp ON sp.scheduledServiceId = ss.scheduledServiceId
+		INNER JOIN policy p ON p.policyId = sp.policyId
+		INNER JOIN equipmentType e ON e.equipmentTypeId = p.equipmentTypeId
+		INNER JOIN office o ON o.officeId = p.officeId
+	WHERE employeeId = pUser
+	ORDER BY serviceDate;
+
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetNextServiceNumberForEquipment
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetNextServiceNumberForEquipment$$
+CREATE PROCEDURE blackstarDb.GetNextServiceNumberForEquipment(pPolicyId INTEGER)
+BEGIN
+
+	DECLARE eqType VARCHAR(10);
+	DECLARE prefix VARCHAR(10);
+	DECLARE newNumber INTEGER;
+
+	-- Obteniendo el tipo de equipo
+	SELECT equipmentTypeId into eqType FROM policy WHERE policyId = pPolicyId;
+	-- Cambiando a O por default
+	IF eqType NOT IN('A', 'B', 'P', 'U') THEN
+		SELECT 'O' into eqType;
+	END IF;
+
+	SET prefix = (SELECT CASE 
+		WHEN eqType = 'A' THEN 'AA-' 
+		WHEN eqType = 'B' THEN 'BB-'
+		WHEN eqType = 'P' THEN 'PE-'
+		WHEN eqType = 'U' THEN 'UPS-'
+		ELSE 'OS-' END);
+
+	-- Obteniendo el numero de folio
+	CALL blackstarDb.GetNextServiceOrderNumber(eqType, newNumber);
+
+	-- Regresando el numero de folio completo
+	SELECT CONCAT(prefix, lpad(cast(newNumber AS CHAR(50)), 5, '0'), '-e') AS ServiceNumber;
+
 END$$
 
 
@@ -419,6 +1147,115 @@ BEGIN
 	
 END$$
 
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetAndIncreaseSequence
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetAndIncreaseSequence$$
+CREATE PROCEDURE blackstarDb.GetAndIncreaseSequence(pSequenceTypeId CHAR(1), OUT nextNum INTEGER)
+BEGIN
+
+	-- Recuperar el numero de secuencia actual
+	DECLARE seqNum INTEGER;
+	SELECT sequenceNumber into seqNum FROM sequence WHERE sequenceTypeId = pSequenceTypeId;
+
+	-- Incrementar el numero en la BD
+	UPDATE sequence SET
+		sequenceNumber = (seqNum + 1)
+	WHERE sequenceTypeId = pSequenceTypeId;
+
+	-- Regresar el numero actual
+	SELECT seqNum into nextNum;
+
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.LoadNewSequencePoolItems
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.LoadNewSequencePoolItems$$
+CREATE PROCEDURE blackstarDb.LoadNewSequencePoolItems(pSequenceNumberTypeId CHAR(1))
+BEGIN
+
+	-- Verificar cuantos numeros hay actualmente
+	DECLARE poolItems INTEGER;
+	DECLARE newNumber INTEGER;
+
+	SELECT count(*) into poolItems FROM sequenceNumberPool WHERE sequenceNumberTypeId = pSequenceNumberTypeId AND sequenceNumberStatus = 'U';
+
+	WHILE poolItems < 5 DO
+	    
+		-- Cargar nuevo numero en el pool
+		CALL blackstarDb.GetAndIncreaseSequence(pSequenceNumberTypeId, newNumber);
+
+		INSERT INTO sequenceNumberPool(sequenceNumberTypeId, sequenceNumber, sequenceNumberStatus)
+		SELECT pSequenceNumberTypeId, newNumber, 'U';
+  
+  		SELECT count(*) into poolItems FROM sequenceNumberPool WHERE sequenceNumberTypeId = pSequenceNumberTypeId AND sequenceNumberStatus = 'U';
+
+  	END WHILE;
+
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.CommitServiceOrderNumber
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.CommitServiceOrderNumber$$
+CREATE PROCEDURE blackstarDb.CommitServiceOrderNumber(pSequenceNumber INTEGER, pSequenceNumberTypeId CHAR(1))
+BEGIN
+
+	-- Borrar numero del pool
+	DELETE FROM sequenceNumberPool WHERE sequenceNumber = pSequenceNumber AND sequenceNumberTypeId = pSequenceNumberTypeId;
+
+	-- Cargar nuevos numeros
+	CALL blackstarDb.LoadNewSequencePoolItems(pSequenceNumberTypeId);
+	
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetNextServiceOrderNumber
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetNextServiceOrderNumber$$
+CREATE PROCEDURE blackstarDb.GetNextServiceOrderNumber(pSequenceNumberTypeId CHAR(1), OUT nextNumber INTEGER)
+BEGIN
+
+	DECLARE nextId INTEGER;
+
+	-- Recuperar el siguiente numero en la secuencia y su ID
+	SELECT min(sequenceNumber) into nextNumber
+	FROM sequenceNumberPool 
+	WHERE sequenceNumberTypeId = pSequenceNumberTypeId
+		AND sequenceNumberStatus = 'U';
+
+	SELECT sequenceNumberPoolId into nextId
+	FROM sequenceNumberPool 
+	WHERE sequenceNumber = nextNumber 
+		AND sequenceNumberTypeId = pSequenceNumberTypeId;
+
+	-- Bloquear el numero
+	UPDATE sequenceNumberPool SET sequenceNumberStatus = 'L'
+	WHERE sequenceNumberPoolId = nextId;
+	
+	-- Cargar nuevos numeros
+	CALL blackstarDb.LoadNewSequencePoolItems(pSequenceNumberTypeId);
+
+	-- Regresar el numero siguiente
+	SELECT nextNumber;
+
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetUserGroups
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetUserGroups$$
+CREATE PROCEDURE blackstarDb.GetUserGroups(pEmail VARCHAR(100))
+BEGIN
+
+	SELECT g.name AS groupName
+	FROM blackstarUser_userGroup ug
+		INNER JOIN blackstarUser u ON u.blackstarUserId = ug.blackstarUserId
+		LEFT OUTER JOIN userGroup g ON g.userGroupId = ug.userGroupId
+	WHERE u.email = pEmail;
+	
+END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetEquipmentByCustomer
@@ -766,18 +1603,18 @@ END$$
 
 
 -- -----------------------------------------------------------------------------
-	-- blackstarDb.GetUserData
+        -- blackstarDb.GetUserData
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetUserData$$
 CREATE PROCEDURE blackstarDb.GetUserData(pEmail VARCHAR(100))
 BEGIN
 
-	SELECT u.email AS userEmail, u.name AS userName, g.name AS groupName
-	FROM blackstarUser_userGroup ug
-		INNER JOIN blackstarUser u ON u.blackstarUserId = ug.blackstarUserId
-		LEFT OUTER JOIN userGroup g ON g.userGroupId = ug.userGroupId
-	WHERE u.email = pEmail;
-	
+        SELECT u.email AS userEmail, u.name AS userName, g.name AS groupName
+        FROM blackstarUser_userGroup ug
+                INNER JOIN blackstarUser u ON u.blackstarUserId = ug.blackstarUserId
+                LEFT OUTER JOIN userGroup g ON g.userGroupId = ug.userGroupId
+        WHERE u.email = pEmail;
+        
 END$$
 
 -- -----------------------------------------------------------------------------
@@ -1019,9 +1856,728 @@ BEGIN
 END$$
 
 -- -----------------------------------------------------------------------------
+	-- blackstarDb.GetAirCoServiceByIdService
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetAirCoServiceByIdService$$
+CREATE PROCEDURE blackstarDb.GetAirCoServiceByIdService (idService INTEGER)
+BEGIN	
+	select 
+		aaServiceId, serviceOrderId, evaDescription, evaValTemp, evaValHum, evaSetpointTemp, evaSetpointHum, 
+		evaFlagCalibration, evaReviewFilter, evaReviewStrip, evaCleanElectricSystem, evaCleanControlCard, evaCleanTray, 
+		evaLectrurePreasureHigh, evaLectrurePreasureLow, evaLectureTemp, evaLectureOilColor, evaLectureOilLevel, evaLectureCoolerColor, 
+		evaLectureCoolerLevel, evaCheckOperatation, evaCheckNoise, evaCheckIsolated, evaLectureVoltageGroud, evaLectureVoltagePhases, 
+		evaLectureVoltageControl, evaLectureCurrentMotor1, evaLectureCurrentMotor2, evaLectureCurrentMotor3, evaLectureCurrentCompressor1, 
+		evaLectureCurrentCompressor2, evaLectureCurrentCompressor3, evaLectureCurrentHumidifier1, evaLectureCurrentHumidifier2, 
+		evaLectureCurrentHumidifier3, evaLectureCurrentHeater1, evaLectureCurrentHeater2, evaLectureCurrentHeater3, evaCheckFluidSensor,
+		evaRequirMaintenance, condReview, condCleanElectricSystem, condClean, condLectureVoltageGroud, condLectureVoltagePhases,
+		condLectureVoltageControl, condLectureMotorCurrent, condReviewThermostat, condModel, condSerialNumber, condBrand, observations
+	from aaService 
+	where 
+		aaServiceId = idService;
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetBatteryServiceByIdService
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetBatteryServiceByIdService$$
+CREATE PROCEDURE blackstarDb.GetBatteryServiceByIdService (idService INTEGER)
+BEGIN
+	select 
+		bbServiceId, serviceOrderId, plugClean, plugCleanStatus, plugCleanComments, coverClean, coverCleanStatus, 
+		coverCleanComments, capClean, capCleanStatus, capCleanComments, groundClean, groundCleanStatus, groundCleanComments, 
+		rackClean, rackCleanStatus, rackCleanComments, serialNoDateManufact, batteryTemperature, voltageBus, temperature
+	from bbService 
+	where 
+		bbServiceId = idService;
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetCellBatteryServiceByIdBatteryService
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetCellBatteryServiceByIdBatteryService$$
+CREATE PROCEDURE blackstarDb.GetCellBatteryServiceByIdBatteryService (idBatteryService INTEGER)
+BEGIN
+	select 
+		bbCellServiceId, bbServiceId, cellNumber, floatVoltage, chargeVoltage
+	from bbCellService 
+	where 
+		bbServiceId = idBatteryService;
+
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetEmergencyPlantServiceByIdService
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetEmergencyPlantServiceByIdService$$
+CREATE PROCEDURE blackstarDb.GetEmergencyPlantServiceByIdService (idService INTEGER)
+BEGIN
+	select 
+		A.epServiceId, serviceOrderId, brandPE,modelPE,serialPE, transferType, modelTransfer, modelControl, modelRegVoltage, modelRegVelocity, 
+		modelCharger, oilChange, brandMotor, modelMotor, serialMotor, cplMotor, brandGenerator, modelGenerator, serialGenerator, 
+		powerWattGenerator, tensionGenerator, tuningDate, tankCapacity, pumpFuelModel, filterFuelFlag, filterOilFlag, filterWaterFlag, 
+		filterAirFlag, brandGear, brandBattery, clockLecture, serviceCorrective, observations, 
+
+		epServiceSurveyId, levelOilFlag, levelWaterFlag, levelBattery, tubeLeak, batteryCap, batterySulfate, levelOil, 
+		heatEngine, hoseOil, hoseWater, tubeValve, stripBlades, 
+
+		epServiceWorkBasicId, washEngine, washRadiator, cleanWorkArea, conectionCheck, cleanTransfer, cleanCardControl, 
+		checkConectionControl, checkWinding, batteryTests, checkCharger, checkPaint, cleanGenerator, 
+
+		epServiceDynamicTestId, vacuumFrequency, chargeFrequency, bootTryouts, vacuumVoltage, chargeVoltage, qualitySmoke, 
+		startTime, transferTime, stopTime, 
+
+		epServiceTestProtectionId, tempSensor, oilSensor, voltageSensor, overSpeedSensor, oilPreasureSensor, waterLevelSensor, 
+		
+		epServiceTransferSwitchId, mechanicalStatus, boardClean, lampTest, screwAdjust, conectionAdjust, systemMotors, electricInterlock, 
+		mechanicalInterlock, capacityAmp, 
+
+		epServiceLecturesId, voltageABAN, voltageACCN, voltageBCBN, voltageNT, currentA, currentB, currentC, frequency, oilPreassure, temp, 
+
+		epServiceParamsId, adjsutmentTherm, current, batteryCurrent, clockStatus, trasnferTypeProtection, generatorTypeProtection
+
+	from epService A
+	inner join  epServiceSurvey  B on  A.epServiceId  = B.epServiceId 
+	inner join  epServiceWorkBasic  C on  A.epServiceId  = C.epServiceId 
+	inner join  epServiceDynamicTest  D on  A.epServiceId  = D.epServiceId 
+	inner join  epServiceTestProtection E on  A.epServiceId  = E.epServiceId 
+	inner join  epServiceTransferSwitch F on  A.epServiceId  = F.epServiceId 
+	inner join  epServiceLectures G on  A.epServiceId  = G.epServiceId 
+	inner join  epServiceParams H on  A.epServiceId  = H.epServiceId 
+	where 
+		A.epServiceId  = idService;
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetPlainServiceServiceByIdService
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetPlainServiceServiceByIdService$$
+CREATE PROCEDURE blackstarDb.GetPlainServiceServiceByIdService (idService INTEGER)
+BEGIN	
+	select 
+		plainServiceId, serviceOrderId, troubleDescription, techParam, workDone, materialUsed, observations
+	from plainService ps
+	where 
+		serviceOrderId = idService;
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetUPSServiceByIdService
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetUPSServiceByIdService$$
+CREATE PROCEDURE blackstarDb.GetUPSServiceByIdService (idService INTEGER)
+BEGIN
+
+	select 
+		A.upsServiceId, serviceOrderId, estatusEquipment, cleaned, hooverClean, verifyConnections, capacitorStatus, verifyFuzz, 
+		chargerReview, fanStatus,
+		
+		upsServiceBatteryBankId, checkConnectors, cverifyOutflow, numberBatteries, manufacturedDateSerial, damageBatteries, 
+		other, temp, chargeTest, brandModel, batteryVoltage, 
+		
+		upsServiceGeneralTestId, trasferLine, transferEmergencyPlant, backupBatteries, verifyVoltage, 
+		
+		upsServiceParamsId, inputVoltagePhase, inputVoltageNeutro, inputVoltageNeutroGround, percentCharge, outputVoltagePhase, 
+		outputVoltageNeutro, inOutFrecuency, busVoltage
+	from upsService A
+	inner join  upsServiceBatteryBank  B on  A.upsServiceId = B.upsServiceId
+	inner join  upsServiceGeneralTest  C on  A.upsServiceId = C.upsServiceId
+	inner join  upsServiceParams  D on  A.upsServiceId = D.upsServiceId
+	where 
+		A.upsServiceId = idService;
+
+END$$
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetPolicyBySerialNo
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetPolicyBySerialNo$$
+CREATE PROCEDURE blackstarDb.GetPolicyBySerialNo (noSerial VARCHAR(100))
+BEGIN
+	SELECT * FROM blackstardb.policy
+	WHERE startDate < CURDATE() AND endDate > CURDATE() AND serialNumber = noSerial;
+END$$
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.AddAAservice
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.AddAAservice$$
+CREATE PROCEDURE blackstarDb.AddAAservice (  
+  serviceOrderId int(11) ,
+  evaDescription varchar(250) ,
+  evaValTemp decimal(10,0) ,
+  evaValHum decimal(10,0) ,
+  evaSetpointTemp decimal(10,0) ,
+  evaSetpointHum decimal(10,0) ,
+  evaFlagCalibration bit(1) ,
+  evaReviewFilter bit(1) ,
+  evaReviewStrip bit(1) ,
+  evaCleanElectricSystem bit(1) ,
+  evaCleanControlCard bit(1) ,
+  evaCleanTray bit(1) ,
+  evaLectrurePreasureHigh decimal(10,0) ,
+  evaLectrurePreasureLow decimal(10,0) ,
+  evaLectureTemp decimal(10,0) ,
+  evaLectureOilColor varchar(10) ,
+  evaLectureOilLevel decimal(10,0) ,
+  evaLectureCoolerColor varchar(10) ,
+  evaLectureCoolerLevel decimal(10,0) ,
+  evaCheckOperatation varchar(10) ,
+  evaCheckNoise varchar(10) ,
+  evaCheckIsolated varchar(10) ,
+  evaLectureVoltageGroud decimal(10,0) ,
+  evaLectureVoltagePhases decimal(10,0) ,
+  evaLectureVoltageControl decimal(10,0) ,
+  evaLectureCurrentMotor1 decimal(10,0) ,
+  evaLectureCurrentMotor2 decimal(10,0) ,
+  evaLectureCurrentMotor3 decimal(10,0) ,
+  evaLectureCurrentCompressor1 decimal(10,0) ,
+  evaLectureCurrentCompressor2 decimal(10,0) ,
+  evaLectureCurrentCompressor3 decimal(10,0) ,
+  evaLectureCurrentHumidifier1 decimal(10,0) ,
+  evaLectureCurrentHumidifier2 decimal(10,0) ,
+  evaLectureCurrentHumidifier3 decimal(10,0) ,
+  evaLectureCurrentHeater1 decimal(10,0) ,
+  evaLectureCurrentHeater2 decimal(10,0) ,
+  evaLectureCurrentHeater3 decimal(10,0) ,
+  evaCheckFluidSensor bit(1) ,
+  evaRequirMaintenance bit(1) ,
+  condReview varchar(50) ,
+  condCleanElectricSystem bit(1) ,
+  condClean bit(1) ,
+  condLectureVoltageGroud decimal(10,0) ,
+  condLectureVoltagePhases decimal(10,0) ,
+  condLectureVoltageControl decimal(10,0) ,
+  condLectureMotorCurrent decimal(10,0) ,
+  condReviewThermostat varchar(50) ,
+  condModel varchar(50) ,
+  condSerialNumber varchar(50) ,
+  condBrand varchar(50) ,
+  observations varchar(255) ,
+  created datetime ,
+  createdBy varchar(50) ,
+  createdByUsr varchar(50))
+BEGIN
+	INSERT INTO aaService
+(serviceOrderId,evaDescription,evaValTemp,evaValHum,evaSetpointTemp,
+evaSetpointHum,evaFlagCalibration,evaReviewFilter,evaReviewStrip,evaCleanElectricSystem,
+evaCleanControlCard,evaCleanTray,evaLectrurePreasureHigh,evaLectrurePreasureLow,evaLectureTemp,
+evaLectureOilColor,evaLectureOilLevel,evaLectureCoolerColor,evaLectureCoolerLevel,
+evaCheckOperatation,evaCheckNoise,evaCheckIsolated,evaLectureVoltageGroud,evaLectureVoltagePhases,
+evaLectureVoltageControl,evaLectureCurrentMotor1,evaLectureCurrentMotor2,evaLectureCurrentMotor3,
+evaLectureCurrentCompressor1,evaLectureCurrentCompressor2,evaLectureCurrentCompressor3,
+evaLectureCurrentHumidifier1,evaLectureCurrentHumidifier2,evaLectureCurrentHumidifier3,
+evaLectureCurrentHeater1,evaLectureCurrentHeater2,evaLectureCurrentHeater3,evaCheckFluidSensor,
+evaRequirMaintenance,condReview,condCleanElectricSystem,condClean,condLectureVoltageGroud,
+condLectureVoltagePhases,condLectureVoltageControl,condLectureMotorCurrent,condReviewThermostat,
+condModel,condSerialNumber,condBrand,observations,created,createdBy,createdByUsr)
+VALUES
+(
+serviceOrderId,evaDescription,evaValTemp,evaValHum,evaSetpointTemp,
+evaSetpointHum,evaFlagCalibration,evaReviewFilter,evaReviewStrip,
+evaCleanElectricSystem,evaCleanControlCard,evaCleanTray,evaLectrurePreasureHigh,
+evaLectrurePreasureLow,evaLectureTemp,evaLectureOilColor,evaLectureOilLevel,
+evaLectureCoolerColor,evaLectureCoolerLevel,evaCheckOperatation,evaCheckNoise,
+evaCheckIsolated,evaLectureVoltageGroud,evaLectureVoltagePhases,evaLectureVoltageControl,
+evaLectureCurrentMotor1,evaLectureCurrentMotor2,evaLectureCurrentMotor3,evaLectureCurrentCompressor1,
+evaLectureCurrentCompressor2,evaLectureCurrentCompressor3,evaLectureCurrentHumidifier1,
+evaLectureCurrentHumidifier2,evaLectureCurrentHumidifier3,evaLectureCurrentHeater1,
+evaLectureCurrentHeater2,evaLectureCurrentHeater3,evaCheckFluidSensor,
+evaRequirMaintenance,condReview,condCleanElectricSystem,condClean,
+condLectureVoltageGroud,condLectureVoltagePhases,condLectureVoltageControl,
+condLectureMotorCurrent,condReviewThermostat,condModel,condSerialNumber,
+condBrand,observations,created,createdBy,createdByUsr
+);
+select LAST_INSERT_ID();
+END$$
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.AddBBcellservice
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.AddBBcellservice$$
+CREATE PROCEDURE blackstarDb.AddBBcellservice (bbServiceId int(11) , cellNumber int(11) , floatVoltage int(11) , chargeVoltage int(11))
+BEGIN
+INSERT INTO bbCellService
+(bbServiceId,cellNumber,floatVoltage,chargeVoltage)
+VALUES
+(bbServiceId,cellNumber,floatVoltage,chargeVoltage);
+END$$
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.AddBBservice
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.AddBBservice$$
+CREATE PROCEDURE blackstarDb.AddBBservice (
+   serviceOrderId  int(11)  ,
+   plugClean  bit(1)  ,
+   plugCleanStatus  varchar(50) , 
+   plugCleanComments  varchar(50) , 
+   coverClean  bit(1)  ,
+   coverCleanStatus  varchar(50)  ,
+   coverCleanComments  varchar(50) , 
+   capClean  bit(1)  ,
+   capCleanStatus  varchar(50)  ,
+   capCleanComments  varchar(50) , 
+   groundClean  bit(1)  ,
+   groundCleanStatus  varchar(50) , 
+   groundCleanComments  varchar(50) , 
+   rackClean  bit(1)  ,
+   rackCleanStatus  varchar(50) , 
+   rackCleanComments  varchar(50) , 
+   serialNoDateManufact  varchar(50)  ,
+   batteryTemperature  varchar(50)  ,
+   voltageBus  int(11)  ,
+   temperature  int(11)  ,
+   created  datetime , 
+   createdBy  varchar(50)  ,
+   createdByUsr  varchar(50)
+)
+BEGIN
+INSERT INTO bbService
+(serviceOrderId,plugClean,plugCleanStatus,plugCleanComments,coverClean,coverCleanStatus,coverCleanComments,
+capClean,capCleanStatus,capCleanComments,groundClean,groundCleanStatus,groundCleanComments,rackClean,
+rackCleanStatus,rackCleanComments,serialNoDateManufact,batteryTemperature,voltageBus,temperature,
+created,createdBy,createdByUsr)
+VALUES
+(serviceOrderId ,plugClean ,plugCleanStatus ,plugCleanComments ,coverClean ,coverCleanStatus ,
+coverCleanComments ,capClean ,capCleanStatus ,capCleanComments ,groundClean ,groundCleanStatus ,
+groundCleanComments ,rackClean ,rackCleanStatus ,rackCleanComments ,serialNoDateManufact ,batteryTemperature ,
+voltageBus ,temperature ,created ,createdBy ,createdByUsr );
+select LAST_INSERT_ID();
+END$$
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.AddepService
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.AddepService$$
+CREATE PROCEDURE blackstarDb.AddepService (
+   serviceOrderId  int(11)  ,
+   brandPE varchar(50) ,
+   modelPE varchar(50) ,
+   serialPE varchar(50) ,
+   transferType  varchar(50)  ,
+   modelTransfer  varchar(50)  ,
+   modelControl  varchar(50)  ,
+   modelRegVoltage  varchar(50)  ,
+   modelRegVelocity  varchar(50)  ,
+   modelCharger  varchar(50)  ,
+   oilChange  date  ,
+   brandMotor  varchar(50)  ,
+   modelMotor  varchar(50)  ,
+   serialMotor  varchar(50)  ,
+   cplMotor  varchar(50)  ,
+   brandGenerator  varchar(50)  ,
+   modelGenerator  varchar(50)  ,
+   serialGenerator  varchar(50)  ,
+   powerWattGenerator  int(11)  ,
+   tensionGenerator  int(11)  ,
+   tuningDate  date  ,
+   tankCapacity  int(11)  ,
+   pumpFuelModel  varchar(50)  ,
+   filterFuelFlag  bit(1)  ,
+   filterOilFlag  bit(1)  ,
+   filterWaterFlag  bit(1)  ,
+   filterAirFlag  bit(1)  ,
+   brandGear  varchar(50)  ,
+   brandBattery  varchar(50)  ,
+   clockLecture  varchar(50)  ,
+   serviceCorrective  date  ,
+   observations  varchar(50)  ,
+   created  datetime  ,
+   createdBy  varchar(50)  ,
+   createdByUsr  varchar(50)
+)
+BEGIN
+
+insert into epService
+(serviceOrderId,brandPE,modelPE,serialPE,transferType,modelTransfer,modelControl,modelRegVoltage,modelRegVelocity,modelCharger,oilChange,brandMotor,modelMotor,serialMotor,cplMotor,brandGenerator,modelGenerator,serialGenerator,powerWattGenerator,tensionGenerator,tuningDate,tankCapacity,pumpFuelModel,filterFuelFlag,filterOilFlag,filterWaterFlag,filterAirFlag,brandGear,brandBattery,clockLecture,serviceCorrective,observations,created,createdBy,createdByUsr)
+VALUES
+(serviceOrderId,brandPE,modelPE,serialPE,transferType,modelTransfer,modelControl,modelRegVoltage,modelRegVelocity,modelCharger,oilChange,brandMotor,modelMotor,serialMotor,cplMotor,brandGenerator,modelGenerator,serialGenerator,powerWattGenerator,tensionGenerator,tuningDate,tankCapacity,pumpFuelModel,filterFuelFlag,filterOilFlag,filterWaterFlag,filterAirFlag,brandGear,brandBattery,clockLecture,serviceCorrective,observations,created,createdBy,createdByUsr);
+select LAST_INSERT_ID();
+END$$
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.AddepServiceSurvey
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.AddepServiceSurvey$$
+CREATE PROCEDURE blackstarDb.AddepServiceSurvey (
+	epServiceId  int(11)  ,
+   levelOilFlag  bit(1)  ,
+   levelWaterFlag  bit(1)  ,
+   levelBattery  int(11)  ,
+   tubeLeak  bit(1)  ,
+   batteryCap  varchar(50)  ,
+   batterySulfate  varchar(50)  ,
+   levelOil  int(11)  ,
+   heatEngine  varchar(50)  ,
+   hoseOil  varchar(50)  ,
+   hoseWater  varchar(50)  ,
+   tubeValve  varchar(50)  ,
+   stripBlades  varchar(50) 
+)
+BEGIN
+insert into epServiceSurvey
+(epServiceId,levelOilFlag,levelWaterFlag,levelBattery,tubeLeak,batteryCap,batterySulfate,levelOil,heatEngine,hoseOil,hoseWater,tubeValve,stripBlades)
+values
+(epServiceId,levelOilFlag,levelWaterFlag,levelBattery,tubeLeak,batteryCap,batterySulfate,levelOil,heatEngine,hoseOil,hoseWater,tubeValve,stripBlades);
+
+END$$
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.AddepServiceWorkBasic
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.AddepServiceWorkBasic$$
+CREATE PROCEDURE blackstarDb.AddepServiceWorkBasic (
+   epServiceId  int(11)  ,
+   washEngine  bit(1)  ,
+   washRadiator  bit(1)  ,
+   cleanWorkArea  bit(1)  ,
+   conectionCheck  bit(1)  ,
+   cleanTransfer  bit(1)  ,
+   cleanCardControl  bit(1)  ,
+   checkConectionControl  bit(1)  ,
+   checkWinding  bit(1)  ,
+   batteryTests  bit(1)  ,
+   checkCharger  bit(1)  ,
+   checkPaint  bit(1)  ,
+   cleanGenerator  bit(1) 
+)
+BEGIN
+insert into epServiceWorkBasic
+(epServiceId,washEngine,washRadiator,cleanWorkArea,conectionCheck,cleanTransfer,cleanCardControl,checkConectionControl,checkWinding,batteryTests,checkCharger,checkPaint,cleanGenerator)
+values
+(epServiceId,washEngine,washRadiator,cleanWorkArea,conectionCheck,cleanTransfer,cleanCardControl,checkConectionControl,checkWinding,batteryTests,checkCharger,checkPaint,cleanGenerator);
+END$$
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.AddepServiceDynamicTest
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.AddepServiceDynamicTest$$
+CREATE PROCEDURE blackstarDb.AddepServiceDynamicTest (
+   epServiceId  int(11)  ,
+   vacuumFrequency  decimal(10,0)  ,
+   chargeFrequency  decimal(10,0)  ,
+   bootTryouts  int(11)  ,
+   vacuumVoltage  decimal(10,0)  ,
+   chargeVoltage  decimal(10,0)  ,
+   qualitySmoke  decimal(10,0)  ,
+   startTime  int(11)  ,
+   transferTime  int(11)  ,
+   stopTime  int(11) 
+)
+BEGIN
+insert into epServiceDynamicTest
+(epServiceId,vacuumFrequency,chargeFrequency,bootTryouts,vacuumVoltage,chargeVoltage,qualitySmoke,startTime,transferTime,stopTime)
+values
+(epServiceId,vacuumFrequency,chargeFrequency,bootTryouts,vacuumVoltage,chargeVoltage,qualitySmoke,startTime,transferTime,stopTime);
+END$$
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.AddepServiceTestProtection
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.AddepServiceTestProtection$$
+CREATE PROCEDURE blackstarDb.AddepServiceTestProtection (
+   epServiceId  int(11)  ,
+   tempSensor  int(11)  ,
+   oilSensor  int(11)  ,
+   voltageSensor  int(11)  ,
+   overSpeedSensor  int(11)  ,
+   oilPreasureSensor  int(11) ,
+    waterLevelSensor  int(11) 
+)
+BEGIN
+insert into epServiceTestProtection
+(epServiceId,tempSensor,oilSensor,voltageSensor,overSpeedSensor,oilPreasureSensor,waterLevelSensor)
+values
+(epServiceId,tempSensor,oilSensor,voltageSensor,overSpeedSensor,oilPreasureSensor,waterLevelSensor);
+END$$
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.AddepServiceTransferSwitch
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.AddepServiceTransferSwitch$$
+CREATE PROCEDURE blackstarDb.AddepServiceTransferSwitch (
+   epServiceId  int(11)  ,
+   mechanicalStatus  varchar(10)  ,
+   boardClean  bit(1)  ,
+	lampTest  bit(1)  ,
+   screwAdjust  bit(1)  ,
+   conectionAdjust  bit(1)  ,
+   systemMotors  varchar(10)  ,
+   electricInterlock  varchar(10)  ,
+   mechanicalInterlock  varchar(10)  ,
+   capacityAmp  int(11)  
+)
+BEGIN
+insert into epServiceTransferSwitch
+(epServiceId,mechanicalStatus,boardClean,screwAdjust,lampTest,conectionAdjust,systemMotors,electricInterlock,mechanicalInterlock,capacityAmp)
+values
+(epServiceId,mechanicalStatus,boardClean,screwAdjust,lampTest,conectionAdjust,systemMotors,electricInterlock,mechanicalInterlock,capacityAmp);
+END$$
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.AddepServiceLectures
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.AddepServiceLectures$$
+CREATE PROCEDURE blackstarDb.AddepServiceLectures (
+   epServiceId  int(11)  ,
+   voltageABAN  int(11)  ,
+   voltageACCN  int(11)  ,
+   voltageBCBN  int(11)  ,
+   voltageNT  int(11)  ,
+   currentA  int(11)  ,
+   currentB  int(11)  ,
+   currentC  int(11)  ,
+   frequency  int(11)  ,
+   oilPreassure  int(11)  ,
+   temp  int(11)  
+)
+BEGIN
+insert into epServiceLectures
+(epServiceId,voltageABAN,voltageACCN,voltageBCBN,voltageNT,currentA,currentB,currentC,frequency,oilPreassure,temp)
+values
+(epServiceId,voltageABAN,voltageACCN,voltageBCBN,voltageNT,currentA,currentB,currentC,frequency,oilPreassure,temp);
+END$$
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.AddepServiceParams
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.AddepServiceParams$$
+CREATE PROCEDURE blackstarDb.AddepServiceParams (
+   epServiceId  int(11)  ,
+   adjsutmentTherm  varchar(10)  ,
+   current  varchar(10)  ,
+   batteryCurrent  varchar(10)  ,
+   clockStatus  varchar(10)  ,
+   trasnferTypeProtection  varchar(10)  ,
+   generatorTypeProtection  varchar(10)  
+)
+BEGIN
+insert into epServiceParams
+(epServiceId,adjsutmentTherm,current,batteryCurrent,clockStatus,trasnferTypeProtection,generatorTypeProtection)
+values
+(epServiceId,adjsutmentTherm,current,batteryCurrent,clockStatus,trasnferTypeProtection,generatorTypeProtection);
+END$$
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.AddplainService
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.AddplainService$$
+CREATE PROCEDURE blackstarDb.AddplainService (
+   serviceOrderId  int(11)  ,
+   troubleDescription  varchar(255)  ,
+   techParam  varchar(255)  ,
+   workDone  varchar(255)  ,
+   materialUsed  varchar(255)  ,
+   observations  varchar(255)  ,
+   created  datetime  ,
+   createdBy  varchar(50)  ,
+   createdByUsr  varchar(50) 
+)
+BEGIN
+insert into plainService
+(serviceOrderId,troubleDescription,techParam,workDone,materialUsed,observations,created,createdBy,createdByUsr)
+values
+(serviceOrderId,troubleDescription,techParam,workDone,materialUsed,observations,created,createdBy,createdByUsr);
+select LAST_INSERT_ID();
+END$$
+
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.AddupsService
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.AddupsService$$
+CREATE PROCEDURE blackstarDb.AddupsService (
+  serviceOrderId int(11) ,
+  estatusEquipment varchar(50) ,
+  cleaned bit(1) ,
+  hooverClean bit(1) ,
+  verifyConnections bit(1) ,
+  capacitorStatus varchar(50) ,
+  verifyFuzz bit(1) ,
+  chargerReview bit(1) ,
+  fanStatus varchar(50) ,
+	observations nvarchar(250),
+  created datetime ,
+  createdBy varchar(50) ,
+  createdByUsr varchar(50) 
+)
+BEGIN
+insert into upsService
+(serviceOrderId,estatusEquipment,cleaned,hooverClean,verifyConnections,capacitorStatus,verifyFuzz,chargerReview,fanStatus,observations,created,createdBy,createdByUsr)
+values
+(serviceOrderId,estatusEquipment,cleaned,hooverClean,verifyConnections,capacitorStatus,verifyFuzz,chargerReview,fanStatus,observations,created,createdBy,createdByUsr);
+select LAST_INSERT_ID();
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.AddupsServiceBatteryBank
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.AddupsServiceBatteryBank$$
+CREATE PROCEDURE blackstarDb.AddupsServiceBatteryBank (
+   upsServiceId int(11) ,
+  checkConnectors bit(1) ,
+  cverifyOutflow bit(1) ,
+  numberBatteries int(11) ,
+  manufacturedDateSerial varchar(10) ,
+  damageBatteries varchar(50) ,
+  other varchar(250) ,
+  temp decimal(10,0) ,
+  chargeTest bit(1) ,
+  brandModel varchar(250) ,
+  batteryVoltage decimal(10,0) 
+)
+BEGIN
+insert into upsServiceBatteryBank
+(upsServiceId,checkConnectors,cverifyOutflow,numberBatteries,manufacturedDateSerial,damageBatteries,other,temp,chargeTest,brandModel,batteryVoltage)
+values
+(upsServiceId,checkConnectors,cverifyOutflow,numberBatteries,manufacturedDateSerial,damageBatteries,other,temp,chargeTest,brandModel,batteryVoltage);
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.AddupsServiceGeneralTest
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.AddupsServiceGeneralTest$$
+CREATE PROCEDURE blackstarDb.AddupsServiceGeneralTest (
+  upsServiceId int(11) ,
+  trasferLine decimal(10,0) ,
+  transferEmergencyPlant decimal(10,0) ,
+  backupBatteries decimal(10,0) ,
+  verifyVoltage decimal(10,0) 
+)
+BEGIN
+insert into upsServiceGeneralTest
+(upsServiceId,trasferLine,transferEmergencyPlant,backupBatteries,verifyVoltage)
+values
+(upsServiceId,trasferLine,transferEmergencyPlant,backupBatteries,verifyVoltage);
+END$$
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.AddupsServiceParams
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.AddupsServiceParams$$
+CREATE PROCEDURE blackstarDb.AddupsServiceParams (
+  upsServiceId int(11) ,
+  inputVoltagePhase decimal(10,0) ,
+  inputVoltageNeutro decimal(10,0) ,
+  inputVoltageNeutroGround decimal(10,0) ,
+  percentCharge decimal(10,0) ,
+  outputVoltagePhase decimal(10,0) ,
+  outputVoltageNeutro decimal(10,0) ,
+  inOutFrecuency decimal(10,0) ,
+  busVoltage decimal(10,0) 
+)
+BEGIN
+insert into upsServiceParams
+(upsServiceId,inputVoltagePhase,inputVoltageNeutro,inputVoltageNeutroGround,percentCharge,outputVoltagePhase,outputVoltageNeutro,inOutFrecuency,busVoltage)
+values
+(upsServiceId,inputVoltagePhase,inputVoltageNeutro,inputVoltageNeutroGround,percentCharge,outputVoltagePhase,outputVoltageNeutro,inOutFrecuency,busVoltage);
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.AddserviceOrder
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.AddserviceOrder$$
+CREATE PROCEDURE blackstarDb.AddserviceOrder (
+  serviceOrderNumber varchar(50) ,
+  serviceTypeId char(1) ,
+  ticketId int(11) ,
+  policyId int(11) ,
+  serviceUnit varchar(10) ,
+  serviceDate datetime ,
+  responsible varchar(100) ,
+  additionalEmployees varchar(400) ,
+  receivedBy varchar(100) ,
+  serviceComments text,
+  serviceStatusId char(1) ,
+  closed datetime ,
+  consultant varchar(100) ,
+  coordinator varchar(100) ,
+  asignee varchar(50) ,
+  hasErrors tinyint(4) ,
+  isWrong tinyint(4) ,
+  signCreated text,
+  signReceivedBy text,
+  receivedByPosition varchar(50) ,
+  created datetime ,
+  createdBy varchar(50) ,
+  createdByUsr varchar(50) 
+)
+BEGIN
+insert into serviceOrder
+(serviceOrderNumber,serviceTypeId,ticketId,policyId,serviceUnit,serviceDate,responsible,additionalEmployees,receivedBy,serviceComments,serviceStatusId,closed,consultant,coordinator,asignee,hasErrors,isWrong,signCreated,signReceivedBy,receivedByPosition,created,createdBy,createdByUsr)
+values
+(serviceOrderNumber,serviceTypeId,ticketId,policyId,serviceUnit,serviceDate,responsible,additionalEmployees,receivedBy,serviceComments,serviceStatusId,closed,consultant,coordinator,asignee,hasErrors,isWrong,signCreated,signReceivedBy,receivedByPosition,created,createdBy,createdByUsr);
+select LAST_INSERT_ID();
+END$$
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.UpdateServiceOrder
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.UpdateServiceOrder$$
+CREATE PROCEDURE blackstarDb.UpdateServiceOrder (
+	serviceOrderId int(11),
+  serviceOrderNumber varchar(50) ,
+  serviceTypeId char(1) ,
+  ticketId int(11) ,
+  policyId int(11) ,
+  serviceUnit varchar(10) ,
+  serviceDate datetime ,
+  responsible varchar(100) ,
+  additionalEmployees varchar(400) ,
+  receivedBy varchar(100) ,
+  serviceComments text,
+  serviceStatusId char(1) ,
+  closed datetime ,
+  consultant varchar(100) ,
+  coordinator varchar(100) ,
+  asignee varchar(50) ,
+  hasErrors tinyint(4) ,
+  isWrong tinyint(4) ,
+  signCreated text,
+  signReceivedBy text,
+  receivedByPosition varchar(50) ,
+  modified datetime ,
+  modifiedBy varchar(50) ,
+  modifiedByUsr varchar(50) 
+)
+BEGIN
+UPDATE serviceOrder
+SET
+serviceOrderNumber = serviceOrderNumber ,
+serviceTypeId = serviceTypeId ,
+ticketId = ticketId ,
+policyId = policyId ,
+serviceUnit = serviceUnit ,
+serviceDate = serviceDate ,
+responsible = responsible ,
+additionalEmployees = additionalEmployees ,
+receivedBy = receivedBy ,
+serviceComments = serviceComments ,
+serviceStatusId = serviceStatusId ,
+closed = closed ,
+consultant = consultant ,
+coordinator = coordinator ,
+asignee = asignee ,
+hasErrors = hasErrors ,
+isWrong = isWrong,
+signCreated = signCreated ,
+signReceivedBy = signReceivedBy ,
+receivedByPosition = receivedByPosition ,
+modified = modified ,
+modifiedBy = modifiedBy ,
+modifiedByUsr = modifiedByUsr 
+where serviceOrderId = serviceOrderId;
+END$$
+
+
+-- -----------------------------------------------------------------------------
 	-- FIN DE LOS STORED PROCEDURES
 -- -----------------------------------------------------------------------------
 DELIMITER ;
+
+-- -----------------------------------------------------
+-- File:	blackstarDbTransfer_Schema.sql    
+-- Name:	blackstarDbTransfer_Schema
+-- Desc:	Implementa cambios en el esquema de la BD blackstarDbTransfer
+-- Auth:	Sergio A Gomez
+-- Date:	20/12/2013
+-- -----------------------------------------------------
+-- Change History
+-- -----------------------------------------------------
+-- PR   Date    	Author	Description
+-- --   --------   -------  ------------------------------------
+-- 1    08/08/2013  SAG  	Se aumenta el tamaño de ticket.serialNumber
+-- -----------------------------------------------------
+
+USE blackstarDbTransfer;
+
+ALTER TABLE blackstarDbTransfer.ticket MODIFY serialNumber VARCHAR(100) NULL DEFAULT NULL;
+
 
 -- -----------------------------------------------------------------------------
 -- File:	blackstarDbTransfer_LoadTransferData.sql   
@@ -1294,25 +2850,6 @@ END$$
 	-- FIN 
 -- -----------------------------------------------------------------------------
 DELIMITER ;
-
--- -----------------------------------------------------
--- File:	blackstarDbTransfer_Schema.sql    
--- Name:	blackstarDbTransfer_Schema
--- Desc:	Implementa cambios en el esquema de la BD blackstarDbTransfer
--- Auth:	Sergio A Gomez
--- Date:	20/12/2013
--- -----------------------------------------------------
--- Change History
--- -----------------------------------------------------
--- PR   Date    	Author	Description
--- --   --------   -------  ------------------------------------
--- 1    08/08/2013  SAG  	Se aumenta el tamaño de ticket.serialNumber
--- -----------------------------------------------------
-
-USE blackstarDbTransfer;
-
-ALTER TABLE blackstarDbTransfer.ticket MODIFY serialNumber VARCHAR(100) NULL DEFAULT NULL;
-
 
 -- -----------------------------------------------------------------------------
 -- File:	blackstarManage_StoredProcedures.sql   

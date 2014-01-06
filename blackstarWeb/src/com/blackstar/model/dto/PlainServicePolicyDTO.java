@@ -66,7 +66,8 @@ public class PlainServicePolicyDTO {
 		this.signReceivedBy = serviceOrder.getsignReceivedBy();
 		this.receivedByPosition = serviceOrder.getReceivedByPosition();
 		this.serviceOrderNumber = serviceOrder.getServiceOrderNumber();
-		
+		this.serviceTypeId = serviceOrder.getServiceTypeId().toString();
+		this.isWrong = serviceOrder.getIsWrong()>0?true:false;
 	}
 	
 	public PlainServicePolicyDTO(Policy policy, String equipmentType, Serviceorder serviceOrder,  PlainServiceDTO plainServiceDTO)
@@ -100,6 +101,8 @@ public class PlainServicePolicyDTO {
 		this.signReceivedBy = serviceOrder.getsignReceivedBy();
 		this.receivedByPosition = serviceOrder.getReceivedByPosition();
 		this.serviceOrderNumber = serviceOrder.getServiceOrderNumber();	
+		this.serviceTypeId = serviceOrder.getServiceTypeId().toString();
+		this.isWrong = serviceOrder.getIsWrong()>0?true:false;
 		
 		this.plainServiceId = plainServiceDTO.getPlainServiceId();
 		this.troubleDescription = plainServiceDTO.getTroubleDescription();
@@ -140,6 +143,7 @@ public class PlainServicePolicyDTO {
 	private String signReceivedBy;
 	private String receivedByPosition;
 	private String serviceOrderNumber;
+	private String serviceTypeId;
 	
 	private Integer plainServiceId;	
 	private String troubleDescription;
@@ -147,6 +151,7 @@ public class PlainServicePolicyDTO {
 	private String workDone;
 	private String materialUsed;
 	private String observations;
+	private Boolean isWrong;
 
 	
 	public Integer getPolicyId() {
@@ -419,5 +424,21 @@ public class PlainServicePolicyDTO {
 
 	public void setObservations(String observations) {
 		this.observations = observations;
+	}
+
+	public String getServiceTypeId() {
+		return serviceTypeId;
+	}
+
+	public void setServiceTypeId(String serviceTypeId) {
+		this.serviceTypeId = serviceTypeId;
+	}
+
+	public Boolean getIsWrong() {
+		return isWrong;
+	}
+
+	public void setIsWrong(Boolean isWrong) {
+		this.isWrong = isWrong;
 	}
 }

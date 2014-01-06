@@ -16,6 +16,8 @@
 -- 3    13/11/2013  SAG  	Se agrega scheduledService
 -- --   --------   -------  ------------------------------------
 -- 4    28/11/2013  JAGH  	Se agregan tablas para captura de OS
+-- --   --------   -------  ------------------------------------
+-- 5   12/12/2013  SAG  	Se agrega sequence y sequenceNumberPool
 -- ---------------------------------------------------------------------------
 
 use blackstarDb;
@@ -29,6 +31,37 @@ BEGIN
 -- -----------------------------------------------------------------------------
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
+
+-- AGREGANDO TABLA POOL DE NUMEROS DE ORDEN
+	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'sequenceNumberPool') = 0 THEN
+		CREATE TABLE blackstarDb.sequenceNumberPool(
+			sequenceNumberPoolId INTEGER NOT NULL AUTO_INCREMENT, 
+			sequenceNumberTypeId CHAR(1), 
+			sequenceNumber INTEGER, 
+			sequenceNumberStatus CHAR(1), -- U: unlocked, L: locked
+			PRIMARY KEY(sequenceNumberPoolId),
+			UNIQUE UQ_sequenceNumberPool_sequenceNumberPoolId(sequenceNumberPoolId)
+		)ENGINE=INNODB;
+
+	END IF;
+
+-- AGREGANDO TABLA DE SECUENCIAS PARA ORDENES DE SERVICIO
+	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'sequence') = 0 THEN
+		CREATE TABLE blackstarDb.sequence(
+			sequenceTypeId CHAR(1), 
+			sequenceNumber INTEGER,
+			PRIMARY KEY(sequenceTypeId),
+			UNIQUE UQ_sequence_sequenceTypeId(sequenceTypeId)
+		)ENGINE=INNODB;
+
+		-- INICIALIZANDO FOLIOS EN TABLA DE SECUENCIAS
+		INSERT INTO sequence(sequenceTypeId, sequenceNumber)
+		SELECT 'A', 1 union
+		SELECT 'B', 1 union
+		SELECT 'O', 1 union
+		SELECT 'P', 1 union
+		SELECT 'U', 1 ;
+	END IF;
 
 -- AGREGANDO COLUMNA isWrong A serviceOrder
 	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'serviceOrder' AND COLUMN_NAME = 'isWrong') = 0 THEN

@@ -7,6 +7,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.blackstar.common.Globals;
@@ -35,32 +36,41 @@ public class ServiceOrderController extends AbstractController {
   }
 
   @RequestMapping("/show.do")
-  public String  setup(@RequestParam(required = true) Integer serviceOrderId
-		             , @RequestParam(required = false) String osNum
-		             , @ModelAttribute(Globals.SESSION_KEY_PARAM)  UserSession userSession
-		             , ModelMap model) {
+  public String  setup(@RequestParam(required = true) Integer serviceOrderId, HttpServletResponse response) {
+	String url = "error";
 	try {
-		 model.addAttribute("serviceOrderDetail", service.getServiceOrderByIdOrNumber(serviceOrderId
-				                                                                          , osNum));
-		 model.addAttribute("followUps", service.getFollows(serviceOrderId));
-		 model.addAttribute("employees", udService.getStaff());
-		 model.addAttribute("osAttachmentFolder", gdService.getAttachmentFolderId(serviceOrderId));
-		 model.addAttribute("accessToken", gdService.getAccessToken());
+		String equipmentType = service.getEquipmentTypeBySOId(serviceOrderId);
+		String params = "/show.do?operation=2&idObject=" + serviceOrderId;
+		String aTemplate = "/aircoservice";
+		String bTemplate = "/batteryservice";
+		String pTemplate = "/emergencyplantservice";
+		String uTemplate = "/upsservice";
+		String xTemplate = "/plainservice";
+		
+		switch(equipmentType){
+			case "A": url = aTemplate + params;
+				break;
+			case "B": url = bTemplate + params;
+				break;
+			case "P": url = pTemplate + params;
+				break;
+			case "U": url = uTemplate + params;
+				break;
+			default: url = xTemplate + params;
+				break;
+		}
 	} catch (Exception e) {
-		 Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
-		 model.addAttribute("stackTrace", e.getStackTrace());
-		 model.addAttribute("errMessage", e.toString());
+		 Logger.Log(LogLevel.FATAL, Thread.currentThread().getStackTrace()[1].toString(), e);
 		 return "error";
 	}
-	return "osDetail";
+	return "forward:" + url;
   }
   
   @RequestMapping("/showReport.do")
   public String  showReport(@RequestParam(required = true) Integer serviceOrderId
-		             , @RequestParam(required = false) String osNum
-		             , @ModelAttribute(Globals.SESSION_KEY_PARAM)  UserSession userSession
-		             , ModelMap model, HttpServletResponse response) {
-	return null;
+                             , @RequestParam(required = false) String osNum
+                             , @ModelAttribute(Globals.SESSION_KEY_PARAM)  UserSession userSession
+                             , ModelMap model, HttpServletResponse response) {
+        return null;
   }
-
 }

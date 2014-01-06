@@ -129,7 +129,7 @@
 		<p>Asignar ticket<label id="lblTicketBeignAssigned"></label></p>
 			<select id="employeeSelect">
 				<c:forEach var="employee" items="${employees}">
-					<option value = "${ eomployee.key }">${employee.value}</option>
+					<option value = "${ eomployee.userEmail }">${employee.userName}</option>
 				</c:forEach>
 			</select>
 		<form id="ticksetSelect" action="tickets" method="post">

@@ -6,8 +6,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import com.blackstar.logging.*;
-
 public class User implements java.io.Serializable {
 	String userEmail;
 	String userName;

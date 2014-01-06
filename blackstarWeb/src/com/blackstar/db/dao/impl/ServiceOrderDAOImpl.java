@@ -5,8 +5,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import org.json.JSONObject;
+
 import com.blackstar.db.dao.AbstractDAO;
 import com.blackstar.db.dao.interfaces.ServiceOrderDAO;
+import com.blackstar.db.dao.mapper.JSONRowMapper;
 import com.blackstar.model.Serviceorder;
 import com.blackstar.model.dto.AirCoServiceDTO;
 import com.blackstar.model.dto.BatteryCellServiceDTO;
@@ -653,5 +656,36 @@ public class ServiceOrderDAOImpl extends AbstractDAO implements ServiceOrderDAO 
 	}
 
 
+	@Override
+	public String getNewServiceNumber(Integer policyId) {
+		return getJdbcTemplate().queryForObject(String.format("CALL blackstarDb.GetNextServiceNumberForEquipment(%s)", policyId), String.class);
+	}
 
+
+	@Override
+	public List<JSONObject> getServiceOrdersByStatus(String status) {
+		String sqlQuery = "CALL GetServiceOrders(?);";
+		return getJdbcTemplate().query(sqlQuery, new Object[]{status}, new JSONRowMapper()); 
+	}
+
+
+	@Override
+	public List<JSONObject> getServiceOrderHistory() {
+		String sqlQuery = "CALL GetAllServiceOrders();";
+		return getJdbcTemplate().query(sqlQuery, new JSONRowMapper()); 
+	}
+
+
+	@Override
+	public List<JSONObject> getEquipmentByType(String type) {
+		String sqlQuery = "CALL GetEquipmentByType(?);";
+		return getJdbcTemplate().query(sqlQuery, new Object[]{type}, new JSONRowMapper()); 
+	}
+
+
+	@Override
+	public String getEquipmentTypeBySOId(Integer serviceOrderId) {
+		String sqlQuery = "CALL GetEquipmentTypeBySOId(?);";
+		return getJdbcTemplate().queryForObject(sqlQuery, new Object[]{serviceOrderId}, String.class); 
+	}
 }

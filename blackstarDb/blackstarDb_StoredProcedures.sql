@@ -103,12 +103,82 @@
 -- 								blackstarDb.AddserviceOrder
 -- 								blackstarDb.UpdateServiceOrder
 -- -----------------------------------------------------------------------------
-
+-- 16   25/11/2013	SAG		Se Integra:
+-- 								blackstarDb.GetUserGroups
+-- -----------------------------------------------------------------------------
+-- 17   12/12/2013	SAG		Se Integra:
+-- 								blackstarDb.GetNextServiceOrderNumber 
+-- 								blackstarDb.CommitServiceOrderNumber 
+-- 								blackstarDb.LoadNewSequencePoolItems 
+-- 								blackstarDb.GetAndIncreaseSequence 
+-- 								blackstarDb.GetNextServiceNumberForEquipment 
+-- -----------------------------------------------------------------------------
+-- 18   26/12/2013	SAG		Se Integra:
+-- 								blackstarDb.GetScheduledServices 
+-- 								blackstarDb.GetAssignedTickets 
+-- -----------------------------------------------------------------------------
+-- 19   31/12/2013	SAG		Fix:
+-- 								blackstarDb.GetUserData 
+-- -----------------------------------------------------------------------------
+-- 21   02/01/2014	SAG		Se Integra:
+-- 								blackstarDb.GetPersonalServiceOrders 
+-- -----------------------------------------------------------------------------
+-- 22   03/01/2014	SAG		Se Integra:
+-- 								blackstarDb.GetAllServiceOrders 
+-- 								blackstarDb.GetEquipmentByType 
+-- -----------------------------------------------------------------------------
+-- 23   05/01/2014	SAG		Se Integra:
+-- 								blackstarDb.GetServiceTypeList
+-- 								blackstarDb.GetServiceTypeById
+-- 								blackstarDb.GetEquipmentTypeBySOId
+-- -----------------------------------------------------------------------------
 use blackstarDb;
 
 
 DELIMITER $$
 
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetEquipmentTypeBySOId
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetEquipmentTypeBySOId$$
+CREATE PROCEDURE blackstarDb.GetEquipmentTypeBySOId(pServiceOrderId INT)
+BEGIN
+
+	SELECT 
+		equipmentTypeId AS equipmentTypeId
+	FROM serviceOrder so
+		INNER JOIN policy p ON so.policyId = p.policyId
+	WHERE serviceOrderId = pServiceOrderId;
+
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetServiceTypeById
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetServiceTypeById$$
+CREATE PROCEDURE blackstarDb.GetServiceTypeById(pType CHAR(1))
+BEGIN
+
+	-- TODO: codigo heredado, revisar SELECT
+	SELECT * FROM serviceType WHERE serviceTypeId = pType;
+
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetServiceTypeList
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetServiceTypeList$$
+CREATE PROCEDURE blackstarDb.GetServiceTypeList()
+BEGIN
+
+	SELECT 
+		serviceTypeId AS serviceTypeId,
+		serviceType AS serviceType
+	FROM serviceType
+	ORDER BY serviceType;
+
+END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.CloseOS
@@ -125,7 +195,36 @@ BEGIN
 		modifiedByUsr = pUser
 	WHERE
 		serviceOrderId = pServiceOrderId;
+END$$
 	
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetEquipmentByType
+	--
+	-- Este SP se utiliza especificamente para recuperar valores destinados
+	-- a poblar un campo autocomplete. No cambiar las etiquetas
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetEquipmentByType$$
+CREATE PROCEDURE blackstarDb.GetEquipmentByType(pEquipmentTypeId CHAR(1))
+BEGIN
+	
+	IF(pEquipmentTypeId = 'X') THEN
+		SELECT 
+			concat_ws(' - ', brand, model, serialNumber) AS label,
+			serialNumber AS value
+		FROM policy p
+		WHERE equipmentTypeId NOT IN('A', 'B', 'P', 'U')
+		AND p.startDate < CURDATE() AND p.endDate > CURDATE()
+		ORDER BY brand, model, serialNumber;
+	ELSE
+		SELECT 
+			concat_ws(' - ', brand, model, serialNumber) AS label,
+			serialNumber AS value
+		FROM policy p
+		WHERE equipmentTypeId = pEquipmentTypeId
+		AND p.startDate < CURDATE() AND p.endDate > CURDATE()
+		ORDER BY brand, model, serialNumber;
+	END IF;
+
 END$$
 
 -- -----------------------------------------------------------------------------
@@ -141,7 +240,7 @@ BEGIN
 		'' AS placeHolder,
 		IFNULL(t.ticketNumber, '') AS ticketNumber,
 		st.serviceType AS serviceType,
-		DATE(so.created) AS created,
+		DATE(so.serviceDate) AS serviceDate,
 		p.customer AS customer,
 		et.equipmentType AS equipmentType,
 		p.project AS project,
@@ -217,6 +316,66 @@ BEGIN
 	
 END$$
 
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetPersonalServiceOrders
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetPersonalServiceOrders$$
+CREATE PROCEDURE blackstarDb.GetPersonalServiceOrders(pUser VARCHAR(100), pStatus VARCHAR(50))
+BEGIN
+
+	SELECT 
+		so.serviceOrderId AS DT_RowId,
+		so.serviceOrderNumber AS serviceOrderNumber,
+		'' AS placeHolder,
+		ifnull(t.ticketNumber, '') AS ticketNumber,
+		st.serviceType AS serviceType,
+		date(so.serviceDate) AS serviceDate,
+		p.customer AS customer,
+		et.equipmentType AS equipmentType,
+		p.project AS project,
+		o.officeName AS officeName,
+		p.brand AS brand,
+		p.serialNumber AS serialNumber
+	FROM serviceOrder so
+		INNER JOIN serviceStatus ss ON ss.serviceStatusId = so.serviceStatusId
+		LEFT OUTER JOIN ticket t ON t.ticketId = so.ticketId
+		INNER JOIN serviceType st ON st.serviceTypeId = so.serviceTypeId
+		INNER JOIN policy p ON p.policyId = so.policyId
+		INNER JOIN equipmentType et ON et.equipmentTypeId = p.equipmentTypeId
+		INNER JOIN office o ON p.officeId = o.officeId
+	where serviceStatus = pStatus
+	AND so.asignee = pUser
+	ORDER BY serviceDate;
+
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetAssignedTickets
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetAssignedTickets$$
+CREATE PROCEDURE blackstarDb.GetAssignedTickets(pUser VARCHAR(100))
+BEGIN
+
+	SELECT 
+		t.ticketId AS DT_RowId,
+		t.ticketNumber AS ticketNumber,
+		t.created AS ticketDate,
+		p.customer AS customer,
+		e.equipmentType AS equipmentType,
+		p.responseTimeHR AS responseTime,
+		p.project AS project,
+		ts.ticketStatus AS ticketStatus,
+		'' AS placeHolder
+FROM ticket t
+	INNER JOIN policy p ON p.policyId = t.policyId
+	INNER JOIN equipmentType e ON e.equipmentTypeId = p.equipmentTypeId
+	INNER JOIN ticketstatus ts ON t.ticketStatusId = ts.ticketStatusId
+WHERE t.asignee = pUser
+AND t.closed IS NULL
+ORDER BY ticketDate;
+
+END$$
+
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.AddScheduledServiceEmployee
@@ -264,7 +423,68 @@ BEGIN
 		NOW(),
 		'AddScheduledServicePolicy',
 		pUser;
+END$$
 	
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetScheduledServices
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetScheduledServices$$
+CREATE PROCEDURE blackstarDb.GetScheduledServices(pUser VARCHAR(100))
+BEGIN
+
+SELECT 
+	ss.scheduledServiceId AS DT_RowId,
+	sd.serviceDate AS serviceDate,
+	p.customer AS customer,
+	e.equipmentType AS equipmentType,
+	p.project AS project,
+	o.officeName AS office,
+	p.brand AS brand,
+	p.serialNumber AS serialNumber
+	FROM 
+		scheduledService ss
+		INNER JOIN scheduledServiceDate sd ON ss.scheduledServiceId = sd.scheduledServiceId
+		INNER JOIN scheduledServiceEmployee se ON se.scheduledServiceId = ss.scheduledServiceId
+		INNER JOIN scheduledServicePolicy sp ON sp.scheduledServiceId = ss.scheduledServiceId
+		INNER JOIN policy p ON p.policyId = sp.policyId
+		INNER JOIN equipmentType e ON e.equipmentTypeId = p.equipmentTypeId
+		INNER JOIN office o ON o.officeId = p.officeId
+	WHERE employeeId = pUser
+	ORDER BY serviceDate;
+
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetNextServiceNumberForEquipment
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetNextServiceNumberForEquipment$$
+CREATE PROCEDURE blackstarDb.GetNextServiceNumberForEquipment(pPolicyId INTEGER)
+BEGIN
+
+	DECLARE eqType VARCHAR(10);
+	DECLARE prefix VARCHAR(10);
+	DECLARE newNumber INTEGER;
+
+	-- Obteniendo el tipo de equipo
+	SELECT equipmentTypeId into eqType FROM policy WHERE policyId = pPolicyId;
+	-- Cambiando a O por default
+	IF eqType NOT IN('A', 'B', 'P', 'U') THEN
+		SELECT 'O' into eqType;
+	END IF;
+
+	SET prefix = (SELECT CASE 
+		WHEN eqType = 'A' THEN 'AA-' 
+		WHEN eqType = 'B' THEN 'BB-'
+		WHEN eqType = 'P' THEN 'PE-'
+		WHEN eqType = 'U' THEN 'UPS-'
+		ELSE 'OS-' END);
+
+	-- Obteniendo el numero de folio
+	CALL blackstarDb.GetNextServiceOrderNumber(eqType, newNumber);
+
+	-- Regresando el numero de folio completo
+	SELECT CONCAT(prefix, lpad(cast(newNumber AS CHAR(50)), 5, '0'), '-e') AS ServiceNumber;
+
 END$$
 
 
@@ -317,6 +537,115 @@ BEGIN
 	
 END$$
 
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetAndIncreaseSequence
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetAndIncreaseSequence$$
+CREATE PROCEDURE blackstarDb.GetAndIncreaseSequence(pSequenceTypeId CHAR(1), OUT nextNum INTEGER)
+BEGIN
+
+	-- Recuperar el numero de secuencia actual
+	DECLARE seqNum INTEGER;
+	SELECT sequenceNumber into seqNum FROM sequence WHERE sequenceTypeId = pSequenceTypeId;
+
+	-- Incrementar el numero en la BD
+	UPDATE sequence SET
+		sequenceNumber = (seqNum + 1)
+	WHERE sequenceTypeId = pSequenceTypeId;
+
+	-- Regresar el numero actual
+	SELECT seqNum into nextNum;
+
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.LoadNewSequencePoolItems
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.LoadNewSequencePoolItems$$
+CREATE PROCEDURE blackstarDb.LoadNewSequencePoolItems(pSequenceNumberTypeId CHAR(1))
+BEGIN
+
+	-- Verificar cuantos numeros hay actualmente
+	DECLARE poolItems INTEGER;
+	DECLARE newNumber INTEGER;
+
+	SELECT count(*) into poolItems FROM sequenceNumberPool WHERE sequenceNumberTypeId = pSequenceNumberTypeId AND sequenceNumberStatus = 'U';
+
+	WHILE poolItems < 5 DO
+	    
+		-- Cargar nuevo numero en el pool
+		CALL blackstarDb.GetAndIncreaseSequence(pSequenceNumberTypeId, newNumber);
+
+		INSERT INTO sequenceNumberPool(sequenceNumberTypeId, sequenceNumber, sequenceNumberStatus)
+		SELECT pSequenceNumberTypeId, newNumber, 'U';
+  
+  		SELECT count(*) into poolItems FROM sequenceNumberPool WHERE sequenceNumberTypeId = pSequenceNumberTypeId AND sequenceNumberStatus = 'U';
+
+  	END WHILE;
+
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.CommitServiceOrderNumber
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.CommitServiceOrderNumber$$
+CREATE PROCEDURE blackstarDb.CommitServiceOrderNumber(pSequenceNumber INTEGER, pSequenceNumberTypeId CHAR(1))
+BEGIN
+
+	-- Borrar numero del pool
+	DELETE FROM sequenceNumberPool WHERE sequenceNumber = pSequenceNumber AND sequenceNumberTypeId = pSequenceNumberTypeId;
+
+	-- Cargar nuevos numeros
+	CALL blackstarDb.LoadNewSequencePoolItems(pSequenceNumberTypeId);
+	
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetNextServiceOrderNumber
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetNextServiceOrderNumber$$
+CREATE PROCEDURE blackstarDb.GetNextServiceOrderNumber(pSequenceNumberTypeId CHAR(1), OUT nextNumber INTEGER)
+BEGIN
+
+	DECLARE nextId INTEGER;
+
+	-- Recuperar el siguiente numero en la secuencia y su ID
+	SELECT min(sequenceNumber) into nextNumber
+	FROM sequenceNumberPool 
+	WHERE sequenceNumberTypeId = pSequenceNumberTypeId
+		AND sequenceNumberStatus = 'U';
+
+	SELECT sequenceNumberPoolId into nextId
+	FROM sequenceNumberPool 
+	WHERE sequenceNumber = nextNumber 
+		AND sequenceNumberTypeId = pSequenceNumberTypeId;
+
+	-- Bloquear el numero
+	UPDATE sequenceNumberPool SET sequenceNumberStatus = 'L'
+	WHERE sequenceNumberPoolId = nextId;
+	
+	-- Cargar nuevos numeros
+	CALL blackstarDb.LoadNewSequencePoolItems(pSequenceNumberTypeId);
+
+	-- Regresar el numero siguiente
+	SELECT nextNumber;
+
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetUserGroups
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetUserGroups$$
+CREATE PROCEDURE blackstarDb.GetUserGroups(pEmail VARCHAR(100))
+BEGIN
+
+	SELECT g.name AS groupName
+	FROM blackstarUser_userGroup ug
+		INNER JOIN blackstarUser u ON u.blackstarUserId = ug.blackstarUserId
+		LEFT OUTER JOIN userGroup g ON g.userGroupId = ug.userGroupId
+	WHERE u.email = pEmail;
+	
+END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetEquipmentByCustomer
@@ -664,18 +993,18 @@ END$$
 
 
 -- -----------------------------------------------------------------------------
-	-- blackstarDb.GetUserData
+        -- blackstarDb.GetUserData
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetUserData$$
 CREATE PROCEDURE blackstarDb.GetUserData(pEmail VARCHAR(100))
 BEGIN
 
-	SELECT u.email AS userEmail, u.name AS userName, g.name AS groupName
-	FROM blackstarUser_userGroup ug
-		INNER JOIN blackstarUser u ON u.blackstarUserId = ug.blackstarUserId
-		LEFT OUTER JOIN userGroup g ON g.userGroupId = ug.userGroupId
-	WHERE u.email = pEmail;
-	
+        SELECT u.email AS userEmail, u.name AS userName, g.name AS groupName
+        FROM blackstarUser_userGroup ug
+                INNER JOIN blackstarUser u ON u.blackstarUserId = ug.blackstarUserId
+                LEFT OUTER JOIN userGroup g ON g.userGroupId = ug.userGroupId
+        WHERE u.email = pEmail;
+        
 END$$
 
 -- -----------------------------------------------------------------------------
@@ -1016,9 +1345,9 @@ CREATE PROCEDURE blackstarDb.GetPlainServiceServiceByIdService (idService INTEGE
 BEGIN	
 	select 
 		plainServiceId, serviceOrderId, troubleDescription, techParam, workDone, materialUsed, observations
-	from plainService 
+	from plainService ps
 	where 
-		plainServiceId = idService;
+		serviceOrderId = idService;
 END$$
 
 -- -----------------------------------------------------------------------------
@@ -1054,7 +1383,7 @@ DROP PROCEDURE IF EXISTS blackstarDb.GetPolicyBySerialNo$$
 CREATE PROCEDURE blackstarDb.GetPolicyBySerialNo (noSerial VARCHAR(100))
 BEGIN
 	SELECT * FROM blackstardb.policy
-	where startDate < CURDATE() and endDate > CURDATE() and serialNumber = noSerial;
+	WHERE startDate < CURDATE() AND endDate > CURDATE() AND serialNumber = noSerial;
 END$$
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.AddAAservice
