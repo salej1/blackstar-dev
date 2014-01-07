@@ -75,6 +75,15 @@
 		</script>
 <!-- Fin Links Para Crear Ordenes De Servicio -->
 
+<!-- Tabla de servicios programados -->
+		<c:import url="scheduledPersonalServices.jsp"></c:import>
+		<script type="text/javascript">
+			$(function(){
+				scheduledPersonalServices_init();
+			});
+		</script>
+<!-- Fin Tabla de servicios programados -->
+
 <!-- Tabla De Tickets Asignados -->
 		<c:import url="assignedTickets.jsp"></c:import>
 		<script type="text/javascript">

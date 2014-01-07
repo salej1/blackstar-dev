@@ -1,5 +1,6 @@
 package com.blackstar.db.dao.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.json.JSONObject;
@@ -37,5 +38,11 @@ public class DashboardDAOImpl extends AbstractDAO implements DashboardDAO {
 	public List<JSONObject> getPersonalServiceOrders(String user, String status) {
 		String sqlQuery = "CALL GetPersonalServiceOrders(?, ?);";
 		return getJdbcTemplate().query(sqlQuery, new Object[]{user, status}, new JSONRowMapper()); 
+	}
+
+	@Override
+	public List<String> getOfficesList() {
+		String sqlQuery = "CALL GetOfficesList();";
+		return getJdbcTemplate().queryForList(sqlQuery, String.class);
 	}
 }

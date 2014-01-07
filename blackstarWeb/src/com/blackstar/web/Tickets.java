@@ -53,9 +53,9 @@ public class Tickets extends HttpServlet {
 			IUserService dir = UserServiceFactory.getUserService();
 			request.setAttribute("employees", dir.getEmployeeList());
 		}
-		catch (Exception ex)
+		catch (Exception e)
 		{
-			 Logger.Log(LogLevel.FATAL, Thread.currentThread().getStackTrace()[1].toString(), ex);
+			 Logger.Log(LogLevel.FATAL, e.getStackTrace()[0].toString(), e);
 		}
 		
 		request.getRequestDispatcher("/tickets.jsp").forward(request, response);
@@ -75,7 +75,7 @@ public class Tickets extends HttpServlet {
 
 		} catch (NumberFormatException e) {
 			// TODO Auto-generated catch block
-			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
+			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 		}
 		finally{
 			response.sendRedirect("/tickets");

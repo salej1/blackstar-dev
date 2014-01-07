@@ -60,7 +60,7 @@ public class MySQLServiceOrderDAO implements ServiceOrderDAO, Serializable {
 						
 			}
 		} catch (ClassNotFoundException | SQLException e) {
-			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
+			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 		}
 		finally{
 			if(conn != null){
@@ -98,14 +98,14 @@ public class MySQLServiceOrderDAO implements ServiceOrderDAO, Serializable {
 						
 			}
 		} catch (ClassNotFoundException | SQLException e) {
-			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
+			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 		}
 		finally{
 			if(conn != null){
 				try {
 					conn.close();
 				} catch (SQLException e) {
-					Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
+					Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 				}
 			}
 		}
@@ -135,15 +135,15 @@ public class MySQLServiceOrderDAO implements ServiceOrderDAO, Serializable {
 			conn.createStatement().executeUpdate(sql.toString());
 			retVal = true;
 		}
-		catch(Exception ex){
-			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), ex);
+		catch(Exception e){
+			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 		}
 		finally{
 			if(conn != null){
 				try {
 					conn.close();
 				} catch (SQLException e) {
-					Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
+					Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 				}
 			}
 		}
@@ -172,7 +172,7 @@ public class MySQLServiceOrderDAO implements ServiceOrderDAO, Serializable {
 						
 			}
 		} catch (ClassNotFoundException | SQLException e) {
-			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
+			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 		}
 		finally{
 			if(conn != null){

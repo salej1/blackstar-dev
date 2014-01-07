@@ -94,7 +94,7 @@ public class EmergencyPlantServiceController extends AbstractController {
 		  } 
 		  catch (Exception e) 
 		  {
-				 Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
+				 Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 		  }
 		  
 		  return "emergencyplantservice";

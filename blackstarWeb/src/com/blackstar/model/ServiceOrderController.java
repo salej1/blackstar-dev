@@ -16,8 +16,8 @@ public class ServiceOrderController {
 			da.executeUpdate(String.format("CALL AssignServiceOrder('%s', '%s', '%s', '%s')", osId, asignee, who, "Dashboard"));
 			
 			SendAssignationEmail(osId, asignee, who, message);
-		} catch (Exception ex) {
-			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), ex);
+		} catch (Exception e) {
+			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 		}
 		finally{
 			da.closeConnection();

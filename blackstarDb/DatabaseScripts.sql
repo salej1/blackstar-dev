@@ -979,7 +979,7 @@ BEGIN
 FROM ticket t
 	INNER JOIN policy p ON p.policyId = t.policyId
 	INNER JOIN equipmentType e ON e.equipmentTypeId = p.equipmentTypeId
-	INNER JOIN ticketstatus ts ON t.ticketStatusId = ts.ticketStatusId
+	INNER JOIN ticketStatus ts ON t.ticketStatusId = ts.ticketStatusId
 WHERE t.asignee = pUser
 AND t.closed IS NULL
 ORDER BY ticketDate;
@@ -1992,7 +1992,7 @@ END$$
 DROP PROCEDURE IF EXISTS blackstarDb.GetPolicyBySerialNo$$
 CREATE PROCEDURE blackstarDb.GetPolicyBySerialNo (noSerial VARCHAR(100))
 BEGIN
-	SELECT * FROM blackstardb.policy
+	SELECT * FROM blackstarDb.policy
 	WHERE startDate < CURDATE() AND endDate > CURDATE() AND serialNumber = noSerial;
 END$$
 -- -----------------------------------------------------------------------------

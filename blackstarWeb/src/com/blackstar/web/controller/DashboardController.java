@@ -37,8 +37,17 @@ public class DashboardController extends AbstractController {
 	@RequestMapping(value = "/show.do", method = RequestMethod.GET)
 	public String show(ModelMap model, HttpServletRequest req,
 			HttpServletResponse resp) {
-		
-		// Solo se invoca dashboard.jsp
+		try {
+			// se carga la lista de oficinas
+			if(!model.containsAttribute("offices")){
+				model.addAttribute("offices", service.getOfficesList());
+			}
+		} catch (Exception e) {
+			Logger.Log(LogLevel.ERROR,
+					e.getStackTrace()[0].toString(), e);
+			e.printStackTrace();
+			return "error";
+		}
 		return "dashboard";
 	}
 
@@ -53,10 +62,10 @@ public class DashboardController extends AbstractController {
 		try {
 			model.addAttribute("employees", udService.getStaff());
 			retVal = service.getUnassignedTickets();
-		} catch (Exception ex) {
+		} catch (Exception e) {
 			Logger.Log(LogLevel.ERROR,
-					Thread.currentThread().getStackTrace()[1].toString(), ex);
-			ex.printStackTrace();
+					e.getStackTrace()[0].toString(), e);
+			e.printStackTrace();
 			return "error";
 		}
 		return retVal;
@@ -68,10 +77,10 @@ public class DashboardController extends AbstractController {
 		String retVal;
 		try {
 			retVal = service.getServiceOrders("NUEVO");
-		} catch (Exception ex) {
+		} catch (Exception e) {
 			Logger.Log(LogLevel.ERROR,
-					Thread.currentThread().getStackTrace()[1].toString(), ex);
-			ex.printStackTrace();
+					e.getStackTrace()[0].toString(), e);
+			e.printStackTrace();
 			return "error";
 		}
 		return retVal;
@@ -83,10 +92,10 @@ public class DashboardController extends AbstractController {
 		String retVal;
 		try {
 			retVal = service.getServiceOrders("PENDIENTE");
-		} catch (Exception ex) {
+		} catch (Exception e) {
 			Logger.Log(LogLevel.ERROR,
-					Thread.currentThread().getStackTrace()[1].toString(), ex);
-			ex.printStackTrace();
+					e.getStackTrace()[0].toString(), e);
+			e.printStackTrace();
 			return "error";
 		}
 		return retVal;
@@ -102,10 +111,10 @@ public class DashboardController extends AbstractController {
 				: userSession.getUser().getUserEmail();
 		try {
 			TicketController.AssignTicket(ticketId, employee, who, null);
-		} catch (Exception ex) {
+		} catch (Exception e) {
 			Logger.Log(LogLevel.ERROR,
-					Thread.currentThread().getStackTrace()[1].toString(), ex);
-			ex.printStackTrace();
+					e.getStackTrace()[0].toString(), e);
+			e.printStackTrace();
 			return "error";
 		}
 		return show(model, req, resp);
@@ -126,10 +135,10 @@ public class DashboardController extends AbstractController {
 		try{
 			retVal = service.getAssignedTickets(userSession.getUser().getUserEmail());
 		}
-		catch(Exception ex){
+		catch(Exception e){
 			Logger.Log(LogLevel.ERROR,
-					Thread.currentThread().getStackTrace()[1].toString(), ex);
-			ex.printStackTrace();
+					e.getStackTrace()[0].toString(), e);
+			e.printStackTrace();
 			return "error";
 		}
 		return retVal;
@@ -140,10 +149,10 @@ public class DashboardController extends AbstractController {
 		String retVal;
 		try {
 			retVal = service.getScheduledServices(userSession.getUser().getUserEmail());
-		} catch (Exception ex) {
+		} catch (Exception e) {
 			Logger.Log(LogLevel.ERROR,
-					Thread.currentThread().getStackTrace()[1].toString(), ex);
-			ex.printStackTrace();
+					e.getStackTrace()[0].toString(), e);
+			e.printStackTrace();
 			return "error";
 		}
 		return retVal;
@@ -155,10 +164,10 @@ public class DashboardController extends AbstractController {
 		String retVal;
 		try {
 			retVal = service.getPersonalServiceOrders(userSession.getUser().getUserEmail(), "PENDIENTE");
-		} catch (Exception ex) {
+		} catch (Exception e) {
 			Logger.Log(LogLevel.ERROR,
-					Thread.currentThread().getStackTrace()[1].toString(), ex);
-			ex.printStackTrace();
+					e.getStackTrace()[0].toString(), e);
+			e.printStackTrace();
 			return "error";
 		}
 		return retVal;
@@ -174,10 +183,10 @@ public class DashboardController extends AbstractController {
 		try {
 			model.addAttribute("employees", udService.getStaff());
 			retVal = service.getUnassignedTickets();
-		} catch (Exception ex) {
+		} catch (Exception e) {
 			Logger.Log(LogLevel.ERROR,
-					Thread.currentThread().getStackTrace()[1].toString(), ex);
-			ex.printStackTrace();
+					e.getStackTrace()[0].toString(), e);
+			e.printStackTrace();
 			return "error";
 		}
 		return retVal;

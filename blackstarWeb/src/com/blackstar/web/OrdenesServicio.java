@@ -51,9 +51,9 @@ public class OrdenesServicio extends HttpServlet {
 			
 			da.closeConnection();
 		}
-		catch (Exception ex)
+		catch (Exception e)
 		{
-			 Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), ex);
+			 Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 		}
 
 		request.getRequestDispatcher("/ordenesServicio.jsp").forward(request, response);

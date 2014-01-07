@@ -73,9 +73,9 @@ public class Dashboard extends HttpServlet {
 			
 		} 
 		
-		catch (Exception ex) {
+		catch (Exception e) {
 			
-			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), ex);
+			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 			if (jsticketsToAssign.length() == 0) {
 				request.setAttribute("ticketsToAssignDashboard", "Error al recuperar tickets por asignar");
 			}
@@ -115,7 +115,7 @@ public class Dashboard extends HttpServlet {
 
 		} catch (NumberFormatException e) {
 			// TODO Auto-generated catch block
-			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
+			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 		}
 		finally{
 			response.sendRedirect("/dashboard");
@@ -131,8 +131,8 @@ public class Dashboard extends HttpServlet {
 				list.add(rs.getString("officeName"));
 			}
 		}
-		catch(Exception ex){
-			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), ex);
+		catch(Exception e){
+			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 		}
 		return list;
 	}}

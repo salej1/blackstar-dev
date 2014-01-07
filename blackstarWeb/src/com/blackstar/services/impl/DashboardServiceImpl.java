@@ -46,4 +46,9 @@ public class DashboardServiceImpl extends AbstractService implements
 		List<JSONObject> personalOrders = dao.getPersonalServiceOrders(user, status);
 		return personalOrders != null? personalOrders.toString() : "";
 	}
+
+	@Override
+	public List<String> getOfficesList() {
+		return dao.getOfficesList();
+	}
 }

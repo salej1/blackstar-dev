@@ -59,9 +59,9 @@ public class FollowUp extends HttpServlet {
 				request.getRequestDispatcher("/seguimiento.jsp").forward(request, response);
 			}
 		}
-		catch (Exception ex)
+		catch (Exception e)
 		{
-			 Logger.Log(LogLevel.FATAL, Thread.currentThread().getStackTrace()[1].toString(), ex);
+			 Logger.Log(LogLevel.FATAL, e.getStackTrace()[0].toString(), e);
 		}
 		
 	}
@@ -89,7 +89,7 @@ public class FollowUp extends HttpServlet {
 			try {
 				da.executeQuery(sql);
 			} catch (Exception e) {
-				Logger.Log(LogLevel.FATAL, Thread.currentThread().getStackTrace()[1].toString(), e);
+				Logger.Log(LogLevel.FATAL, e.getStackTrace()[0].toString(), e);
 			}
 		}
 		else if(action.endsWith("reopenTicket")){
@@ -106,7 +106,7 @@ public class FollowUp extends HttpServlet {
 			try {
 				da.executeQuery(sql);
 			} catch (Exception e) {
-				Logger.Log(LogLevel.FATAL, Thread.currentThread().getStackTrace()[1].toString(), e);
+				Logger.Log(LogLevel.FATAL, e.getStackTrace()[0].toString(), e);
 			}
 		}
 		
@@ -191,8 +191,8 @@ public class FollowUp extends HttpServlet {
 			
 			da.closeConnection();
 		}
-		catch(Exception ex){
-			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), ex);
+		catch(Exception e){
+			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 		}
 		return list;
 	}

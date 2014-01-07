@@ -41,14 +41,14 @@ public class MySQLUserDAO implements UserDAO {
 			}
 			
 		} catch (ClassNotFoundException | SQLException e) {
-			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
+			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 		}
 		finally{
 			if(conn != null){
 				try {
 					conn.close();
 				} catch (SQLException e) {
-					Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
+					Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 				}
 			}
 		}

@@ -53,10 +53,10 @@ public class ServiceOrdersController extends AbstractController{
 		String retVal;
 		try {
 			retVal = service.getServiceOrderHistory();
-		} catch (Exception ex) {
+		} catch (Exception e) {
 			Logger.Log(LogLevel.ERROR,
-					Thread.currentThread().getStackTrace()[1].toString(), ex);
-			ex.printStackTrace();
+					e.getStackTrace()[0].toString(), e);
+			e.printStackTrace();
 			return "error";
 		}
 		return retVal;
@@ -69,10 +69,10 @@ public class ServiceOrdersController extends AbstractController{
 			String retVal;
 			try {
 				retVal = service.getEquipmentByType(type);
-			} catch (Exception ex) {
+			} catch (Exception e) {
 				Logger.Log(LogLevel.ERROR,
-						Thread.currentThread().getStackTrace()[1].toString(), ex);
-				ex.printStackTrace();
+						e.getStackTrace()[0].toString(), e);
+				e.printStackTrace();
 				return "error";
 			}
 			return retVal;

@@ -60,7 +60,7 @@ public class ServiceOrderController extends AbstractController {
 				break;
 		}
 	} catch (Exception e) {
-		 Logger.Log(LogLevel.FATAL, Thread.currentThread().getStackTrace()[1].toString(), e);
+		 Logger.Log(LogLevel.FATAL, e.getStackTrace()[0].toString(), e);
 		 return "error";
 	}
 	return "forward:" + url;

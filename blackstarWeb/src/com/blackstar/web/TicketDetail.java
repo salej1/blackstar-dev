@@ -122,7 +122,7 @@ public class TicketDetail extends HttpServlet{
 			}
 			request.getRequestDispatcher("/ticketDetail.jsp").forward(request, response);
 		} catch (NumberFormatException e) {
-			Logger.Log(LogLevel.FATAL, Thread.currentThread().getStackTrace()[1].toString(), e);
+			Logger.Log(LogLevel.FATAL, e.getStackTrace()[0].toString(), e);
 		}
 				
 	}
@@ -150,7 +150,7 @@ public class TicketDetail extends HttpServlet{
 			try {
 				da.executeQuery(sql);
 			} catch (Exception e) {
-				Logger.Log(LogLevel.FATAL, Thread.currentThread().getStackTrace()[1].toString(), e);
+				Logger.Log(LogLevel.FATAL, e.getStackTrace()[0].toString(), e);
 			}
 		}
 		else if(action.endsWith("reopenTicket")){
@@ -167,7 +167,7 @@ public class TicketDetail extends HttpServlet{
 			try {
 				da.executeQuery(sql);
 			} catch (Exception e) {
-				Logger.Log(LogLevel.FATAL, Thread.currentThread().getStackTrace()[1].toString(), e);
+				Logger.Log(LogLevel.FATAL, e.getStackTrace()[0].toString(), e);
 			}
 		}
 		
@@ -187,8 +187,8 @@ public class TicketDetail extends HttpServlet{
 			
 			da.closeConnection();
 		}
-		catch(Exception ex){
-			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), ex);
+		catch(Exception e){
+			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 		}
 		return list;
 	}
@@ -213,8 +213,8 @@ public class TicketDetail extends HttpServlet{
 				list.add(fu);
 			}
 		}
-		catch(Exception ex){
-			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), ex);
+		catch(Exception e){
+			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 		}
 		finally{
 			da.closeConnection();

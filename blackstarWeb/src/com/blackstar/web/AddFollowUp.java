@@ -77,7 +77,7 @@ public class AddFollowUp extends HttpServlet {
 					ticketId = Integer.parseInt(id);
 					TicketController.AssignTicket(ticketId, asignee, sender, message);
 				} catch (Exception e) {
-					Logger.Log(LogLevel.WARNING, Thread.currentThread().getStackTrace()[1].toString(), "Error al agrear FollowUp a ticket " + id + ". No se puede convertir ID a entero", "");
+					Logger.Log(LogLevel.WARNING, e.getStackTrace()[0].toString(), "Error al agrear FollowUp a ticket " + id + ". No se puede convertir ID a entero", "");
 				}
 			}
 			else if(type.equals("serviceOrder")){
@@ -85,14 +85,14 @@ public class AddFollowUp extends HttpServlet {
 					int osId = Integer.parseInt(id);
 					ServiceOrderController.AssignServiceOrder(osId, asignee, sender, message);
 				} catch (Exception e) {
-					Logger.Log(LogLevel.WARNING, Thread.currentThread().getStackTrace()[1].toString(), "Error al agrear FollowUp a OS " + id + ". No se puede convertir ID a entero", "");
+					Logger.Log(LogLevel.WARNING, e.getStackTrace()[0].toString(), "Error al agrear FollowUp a OS " + id + ". No se puede convertir ID a entero", "");
 				}
 			}
 			
 			response.sendRedirect(redirect);
 			
 		} catch (Exception e) {
-			Logger.Log(LogLevel.FATAL, Thread.currentThread().getStackTrace()[1].toString(), e);
+			Logger.Log(LogLevel.FATAL, e.getStackTrace()[0].toString(), e);
 		}
 	}
 

@@ -68,8 +68,8 @@ public class scheduleStatus extends HttpServlet {
 			// Redireccionando el request
 			request.getRequestDispatcher("/scheduleStatus.jsp").forward(request, response);
 		}
-		catch(Exception ex){
-			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), ex);
+		catch(Exception e){
+			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 		}
 		finally{
 			if(da!= null){
@@ -146,8 +146,8 @@ public class scheduleStatus extends HttpServlet {
 			
 			response.sendRedirect("/scheduleStatus");
 		}
-		catch(Exception ex){
-			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), ex);
+		catch(Exception e){
+			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 		}
 		finally{
 			if(da!= null){
@@ -202,8 +202,8 @@ public class scheduleStatus extends HttpServlet {
 				
 				servicesToDate.add(sch);
 			}
-		}catch(Exception ex){
-			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), ex);	
+		}catch(Exception e){
+			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);	
 		}
 		// Leyendo los servicios programados de la BD
 		
@@ -219,8 +219,8 @@ public class scheduleStatus extends HttpServlet {
 			while(rs.next()){
 				projects.add(rs.getString("project"));
 			}
-		}catch(Exception ex){
-			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), ex);
+		}catch(Exception e){
+			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 		}
 		
 		return projects;
@@ -234,8 +234,8 @@ public class scheduleStatus extends HttpServlet {
 			ResultSet rs = da.executeQuery("CALL GetEquipmentList()");
 			list = ResultSetConverter.convertResultSetToJSONArray(rs);
 			
-		}catch(Exception ex){
-			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), ex);
+		}catch(Exception e){
+			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 		}
 		
 		return list;
@@ -249,8 +249,8 @@ public class scheduleStatus extends HttpServlet {
 			ResultSet employees = da.executeQuery(String.format("CALL GetDomainEmployeesByGroup('%s');", Globals.GROUP_SERVICE));
 			list = ResultSetConverter.convertResultSetToJSONArray(employees);
 			
-		}catch(Exception ex){
-			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), ex);
+		}catch(Exception e){
+			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 		}
 		
 		return list;
@@ -268,8 +268,8 @@ public class scheduleStatus extends HttpServlet {
 			ResultSet services = da.executeQuery(String.format("CALL GetFutureServicesSchedule('%s');", sdf.format(cal.getTime())));
 			list = ResultSetConverter.convertResultSetToJSONArray(services);
 			
-		}catch(Exception ex){
-			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), ex);
+		}catch(Exception e){
+			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 		}
 		
 		return list;

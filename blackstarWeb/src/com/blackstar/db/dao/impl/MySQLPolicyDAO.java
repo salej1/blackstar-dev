@@ -54,7 +54,7 @@ public class MySQLPolicyDAO implements PolicyDAO, Serializable {
 						
 			}
 		} catch (ClassNotFoundException | SQLException e) {
-			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
+			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 		}
 		finally{
 			if(conn != null){
@@ -108,7 +108,7 @@ public class MySQLPolicyDAO implements PolicyDAO, Serializable {
 						
 			}
 		} catch (ClassNotFoundException | SQLException e) {
-			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
+			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 		}
 		finally{
 			if(conn != null){
@@ -138,11 +138,11 @@ public class MySQLPolicyDAO implements PolicyDAO, Serializable {
 			conn.close();
 			
 		} catch (ClassNotFoundException e) {
-			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
+			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 		} catch (SQLException e) {
-			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
+			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 		} catch (JSONException e) {
-			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
+			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 		}
 		
 		return retVal;
@@ -174,7 +174,7 @@ public class MySQLPolicyDAO implements PolicyDAO, Serializable {
 			
 		}
 		 catch (ClassNotFoundException | SQLException e) {
-			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
+			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 		}
 		finally{
 			if(conn != null){

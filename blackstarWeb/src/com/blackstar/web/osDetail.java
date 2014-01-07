@@ -135,7 +135,7 @@ public class osDetail extends HttpServlet {
 				request.getRequestDispatcher("/osDetail.jsp").forward(request, response);
 			}
 		} catch (NumberFormatException e) {
-			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
+			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 		}
 		finally{
 			if(da != null){
@@ -188,7 +188,7 @@ public class osDetail extends HttpServlet {
 				response.sendRedirect(String.format("/osDetail?serviceOrderId=%s", serviceOrderId));
 			}
 		} catch (Exception e) {
-			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
+			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 		}
 		finally{
 			if(da != null){
@@ -218,8 +218,8 @@ public class osDetail extends HttpServlet {
 			
 			da.closeConnection();
 		}
-		catch(Exception ex){
-			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), ex);
+		catch(Exception e){
+			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 		}
 		return list;
 	}
