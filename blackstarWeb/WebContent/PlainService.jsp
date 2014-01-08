@@ -30,6 +30,7 @@
 		// Binding serviceTypes con campo oculto de tipo de servicio
 		$("#serviceTypes").bind("change", function(){
 			$("#serviceTypeId").val($(this).val());
+			$("#serviceType").val($('#serviceTypes').find('option:selected').text());
 		});
 
 		// Bloqueo de los campos si la pantalla es de consulta
@@ -178,6 +179,7 @@
 									<td>Tipo de servicio:</td>
 									<td colspan="5">
 										<form:hidden path="serviceTypeId" />
+										<form:hidden path="serviceType" />
 										<select id="serviceTypes">
 											<c:forEach var="stype" items="${serviceTypes}">
 										        <option value="${stype.serviceTypeId}" 
