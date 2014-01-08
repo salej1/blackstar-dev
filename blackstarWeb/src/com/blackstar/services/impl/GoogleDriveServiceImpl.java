@@ -25,6 +25,8 @@ public class GoogleDriveServiceImpl extends AbstractService
                                     implements GoogleDriveService {
 	
   public static final String FOLDER_FILE_TYPE = "application/vnd.google-apps.folder";
+  public static final String DOC_FILE_TYPE = "application/vnd.google-apps.document";
+  
   public static final String P12_KEY_PATH = "auth/serviceKey.p12";
   
   private static  Map<String, String> sysFolderIds = new HashMap<String, String>();
@@ -139,28 +141,40 @@ public class GoogleDriveServiceImpl extends AbstractService
 	drive.permissions().insert(fileId, p).execute();
   }
   
-  public static String getFolderId(String folderName, String parentId) 
-		                                            throws Exception {
-	Files.List request = null;
-	FileList files = null;
-	String id = null;
-	StringBuilder criteria = new StringBuilder().append("title='")
-			      .append(folderName).append("'").append(" and trashed = false")
-			      .append(" and mimeType='application/vnd.google-apps.folder'");
-			                
-    if(parentId != null){
-    	criteria.append(" and '").append(parentId).append("' in parents");
-    }			                           
-	request = drive.files().list();
-	request.setQ(criteria.toString());
-	files = request.execute();
-	if(files.getItems().size() > 0){
-		id = files.getItems().get(0).getId();
+  public String getFolderId(String folderName, String parentId) 
+		                                     throws Exception {
+	return getObjectId(folderName, parentId, FOLDER_FILE_TYPE);
+  }
+  
+  public String getReportFileId(Integer serviceOrderId, String reportName) 
+		                                               throws Exception {
+	String parentId = getReportsFolderId(serviceOrderId);
+    return getObjectId(reportName, parentId, null);
+  }
+  
+  public String getObjectId(String name, String parentId, String type) 
+                                                        throws Exception {
+    Files.List request = null;
+    FileList files = null;
+    String id = null;
+    StringBuilder criteria = new StringBuilder().append("title='")
+                  .append(name).append("'").append(" and trashed = false");
+    if(type != null){
+    	criteria.append(" and mimeType='" + type + "'");
     }
-	return id;
+    if(parentId != null){
+      criteria.append(" and '").append(parentId).append("' in parents");
+    }			                           
+    request = drive.files().list();
+    request.setQ(criteria.toString());
+    files = request.execute();
+    if(files.getItems().size() > 0){
+      id = files.getItems().get(0).getId();
+    }
+    return id;
   }
 	
-  public static String insertFile(String title, String parentId, String type) 
+  public String insertFile(String title, String parentId, String type) 
 		                                                   throws Exception {
 	File file = new File();
 	file.setTitle(title);

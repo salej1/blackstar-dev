@@ -7,5 +7,7 @@ public interface GoogleDriveService {
   public String insertFileFromStream(Integer serviceOrderId, String type
 		  , String fileName, String parentId,  byte[] report) throws Exception;
   public String getAccessToken() throws Exception;
+  public String getReportFileId(Integer serviceOrderId, String reportName) 
+                                                         throws Exception;
 
 }
