@@ -144,8 +144,8 @@ public class PlainServicePolicyDTO {
 	private String receivedByPosition;
 	private String serviceOrderNumber;
 	private String serviceTypeId;
-	
-	private Integer plainServiceId;	
+	private String serviceType;
+    private Integer plainServiceId;	
 	private String troubleDescription;
 	private String techParam;
 	private String workDone;
@@ -440,5 +440,11 @@ public class PlainServicePolicyDTO {
 
 	public void setIsWrong(Boolean isWrong) {
 		this.isWrong = isWrong;
+	}
+	public String getServiceType() {
+		return serviceType;
+	}
+	public void setServiceType(String serviceType) {
+		this.serviceType = serviceType;
 	}
 }

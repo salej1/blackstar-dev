@@ -54,7 +54,7 @@ public class GeneralServiceReport extends AbstractReport {
 	drawer.text(data.getTroubleDescription(), 90, 158, true);
 	drawer.hLine(0, 555, 162);
 	drawer.text("TIPO DE SERVICIO : ", 5, 173, false);
-	drawer.text(data.getServiceTypeId(), 85, 173, true);
+	drawer.text(data.getServiceType(), 85, 173, true);
 	drawer.text("CONTRATO / PROYECTO : " , 305, 173, false);
 	drawer.text(data.getProject(), 408, 173, true);
 	drawer.hLine(0, 555, 177);
