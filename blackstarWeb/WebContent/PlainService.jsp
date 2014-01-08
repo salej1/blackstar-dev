@@ -117,6 +117,11 @@
 		$('#leftSign').signature('draw', '${serviceOrder.signCreated}'); 
 		// Signature capture box # 2 
 		$('#rightSign').signature('draw', '${serviceOrder.signReceivedBy}'); 
+
+		// Cierre del ticket
+		$("#closeBtn").bind("click", function(){
+			$("serviceStatusId").val('C');
+		});
 	});
 
 	function isNumberKey(evt){
@@ -126,7 +131,6 @@
 
 	    	         return true;
 	}
-	
 
 	</script> 
 	
@@ -176,7 +180,7 @@
 									<td><form:input path="serialNumber" type="text" style="width:95%;" readOnly="true" /></td>								
 								</tr>
 								<tr>
-									<td>Tipo de servicio:</td>
+									<td>Tipo:</td>
 									<td colspan="5">
 										<form:hidden path="serviceTypeId" />
 										<form:hidden path="serviceType" />
@@ -184,7 +188,7 @@
 											<c:forEach var="stype" items="${serviceTypes}">
 										        <option value="${stype.serviceTypeId}" 
 										        <c:if test="${stype.serviceTypeId == serviceOrder.serviceTypeId}">
-										        	selected
+										        	selected="true"
 										    	</c:if>
 										        >${stype.serviceType}</option>
 										    </c:forEach>
@@ -193,7 +197,22 @@
 									<td>Contrato / Proyecto</td>
 									<td colspan="3"><form:input path="project" type="text" style="width:95%;" readOnly="true" /></td>
 								</tr>
-
+								<tr>
+									<td>Estatus:</td>
+									<td colspan="5">
+										<form:hidden path="serviceStatusId" />
+										<select name="" id="serviceStatuses" disabled>
+											<c:forEach var="ss" items="${serviceStatuses}">
+												<option value="ss.serviceStatusId"
+												<c:if test="${ss.serviceStatusId == serviceOrder.serviceStatusId}">
+													selected="true"
+												</c:if>
+												>${ss.serviceStatus}</option>
+											</c:forEach>
+											<option value=""></option>
+										</select>
+									</td>
+								</tr>
 							</table>
 						</div>					
 					</div>
@@ -325,13 +344,18 @@
 							<c:import url="_attachments.jsp"></c:import>
 							<!-- Control de secuencia y captura de seguimiento -->
 							<c:import url="followUpControl.jsp"></c:import>
+							<script type="text/javascript" charset="utf-8">
+								$(function(){
+									initFollowUpDlg("os", "/osDetail/show.do?serviceOrderId=${serviceOrder.serviceOrderId}");
+								});
+							</script>
 							<table>
 								<tbody>
 									<tr>
 										<td>
 											<button class="searchButton" onclick="addSeguimiento(${serviceOrder.serviceOrderId}, '${serviceOrder.serviceOrderNumber}');">Agregar seguimiento</button>
 											<c:if test="${ user.belongsToGroup['Coordinador']}">
-												<button class="searchButton" onclick="window.location = 'dashboard'">Cerrar</button>
+												<button class="searchButton" id="closeBtn">Cerrar</button>
 											</c:if>
 										</td>
 									</tr>

@@ -205,7 +205,7 @@ public class TicketDetail extends HttpServlet{
 			
 			while(rs.next()){
 				FollowUpDTO fu = new FollowUpDTO(
-						String.format("%s", rs.getTimestamp("created")),
+						String.format("%s", rs.getTimestamp("timeStamp")),
 						rs.getString("asignee"), 
 						rs.getString("createdBy"), 
 						rs.getString("followUp")

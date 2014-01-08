@@ -1,6 +1,10 @@
 package com.blackstar.model.dto;
 
 public class FollowUpDTO {
+	public FollowUpDTO(){
+		
+	}
+	
 	public FollowUpDTO(String timeStamp, String asignee, String createdBy,
 			String followUp) {
 		super();

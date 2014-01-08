@@ -132,11 +132,32 @@
 -- 								blackstarDb.GetServiceTypeById
 -- 								blackstarDb.GetEquipmentTypeBySOId
 -- -----------------------------------------------------------------------------
+-- 24   07/01/2014	SAG		Se Integra:
+-- 								blackstarDb.GetServiceStatusList
+--							Se actualiza:
+--								blackstarDb.AddFollowUpToOS
+-- -----------------------------------------------------------------------------
 use blackstarDb;
 
 
 DELIMITER $$
 
+
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetServiceStatusList
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetServiceStatusList$$
+CREATE PROCEDURE blackstarDb.GetServiceStatusList()
+BEGIN
+
+	SELECT
+		serviceStatusId AS serviceStatusId,
+		serviceStatus AS serviceStatus
+	FROM serviceStatus
+	ORDER BY serviceStatus;
+
+END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetEquipmentTypeBySOId
@@ -571,17 +592,13 @@ BEGIN
 
 	SELECT count(*) into poolItems FROM sequenceNumberPool WHERE sequenceNumberTypeId = pSequenceNumberTypeId AND sequenceNumberStatus = 'U';
 
-	WHILE poolItems < 5 DO
-	    
-		-- Cargar nuevo numero en el pool
-		CALL blackstarDb.GetAndIncreaseSequence(pSequenceNumberTypeId, newNumber);
+	-- Cargar nuevo numero en el pool
+	CALL blackstarDb.GetAndIncreaseSequence(pSequenceNumberTypeId, newNumber);
 
-		INSERT INTO sequenceNumberPool(sequenceNumberTypeId, sequenceNumber, sequenceNumberStatus)
-		SELECT pSequenceNumberTypeId, newNumber, 'U';
-  
-  		SELECT count(*) into poolItems FROM sequenceNumberPool WHERE sequenceNumberTypeId = pSequenceNumberTypeId AND sequenceNumberStatus = 'U';
+	INSERT INTO sequenceNumberPool(sequenceNumberTypeId, sequenceNumber, sequenceNumberStatus)
+	SELECT pSequenceNumberTypeId, newNumber, 'U';
 
-  	END WHILE;
+	SELECT count(*) into poolItems FROM sequenceNumberPool WHERE sequenceNumberTypeId = pSequenceNumberTypeId AND sequenceNumberStatus = 'U';
 
 END$$
 
@@ -609,6 +626,9 @@ BEGIN
 
 	DECLARE nextId INTEGER;
 
+	-- Cargar nuevos numeros
+	CALL blackstarDb.LoadNewSequencePoolItems(pSequenceNumberTypeId);
+	
 	-- Recuperar el siguiente numero en la secuencia y su ID
 	SELECT min(sequenceNumber) into nextNumber
 	FROM sequenceNumberPool 
@@ -623,12 +643,6 @@ BEGIN
 	-- Bloquear el numero
 	UPDATE sequenceNumberPool SET sequenceNumberStatus = 'L'
 	WHERE sequenceNumberPoolId = nextId;
-	
-	-- Cargar nuevos numeros
-	CALL blackstarDb.LoadNewSequencePoolItems(pSequenceNumberTypeId);
-
-	-- Regresar el numero siguiente
-	SELECT nextNumber;
 
 END$$
 
@@ -727,7 +741,7 @@ END$$
 
 
 -- -----------------------------------------------------------------------------
-	-- blackstarDb.AddFollowUpToTicket
+	-- blackstarDb.AddFollowUpToOS
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.AddFollowUpToOS$$
 CREATE PROCEDURE blackstarDb.AddFollowUpToOS(pOsId INTEGER, pCreated DATETIME, pCreatedBy VARCHAR(100), pAsignee VARCHAR(100), pMessage TEXT)
@@ -749,6 +763,10 @@ BEGIN
 		pCreated,
 		'AddFollowUpToTicket',
 		pCreatedBy;
+
+	UPDATE serviceOrder SET
+		serviceStatusId = 'E'
+	WHERE serviceOrderId = pOsId;
 
 END$$
 
@@ -828,7 +846,7 @@ CREATE PROCEDURE blackstarDb.GetFollowUpByServiceOrder(pServiceOrderId INTEGER)
 BEGIN
 
 	SELECT 
-		created AS created,
+		created AS timeStamp,
 		u2.name AS createdBy,
 		u.name AS asignee,
 		followup AS followUp
@@ -1235,8 +1253,14 @@ DROP PROCEDURE IF EXISTS blackstarDb.AssignTicket$$
 CREATE PROCEDURE blackstarDb.AssignTicket (pTicketId INTEGER, pEmployee VARCHAR(100), usr VARCHAR(100), proc VARCHAR(100))
 BEGIN
 
+	-- Asignacion del dueño del ticket
 	UPDATE ticket SET
-		employee = IFNULL(employee, pEmployee),
+		employee = pEmployee
+	WHERE ticketId = pTicketId
+		AND IFNULL(employee, '') = '';
+		
+	-- Asignacion del empleado responsable
+	UPDATE ticket SET
 		asignee = pEmployee,
 		modified = NOW(),
 		modifiedBy = proc,
@@ -1890,27 +1914,11 @@ END$$
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.UpdateServiceOrder$$
 CREATE PROCEDURE blackstarDb.UpdateServiceOrder (
-	serviceOrderId int(11),
-  serviceOrderNumber varchar(50) ,
-  serviceTypeId char(1) ,
-  ticketId int(11) ,
-  policyId int(11) ,
-  serviceUnit varchar(10) ,
-  serviceDate datetime ,
-  responsible varchar(100) ,
-  additionalEmployees varchar(400) ,
-  receivedBy varchar(100) ,
-  serviceComments text,
+  serviceOrderId int(11),
   serviceStatusId char(1) ,
   closed datetime ,
-  consultant varchar(100) ,
-  coordinator varchar(100) ,
   asignee varchar(50) ,
-  hasErrors tinyint(4) ,
   isWrong tinyint(4) ,
-  signCreated text,
-  signReceivedBy text,
-  receivedByPosition varchar(50) ,
   modified datetime ,
   modifiedBy varchar(50) ,
   modifiedByUsr varchar(50) 
@@ -1918,26 +1926,10 @@ CREATE PROCEDURE blackstarDb.UpdateServiceOrder (
 BEGIN
 UPDATE serviceOrder
 SET
-serviceOrderNumber = serviceOrderNumber ,
-serviceTypeId = serviceTypeId ,
-ticketId = ticketId ,
-policyId = policyId ,
-serviceUnit = serviceUnit ,
-serviceDate = serviceDate ,
-responsible = responsible ,
-additionalEmployees = additionalEmployees ,
-receivedBy = receivedBy ,
-serviceComments = serviceComments ,
 serviceStatusId = serviceStatusId ,
 closed = closed ,
-consultant = consultant ,
-coordinator = coordinator ,
 asignee = asignee ,
-hasErrors = hasErrors ,
 isWrong = isWrong,
-signCreated = signCreated ,
-signReceivedBy = signReceivedBy ,
-receivedByPosition = receivedByPosition ,
 modified = modified ,
 modifiedBy = modifiedBy ,
 modifiedByUsr = modifiedByUsr 

@@ -1,6 +1,11 @@
 package com.blackstar.model.dto;
 
-public class EmployeeDTO {
+import java.io.Serializable;
+
+public class EmployeeDTO implements Serializable {
+	
+	private static final long serialVersionUID = 3609765585538661484L;
+	
 	String email;
 	String name;
 	

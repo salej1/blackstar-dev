@@ -12,6 +12,7 @@ import com.blackstar.model.dto.AirCoServiceDTO;
 import com.blackstar.model.dto.BatteryServiceDTO;
 import com.blackstar.model.dto.EmergencyPlantServiceDTO;
 import com.blackstar.model.dto.PlainServiceDTO;
+import com.blackstar.model.dto.ServiceStatusDTO;
 import com.blackstar.model.dto.ServiceTypeDTO;
 import com.blackstar.model.dto.UpsServiceDTO;
 
@@ -49,4 +50,10 @@ public interface ServiceOrderService {
 	
 	// Servicio de recuperacion de tipos de servicios
 	public List<ServiceTypeDTO> getServiceTypeList();
+	
+	// Servicio de recuperacion de estatus 
+	public List<ServiceStatusDTO> getServiceStatusList();
+	
+	// Recuperacion del seguimiento asociado
+	public List<FollowUpDTO> getServiceFollowUps(Integer serviceOrderId);
 }

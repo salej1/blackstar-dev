@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.blackstar.common.Globals;
 import com.blackstar.model.UserSession;
+import com.blackstar.services.UserServiceFactory;
 import com.blackstar.web.AbstractController;
 
 
@@ -25,7 +26,8 @@ public class SecurityController extends AbstractController {
 		//TODO Se mantienen de forma provisional por compatibilidad con version actual
 		request.getSession().setAttribute("user_id", userSession.getUser().getUserEmail());
 		request.getSession().setAttribute("user", userSession.getUser());
-		return ("forward:/dashboard/show.do");
+		request.getSession().setAttribute("employees", UserServiceFactory.getUserService().getEmployeeList());
+		return ("redirect:/dashboard/show.do");
 	} 
 	return ("noUser");
   }

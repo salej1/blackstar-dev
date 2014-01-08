@@ -15,6 +15,7 @@ import com.blackstar.model.dto.EmergencyPlantServiceDTO;
 import com.blackstar.model.dto.FollowUpDTO;
 import com.blackstar.model.dto.OrderserviceDTO;
 import com.blackstar.model.dto.PlainServiceDTO;
+import com.blackstar.model.dto.ServiceStatusDTO;
 import com.blackstar.model.dto.ServiceTypeDTO;
 import com.blackstar.model.dto.UpsServiceDTO;
 import com.blackstar.services.AbstractService;
@@ -121,23 +122,7 @@ public void updateServiceOrder(Serviceorder service, String modifiedBy,
 
 @Override
 public String getNewServiceNumber(Policy policy) {
-	String num = dao.getNewServiceNumber(policy.getPolicyId());
-	String prefix;
-	String postFix = "-e";
-
-	switch(policy.getEquipmentTypeId()){
-		case 'A': prefix = "AA-";
-			break;
-		case 'B': prefix = "BB-";
-			break;
-		case 'P': prefix = "PE-";
-			break;
-		case 'U': prefix = "UPS-";
-			break;
-		default: prefix = "OS-";
-	}
-	
-	return prefix + num + postFix;
+	return dao.getNewServiceNumber(policy.getPolicyId());
 }
 
 @Override
@@ -166,6 +151,17 @@ public List<ServiceTypeDTO> getServiceTypeList() {
 @Override
 public String getEquipmentTypeBySOId(Integer serviceOrderId) {
 	return dao.getEquipmentTypeBySOId(serviceOrderId);
+}
+
+@Override
+public List<ServiceStatusDTO> getServiceStatusList() {
+	return dao.getServiceStatusList();
+}
+
+@Override
+public List<FollowUpDTO> getServiceFollowUps(Integer serviceOrderId) {
+	// TODO Auto-generated method stub
+	return null;
 }
   
   

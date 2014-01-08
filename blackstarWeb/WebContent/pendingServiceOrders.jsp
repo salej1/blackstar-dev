@@ -45,6 +45,8 @@
 									  {"mRender" : function(data, type, row){return "<div align='center'><a href='${pageContext.request.contextPath}/ticketDetail?ticketNumber=" + data + "'>" + data + "</a></div>";}, "aTargets" : [2]}	    		    	       
 									   ]}
 			);
+
+			pendingServiceOrders_filter(officePref);
 		});
 	}
 	

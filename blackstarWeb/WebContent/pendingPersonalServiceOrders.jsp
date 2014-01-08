@@ -4,10 +4,10 @@
 	function pendingPersonalServiceOrders_init(){
 
 		// Tabla de ordenes de servicio personales con pendientes 
-		getPendingServiceOrders();
+		getPendingPersonalServiceOrders();
 	}	
 	
-	function getPendingServiceOrders(){
+	function getPendingPersonalServiceOrders(){
 		$.getJSON("/dashboard/pendingPersonalServiceOrders.do", function(data){
 			// Inicializacion de tabla de ordenes con pendientes
 			$('#dtOrdenesPersonalesPendientes').dataTable({	
@@ -48,7 +48,7 @@
 -->
 	<div class="grid_16">
 		<div class="box">
-			<h2>Ordenes de servicio con pendientes</h2>
+			<h2>Mis Ordenes de servicio con pendientes</h2>
 			<div class="utils">
 				
 			</div>

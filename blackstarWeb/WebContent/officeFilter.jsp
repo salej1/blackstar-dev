@@ -1,13 +1,14 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@page isELIgnored="false" %>
 <script type="text/javascript" charset="utf-8">
-	
+	var officePref = "";
 	// Filtrado inicial
 	function officeFilter_init(){
 
 		// se filtran las oficinas de acuerdo a la ultima preferencia del usuario
-		var officePref = $.cookie('blackstar_office_pref');
+		officePref = $.cookie('blackstar_office_pref');
 		if(officePref != null){
 			$("#optOffices").val(officePref);
-			refreshSoListByOffice(officePref);
 		}
 	}
 

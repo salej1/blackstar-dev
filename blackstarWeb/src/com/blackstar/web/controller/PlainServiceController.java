@@ -22,6 +22,7 @@ import com.blackstar.model.Ticket;
 import com.blackstar.model.UserSession;
 import com.blackstar.model.dto.PlainServiceDTO;
 import com.blackstar.model.dto.PlainServicePolicyDTO;
+import com.blackstar.services.UserServiceFactory;
 import com.blackstar.services.interfaces.ReportService;
 import com.blackstar.services.interfaces.ServiceOrderService;
 import com.blackstar.web.AbstractController;
@@ -61,8 +62,8 @@ public class PlainServiceController extends AbstractController {
 	  				  Policy policy = this.daoFactory.getPolicyDAO().getPolicyById(ticket.getPolicyId());
 	  				  Equipmenttype equipType = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
 	  				  plainServicePolicyDTO = new PlainServicePolicyDTO(policy, equipType.getEquipmentType());
+	  				  plainServicePolicyDTO.setServiceStatusId("N");
 	  				  model.addAttribute("serviceOrder", plainServicePolicyDTO);
-	  				  model.addAttribute("serviceTypes", service.getServiceTypeList());
 	  				  model.addAttribute("mode", "new");
 		  		  }
 		  		  else if( operation==2)
@@ -74,7 +75,7 @@ public class PlainServiceController extends AbstractController {
 	  				  Equipmenttype equipType = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
 	  				  plainServicePolicyDTO = new PlainServicePolicyDTO(policy, equipType.getEquipmentType(), serviceOrder,  plainServiceDTO);
 	  				  model.addAttribute("serviceOrder", plainServicePolicyDTO);
-	  				  model.addAttribute("serviceTypes", service.getServiceTypeList());
+	  				  model.addAttribute("followUps", service.getFollows(idOrderService));
 	  				  model.addAttribute("mode", "detail");
 		  		  }
 		  		  else if(operation==3)
@@ -83,10 +84,13 @@ public class PlainServiceController extends AbstractController {
 	  				  Equipmenttype equipType = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
 	  				  plainServicePolicyDTO = new PlainServicePolicyDTO(policy, equipType.getEquipmentType());
 	  				  plainServicePolicyDTO.setServiceOrderNumber(service.getNewServiceNumber(policy));
+	  				  plainServicePolicyDTO.setServiceStatusId("N");
 	  				  model.addAttribute("serviceOrder", plainServicePolicyDTO);
-	  				  model.addAttribute("serviceTypes", service.getServiceTypeList());
 	  				  model.addAttribute("mode", "new");
 		  		  }
+		  		  
+		  		  model.addAttribute("serviceTypes", service.getServiceTypeList());
+				  model.addAttribute("serviceStatuses", service.getServiceStatusList());
 	  		  }
 			  else
 			  {
@@ -123,7 +127,7 @@ public class PlainServiceController extends AbstractController {
 		    		servicioOrderSave.setResponsible(serviceOrder.getResponsible());
 		    		servicioOrderSave.setServiceDate(serviceOrder.getServiceDate());
 		    		servicioOrderSave.setServiceOrderNumber(serviceOrder.getServiceOrderNumber());
-		    		servicioOrderSave.setServiceTypeId('I');
+		    		servicioOrderSave.setServiceTypeId(serviceOrder.getServiceTypeId().toCharArray()[0]);
 		    		servicioOrderSave.setSignCreated(serviceOrder.getSignCreated());
 		    		servicioOrderSave.setSignReceivedBy(serviceOrder.getSignReceivedBy());
 		    		servicioOrderSave.setStatusId("N");
@@ -133,18 +137,11 @@ public class PlainServiceController extends AbstractController {
 		    	{
 		    		//Actualizar orden de servicio
 		    		Serviceorder servicioOrderSave = new Serviceorder();
+		    		servicioOrderSave.setServiceOrderId(serviceOrder.getServiceOrderId());
 		    		servicioOrderSave.setAsignee( serviceOrder.getResponsible());
 		    		servicioOrderSave.setClosed(serviceOrder.getClosed());
-		    		servicioOrderSave.setPolicyId((Short.parseShort(serviceOrder.getPolicyId().toString())));
-		    		servicioOrderSave.setReceivedBy(serviceOrder.getReceivedBy());
-		    		servicioOrderSave.setReceivedByPosition(serviceOrder.getReceivedByPosition());
-		    		servicioOrderSave.setResponsible(serviceOrder.getResponsible());
-		    		servicioOrderSave.setServiceDate(serviceOrder.getServiceDate());
-		    		servicioOrderSave.setServiceOrderNumber(serviceOrder.getServiceOrderNumber());
-		    		servicioOrderSave.setServiceTypeId('I');
-		    		servicioOrderSave.setSignCreated(serviceOrder.getSignCreated());
-		    		servicioOrderSave.setSignReceivedBy(serviceOrder.getSignReceivedBy());
-		    		servicioOrderSave.setStatusId("N");
+		    		servicioOrderSave.setIsWrong(serviceOrder.getIsWrong()?1:0);
+		    		servicioOrderSave.setStatusId(serviceOrder.getServiceStatusId());
 		    		service.updateServiceOrder(servicioOrderSave, "PlainServiceController", userSession.getUser().getUserName());
 		    	}
 		    	

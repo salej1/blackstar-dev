@@ -18,6 +18,7 @@ import com.blackstar.model.dto.EmergencyPlantServiceDTO;
 import com.blackstar.model.dto.FollowUpDTO;
 import com.blackstar.model.dto.OrderserviceDTO;
 import com.blackstar.model.dto.PlainServiceDTO;
+import com.blackstar.model.dto.ServiceStatusDTO;
 import com.blackstar.model.dto.UpsServiceDTO;
 
 
@@ -149,30 +150,14 @@ public class ServiceOrderDAOImpl extends AbstractDAO implements ServiceOrderDAO 
   @Override
   public boolean updateServiceOrder(Serviceorder orderService) {
 		StringBuilder sqlBuilder = new StringBuilder();
-		sqlBuilder.append("CALL AddserviceOrder(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+		sqlBuilder.append("CALL UpdateServiceOrder(?,?,?,?,?,?,?,?)");
 		DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		Object[] args = new Object []{
 										orderService.getServiceOrderId(),
-										""+orderService.getServiceOrderNumber()+ "",
-										orderService.getServiceTypeId(),
-										orderService.getTicketId(),
-										orderService.getPolicyId(),
-										""+orderService.getServiceUnit()+ "",
-										""+orderService.getServiceDate()+ "",
-										""+orderService.getResponsible()+ "",
-										"",
-										""+orderService.getReceivedBy()+ "",
-										""+orderService.getServiceComments()+ "",
 										""+orderService.getStatusId()+ "",
 										""+df.format(orderService.getClosed())+ "",
-										""+orderService.getConsultant()+ "",
-										""+orderService.getCoordinator()+ "",
 										""+orderService.getAsignee()+ "",
-										0,
-										0,
-										""+orderService.getSignCreated()+ "",
-										""+orderService.getsignReceivedBy()+ "",
-										""+orderService.getReceivedByPosition()+ "",
+										""+orderService.getIsWrong()+ "",
 										""+df.format(orderService.getModified())+ "",
 										""+orderService.getModifiedBy()+ "",
 										""+orderService.getModifiedByUsr()+ ""
@@ -687,5 +672,19 @@ public class ServiceOrderDAOImpl extends AbstractDAO implements ServiceOrderDAO 
 	public String getEquipmentTypeBySOId(Integer serviceOrderId) {
 		String sqlQuery = "CALL GetEquipmentTypeBySOId(?);";
 		return getJdbcTemplate().queryForObject(sqlQuery, new Object[]{serviceOrderId}, String.class); 
+	}
+
+
+	@Override
+	public List<ServiceStatusDTO> getServiceStatusList() {
+		String query = "CALL GetServiceStatusList()";
+		return (List<ServiceStatusDTO>) getJdbcTemplate().query(query,  getMapperFor(ServiceStatusDTO.class));
+	}
+
+
+	@Override
+	public List<FollowUpDTO> getServiceFollowUps(Integer serviceOrderId) {
+		String query = "CALL GetFollowUpByServiceOrder(?)";
+		return (List<FollowUpDTO>) getJdbcTemplate().query(query, getMapperFor(FollowUpDTO.class));
 	}
 }

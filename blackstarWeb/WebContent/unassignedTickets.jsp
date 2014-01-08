@@ -1,3 +1,5 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@page isELIgnored="false" %>
 <script type="text/javascript">
 	
 	// Inicializacion de tabla de tickets y dialogo de asignacion
@@ -112,11 +114,11 @@
 <div id="tktAssignDlg" title="Asignar Ticket" >
 	<p>Asignar ticket<label id="lblTicketBeignAssigned"></label></p>
 		<select id="employeeSelect">
-			<c:forEach var="employee" items="${employees}">
-				<option value = "${employee.userEmail}">${employee.userName}</option>
+			<c:forEach var="employee" items="${staff}">
+				<option value = "${employee.email}">${employee.name}</option>
 			</c:forEach>
 		</select>
-	<form id="ticksetSelect" action="dashboard" method="post">
+	<form id="ticksetSelect" action="/dashboard/asignTicket.do" method="post">
 		<input id="ticketId" name="ticketId" type="hidden"/>
 		<input id="employee" name="employee" type="hidden"/>
 	</form>

@@ -13,6 +13,7 @@ import com.blackstar.model.dto.EmergencyPlantServiceDTO;
 import com.blackstar.model.dto.FollowUpDTO;
 import com.blackstar.model.dto.OrderserviceDTO;
 import com.blackstar.model.dto.PlainServiceDTO;
+import com.blackstar.model.dto.ServiceStatusDTO;
 import com.blackstar.model.dto.UpsServiceDTO;
 
 public interface ServiceOrderDAO {
@@ -47,4 +48,8 @@ public interface ServiceOrderDAO {
 	
 	public List<JSONObject> getEquipmentByType(String type);
 	public String getEquipmentTypeBySOId(Integer serviceOrderId);
+	
+	public List<ServiceStatusDTO> getServiceStatusList();
+	
+	public List<FollowUpDTO> getServiceFollowUps(Integer serviceOrderId);
 }

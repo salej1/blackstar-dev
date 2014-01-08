@@ -217,7 +217,7 @@
 					</div>					
 				</div>
 				
-			<form action="dashboard" id="sendAssignNow" method="POST">
+			<form action="/dashboard/asignTicket.do" id="sendAssignNow" method="POST">
 				<input type="hidden" name="ticketId" id="ticketId"/>
 				<input type="hidden" name="employee" id="employee"/>
 			</form>	

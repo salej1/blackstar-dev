@@ -45,6 +45,8 @@
 									  {"mRender" : function(data){return "<div align='center'><a href='${pageContext.request.contextPath}/ticketDetail?ticketId=" + data + "'>" + data + "</a></div>";}, "aTargets" : [2]}	    		    	       
 									   ]}
 			);
+
+			newServiceOrders_filter(officePref);
 		});
 	}
 	

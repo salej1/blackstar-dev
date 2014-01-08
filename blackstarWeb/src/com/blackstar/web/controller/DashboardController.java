@@ -2,6 +2,7 @@ package com.blackstar.web.controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -36,16 +37,22 @@ public class DashboardController extends AbstractController {
 	// Dashboard principal
 	@RequestMapping(value = "/show.do", method = RequestMethod.GET)
 	public String show(ModelMap model, HttpServletRequest req,
-			HttpServletResponse resp) {
+			HttpServletResponse resp ) {
 		try {
-			// se carga la lista de oficinas
-			if(!model.containsAttribute("offices")){
-				model.addAttribute("offices", service.getOfficesList());
+			HttpSession session = req.getSession();
+			// se carga la lista de oficinas si no existe
+			if(session.getAttribute("offices") == null){
+				session.setAttribute("offices", service.getOfficesList());
+			}
+			// se carga la lista de empleados si no existe
+			if(session.getAttribute("staff") == null){
+				session.setAttribute("staff", udService.getStaff());
 			}
 		} catch (Exception e) {
 			Logger.Log(LogLevel.ERROR,
 					e.getStackTrace()[0].toString(), e);
 			e.printStackTrace();
+			model.addAttribute("errorDetails", e.getStackTrace()[0].toString());
 			return "error";
 		}
 		return "dashboard";
@@ -60,7 +67,6 @@ public class DashboardController extends AbstractController {
 	public @ResponseBody String unnasignedTicketsJson(ModelMap model) {
 		String retVal;
 		try {
-			model.addAttribute("employees", udService.getStaff());
 			retVal = service.getUnassignedTickets();
 		} catch (Exception e) {
 			Logger.Log(LogLevel.ERROR,
@@ -106,7 +112,7 @@ public class DashboardController extends AbstractController {
 	public String asignTicket(@RequestParam(required = true) Integer ticketId,
 			@RequestParam(required = true) String employee,
 			@ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession,
-			ModelMap model, HttpServletRequest req, HttpServletResponse resp) {
+			ModelMap model, HttpServletRequest req, HttpServletResponse resp, HttpSession session) {
 		String who = userSession == null ? "portal-servicios@gposac.com.mx"
 				: userSession.getUser().getUserEmail();
 		try {
@@ -117,7 +123,7 @@ public class DashboardController extends AbstractController {
 			e.printStackTrace();
 			return "error";
 		}
-		return show(model, req, resp);
+		return "redirect: /dashboard/show.do";
 	}
 
 	//================================================================================
@@ -172,26 +178,6 @@ public class DashboardController extends AbstractController {
 		}
 		return retVal;
 	}
-	
-	// Handler para creacion de nueva orden de servicio
-	@RequestMapping(value = "/createServiceOrder.do", method = RequestMethod.GET)
-	public String createServiceOrder(
-			@RequestParam(required = true) String equipmentType,
-			@RequestParam(required = false) Integer ticketId,
-			ModelMap model) {
-		String retVal;
-		try {
-			model.addAttribute("employees", udService.getStaff());
-			retVal = service.getUnassignedTickets();
-		} catch (Exception e) {
-			Logger.Log(LogLevel.ERROR,
-					e.getStackTrace()[0].toString(), e);
-			e.printStackTrace();
-			return "error";
-		}
-		return retVal;
-	}
-
 	
 	//================================================================================
     //  FIN INGENIEROS DE SERVICIO
