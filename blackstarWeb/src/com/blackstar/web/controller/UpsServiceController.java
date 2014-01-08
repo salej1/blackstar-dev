@@ -90,6 +90,7 @@ public class UpsServiceController extends AbstractController {
 	  				  upsServicePolicyDTO = new UpsServicePolicyDTO(policy, equipType.getEquipmentType(), serviceOrder,  upsServiceDTO);
 	  				  model.addAttribute("serviceOrder", upsServicePolicyDTO);
 		  		  }
+		  		  model.addAttribute("osAttachmentFolder", gdService.getAttachmentFolderId(Integer.parseInt(idObject)));
 	  		  }
 			  else
 			  {
