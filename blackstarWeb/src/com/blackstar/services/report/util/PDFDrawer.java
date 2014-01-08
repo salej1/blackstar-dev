@@ -81,6 +81,10 @@ public class PDFDrawer {
 	text(text, x, y, isBold, Color.black);
   }
   
+  public void text(Integer text, float x, float y, boolean isBold) throws Exception {
+	text(text!= null ? text.toString() : "", x, y, isBold, Color.black);
+  }
+  
   public void text(String text, float x, float y, boolean isBold, int color) throws Exception {
 	text(text, x, y, isBold, color, DEFAULT_FONT_SIZE);
   }

@@ -20,7 +20,6 @@ import com.blackstar.model.Policy;
 import com.blackstar.model.Serviceorder;
 import com.blackstar.model.Ticket;
 import com.blackstar.model.UserSession;
-import com.blackstar.model.dto.AirCoServicePolicyDTO;
 import com.blackstar.model.dto.PlainServiceDTO;
 import com.blackstar.model.dto.PlainServicePolicyDTO;
 import com.blackstar.services.interfaces.ReportService;
@@ -154,19 +153,21 @@ public class PlainServiceController extends AbstractController {
                          serviceOrder.setServiceOrderId(idServicio);
                          //Crear orden de servicio de AirCo
                          service.savePlainService(new PlainServiceDTO(serviceOrder), "PlainServiceController", userSession.getUser().getUserName());
-                         saveReport(idServicio);
+                         saveReport(serviceOrder);
                  }
 	    	}
 	    	catch(Exception e){
 				 Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
+				 e.printStackTrace();
 				 return "error";
 	    	}
 	    	return "dashboard";
 	    }
 	    
-	    private void saveReport(Integer serviceOrderId) throws Exception {
-	    	String parentId = gdService.getReportsFolderId(serviceOrderId);
-	    	gdService.insertFileFromStream(serviceOrderId, "application/pdf", "ServiceOrder.pdf"
-	    			            , parentId, rpService.getGeneralReport(serviceOrderId));
-	      }
+	    private void saveReport(PlainServicePolicyDTO serviceOrder) throws Exception {
+	    	Integer id = serviceOrder.getServiceOrderId();
+	    	String parentId = gdService.getReportsFolderId(id);
+	    	gdService.insertFileFromStream(id, "application/pdf", "ServiceOrder.pdf"
+	    			            , parentId, rpService.getGeneralReport(serviceOrder));
+	    }
 	}
