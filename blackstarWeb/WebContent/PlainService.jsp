@@ -11,8 +11,6 @@
 	
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		
-	<script src="${pageContext.request.contextPath}/js/jquery.ui.touch-punch.min.js"></script>
-	<script src="${pageContext.request.contextPath}/js/jquery.signature.min.js"></script>
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/960.css" type="text/css" media="screen" charset="utf-8" />
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/template.css" type="text/css" media="screen" charset="utf-8" />
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/colour.css" type="text/css" media="screen" charset="utf-8" />
@@ -21,6 +19,8 @@
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery-ui.min.css">
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery.signature.css">
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery.datetimepicker.css">
+	<script src="${pageContext.request.contextPath}/js/jquery.signature.min.js"></script>
+	<script src="${pageContext.request.contextPath}/js/jquery.ui.touch-punch.min.js"></script>
 	<script src="${pageContext.request.contextPath}/js/dateFormat.js"></script>
 	
 	<script type="text/javascript" charset="utf-8">
@@ -146,8 +146,7 @@
 								<tr>
 									<td>Folio:</td>
 									<td><form:input path="serviceOrderNumber" type="text" style="width:95%;" maxlength="5" readOnly="true"/></td>
-									<td colspan="2"><small></small>
-										
+									<td colspan="2"><a href='${pageContext.request.contextPath}/report/show.do?serviceOrderId=${serviceOrder.serviceOrderId}' target="_blank">Ver PDF</a><img src='${pageContext.request.contextPath}/img/pdf.png'/>	
 									</td>
 								</tr>
 								<tr>

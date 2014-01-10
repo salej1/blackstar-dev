@@ -6,6 +6,7 @@
 		getAssignedTickets();
 	}	
 	
+	// Funcion que muestra la tabla de tickets asignados
 	function getAssignedTickets(){
 		$.getJSON("/dashboard/assignedTicketsJson.do", function(data){ 
 			
@@ -32,7 +33,7 @@
 						  ],
 				"aoColumnDefs" : [
 									{"mRender" : function(data, type, row){return "<div><a href=${pageContext.request.contextPath}/ticketDetail?ticketId=" + row.DT_RowId + ">" + data + "</a></div>";}, "aTargets" : [0]},
-									{"mRender" : function(data, type, row){return "<div><a href=${pageContext.request.contextPath}/newOs?ticketId=" + row.DT_RowId + ">Crear O.S.</a></div>";}, "aTargets" : [7]}	       
+									{"mRender" : function(data, type, row){return "<div><a href=/plainservice/show.do?operation=1&idObject=" + row.DT_RowId +">Crear O.S.</a></div>";}, "aTargets" : [7]}	       
 								 ]}
 			);
 		});

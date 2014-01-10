@@ -109,8 +109,7 @@
 								<tr>
 									<td>Folio:</td>
 									<td><form:input path="serviceOrderNumber" type="text" style="width:95%;" maxlength="5" /></td>
-									<td colspan="2"><small></small>
-										
+									<td colspan="2"><a href='${pageContext.request.contextPath}/report/show.do?serviceOrderId=${serviceOrder.serviceOrderId}' target="_blank">Ver PDF</a><img src='${pageContext.request.contextPath}/img/pdf.png'/>	
 									</td>
 								</tr>
 								<tr>

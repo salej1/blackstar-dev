@@ -926,7 +926,7 @@ CREATE PROCEDURE blackstarDb.GetFollowUpByTicket(pTicketId INTEGER)
 BEGIN
 
 	SELECT 
-		created AS created,
+		created AS timeStamp,
 		u2.name AS createdBy,
 		u.name AS asignee,
 		followup AS followUp

@@ -48,13 +48,13 @@
 		var eq = $("#eqSearch").val();
 
 		switch(type){
-			case 'a': urlTemplate = urlTemplate.replace("PAGE", "/aircoservice");
+			case 'A': urlTemplate = urlTemplate.replace("PAGE", "/aircoservice");
 				break;
-			case 'b': urlTemplate = urlTemplate.replace("PAGE", "/batteryservice");
+			case 'B': urlTemplate = urlTemplate.replace("PAGE", "/batteryservice");
 				break;
-			case 'p': urlTemplate = urlTemplate.replace("PAGE", "/emergencyplantservice");
+			case 'P': urlTemplate = urlTemplate.replace("PAGE", "/emergencyplantservice");
 				break;
-			case 'u': urlTemplate = urlTemplate.replace("PAGE", "/upsservice");
+			case 'U': urlTemplate = urlTemplate.replace("PAGE", "/upsservice");
 				break;
 			default: urlTemplate = urlTemplate.replace("PAGE", "/plainservice");
 				break;
@@ -71,13 +71,13 @@
 
 		var dlgTitle = "Orden de servicio para ";
 		switch(type){
-			case 'a': dlgTitle = dlgTitle + "Aire acondicionado";
+			case 'A': dlgTitle = dlgTitle + "Aire acondicionado";
 				break;
-			case 'b': dlgTitle = dlgTitle + "Baterias";
+			case 'B': dlgTitle = dlgTitle + "Baterias";
 				break;
-			case 'p': dlgTitle = dlgTitle + "Planta de emergencia";
+			case 'P': dlgTitle = dlgTitle + "Planta de emergencia";
 				break;
-			case 'u': dlgTitle = dlgTitle + "UPS";
+			case 'U': dlgTitle = dlgTitle + "UPS";
 				break;
 			default: dlgTitle = dlgTitle + "equipo";
 				break;
