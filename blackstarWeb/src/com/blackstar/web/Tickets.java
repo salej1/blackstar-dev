@@ -66,7 +66,7 @@ public class Tickets extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
-			String ticket = request.getParameter("ticket");
+			String ticket = request.getParameter("ticketId");
 			String employee = request.getParameter("employee");
 			int ticketId = Integer.parseInt(ticket);
 			String who = "portal-servicios";

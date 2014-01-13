@@ -75,8 +75,7 @@
 			modal: true,
 			buttons: {
 				"Aceptar": function() {
-					var employee = $("#employeeSelect option:selected").val();
-
+					var employee = $('#employeeSelect').find('option:selected').val();
 					postAssignedTicket(assignedTicket, employee);
 					
 					$( this ).dialog( "close" );
@@ -129,7 +128,7 @@
 		<p>Asignar ticket<label id="lblTicketBeignAssigned"></label></p>
 			<select id="employeeSelect">
 				<c:forEach var="employee" items="${employees}">
-					<option value = "${ eomployee.userEmail }">${employee.userName}</option>
+					<option value = "${ employee.userEmail }">${employee.userName}</option>
 				</c:forEach>
 			</select>
 		<form id="ticksetSelect" action="tickets" method="post">
