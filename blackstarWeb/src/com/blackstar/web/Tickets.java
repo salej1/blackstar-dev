@@ -69,7 +69,7 @@ public class Tickets extends HttpServlet {
 			String ticket = request.getParameter("ticketId");
 			String employee = request.getParameter("employee");
 			int ticketId = Integer.parseInt(ticket);
-			String who = "portal-servicios";
+			String who = "portal-servicios@gposac.com.mx";
 			
 			TicketController.AssignTicket(ticketId, employee, who, null);
 
