@@ -25,9 +25,10 @@
 					}
 				);
 			});
+			
 		</script>
 	</head>
-
+        <c:set var="sysCallCenter" scope="request" value="${user.belongsToGroup['Call Center']}" />
 		<h1 id="head">
 			<div class="logo">
 				<img alt="Grupo Sac" src="${pageContext.request.contextPath}/img/grupo-sac-logo.png" border="0"/>
@@ -41,7 +42,9 @@
 				<li><span class="active" onclick="window.location = '/dashboard/show.do'">Inicio</span></li>
 				<li><a href="${pageContext.request.contextPath}/tickets">Tickets</a></li>
 				<li><a href="${pageContext.request.contextPath}/serviceOrders/show.do">Ordenes de servicio</a></li>
-				<li><a href="${pageContext.request.contextPath}/seguimiento">Seguimiento</a></li>
+				<c:if test="${sysCallCenter == true}">
+				  <li><a href="${pageContext.request.contextPath}/seguimiento">Seguimiento</a></li>
+				</c:if>
 				<li><a href="${pageContext.request.contextPath}/encuestas">Encuestas de servicio</a></li>
 				<li><a href="${pageContext.request.contextPath}/indicadores">Indicadores Serv.</a></li>
 			</c:when>
@@ -57,7 +60,9 @@
 				<li><a href="${pageContext.request.contextPath}/dashboard/show.do">Inicio</a></li>
 				<li><a href="${pageContext.request.contextPath}/tickets">Tickets</a></li>
 				<li><span class="active" onclick="window.location = '/serviceOrders/show.do'">Ordenes de servicio</span></li>
-				<li><a href="${pageContext.request.contextPath}/seguimiento">Seguimiento</a></li>
+				<c:if test="${sysCallCenter == true}">
+				  <li><a href="${pageContext.request.contextPath}/seguimiento">Seguimiento</a></li>
+				</c:if>
 				<li><a href="${pageContext.request.contextPath}/encuestas">Encuestas de servicio</a></li>
 				<li><a href="${pageContext.request.contextPath}/indicadores">Indicadores Serv.</a></li>
 			</c:when>
@@ -65,7 +70,9 @@
 				<li><a href="${pageContext.request.contextPath}/dashboard/show.do">Inicio</a></li>
 				<li><a href="${pageContext.request.contextPath}/tickets">Tickets</a></li>
 				<li><a href="${pageContext.request.contextPath}/serviceOrders/show.do">Ordenes de servicio</a></li>
-				<li><span class="active"" onclick="window.location = '/seguimiento'">Seguimiento</span></li>
+				<c:if test="${sysCallCenter == true}">
+				  <li><span class="active"" onclick="window.location = '/seguimiento'">Seguimiento</span></li>
+				</c:if>
 				<li><a href="${pageContext.request.contextPath}/encuestas">Encuestas de servicio</a></li>
 				<li><a href="${pageContext.request.contextPath}/indicadores">Indicadores Serv.</a></li>
 			</c:when>			
@@ -73,7 +80,9 @@
 				<li><a href="${pageContext.request.contextPath}/dashboard/show.do">Inicio</a></li>
 				<li><a href="${pageContext.request.contextPath}/tickets">Tickets</a></li>
 				<li><a href="${pageContext.request.contextPath}/serviceOrders/show.do">Ordenes de servicio</a></li>
-				<li><a href="${pageContext.request.contextPath}/seguimiento">Seguimiento</a></li>
+				<c:if test="${sysCallCenter == true}">
+				  <li><a href="${pageContext.request.contextPath}/seguimiento">Seguimiento</a></li>
+				</c:if>
 				<li><span class="active" onclick="window.location = '/encuestas'">Encuestas de servicio</span></li>
 				<li><a href="${pageContext.request.contextPath}/indicadores">Indicadores Serv.</a></li>
 			</c:when>			
@@ -81,7 +90,9 @@
 				<li><a href="${pageContext.request.contextPath}/dashboard/show.do">Inicio</a></li>
 				<li><a href="${pageContext.request.contextPath}/tickets">Tickets</a></li>
 				<li><a href="${pageContext.request.contextPath}/serviceOrders/show.do">Ordenes de servicio</a></li>
-				<li><a href="${pageContext.request.contextPath}/seguimiento">Seguimiento</a></li>
+				<c:if test="${sysCallCenter == true}">
+				  <li><a href="${pageContext.request.contextPath}/seguimiento">Seguimiento</a></li>
+				</c:if>
 				<li><a href="${pageContext.request.contextPath}/encuestas">Encuestas de servicio</a></li>
 				<li><span class="active" onclick="window.location = '/indicadores'">Indicadores Serv.</span></li>
 			</c:when>		
@@ -89,7 +100,9 @@
 				<li><a href="${pageContext.request.contextPath}/dashboard/show.do">Inicio</a></li>
 				<li><a href="${pageContext.request.contextPath}/tickets">Tickets</a></li>
 				<li><a href="${pageContext.request.contextPath}/serviceOrders/show.do">Ordenes de servicio</a></li>
-				<li><a href="${pageContext.request.contextPath}/seguimiento">Seguimiento</a></li>
+				<c:if test="${sysCallCenter == true}">
+				  <li><a href="${pageContext.request.contextPath}/seguimiento">Seguimiento</a></li>
+				</c:if>
 				<li><a href="${pageContext.request.contextPath}/encuestas">Encuestas de servicio</a></li>
 				<li><a href="${pageContext.request.contextPath}/indicadores">Indicadores Serv.</a></li>
 			</c:otherwise>
