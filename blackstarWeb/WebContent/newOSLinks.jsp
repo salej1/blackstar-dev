@@ -22,7 +22,7 @@
 <!-- Seccion de dialgo que se muestra para seleccionar el equipo -->
 <script>
 	var loadedType="";
-
+    var selected = false;
 	// Init
 	function newOSLinks_init(){
 		//Inicializacion del cuadro de dialogo para seleccionar el equipo
@@ -33,7 +33,11 @@
 			modal: true,
 			buttons: {
 				"Aceptar": function() {
-					moveToCaptureScreen(loadedType);
+					if(selected){
+					  moveToCaptureScreen(loadedType);
+					} else {
+						$( this ).dialog( "close" );
+					}
 				},
 				
 				"Cancelar": function() {
@@ -83,6 +87,8 @@
 				break;
 		}
 
+		selected = false;
+		$( "#eqSearch" ).val("");
 		$("#selectSNDialog").dialog('option', 'title', dlgTitle);
 		$("#selectSNDialog").dialog('open');
 	}
@@ -94,10 +100,10 @@
 			source: data,
 			select: function( event, ui ) {
 				$( "#eqSearch" ).val( ui.item.value );
- 
+				selected = true;
 				return false;
 			}
-		})
+		});
 	}
 
 	function getEquipmentList(type){
