@@ -131,6 +131,7 @@ public class PlainServicePolicyDTO {
 
 	private Integer serviceOrderId;
 	private Integer ticketId;
+	private String ticketNumber;
 	private Date serviceDate;
 	private String responsible;
 	private String receivedBy;
@@ -142,6 +143,7 @@ public class PlainServicePolicyDTO {
 	private String signCreated;
 	private String signReceivedBy;
 	private String receivedByPosition;
+	private String receivedByEmail;
 	private String serviceOrderNumber;
 	private String serviceTypeId;
 	private String serviceType;
@@ -446,5 +448,21 @@ public class PlainServicePolicyDTO {
 	}
 	public void setServiceType(String serviceType) {
 		this.serviceType = serviceType;
+	}
+
+	public String getTicketNumber() {
+		return ticketNumber;
+	}
+
+	public void setTicketNumber(String ticketNumber) {
+		this.ticketNumber = ticketNumber;
+	}
+
+	public String getReceivedByEmail() {
+		return receivedByEmail;
+	}
+
+	public void setReceivedByEmail(String receivedByEmail) {
+		this.receivedByEmail = receivedByEmail;
 	}
 }

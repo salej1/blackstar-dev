@@ -61,7 +61,7 @@ public class ServiceOrderController {
 							
 							bodySb.append(String.format("La orden de servicio %s le ha sido asignada para dar seguimiento. Por favor revise a continuación los detalles de la orden ", so.getServiceOrderNumber()));
 							if(message != null){
-								bodySb.append(" y la invormación adicional.");
+								bodySb.append(" y la información adicional.");
 							}
 							bodySb.append(String.format("\r\n\r\n Folio: %s", so.getServiceOrderNumber()));
 							bodySb.append(String.format("\r\n\r\n Cliente: %s", po.getCustomer()));

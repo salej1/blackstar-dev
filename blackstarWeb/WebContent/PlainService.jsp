@@ -146,14 +146,17 @@
 								<tr>
 									<td>Folio:</td>
 									<td><form:input path="serviceOrderNumber" type="text" style="width:95%;" maxlength="5" readOnly="true"/></td>
-									<td colspan="2"><a href='${pageContext.request.contextPath}/report/show.do?serviceOrderId=${serviceOrder.serviceOrderId}' target="_blank">Ver PDF</a><img src='${pageContext.request.contextPath}/img/pdf.png'/>	
+									<td colspan="2">
+										<c:if test="${serviceOrder.serviceOrderId > 0}">
+											<a href='${pageContext.request.contextPath}/report/show.do?serviceOrderId=${serviceOrder.serviceOrderId}' target="_blank">Ver PDF</a><img src='${pageContext.request.contextPath}/img/pdf.png'/>
+										</c:if>	
 									</td>
 								</tr>
 								<tr>
 									<td>Cliente</td>
 									<td colspan="5"><form:input path="customer" type="text" style="width:95%;" readOnly="true" /></td>
 									<td>No. de ticket</td>
-									<td colspan="3"><form:input path="ticketId" type="text" style="width:95%;" readOnly="true" /></td>
+									<td colspan="3"><form:input path="ticketNumber" type="text" style="width:95%;" readOnly="true" /></td>
 								</tr>
 								<tr>
 									<td>Domicilio</td>
@@ -163,7 +166,7 @@
 								</tr>
 								<tr>
 									<td>Solicitante</td>
-									<td colspan="5"><form:textarea path="finalUser" style="width:95%;height:50px;" readOnly="true"></form:textarea></td>
+									<td colspan="5"><form:textarea path="finalUser" style="width:95%;height:50px;"></form:textarea></td>
 									<td>Teléfono</td>
 									<td><form:input type="text" path="contactPhone" style="width:95%;" readOnly="true" /></td>
 								</tr>
@@ -297,6 +300,11 @@
 									<td>Puesto</td>
 									<td><form:input path="receivedByPosition"  style="width:95%;" required="true" /></td>
 								</tr>	
+								<tr>
+									<td colspan="2"></td>
+									<td>Email</td>
+									<td><form:input path="receivedByEmail"  style="width:95%;" required="true" /></td>
+								</tr>
 								<c:if test="${ user.belongsToGroup['Coordinador']}">
 									<tr>
 										<td>Errores de captura<form:checkbox path="isWrong" /></td>

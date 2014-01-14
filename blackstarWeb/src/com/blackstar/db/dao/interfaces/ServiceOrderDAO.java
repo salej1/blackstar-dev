@@ -42,6 +42,7 @@ public interface ServiceOrderDAO {
     public int saveUpsService (UpsServiceDTO service, Date created ,String createdBy,String createdByUsr);
     
     public String getNewServiceNumber(Integer policyId);
+    public String getNewServiceNumber();
     
 	public List<JSONObject> getServiceOrdersByStatus(String status);
 	public List<JSONObject> getServiceOrderHistory();

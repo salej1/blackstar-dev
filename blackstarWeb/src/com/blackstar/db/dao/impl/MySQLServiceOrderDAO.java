@@ -56,7 +56,7 @@ public class MySQLServiceOrderDAO implements ServiceOrderDAO, Serializable {
 						rs.getString("asignee"), rs.getDate("created"), rs.getString("createdBy"),
 						rs.getString("createdByUsr"), rs.getDate("modified"), rs.getString("modifiedBy"),
 						rs.getString("modifiedByUsr"), rs.getString("signCreated"), rs.getString("signReceivedBy"),rs.getString("receivedByPosition"),rs.getString("serviceOrderNumber"), rs.getInt("serviceOrderId"),
-						rs.getInt("isWrong"));
+						rs.getInt("isWrong"), rs.getString("receivedByEmail"));
 				lstServiceOrder.add(serviceOrder);
 						
 			}
@@ -95,7 +95,7 @@ public class MySQLServiceOrderDAO implements ServiceOrderDAO, Serializable {
 						rs.getString("asignee"), rs.getDate("created"), rs.getString("createdBy"),
 						rs.getString("createdByUsr"), rs.getDate("modified"), rs.getString("modifiedBy"),
 						rs.getString("modifiedByUsr"), rs.getString("signCreated"), rs.getString("signReceivedBy"),rs.getString("receivedByPosition"),rs.getString("serviceOrderNumber"),rs.getInt("serviceOrderId"),
-						rs.getInt("isWrong"));
+						rs.getInt("isWrong"), rs.getString("receivedByEmail"));
 						
 			}
 		} catch (ClassNotFoundException | SQLException e) {
@@ -169,7 +169,7 @@ public class MySQLServiceOrderDAO implements ServiceOrderDAO, Serializable {
 						rs.getString("asignee"), rs.getDate("created"), rs.getString("createdBy"),
 						rs.getString("createdByUsr"), rs.getDate("modified"), rs.getString("modifiedBy"),
 						rs.getString("modifiedByUsr"), rs.getString("signCreated"), rs.getString("signReceivedBy"),rs.getString("receivedByPosition"),rs.getString("serviceOrderNumber"),rs.getInt("serviceOrderId"),
-						rs.getInt("IsWrong"));
+						rs.getInt("IsWrong"), rs.getString("receivedByEmail"));
 						
 			}
 		} catch (ClassNotFoundException | SQLException e) {
@@ -306,6 +306,12 @@ public class MySQLServiceOrderDAO implements ServiceOrderDAO, Serializable {
 
 	@Override
 	public List<FollowUpDTO> getServiceFollowUps(Integer serviceOrderId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getNewServiceNumber() {
 		// TODO Auto-generated method stub
 		return null;
 	}

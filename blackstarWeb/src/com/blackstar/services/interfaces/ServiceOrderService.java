@@ -37,8 +37,10 @@ public interface ServiceOrderService {
 	public void savePlainService (PlainServiceDTO service,String createdBy, String createdByUsr);
 	public void saveUpsService (UpsServiceDTO service,String createdBy, String createdByUsr);
 
+	// regresa un numero de OS preventivo, segun tipo de equipo
 	public String getNewServiceNumber(Policy policy);
-	
+	// regresa un nuevo numero de OS correctivo, siempre OS-
+	public String getNewServiceNumber();
 	
 	// Servicios de despliegue de listados de ordenes de servicio
 	public String getServiceOrdersByStatus(String status);

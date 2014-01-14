@@ -20,7 +20,7 @@
 					"aaData": data,
 					"sDom": '<"top"i>rt<"bottom"flp><"clear">',
 					"aoColumns": [
-								  { "mData": "scheduledDate" },
+								  { "mData": "serviceDate" },
 								  { "mData": "customer" },
 								  { "mData": "equipmentType" },
 								  { "mData": "project" },
@@ -30,7 +30,7 @@
 								  { "mData": "equipmentType" }
 							  ],
 					"aoColumnDefs" : [
-										{"mRender" : function(data, type, row){return "<div align='center'><a href='${pageContext.request.contextPath}/dashboard/createServiceOrder.do?equipmentType=" + data + "'>Crear O.S.</a></div>";}, "aTargets" : [0]}
+										{"mRender" : function(data, type, row){return "<div align='center'><a href='${pageContext.request.contextPath}/dashboard/createServiceOrder.do?equipmentType=" + data + "'>Crear O.S.</a></div>";}, "aTargets" : [7]}
 									 ]
 			});
 		});

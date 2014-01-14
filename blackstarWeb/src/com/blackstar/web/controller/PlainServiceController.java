@@ -62,7 +62,9 @@ public class PlainServiceController extends AbstractController {
 	  				  Policy policy = this.daoFactory.getPolicyDAO().getPolicyById(ticket.getPolicyId());
 	  				  Equipmenttype equipType = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
 	  				  plainServicePolicyDTO = new PlainServicePolicyDTO(policy, equipType.getEquipmentType());
+	  				  plainServicePolicyDTO.setServiceOrderNumber(service.getNewServiceNumber());  
 	  				  plainServicePolicyDTO.setServiceStatusId("N");
+	  				  plainServicePolicyDTO.setTicketNumber(ticket.getTicketNumber());
 	  				  model.addAttribute("serviceOrder", plainServicePolicyDTO);
 	  				  model.addAttribute("mode", "new");
 		  		  }
@@ -85,6 +87,7 @@ public class PlainServiceController extends AbstractController {
 	  				  plainServicePolicyDTO = new PlainServicePolicyDTO(policy, equipType.getEquipmentType());
 	  				  plainServicePolicyDTO.setServiceOrderNumber(service.getNewServiceNumber(policy));
 	  				  plainServicePolicyDTO.setServiceStatusId("N");
+	  				  plainServicePolicyDTO.setTicketNumber("NA");
 	  				  model.addAttribute("serviceOrder", plainServicePolicyDTO);
 	  				  model.addAttribute("mode", "new");
 		  		  }
@@ -101,6 +104,7 @@ public class PlainServiceController extends AbstractController {
 		  catch (Exception e) 
 		  {
 				 Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
+				 model.addAttribute("errorDetails", e.getMessage() + " - " + e.getStackTrace()[0].toString());
 				 return "error";
 		  }
 		  
@@ -131,6 +135,7 @@ public class PlainServiceController extends AbstractController {
 		    		servicioOrderSave.setServiceTypeId(serviceOrder.getServiceTypeId().toCharArray()[0]);
 		    		servicioOrderSave.setSignCreated(serviceOrder.getSignCreated());
 		    		servicioOrderSave.setSignReceivedBy(serviceOrder.getSignReceivedBy());
+		    		servicioOrderSave.setReceivedByEmail(serviceOrder.getReceivedByEmail());
 		    		servicioOrderSave.setStatusId("N");
 		    		idServicio = service.saveServiceOrder(servicioOrderSave, "PlainServiceController", userSession.getUser().getUserName());
 		    	}

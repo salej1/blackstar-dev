@@ -163,6 +163,11 @@ public List<FollowUpDTO> getServiceFollowUps(Integer serviceOrderId) {
 	// TODO Auto-generated method stub
 	return null;
 }
+
+@Override
+public String getNewServiceNumber() {
+	return dao.getNewServiceNumber();
+}
   
   
 }
