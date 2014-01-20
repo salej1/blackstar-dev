@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.blackstar.common.Globals;
 import com.blackstar.db.DAOFactory;
+import com.blackstar.interfaces.IEmailService;
 import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
 import com.blackstar.model.Equipmenttype;
@@ -34,6 +35,11 @@ public class UpsServiceController extends AbstractController {
 	  private ServiceOrderService service = null;
 	  private DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.MYSQL);
       private ReportService rpService = null;
+      private IEmailService gmService = null;
+	  
+	  public void setGmService(IEmailService gmService) {
+		this.gmService = gmService;
+	  }
 	  
 	  public void setRpService(ReportService rpService) {
 		this.rpService = rpService;
@@ -154,17 +160,27 @@ public class UpsServiceController extends AbstractController {
 	    		serviceOrder.setServiceOrderId(idServicio);
 	    		//Crear orden de servicio de UpsService
 	    		service.saveUpsService(new UpsServiceDTO(serviceOrder), "UpsServiceController", userSession.getUser().getUserName());
-	    		saveReport(serviceOrder);
+	    		commit(serviceOrder);
 	    	}
 
 	    	return "dashboard";
 	    }
-	    
-  private void saveReport(UpsServicePolicyDTO serviceOrder) throws Exception {
-	Integer id = serviceOrder.getServiceOrderId();
-	String parentId = gdService.getReportsFolderId(id);
-	gdService.insertFileFromStream(id, "application/pdf", "ServiceOrder.pdf"
-	    	      , parentId, rpService.getUPSReport(serviceOrder));
+
+  private void commit(UpsServicePolicyDTO serviceOrder) throws Exception {
+	byte [] report = rpService.getUPSReport(serviceOrder);
+	saveReport(serviceOrder.getServiceOrderId(), report);
+	sendNotification(serviceOrder.getReceivedByEmail(), report);
+  }
+  
+  private void saveReport(Integer id, byte[] report) throws Exception {
+  	String parentId = gdService.getReportsFolderId(id);
+  	gdService.insertFileFromStream(id, "application/pdf"
+  			   , "ServiceOrder.pdf", parentId, report);
+  }
+  
+  private void sendNotification(String to, byte [] report){
+  	gmService.sendEmail(to, "Orden de Servicio", "Orden de Servicio"
+  			                          , "ServiceOrder.pdf", report);
   }
 
-	}
+}

@@ -359,7 +359,12 @@
 									<td><form:input path="closed" type="text" style="width:95%;"  /></td>
 									<td>Puesto</td>
 									<td><form:input path="receivedByPosition"  style="width:95%;"  /></td>
-								</tr>						
+								</tr>	
+								<tr>
+									<td colspan="2"></td>
+									<td>Email</td>
+									<td><form:input path="receivedByEmail"  style="width:95%;" required="true" /></td>
+								</tr>					
 							</table>
 
 							<table>

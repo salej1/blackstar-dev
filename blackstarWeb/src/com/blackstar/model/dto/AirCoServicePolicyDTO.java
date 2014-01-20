@@ -236,6 +236,7 @@ public class AirCoServicePolicyDTO {
 	private String condSerialNumber;
 	private String condBrand;
 	private String observations;
+	private String receivedByEmail;
 	
 	public Integer getPolicyId() {
 		return policyId;
@@ -710,5 +711,13 @@ public class AirCoServicePolicyDTO {
 	}
 	public void setObservations(String observations) {
 		this.observations = observations;
+	}
+
+	public String getReceivedByEmail() {
+		return receivedByEmail;
+	}
+
+	public void setReceivedByEmail(String receivedByEmail) {
+		this.receivedByEmail = receivedByEmail;
 	}
 }

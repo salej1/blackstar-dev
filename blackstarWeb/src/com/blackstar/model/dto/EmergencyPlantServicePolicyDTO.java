@@ -352,6 +352,7 @@ public class EmergencyPlantServicePolicyDTO {
 	private String clockStatus;
 	private String trasnferTypeProtection;
 	private String generatorTypeProtection;
+	private String receivedByEmail;
 	
 	public Integer getPolicyId() {
 		return policyId;
@@ -1140,6 +1141,14 @@ public class EmergencyPlantServicePolicyDTO {
 
 	public void setLampTest(Boolean lampTest) {
 		this.lampTest = lampTest;
+	}
+
+	public String getReceivedByEmail() {
+		return receivedByEmail;
+	}
+
+	public void setReceivedByEmail(String receivedByEmail) {
+		this.receivedByEmail = receivedByEmail;
 	}
 
 }
