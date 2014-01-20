@@ -115,9 +115,9 @@ public class GoogleDriveServiceImpl extends AbstractService
 	body.setParents(Arrays.asList(new ParentReference()
 	      .setId(getReportsFolderId(serviceOrderId))));
 	body.setTitle(fileName);
-	body.setMimeType("application/pdf");
+	body.setMimeType(type);
 	body.setFileSize((long) report.length);
-	InputStreamContent mediaContent = new InputStreamContent("application/pdf",
+	InputStreamContent mediaContent = new InputStreamContent(type,
 		             new BufferedInputStream(new ByteArrayInputStream(report)));
 	mediaContent.setLength(report.length);
 	return drive.files().insert(body, mediaContent).execute().getId();
