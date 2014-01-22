@@ -67,5 +67,9 @@
      <property name="soService" ref="serviceOrderService" />
      <property name="rpService" ref="reportService" />
   </bean>
+  
+  <bean id="indicadoresServicioService" class="com.blackstar.services.impl.IndicadoresServicioServiceImpl" parent="abstractService">
+      <property name="dao" ref="indicadoresServicioDAO" />
+  </bean>
 
 </beans>

@@ -85,5 +85,7 @@
        <property name="urlSufix" value="/edit"/>
    </bean>
    <bean class="com.blackstar.web.controller.IndicadoresServicioController" parent="abstractController">
+       <property name="service" ref="indicadoresServicioService" />
    </bean>
+ 
 </beans>
