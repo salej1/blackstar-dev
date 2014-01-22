@@ -9,7 +9,7 @@
 	 catch(err){
 	 alert(err);
 	 }
-
+	 
 	 $('#tickets').dataTable({
 			"bProcessing": true,
 			"bFilter": true,
@@ -29,10 +29,25 @@
 						  { "mData": "arrival" },
 						  { "mData": "closed" },
 						  { "mData": "asignee" },
-						  { "mData": "ticketStatus" }
+						  { "mData": "ticketStatus", "sClass": "datatables_action" }
 
-					  ]}
+					  ],
+					  "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+						  var backcolor= 'white';
+						  if( aData["ticketStatus"] == "CERRADO" ){
+							  backcolor = "#DFF2BF";
+						  } else if(aData["ticketStatus"] == 'CERRADO FT' ){
+							  backcolor = "#E5F32A";
+						  }else if(aData["ticketStatus"] == 'RETRASADO' ){
+							  backcolor = "#F0C0C0";
+						  }
+					      $('td:eq(9)', nRow).css('background', backcolor).css('font-weight', 'bold');
+					    }					  
+                }
 		);
+	 
+	 
+	 $('#tickets >  tr > th:nth-child(2)').css('background', 'green');
 		
 	} );
 

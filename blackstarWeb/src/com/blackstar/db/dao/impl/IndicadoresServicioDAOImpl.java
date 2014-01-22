@@ -7,13 +7,12 @@ import org.json.JSONObject;
 import com.blackstar.db.dao.AbstractDAO;
 import com.blackstar.db.dao.interfaces.IndicadoresServicioDAO;
 import com.blackstar.db.dao.mapper.JSONRowMapper;
-import com.blackstar.model.Ticket;
 
 public class IndicadoresServicioDAOImpl extends AbstractDAO 
                                         implements IndicadoresServicioDAO {
 	
 	public List<JSONObject> getAllTickets(){
-		String sqlQuery = "CALL GetAllTickets();";
+		String sqlQuery = "CALL GetTicketsKPI();";
 		return getJdbcTemplate().query(sqlQuery, new Object[]{}
 		                                , new JSONRowMapper()); 
 	}
