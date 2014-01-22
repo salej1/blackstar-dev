@@ -27,10 +27,10 @@
 								  { "mData": "officeName" },
 								  { "mData": "brand" },
 								  { "mData": "serialNumber" },
-								  { "mData": "equipmentType" }
+								  { "mData": "serialNumber" }
 							  ],
 					"aoColumnDefs" : [
-										{"mRender" : function(data, type, row){return "<div align='center'><a href='${pageContext.request.contextPath}/dashboard/createServiceOrder.do?equipmentType=" + data + "'>Crear O.S.</a></div>";}, "aTargets" : [7]}
+										{"mRender" : function(data, type, row){return "<div align='center'><a href='${pageContext.request.contextPath}/serviceOrders/show.do?equipmentType=" + data + "'>Crear O.S.</a></div>";}, "aTargets" : [7]}
 									 ]
 			});
 		});
