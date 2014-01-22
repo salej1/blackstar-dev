@@ -96,7 +96,7 @@ public class BatteryServiceController extends AbstractController {
 	  				  batteryServicePolicyDTO = new BatteryServicePolicyDTO(policy, equipType.getEquipmentType(), serviceOrder,  batteryServiceDTO);
 	  				  model.addAttribute("serviceOrder", batteryServicePolicyDTO);
 		  		  }
-		  		  model.addAttribute("osAttachmentFolder", gdService.getAttachmentFolderId(Integer.parseInt(idObject)));
+		  		model.addAttribute("osAttachmentFolder", gdService.getAttachmentFolderId(batteryServicePolicyDTO.getServiceOrderNumber()));
 	  		  }
 			  else
 			  {

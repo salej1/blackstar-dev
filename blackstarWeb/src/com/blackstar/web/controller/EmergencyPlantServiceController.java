@@ -93,7 +93,7 @@ public class EmergencyPlantServiceController extends AbstractController {
 	  				emergencyPlantServicePolicyDTO = new EmergencyPlantServicePolicyDTO(policy, equipType.getEquipmentType(), serviceOrder,  emergencyPlantServiceDTO);
 	  				  model.addAttribute("serviceOrder", emergencyPlantServicePolicyDTO);
 		  		  }
-		  		  model.addAttribute("osAttachmentFolder", gdService.getAttachmentFolderId(Integer.parseInt(idObject)));
+		  		model.addAttribute("osAttachmentFolder", gdService.getAttachmentFolderId(emergencyPlantServicePolicyDTO.getServiceOrderNumber()));
 	  		  }
 			  else
 			  {
