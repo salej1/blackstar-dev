@@ -18,7 +18,6 @@ import com.blackstar.model.Policy;
 import com.blackstar.model.Serviceorder;
 import com.blackstar.model.Ticket;
 import com.blackstar.model.UserSession;
-import com.blackstar.model.dto.BatteryServicePolicyDTO;
 import com.blackstar.model.dto.EmergencyPlantServiceDTO;
 import com.blackstar.model.dto.EmergencyPlantServicePolicyDTO;
 import com.blackstar.services.interfaces.ReportService;
@@ -93,7 +92,7 @@ public class EmergencyPlantServiceController extends AbstractController {
 	  				emergencyPlantServicePolicyDTO = new EmergencyPlantServicePolicyDTO(policy, equipType.getEquipmentType(), serviceOrder,  emergencyPlantServiceDTO);
 	  				  model.addAttribute("serviceOrder", emergencyPlantServicePolicyDTO);
 		  		  }
-		  		  model.addAttribute("osAttachmentFolder", gdService.getAttachmentFolderId(Integer.parseInt(idObject)));
+		  		  model.addAttribute("osAttachmentFolder", gdService.getAttachmentFolderId(emergencyPlantServicePolicyDTO.getServiceOrderNumber()));
 	  		  }
 			  else
 			  {

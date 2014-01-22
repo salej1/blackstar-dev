@@ -93,7 +93,7 @@ public class AirCoServiceController extends AbstractController {
 	  				  airCoServicePolicyDTO = new AirCoServicePolicyDTO(policy, equipType.getEquipmentType(), serviceOrder,  airCoServiceDTO);
 	  				  model.addAttribute("serviceOrder", airCoServicePolicyDTO);
 		  		  }
-		  		  model.addAttribute("osAttachmentFolder", gdService.getAttachmentFolderId(Integer.parseInt(idObject)));
+		  		  model.addAttribute("osAttachmentFolder", gdService.getAttachmentFolderId(airCoServicePolicyDTO.getServiceOrderNumber()));
 	  		  }
 			  else
 			  {
