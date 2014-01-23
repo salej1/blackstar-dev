@@ -34,8 +34,8 @@ public class IndicadoresServicioServiceImpl extends AbstractService
 	this.dao = dao;
   }
   
-  public String getAllTickets() throws Exception{
-	List<JSONObject> jsonData = dao.getAllTickets();
+  public String getTickets() throws Exception{
+	List<JSONObject> jsonData = dao.getTickets();
 	String month = "";
 	String lastMonth = "";
 	Map <String, String> map = new HashMap<String , String>() {{
@@ -59,7 +59,12 @@ public class IndicadoresServicioServiceImpl extends AbstractService
 		  jsonData.add(i, new JSONObject(map));
 	  }
     }
-	return jsonData.toString();
+	return jsonData != null ? jsonData.toString() : "";
+  }
+  
+  public String getPolicies() throws Exception{
+	List<JSONObject> jsonData = dao.getPolicies();
+	return jsonData != null ? jsonData.toString() : "";
   }
 
 }

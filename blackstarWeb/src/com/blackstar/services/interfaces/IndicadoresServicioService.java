@@ -2,5 +2,6 @@ package com.blackstar.services.interfaces;
 
 public interface IndicadoresServicioService {
 
-	public String getAllTickets() throws Exception;
+	public String getTickets() throws Exception;
+	public String getPolicies() throws Exception;
 }

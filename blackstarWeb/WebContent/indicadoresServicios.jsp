@@ -55,7 +55,7 @@
 					<img src="/img/navigate-right.png"/><a href="/#">Resumen Ordenes de servicio</a>
 				</div>
 				<div>
-					<img src="/img/navigate-right.png"/><a href="/#">Concentrado polizas</a>
+					<img src="/img/navigate-right.png"/><a href="#" id="getPolicies" onclick="go('getPolicies')">Concentrado polizas</a>
 				</div>
 			</div>	
 		</div>

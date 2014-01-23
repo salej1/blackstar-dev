@@ -32,7 +32,7 @@ public class IndicadoresServicioController extends AbstractController {
   @RequestMapping(value= "/getTickets.do", method = RequestMethod.GET)
   public String  getTickets(ModelMap model){
 	try {
-	     model.addAttribute("tickets", service.getAllTickets());
+	     model.addAttribute("tickets", service.getTickets());
 	} catch (Exception e) {
 		Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 		e.printStackTrace();
@@ -40,6 +40,19 @@ public class IndicadoresServicioController extends AbstractController {
 		return "error";
 	}
 	return "_indServTickets";
+  }
+  
+  @RequestMapping(value= "/getPolicies.do", method = RequestMethod.GET)
+  public String  getPolicies(ModelMap model){
+	try {
+	     model.addAttribute("policies", service.getPolicies());
+	} catch (Exception e) {
+		Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
+		e.printStackTrace();
+		model.addAttribute("errorDetails", e.getStackTrace()[0].toString());
+		return "error";
+	}
+	return "_indServPolicies";
   }
 
 }
