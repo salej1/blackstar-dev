@@ -65,6 +65,7 @@ public class AirCoServicePolicyDTO {
 		this.signCreated = serviceOrder.getSignCreated();
 		this.signReceivedBy = serviceOrder.getsignReceivedBy();
 		this.receivedByPosition = serviceOrder.getReceivedByPosition();
+		this.receivedByEmail = serviceOrder.getReceivedByEmail();
 		this.serviceOrderNumber = serviceOrder.getServiceOrderNumber();
 		
 	}
@@ -183,6 +184,7 @@ public class AirCoServicePolicyDTO {
 	private String signCreated;
 	private String signReceivedBy;
 	private String receivedByPosition;
+	private String receivedByEmail;
 	private String serviceOrderNumber;
 	
 	private Integer aaServiceId;
@@ -710,5 +712,13 @@ public class AirCoServicePolicyDTO {
 	}
 	public void setObservations(String observations) {
 		this.observations = observations;
+	}
+
+	public String getReceivedByEmail() {
+		return receivedByEmail;
+	}
+
+	public void setReceivedByEmail(String receivedByEmail) {
+		this.receivedByEmail = receivedByEmail;
 	}
 }

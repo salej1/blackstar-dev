@@ -11,8 +11,7 @@
 	<title>Órden de servicio Aire Acondicionado</title>
 	
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<script src="${pageContext.request.contextPath}/js/jquery.ui.touch-punch.min.js"></script>
-	<script src="${pageContext.request.contextPath}/js/jquery.signature.min.js"></script>
+
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/960.css" type="text/css" media="screen" charset="utf-8" />
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/template.css" type="text/css" media="screen" charset="utf-8" />
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/colour.css" type="text/css" media="screen" charset="utf-8" />
@@ -20,15 +19,15 @@
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery.ui.theme.css">
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery-ui.min.css">
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery.signature.css">
-	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery.datetimepicker.css">
-	<script src="${pageContext.request.contextPath}/js/jquery.datetimepicker.js"></script>
+	<script src="${pageContext.request.contextPath}/js/jquery.signature.min.js"></script>
+	<script src="${pageContext.request.contextPath}/js/jquery.ui.touch-punch.min.js"></script>
+	<script src="${pageContext.request.contextPath}/js/dateFormat.js"></script>
 	
 	<script type="text/javascript" charset="utf-8">
 	
 		$(document).ready(function () {
 						
-			$( "#serviceDate" ).datetimepicker();
-			$( "#closed" ).datetimepicker();
+			$("#serviceDate").val(dateNow());
 
 			// Signature capture box # 1 
 			$('#signCapture').signature({syncField: '#signCreated'});
@@ -108,8 +107,11 @@
 							<table>
 								<tr>
 									<td>Folio:</td>
-									<td><form:input path="serviceOrderNumber" type="text" style="width:95%;" maxlength="5" /></td>
-									<td colspan="2"><a href='${pageContext.request.contextPath}/report/show.do?serviceOrderId=${serviceOrder.serviceOrderId}' target="_blank">Ver PDF</a><img src='${pageContext.request.contextPath}/img/pdf.png'/>	
+									<td><form:input path="serviceOrderNumber" type="text" style="width:95%;" maxlength="5" readOnly="true" /></td>
+									<td colspan="2">
+										<c:if test="${serviceOrder.serviceOrderId > 0}">
+											<a href='${pageContext.request.contextPath}/report/show.do?serviceOrderId=${serviceOrder.serviceOrderId}' target="_blank">Ver PDF</a><img src='${pageContext.request.contextPath}/img/pdf.png'/>	
+										</c:if>
 									</td>
 								</tr>
 								<tr>
@@ -137,7 +139,7 @@
 								</tr>
 								<tr>
 									<td>Fecha y hora de llegada</td>
-									<td><form:input path="serviceDate" type="text" style="width:95%;"  /></td>
+									<td><form:input path="serviceDate" type="text" style="width:95%;" readOnly="true"  /></td>
 								</tr>
 							</table>
 						</div>					
@@ -350,16 +352,21 @@
 								</tr>
 								<tr>
 									<td>Nombre</td>
-									<td><form:input path="responsible" type="text" style="width:95%;"  /></td>
+									<td><form:input path="responsible" type="text" style="width:95%;" readOnly="true" /></td>
 									<td>Nombre</td>
-									<td><form:input path="receivedBy" type="text" style="width:95%;" /></td>
+									<td><form:input path="receivedBy" type="text" style="width:95%;" required="true"/></td>
 								</tr>
 								<tr>
 									<td>Fecha y hora de salida</td>
-									<td><form:input path="closed" type="text" style="width:95%;"  /></td>
+									<td><form:input path="closed" type="text" style="width:95%;" required="true" /></td>
 									<td>Puesto</td>
-									<td><form:input path="receivedByPosition"  style="width:95%;"  /></td>
-								</tr>						
+									<td><form:input path="receivedByPosition"  style="width:95%;" required="true" /></td>
+								</tr>		
+								<tr>
+									<td colspan="2"></td>
+									<td>Email</td>
+									<td><form:input path="receivedByEmail"  style="width:95%;" required="true" /></td>
+								</tr>			
 							</table>
 
 							<table>

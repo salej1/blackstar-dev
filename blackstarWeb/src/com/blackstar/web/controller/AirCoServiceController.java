@@ -51,7 +51,6 @@ public class AirCoServiceController extends AbstractController {
 				  //si la operation es 1, el idObject es el id de un ticket
 				  //si la operation es 2, el idObject es el id de un servicio
 				  //si la operation es 3, el idObject es el no de serie del equipo
-				  //si la operation es 4, el idObject es el id del aircoservice
 		  		  if(operation==1)
 		  		  {
 		  			  Integer idTicket = Integer.parseInt(idObject);
@@ -59,7 +58,10 @@ public class AirCoServiceController extends AbstractController {
 	  				  Policy policy = this.daoFactory.getPolicyDAO().getPolicyById(ticket.getPolicyId());
 	  				  Equipmenttype equipType = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
 	  				  airCoServicePolicyDTO = new AirCoServicePolicyDTO(policy, equipType.getEquipmentType());
+	  				  airCoServicePolicyDTO.setServiceOrderNumber(service.getNewServiceNumber(policy));
+	  				  airCoServicePolicyDTO.setServiceStatusId("N");
 	  				  model.addAttribute("serviceOrder", airCoServicePolicyDTO);
+	  				  model.addAttribute("mode", "new");
 		  		  }
 		  		  else if( operation==2)
 		  		  {
@@ -69,23 +71,17 @@ public class AirCoServiceController extends AbstractController {
 	  				  Equipmenttype equipType = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
 	  				  airCoServicePolicyDTO = new AirCoServicePolicyDTO(policy, equipType.getEquipmentType(), serviceOrder );
 	  				  model.addAttribute("serviceOrder", airCoServicePolicyDTO);
+	  				  model.addAttribute("mode", "detail");
 		  		  }
 		  		  else if(operation==3)
 		  		  {
 		  			  Policy policy  = this.daoFactory.getPolicyDAO().getPolicyBySerialNo(idObject);
 	  				  Equipmenttype equipType = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
 	  				  airCoServicePolicyDTO = new AirCoServicePolicyDTO(policy, equipType.getEquipmentType());
+	  				  airCoServicePolicyDTO.setServiceOrderNumber(service.getNewServiceNumber(policy));
+	  				  airCoServicePolicyDTO.setServiceStatusId("N");
 	  				  model.addAttribute("serviceOrder", airCoServicePolicyDTO);
-		  		  }
-		  		  else if(operation ==4)
-		  		  {
-		  			  Integer idOrderService = Integer.parseInt(idObject);
-		  			  AirCoServiceDTO airCoServiceDTO = service.getAirCoService(idOrderService);
-		  			  Serviceorder serviceOrder = this.daoFactory.getServiceOrderDAO().getServiceOrderById(airCoServiceDTO.getServiceOrderId());
-		  			  Policy policy = this.daoFactory.getPolicyDAO().getPolicyById(serviceOrder.getPolicyId());
-	  				  Equipmenttype equipType = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
-	  				  airCoServicePolicyDTO = new AirCoServicePolicyDTO(policy, equipType.getEquipmentType(), serviceOrder,  airCoServiceDTO);
-	  				  model.addAttribute("serviceOrder", airCoServicePolicyDTO);
+	  				  model.addAttribute("mode", "new");
 		  		  }
 		  		  model.addAttribute("osAttachmentFolder", gdService.getAttachmentFolderId(Integer.parseInt(idObject)));
 	  		  }
@@ -97,6 +93,8 @@ public class AirCoServiceController extends AbstractController {
 		  catch (Exception e) 
 		  {
 				 Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
+				 model.addAttribute("errorDetails", e.getMessage() + " - " + e.getStackTrace()[0].toString());
+				 return "error";
 		  }
 		  
 		  return "aircoservice";
@@ -123,6 +121,7 @@ public class AirCoServiceController extends AbstractController {
 	      servicioOrderSave.setServiceTypeId('I');
 	      servicioOrderSave.setSignCreated(serviceOrder.getSignCreated());
 	      servicioOrderSave.setSignReceivedBy(serviceOrder.getSignReceivedBy());
+	      servicioOrderSave.setReceivedByEmail(serviceOrder.getReceivedByEmail());
 	      servicioOrderSave.setStatusId("N");
 	      idServicio = service.saveServiceOrder(servicioOrderSave, "AirCoServiceController", userSession.getUser().getUserName());
 	    } else {
@@ -148,10 +147,11 @@ public class AirCoServiceController extends AbstractController {
 	      service.saveAirCoService(new AirCoServiceDTO(serviceOrder), "AirCoServiceController", userSession.getUser().getUserName());
 	      saveReport(serviceOrder);
 	    }
-	} catch(Exception ex){
+	} catch(Exception e){
 	    Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1]
-	    		                                           .toString(), ex);
-	    ex.printStackTrace();
+	    		                                           .toString(), e);
+	    e.printStackTrace();
+	    model.addAttribute("errorDetails", e.getMessage() + " - " + e.getStackTrace()[0].toString());
 	    return "error";
 	}
     return "dashboard";

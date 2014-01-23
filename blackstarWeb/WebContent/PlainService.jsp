@@ -18,7 +18,6 @@
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery.ui.theme.css">
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery-ui.min.css">
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery.signature.css">
-	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery.datetimepicker.css">
 	<script src="${pageContext.request.contextPath}/js/jquery.signature.min.js"></script>
 	<script src="${pageContext.request.contextPath}/js/jquery.ui.touch-punch.min.js"></script>
 	<script src="${pageContext.request.contextPath}/js/dateFormat.js"></script>
