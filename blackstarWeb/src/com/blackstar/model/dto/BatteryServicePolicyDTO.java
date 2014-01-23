@@ -181,6 +181,7 @@ public class BatteryServicePolicyDTO {
 	private String batteryTemperature;
 	private Integer voltageBus;
 	private Integer temperature;
+	private String receivedByEmail;
 	private List<BatteryCellServiceDTO> cells;
 	
 	public Integer getPolicyId() {
@@ -476,6 +477,14 @@ public class BatteryServicePolicyDTO {
 	}
 	public void setCells(List<BatteryCellServiceDTO> cells) {
 		this.cells = cells;
+	}
+
+	public String getReceivedByEmail() {
+		return receivedByEmail;
+	}
+
+	public void setReceivedByEmail(String receivedByEmail) {
+		this.receivedByEmail = receivedByEmail;
 	}
 	
 	

@@ -44,9 +44,26 @@
       <property name="typeDao" ref="serviceTypeDAO" />
   </bean>
   
-  <bean id="reportService" class="com.blackstar.services.impl.ReportServiceImpl" parent="abstractService">
+  <bean id="reportService" class="com.blackstar.services.impl.ReportServiceImpl" parent="abstractService"/>
+  <bean id="gmService" class="com.blackstar.services.GmailService" parent="abstractService">
+      <property name="mailSender" ref="mailSender" />
   </bean>
-    <bean id="offlineOSService" class="com.blackstar.services.impl.OfflineOSServiceImpl" parent="abstractService">
+  
+  <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+	<property name="host" value="smtp.gmail.com" />
+	<property name="port" value="587" />
+	<property name="username" value="portal-servicios@gposac.com.mx" />
+	<property name="password" value="SACPORTAL" />
+ 
+	<property name="javaMailProperties">
+	   <props>
+       	      <prop key="mail.smtp.auth">true</prop>
+       	      <prop key="mail.smtp.starttls.enable">true</prop>
+       	   </props>
+	</property>
+  </bean>
+  
+  <bean id="offlineOSService" class="com.blackstar.services.impl.OfflineOSServiceImpl" parent="abstractService">
      <property name="soService" ref="serviceOrderService" />
      <property name="rpService" ref="reportService" />
   </bean>

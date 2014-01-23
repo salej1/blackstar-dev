@@ -90,20 +90,19 @@ public class GoogleDriveServiceImpl extends AbstractService
     }
   }
 
-  public String getAttachmentFolderId(Integer serviceOrderId) throws Exception {
-	return getFolderId(serviceOrderId, sysFolderIds.get("OS_ATTACHMENTS"));
+  public String getAttachmentFolderId(String id) throws Exception {
+	return getSysFolderId(id, sysFolderIds.get("OS_ATTACHMENTS"));
   }	
   
-  public String getReportsFolderId(Integer serviceOrderId) throws Exception {
-	return getFolderId(serviceOrderId, sysFolderIds.get("OS_REPORTS"));
+  public String getReportsFolderId(Integer id) throws Exception {
+	return getSysFolderId(String.valueOf(id), sysFolderIds.get("OS_REPORTS"));
   }	
   
-  public String getFolderId(Integer serviceOrderId, String parentId) 
+  public String getSysFolderId(String id, String parentId) 
 		                                          throws Exception {
-	String osAttachmentFolderId = getFolderId("os_" + serviceOrderId, parentId);		
+	String osAttachmentFolderId = getFolderId(id, parentId);		
 	if(osAttachmentFolderId == null){
-	  osAttachmentFolderId = insertFile("os_" + serviceOrderId ,parentId 
-			                                        , FOLDER_FILE_TYPE);
+	  osAttachmentFolderId = insertFile(id ,parentId , FOLDER_FILE_TYPE);
 	  setPermissions(osAttachmentFolderId);
 	}
 	return osAttachmentFolderId;
@@ -115,9 +114,9 @@ public class GoogleDriveServiceImpl extends AbstractService
 	body.setParents(Arrays.asList(new ParentReference()
 	      .setId(getReportsFolderId(serviceOrderId))));
 	body.setTitle(fileName);
-	body.setMimeType("application/pdf");
+	body.setMimeType(type);
 	body.setFileSize((long) report.length);
-	InputStreamContent mediaContent = new InputStreamContent("application/pdf",
+	InputStreamContent mediaContent = new InputStreamContent(type,
 		             new BufferedInputStream(new ByteArrayInputStream(report)));
 	mediaContent.setLength(report.length);
 	return drive.files().insert(body, mediaContent).execute().getId();

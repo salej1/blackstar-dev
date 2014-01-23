@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.blackstar.common.Globals;
 import com.blackstar.db.DAOFactory;
+import com.blackstar.interfaces.IEmailService;
 import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
 import com.blackstar.model.Equipmenttype;
@@ -22,7 +23,6 @@ import com.blackstar.model.Ticket;
 import com.blackstar.model.UserSession;
 import com.blackstar.model.dto.PlainServiceDTO;
 import com.blackstar.model.dto.PlainServicePolicyDTO;
-import com.blackstar.services.UserServiceFactory;
 import com.blackstar.services.interfaces.ReportService;
 import com.blackstar.services.interfaces.ServiceOrderService;
 import com.blackstar.web.AbstractController;
@@ -35,10 +35,16 @@ public class PlainServiceController extends AbstractController {
 	  private ServiceOrderService service = null;
 	  private DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.MYSQL);
 	  private ReportService rpService = null;
+	  private IEmailService gmService = null;
+	  
+	  public void setGmService(IEmailService gmService) {
+		this.gmService = gmService;
+	  }
 	  
 	  public void setRpService(ReportService rpService) {
 		this.rpService = rpService;
 	  }
+	  
 	  public void setService(ServiceOrderService service) {
 		this.service = service;
 	  }
@@ -94,7 +100,7 @@ public class PlainServiceController extends AbstractController {
 		  		  
 		  		  model.addAttribute("serviceTypes", service.getServiceTypeList());
 				  model.addAttribute("serviceStatuses", service.getServiceStatusList());
-				  model.addAttribute("osAttachmentFolder", gdService.getAttachmentFolderId(Integer.parseInt(idObject)));
+				  model.addAttribute("osAttachmentFolder", gdService.getAttachmentFolderId(plainServicePolicyDTO.getServiceOrderNumber()));
 	  		  }
 			  else
 			  {
@@ -108,7 +114,7 @@ public class PlainServiceController extends AbstractController {
 				 return "error";
 		  }
 		  
-		  return "plainservice";
+		  return "PlainService";
 	  }
 	  
 	    @RequestMapping(value = "/save.do", method = RequestMethod.POST)
@@ -156,21 +162,35 @@ public class PlainServiceController extends AbstractController {
                          serviceOrder.setServiceOrderId(idServicio);
                          //Crear orden de servicio de AirCo
                          service.savePlainService(new PlainServiceDTO(serviceOrder), "PlainServiceController", userSession.getUser().getUserName());
-                         saveReport(serviceOrder);
+                         commit(serviceOrder);
                  }
 	    	}
 	    	catch(Exception e){
-				 Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
+				 StringBuilder details = new StringBuilder(e.toString() + "\n");
+				 for(StackTraceElement element : e.getStackTrace()){
+					 details.append(element.toString() + "\n");
+				 }
+				 model.addAttribute("errorDetails", details.toString());
 				 e.printStackTrace();
 				 return "error";
 	    	}
 	    	return "dashboard";
 	    }
 	    
-	    private void saveReport(PlainServicePolicyDTO serviceOrder) throws Exception {
-	    	Integer id = serviceOrder.getServiceOrderId();
+	    private void saveReport(Integer id, byte[] report) throws Exception {
 	    	String parentId = gdService.getReportsFolderId(id);
-	    	gdService.insertFileFromStream(id, "application/pdf", "ServiceOrder.pdf"
-	    			            , parentId, rpService.getGeneralReport(serviceOrder));
+	    	gdService.insertFileFromStream(id, "application/pdf"
+	    			   , "ServiceOrder.pdf", parentId, report);
+	    }
+	    
+	    private void sendNotification(String to, byte [] report){
+	    	gmService.sendEmail(to, "Orden de Servicio", "Orden de Servicio"
+	    			                          , "ServiceOrder.pdf", report);
+	    }
+	    
+	    private void commit(PlainServicePolicyDTO serviceOrder) throws Exception {
+	      byte [] report = rpService.getGeneralReport(serviceOrder);
+	      saveReport(serviceOrder.getServiceOrderId(), report);
+	      sendNotification(serviceOrder.getReceivedByEmail(), report);
 	    }
 	}

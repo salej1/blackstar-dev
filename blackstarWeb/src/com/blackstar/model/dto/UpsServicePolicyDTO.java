@@ -209,6 +209,7 @@ public class UpsServicePolicyDTO {
 	private Double outputVoltageNeutro;
 	private Double inOutFrecuency;
 	private Double busVoltage;
+	private String receivedByEmail;
 	
 	public Integer getPolicyId() {
 		return policyId;
@@ -587,5 +588,13 @@ public class UpsServicePolicyDTO {
 	}
 	public void setBusVoltage(Double busVoltage) {
 		this.busVoltage = busVoltage;
+	}
+
+	public String getReceivedByEmail() {
+		return receivedByEmail;
+	}
+
+	public void setReceivedByEmail(String receivedByEmail) {
+		this.receivedByEmail = receivedByEmail;
 	}
 }

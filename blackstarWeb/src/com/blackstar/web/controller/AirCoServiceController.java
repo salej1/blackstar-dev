@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.blackstar.common.Globals;
 import com.blackstar.db.DAOFactory;
+import com.blackstar.interfaces.IEmailService;
 import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
 import com.blackstar.model.Equipmenttype;
@@ -31,6 +32,11 @@ public class AirCoServiceController extends AbstractController {
 	  private ServiceOrderService service = null;
 	  private DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.MYSQL);
 	  private ReportService rpService = null;
+      private IEmailService gmService = null;
+	  
+	  public void setGmService(IEmailService gmService) {
+		this.gmService = gmService;
+	  }
 	  
 	  public void setRpService(ReportService rpService) {
 		this.rpService = rpService;
@@ -83,7 +89,7 @@ public class AirCoServiceController extends AbstractController {
 	  				  model.addAttribute("serviceOrder", airCoServicePolicyDTO);
 	  				  model.addAttribute("mode", "new");
 		  		  }
-		  		  model.addAttribute("osAttachmentFolder", gdService.getAttachmentFolderId(Integer.parseInt(idObject)));
+		  		model.addAttribute("osAttachmentFolder", gdService.getAttachmentFolderId(airCoServicePolicyDTO.getServiceOrderNumber()));
 	  		  }
 			  else
 			  {
@@ -145,7 +151,7 @@ public class AirCoServiceController extends AbstractController {
 	      serviceOrder.setServiceOrderId(idServicio);
 	      //Crear orden de servicio de AirCo
 	      service.saveAirCoService(new AirCoServiceDTO(serviceOrder), "AirCoServiceController", userSession.getUser().getUserName());
-	      saveReport(serviceOrder);
+	      commit(serviceOrder);
 	    }
 	} catch(Exception e){
 	    Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1]
@@ -156,12 +162,22 @@ public class AirCoServiceController extends AbstractController {
 	}
     return "dashboard";
   }
-	    
-  private void saveReport(AirCoServicePolicyDTO serviceOrder) throws Exception {
-    Integer id = serviceOrder.getServiceOrderId();
-	String parentId = gdService.getReportsFolderId(id);
-	gdService.insertFileFromStream(id, "application/pdf", "ServiceOrder.pdf"
-			            , parentId, rpService.getAirCoReport(serviceOrder));
+  
+  private void commit(AirCoServicePolicyDTO serviceOrder) throws Exception {
+	byte [] report = rpService.getAirCoReport(serviceOrder);
+	saveReport(serviceOrder.getServiceOrderId(), report);
+	sendNotification(serviceOrder.getReceivedByEmail(), report);
+  }
+  
+  private void saveReport(Integer id, byte[] report) throws Exception {
+  	String parentId = gdService.getReportsFolderId(id);
+  	gdService.insertFileFromStream(id, "application/pdf"
+  			   , "ServiceOrder.pdf", parentId, report);
+  }
+  
+  private void sendNotification(String to, byte [] report){
+  	gmService.sendEmail(to, "Orden de Servicio", "Orden de Servicio"
+  			                          , "ServiceOrder.pdf", report);
   }
 
 }

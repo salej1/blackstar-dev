@@ -238,6 +238,7 @@ public class AirCoServicePolicyDTO {
 	private String condSerialNumber;
 	private String condBrand;
 	private String observations;
+	private String receivedByEmail;
 	
 	public Integer getPolicyId() {
 		return policyId;
