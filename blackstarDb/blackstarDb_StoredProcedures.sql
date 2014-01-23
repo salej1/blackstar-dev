@@ -144,13 +144,51 @@
 -- -----------------------------------------------------------------------------
 -- 26   23/01/2014	DCB		Se Integra:
 -- 								blackstarDb.GetTicketsKPI
+--                              blackstarDb.GetPoliciesKPI
 -- -----------------------------------------------------------------------------
 use blackstarDb;
 
 
 DELIMITER $$
 
-
+DROP PROCEDURE IF EXISTS blackstardb.GetPoliciesKPI$$
+CREATE PROCEDURE blackstardb.GetPoliciesKPI()
+BEGIN
+SELECT py.policyId as policyId,
+       IFNULL(of.officeName, '') as officeName,
+       IFNULL(py.policyTypeId, '') as  policyTypeId,
+       IFNULL(py.customerContract, '') as customerContract,
+       IFNULL(py.customer, '') as customer,
+       IFNULL(py.finalUser, '') as finalUser,
+       IFNULL(py.project, '') as project,
+       IFNULL(py.cst, '') as cst,
+       IFNULL(eq.equipmentType, '') as equipmentType,
+       IFNULL(py.brand, '') as brand,
+       IFNULL(py.model, '') as model,
+       IFNULL(py.serialNumber, '') as serialNumber,
+       IFNULL(py.capacity, '') as capacity,
+       IFNULL(py.equipmentAddress, '') as equipmentAddress,
+       IFNULL(py.equipmentLocation, '') as equipmentLocation,
+       IFNULL(py.contactName, '') as contactName,
+       IFNULL(py.contactEmail, '') as contactEmail,
+       IFNULL(py.contactPhone, '') as contactPhone,
+       IFNULL(py.startDate, '') as startDate,
+       IFNULL(py.endDate, '') as endDate,
+       IFNULL(py.visitsPerYear, '') as visitsPerYear,
+       IFNULL(py.responseTimeHR, '') as responseTimeHR,
+       IFNULL(py.solutionTimeHR, '') as solutionTimeHR,
+       IFNULL(py.penalty, '') as penalty,
+       IFNULL(py.service, '') as service,
+       IFNULL(py.includesParts, '') as includesParts,
+       IFNULL(py.exceptionParts, '') as exceptionParts,
+       IFNULL(sc.serviceCenter, '') as serviceCenter
+	FROM policy py
+  INNER JOIN office of ON py.officeId = of.officeId
+  INNER JOIN equipmenttype eq ON eq.equipmentTypeId = py.equipmentTypeId
+  INNER JOIN servicecenter sc ON py.serviceCenterId = sc.serviceCenterId
+	WHERE py.created >= STR_TO_DATE(CONCAT('01-01-',YEAR(NOW())),'%d-%m-%Y')
+    ORDER BY py.created ASC;
+END$$
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetTicketsKPI
 -- -----------------------------------------------------------------------------
