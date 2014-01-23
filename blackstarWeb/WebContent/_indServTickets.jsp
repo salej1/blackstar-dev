@@ -1,5 +1,6 @@
 <script type="text/javascript" charset="utf-8">
 	 var str = '${tickets}';
+	 var sMonth;
 
 	 $(document).ready(function() {
 
@@ -19,6 +20,7 @@
 			"sPaginationType": "full_numbers",
 			"aaData": data,
 			"sDom": '<"top"i>rt<"bottom"flp><"clear">',
+			"aaSorting": [],
 			"aoColumns": [
 						  { "mData": "ticketNumber" },
 						  { "mData": "customer" },
@@ -29,7 +31,7 @@
 						  { "mData": "arrival" },
 						  { "mData": "closed" },
 						  { "mData": "asignee" },
-						  { "mData": "ticketStatus", "sClass": "datatables_action" }
+						  { "mData": "ticketStatus"}
 
 					  ],
 					  "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
@@ -42,12 +44,14 @@
 							  backcolor = "#F0C0C0";
 						  }
 					      $('td:eq(9)', nRow).css('background', backcolor).css('font-weight', 'bold');
+					      if( aData["ticketNumber"].indexOf("lbl-") == 0){
+					    	  $('td:eq(0)', nRow).html(aData["ticketNumber"]
+					    	       .substring(4, aData["ticketNumber"].length));
+					    	  $('td', nRow).css({'background':'#C0E1F3'}).css('font-weight', 'bold');;
+					      }
 					    }					  
                 }
 		);
-	 
-	 
-	 $('#tickets >  tr > th:nth-child(2)').css('background', 'green');
 		
 	} );
 

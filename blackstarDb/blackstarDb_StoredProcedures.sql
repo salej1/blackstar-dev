@@ -142,13 +142,43 @@
 --							Se modifica:
 --								blackstarDb.AddserviceOrder
 -- -----------------------------------------------------------------------------
+-- 26   23/01/2014	DCB		Se Integra:
+-- 								blackstarDb.GetTicketsKPI
+-- -----------------------------------------------------------------------------
 use blackstarDb;
 
 
 DELIMITER $$
 
 
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetTicketsKPI
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstardb.GetTicketsKPI$$
+CREATE PROCEDURE blackstardb.GetTicketsKPI()
+BEGIN
 
+SELECT 
+		tk.ticketId AS DT_RowId,
+		tk.ticketNumber AS ticketNumber,
+		tk.created AS created,
+		p.customer AS customer,
+		et.equipmenttype AS equipmentType,
+		ts.ticketStatus AS ticketStatus,
+		IFNULL(bu.name, '') AS asignee,
+    IFNULL(p.equipmentLocation, '') AS equipmentLocation,
+    IFNULL(p.brand, '') AS equipmentBrand,
+    IFNULL(tk.arrival, '') AS arrival,
+    IFNULL(tk.closed, '') AS closed
+	FROM ticket tk 
+		INNER JOIN ticketStatus ts ON tk.ticketStatusId = ts.ticketStatusId
+		INNER JOIN policy p ON tk.policyId = p.policyId
+		INNER JOIN equipmentType et ON p.equipmenttypeId = et.equipmenttypeId
+		INNER JOIN office of on p.officeId = of.officeId
+		LEFT OUTER JOIN blackstarUser bu ON bu.email = tk.asignee
+	WHERE tk.created >= STR_TO_DATE(CONCAT('01-01-',YEAR(NOW())),'%d-%m-%Y')
+    ORDER BY tk.created ASC;
+END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetNextServiceNumberForTicket

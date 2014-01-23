@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.blackstar.common.Globals;
+import com.blackstar.logging.LogLevel;
+import com.blackstar.logging.Logger;
 import com.blackstar.services.interfaces.IndicadoresServicioService;
 import com.blackstar.web.AbstractController;
 
@@ -29,7 +31,14 @@ public class IndicadoresServicioController extends AbstractController {
 	
   @RequestMapping(value= "/getTickets.do", method = RequestMethod.GET)
   public String  getTickets(ModelMap model){
-	model.addAttribute("tickets", service.getAllTickets());
+	try {
+	     model.addAttribute("tickets", service.getAllTickets());
+	} catch (Exception e) {
+		Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
+		e.printStackTrace();
+		model.addAttribute("errorDetails", e.getStackTrace()[0].toString());
+		return "error";
+	}
 	return "_indServTickets";
   }
 
