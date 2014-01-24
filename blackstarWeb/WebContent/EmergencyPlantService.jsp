@@ -11,8 +11,6 @@
 	
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	
-	<script src="${pageContext.request.contextPath}/js/jquery.ui.touch-punch.min.js"></script>
-	<script src="${pageContext.request.contextPath}/js/jquery.signature.min.js"></script>
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/960.css" type="text/css" media="screen" charset="utf-8" />
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/template.css" type="text/css" media="screen" charset="utf-8" />
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/colour.css" type="text/css" media="screen" charset="utf-8" />
@@ -20,18 +18,17 @@
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery.ui.theme.css">
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery-ui.min.css">
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery.signature.css">
-	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery.datetimepicker.css">
-	<script src="${pageContext.request.contextPath}/js/jquery.datetimepicker.js"></script>
-	
+	<script src="${pageContext.request.contextPath}/js/jquery.signature.min.js"></script>
+	<script src="${pageContext.request.contextPath}/js/jquery.ui.touch-punch.min.js"></script>
+	<script src="${pageContext.request.contextPath}/js/dateFormat.js"></script>	
 	<script type="text/javascript" charset="utf-8">
+
 	$(document).ready(function () {
 		
-		$( "#serviceDate" ).datetimepicker();
-		$( "#closed" ).datetimepicker();
-		$( "#oilChange" ).datetimepicker();
-		$( "#tuningDate" ).datetimepicker();
-		$( "#serviceCorrective" ).datetimepicker();
-		
+		$( "#serviceDate" ).val(dateNow());
+		$( "#oilChange" ).datepicker();
+		$( "#tuningDate" ).datepicker();
+		$( "#serviceCorrective" ).datepicker();
 		
 		// Signature capture box # 1 
 		$('#signCapture').signature({syncField: '#signCreated'});
@@ -487,12 +484,7 @@
 									<td><form:input path="closed" type="text" style="width:95%;"  /></td>
 									<td>Puesto</td>
 									<td><form:input path="receivedByPosition"  style="width:95%;"  /></td>
-								</tr>	
-								<tr>
-									<td colspan="2"></td>
-									<td>Email</td>
-									<td><form:input path="receivedByEmail"  style="width:95%;" required="true" /></td>
-								</tr>					
+								</tr>						
 							</table>
 
 							<table>

@@ -124,7 +124,7 @@ public class AirCoServiceController extends AbstractController {
 	      servicioOrderSave.setResponsible(serviceOrder.getResponsible());
 	      servicioOrderSave.setServiceDate(serviceOrder.getServiceDate());
 	      servicioOrderSave.setServiceOrderNumber(serviceOrder.getServiceOrderNumber());
-	      servicioOrderSave.setServiceTypeId('I');
+	      servicioOrderSave.setServiceTypeId(serviceOrder.getServiceTypeId().toCharArray()[0]);
 	      servicioOrderSave.setSignCreated(serviceOrder.getSignCreated());
 	      servicioOrderSave.setSignReceivedBy(serviceOrder.getSignReceivedBy());
 	      servicioOrderSave.setReceivedByEmail(serviceOrder.getReceivedByEmail());
@@ -141,7 +141,7 @@ public class AirCoServiceController extends AbstractController {
 	    	servicioOrderSave.setResponsible(serviceOrder.getResponsible());
 	    	servicioOrderSave.setServiceDate(serviceOrder.getServiceDate());
 	    	servicioOrderSave.setServiceOrderNumber(serviceOrder.getServiceOrderNumber());
-	    	servicioOrderSave.setServiceTypeId('I');
+	    	servicioOrderSave.setServiceTypeId(serviceOrder.getServiceTypeId().toCharArray()[0]);
 	    	servicioOrderSave.setSignCreated(serviceOrder.getSignCreated());
 	    	servicioOrderSave.setSignReceivedBy(serviceOrder.getSignReceivedBy());
 	    	servicioOrderSave.setStatusId("N");

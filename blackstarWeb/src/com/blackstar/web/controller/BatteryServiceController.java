@@ -36,11 +36,10 @@ public class BatteryServiceController extends AbstractController {
 	  private DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.MYSQL);
       private ReportService rpService = null;
       private IEmailService gmService = null;
-	  
-	  public void setGmService(IEmailService gmService) {
-		this.gmService = gmService;
-	  }
-	  
+      
+      public void setGmService(IEmailService gmService) {
+            this.gmService = gmService;
+      }
 	  public void setRpService(ReportService rpService) {
 		this.rpService = rpService;
 	  }
@@ -67,8 +66,12 @@ public class BatteryServiceController extends AbstractController {
 		  			  Ticket ticket = daoFactory.getTicketDAO().getTicketById(idTicket);
 	  				  Policy policy = this.daoFactory.getPolicyDAO().getPolicyById(ticket.getPolicyId());
 	  				  Equipmenttype equipType = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
-	  				batteryServicePolicyDTO = new BatteryServicePolicyDTO(policy, equipType.getEquipmentType());
+	  				  batteryServicePolicyDTO = new BatteryServicePolicyDTO(policy, equipType.getEquipmentType());
+					  batteryServicePolicyDTO.setServiceOrderNumber(service.getNewServiceNumber(policy));
+					  batteryServicePolicyDTO.setServiceStatusId("N");
+					  batteryServicePolicyDTO.setServiceTypeId("P");
 	  				  model.addAttribute("serviceOrder", batteryServicePolicyDTO);
+					  model.addAttribute("mode", "new");
 		  		  }
 		  		  else if( operation==2)
 		  		  {
@@ -76,27 +79,23 @@ public class BatteryServiceController extends AbstractController {
 		  			  Serviceorder serviceOrder = this.daoFactory.getServiceOrderDAO().getServiceOrderById(idOrder);
 		  			  Policy policy = this.daoFactory.getPolicyDAO().getPolicyById(serviceOrder.getPolicyId());
 	  				  Equipmenttype equipType = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
-	  				batteryServicePolicyDTO = new BatteryServicePolicyDTO(policy, equipType.getEquipmentType(), serviceOrder );
+	  				  batteryServicePolicyDTO = new BatteryServicePolicyDTO(policy, equipType.getEquipmentType(), serviceOrder );
 	  				  model.addAttribute("serviceOrder", batteryServicePolicyDTO);
+					  model.addAttribute("mode", "detail");
 		  		  }
 		  		  else if(operation==3)
 		  		  {
 		  			  Policy policy  = this.daoFactory.getPolicyDAO().getPolicyBySerialNo(idObject);
 	  				  Equipmenttype equipType = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
-	  				batteryServicePolicyDTO = new BatteryServicePolicyDTO(policy, equipType.getEquipmentType());
+	  				  batteryServicePolicyDTO = new BatteryServicePolicyDTO(policy, equipType.getEquipmentType());
+					  batteryServicePolicyDTO.setServiceOrderNumber(service.getNewServiceNumber(policy));
+					  batteryServicePolicyDTO.setServiceStatusId("N");
+					  batteryServicePolicyDTO.setServiceTypeId("P");
 	  				  model.addAttribute("serviceOrder", batteryServicePolicyDTO);
+					  model.addAttribute("mode", "new");
 		  		  }
-		  		  else if(operation ==4)
-		  		  {
-		  			  Integer idOrderService = Integer.parseInt(idObject);
-		  			  BatteryServiceDTO batteryServiceDTO = service.getBateryService(idOrderService);
-		  			  Serviceorder serviceOrder = this.daoFactory.getServiceOrderDAO().getServiceOrderById(batteryServiceDTO.getServiceOrderId());
-		  			  Policy policy = this.daoFactory.getPolicyDAO().getPolicyById(serviceOrder.getPolicyId());
-	  				  Equipmenttype equipType = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
-	  				  batteryServicePolicyDTO = new BatteryServicePolicyDTO(policy, equipType.getEquipmentType(), serviceOrder,  batteryServiceDTO);
-	  				  model.addAttribute("serviceOrder", batteryServicePolicyDTO);
-		  		  }
-		  		model.addAttribute("osAttachmentFolder", gdService.getAttachmentFolderId(batteryServicePolicyDTO.getServiceOrderNumber()));
+
+		  		  model.addAttribute("osAttachmentFolder", gdService.getAttachmentFolderId(batteryServicePolicyDTO.getServiceOrderNumber()));
 	  		  }
 			  else
 			  {
@@ -105,7 +104,10 @@ public class BatteryServiceController extends AbstractController {
 		  } 
 		  catch (Exception e) 
 		  {
-				 Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
+			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
+			e.printStackTrace();
+			model.addAttribute("errorDetails", e.getMessage() + " - " + e.getStackTrace()[0].toString());
+			return "error";
 		  }
 		  
 		  return "batteryservice";
@@ -129,10 +131,9 @@ public class BatteryServiceController extends AbstractController {
 	       servicioOrderSave.setResponsible(serviceOrder.getResponsible());
 	       servicioOrderSave.setServiceDate(serviceOrder.getServiceDate());
 	       servicioOrderSave.setServiceOrderNumber(serviceOrder.getServiceOrderNumber());
-	       servicioOrderSave.setServiceTypeId('I');
+	       servicioOrderSave.setServiceTypeId(serviceOrder.getServiceTypeId().toCharArray()[0]);
 	       servicioOrderSave.setSignCreated(serviceOrder.getSignCreated());
 	       servicioOrderSave.setSignReceivedBy(serviceOrder.getSignReceivedBy());
-	       servicioOrderSave.setStatusId("N");
 	       idServicio = service.saveServiceOrder(servicioOrderSave, "AirCoServiceController", userSession.getUser().getUserName());
 	     } else {
 	    	  //Actualizar orden de servicio
@@ -145,41 +146,30 @@ public class BatteryServiceController extends AbstractController {
 	    	  servicioOrderSave.setResponsible(serviceOrder.getResponsible());
 	    	  servicioOrderSave.setServiceDate(serviceOrder.getServiceDate());
 	    	  servicioOrderSave.setServiceOrderNumber(serviceOrder.getServiceOrderNumber());
-	    	  servicioOrderSave.setServiceTypeId('I');
+	    	  servicioOrderSave.setServiceTypeId(serviceOrder.getServiceTypeId().toCharArray()[0]);
 	    	  servicioOrderSave.setSignCreated(serviceOrder.getSignCreated());
 	    	  servicioOrderSave.setSignReceivedBy(serviceOrder.getSignReceivedBy());
-	    	  servicioOrderSave.setStatusId("N");
 	    	  service.updateServiceOrder(servicioOrderSave, "AirCoServiceController", userSession.getUser().getUserName());
 	     }
 	     if(serviceOrder.getBbServiceId()==null) {
 	    	serviceOrder.setServiceOrderId(idServicio);
 	    	//Crear orden de servicio de AirCo
 	    	service.saveBateryService(new BatteryServiceDTO(serviceOrder), "AirCoServiceController", userSession.getUser().getUserName());
-	    	commit(serviceOrder);
+	    	saveReport(serviceOrder);
 	     }
-    } catch(Exception ex){
-	    Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1]
-	    		                                           .toString(), ex);
-	    ex.printStackTrace();
+    } catch(Exception e){
+	    Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
+	    e.printStackTrace();
+	    model.addAttribute("errorDetails", e.getMessage() + " - " + e.getStackTrace()[0].toString());
 	    return "error";
 	}
     return "dashboard";
   }
-  
-  private void commit(BatteryServicePolicyDTO serviceOrder) throws Exception {
-	byte [] report = rpService.getBatteryReport(serviceOrder);
-	saveReport(serviceOrder.getServiceOrderId(), report);
-	sendNotification(serviceOrder.getReceivedByEmail(), report);
-  }
-  
-  private void saveReport(Integer id, byte[] report) throws Exception {
-  	String parentId = gdService.getReportsFolderId(id);
-  	gdService.insertFileFromStream(id, "application/pdf"
-  			   , "ServiceOrder.pdf", parentId, report);
-  }
-  
-  private void sendNotification(String to, byte [] report){
-  	gmService.sendEmail(to, "Orden de Servicio", "Orden de Servicio"
-  			                          , "ServiceOrder.pdf", report);
+	    
+  private void saveReport(BatteryServicePolicyDTO serviceOrder) throws Exception {
+	Integer id = serviceOrder.getServiceOrderId();
+	String parentId = gdService.getReportsFolderId(id);
+	gdService.insertFileFromStream(id, "application/pdf", "ServiceOrder.pdf"
+	    			      , parentId, rpService.getBatteryReport(serviceOrder));
   }
 }

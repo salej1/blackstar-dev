@@ -32,6 +32,11 @@ BEGIN
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
 
+-- AGREGANDO COLUMNA receivedByEmail a ServiceOrder -- ESTA COLUMNA DETERMINA EL EMAIL AL QUE SE ENVIARA COPIA DE LA OS
+	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'serviceOrder' AND COLUMN_NAME = 'receivedByEmail') = 0  THEN
+		ALTER TABLE serviceOrder ADD receivedByEmail VARCHAR(100) NULL;
+	END IF;
+
 -- AGREGANDO TABLA POOL DE NUMEROS DE ORDEN
 	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'sequenceNumberPool') = 0 THEN
 		CREATE TABLE blackstarDb.sequenceNumberPool(
@@ -747,12 +752,34 @@ DROP PROCEDURE blackstarDb.upgradeSchema;
 --							Se actualiza:
 --								blackstarDb.AddFollowUpToOS
 -- -----------------------------------------------------------------------------
+-- 25   13/01/2014	SAG		Se Integra:
+-- 								blackstarDb.GetNextServiceNumberForTicket
+--							Se modifica:
+--								blackstarDb.AddserviceOrder
+-- -----------------------------------------------------------------------------
 use blackstarDb;
 
 
 DELIMITER $$
 
 
+
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetNextServiceNumberForTicket
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetNextServiceNumberForTicket$$
+CREATE PROCEDURE blackstarDb.GetNextServiceNumberForTicket()
+BEGIN
+
+	DECLARE newNumber INTEGER;
+
+	-- Obteniendo el numero de folio
+	CALL blackstarDb.GetNextServiceOrderNumber('O', newNumber);
+
+	-- Regresando el numero de folio completo
+	SELECT CONCAT('OS-', lpad(cast(newNumber AS CHAR(50)), 5, '0'), '-e') AS ServiceNumber;
+END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetServiceStatusList
@@ -1069,7 +1096,7 @@ SELECT
 	p.customer AS customer,
 	e.equipmentType AS equipmentType,
 	p.project AS project,
-	o.officeName AS office,
+	o.officeName AS officeName,
 	p.brand AS brand,
 	p.serialNumber AS serialNumber
 	FROM 
@@ -2510,13 +2537,14 @@ CREATE PROCEDURE blackstarDb.AddserviceOrder (
   receivedByPosition varchar(50) ,
   created datetime ,
   createdBy varchar(50) ,
-  createdByUsr varchar(50) 
+  createdByUsr varchar(50) ,
+  receivedByEmail varchar(100)
 )
 BEGIN
 insert into serviceOrder
-(serviceOrderNumber,serviceTypeId,ticketId,policyId,serviceUnit,serviceDate,responsible,additionalEmployees,receivedBy,serviceComments,serviceStatusId,closed,consultant,coordinator,asignee,hasErrors,isWrong,signCreated,signReceivedBy,receivedByPosition,created,createdBy,createdByUsr)
+(serviceOrderNumber,serviceTypeId,ticketId,policyId,serviceUnit,serviceDate,responsible,additionalEmployees,receivedBy,serviceComments,serviceStatusId,closed,consultant,coordinator,asignee,hasErrors,isWrong,signCreated,signReceivedBy,receivedByPosition,created,createdBy,createdByUsr,receivedByEmail)
 values
-(serviceOrderNumber,serviceTypeId,ticketId,policyId,serviceUnit,serviceDate,responsible,additionalEmployees,receivedBy,serviceComments,serviceStatusId,closed,consultant,coordinator,asignee,hasErrors,isWrong,signCreated,signReceivedBy,receivedByPosition,created,createdBy,createdByUsr);
+(serviceOrderNumber,serviceTypeId,ticketId,policyId,serviceUnit,serviceDate,responsible,additionalEmployees,receivedBy,serviceComments,serviceStatusId,closed,consultant,coordinator,asignee,hasErrors,isWrong,signCreated,signReceivedBy,receivedByPosition,created,createdBy,createdByUsr,receivedByEmail);
 select LAST_INSERT_ID();
 END$$
 -- -----------------------------------------------------------------------------

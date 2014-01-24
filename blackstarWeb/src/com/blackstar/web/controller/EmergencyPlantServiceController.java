@@ -18,7 +18,6 @@ import com.blackstar.model.Policy;
 import com.blackstar.model.Serviceorder;
 import com.blackstar.model.Ticket;
 import com.blackstar.model.UserSession;
-import com.blackstar.model.dto.BatteryServicePolicyDTO;
 import com.blackstar.model.dto.EmergencyPlantServiceDTO;
 import com.blackstar.model.dto.EmergencyPlantServicePolicyDTO;
 import com.blackstar.services.interfaces.ReportService;
@@ -33,11 +32,11 @@ public class EmergencyPlantServiceController extends AbstractController {
 	  private DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.MYSQL);
       private ReportService rpService = null;
       private IEmailService gmService = null;
-	  
-	  public void setGmService(IEmailService gmService) {
-		this.gmService = gmService;
-	  }
-	  
+      
+      public void setGmService(IEmailService gmService) {
+            this.gmService = gmService;
+      }
+      
 	  public void setRpService(ReportService rpService) {
 		this.rpService = rpService;
 	  }
@@ -65,7 +64,11 @@ public class EmergencyPlantServiceController extends AbstractController {
 	  				  Policy policy = this.daoFactory.getPolicyDAO().getPolicyById(ticket.getPolicyId());
 	  				  Equipmenttype equipType = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
 	  				  emergencyPlantServicePolicyDTO = new EmergencyPlantServicePolicyDTO(policy, equipType.getEquipmentType());
+					  emergencyPlantServicePolicyDTO.setServiceOrderNumber(service.getNewServiceNumber(policy));
+					  emergencyPlantServicePolicyDTO.setServiceStatusId("N");
+					  emergencyPlantServicePolicyDTO.setServiceTypeId("P");
 	  				  model.addAttribute("serviceOrder", emergencyPlantServicePolicyDTO);
+	  				  model.addAttribute("mode", "new");
 		  		  }
 		  		  else if( operation==2)
 		  		  {
@@ -81,19 +84,14 @@ public class EmergencyPlantServiceController extends AbstractController {
 		  			  Policy policy  = this.daoFactory.getPolicyDAO().getPolicyBySerialNo(idObject);
 	  				  Equipmenttype equipType = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
 	  				  emergencyPlantServicePolicyDTO = new EmergencyPlantServicePolicyDTO(policy, equipType.getEquipmentType());
+					  emergencyPlantServicePolicyDTO.setServiceOrderNumber(service.getNewServiceNumber(policy));
+					  emergencyPlantServicePolicyDTO.setServiceStatusId("N");
+					  emergencyPlantServicePolicyDTO.setServiceTypeId("P");
 	  				  model.addAttribute("serviceOrder", emergencyPlantServicePolicyDTO);
+	  				  model.addAttribute("mode", "new");
 		  		  }
-		  		  else if(operation ==4)
-		  		  {
-		  			  Integer idOrderService = Integer.parseInt(idObject);
-		  			EmergencyPlantServiceDTO emergencyPlantServiceDTO = service.getEmergencyPlantService(idOrderService);
-		  			  Serviceorder serviceOrder = this.daoFactory.getServiceOrderDAO().getServiceOrderById(emergencyPlantServiceDTO.getServiceOrderId());
-		  			  Policy policy = this.daoFactory.getPolicyDAO().getPolicyById(serviceOrder.getPolicyId());
-	  				  Equipmenttype equipType = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
-	  				emergencyPlantServicePolicyDTO = new EmergencyPlantServicePolicyDTO(policy, equipType.getEquipmentType(), serviceOrder,  emergencyPlantServiceDTO);
-	  				  model.addAttribute("serviceOrder", emergencyPlantServicePolicyDTO);
-		  		  }
-		  		model.addAttribute("osAttachmentFolder", gdService.getAttachmentFolderId(emergencyPlantServicePolicyDTO.getServiceOrderNumber()));
+
+		  		  model.addAttribute("osAttachmentFolder", gdService.getAttachmentFolderId(emergencyPlantServicePolicyDTO.getServiceOrderNumber()));
 	  		  }
 			  else
 			  {
@@ -102,7 +100,10 @@ public class EmergencyPlantServiceController extends AbstractController {
 		  } 
 		  catch (Exception e) 
 		  {
-				 Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
+				Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
+				e.printStackTrace();
+				model.addAttribute("errorDetails", e.getMessage() + " - " + e.getStackTrace()[0].toString());
+				return "error";
 		  }
 		  
 		  return "emergencyplantservice";
@@ -113,70 +114,66 @@ public class EmergencyPlantServiceController extends AbstractController {
 	    		     @ModelAttribute(Globals.SESSION_KEY_PARAM)  UserSession userSession,
                                               ModelMap model) throws Exception {
 	    	int idServicio = 0;
-	    	// Verificar si existe una orden de servicio
-	    	if(serviceOrder.getServiceOrderId()==null)
-	    	{
-	    		//Crear orden de servicio
-	    		Serviceorder servicioOrderSave = new Serviceorder();
-	    		servicioOrderSave.setAsignee( serviceOrder.getResponsible());
-	    		servicioOrderSave.setClosed(serviceOrder.getClosed());
-	    		servicioOrderSave.setPolicyId((Short.parseShort(serviceOrder.getPolicyId().toString())));
-	    		servicioOrderSave.setReceivedBy(serviceOrder.getReceivedBy());
-	    		servicioOrderSave.setReceivedByPosition(serviceOrder.getReceivedByPosition());
-	    		servicioOrderSave.setResponsible(serviceOrder.getResponsible());
-	    		servicioOrderSave.setServiceDate(serviceOrder.getServiceDate());
-	    		servicioOrderSave.setServiceOrderNumber(serviceOrder.getServiceOrderNumber());
-	    		servicioOrderSave.setServiceTypeId('I');
-	    		servicioOrderSave.setSignCreated(serviceOrder.getSignCreated());
-	    		servicioOrderSave.setSignReceivedBy(serviceOrder.getSignReceivedBy());
-	    		servicioOrderSave.setStatusId("N");
-	    		idServicio = service.saveServiceOrder(servicioOrderSave, "EmergencyPlantServiceController", userSession.getUser().getUserName());
-	    	}
-	    	else
-	    	{
-	    		//Actualizar orden de servicio
-	    		Serviceorder servicioOrderSave = new Serviceorder();
-	    		servicioOrderSave.setAsignee( serviceOrder.getResponsible());
-	    		servicioOrderSave.setClosed(serviceOrder.getClosed());
-	    		servicioOrderSave.setPolicyId((Short.parseShort(serviceOrder.getPolicyId().toString())));
-	    		servicioOrderSave.setReceivedBy(serviceOrder.getReceivedBy());
-	    		servicioOrderSave.setReceivedByPosition(serviceOrder.getReceivedByPosition());
-	    		servicioOrderSave.setResponsible(serviceOrder.getResponsible());
-	    		servicioOrderSave.setServiceDate(serviceOrder.getServiceDate());
-	    		servicioOrderSave.setServiceOrderNumber(serviceOrder.getServiceOrderNumber());
-	    		servicioOrderSave.setServiceTypeId('I');
-	    		servicioOrderSave.setSignCreated(serviceOrder.getSignCreated());
-	    		servicioOrderSave.setSignReceivedBy(serviceOrder.getSignReceivedBy());
-	    		servicioOrderSave.setStatusId("N");
-	    		service.updateServiceOrder(servicioOrderSave, "EmergencyPlantServiceController", userSession.getUser().getUserName());
-	    	}
+			try{
+				// Verificar si existe una orden de servicio
+	    		if(serviceOrder.getServiceOrderId()==null)
+	    		{
+	    			//Crear orden de servicio
+	    			Serviceorder servicioOrderSave = new Serviceorder();
+	    			servicioOrderSave.setAsignee( serviceOrder.getResponsible());
+	    			servicioOrderSave.setClosed(serviceOrder.getClosed());
+	    			servicioOrderSave.setPolicyId((Short.parseShort(serviceOrder.getPolicyId().toString())));
+	    			servicioOrderSave.setReceivedBy(serviceOrder.getReceivedBy());
+	    			servicioOrderSave.setReceivedByPosition(serviceOrder.getReceivedByPosition());
+	    			servicioOrderSave.setResponsible(serviceOrder.getResponsible());
+	    			servicioOrderSave.setServiceDate(serviceOrder.getServiceDate());
+	    			servicioOrderSave.setServiceOrderNumber(serviceOrder.getServiceOrderNumber());
+	    			servicioOrderSave.setServiceTypeId(serviceOrder.getServiceTypeId().toCharArray()[0]);
+	    			servicioOrderSave.setSignCreated(serviceOrder.getSignCreated());
+	    			servicioOrderSave.setSignReceivedBy(serviceOrder.getSignReceivedBy());
+	    			idServicio = service.saveServiceOrder(servicioOrderSave, "EmergencyPlantServiceController", userSession.getUser().getUserName());
+	    		}
+	    		else
+	    		{
+	    			//Actualizar orden de servicio
+	    			Serviceorder servicioOrderSave = new Serviceorder();
+	    			servicioOrderSave.setAsignee( serviceOrder.getResponsible());
+	    			servicioOrderSave.setClosed(serviceOrder.getClosed());
+	    			servicioOrderSave.setPolicyId((Short.parseShort(serviceOrder.getPolicyId().toString())));
+	    			servicioOrderSave.setReceivedBy(serviceOrder.getReceivedBy());
+	    			servicioOrderSave.setReceivedByPosition(serviceOrder.getReceivedByPosition());
+	    			servicioOrderSave.setResponsible(serviceOrder.getResponsible());
+	    			servicioOrderSave.setServiceDate(serviceOrder.getServiceDate());
+	    			servicioOrderSave.setServiceOrderNumber(serviceOrder.getServiceOrderNumber());
+	    			servicioOrderSave.setServiceTypeId(serviceOrder.getServiceTypeId().toCharArray()[0]);
+	    			servicioOrderSave.setSignCreated(serviceOrder.getSignCreated());
+	    			servicioOrderSave.setSignReceivedBy(serviceOrder.getSignReceivedBy());
+	    			service.updateServiceOrder(servicioOrderSave, "EmergencyPlantServiceController", userSession.getUser().getUserName());
+	    		}
 	    	
-	    	if(serviceOrder.getEpServiceId()==null)
-	    	{
-	    		serviceOrder.setServiceOrderId(idServicio);
-	    		//Crear orden de servicio de AirCo
-	    		service.saveEmergencyPlantService(new EmergencyPlantServiceDTO(serviceOrder), "EmergencyPlantServiceController", userSession.getUser().getUserName());
-	    		commit(serviceOrder);
-	    	}
+	    		if(serviceOrder.getEpServiceId()==null)
+	    		{
+	    			serviceOrder.setServiceOrderId(idServicio);
+	    			//Crear orden de servicio de AirCo
+	    			service.saveEmergencyPlantService(new EmergencyPlantServiceDTO(serviceOrder), "EmergencyPlantServiceController", userSession.getUser().getUserName());
+	    			saveReport(serviceOrder);
+	    		}
+			}
+			catch (Exception e) 
+			{
+				Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
+				e.printStackTrace();
+				model.addAttribute("errorDetails", e.getMessage() + " - " + e.getStackTrace()[0].toString());
+				return "error";
+			}
 
 	    	return "dashboard";
 	    }
-
-  private void commit(EmergencyPlantServicePolicyDTO serviceOrder) throws Exception {
-	byte [] report = rpService.getEmergencyPlantReport(serviceOrder);
-	saveReport(serviceOrder.getServiceOrderId(), report);
-	sendNotification(serviceOrder.getReceivedByEmail(), report);
+	    
+  private void saveReport(EmergencyPlantServicePolicyDTO serviceOrder) throws Exception {
+	Integer id = serviceOrder.getServiceOrderId();
+	String parentId = gdService.getReportsFolderId(id);
+	gdService.insertFileFromStream(id, "application/pdf", "ServiceOrder.pdf"
+	    		   , parentId, rpService.getEmergencyPlantReport(serviceOrder));
   }
-  
-  private void saveReport(Integer id, byte[] report) throws Exception {
-  	String parentId = gdService.getReportsFolderId(id);
-  	gdService.insertFileFromStream(id, "application/pdf"
-  			   , "ServiceOrder.pdf", parentId, report);
-  }
-  
-  private void sendNotification(String to, byte [] report){
-  	gmService.sendEmail(to, "Orden de Servicio", "Orden de Servicio"
-  			                          , "ServiceOrder.pdf", report);
-  }
-
-	}
+}

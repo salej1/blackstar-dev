@@ -184,8 +184,8 @@ public class AirCoServicePolicyDTO {
 	private String signCreated;
 	private String signReceivedBy;
 	private String receivedByPosition;
-	private String receivedByEmail;
 	private String serviceOrderNumber;
+	private String serviceTypeId;
 	
 	private Integer aaServiceId;
 	private String evaDescription;
@@ -721,5 +721,13 @@ public class AirCoServicePolicyDTO {
 
 	public void setReceivedByEmail(String receivedByEmail) {
 		this.receivedByEmail = receivedByEmail;
+	}
+
+	public String getServiceTypeId() {
+		return serviceTypeId;
+	}
+
+	public void setServiceTypeId(String serviceTypeId) {
+		this.serviceTypeId = serviceTypeId;
 	}
 }

@@ -241,6 +241,7 @@ public class EmergencyPlantServicePolicyDTO {
 	private String signReceivedBy;
 	private String receivedByPosition;
 	private String serviceOrderNumber;
+	private String serviceTypeId;
 	
 	private Integer epServiceId;
 	private String brandPE;
@@ -1149,6 +1150,14 @@ public class EmergencyPlantServicePolicyDTO {
 
 	public void setReceivedByEmail(String receivedByEmail) {
 		this.receivedByEmail = receivedByEmail;
+	}
+
+	public String getServiceTypeId() {
+		return serviceTypeId;
+	}
+
+	public void setServiceTypeId(String serviceTypeId) {
+		this.serviceTypeId = serviceTypeId;
 	}
 
 }

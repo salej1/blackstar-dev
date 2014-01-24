@@ -140,6 +140,7 @@
 								<tr>
 									<td>Fecha y hora de llegada</td>
 									<td><form:input path="serviceDate" type="text" style="width:95%;" readOnly="true"  /></td>
+									<form:input path="serviceTypeId" type="hidden" value="P" />
 								</tr>
 							</table>
 						</div>					

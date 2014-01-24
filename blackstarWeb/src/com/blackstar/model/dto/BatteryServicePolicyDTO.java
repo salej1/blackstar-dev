@@ -160,6 +160,7 @@ public class BatteryServicePolicyDTO {
 	private String signReceivedBy;
 	private String receivedByPosition;
 	private String serviceOrderNumber;
+	private String serviceTypeId;
 	
 	private Integer bbServiceId;	
 	private Boolean plugClean;
@@ -485,6 +486,14 @@ public class BatteryServicePolicyDTO {
 
 	public void setReceivedByEmail(String receivedByEmail) {
 		this.receivedByEmail = receivedByEmail;
+	}
+
+	public String getServiceTypeId() {
+		return serviceTypeId;
+	}
+
+	public void setServiceTypeId(String serviceTypeId) {
+		this.serviceTypeId = serviceTypeId;
 	}
 	
 	

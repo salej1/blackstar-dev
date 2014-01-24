@@ -17,6 +17,8 @@ import com.google.api.services.drive.DriveScopes;
 import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.FileList;
 import com.google.api.services.drive.model.ParentReference;
+import com.blackstar.logging.LogLevel;
+import com.blackstar.logging.Logger;
 import com.blackstar.services.AbstractService;
 import com.blackstar.services.interfaces.GoogleDriveService;
 import com.google.api.services.drive.model.Permission;
@@ -65,6 +67,7 @@ public class GoogleDriveServiceImpl extends AbstractService
 	 	sysFolderIds.put("OS_REPORTS", folderId);
 	} catch(Exception e){
 		e.printStackTrace();
+		Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 	}
   }
   
@@ -87,6 +90,7 @@ public class GoogleDriveServiceImpl extends AbstractService
             .setHttpRequestInitializer(credential).build();
     } catch(Exception e){
     	e.printStackTrace();
+    	Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
     }
   }
 

@@ -36,11 +36,11 @@ public class UpsServiceController extends AbstractController {
 	  private DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.MYSQL);
       private ReportService rpService = null;
       private IEmailService gmService = null;
-	  
-	  public void setGmService(IEmailService gmService) {
-		this.gmService = gmService;
-	  }
-	  
+      
+      public void setGmService(IEmailService gmService) {
+            this.gmService = gmService;
+      }
+      
 	  public void setRpService(ReportService rpService) {
 		this.rpService = rpService;
 	  }
@@ -68,7 +68,11 @@ public class UpsServiceController extends AbstractController {
 	  				  Policy policy = this.daoFactory.getPolicyDAO().getPolicyById(ticket.getPolicyId());
 	  				  Equipmenttype equipType = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
 	  				  upsServicePolicyDTO = new UpsServicePolicyDTO(policy, equipType.getEquipmentType());
+					  upsServicePolicyDTO.setServiceOrderNumber(service.getNewServiceNumber(policy));
+					  upsServicePolicyDTO.setServiceStatusId("N");
+					  upsServicePolicyDTO.setServiceTypeId("P");
 	  				  model.addAttribute("serviceOrder", upsServicePolicyDTO);
+	  				  model.addAttribute("mode", "new");
 		  		  }
 		  		  else if( operation==2)
 		  		  {
@@ -78,25 +82,21 @@ public class UpsServiceController extends AbstractController {
 	  				  Equipmenttype equipType = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
 	  				  upsServicePolicyDTO = new UpsServicePolicyDTO(policy, equipType.getEquipmentType(), serviceOrder );
 	  				  model.addAttribute("serviceOrder", upsServicePolicyDTO);
+	  				  model.addAttribute("mode", "detail");
 		  		  }
 		  		  else if(operation==3)
 		  		  {
 		  			  Policy policy  = this.daoFactory.getPolicyDAO().getPolicyBySerialNo(idObject);
 	  				  Equipmenttype equipType = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
 	  				  upsServicePolicyDTO = new UpsServicePolicyDTO(policy, equipType.getEquipmentType());
+					  upsServicePolicyDTO.setServiceOrderNumber(service.getNewServiceNumber(policy));
+					  upsServicePolicyDTO.setServiceStatusId("N");
+					  upsServicePolicyDTO.setServiceTypeId("P");
 	  				  model.addAttribute("serviceOrder", upsServicePolicyDTO);
+	  				  model.addAttribute("mode", "new");
 		  		  }
-		  		  else if(operation ==4)
-		  		  {
-		  			  Integer idOrderService = Integer.parseInt(idObject);
-		  			  UpsServiceDTO upsServiceDTO = service.getUpsService(idOrderService);
-		  			  Serviceorder serviceOrder = this.daoFactory.getServiceOrderDAO().getServiceOrderById(upsServiceDTO.getServiceOrderId());
-		  			  Policy policy = this.daoFactory.getPolicyDAO().getPolicyById(serviceOrder.getPolicyId());
-	  				  Equipmenttype equipType = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
-	  				  upsServicePolicyDTO = new UpsServicePolicyDTO(policy, equipType.getEquipmentType(), serviceOrder,  upsServiceDTO);
-	  				  model.addAttribute("serviceOrder", upsServicePolicyDTO);
-		  		  }
-		  		model.addAttribute("osAttachmentFolder", gdService.getAttachmentFolderId(upsServicePolicyDTO.getServiceOrderNumber()));
+
+		  		  model.addAttribute("osAttachmentFolder", gdService.getAttachmentFolderId(upsServicePolicyDTO.getServiceOrderNumber()));
 	  		  }
 			  else
 			  {
@@ -105,7 +105,10 @@ public class UpsServiceController extends AbstractController {
 		  } 
 		  catch (Exception e) 
 		  {
-				 Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
+			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
+			e.printStackTrace();
+			model.addAttribute("errorDetails", e.getMessage() + " - " + e.getStackTrace()[0].toString());
+			return "error";
 		  }
 		  
 		  return "upsservice";
@@ -117,70 +120,69 @@ public class UpsServiceController extends AbstractController {
 	    		@ModelAttribute(Globals.SESSION_KEY_PARAM)  UserSession userSession,
               ModelMap model, HttpServletRequest req, HttpServletResponse resp) throws Exception{
 	    	int idServicio = 0;
-	    	// Verificar si existe una orden de servicio
-	    	if(serviceOrder.getServiceOrderId()==null)
-	    	{
-	    		//Crear orden de servicio
-	    		Serviceorder servicioOrderSave = new Serviceorder();
-	    		servicioOrderSave.setAsignee( serviceOrder.getResponsible());
-	    		servicioOrderSave.setClosed(serviceOrder.getClosed());
-	    		servicioOrderSave.setPolicyId((Short.parseShort(serviceOrder.getPolicyId().toString())));
-	    		servicioOrderSave.setReceivedBy(serviceOrder.getReceivedBy());
-	    		servicioOrderSave.setReceivedByPosition(serviceOrder.getReceivedByPosition());
-	    		servicioOrderSave.setResponsible(serviceOrder.getResponsible());
-	    		servicioOrderSave.setServiceDate(serviceOrder.getServiceDate());
-	    		servicioOrderSave.setServiceOrderNumber(serviceOrder.getServiceOrderNumber());
-	    		servicioOrderSave.setServiceTypeId('I');
-	    		servicioOrderSave.setSignCreated(serviceOrder.getSignCreated());
-	    		servicioOrderSave.setSignReceivedBy(serviceOrder.getSignReceivedBy());
-	    		servicioOrderSave.setStatusId("N");
-	    		idServicio = service.saveServiceOrder(servicioOrderSave, "UpsServiceController", userSession.getUser().getUserName());
-	    	}
-	    	else
-	    	{
-	    		//Actualizar orden de servicio
-	    		Serviceorder servicioOrderSave = new Serviceorder();
-	    		servicioOrderSave.setAsignee( serviceOrder.getResponsible());
-	    		servicioOrderSave.setClosed(serviceOrder.getClosed());
-	    		servicioOrderSave.setPolicyId((Short.parseShort(serviceOrder.getPolicyId().toString())));
-	    		servicioOrderSave.setReceivedBy(serviceOrder.getReceivedBy());
-	    		servicioOrderSave.setReceivedByPosition(serviceOrder.getReceivedByPosition());
-	    		servicioOrderSave.setResponsible(serviceOrder.getResponsible());
-	    		servicioOrderSave.setServiceDate(serviceOrder.getServiceDate());
-	    		servicioOrderSave.setServiceOrderNumber(serviceOrder.getServiceOrderNumber());
-	    		servicioOrderSave.setServiceTypeId('I');
-	    		servicioOrderSave.setSignCreated(serviceOrder.getSignCreated());
-	    		servicioOrderSave.setSignReceivedBy(serviceOrder.getSignReceivedBy());
-	    		servicioOrderSave.setStatusId("N");
-	    		service.updateServiceOrder(servicioOrderSave, "UpsServiceController", userSession.getUser().getUserName());
-	    	}
-	    	
-	    	if(serviceOrder.getUpsServiceId()==null)
-	    	{
-	    		serviceOrder.setServiceOrderId(idServicio);
-	    		//Crear orden de servicio de UpsService
-	    		service.saveUpsService(new UpsServiceDTO(serviceOrder), "UpsServiceController", userSession.getUser().getUserName());
-	    		commit(serviceOrder);
-	    	}
 
+			try{
+				// Verificar si existe una orden de servicio
+	    		if(serviceOrder.getServiceOrderId()==null)
+	    		{
+	    			//Crear orden de servicio
+	    			Serviceorder servicioOrderSave = new Serviceorder();
+	    			servicioOrderSave.setAsignee( serviceOrder.getResponsible());
+	    			servicioOrderSave.setClosed(serviceOrder.getClosed());
+	    			servicioOrderSave.setPolicyId((Short.parseShort(serviceOrder.getPolicyId().toString())));
+	    			servicioOrderSave.setReceivedBy(serviceOrder.getReceivedBy());
+	    			servicioOrderSave.setReceivedByPosition(serviceOrder.getReceivedByPosition());
+	    			servicioOrderSave.setResponsible(serviceOrder.getResponsible());
+	    			servicioOrderSave.setServiceDate(serviceOrder.getServiceDate());
+	    			servicioOrderSave.setServiceOrderNumber(serviceOrder.getServiceOrderNumber());
+	    			servicioOrderSave.setServiceTypeId(serviceOrder.getServiceTypeId().toCharArray()[0]);
+	    			servicioOrderSave.setSignCreated(serviceOrder.getSignCreated());
+	    			servicioOrderSave.setSignReceivedBy(serviceOrder.getSignReceivedBy());
+	    			servicioOrderSave.setStatusId("N");
+	    			idServicio = service.saveServiceOrder(servicioOrderSave, "UpsServiceController", userSession.getUser().getUserName());
+	    		}
+	    		else
+	    		{
+	    			//Actualizar orden de servicio
+	    			Serviceorder servicioOrderSave = new Serviceorder();
+	    			servicioOrderSave.setAsignee( serviceOrder.getResponsible());
+	    			servicioOrderSave.setClosed(serviceOrder.getClosed());
+	    			servicioOrderSave.setPolicyId((Short.parseShort(serviceOrder.getPolicyId().toString())));
+	    			servicioOrderSave.setReceivedBy(serviceOrder.getReceivedBy());
+	    			servicioOrderSave.setReceivedByPosition(serviceOrder.getReceivedByPosition());
+	    			servicioOrderSave.setResponsible(serviceOrder.getResponsible());
+	    			servicioOrderSave.setServiceDate(serviceOrder.getServiceDate());
+	    			servicioOrderSave.setServiceOrderNumber(serviceOrder.getServiceOrderNumber());
+	    			servicioOrderSave.setServiceTypeId(serviceOrder.getServiceTypeId().toCharArray()[0]);
+	    			servicioOrderSave.setSignCreated(serviceOrder.getSignCreated());
+	    			servicioOrderSave.setSignReceivedBy(serviceOrder.getSignReceivedBy());
+	    			servicioOrderSave.setStatusId("N");
+	    			service.updateServiceOrder(servicioOrderSave, "UpsServiceController", userSession.getUser().getUserName());
+	    		}
+	    	
+	    		if(serviceOrder.getUpsServiceId()==null)
+	    		{
+	    			serviceOrder.setServiceOrderId(idServicio);
+	    			//Crear orden de servicio de UpsService
+	    			service.saveUpsService(new UpsServiceDTO(serviceOrder), "UpsServiceController", userSession.getUser().getUserName());
+	    			saveReport(serviceOrder);
+	    		}
+			}
+			catch (Exception e) 
+			{
+				Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
+				e.printStackTrace();
+				model.addAttribute("errorDetails", e.getMessage() + " - " + e.getStackTrace()[0].toString());
+				return "error";
+			}
+	    	
 	    	return "dashboard";
 	    }
-
-  private void commit(UpsServicePolicyDTO serviceOrder) throws Exception {
-	byte [] report = rpService.getUPSReport(serviceOrder);
-	saveReport(serviceOrder.getServiceOrderId(), report);
-	sendNotification(serviceOrder.getReceivedByEmail(), report);
+	    
+  private void saveReport(UpsServicePolicyDTO serviceOrder) throws Exception {
+	Integer id = serviceOrder.getServiceOrderId();
+	String parentId = gdService.getReportsFolderId(id);
+	gdService.insertFileFromStream(id, "application/pdf", "ServiceOrder.pdf"
+	    	      , parentId, rpService.getUPSReport(serviceOrder));
   }
-  
-  private void saveReport(Integer id, byte[] report) throws Exception {
-  	String parentId = gdService.getReportsFolderId(id);
-  	gdService.insertFileFromStream(id, "application/pdf"
-  			   , "ServiceOrder.pdf", parentId, report);
-  }
-  
-  private void sendNotification(String to, byte [] report){
-  	gmService.sendEmail(to, "Orden de Servicio", "Orden de Servicio"
-  			                          , "ServiceOrder.pdf", report);
-  }
-
 }

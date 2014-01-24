@@ -170,6 +170,7 @@ public class UpsServicePolicyDTO {
 	private String signReceivedBy;
 	private String receivedByPosition;
 	private String serviceOrderNumber;
+	private String serviceTypeId;
 	
 	private Integer upsServiceId;	
 	private String estatusEquipment;
@@ -596,5 +597,13 @@ public class UpsServicePolicyDTO {
 
 	public void setReceivedByEmail(String receivedByEmail) {
 		this.receivedByEmail = receivedByEmail;
+	}
+
+	public String getServiceTypeId() {
+		return serviceTypeId;
+	}
+
+	public void setServiceTypeId(String serviceTypeId) {
+		this.serviceTypeId = serviceTypeId;
 	}
 }
