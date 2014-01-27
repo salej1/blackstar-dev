@@ -1959,7 +1959,46 @@ modifiedByUsr = modifiedByUsr
 where serviceOrderId = serviceOrderId;
 END$$
 
+CREATE PROCEDURE `GetServiceOrderByUser` ()
+BEGIN
 
+select serviceOrderId,serviceOrderNumber from serviceorder where created = CURDATE() order by createdByUsr;
+
+END$$
+
+
+CREATE PROCEDURE `AddSurveyService`(
+company varchar(255),
+namePerson varchar(255),
+email varchar(255),
+telephone int,
+datePerson datetime,
+questiontreatment varchar(255),
+reasontreatment varchar(255),
+questionIdentificationPersonal varchar(255),
+questionIdealEquipment varchar(255),
+reasonIdealEquipment varchar(255),
+questionTime varchar(255),
+reasonTime varchar(255),
+questionUniform varchar(255),
+reasonUniform varchar(255),
+qualification int,
+serviceOrderId  int(11) ,
+sign varchar(255)
+)
+BEGIN 
+INSERT INTO surveyService (company,namePerson,email
+,telephone,datePerson,questiontreatment,reasontreatment,questionIdentificationPersonal,
+questionIdealEquipment,reasonIdealEquipment,questionTime,reasonTime,
+questionUniform,reasonUniform,qualification,serviceOrderId,sign)
+values(company,namePerson,email
+,telephone,datePerson,questiontreatment,reasontreatment,
+questionIdentificationPersonal,questionIdealEquipment,reasonIdealEquipment,
+questionTime,reasonTime,questionUniform,reasonUniform,qualification,
+serviceOrderId,sign);
+select LAST_INSERT_ID();
+
+END
 -- -----------------------------------------------------------------------------
 	-- FIN DE LOS STORED PROCEDURES
 -- -----------------------------------------------------------------------------

@@ -600,6 +600,48 @@ IF (SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackst
 END IF;
 
 
+IF (SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'surveyService') = 0 THEN
+
+	CREATE TABLE blackstardb.surveyservice (
+		  surveyServiceId INT NOT NULL AUTO_INCREMENT,
+		  company VARCHAR(45) NULL,
+		  namePerson VARCHAR(45) NULL,
+		  email VARCHAR(45) NULL,
+		  telephone INT NULL,
+		  datePerson DATE NULL,
+		  questiontreatment VARCHAR(45) NULL,
+		  reasontreatment VARCHAR(45) NULL,
+		  questionIdentificationPersonal VARCHAR(45) NULL,
+		  questionIdealEquipment VARCHAR(45) NULL,
+		  surveyservicecol VARCHAR(45) NULL,
+		  reasonIdealEquipment VARCHAR(45) NULL,
+		  questionTime VARCHAR(45) NULL,
+		  reasonTime VARCHAR(45) NULL,
+		  questionUniform VARCHAR(45) NULL,
+		  reasonUniform VARCHAR(45) NULL,
+		  qualification INT NULL,
+		 PRIMARY KEY (surveyServiceId))
+	     COMMENT = 'this table will be to record data about surveyservice';
+
+		ALTER TABLE blackstardb.surveyservice 
+
+		ADD COLUMN serviceOrderId INT NULL AFTER qualification,
+		ADD INDEX serviceOrderId_idx 
+		(dserviceOrderId ASC);
+		ALTER TABLE blackstardb.surveyservice 
+		ADD CONSTRAINT `serviceOrderId`
+			  
+		FOREIGN KEY (serviceOrderId)
+		REFERENCES blackstardb.serviceorder (serviceOrderId)
+
+		ON DELETE NO ACTION
+		ON UPDATE NO ACTION;
+
+
+		ALTER TABLE blackstardb.surveyservice 
+		ADD COLUMN sign VARCHAR(45) NULL AFTER serviceOrderId;
+END IF
+
 	
 -- -----------------------------------------------------------------------------
 -- FIN SECCION DE CAMBIOS - NO CAMBIAR CODIGO FUERA DE ESTA SECCION
