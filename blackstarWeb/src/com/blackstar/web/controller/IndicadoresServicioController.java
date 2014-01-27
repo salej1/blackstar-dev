@@ -54,5 +54,18 @@ public class IndicadoresServicioController extends AbstractController {
 	}
 	return "_indServPolicies";
   }
+  
+  @RequestMapping(value= "/getConcurrentFailures.do", method = RequestMethod.GET)
+  public String  getConcurrenFailures(ModelMap model){
+	try {
+	     model.addAttribute("concurrenFailures", service.getConcurrentFailures());
+	} catch (Exception e) {
+		Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
+		e.printStackTrace();
+		model.addAttribute("errorDetails", e.getStackTrace()[0].toString());
+		return "error";
+	}
+	return "_indServConcurrentFailures";
+  }
 
 }

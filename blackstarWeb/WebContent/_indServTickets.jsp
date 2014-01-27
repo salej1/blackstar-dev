@@ -47,7 +47,7 @@
 					      if( aData["ticketNumber"].indexOf("lbl-") == 0){
 					    	  $('td:eq(0)', nRow).html(aData["ticketNumber"]
 					    	       .substring(4, aData["ticketNumber"].length));
-					    	  $('td', nRow).css({'background':'#C0E1F3'}).css('font-weight', 'bold');;
+					    	  $('td', nRow).css({'background':'#C0E1F3'}).css('font-weight', 'bold');
 					      }
 					    }					  
                 }

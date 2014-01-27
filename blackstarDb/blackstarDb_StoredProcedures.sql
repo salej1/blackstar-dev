@@ -145,11 +145,37 @@
 -- 26   23/01/2014	DCB		Se Integra:
 -- 								blackstarDb.GetTicketsKPI
 --                              blackstarDb.GetPoliciesKPI
+--                              blackstarDb.GetConcurrentFailuresKPI
 -- -----------------------------------------------------------------------------
 use blackstarDb;
 
 
 DELIMITER $$
+
+DROP PROCEDURE IF EXISTS blackstardb.GetConcurrentFailuresKPI$$
+CREATE PROCEDURE blackstardb.GetConcurrentFailuresKPI()
+BEGIN
+  SELECT  tk.employee as employee, 
+          py.customer as customer,
+          py.equipmentTypeId as equipmentTypeId,
+          py.brand as brand,
+          py.serialNumber as serialNumber,
+          tk.observations as observations,
+          IFNULL(bu.name, '') AS asignee,
+          tk.ticketNumber as ticketNumber,
+          tk.created as created
+  FROM ticket tk
+  INNER JOIN Policy py on tk.policyId = py.policyId
+  LEFT OUTER JOIN blackstarUser bu ON bu.email = tk.asignee
+  WHERE py.policyId in (
+        SELECT tk.policyId
+        FROM ticket tk
+        WHERE tk.created >= STR_TO_DATE(CONCAT('01-01-',YEAR(NOW())),'%d-%m-%Y')
+        GROUP BY tk.policyId
+        HAVING count(1) > 1)
+  ORDER BY tk.created, tk.policyId ASC;
+END$$
+
 
 DROP PROCEDURE IF EXISTS blackstardb.GetPoliciesKPI$$
 CREATE PROCEDURE blackstardb.GetPoliciesKPI()

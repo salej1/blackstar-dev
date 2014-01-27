@@ -7,6 +7,7 @@ import java.util.Map;
 import org.json.JSONObject;
 
 import com.blackstar.db.dao.interfaces.IndicadoresServicioDAO;
+import com.blackstar.model.IndServConcurrentFailures;
 import com.blackstar.services.AbstractService;
 import com.blackstar.services.interfaces.IndicadoresServicioService;
 
@@ -65,6 +66,20 @@ public class IndicadoresServicioServiceImpl extends AbstractService
   public String getPolicies() throws Exception{
 	List<JSONObject> jsonData = dao.getPolicies();
 	return jsonData != null ? jsonData.toString() : "";
+  }
+  
+  public List<IndServConcurrentFailures> getConcurrentFailures() throws Exception{
+	List<IndServConcurrentFailures> data = dao.getConcurrentFailures();
+	String month = "";
+	String lastMonth = "";
+	for(int i = 0; i < data.size();i++){
+		  month = data.get(i).getCreated().toString().substring(5,7);
+		  if(! month.equals(lastMonth)){
+			  lastMonth = month;
+			  data.add(i, new  IndServConcurrentFailures(MONTHS.get(month)));
+		  }
+	    }
+	return data;
   }
 
 }

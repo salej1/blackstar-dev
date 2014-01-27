@@ -7,7 +7,9 @@ import org.json.JSONObject;
 import com.blackstar.db.dao.AbstractDAO;
 import com.blackstar.db.dao.interfaces.IndicadoresServicioDAO;
 import com.blackstar.db.dao.mapper.JSONRowMapper;
+import com.blackstar.model.IndServConcurrentFailures;
 
+@SuppressWarnings("unchecked")
 public class IndicadoresServicioDAOImpl extends AbstractDAO 
                                         implements IndicadoresServicioDAO {
 	
@@ -19,5 +21,12 @@ public class IndicadoresServicioDAOImpl extends AbstractDAO
   public List<JSONObject> getPolicies(){
 	String sqlQuery = "CALL GetPoliciesKPI();";
 	return getJdbcTemplate().query(sqlQuery, new Object[]{}, new JSONRowMapper()); 
+  }
+  
+  
+  public List<IndServConcurrentFailures> getConcurrentFailures(){
+	String sqlQuery = "CALL GetConcurrentFailuresKPI();";
+	return (List<IndServConcurrentFailures> )getJdbcTemplate().query(sqlQuery
+			, new Object[]{}, getMapperFor(IndServConcurrentFailures.class)); 
   }
 }

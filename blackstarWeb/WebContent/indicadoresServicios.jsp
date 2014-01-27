@@ -46,6 +46,9 @@
 					<img src="/img/navigate-right.png"/><a href="#" id="getTickets" onclick="go('getTickets')">Tickets</a>
 				</div>
 				<div>
+					<img src="/img/navigate-right.png"/><a href="#" id="getConcurrentFailures" onclick="go('getConcurrentFailures')">Fallas concurrentes</a>
+				</div>
+				<div>
 					<img src="/img/navigate-right.png"/><a href="/#">Promedios</a>
 				</div>
 				<div>
