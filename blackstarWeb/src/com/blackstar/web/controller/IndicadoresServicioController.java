@@ -67,5 +67,19 @@ public class IndicadoresServicioController extends AbstractController {
 	}
 	return "_indServConcurrentFailures";
   }
+  
+  
+  @RequestMapping(value= "/getMaxReportsByUser.do", method = RequestMethod.GET)
+  public String  getMaxReportsByUser(ModelMap model){
+	try {
+	     model.addAttribute("maxReportsByUser", service.getMaxPeportsByUser());
+	} catch (Exception e) {
+		Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
+		e.printStackTrace();
+		model.addAttribute("errorDetails", e.getStackTrace()[0].toString());
+		return "error";
+	}
+	return "_indServMaxReportsByUser";
+  }
 
 }

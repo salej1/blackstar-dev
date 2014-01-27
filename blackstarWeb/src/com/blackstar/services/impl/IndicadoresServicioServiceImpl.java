@@ -81,5 +81,26 @@ public class IndicadoresServicioServiceImpl extends AbstractService
 	    }
 	return data;
   }
+  
+  public String getMaxPeportsByUser() throws Exception {
+	List<JSONObject> jsonData = dao.getMaxPeportsByUser();
+    String month = "";
+	String lastMonth = "";
+	Map <String, String> map = new HashMap<String , String>() {{
+	        put("employee", "1");
+	        put("customer", "");
+	        put("created", "");
+	        put("counter", "");
+	}};
+	for(int i = 0; i < jsonData.size();i++){
+	  month = jsonData.get(i).get("created").toString().substring(5,7);
+	  if(! month.equals(lastMonth)){
+		  lastMonth = month;
+		  map.put("employee", MONTHS.get(month));
+		  jsonData.add(i, new JSONObject(map));
+	  }
+	}
+	return jsonData != null ? jsonData.toString() : "";
+  }
 
 }

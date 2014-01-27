@@ -29,4 +29,9 @@ public class IndicadoresServicioDAOImpl extends AbstractDAO
 	return (List<GetConcurrentFailuresKPI> )getJdbcTemplate().query(sqlQuery
 			, new Object[]{}, getMapperFor(GetConcurrentFailuresKPI.class)); 
   }
+  
+  public List<JSONObject> getMaxPeportsByUser(){
+	String sqlQuery = "CALL GetMaxReportsByUserKPI();";
+	return getJdbcTemplate().query(sqlQuery, new Object[]{}, new JSONRowMapper()); 
+  }
 }

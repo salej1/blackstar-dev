@@ -11,5 +11,6 @@ public interface IndicadoresServicioDAO {
   public List<JSONObject> getTickets();
   public List<JSONObject> getPolicies();
   public List<GetConcurrentFailuresKPI> getConcurrentFailures();
+  public List<JSONObject> getMaxPeportsByUser();
 	
 }

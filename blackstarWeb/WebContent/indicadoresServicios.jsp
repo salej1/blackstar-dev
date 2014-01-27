@@ -40,7 +40,7 @@
 					<img src="/img/navigate-right.png"/><a href="/#">Graficas generales</a>
 				</div>
 				<div>
-					<img src="/img/navigate-right.png"/><a href="/#">Usuarios que mas reportan</a>
+					<img src="/img/navigate-right.png"/><a href="#" id="getMaxReportsByUser" onclick="go('getMaxReportsByUser')">Usuarios que mas reportan</a>
 				</div>
 				<div>
 					<img src="/img/navigate-right.png"/><a href="#" id="getTickets" onclick="go('getTickets')">Tickets</a>
