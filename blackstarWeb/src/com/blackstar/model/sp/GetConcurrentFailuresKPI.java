@@ -1,8 +1,8 @@
-package com.blackstar.model;
+package com.blackstar.model.sp;
 
 import java.util.Date;
 
-public class IndServConcurrentFailures {
+public class GetConcurrentFailuresKPI {
 	
 	private String employee;
 	private String customer;
@@ -14,11 +14,11 @@ public class IndServConcurrentFailures {
 	private String ticketNumber;
 	private Date created;
 	
-	public IndServConcurrentFailures(){
+	public GetConcurrentFailuresKPI(){
 		
 	}
 	
-	public IndServConcurrentFailures(String employee){
+	public GetConcurrentFailuresKPI(String employee){
 		this.employee = employee;
 	}
 	

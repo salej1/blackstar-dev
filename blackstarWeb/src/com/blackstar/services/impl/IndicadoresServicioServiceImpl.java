@@ -7,7 +7,7 @@ import java.util.Map;
 import org.json.JSONObject;
 
 import com.blackstar.db.dao.interfaces.IndicadoresServicioDAO;
-import com.blackstar.model.IndServConcurrentFailures;
+import com.blackstar.model.sp.GetConcurrentFailuresKPI;
 import com.blackstar.services.AbstractService;
 import com.blackstar.services.interfaces.IndicadoresServicioService;
 
@@ -68,15 +68,15 @@ public class IndicadoresServicioServiceImpl extends AbstractService
 	return jsonData != null ? jsonData.toString() : "";
   }
   
-  public List<IndServConcurrentFailures> getConcurrentFailures() throws Exception{
-	List<IndServConcurrentFailures> data = dao.getConcurrentFailures();
+  public List<GetConcurrentFailuresKPI> getConcurrentFailures() throws Exception{
+	List<GetConcurrentFailuresKPI> data = dao.getConcurrentFailures();
 	String month = "";
 	String lastMonth = "";
 	for(int i = 0; i < data.size();i++){
 		  month = data.get(i).getCreated().toString().substring(5,7);
 		  if(! month.equals(lastMonth)){
 			  lastMonth = month;
-			  data.add(i, new  IndServConcurrentFailures(MONTHS.get(month)));
+			  data.add(i, new  GetConcurrentFailuresKPI(MONTHS.get(month)));
 		  }
 	    }
 	return data;
