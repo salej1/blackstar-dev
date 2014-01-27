@@ -1,9 +1,9 @@
 package com.blackstar.web.controller;
 
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.blackstar.common.Globals;
-import com.blackstar.logging.Logger;
 import com.blackstar.model.SurveyService;
 import com.blackstar.model.UserSession;
 import com.blackstar.services.interfaces.SurveyServiceService;
@@ -34,17 +33,25 @@ public class SurveyServiceController extends AbstractController {
 	  {
 		  SurveyService surveyService = new SurveyService();
 		  model.addAttribute("surveyService", surveyService);
-
-		  //System.out.println("**********************Entro a cargar la pagina");		  
+	  
 		  return "surveyService";
 	  }
 	
-	 @RequestMapping(value = "/save.do", method = RequestMethod.POST)
-	    public String save(@ModelAttribute("surveyService") SurveyService surveyService){
+	@ModelAttribute("surveyServiceList")
+	public String populateServiceOrderList(ModelMap modelLoad) {
+		modelLoad.addAttribute("surveyServiceList",SurveyServiceService.getServiceOrder());
+		return "surveyService";
+	}
+	
+	@RequestMapping(value = "/save.do", method = RequestMethod.POST)
+	   public String save(
+	   		@ModelAttribute("surveyService") SurveyService surveyService,
+	   		@ModelAttribute(Globals.SESSION_KEY_PARAM)  UserSession userSession,
+	             ModelMap model, HttpServletRequest req, HttpServletResponse resp){
 		 
 		// model.addAttribute("surveyService", surveyService);
-		System.out.println("**********************Estoy en save");
-		 return "dashboard";
+		SurveyServiceService.saveSurvey(surveyService);
+		return "dashboard";
 		 
 	 }
 

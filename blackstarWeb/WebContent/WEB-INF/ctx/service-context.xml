@@ -16,8 +16,8 @@
   </bean>
   
   <bean id="googleDriveService" class="com.blackstar.services.impl.GoogleDriveServiceImpl" parent="abstractService" init-method="init">
-    <property name="serviceAccountId" value="313287673617@developer.gserviceaccount.com"/>
-    <property name="serviceAccountUser" value="portal-servicios@gposac.com.mx"/>
+    <property name="serviceAccountId" value="435070024686-gclpdp2tt6aqo11nqfs0rfj1mpcp4iu1@developer.gserviceaccount.com"/>
+    <property name="serviceAccountUser" value="sergio.aga@gmail.com"/>
   </bean>
   
   
@@ -49,6 +49,10 @@
     <bean id="offlineOSService" class="com.blackstar.services.impl.OfflineOSServiceImpl" parent="abstractService">
      <property name="soService" ref="serviceOrderService" />
      <property name="rpService" ref="reportService" />
+  </bean>
+  
+    <bean id="surveyServiceService" class="com.blackstar.services.impl.SurveyServiceServiceImpl" parent="abstractService">
+      <property name="surveyServiceDAO" ref="surveyServiceDAO" />
   </bean>
 
 </beans>

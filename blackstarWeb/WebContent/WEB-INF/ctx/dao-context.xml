@@ -16,14 +16,14 @@
 
       <bean id="dsBlackStartDev" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">  
              <property name="driverClassName" value="com.mysql.jdbc.Driver"/>  
-             <property name="url" value="jdbc:mysql://localhost:3306/blackstarDb"/>  
+             <property name="url" value="jdbc:mysql://localhost:3307/blackstarDb"/>  
              <property name="username" value="root"/>  
              <property name="password" value=""/>  
        </bean>
        
        <bean id="dsBlackStartProd" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">  
              <property name="driverClassName" value="com.mysql.jdbc.GoogleDriver"/>  
-             <property name="url" value="jdbc:google:rdbms://gposac-blackstar-pro:gposac-blackstar-pro/blackstarDb"/>  
+             <property name="url" value="jdbc:google:rdbms://innso-blackstar-dev:innso-blackstar-dev2/blackstarDb"/>  
        </bean>
        
        <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
@@ -39,5 +39,7 @@
        <bean id="dashboardDAO" class="com.blackstar.db.dao.impl.DashboardDAOImpl" parent="abstractDAO"/>
        <bean id="serviceOrderDAO" class="com.blackstar.db.dao.impl.ServiceOrderDAOImpl" parent="abstractDAO"/>
        <bean id="serviceTypeDAO" class="com.blackstar.db.dao.impl.ServiceTypeDAOImpl" parent="abstractDAO"/>
+       <bean id="surveyServiceDAO" class="com.blackstar.db.dao.impl.SurveyServiceDAOImpl" parent="abstractDAO"/>
+       
 
 </beans>
