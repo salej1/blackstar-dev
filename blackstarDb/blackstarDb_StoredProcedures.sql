@@ -146,11 +146,57 @@
 -- 								blackstarDb.GetTicketsKPI
 --                              blackstarDb.GetPoliciesKPI
 --                              blackstarDb.GetConcurrentFailuresKPI
+--                              blackstarDb.GetMaxReportsByUserKPI
+--                              blackstarDb.GetReportOSTableKPI
+--                              blackstarDb.GetReportOSResumeKPI
 -- -----------------------------------------------------------------------------
 use blackstarDb;
 
 
 DELIMITER $$
+
+DROP PROCEDURE IF EXISTS blackstardb.GetReportOSResumeKPI$$
+CREATE PROCEDURE blackstardb.GetReportOSResumeKPI()
+BEGIN
+SELECT so.serviceUnit office, count(*) numServiceOrders, survey.obCount numObervations
+FROM serviceorder so
+INNER JOIN (SELECT so.serviceUnit, count(*) obCount
+            FROM surveyservice ss
+            INNER JOIN serviceorder so on so.serviceOrderId = ss.serviceOrderId
+            WHERE ss.datePerson >= STR_TO_DATE(CONCAT('01-01-',YEAR(NOW())),'%d-%m-%Y')
+            GROUP BY so.serviceUnit) AS survey ON so.serviceUnit = survey.serviceUnit 
+WHERE so.closed >= STR_TO_DATE(CONCAT('01-01-',YEAR(NOW())),'%d-%m-%Y')
+GROUP BY so.serviceUnit;
+END$$
+
+
+DROP PROCEDURE IF EXISTS blackstardb.GetReportOSTableKPI$$
+CREATE PROCEDURE blackstardb.GetReportOSTableKPI()
+BEGIN
+SELECT os.serviceOrderId as serviceOrderId
+       , ss.comments as comments
+       , ss.serviceComments as serviceComments
+       , os.responsible as responsible
+       , os.serviceUnit as office
+FROM serviceorder os
+INNER JOIN surveyservice ss on os.serviceOrderId = ss.serviceOrderId
+ORDER BY office ASC;
+END$$
+
+DROP PROCEDURE IF EXISTS blackstardb.GetMaxReportsByUserKPI$$
+CREATE PROCEDURE blackstardb.GetMaxReportsByUserKPI()
+BEGIN
+SELECT tk.employee as employee,
+       py.customer as customer,
+       tk.created as created,
+       count(*) counter
+FROM ticket tk
+INNER JOIN policy py ON tk.policyId = py.policyId
+WHERE tk.employee != ''
+GROUP BY tk.employee, MONTH(tk.created)
+HAVING counter >= 2
+ORDER BY MONTH(tk.created) ASC;
+END$$
 
 DROP PROCEDURE IF EXISTS blackstardb.GetConcurrentFailuresKPI$$
 CREATE PROCEDURE blackstardb.GetConcurrentFailuresKPI()
