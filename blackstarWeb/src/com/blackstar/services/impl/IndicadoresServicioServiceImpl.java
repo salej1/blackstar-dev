@@ -8,6 +8,7 @@ import org.json.JSONObject;
 
 import com.blackstar.db.dao.interfaces.IndicadoresServicioDAO;
 import com.blackstar.model.sp.GetConcurrentFailuresKPI;
+import com.blackstar.model.sp.GetReportOSTableKPI;
 import com.blackstar.services.AbstractService;
 import com.blackstar.services.interfaces.IndicadoresServicioService;
 
@@ -16,7 +17,7 @@ public class IndicadoresServicioServiceImpl extends AbstractService
                             implements IndicadoresServicioService {
 	
   private IndicadoresServicioDAO dao = null;
-	public static final Map<String , String> MONTHS = new HashMap<String , String>() {{
+  public static final Map<String , String> MONTHS = new HashMap<String , String>() {{
         put("01", "lbl-ENERO");
         put("02", "lbl-FEBRERO");
         put("03", "lbl-MARZO");
@@ -29,7 +30,13 @@ public class IndicadoresServicioServiceImpl extends AbstractService
         put("10", "lbl-OCTUBRE");
         put("11", "lbl-NOVIEMBRE");
         put("12", "lbl-DICIEMBRE");
-}};
+  }};
+  
+  public static final Map<String , String> OFFICES = new HashMap<String , String>() {{
+    put("GDL", "lbl-GUADALAJARA");
+    put("MXO", "lbl-MEXICO");
+    put("QRO", "lbl-QUERETARO");
+  }};
   
   public void setDao(IndicadoresServicioDAO dao) {
 	this.dao = dao;
@@ -101,6 +108,25 @@ public class IndicadoresServicioServiceImpl extends AbstractService
 	  }
 	}
 	return jsonData != null ? jsonData.toString() : "";
+  }
+  
+  public String getReportOSResumeKPI() throws Exception{
+	List<JSONObject> jsonData = dao.getReportOSResume();
+	return jsonData != null ? jsonData.toString() : "";
+  }
+  
+  public List<GetReportOSTableKPI> getReportOSTable(){
+	List<GetReportOSTableKPI> data = dao.getReportOSTable();
+	String office = "";
+	String lastOffice = "";
+	for(int i = 0; i < data.size();i++){
+	  office = data.get(i).getOffice();
+	  if(! office.equals(lastOffice)){
+		 lastOffice = office;
+		 data.add(i, new  GetReportOSTableKPI(OFFICES.get(office)));
+	  }
+	}
+	return data;
   }
 
 }

@@ -81,5 +81,20 @@ public class IndicadoresServicioController extends AbstractController {
 	}
 	return "_indServMaxReportsByUser";
   }
+ 
+  @RequestMapping(value= "/getReportOS.do", method = RequestMethod.GET)
+  public String  getReportOS(ModelMap model){
+	try {
+		 model.addAttribute("reportOSResume", service.getReportOSResumeKPI());
+		 model.addAttribute("reportOSTable", service.getReportOSTable());
+	} catch (Exception e) {
+		Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
+		e.printStackTrace();
+		model.addAttribute("errorDetails", e.getStackTrace()[0].toString());
+		return "error";
+	}
+	return "_indServReportOS";
+  }
+  
 
 }

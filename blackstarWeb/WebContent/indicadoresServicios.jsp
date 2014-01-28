@@ -52,7 +52,7 @@
 					<img src="/img/navigate-right.png"/><a href="/#">Promedios</a>
 				</div>
 				<div>
-					<img src="/img/navigate-right.png"/><a href="/#">Reporte Ordenes de servicio</a>
+					<img src="/img/navigate-right.png"/><a href="#" id="getReportOS" onclick="go('getReportOS')">Reporte Ordenes de servicio</a>
 				</div>
 				<div>
 					<img src="/img/navigate-right.png"/><a href="/#">Resumen Ordenes de servicio</a>
