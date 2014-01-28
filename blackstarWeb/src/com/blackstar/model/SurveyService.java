@@ -8,35 +8,21 @@ public class SurveyService {
 	private String company;
 	private String name;
 	private String email;
-	private Integer telephone;
+	private String telephone;
 	private Date date;
-	private List<String> lQuestionTreatment;
-	private String reasontreatment;		
-	private List<String> lQuestionIdentificationPersonal;	
-	private List<String> lQuestionIdealEquipment;
+	private String reasontreatment;			
+	private String questionIdentificationPersonal;	
+	private String questionIdealEquipment;
 	private String reasonIdealEquipment;	
-	private List<String> lQuestionTime;
+	private String questionTime;
 	private String reasonTime;	
-	private List<String> lQuestionUniform;
-	private List<String> reasonUniform;	
+	private String questionUniform;
+	private String reasonUniform;	
 	private Integer qualification;
 	private String suggestion;
 	private Integer serviceOrderId;
 	private String sign;
-	
-	public Integer getServiceOrderId() {
-		return serviceOrderId;
-	}
-	public void setServiceOrderId(Integer serviceOrderId) {
-		this.serviceOrderId = serviceOrderId;
-	}
-	public String getSign() {
-		return sign;
-	}
-	public void setSign(String sign) {
-		this.sign = sign;
-	}
-		
+	private String questionTreatment;
 	public String getCompany() {
 		return company;
 	}
@@ -55,17 +41,17 @@ public class SurveyService {
 	public void setEmail(String email) {
 		this.email = email;
 	}
+	public String getTelephone() {
+		return telephone;
+	}
+	public void setTelephone(String telephone) {
+		this.telephone = telephone;
+	}
 	public Date getDate() {
 		return date;
 	}
 	public void setDate(Date date) {
 		this.date = date;
-	}
-	public List<String> getlQuestionTreatment() {
-		return lQuestionTreatment;
-	}
-	public void setlQuestionTreatment(List<String> lQuestionTreatment) {
-		this.lQuestionTreatment = lQuestionTreatment;
 	}
 	public String getReasontreatment() {
 		return reasontreatment;
@@ -73,18 +59,18 @@ public class SurveyService {
 	public void setReasontreatment(String reasontreatment) {
 		this.reasontreatment = reasontreatment;
 	}
-	public List<String> getlQuestionIdentificationPersonal() {
-		return lQuestionIdentificationPersonal;
+	public String getQuestionIdentificationPersonal() {
+		return questionIdentificationPersonal;
 	}
-	public void setlQuestionIdentificationPersonal(
-			List<String> lQuestionIdentificationPersonal) {
-		this.lQuestionIdentificationPersonal = lQuestionIdentificationPersonal;
+	public void setQuestionIdentificationPersonal(
+			String questionIdentificationPersonal) {
+		this.questionIdentificationPersonal = questionIdentificationPersonal;
 	}
-	public List<String> getlQuestionIdealEquipment() {
-		return lQuestionIdealEquipment;
+	public String getQuestionIdealEquipment() {
+		return questionIdealEquipment;
 	}
-	public void setlQuestionIdealEquipment(List<String> lQuestionIdealEquipment) {
-		this.lQuestionIdealEquipment = lQuestionIdealEquipment;
+	public void setQuestionIdealEquipment(String questionIdealEquipment) {
+		this.questionIdealEquipment = questionIdealEquipment;
 	}
 	public String getReasonIdealEquipment() {
 		return reasonIdealEquipment;
@@ -92,11 +78,11 @@ public class SurveyService {
 	public void setReasonIdealEquipment(String reasonIdealEquipment) {
 		this.reasonIdealEquipment = reasonIdealEquipment;
 	}
-	public List<String> getlQuestionTime() {
-		return lQuestionTime;
+	public String getQuestionTime() {
+		return questionTime;
 	}
-	public void setlQuestionTime(List<String> lQuestionTime) {
-		this.lQuestionTime = lQuestionTime;
+	public void setQuestionTime(String questionTime) {
+		this.questionTime = questionTime;
 	}
 	public String getReasonTime() {
 		return reasonTime;
@@ -104,16 +90,16 @@ public class SurveyService {
 	public void setReasonTime(String reasonTime) {
 		this.reasonTime = reasonTime;
 	}
-	public List<String> getlQuestionUniform() {
-		return lQuestionUniform;
+	public String getQuestionUniform() {
+		return questionUniform;
 	}
-	public void setlQuestionUniform(List<String> lQuestionUniform) {
-		this.lQuestionUniform = lQuestionUniform;
+	public void setQuestionUniform(String questionUniform) {
+		this.questionUniform = questionUniform;
 	}
-	public List<String> getReasonUniform() {
+	public String getReasonUniform() {
 		return reasonUniform;
 	}
-	public void setReasonUniform(List<String> reasonUniform) {
+	public void setReasonUniform(String reasonUniform) {
 		this.reasonUniform = reasonUniform;
 	}
 	public Integer getQualification() {
@@ -128,12 +114,26 @@ public class SurveyService {
 	public void setSuggestion(String suggestion) {
 		this.suggestion = suggestion;
 	}
+	public Integer getServiceOrderId() {
+		return serviceOrderId;
+	}
+	public void setServiceOrderId(Integer serviceOrderId) {
+		this.serviceOrderId = serviceOrderId;
+	}
+	public String getSign() {
+		return sign;
+	}
+	public void setSign(String sign) {
+		this.sign = sign;
+	}
+	public String getQuestionTreatment() {
+		return questionTreatment;
+	}
+	public void setQuestionTreatment(String questionTreatment) {
+		this.questionTreatment = questionTreatment;
+	}
 	
-	public Integer getTelephone() {
-		return telephone;
-	}
-	public void setTelephone(Integer telephone) {
-		this.telephone = telephone;
-	}
+	
+
 	
 }

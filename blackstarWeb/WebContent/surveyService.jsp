@@ -30,19 +30,20 @@
 				  <table width="608" border="1">
                     <tr>
                       <td width="89">Empresa</td>
-                      <td width="153"><input type="text" name="company" size="80"></td>
+                      <!-- <td width="153"><input type="text" name="company" size="80"></td>-->
+                       <td><form:input path="company" type="text" style="width:100%;"/></td>
 				    </tr>
                     <tr>
                       <td>Nombre</td>
-                      <td><input type="text" name="name"></td>
+                      <td><form:input path="name" type="text" style="width:50%;"/></td>
 					  <td>Telefono</td>
-           			  <td width="277"><input type="text" name="telephone" id="telephone"></td>
+           			  <td><form:input path="telephone" type="text" style="width:50%;"/></td>
                     </tr>
                     <tr>
                       <td>Correo electronico </td>
-                      <td><input type="text" name="email"></td>
+                      <td><form:input path="email" type="text" style="width:50%;"/></td>
 					  <td>Fecha </td>
-                      <td><!--<input type="text" name="date" id="date"/>-->
+                      <td>
                       	 <form:input path="date" type="text" style="width:50%;"  />
                       </td>
                      
@@ -54,11 +55,11 @@
 				  
 				  <table width="421" border="1">
                     <tr>
-                      <td>Bueno
-                      	<input type="checkbox" name="lQuestionTreatment" value="bueno">
+                      <td>Bueno   
+                      	<form:radiobutton path="QuestionTreatment" value="Bueno"/>
                       </td>
                       <td>                        Malo</span>
-                      <input type="checkbox" name="lQuestionTreatment" value="malo"></td>
+                      <form:radiobutton path="QuestionTreatment" value="Malo"/></td>
                       <td><span class="Estilo1">Por que?</span></td>
                       <td><input type="text" name="reasontreatment"></td>
                     </tr>
@@ -67,9 +68,9 @@
 				  <table width="421" border="1">
                     <tr>
                       <td>Si
-                      <input type="checkbox" name="lQuestionIdentificationPersonal" value="si"></td>
+                      <form:radiobutton path="QuestionIdentificationPersonal" value="Si"/></td>
                       <td>                        No
-                      <input type="checkbox" name="lQuestionIdentificationPersonal" value="no"></td>
+                      <form:radiobutton path="QuestionIdentificationPersonal" value="No"/></td>
                       <td>
                     </tr>
                   </table>
@@ -78,9 +79,9 @@
 				  <table width="421" border="1">
                     <tr>
                       <td>Si
-                      <input type="checkbox" name="lQuestionIdealEquiment" value="si"></td>
+                      <form:radiobutton path="QuestionIdealEquipment" value="Si"/></td>
                       <td>                        No
-                      <input type="checkbox" name="lQuestionIdealEquiment" value="no"></td>
+                      <form:radiobutton path="QuestionIdealEquipment" value="No"/></td>
                       <td>                        Por que?</td>
                       <td><input type="text" name="reasonIdealEquipment"></td>
                     </tr>
@@ -91,9 +92,9 @@
 				  <table width="421" border="1">
                     <tr>
                       <td>Si
-                      <input type="checkbox" name="lQuestionTime" value="si"></td>
+                      <form:radiobutton path="QuestionTime" value="Si"/></td>
                       <td>                        No
-                      <input type="checkbox" name="lQuestionTime" value="no"></td>
+                      <form:radiobutton path="QuestionTime" value="No"/></td>
                       <td>                        Por que?</td>
                       <td><input type="text" name="reasonTime"></td>
                     </tr>
@@ -104,9 +105,9 @@
 				  <table width="421" border="1">
                     <tr>
                       <td>Si
-                      <input type="checkbox" name="lQuestionUniform" value="si"></td>
+                      <form:radiobutton path="QuestionUniform" value="Si"/></td>
                       <td>                        No
-                      <input type="checkbox" name="lQuestionUniform" value="no"></td>
+                      <form:radiobutton path="QuestionUniform" value="No"/></td>
                       <td>                        Por que?</td>
                       <td><input type="text" name="reasonUniform"></td>
                     </tr>

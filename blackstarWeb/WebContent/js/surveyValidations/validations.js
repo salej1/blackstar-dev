@@ -22,7 +22,6 @@ $("#telephone").keydown(function(event) {
         }
       }
    });
-
 	$("#date").datetimepicker();
 
 	

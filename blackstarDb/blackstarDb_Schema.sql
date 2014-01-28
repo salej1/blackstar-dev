@@ -19,6 +19,8 @@
 -- --   --------   -------  ------------------------------------
 -- 5   12/12/2013  SAG  	Se agrega sequence y sequenceNumberPool
 -- ---------------------------------------------------------------------------
+-- 6   26/01/2014  LERV  	Se agrega tabla SurveyService
+-- ---------------------------------------------------------------------------
 
 use blackstarDb;
 
@@ -602,12 +604,12 @@ END IF;
 
 IF (SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'surveyService') = 0 THEN
 
-	CREATE TABLE blackstardb.surveyservice (
+	CREATE TABLE blackstardb.surveyService (
 		  surveyServiceId INT NOT NULL AUTO_INCREMENT,
 		  company VARCHAR(45) NULL,
 		  namePerson VARCHAR(45) NULL,
 		  email VARCHAR(45) NULL,
-		  telephone INT NULL,
+		  telephone VARCHAR(45) NULL,
 		  datePerson DATE NULL,
 		  questiontreatment VARCHAR(45) NULL,
 		  reasontreatment VARCHAR(45) NULL,
@@ -623,16 +625,16 @@ IF (SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackst
 		 PRIMARY KEY (surveyServiceId))
 	     COMMENT = 'this table will be to record data about surveyservice';
 
-		ALTER TABLE blackstardb.surveyservice 
+		ALTER TABLE blackstardb.SurveyService 
 
 		ADD COLUMN serviceOrderId INT NULL AFTER qualification,
 		ADD INDEX serviceOrderId_idx 
 		(dserviceOrderId ASC);
-		ALTER TABLE blackstardb.surveyservice 
-		ADD CONSTRAINT `serviceOrderId`
+		ALTER TABLE blackstardb.serviceorder 
+		ADD CONSTRAINT `surveyServiceId`
 			  
-		FOREIGN KEY (serviceOrderId)
-		REFERENCES blackstardb.serviceorder (serviceOrderId)
+		FOREIGN KEY (surveyServiceId)
+		REFERENCES blackstardb.surveyservice (surveyServiceId)
 
 		ON DELETE NO ACTION
 		ON UPDATE NO ACTION;

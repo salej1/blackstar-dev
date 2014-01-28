@@ -4,6 +4,7 @@ package com.blackstar.web.controller;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -49,8 +50,13 @@ public class SurveyServiceController extends AbstractController {
 	   		@ModelAttribute(Globals.SESSION_KEY_PARAM)  UserSession userSession,
 	             ModelMap model, HttpServletRequest req, HttpServletResponse resp){
 		 
-		// model.addAttribute("surveyService", surveyService);
-		SurveyServiceService.saveSurvey(surveyService);
+		try{
+			SurveyServiceService.saveSurvey(surveyService);
+		}catch(DataAccessException e){
+			e.printStackTrace();
+		}catch(IllegalArgumentException e){
+			e.printStackTrace();
+		}
 		return "dashboard";
 		 
 	 }

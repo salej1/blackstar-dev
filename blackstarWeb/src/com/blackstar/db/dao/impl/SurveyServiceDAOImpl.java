@@ -31,17 +31,18 @@ public class SurveyServiceDAOImpl extends AbstractDAO implements SurveyServiceDA
 										""+surveyService.getEmail()+"",
 										""+surveyService.getTelephone()+"",
 										""+df.format(surveyService.getDate())+"",
-										""+surveyService.getlQuestionTreatment()+"",
+										""+surveyService.getQuestionTreatment()+"",
 										""+surveyService.getReasontreatment()+"",
-										""+surveyService.getlQuestionIdentificationPersonal()+"",
-										""+surveyService.getlQuestionIdealEquipment()+"",
+										""+surveyService.getQuestionIdentificationPersonal()+"",
+										""+surveyService.getQuestionIdealEquipment()+"",
 										""+surveyService.getReasonIdealEquipment()+"",
-										""+surveyService.getlQuestionTime()+"",
+										""+surveyService.getQuestionTime()+"",
 										""+surveyService.getReasonTime()+"",
-										""+surveyService.getlQuestionUniform()+"",
+										""+surveyService.getQuestionUniform()+"",
 										""+surveyService.getReasonUniform()+"",
 										""+surveyService.getQualification()+"",
 										""+surveyService.getServiceOrderId()+"", //ordenes de servicio asociadas a una encuesta de servicio ordenadas por usuario
+										//"1000",
 										""+surveyService.getSign()+""
 										};
 		

@@ -142,6 +142,13 @@
 --							Se modifica:
 --								blackstarDb.AddserviceOrder
 -- -----------------------------------------------------------------------------
+-- -----------------------------------------------------------------------------
+-- 26   26/01/2014	LERV	Se Integra:
+-- 								blackstarDb.GetServiceOrderByUser
+--								blackstarDb.AddSurveyService
+--										
+-- -----------------------------------------------------------------------------
+
 use blackstarDb;
 
 
@@ -1959,6 +1966,10 @@ modifiedByUsr = modifiedByUsr
 where serviceOrderId = serviceOrderId;
 END$$
 
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetServiceOrderByUser
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetServiceOrderByUser$$
 CREATE PROCEDURE `GetServiceOrderByUser` ()
 BEGIN
 
@@ -1966,12 +1977,15 @@ select serviceOrderId,serviceOrderNumber from serviceorder where created = CURDA
 
 END$$
 
-
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.AddSurveyService
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.AddSurveyService$$
 CREATE PROCEDURE `AddSurveyService`(
 company varchar(255),
 namePerson varchar(255),
 email varchar(255),
-telephone int,
+telephone varchar(45),
 datePerson datetime,
 questiontreatment varchar(255),
 reasontreatment varchar(255),
