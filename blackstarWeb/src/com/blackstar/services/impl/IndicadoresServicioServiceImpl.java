@@ -128,5 +128,47 @@ public class IndicadoresServicioServiceImpl extends AbstractService
 	}
 	return data;
   }
+  
+  public String getOSResume() throws Exception {
+	List<JSONObject> jsonData = dao.getOSResume();
+	String month = "";
+	String lastMonth = "";
+	Map <String, String> map = new HashMap<String , String>() {{
+	       put("serviceUnit", "");
+	       put("project", "");
+	       put("customer", "");
+	       put("equipmentLocation", "");
+	       put("equipmentAddress", "");
+	       put("serviceTypeId", "");
+	       put("serviceOrderNumber", "");
+	       put("ticketId", "");
+	       put("created", "");
+	       put("equipmentTypeId", "");
+	       put("brand", "");
+	       put("model", "");
+	       put("serialNumber", "");
+	       put("capacity", "");
+	       put("responsible", "");
+	       put("receivedBy", "");
+	       put("serviceComments", "");
+	       put("closed", "");
+	       put("hasErrors", "");
+	       put("materialUsed", "");
+	       put("cst", "");
+	       put("finalUser", "");
+	       put("qualification", "");
+	       put("comments", "");
+	       
+	}};
+	for(int i = 0; i < jsonData.size();i++){
+	  month = jsonData.get(i).get("created").toString().substring(5,7);
+	  if(! month.equals(lastMonth)){
+		  lastMonth = month;
+		  map.put("serviceUnit", MONTHS.get(month));
+		  jsonData.add(i, new JSONObject(map));
+	  }
+	}
+	return jsonData != null ? jsonData.toString() : "";
+  }
 
 }

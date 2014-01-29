@@ -96,5 +96,18 @@ public class IndicadoresServicioController extends AbstractController {
 	return "_indServReportOS";
   }
   
+  @RequestMapping(value= "/getOSResume.do", method = RequestMethod.GET)
+  public String  getOSResume(ModelMap model){
+	try {
+		 model.addAttribute("OSResume", service.getOSResume());
+	} catch (Exception e) {
+		Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
+		e.printStackTrace();
+		model.addAttribute("errorDetails", e.getStackTrace()[0].toString());
+		return "error";
+	}
+	return "_indServOSResume";
+  }
+  
 
 }

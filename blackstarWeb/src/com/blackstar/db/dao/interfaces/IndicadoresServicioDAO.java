@@ -15,5 +15,6 @@ public interface IndicadoresServicioDAO {
   public List<JSONObject> getMaxPeportsByUser();
   public List<GetReportOSTableKPI> getReportOSTable();
   public List<JSONObject> getReportOSResume();
+  public List<JSONObject> getOSResume();
 	
 }

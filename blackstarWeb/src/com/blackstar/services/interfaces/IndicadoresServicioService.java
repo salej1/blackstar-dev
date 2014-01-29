@@ -13,5 +13,6 @@ public interface IndicadoresServicioService {
 	public String getMaxPeportsByUser() throws Exception;
 	public String getReportOSResumeKPI() throws Exception;
 	public List<GetReportOSTableKPI> getReportOSTable() throws Exception;
+	public String getOSResume() throws Exception;
 	
 }
