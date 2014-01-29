@@ -40,8 +40,14 @@ public class SurveyServiceController extends AbstractController {
 	
 	@ModelAttribute("surveyServiceList")
 	public String populateServiceOrderList(ModelMap modelLoad) {
-		modelLoad.addAttribute("surveyServiceList",SurveyServiceService.getServiceOrder());
-		return "surveyService";
+		try{
+			modelLoad.addAttribute("surveyServiceList",SurveyServiceService.getServiceOrder());
+		}catch(NullPointerException e){
+			e.printStackTrace();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+			return "surveyService";
 	}
 	
 	@RequestMapping(value = "/save.do", method = RequestMethod.POST)

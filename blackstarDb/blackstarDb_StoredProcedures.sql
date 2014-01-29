@@ -1998,18 +1998,19 @@ questionUniform varchar(255),
 reasonUniform varchar(255),
 qualification int,
 serviceOrderId  int(11) ,
-sign varchar(255)
+sign varchar(255),
+suggestion varchar(255)
 )
 BEGIN 
 INSERT INTO surveyService (company,namePerson,email
 ,telephone,datePerson,questiontreatment,reasontreatment,questionIdentificationPersonal,
 questionIdealEquipment,reasonIdealEquipment,questionTime,reasonTime,
-questionUniform,reasonUniform,qualification,serviceOrderId,sign)
+questionUniform,reasonUniform,qualification,serviceOrderId,sign,suggestion)
 values(company,namePerson,email
 ,telephone,datePerson,questiontreatment,reasontreatment,
 questionIdentificationPersonal,questionIdealEquipment,reasonIdealEquipment,
 questionTime,reasonTime,questionUniform,reasonUniform,qualification,
-serviceOrderId,sign);
+serviceOrderId,sign,suggestion);
 select LAST_INSERT_ID();
 
 END

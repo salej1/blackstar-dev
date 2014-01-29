@@ -625,11 +625,12 @@ IF (SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackst
 		 PRIMARY KEY (surveyServiceId))
 	     COMMENT = 'this table will be to record data about surveyservice';
 
-		ALTER TABLE blackstardb.SurveyService 
+		ALTER TABLE blackstardb.surveyService 
 
 		ADD COLUMN serviceOrderId INT NULL AFTER qualification,
 		ADD INDEX serviceOrderId_idx 
 		(dserviceOrderId ASC);
+		
 		ALTER TABLE blackstardb.serviceorder 
 		ADD CONSTRAINT `surveyServiceId`
 			  
@@ -642,6 +643,10 @@ IF (SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackst
 
 		ALTER TABLE blackstardb.surveyservice 
 		ADD COLUMN sign VARCHAR(45) NULL AFTER serviceOrderId;
+		
+		ALTER TABLE `blackstardb`.`surveyservice` 
+		ADD COLUMN `suggestion` VARCHAR(255) NULL AFTER `sign`;
+		
 END IF
 
 	

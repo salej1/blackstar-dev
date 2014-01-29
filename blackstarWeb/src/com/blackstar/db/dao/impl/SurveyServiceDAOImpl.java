@@ -22,7 +22,7 @@ public class SurveyServiceDAOImpl extends AbstractDAO implements SurveyServiceDA
 	public void saveSurvey(SurveyService surveyService) {
 		StringBuilder sqlBuilder = new StringBuilder();
 		DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-		sqlBuilder.append("CALL AddSurveyService(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+		sqlBuilder.append("CALL AddSurveyService(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
 		
 		Object[] args = new Object []{
@@ -43,7 +43,8 @@ public class SurveyServiceDAOImpl extends AbstractDAO implements SurveyServiceDA
 										""+surveyService.getQualification()+"",
 										""+surveyService.getServiceOrderId()+"", //ordenes de servicio asociadas a una encuesta de servicio ordenadas por usuario
 										//"1000",
-										""+surveyService.getSign()+""
+										""+surveyService.getSign()+"",
+										""+surveyService.getSuggestion()+""
 										};
 		
 		getJdbcTemplate().update(sqlBuilder.toString() ,args);
