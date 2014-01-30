@@ -49,7 +49,7 @@ public class IndicadoresServicioDAOImpl extends AbstractDAO
   }
   
   public List<JSONObject> getOSResume(){
-	String sqlQuery = "CALL GetResumenOSKPI();";
+	String sqlQuery = "CALL GetResumeOSKPI();";
 	return getJdbcTemplate().query(sqlQuery, new Object[]{}, new JSONRowMapper()); 
   }
   

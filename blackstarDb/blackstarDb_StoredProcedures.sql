@@ -149,12 +149,111 @@
 --                              blackstarDb.GetMaxReportsByUserKPI
 --                              blackstarDb.GetReportOSTableKPI
 --                              blackstarDb.GetReportOSResumeKPI
+--                              blackstarDb.GetResumeOSKPI
+--                              blackstarDb.GetReportsByEquipmentTypeKPI
+--                              blackstarDb.GetTicketsByServiceCenterKPI
+--                              blackstarDb.GetStatusKPI
+--                              blackstarDb.GetServiceCenterIdList
 -- -----------------------------------------------------------------------------
 use blackstarDb;
 
 
 DELIMITER $$
 
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetServiceCenterIdList
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstardb.GetServiceCenterIdList$$
+CREATE PROCEDURE blackstardb.`GetServiceCenterIdList`()
+BEGIN
+SELECT *
+FROM servicecenter;
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetStatusKPI
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstardb.GetStatusKPI$$
+CREATE PROCEDURE blackstardb.`GetStatusKPI`(pType CHAR(1))
+BEGIN
+SELECT ts.ticketStatus as name, count(*) as value
+FROM ticket tk
+INNER JOIN policy py on tk.policyId = py.policyId
+INNER JOIN servicecenter sc ON py.serviceCenterId = sc.serviceCenterId
+INNER JOIN ticketstatus ts ON tk.ticketStatusId = ts.ticketStatusId
+WHERE tk.created >= STR_TO_DATE(CONCAT('01-01-',YEAR(NOW())),'%d-%m-%Y')
+AND sc.serviceCenterId LIKE pType
+GROUP BY tk.ticketStatusId;
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetTicketsByServiceCenterKPI
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstardb.GetTicketsByServiceCenterKPI$$
+CREATE PROCEDURE blackstardb.`GetTicketsByServiceCenterKPI`()
+BEGIN
+SELECT sc.serviceCenter as name, count(*) as value
+FROM ticket tk
+INNER JOIN policy py on tk.policyId = py.policyId
+INNER JOIN servicecenter sc ON py.serviceCenterId = sc.serviceCenterId
+WHERE tk.created >= STR_TO_DATE(CONCAT('01-01-',YEAR(NOW())),'%d-%m-%Y')
+GROUP BY sc.serviceCenter;
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetReportsByEquipmentTypeKPI
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstardb.GetReportsByEquipmentTypeKPI$$
+CREATE PROCEDURE blackstardb.`GetReportsByEquipmentTypeKPI`()
+BEGIN
+SELECT et.equipmentType as name , count(*) as value
+FROM ticket tk
+INNER JOIN policy py on py.policyId = tk.policyId
+INNER JOIN equipmenttype et ON et.equipmentTypeId = py.equipmentTypeId
+WHERE tk.created >= STR_TO_DATE(CONCAT('01-01-',YEAR(NOW())),'%d-%m-%Y')
+GROUP BY py.equipmentTypeId$$
+END;
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetResumeOSKPI
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstardb.GetResumeOSKPI$$
+CREATE PROCEDURE blackstardb.`GetResumeOSKPI`()
+BEGIN
+SELECT so.serviceUnit as serviceUnit,
+       py.project as project,
+       py.customer as customer,
+       py.equipmentLocation as equipmentLocation,
+       py.equipmentAddress as equipmentAddress,
+       so.serviceTypeId as serviceTypeId,
+       so.serviceOrderNumber as serviceOrderNumber,
+       so.ticketId as ticketId,
+       so.created as created,
+       py.equipmentTypeId as equipmentTypeId,
+       py.brand as brand,
+       py.model as model,
+       py.serialNumber as serialNumber,
+       py.capacity as capacity,
+       so.responsible as responsible,
+       so.receivedBy as receivedBy,
+       so.serviceComments as serviceComments,
+       so.closed as closed,
+       so.hasErrors as hasErrors,
+       '' as materialUsed,
+       py.cst as cst,
+       py.finalUser as finalUser,
+       ss.qualification as qualification,
+       ss.comments as comments
+FROM serviceorder so
+INNER JOIN surveyservice ss on so.serviceOrderId = ss.serviceOrderId
+INNER JOIN policy py on so.policyId = py.policyId
+WHERE so.created >= STR_TO_DATE(CONCAT('01-01-',YEAR(NOW())),'%d-%m-%Y');
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetReportOSResumeKPI
+-- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstardb.GetReportOSResumeKPI$$
 CREATE PROCEDURE blackstardb.GetReportOSResumeKPI()
 BEGIN
@@ -169,7 +268,9 @@ WHERE so.closed >= STR_TO_DATE(CONCAT('01-01-',YEAR(NOW())),'%d-%m-%Y')
 GROUP BY so.serviceUnit;
 END$$
 
-
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetReportOSTableKPI
+-- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstardb.GetReportOSTableKPI$$
 CREATE PROCEDURE blackstardb.GetReportOSTableKPI()
 BEGIN
@@ -183,6 +284,9 @@ INNER JOIN surveyservice ss on os.serviceOrderId = ss.serviceOrderId
 ORDER BY office ASC;
 END$$
 
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetMaxReportsByUserKPI
+-- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstardb.GetMaxReportsByUserKPI$$
 CREATE PROCEDURE blackstardb.GetMaxReportsByUserKPI()
 BEGIN
@@ -198,6 +302,9 @@ HAVING counter >= 2
 ORDER BY MONTH(tk.created) ASC;
 END$$
 
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetConcurrentFailuresKPI
+-- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstardb.GetConcurrentFailuresKPI$$
 CREATE PROCEDURE blackstardb.GetConcurrentFailuresKPI()
 BEGIN
@@ -222,7 +329,9 @@ BEGIN
   ORDER BY tk.created, tk.policyId ASC;
 END$$
 
-
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetPoliciesKPI
+-- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstardb.GetPoliciesKPI$$
 CREATE PROCEDURE blackstardb.GetPoliciesKPI()
 BEGIN
