@@ -37,7 +37,7 @@
 					<img src="/img/navigate-right.png"/><a href="#">Estadisticas</a>
 				</div>
 				<div>
-					<img src="/img/navigate-right.png"/><a href="/#">Graficas generales</a>
+					<img src="/img/navigate-right.png"/><a href="#" id="getCharts" onclick="go('getCharts')">Graficas generales</a>
 				</div>
 				<div>
 					<img src="/img/navigate-right.png"/><a href="#" id="getMaxReportsByUser" onclick="go('getMaxReportsByUser')">Usuarios que mas reportan</a>

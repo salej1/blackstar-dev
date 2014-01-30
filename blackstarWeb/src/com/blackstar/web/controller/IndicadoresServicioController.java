@@ -109,5 +109,18 @@ public class IndicadoresServicioController extends AbstractController {
 	return "_indServOSResume";
   }
   
+  @RequestMapping(value= "/getCharts.do", method = RequestMethod.GET)
+  public String  getCharts(ModelMap model){
+	try {
+		model.addAttribute("charts", service.getCharts());
+	} catch (Exception e) {
+		Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
+		e.printStackTrace();
+		model.addAttribute("errorDetails", e.getStackTrace()[0].toString());
+		return "error";
+	}
+	return "_indServGraphics";
+  }
+  
 
 }

@@ -1,5 +1,6 @@
 package com.blackstar.services.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -7,6 +8,8 @@ import java.util.Map;
 import org.json.JSONObject;
 
 import com.blackstar.db.dao.interfaces.IndicadoresServicioDAO;
+import com.blackstar.model.Chart;
+import com.blackstar.model.Servicecenter;
 import com.blackstar.model.sp.GetConcurrentFailuresKPI;
 import com.blackstar.model.sp.GetReportOSTableKPI;
 import com.blackstar.services.AbstractService;
@@ -169,6 +172,42 @@ public class IndicadoresServicioServiceImpl extends AbstractService
 	  }
 	}
 	return jsonData != null ? jsonData.toString() : "";
+  }
+  
+  public List<Chart> getCharts(){
+	List<Chart> charts = new ArrayList<Chart>();
+	List<Servicecenter> serviceCenters = null;
+	Chart chart = new Chart();
+	chart.setTitle("TIPO DE EQUIPOS REPORTADOS");
+	chart.setIs3d(true);
+	chart.setType("pie");
+	chart.setData(dao.getReportByEquipmentType().toString().replaceAll("\"", "'"));
+	charts.add(chart);
+	
+	chart = new Chart();
+	chart.setTitle("TICKETS POR CENTRO DE SERVICIO");
+	chart.setIs3d(false);
+	chart.setType("bar");
+	chart.setData(dao.getTicketsByServiceCenter().toString().replaceAll("\"", "'"));
+	charts.add(chart);
+	
+	serviceCenters = dao.getServiceCenterIdList();
+	serviceCenters.add(0, new Servicecenter('%', "ESTATUS GENERAL", null));
+	for(Servicecenter serviceCenter : serviceCenters){
+		chart = new Chart();
+		chart.setTitle(serviceCenter.getServiceCenter());
+		chart.setIs3d(false);
+		if(serviceCenter.getServiceCenterId() == '%'){
+		  chart.setType("donut");
+		} else {
+			chart.setType("pie");
+		}
+		chart.setData(dao.getStatus(String.valueOf(serviceCenter.getServiceCenterId()))
+				                    .toString().replaceAll("\"", "'"));
+		charts.add(chart);
+	}
+	
+	return charts;
   }
 
 }

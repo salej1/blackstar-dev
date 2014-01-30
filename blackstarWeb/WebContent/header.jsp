@@ -10,6 +10,7 @@
 		<link href="${pageContext.request.contextPath}/js/glow/1.7.0/widgets/widgets.css" type="text/css" rel="stylesheet" />
 		<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery.ui.theme.css">
 		<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery-ui.min.css">
+		<script type="text/javascript" src="https://www.google.com/jsapi"></script>
 		<script src="${pageContext.request.contextPath}/js/glow/1.7.0/core/core.js" type="text/javascript"></script>
 		<script src="${pageContext.request.contextPath}/js/glow/1.7.0/widgets/widgets.js" type="text/javascript"></script>
 		<script src="${pageContext.request.contextPath}/js/jquery-1.10.1.min.js"></script>
