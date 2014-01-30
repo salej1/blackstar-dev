@@ -41,11 +41,11 @@ public class ServiceOrderController extends AbstractController {
 	try {
 		String equipmentType = service.getEquipmentTypeBySOId(serviceOrderId);
 		String params = "/show.do?operation=2&idObject=" + serviceOrderId;
-		String aTemplate = "/aircoservice";
-		String bTemplate = "/batteryservice";
-		String pTemplate = "/emergencyplantservice";
-		String uTemplate = "/upsservice";
-		String xTemplate = "/plainservice";
+		String aTemplate = "/aircoService";
+		String bTemplate = "/batteryService";
+		String pTemplate = "/emergencyPlantService";
+		String uTemplate = "/upsService";
+		String xTemplate = "/plainService";
 		
 		switch(equipmentType){
 			case "A": url = aTemplate + params;

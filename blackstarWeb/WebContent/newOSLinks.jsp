@@ -52,15 +52,15 @@
 		var eq = $("#eqSearch").val();
 
 		switch(type){
-			case 'A': urlTemplate = urlTemplate.replace("PAGE", "/aircoservice");
+			case 'A': urlTemplate = urlTemplate.replace("PAGE", "/aircoService");
 				break;
-			case 'B': urlTemplate = urlTemplate.replace("PAGE", "/batteryservice");
+			case 'B': urlTemplate = urlTemplate.replace("PAGE", "/batteryService");
 				break;
-			case 'P': urlTemplate = urlTemplate.replace("PAGE", "/emergencyplantservice");
+			case 'P': urlTemplate = urlTemplate.replace("PAGE", "/emergencyPlantService");
 				break;
-			case 'U': urlTemplate = urlTemplate.replace("PAGE", "/upsservice");
+			case 'U': urlTemplate = urlTemplate.replace("PAGE", "/upsService");
 				break;
-			default: urlTemplate = urlTemplate.replace("PAGE", "/plainservice");
+			default: urlTemplate = urlTemplate.replace("PAGE", "/plainService");
 				break;
 		}
 
@@ -72,7 +72,7 @@
 	// Funcion de recuperacion de la lista de equipos
 	function showEquipmentSelect(type){
 		getEquipmentList(type);
-
+		
 		var dlgTitle = "Orden de servicio para ";
 		switch(type){
 			case 'A': dlgTitle = dlgTitle + "Aire acondicionado";
@@ -91,6 +91,8 @@
 		$( "#eqSearch" ).val("");
 		$("#selectSNDialog").dialog('option', 'title', dlgTitle);
 		$("#selectSNDialog").dialog('open');
+		$("#eqSearch").attr("disabled", "");
+		$("#eqSearch").val("Cargando equipos...");
 	}
 
 	// Estableciendo el origen para autocomplete
@@ -104,14 +106,26 @@
 				return false;
 			}
 		});
+
+		$("#eqSearch").removeAttr("disabled");
+		$("#eqSearch").val("");
 	}
 
 	function getEquipmentList(type){
+		var lookupType = type;
+		if(type == 'B'){
+			lookupType = 'U';
+		}
+
 		if(loadedType != type){
-			$.getJSON("/serviceOrders/getEquipmentByTypeJson.do?type=" + type, function(data){
+			$.getJSON("/serviceOrders/getEquipmentByTypeJson.do?type=" + lookupType, function(data){
 				setEquipmentListSource(data);
 				loadedType = type;
 			});
+		}
+		else{
+			$("#eqSearch").removeAttr("disabled");
+			$("#eqSearch").val();
 		}
 	}
 

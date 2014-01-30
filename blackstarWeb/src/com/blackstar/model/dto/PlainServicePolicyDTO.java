@@ -68,6 +68,7 @@ public class PlainServicePolicyDTO {
 		this.serviceOrderNumber = serviceOrder.getServiceOrderNumber();
 		this.serviceTypeId = serviceOrder.getServiceTypeId().toString();
 		this.isWrong = serviceOrder.getIsWrong()>0?true:false;
+		this.receivedByEmail = serviceOrder.getReceivedByEmail();
 	}
 	
 	public PlainServicePolicyDTO(Policy policy, String equipmentType, Serviceorder serviceOrder,  PlainServiceDTO plainServiceDTO)
@@ -103,6 +104,7 @@ public class PlainServicePolicyDTO {
 		this.serviceOrderNumber = serviceOrder.getServiceOrderNumber();	
 		this.serviceTypeId = serviceOrder.getServiceTypeId().toString();
 		this.isWrong = serviceOrder.getIsWrong()>0?true:false;
+		this.receivedByEmail = serviceOrder.getReceivedByEmail();
 		
 		this.plainServiceId = plainServiceDTO.getPlainServiceId();
 		this.troubleDescription = plainServiceDTO.getTroubleDescription();

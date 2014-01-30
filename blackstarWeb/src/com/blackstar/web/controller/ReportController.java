@@ -41,7 +41,7 @@ public class ReportController extends AbstractController {
 		model.addAttribute("errorDetails", e.getStackTrace()[0].toString());
 		return "error";
 	}
-	return "redirect: " + urlPreffix + fileId + urlSufix;
+	return "redirect:" + urlPreffix + fileId + urlSufix;
   }
 
 }

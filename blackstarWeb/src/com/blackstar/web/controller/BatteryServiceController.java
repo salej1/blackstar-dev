@@ -1,5 +1,7 @@
 package com.blackstar.web.controller;
 
+import java.util.Date;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -29,7 +31,7 @@ import com.blackstar.web.AbstractController;
 
 
 @Controller
-@RequestMapping("/batteryservice")
+@RequestMapping("/batteryService")
 @SessionAttributes({Globals.SESSION_KEY_PARAM})
 public class BatteryServiceController extends AbstractController {
 	  private ServiceOrderService service = null;
@@ -110,7 +112,7 @@ public class BatteryServiceController extends AbstractController {
 			return "error";
 		  }
 		  
-		  return "batteryservice";
+		  return "batteryService";
 	  }
 	  
   @RequestMapping(value = "/save.do", method = RequestMethod.POST)
@@ -134,6 +136,8 @@ public class BatteryServiceController extends AbstractController {
 	       servicioOrderSave.setServiceTypeId(serviceOrder.getServiceTypeId().toCharArray()[0]);
 	       servicioOrderSave.setSignCreated(serviceOrder.getSignCreated());
 	       servicioOrderSave.setSignReceivedBy(serviceOrder.getSignReceivedBy());
+		   servicioOrderSave.setClosed(new Date());
+		   servicioOrderSave.setStatusId("N");
 	       idServicio = service.saveServiceOrder(servicioOrderSave, "AirCoServiceController", userSession.getUser().getUserName());
 	     } else {
 	    	  //Actualizar orden de servicio

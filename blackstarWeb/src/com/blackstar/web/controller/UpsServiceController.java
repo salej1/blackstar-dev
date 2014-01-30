@@ -1,5 +1,7 @@
 package com.blackstar.web.controller;
 
+import java.util.Date;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -29,7 +31,7 @@ import com.blackstar.services.interfaces.ServiceOrderService;
 import com.blackstar.web.AbstractController;
 
 @Controller
-@RequestMapping("/upsservice")
+@RequestMapping("/upsService")
 @SessionAttributes({Globals.SESSION_KEY_PARAM})
 public class UpsServiceController extends AbstractController {
 	  private ServiceOrderService service = null;
@@ -111,7 +113,7 @@ public class UpsServiceController extends AbstractController {
 			return "error";
 		  }
 		  
-		  return "upsservice";
+		  return "upsService";
 	  }
 	  
 	    @RequestMapping(value = "/save.do", method = RequestMethod.POST)
@@ -138,7 +140,8 @@ public class UpsServiceController extends AbstractController {
 	    			servicioOrderSave.setServiceTypeId(serviceOrder.getServiceTypeId().toCharArray()[0]);
 	    			servicioOrderSave.setSignCreated(serviceOrder.getSignCreated());
 	    			servicioOrderSave.setSignReceivedBy(serviceOrder.getSignReceivedBy());
-	    			servicioOrderSave.setStatusId("N");
+	    			servicioOrderSave.setClosed(new Date());
+	    		    servicioOrderSave.setStatusId("N");
 	    			idServicio = service.saveServiceOrder(servicioOrderSave, "UpsServiceController", userSession.getUser().getUserName());
 	    		}
 	    		else

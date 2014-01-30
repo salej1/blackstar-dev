@@ -142,6 +142,9 @@
 --							Se modifica:
 --								blackstarDb.AddserviceOrder
 -- -----------------------------------------------------------------------------
+-- 26   30/01/2014	SAG		Se Integra:
+-- 								blackstarDb.LastError
+-- -----------------------------------------------------------------------------
 use blackstarDb;
 
 
@@ -149,6 +152,18 @@ DELIMITER $$
 
 
 
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.LastError
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.LastError$$
+CREATE PROCEDURE blackstarDb.LastError()
+BEGIN
+
+	SELECT error FROM blackstarManage.errorLog
+	ORDER BY errorLogId DESC 
+	LIMIT 2;
+	
+END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetNextServiceNumberForTicket

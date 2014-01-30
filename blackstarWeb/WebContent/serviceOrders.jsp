@@ -46,6 +46,14 @@
 <!-- Inicia Contenido De Perfiles SysCallCenter Y SysCoordinador-->
 			<c:set var="sysCallCenter" scope="request" value="${user.belongsToGroup['Call Center'] || user.belongsToGroup['Coordinador']}" />
 			<c:if test="${sysCallCenter == true}">
+				<!-- Seleccion de filtro por oficina -->
+				<c:import url="officeFilter.jsp"></c:import>
+				<script type="text/javascript">
+					$(function(){
+						officeFilter_init();
+					});
+				</script>
+
 				<!-- Tabla De Ordenes De Servicio Por Revisar - NewServiceOrders.jsp -->
 				<c:import url="newServiceOrders.jsp"></c:import>
 				<script type="text/javascript">

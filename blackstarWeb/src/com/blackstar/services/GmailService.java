@@ -1,6 +1,8 @@
 package com.blackstar.services;
 
 import com.blackstar.interfaces.IEmailService;
+import com.blackstar.logging.LogLevel;
+import com.blackstar.logging.Logger;
 
 import java.io.ByteArrayInputStream;
 import java.util.Properties;
@@ -54,13 +56,10 @@ public class GmailService implements IEmailService{
 			Transport.send(message);
  
 		} 
-		catch (MessagingException e) 
-		{
-			throw new RuntimeException(e);
-		}
 		catch (Exception e) 
 		{
-			throw new RuntimeException(e);
+			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
+			//throw new RuntimeException(e);
 		}
 	}
 	
@@ -81,7 +80,8 @@ public class GmailService implements IEmailService{
 			} 
 		 });
     } catch (Exception e) {
-		throw new RuntimeException(e);
+    	Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
+		//throw new RuntimeException(e);
 	}
   }
 

@@ -287,8 +287,7 @@
 									<td><form:input path="receivedBy" type="text" style="width:95%;" /></td>
 								</tr>
 								<tr>
-									<td>Fecha y hora de salida</td>
-									<td><form:input path="closed" type="text" style="width:95%;"  /></td>
+									<td colspan="2"></td>
 									<td>Puesto</td>
 									<td><form:input path="receivedByPosition"  style="width:95%;"  /></td>
 								</tr>						

@@ -1,5 +1,7 @@
 package com.blackstar.web.controller;
 
+import java.util.Date;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -28,7 +30,7 @@ import com.blackstar.services.interfaces.ServiceOrderService;
 import com.blackstar.web.AbstractController;
 
 @Controller
-@RequestMapping("/plainservice")
+@RequestMapping("/plainService")
 @SessionAttributes({Globals.SESSION_KEY_PARAM})
 public class PlainServiceController extends AbstractController {
 	
@@ -114,7 +116,7 @@ public class PlainServiceController extends AbstractController {
 				 return "error";
 		  }
 		  
-		  return "PlainService";
+		  return "plainService";
 	  }
 	  
 	    @RequestMapping(value = "/save.do", method = RequestMethod.POST)
@@ -130,8 +132,7 @@ public class PlainServiceController extends AbstractController {
 		    	{
 		    		//Crear orden de servicio
 		    		Serviceorder servicioOrderSave = new Serviceorder();
-		    		servicioOrderSave.setAsignee( serviceOrder.getResponsible());
-		    		servicioOrderSave.setClosed(serviceOrder.getClosed());
+		    		// TODO: Se debe asignar a la coordinadora, no al ingeniero // servicioOrderSave.setAsignee( serviceOrder.getResponsible());
 		    		servicioOrderSave.setPolicyId((Short.parseShort(serviceOrder.getPolicyId().toString())));
 		    		servicioOrderSave.setReceivedBy(serviceOrder.getReceivedBy());
 		    		servicioOrderSave.setReceivedByPosition(serviceOrder.getReceivedByPosition());
@@ -142,7 +143,8 @@ public class PlainServiceController extends AbstractController {
 		    		servicioOrderSave.setSignCreated(serviceOrder.getSignCreated());
 		    		servicioOrderSave.setSignReceivedBy(serviceOrder.getSignReceivedBy());
 		    		servicioOrderSave.setReceivedByEmail(serviceOrder.getReceivedByEmail());
-		    		servicioOrderSave.setStatusId("N");
+		  	        servicioOrderSave.setClosed(new Date());
+			        servicioOrderSave.setStatusId("N");
 		    		idServicio = service.saveServiceOrder(servicioOrderSave, "PlainServiceController", userSession.getUser().getUserName());
 		    	}
 		    	else

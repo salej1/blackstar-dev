@@ -1,5 +1,7 @@
 package com.blackstar.web.controller;
 
+import java.util.Date;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -25,7 +27,7 @@ import com.blackstar.services.interfaces.ServiceOrderService;
 import com.blackstar.web.AbstractController;
 
 @Controller
-@RequestMapping("/aircoservice")
+@RequestMapping("/aircoService")
 @SessionAttributes({Globals.SESSION_KEY_PARAM})
 public class AirCoServiceController extends AbstractController {
 	
@@ -103,7 +105,7 @@ public class AirCoServiceController extends AbstractController {
 				 return "error";
 		  }
 		  
-		  return "aircoservice";
+		  return "aircoService";
 	  }
 	  
   @RequestMapping(value = "/save.do", method = RequestMethod.POST)
@@ -128,6 +130,7 @@ public class AirCoServiceController extends AbstractController {
 	      servicioOrderSave.setSignCreated(serviceOrder.getSignCreated());
 	      servicioOrderSave.setSignReceivedBy(serviceOrder.getSignReceivedBy());
 	      servicioOrderSave.setReceivedByEmail(serviceOrder.getReceivedByEmail());
+	      servicioOrderSave.setClosed(new Date());
 	      servicioOrderSave.setStatusId("N");
 	      idServicio = service.saveServiceOrder(servicioOrderSave, "AirCoServiceController", userSession.getUser().getUserName());
 	    } else {

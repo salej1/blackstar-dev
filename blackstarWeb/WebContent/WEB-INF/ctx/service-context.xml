@@ -63,6 +63,7 @@
       </props>
     </property>
   </bean>
+  
   <bean id="offlineOSService" class="com.blackstar.services.impl.OfflineOSServiceImpl" parent="abstractService">
     <property name="soService" ref="serviceOrderService" />
     <property name="rpService" ref="reportService" />
