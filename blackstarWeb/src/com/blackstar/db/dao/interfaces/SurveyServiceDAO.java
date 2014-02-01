@@ -9,5 +9,6 @@ public interface SurveyServiceDAO {
 	
 	List<Serviceorder> getServiceOrder();
 	void saveSurvey(SurveyService surveyService);
+	SurveyService getSurveyServiceById(Integer surveyServiceId);
 
 }

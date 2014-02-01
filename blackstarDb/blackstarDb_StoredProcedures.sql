@@ -2014,6 +2014,22 @@ serviceOrderId,sign,suggestion);
 select LAST_INSERT_ID();
 
 END
+
+-- --------------------------------------------------------------------------------
+-- Routine DDL
+-- Note: comments before and after the routine body will not be stored by the server
+-- --------------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetSurveyServiceById$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `GetSurveyServiceById`(surveyServiceId INTEGER)
+BEGIN
+	select 
+		surveyServiceId,company,namePerson as name,email,telephone,datePerson as date,questiontreatment,
+		reasontreatment,questionIdentificationPersonal,questionIdealEquipment,questionTime,reasonTime,
+		questionUniform,reasonUniform,qualification,serviceOrderId,sign,suggestion
+	from surveyservice 
+	where surveyServiceId = surveyServiceId;
+END
 -- -----------------------------------------------------------------------------
 	-- FIN DE LOS STORED PROCEDURES
 -- -----------------------------------------------------------------------------

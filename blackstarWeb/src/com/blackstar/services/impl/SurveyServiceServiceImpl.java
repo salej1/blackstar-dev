@@ -30,4 +30,11 @@ public class SurveyServiceServiceImpl extends AbstractService  implements Survey
 		return surveyServiceDAO.getServiceOrder();
 	}
 
+
+	@Override
+	public SurveyService getSurveyServiceById(Integer surveyServiceId) {
+		return surveyServiceDAO.getSurveyServiceById(surveyServiceId);
+		
+	}
+
 }

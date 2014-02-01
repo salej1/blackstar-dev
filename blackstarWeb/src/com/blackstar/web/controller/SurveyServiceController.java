@@ -10,6 +10,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.blackstar.common.Globals;
@@ -23,10 +24,10 @@ import com.blackstar.web.AbstractController;
 @SessionAttributes({Globals.SESSION_KEY_PARAM})
 public class SurveyServiceController extends AbstractController {
 	
-	private SurveyServiceService SurveyServiceService;
+	private SurveyServiceService surveyServiceService;
 
 	public void setSurveyServiceService(SurveyServiceService surveyServiceService) {
-		SurveyServiceService = surveyServiceService;
+		this.surveyServiceService = surveyServiceService;
 	}
 
 	@RequestMapping(value= "/show.do", method = RequestMethod.GET)
@@ -34,6 +35,19 @@ public class SurveyServiceController extends AbstractController {
 	  {
 		  SurveyService surveyService = new SurveyService();
 		  model.addAttribute("surveyService", surveyService);
+		  model.addAttribute("readOnlyOrInsert","false");
+	  
+		  return "surveyService";
+	  }
+	
+	@RequestMapping(value= "/readOnly.do", method = RequestMethod.GET)
+	  public String  surveyReadOnly(@RequestParam(required = true) Integer surveyServiceId,ModelMap model)
+	  {
+		  SurveyService surveyService = new SurveyService();
+		  model.addAttribute("surveyService", surveyService);
+		  
+		  model.addAttribute("readOnlyOrInsert","true");
+		  model.addAttribute("surveyServiceData",surveyServiceService.getSurveyServiceById(surveyServiceId));
 	  
 		  return "surveyService";
 	  }
@@ -41,7 +55,7 @@ public class SurveyServiceController extends AbstractController {
 	@ModelAttribute("surveyServiceList")
 	public String populateServiceOrderList(ModelMap modelLoad) {
 		try{
-			modelLoad.addAttribute("surveyServiceList",SurveyServiceService.getServiceOrder());
+			modelLoad.addAttribute("surveyServiceList",surveyServiceService.getServiceOrder());
 		}catch(NullPointerException e){
 			e.printStackTrace();
 		}catch(Exception e){
@@ -57,7 +71,7 @@ public class SurveyServiceController extends AbstractController {
 	             ModelMap model, HttpServletRequest req, HttpServletResponse resp){
 		 
 		try{
-			SurveyServiceService.saveSurvey(surveyService);
+			surveyServiceService.saveSurvey(surveyService);
 		}catch(DataAccessException e){
 			e.printStackTrace();
 		}catch(IllegalArgumentException e){

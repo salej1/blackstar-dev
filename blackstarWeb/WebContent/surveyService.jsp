@@ -29,23 +29,64 @@
 				  <p>Llenar por persona responsable del departamento</p>
 				  <table width="608" border="1">
                     <tr>
+                      <c:set var="cat" value="${readOnlyOrInsert}"/>                      
+                      <c:set var="data" value="${surveyServiceData}"/>
+                      <c:out value="${data.company}"></c:out>
                       <td width="89">Empresa</td>
-                      <!-- <td width="153"><input type="text" name="company" size="80"></td>-->
-                       <td><form:input path="company" type="text" style="width:100%;"/></td>
+                    	<c:choose>
+                         	<c:when test="${cat=='false'}">
+                            	<td><form:input path="company" type="text" style="width:100%;"/></td>
+                    	 	</c:when>    
+    						<c:otherwise>
+                           		<td><form:input path="company" type="text" style="width:100%;" readonly="true" value="${data.company}"/></td>
+                        	</c:otherwise>
+                    	</c:choose>
 				    </tr>
                     <tr>
                       <td>Nombre</td>
-                      <td><form:input path="name" type="text" style="width:50%;"/></td>
+                      	<c:choose>
+                         	<c:when test="${cat=='false'}">
+                            	<td><form:input path="name" type="text" style="width:50%;"/></td>
+                    	 	</c:when>    
+    						<c:otherwise>
+                           		<td><form:input path="name" type="text" style="width:50%;" readonly="true" value="${data.name}"/></td>
+                        	</c:otherwise>
+                    	</c:choose>
+                    	
 					  <td>Telefono</td>
-           			  <td><form:input path="telephone" type="text" style="width:50%;"/></td>
+					  	<c:choose>
+                         	<c:when test="${cat=='false'}">
+                            	 <td><form:input path="telephone" type="text" style="width:50%;"/></td>
+                    	 	</c:when>    
+    						<c:otherwise>
+                           		 <td><form:input path="telephone" type="text" style="width:50%;" readonly="true" value="${data.telephone}"/></td>
+                        	</c:otherwise>
+                    	</c:choose>
+                    	
                     </tr>
                     <tr>
                       <td>Correo electronico </td>
-                      <td><form:input path="email" type="text" style="width:50%;"/></td>
+                      	<c:choose>
+                         	<c:when test="${cat=='false'}">
+                            	 <td><form:input path="email" type="text" style="width:50%;"/></td>
+                    	 	</c:when>    
+    						<c:otherwise>
+                           		 <td><form:input path="email" type="text" style="width:50%;" readonly="true" value="${data.email}"/></td>
+                        	</c:otherwise>
+                    	</c:choose>
 					  <td>Fecha </td>
-                      <td>
-                      	 <form:input path="date" type="text" style="width:50%;"  />
-                      </td>
+					  <c:choose>
+                         	<c:when test="${cat=='false'}">
+                            	<td>
+                      	 			<form:input path="date" type="text" style="width:50%;"/>
+                      			</td>
+                    	 	</c:when>    
+    						<c:otherwise>
+                           		 <td>
+                      	 			<form:input path="date" type="text" style="width:50%;" readonly="true" value="${data.date}"/>
+                      			</td>
+                        	</c:otherwise>
+                    	</c:choose>
                      
                     </tr>
                   </table>
@@ -55,11 +96,34 @@
 				  
 				  <table width="421" border="1">
                     <tr>
-                      <td>Bueno   
-                      	<form:radiobutton path="QuestionTreatment" value="Bueno"/>
+                      <td>Bueno
+                         	<c:if test="${cat=='false'}">                        
+                      			<form:radiobutton path="questionTreatment" value="Bueno"/>
+                      		</c:if>
+                      		<c:if test="${cat=='true'}"><!-- Opcion solo consulta readOnly -->
+                       			<c:if test="${data.questionTreatment=='Bueno'}">
+                      				<input type="radio" value="${data.questionTreatment}" checked disabled/>
+                      			</c:if>
+                      			<c:if test="${data.questionTreatment!='Bueno'}">
+                      				<input type="radio" value="Bueno" disabled/>
+                      			</c:if>
+                      		</c:if>		
+                      		
                       </td>
-                      <td>                        Malo</span>
-                      <form:radiobutton path="QuestionTreatment" value="Malo"/></td>
+                      <td>       
+                      Malo
+                      <c:if test="${cat=='false'}">
+                          <form:radiobutton path="questionTreatment" value="Malo"/>
+                      </c:if>
+                       <c:if test="${cat=='true'}">
+                       		<c:if test="${data.questionTreatment=='Malo'}">
+                       		 	<input type="radio" value="${data.questionTreatment}" checked disabled/>
+                       		</c:if>
+                       		<c:if test="${data.questionTreatment!='Malo'}">
+                       		 	<input type="radio" value="Malo" disabled/>
+                       		</c:if>
+                      </c:if>
+                      </td>
                       <td><span class="Estilo1">Por que?</span></td>
                       <td><input type="text" name="reasontreatment"></td>
                     </tr>
@@ -68,9 +132,31 @@
 				  <table width="421" border="1">
                     <tr>
                       <td>Si
-                      <form:radiobutton path="QuestionIdentificationPersonal" value="Si"/></td>
-                      <td>                        No
-                      <form:radiobutton path="QuestionIdentificationPersonal" value="No"/></td>
+                      		<c:if test="${cat=='false'}">                        
+                      			<form:radiobutton path="questionIdentificationPersonal" value="Si"/>
+                      		</c:if>
+                      		<c:if test="${cat=='true'}"><!-- Opcion solo consulta readOnly -->
+                       			<c:if test="${data.questionIdentificationPersonal=='Si'}">
+                      				<input type="radio" value="${data.questionIdentificationPersonal}" checked disabled/>
+                      			</c:if>
+                      			<c:if test="${data.questionIdentificationPersonal!='Si'}">
+                      				<input type="radio" value="Si" disabled/>
+                      			</c:if>
+                      		</c:if>	
+                      </td>
+                      <td>No
+                      	<c:if test="${cat=='false'}">                        
+                      			<form:radiobutton path="questionIdentificationPersonal" value="No"/>
+                      		</c:if>
+                      		<c:if test="${cat=='true'}"><!-- Opcion solo consulta readOnly -->
+                       			<c:if test="${data.questionIdentificationPersonal=='No'}">
+                      				<input type="radio" value="${data.questionIdentificationPersonal}" checked disabled/>
+                      			</c:if>
+                      			<c:if test="${data.questionIdentificationPersonal!='No'}">
+                      				<input type="radio" value="Si" disabled/>
+                      			</c:if>
+                      		</c:if>	
+                      </td>
                       <td>
                     </tr>
                   </table>
@@ -79,9 +165,31 @@
 				  <table width="421" border="1">
                     <tr>
                       <td>Si
-                      <form:radiobutton path="QuestionIdealEquipment" value="Si"/></td>
+                      <c:if test="${cat=='false'}">                        
+                      			<form:radiobutton path="questionIdealEquipment" value="Si"/>
+                      		</c:if>
+                      		<c:if test="${cat=='true'}"><!-- Opcion solo consulta readOnly -->
+                       			<c:if test="${data.questionIdealEquipment=='Si'}">
+                      				<input type="radio" value="${data.questionIdealEquipment}" checked disabled/>
+                      			</c:if>
+                      			<c:if test="${data.questionIdealEquipment!='Si'}">
+                      				<input type="radio" value="Si" disabled/>
+                      			</c:if>
+                      		</c:if>	 
+                     </td>
                       <td>                        No
-                      <form:radiobutton path="QuestionIdealEquipment" value="No"/></td>
+                      <c:if test="${cat=='false'}">                        
+                      			<form:radiobutton path="questionIdealEquipment" value="No"/>
+                      		</c:if>
+                      		<c:if test="${cat=='true'}"><!-- Opcion solo consulta readOnly -->
+                       			<c:if test="${data.questionIdealEquipment=='No'}">
+                      				<input type="radio" value="${data.questionIdealEquipment}" checked disabled/>
+                      			</c:if>
+                      			<c:if test="${data.questionIdealEquipment!='No'}">
+                      				<input type="radio" value="Si" disabled/>
+                      			</c:if>
+                      		</c:if>	
+                      </td>
                       <td>                        Por que?</td>
                       <td><input type="text" name="reasonIdealEquipment"></td>
                     </tr>
@@ -92,9 +200,32 @@
 				  <table width="421" border="1">
                     <tr>
                       <td>Si
-                      <form:radiobutton path="QuestionTime" value="Si"/></td>
+                      <c:if test="${cat=='false'}">                        
+                      			<form:radiobutton path="questionTime" value="Si"/>
+                      		</c:if>
+                      		<c:if test="${cat=='true'}"><!-- Opcion solo consulta readOnly -->
+                       			<c:if test="${data.questionTime=='Si'}">
+                      				<input type="radio" value="${data.questionTime}" checked disabled/>
+                      			</c:if>
+                      			<c:if test="${data.questionTime!='Si'}">
+                      				<input type="radio" value="Si" disabled/>
+                      			</c:if>
+                      		</c:if>	 
+ 					</td>
                       <td>                        No
-                      <form:radiobutton path="QuestionTime" value="No"/></td>
+                      
+                      <c:if test="${cat=='false'}">                        
+                      			<form:radiobutton path="questionTime" value="No"/>
+                      		</c:if>
+                      		<c:if test="${cat=='true'}"><!-- Opcion solo consulta readOnly -->
+                       			<c:if test="${data.questionTime=='No'}">
+                      				<input type="radio" value="${data.questionTime}" checked disabled/>
+                      			</c:if>
+                      			<c:if test="${data.questionTime!='No'}">
+                      				<input type="radio" value="Si" disabled/>
+                      			</c:if>
+                      		</c:if>	
+					</td>
                       <td>                        Por que?</td>
                       <td><input type="text" name="reasonTime"></td>
                     </tr>
@@ -105,9 +236,33 @@
 				  <table width="421" border="1">
                     <tr>
                       <td>Si
-                      <form:radiobutton path="QuestionUniform" value="Si"/></td>
+                      
+                      <c:if test="${cat=='false'}">                        
+                      			<form:radiobutton path="questionUniform" value="Si"/>
+                      		</c:if>
+                      		<c:if test="${cat=='true'}"><!-- Opcion solo consulta readOnly -->
+                       			<c:if test="${data.questionUniform=='Si'}">
+                      				<input type="radio" value="${data.questionUniform}" checked disabled/>
+                      			</c:if>
+                      			<c:if test="${data.questionUniform!='Si'}">
+                      				<input type="radio" value="Si" disabled/>
+                      			</c:if>
+                      		</c:if>	 
+</td>
                       <td>                        No
-                      <form:radiobutton path="QuestionUniform" value="No"/></td>
+                      
+                       <c:if test="${cat=='false'}">                        
+                      			<form:radiobutton path="questionUniform" value="No"/>
+                      		</c:if>
+                      		<c:if test="${cat=='true'}"><!-- Opcion solo consulta readOnly -->
+                       			<c:if test="${data.questionUniform=='No'}">
+                      				<input type="radio" value="${data.questionUniform}" checked disabled/>
+                      			</c:if>
+                      			<c:if test="${data.questionUniform!='No'}">
+                      				<input type="radio" value="Si" disabled/>
+                      			</c:if>
+                      		</c:if>	
+					</td>
                       <td>                        Por que?</td>
                       <td><input type="text" name="reasonUniform"></td>
                     </tr>

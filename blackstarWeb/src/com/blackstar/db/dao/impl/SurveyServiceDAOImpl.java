@@ -4,6 +4,7 @@ package com.blackstar.db.dao.impl;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.dao.DataAccessException;
@@ -77,6 +78,25 @@ public class SurveyServiceDAOImpl extends AbstractDAO implements SurveyServiceDA
 		}
 		
 		return result;
+	}
+
+
+	@Override
+	public SurveyService getSurveyServiceById(Integer surveyServiceId) {
+		SurveyService surveyService = new SurveyService();
+			
+		StringBuilder sqlBuilder = new StringBuilder();
+		List <SurveyService> surveyServiceArray = new ArrayList<SurveyService>();
+		
+		sqlBuilder.append("CALL GetSurveyServiceById(?)");
+		
+		surveyServiceArray = (List <SurveyService> ) getJdbcTemplate().query(sqlBuilder.toString(), new Object []{surveyServiceId}, getMapperFor(SurveyService.class));
+		
+		if(surveyServiceArray.size()>0)
+		surveyService = surveyServiceArray.get(surveyServiceId-1);
+		
+		return surveyService;
+		
 	}
 
 }
