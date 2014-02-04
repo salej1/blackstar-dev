@@ -209,5 +209,15 @@ public class IndicadoresServicioServiceImpl extends AbstractService
 	
 	return charts;
   }
+  
+  public String getUserAverage(){
+	List<JSONObject> jsonData = dao.getUserAverage();
+	return jsonData != null ? jsonData.toString() : "";
+  }
+  
+  public String getGeneralAverage(){
+	List<JSONObject> jsonData = dao.getGeneralAverage();
+	return jsonData != null ? jsonData.toString() : "";
+  }
 
 }

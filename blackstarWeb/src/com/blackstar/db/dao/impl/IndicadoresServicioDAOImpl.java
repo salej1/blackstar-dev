@@ -74,4 +74,14 @@ public class IndicadoresServicioDAOImpl extends AbstractDAO
 	return (List<Servicecenter> )getJdbcTemplate().query(sqlQuery
 			, new Object[]{}, getMapperFor(Servicecenter.class)); 
   }
+  
+  public List<JSONObject> getUserAverage(){
+	String sqlQuery = "CALL GetUserAverageKPI();";
+	return getJdbcTemplate().query(sqlQuery, new Object[]{}, new JSONRowMapper()); 
+  }
+  
+  public List<JSONObject> getGeneralAverage(){
+	String sqlQuery = "CALL GetGeneralAverageKPI();";
+	return getJdbcTemplate().query(sqlQuery, new Object[]{}, new JSONRowMapper()); 
+  }
 }

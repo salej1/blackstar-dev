@@ -21,5 +21,7 @@ public interface IndicadoresServicioDAO {
   public List<JSONObject> getTicketsByServiceCenter();
   public List<JSONObject> getStatus(String servicecenterId);
   public List<Servicecenter> getServiceCenterIdList();
+  public List<JSONObject> getUserAverage();
+  public List<JSONObject> getGeneralAverage();
 	
 }

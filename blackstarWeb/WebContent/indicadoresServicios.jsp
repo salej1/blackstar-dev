@@ -49,7 +49,7 @@
 					<img src="/img/navigate-right.png"/><a href="#" id="getConcurrentFailures" onclick="go('getConcurrentFailures')">Fallas concurrentes</a>
 				</div>
 				<div>
-					<img src="/img/navigate-right.png"/><a href="/#">Promedios</a>
+					<img src="/img/navigate-right.png"/><a href="#" id="getAverage" onclick="go('getAverage')">Promedios</a>
 				</div>
 				<div>
 					<img src="/img/navigate-right.png"/><a href="#" id="getReportOS" onclick="go('getReportOS')">Reporte Ordenes de servicio</a>

@@ -2,6 +2,8 @@ package com.blackstar.services.interfaces;
 
 import java.util.List;
 
+import org.json.JSONObject;
+
 import com.blackstar.model.Chart;
 import com.blackstar.model.sp.GetConcurrentFailuresKPI;
 import com.blackstar.model.sp.GetReportOSTableKPI;
@@ -16,5 +18,7 @@ public interface IndicadoresServicioService {
 	public List<GetReportOSTableKPI> getReportOSTable() throws Exception;
 	public String getOSResume() throws Exception;
 	public List<Chart> getCharts() throws Exception;
+	public String getUserAverage();
+	public String getGeneralAverage();
 	
 }
