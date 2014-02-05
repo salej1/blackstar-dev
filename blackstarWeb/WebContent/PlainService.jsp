@@ -354,18 +354,20 @@
 									initFollowUpDlg("os", "/osDetail/show.do?serviceOrderId=${serviceOrder.serviceOrderId}");
 								});
 							</script>
-							<table>
-								<tbody>
-									<tr>
-										<td>
-											<button class="searchButton" onclick="addSeguimiento(${serviceOrder.serviceOrderId}, '${serviceOrder.serviceOrderNumber}');">Agregar seguimiento</button>
-											<c:if test="${ user.belongsToGroup['Coordinador']}">
-												<button class="searchButton" id="closeBtn">Cerrar</button>
-											</c:if>
-										</td>
-									</tr>
-								<tbody>
-							</table>	
+							<c:if test="${serviceOrder.serviceOrderId > 0}">
+								<table>
+									<tbody>
+										<tr>
+											<td>
+												<button class="searchButton" onclick="addSeguimiento(${serviceOrder.serviceOrderId}, '${serviceOrder.serviceOrderNumber}');">Agregar seguimiento</button>
+												<c:if test="${ user.belongsToGroup['Coordinador']}">
+													<button class="searchButton" id="closeBtn">Cerrar</button>
+												</c:if>
+											</td>
+										</tr>
+									<tbody>
+								</table>
+							</c:if>	
 		</div>
 	</body>
 </html>

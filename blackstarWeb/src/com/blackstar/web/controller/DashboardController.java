@@ -123,7 +123,7 @@ public class DashboardController extends AbstractController {
 			e.printStackTrace();
 			return "error";
 		}
-		return "redirect: /dashboard/show.do";
+		return "redirect:/dashboard/show.do";
 	}
 
 	//================================================================================

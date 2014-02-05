@@ -25,6 +25,14 @@
 		
 		$( "#serviceDate" ).val(dateNow());
 		
+		// Asignacion de campos iniciales
+		var mode = "${mode}";
+		if(mode == "detail"){
+		}
+		else{
+			$("#responsible").val("${ user.userName }");
+		}
+
 		// Signature capture box # 1 
 		$('#signCapture').signature({syncField: '#signCreated'});
 		$('#leftSign').signature({disabled: true}); 
@@ -102,7 +110,9 @@
 								<tr>
 									<td>Folio:</td>
 									<td><form:input path="serviceOrderNumber" type="text" style="width:95%;" maxlength="5" /></td>
-									<td colspan="2"><a href='${pageContext.request.contextPath}/report/show.do?serviceOrderId=${serviceOrder.serviceOrderId}' target="_blank">Ver PDF</a><img src='${pageContext.request.contextPath}/img/pdf.png'/>	
+									<c:if test="${serviceOrder.serviceOrderId > 0}">
+										<td colspan="2"><a href='${pageContext.request.contextPath}/report/show.do?serviceOrderId=${serviceOrder.serviceOrderId}' target="_blank">Ver PDF</a><img src='${pageContext.request.contextPath}/img/pdf.png'/>	
+									</c:if>	
 									</td>
 								</tr>
 								<tr>
@@ -131,6 +141,7 @@
 									<td><form:input path="serialNumber" type="text" style="width:95%;" readOnly="true" /></td>
 									<td>Fecha y hora de llegada</td>
 									<td><form:input path="serviceDate" type="text" style="width:95%;"  /></td>
+									<form:input path="serviceTypeId" type="hidden" value="P" />
 								</tr>
 							</table>
 						</div>					
@@ -282,7 +293,7 @@
 								</tr>
 								<tr>
 									<td>Nombre</td>
-									<td><form:input path="responsible" type="text" style="width:95%;"  /></td>
+									<td><form:input path="responsible" type="text" style="width:95%;" readOnly="true" /></td>
 									<td>Nombre</td>
 									<td><form:input path="receivedBy" type="text" style="width:95%;" /></td>
 								</tr>
@@ -290,7 +301,12 @@
 									<td colspan="2"></td>
 									<td>Puesto</td>
 									<td><form:input path="receivedByPosition"  style="width:95%;"  /></td>
-								</tr>						
+								</tr>		
+								<tr>
+									<td colspan="2"></td>
+									<td>Email</td>
+									<td><form:input path="receivedByEmail"  style="width:95%;" required="true" /></td>
+								</tr>				
 							</table>
 
 							<table>
@@ -329,16 +345,20 @@
 							<c:import url="_attachments.jsp"></c:import>
 							<!-- Control de secuencia y captura de seguimiento -->
 							<c:import url="followUpControl.jsp"></c:import>
-							<table>
-								<tbody>
-									<tr>
-										<td>
-											<button class="searchButton" onclick="addSeguimiento(${serviceOrder.serviceOrderId}, '${serviceOrder.serviceOrderNumber}');">Agregar seguimiento</button>
-											<button class="searchButton" onclick="window.location = 'dashboard'">Cerrar</button>
-										</td>
-									</tr>
-								<tbody>
-							</table>	
+							<c:if test="${serviceOrder.serviceOrderId > 0}">
+								<table>
+									<tbody>
+										<tr>
+											<td>
+												<button class="searchButton" onclick="addSeguimiento(${serviceOrder.serviceOrderId}, '${serviceOrder.serviceOrderNumber}');">Agregar seguimiento</button>
+												<c:if test="${ user.belongsToGroup['Coordinador']}">
+													<button class="searchButton" id="closeBtn">Cerrar</button>
+												</c:if>
+											</td>
+										</tr>
+									<tbody>
+								</table>	
+							</c:if>
 		</div>
 	</body>
 </html>

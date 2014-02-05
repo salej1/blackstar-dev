@@ -29,6 +29,14 @@
 						
 			$("#serviceDate").val(dateNow());
 
+			// Asignacion de campos iniciales
+			var mode = "${mode}";
+			if(mode == "detail"){
+			}
+			else{
+				$("#responsible").val("${ user.userName }");
+			}
+
 			// Signature capture box # 1 
 			$('#signCapture').signature({syncField: '#signCreated'});
 			$('#leftSign').signature({disabled: true}); 
@@ -405,16 +413,20 @@
 							<c:import url="_attachments.jsp"></c:import>
 							<!-- Control de secuencia y captura de seguimiento -->
 							<c:import url="followUpControl.jsp"></c:import>
-							<table>
-								<tbody>
-									<tr>
-										<td>
-											<button class="searchButton" onclick="addSeguimiento(${serviceOrder.serviceOrderId}, '${serviceOrder.serviceOrderNumber}');">Agregar seguimiento</button>
-											<button class="searchButton" onclick="window.location = 'dashboard'">Cerrar</button>
-										</td>
-									</tr>
-								<tbody>
-							</table>	
+							<c:if test="${serviceOrder.serviceOrderId > 0}">
+								<table>
+									<tbody>
+										<tr>
+											<td>
+												<button class="searchButton" onclick="addSeguimiento(${serviceOrder.serviceOrderId}, '${serviceOrder.serviceOrderNumber}');">Agregar seguimiento</button>
+												<c:if test="${ user.belongsToGroup['Coordinador']}">
+													<button class="searchButton" id="closeBtn">Cerrar</button>
+												</c:if>
+											</td>
+										</tr>
+									<tbody>
+								</table>	
+							</c:if>
 		</div>
 	</body>
 </html>

@@ -71,6 +71,9 @@
 
 	// Funcion de recuperacion de la lista de equipos
 	function showEquipmentSelect(type){
+		$("#eqSearch").attr("disabled", "");
+		$("#eqSearch").val("Cargando equipos...");
+
 		getEquipmentList(type);
 		
 		var dlgTitle = "Orden de servicio para ";
@@ -91,8 +94,6 @@
 		$( "#eqSearch" ).val("");
 		$("#selectSNDialog").dialog('option', 'title', dlgTitle);
 		$("#selectSNDialog").dialog('open');
-		$("#eqSearch").attr("disabled", "");
-		$("#eqSearch").val("Cargando equipos...");
 	}
 
 	// Estableciendo el origen para autocomplete
@@ -125,7 +126,7 @@
 		}
 		else{
 			$("#eqSearch").removeAttr("disabled");
-			$("#eqSearch").val();
+			$("#eqSearch").val("");
 		}
 	}
 

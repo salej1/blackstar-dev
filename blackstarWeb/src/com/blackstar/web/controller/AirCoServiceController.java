@@ -68,6 +68,7 @@ public class AirCoServiceController extends AbstractController {
 	  				  airCoServicePolicyDTO = new AirCoServicePolicyDTO(policy, equipType.getEquipmentType());
 	  				  airCoServicePolicyDTO.setServiceOrderNumber(service.getNewServiceNumber(policy));
 	  				  airCoServicePolicyDTO.setServiceStatusId("N");
+	  				  airCoServicePolicyDTO.setServiceTypeId("P");
 	  				  model.addAttribute("serviceOrder", airCoServicePolicyDTO);
 	  				  model.addAttribute("mode", "new");
 		  		  }
@@ -88,6 +89,7 @@ public class AirCoServiceController extends AbstractController {
 	  				  airCoServicePolicyDTO = new AirCoServicePolicyDTO(policy, equipType.getEquipmentType());
 	  				  airCoServicePolicyDTO.setServiceOrderNumber(service.getNewServiceNumber(policy));
 	  				  airCoServicePolicyDTO.setServiceStatusId("N");
+	  				  airCoServicePolicyDTO.setServiceTypeId("P");
 	  				  model.addAttribute("serviceOrder", airCoServicePolicyDTO);
 	  				  model.addAttribute("mode", "new");
 		  		  }

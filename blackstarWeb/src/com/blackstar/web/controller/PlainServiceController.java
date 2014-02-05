@@ -72,6 +72,7 @@ public class PlainServiceController extends AbstractController {
 	  				  plainServicePolicyDTO = new PlainServicePolicyDTO(policy, equipType.getEquipmentType());
 	  				  plainServicePolicyDTO.setServiceOrderNumber(service.getNewServiceNumber());  
 	  				  plainServicePolicyDTO.setServiceStatusId("N");
+	  				  plainServicePolicyDTO.setServiceTypeId("C");
 	  				  plainServicePolicyDTO.setTicketNumber(ticket.getTicketNumber());
 	  				  model.addAttribute("serviceOrder", plainServicePolicyDTO);
 	  				  model.addAttribute("mode", "new");
@@ -95,6 +96,7 @@ public class PlainServiceController extends AbstractController {
 	  				  plainServicePolicyDTO = new PlainServicePolicyDTO(policy, equipType.getEquipmentType());
 	  				  plainServicePolicyDTO.setServiceOrderNumber(service.getNewServiceNumber(policy));
 	  				  plainServicePolicyDTO.setServiceStatusId("N");
+	  				  plainServicePolicyDTO.setServiceTypeId("C");
 	  				  plainServicePolicyDTO.setTicketNumber("NA");
 	  				  model.addAttribute("serviceOrder", plainServicePolicyDTO);
 	  				  model.addAttribute("mode", "new");
