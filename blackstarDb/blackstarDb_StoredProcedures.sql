@@ -2012,7 +2012,7 @@ questionIdentificationPersonal,questionIdealEquipment,reasonIdealEquipment,
 questionTime,reasonTime,questionUniform,reasonUniform,qualification,
 serviceOrderId,sign,suggestion);
 select LAST_INSERT_ID();
-
+d
 END
 
 -- --------------------------------------------------------------------------------
