@@ -248,20 +248,20 @@
                       				<input type="radio" value="Si" disabled/>
                       			</c:if>
                       		</c:if>	 
-</td>
+					</td>
                       <td>                        No
                       
                        <c:if test="${cat=='false'}">                        
                       			<form:radiobutton path="questionUniform" value="No"/>
+                      	</c:if>
+                      	<c:if test="${cat=='true'}"><!-- Opcion solo consulta readOnly -->
+                       		<c:if test="${data.questionUniform=='No'}">
+                      			<input type="radio" value="${data.questionUniform}" checked disabled/>
                       		</c:if>
-                      		<c:if test="${cat=='true'}"><!-- Opcion solo consulta readOnly -->
-                       			<c:if test="${data.questionUniform=='No'}">
-                      				<input type="radio" value="${data.questionUniform}" checked disabled/>
-                      			</c:if>
-                      			<c:if test="${data.questionUniform!='No'}">
-                      				<input type="radio" value="Si" disabled/>
-                      			</c:if>
-                      		</c:if>	
+                      		<c:if test="${data.questionUniform!='No'}">
+                      			<input type="radio" value="Si" disabled/>
+                      		</c:if>
+                      	</c:if>	
 					</td>
                       <td>                        Por que?</td>
                       <td><input type="text" name="reasonUniform"></td>
@@ -271,22 +271,62 @@
 				  <p>&nbsp;</p>
 				  <p>¿Cual es su nivel de satisfacción respecto a la atencion brindada por nuestro personal en general?</p>
 				  <p>
-				    <select name="qualification" id="qualification">
-				      <option value="10">10 - Excelente</option>
-			        </select>			        
+				  <c:if test="${cat=='false'}">  
+					    <select name="qualification" id="qualification">
+					      <option value="10">10 - Excelente</option>
+				        </select>	
+			       </c:if>	
+			      <c:if test="${cat=='true'}"><!-- Opcion solo consulta readOnly -->
+			      	<select name="qualification" id="qualification" disabled>
+					      <option value="10">10 - Excelente</option>
+				    </select>
+			      </c:if>
+			        	        
 				<p></p>
 				  Firma:     
 				  <div id="leftSign" class="signBox" onclick="$('#signCapDialog').dialog('open');"></div>
 				  				  
 				  <p  style="color:#0000FF">Sugerencias y comentarios</p>
 				  <p>
-				    <textarea name="suggestion" cols="150" rows="8"></textarea>
+				  <c:if test="${cat=='false'}">
+				  		<textarea name="suggestion" cols="150" rows="8"></textarea>
+				  </c:if>
+				  
+				  <c:if test="${cat=='true'}">
+				  		<form:input path="suggestion" type="text" style="width:100%;" readonly="true" value="${data.suggestion}"/>
+				  		
+				  </c:if>
+				  
+				   
 				  </p>
 				  <p>&nbsp; </p>
 				  <p>&nbsp;</p>
 		
 				<div align="left">
-					Ordenes de servicio:
+				Ordenes de servicio:
+				 <c:if test="${cat=='false'}">                        
+                      	<select name="serviceOrderId" id="serviceOrderId">
+	                       <c:forEach var="cat" items="${surveyServiceList}">
+	                         <option value="${cat.serviceOrderId}">
+	                         <c:out value="${cat.serviceOrderNumber}"/>
+	                         </option>
+	                       </c:forEach>
+	                   </select> 
+                  </c:if>
+                  
+                  
+                  <c:if test="${cat=='true'}"><!-- Opcion solo consulta readOnly -->
+                       	<select name="serviceOrderId" id="serviceOrderId" disabled>
+	                       <c:forEach var="cat" items="${surveyServiceList}">
+	                         <option value="${cat.serviceOrderId}">
+	                         <c:out value="${cat.serviceOrderNumber}"/>
+	                         </option>
+	                       </c:forEach>
+	                   </select> 
+                  </c:if>	
+                      	
+                      	
+					<!-- Ordenes de servicio:
 				        <c:catch var ="catchException">
 				        <select name="serviceOrderId" id="serviceOrderId">
 	                       <c:forEach var="cat" items="${surveyServiceList}">
@@ -301,7 +341,7 @@
 				        <c:if test = "${catchException!=null}">
 							The exception is : ${catchException}<br><br>
 							There is an exception: ${catchException.message}<br>
-						</c:if>	
+						</c:if>	-->
 				</div>			
 				 <div align="right"><input  class="searchButton" type="submit" value="Guardar" id="guardar"/></div>
 	    <p>&nbsp;</p>
