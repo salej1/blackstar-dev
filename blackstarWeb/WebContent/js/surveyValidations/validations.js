@@ -25,7 +25,7 @@ $("#telephone").keydown(function(event) {
 	$("#date").datetimepicker();
 
 	
-	$('#sign').signature({syncField: '#sign'});
+	$('#signCapture').signature({syncField: '#sign'});
 	$('#leftSign').signature({disabled: true}); 
 	$("#signCapDialog").dialog({
 		autoOpen: false,

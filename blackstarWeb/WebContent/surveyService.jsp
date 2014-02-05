@@ -353,7 +353,7 @@
 					<form:hidden path="sign"/>
 					<hidden id="rightSignJSON"/></hidden>
 					<div id="signCapDialog" title="Capture su firma en el cuadro" class="signBoxDlg">
-						<div id="sign">
+						<div id="signCapture">
 						</div>
 					</div>
 						
