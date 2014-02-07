@@ -145,6 +145,11 @@ public class PDFDrawer {
   
   public void drawSignature(String jsonEncoding, Float scaleFactor, int x, int y) 
 		                                                      throws Exception {
+	  // TODO : Cambiar algoritmo de dibujado de firma,
+	  // ya que cambio implementacion del algoritmo de firma
+	  
+	  // SE INHABILITA DIBUJADO DE LA FIRMA HASTA CONFIRMAR ALGORITMO
+	  /*
 	  List<List<Point>> points = getLines(jsonEncoding, scaleFactor, x, y);
 	  Point lastPoint = null;
 	  for (List<Point> line : points) { 
@@ -155,7 +160,7 @@ public class PDFDrawer {
               lastPoint = point; 
           } 
           lastPoint = null; 
-      } 
+      } */
   } 
   
   private List<List<Point>> getLines(String json, Float scale, int x, int y) {

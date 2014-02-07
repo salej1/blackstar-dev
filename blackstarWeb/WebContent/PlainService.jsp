@@ -17,11 +17,8 @@
 	<link href="${pageContext.request.contextPath}/js/glow/1.7.0/widgets/widgets.css" type="text/css" rel="stylesheet" />
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery.ui.theme.css">
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery-ui.min.css">
-	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery.signature.css">
-	<script src="${pageContext.request.contextPath}/js/jquery.signature.min.js"></script>
-	<script src="${pageContext.request.contextPath}/js/jquery.ui.touch-punch.min.js"></script>
+	<!-- <script src="${pageContext.request.contextPath}/js/flashcanvas.js"></script> -->
 	<script src="${pageContext.request.contextPath}/js/dateFormat.js"></script>
-	
 	<script type="text/javascript" charset="utf-8">
 	
 	$(document).ready(function () {
@@ -55,67 +52,10 @@
 				$(this).val(dateNow());
 			});
 			$("#responsible").val("${ user.userName }");
-			$("#leftSign").bind("click", function(){
-				$('#signCapDialog').dialog('open');
-			});
-			$("#rightSign").bind("click", function(){
-				$('#signCapDialog2').dialog('open');
-			});
 		}
-
-		// Signature capture box # 1 
-		$('#signCapture').signature({syncField: '#signCreated'});
-		$('#leftSign').signature({disabled: true}); 
-		$("#signCapDialog").dialog({
-			autoOpen: false,
-			height: 220,
-			width: 370,
-			modal: true,
-			buttons: {
-				"Aceptar": function() {
-					$('#leftSign').signature('draw', $('#signCreated').val()); 
-					$( this ).dialog( "close" );
-				},
-				
-				"Borrar": function() {
-					$('#signCapture').signature('clear'); 
-				},
-				
-				"Cancelar": function() {
-				$( this ).dialog( "close" );
-			}}
-		});
-		
-		// Signature capture box # 2 
-		$('#signCapture2').signature({syncField: '#signReceivedBy'});
-		$('#rightSign').signature({disabled: true}); 
-		$("#signCapDialog2").dialog({
-			autoOpen: false,
-			height: 220,
-			width: 370,
-			modal: true,
-			buttons: {
-				"Aceptar": function() {
-					$('#rightSign').signature('draw', $('#signReceivedBy').val()); 
-					$( this ).dialog( "close" );
-				},
-				
-				"Borrar": function() {
-					$('#signCapture2').signature('clear'); 
-				},
-				
-				"Cancelar": function() {
-				$( this ).dialog( "close" );
-			}}
-		});
 			
 		// inicializando el dialogo para agregar seguimientos
 		initFollowUpDlg("serviceOrder", "osDetail?serviceOrderId=${serviceOrder.serviceOrderId}");
-
-		// Signature capture box # 1 
-		$('#leftSign').signature('draw', '${serviceOrder.signCreated}'); 
-		// Signature capture box # 2 
-		$('#rightSign').signature('draw', '${serviceOrder.signReceivedBy}'); 
 
 		// Cierre del ticket
 		$("#closeBtn").bind("click", function(){
@@ -279,11 +219,13 @@
 									<td colspan="2">
 										<span>Firma</span>
 										<div id="leftSign" class="signBox">
+											<canvas class="signPad" width="330" height="115"></canvas>
 										</div>
 									</td>
 									<td colspan="2" >
 										<span>Firma</span>
 										<div id="rightSign" class="signBox">
+											<canvas class="signPad" width="330" height="115"></canvas>
 										</div>
 									</td>
 								</tr>
@@ -326,24 +268,27 @@
 
 					</div>
 					</div>
-					
+										
 					<form:hidden path="policyId"/>
-					
+
+					<!-- Control de firma -->
 					<!-- Signature capture box # 1 -->
-					<form:hidden path="signCreated"/>
-					<hidden id="rightSignJSON"/></hidden>
-					<div id="signCapDialog" title="Capture su firma en el cuadro" class="signBoxDlg">
-						<div id="signCapture">
-						</div>
-					</div>
-					
-					<!-- Signature capture box # 2 -->
-					<form:hidden path="signReceivedBy"/>
-					<hidden id="rightSignJSON2"></hidden>
-					<div id="signCapDialog2" title="Capture su firma en el cuadro" class="signBoxDlg">
-						<div id="signCapture2">
-						</div>
-					</div>
+			          <div id="signCapDialog" title="Capture su firma en el cuadro" class="signBoxDlg">
+			            <div id="signCapture">
+			              <canvas class="signPad" width="330" height="115"></canvas>
+			              <form:hidden path="signCreated" class="output"/>
+			            </div>
+			          </div>
+			          
+			          <!-- Signature capture box # 2 -->
+			          <div id="signCapDialog2" title="Capture su firma en el cuadro" class="signBoxDlg">
+			            <div id="signCapture2">
+			              <canvas class="signPad" width="330" height="115"></canvas>
+			              <form:hidden path="signReceivedBy" class="output"/>
+			            </div>
+			          </div>
+
+					<c:import url="signatureFragment.jsp"></c:import>
 			</form:form>
 							<!-- Adjuntos -->
 							<c:import url="_attachments.jsp"></c:import>
