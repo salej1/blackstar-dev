@@ -6,6 +6,7 @@ gaeDeployDialogSettings=
 gaeDoJarClasses=false
 gaeEnableJarSplitting=true
 gaeHrdEnabled=true
+gaeLaunchAppInBrowser=true
 gaeRetainStagingDirectory=false
 googleCloudSqlEnabled=true
 localDevMySqlEnabled=true
