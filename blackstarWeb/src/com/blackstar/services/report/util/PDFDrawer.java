@@ -145,11 +145,6 @@ public class PDFDrawer {
   
   public void drawSignature(String jsonEncoding, Float scaleFactor, int x, int y) 
 		                                                      throws Exception {
-	  // TODO : Cambiar algoritmo de dibujado de firma,
-	  // ya que cambio implementacion del algoritmo de firma
-	  
-	  // SE INHABILITA DIBUJADO DE LA FIRMA HASTA CONFIRMAR ALGORITMO
-	  /*
 	  List<List<Point>> points = getLines(jsonEncoding, scaleFactor, x, y);
 	  Point lastPoint = null;
 	  for (List<Point> line : points) { 
@@ -160,22 +155,21 @@ public class PDFDrawer {
               lastPoint = point; 
           } 
           lastPoint = null; 
-      } */
+      } 
   } 
   
   private List<List<Point>> getLines(String json, Float scale, int x, int y) {
     List<List<Point>> lines = new ArrayList<List<Point>>();
     List<Point> line = null;
-    String [] segments = json.substring(12).substring(0, json.length() - 16)
-    		                                       .split("\\]\\],\\[\\[");
-    String [] points = null, coordinates = null;
+    String [] segments = json.substring(2).substring(0, json.length() - 4)
+    		                                       .split("\\},\\{");
+    String [] points = null;
     for(String segment : segments){
-      points = segment.split("\\],\\[");
+      points = segment.split(",");
       line = new ArrayList<Point>();
       for(int i = 0; i< points.length; i++){
-    	  coordinates =  points[i].split(",");
-    	  line.add(new Point((Float.parseFloat(coordinates[0]) * scale) + x
-    			             , (Float.parseFloat(coordinates[1]) * scale) + y));
+    	  line.add(new Point((Float.parseFloat(points[i].split(":")[1]) * scale) + x
+    			             , (Float.parseFloat(points[++i].split(":")[1]) * scale) + y));
       }
       lines.add(line);
     }

@@ -51,14 +51,14 @@ public abstract class AbstractReport {
 	drawer.vLine(670, 770, 555);
 		
 	drawer.text("FIRMA:", 5, 695);
-	drawer.drawSignature(signCreated, .7F, 40,678);
+	drawer.drawSignature(signCreated, .6F, 40,678);
 	drawer.text("NOMBRE:", 5, 750);
 	drawer.text(responsible, 45, 750, true);
 	drawer.text("FECHA Y HORA DE SALIDA:", 5, 765);
 	drawer.text(closed.toString(), 113, 765, true);
 		
 	drawer.text("FIRMA:", 281, 695);
-	drawer.drawSignature(signReceivedBy, .7F, 320,678);
+	drawer.drawSignature(signReceivedBy, .6F, 320,678);
 	drawer.text("NOMBRE:", 281, 750);
 	drawer.text(receivedBy, 321, 750, true);
 	drawer.text("PUESTO:", 281, 765);	  
