@@ -65,7 +65,8 @@ public class EmergencyPlantServicePolicyDTO {
 		this.signReceivedBy = serviceOrder.getsignReceivedBy();
 		this.receivedByPosition = serviceOrder.getReceivedByPosition();
 		this.serviceOrderNumber = serviceOrder.getServiceOrderNumber();
-		
+		this.receivedByEmail = serviceOrder.getReceivedByEmail();
+		this.responsibleName = serviceOrder.getEmployeeNameListString();
 	}
 	
 	public EmergencyPlantServicePolicyDTO(Policy policy, String equipmentType, Serviceorder serviceOrder,  EmergencyPlantServiceDTO emergencyPlantService)
@@ -99,6 +100,8 @@ public class EmergencyPlantServicePolicyDTO {
 		this.signReceivedBy = serviceOrder.getsignReceivedBy();
 		this.receivedByPosition = serviceOrder.getReceivedByPosition();
 		this.serviceOrderNumber = serviceOrder.getServiceOrderNumber();
+		this.receivedByEmail = serviceOrder.getReceivedByEmail();
+		this.responsibleName = serviceOrder.getEmployeeNameListString();
 		
 		this.epServiceId = emergencyPlantService.getEpServiceId();
 		this.brandPE = emergencyPlantService.getBrandPE();
@@ -242,6 +245,7 @@ public class EmergencyPlantServicePolicyDTO {
 	private String receivedByPosition;
 	private String serviceOrderNumber;
 	private String serviceTypeId;
+	private String responsibleName;
 	
 	private Integer epServiceId;
 	private String brandPE;
@@ -1158,6 +1162,14 @@ public class EmergencyPlantServicePolicyDTO {
 
 	public void setServiceTypeId(String serviceTypeId) {
 		this.serviceTypeId = serviceTypeId;
+	}
+
+	public String getResponsibleName() {
+		return responsibleName;
+	}
+
+	public void setResponsibleName(String responsibleName) {
+		this.responsibleName = responsibleName;
 	}
 
 }

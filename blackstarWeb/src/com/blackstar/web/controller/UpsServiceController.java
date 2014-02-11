@@ -74,15 +74,17 @@ public class UpsServiceController extends AbstractController {
 					  upsServicePolicyDTO.setServiceStatusId("N");
 					  upsServicePolicyDTO.setServiceTypeId("P");
 	  				  model.addAttribute("serviceOrder", upsServicePolicyDTO);
+	  				  model.addAttribute("serviceEmployees", udService.getStaffByGroupJson(Globals.GROUP_SERVICE));
 	  				  model.addAttribute("mode", "new");
 		  		  }
 		  		  else if( operation==2)
 		  		  {
 		  			  Integer idOrder = Integer.parseInt(idObject);
+		  			  UpsServiceDTO upsService = service.getUpsService(idOrder);
 		  			  Serviceorder serviceOrder = this.daoFactory.getServiceOrderDAO().getServiceOrderById(idOrder);
 		  			  Policy policy = this.daoFactory.getPolicyDAO().getPolicyById(serviceOrder.getPolicyId());
 	  				  Equipmenttype equipType = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
-	  				  upsServicePolicyDTO = new UpsServicePolicyDTO(policy, equipType.getEquipmentType(), serviceOrder );
+	  				  upsServicePolicyDTO = new UpsServicePolicyDTO(policy, equipType.getEquipmentType(), serviceOrder, upsService );
 	  				  model.addAttribute("serviceOrder", upsServicePolicyDTO);
 	  				  model.addAttribute("mode", "detail");
 		  		  }
@@ -95,6 +97,7 @@ public class UpsServiceController extends AbstractController {
 					  upsServicePolicyDTO.setServiceStatusId("N");
 					  upsServicePolicyDTO.setServiceTypeId("P");
 	  				  model.addAttribute("serviceOrder", upsServicePolicyDTO);
+	  			      model.addAttribute("serviceEmployees", udService.getStaffByGroupJson(Globals.GROUP_SERVICE));
 	  				  model.addAttribute("mode", "new");
 		  		  }
 
@@ -129,8 +132,6 @@ public class UpsServiceController extends AbstractController {
 	    		{
 	    			//Crear orden de servicio
 	    			Serviceorder servicioOrderSave = new Serviceorder();
-	    			servicioOrderSave.setAsignee( serviceOrder.getResponsible());
-	    			servicioOrderSave.setClosed(serviceOrder.getClosed());
 	    			servicioOrderSave.setPolicyId((Short.parseShort(serviceOrder.getPolicyId().toString())));
 	    			servicioOrderSave.setReceivedBy(serviceOrder.getReceivedBy());
 	    			servicioOrderSave.setReceivedByPosition(serviceOrder.getReceivedByPosition());
@@ -148,7 +149,6 @@ public class UpsServiceController extends AbstractController {
 	    		{
 	    			//Actualizar orden de servicio
 	    			Serviceorder servicioOrderSave = new Serviceorder();
-	    			servicioOrderSave.setAsignee( serviceOrder.getResponsible());
 	    			servicioOrderSave.setClosed(serviceOrder.getClosed());
 	    			servicioOrderSave.setPolicyId((Short.parseShort(serviceOrder.getPolicyId().toString())));
 	    			servicioOrderSave.setReceivedBy(serviceOrder.getReceivedBy());

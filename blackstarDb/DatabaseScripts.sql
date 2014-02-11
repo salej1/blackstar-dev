@@ -17,7 +17,10 @@
 -- --   --------   -------  ------------------------------------
 -- 4    28/11/2013  JAGH  	Se agregan tablas para captura de OS
 -- --   --------   -------  ------------------------------------
--- 5   12/12/2013  SAG  	Se agrega sequence y sequenceNumberPool
+-- 5    12/12/2013  SAG  	Se agrega sequence y sequenceNumberPool
+-- --   --------   -------  ------------------------------------
+-- 6    09/02/2014  SAG  	Se cambia serviceOrderAdditionalEngineer por
+-- 							serviceOrderEmployee
 -- ---------------------------------------------------------------------------
 
 use blackstarDb;
@@ -31,6 +34,30 @@ BEGIN
 -- -----------------------------------------------------------------------------
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
+
+-- ELIMINANDO TABLA serviceOrderAdditionalEngineer
+	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'serviceOrderAdditionalEngineer') = 1 THEN
+		DROP TABLE serviceOrderAdditionalEngineer;
+	END IF;
+
+-- AGREGANDO TABLA serviceOrderEmployee
+	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'serviceOrderEmployee') = 0 THEN
+		  CREATE TABLE blackstarDb.serviceOrderEmployee(
+			serviceOrderEmployeeId INTEGER NOT NULL AUTO_INCREMENT,
+			serviceOrderId INTEGER NOT NULL,
+			employeeId VARCHAR(100) NOT NULL,
+			isDefault TINYINT NOT NULL DEFAULT 0,
+			created DATETIME NULL,
+			createdBy NVARCHAR(50) NULL,
+			createdByUsr NVARCHAR(50) NULL,
+			PRIMARY KEY (serviceOrderEmployeeId),
+			KEY(serviceOrderId),
+			UNIQUE UQ_serviceOrderEmployee_serviceOrderEmployeeId(serviceOrderEmployeeId)
+		) ENGINE=INNODB;
+		
+		ALTER TABLE blackstarDb.serviceOrderEmployee ADD CONSTRAINT FK_serviceOrderEmployee_servideOrderId
+		FOREIGN KEY (serviceOrderId) REFERENCES serviceOrder (serviceOrderId);
+	END IF;
 
 -- AGREGANDO COLUMNA receivedByEmail a ServiceOrder -- ESTA COLUMNA DETERMINA EL EMAIL AL QUE SE ENVIARA COPIA DE LA OS
 	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'serviceOrder' AND COLUMN_NAME = 'receivedByEmail') = 0  THEN
@@ -757,13 +784,123 @@ DROP PROCEDURE blackstarDb.upgradeSchema;
 --							Se modifica:
 --								blackstarDb.AddserviceOrder
 -- -----------------------------------------------------------------------------
+-- 26   30/01/2014	SAG		Se Integra:
+-- 								blackstarDb.LastError
+-- -----------------------------------------------------------------------------
+-- 26   09/02/2014	SAG		Se Corrigen:
+-- 								blackstarDb.GetServiceOrders
+-- 								blackstarDb.GetPersonalServiceOrders
+--							Se Integra:
+--								blackstarDb.GetServiceOrderById
+--								blackstarDb.GetServiceOrderByNumber
+--								blackstarDb.GetServiceOrderEmployeeList
+--								blackstarDb.AddServiceOrderEmployee
+--								blackstarDb.GetAutocompleteEmployeeList
+-- -----------------------------------------------------------------------------
+
 use blackstarDb;
 
 
 DELIMITER $$
 
 
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetAutocompleteEmployeeList
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetAutocompleteEmployeeList$$
+CREATE PROCEDURE blackstarDb.GetAutocompleteEmployeeList(pUserGroup VARCHAR(100))
+BEGIN
 
+	SELECT 
+		u.name AS label,
+		u.email AS value, 
+	FROM blackstarUser_userGroup ug
+		INNER JOIN blackstarUser u ON u.blackstarUserId = ug.blackstarUserId
+		INNER JOIN userGroup g ON g.userGroupId = ug.userGroupId
+	WHERE g.externalId = pUserGroup
+	ORDER BY u.name;
+	
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.AddServiceOrderEmployee
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.AddServiceOrderEmployee$$
+CREATE PROCEDURE blackstarDb.AddServiceOrderEmployee(pSoId INTEGER, pEmployee VARCHAR(100), pCreated DATETIME, pCreatedBy VARCHAR(100), pCreatedByUsr VARCHAR(100))
+BEGIN
+
+	INSERT INTO serviceOrderEmployee(
+		serviceOrderId,
+		employeeId,
+		created,
+		createdBy,
+		createdByUsr
+	)
+	SELECT
+		pSoId,
+		pEmployee,
+		pCreated,
+		pCreatedBy,
+		pCreatedByUsr
+	
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetServiceOrderEmployeeList
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetServiceOrderEmployeeList$$
+CREATE PROCEDURE blackstarDb.GetServiceOrderEmployeeList(pSoId INTEGER)
+BEGIN
+
+	SELECT 
+		employee as email
+		name as name
+	FROM serviceOrderEmployee s
+		INNER JOIN blackstarUser u ON s.employeeId = u.email
+	WHERE serviceOrderId = pSoNumber;
+	
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetServiceOrderByNumber
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetServiceOrderByNumber$$
+CREATE PROCEDURE blackstarDb.GetServiceOrderByNumber(pSoNumber VARCHAR(100))
+BEGIN
+
+	SELECT *
+	FROM serviceOrder s
+		INNER JOIN blackstarUser u ON s.responsible = u.email
+	WHERE serviceOrderNumber = pSoNumber;
+	
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetServiceOrderById
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetServiceOrderById$$
+CREATE PROCEDURE blackstarDb.GetServiceOrderById(pId INTEGER)
+BEGIN
+
+	SELECT *
+	FROM serviceOrder s
+		INNER JOIN blackstarUser u ON s.responsible = u.email
+	WHERE serviceOrderId = pId;
+	
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.LastError
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.LastError$$
+CREATE PROCEDURE blackstarDb.LastError()
+BEGIN
+
+	SELECT error FROM blackstarManage.errorLog
+	ORDER BY errorLogId DESC 
+	LIMIT 2;
+	
+END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetNextServiceNumberForTicket
@@ -1002,8 +1139,8 @@ BEGIN
 		INNER JOIN equipmentType et ON et.equipmentTypeId = p.equipmentTypeId
 		INNER JOIN office o ON p.officeId = o.officeId
 	where serviceStatus = pStatus
-	AND so.asignee = pUser
-	ORDER BY serviceDate;
+	AND (so.asignee = pUser OR so.responsible = pUser)
+	ORDER BY serviceDate DESC;
 
 END$$
 
@@ -1771,7 +1908,7 @@ END$$
 	-- blackstarDb.GetServiceOrders
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetServiceOrders$$
-CREATE PROCEDURE blackstarDb.GetServiceOrders(IN status VARCHAR(20))
+CREATE PROCEDURE blackstarDb.GetServiceOrders(IN status VARCHAR(200))
 BEGIN
 
 	SELECT 
@@ -1795,8 +1932,8 @@ BEGIN
 		INNER JOIN equipmentType et ON p.equipmenttypeId = et.equipmenttypeId
 		INNER JOIN office of on p.officeId = of.officeId
      LEFT OUTER JOIN ticket t on t.ticketId = so.ticketId
-	WHERE ss.serviceStatus = status
-	ORDER BY serviceOrderNumber ;
+	WHERE ss.serviceStatus IN(status) 
+	ORDER BY serviceDate DESC ;
 	
 END$$
 

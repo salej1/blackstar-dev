@@ -170,6 +170,7 @@ public class DashboardController extends AbstractController {
 		String retVal;
 		try {
 			retVal = service.getPersonalServiceOrders(userSession.getUser().getUserEmail(), "PENDIENTE");
+			retVal += "," + service.getPersonalServiceOrders(userSession.getUser().getUserEmail(), "NUEVO");
 		} catch (Exception e) {
 			Logger.Log(LogLevel.ERROR,
 					e.getStackTrace()[0].toString(), e);

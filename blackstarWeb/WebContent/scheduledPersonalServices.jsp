@@ -14,7 +14,7 @@
 		switch(type){
 			case 'AA': urlTemplate = urlTemplate.replace("PAGE", "/aircoService");
 				break;
-			case 'BB': urlTemplate = urlTemplate.replace("PAGE", "/batteryService");
+			case 'BATERIAS': urlTemplate = urlTemplate.replace("PAGE", "/batteryService");
 				break;
 			case 'PE': urlTemplate = urlTemplate.replace("PAGE", "/emergencyPlantService");
 				break;

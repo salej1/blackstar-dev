@@ -70,15 +70,17 @@ public class EmergencyPlantServiceController extends AbstractController {
 					  emergencyPlantServicePolicyDTO.setServiceStatusId("N");
 					  emergencyPlantServicePolicyDTO.setServiceTypeId("P");
 	  				  model.addAttribute("serviceOrder", emergencyPlantServicePolicyDTO);
+	  				  model.addAttribute("serviceEmployees", udService.getStaffByGroupJson(Globals.GROUP_SERVICE));
 	  				  model.addAttribute("mode", "new");
 		  		  }
 		  		  else if( operation==2)
 		  		  {
 		  			  Integer idOrder = Integer.parseInt(idObject);
+		  			  EmergencyPlantServiceDTO epService = service.getEmergencyPlantService(idOrder);
 		  			  Serviceorder serviceOrder = this.daoFactory.getServiceOrderDAO().getServiceOrderById(idOrder);
 		  			  Policy policy = this.daoFactory.getPolicyDAO().getPolicyById(serviceOrder.getPolicyId());
 	  				  Equipmenttype equipType = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
-	  				  emergencyPlantServicePolicyDTO = new EmergencyPlantServicePolicyDTO(policy, equipType.getEquipmentType(), serviceOrder );
+	  				  emergencyPlantServicePolicyDTO = new EmergencyPlantServicePolicyDTO(policy, equipType.getEquipmentType(), serviceOrder, epService );
 	  				  model.addAttribute("serviceOrder", emergencyPlantServicePolicyDTO);
 		  		  }
 		  		  else if(operation==3)
@@ -90,6 +92,7 @@ public class EmergencyPlantServiceController extends AbstractController {
 					  emergencyPlantServicePolicyDTO.setServiceStatusId("N");
 					  emergencyPlantServicePolicyDTO.setServiceTypeId("P");
 	  				  model.addAttribute("serviceOrder", emergencyPlantServicePolicyDTO);
+	  				  model.addAttribute("serviceEmployees", udService.getStaffByGroupJson(Globals.GROUP_SERVICE));
 	  				  model.addAttribute("mode", "new");
 		  		  }
 
@@ -122,8 +125,6 @@ public class EmergencyPlantServiceController extends AbstractController {
 	    		{
 	    			//Crear orden de servicio
 	    			Serviceorder servicioOrderSave = new Serviceorder();
-	    			servicioOrderSave.setAsignee( serviceOrder.getResponsible());
-	    			servicioOrderSave.setClosed(serviceOrder.getClosed());
 	    			servicioOrderSave.setPolicyId((Short.parseShort(serviceOrder.getPolicyId().toString())));
 	    			servicioOrderSave.setReceivedBy(serviceOrder.getReceivedBy());
 	    			servicioOrderSave.setReceivedByPosition(serviceOrder.getReceivedByPosition());
@@ -141,7 +142,6 @@ public class EmergencyPlantServiceController extends AbstractController {
 	    		{
 	    			//Actualizar orden de servicio
 	    			Serviceorder servicioOrderSave = new Serviceorder();
-	    			servicioOrderSave.setAsignee( serviceOrder.getResponsible());
 	    			servicioOrderSave.setClosed(serviceOrder.getClosed());
 	    			servicioOrderSave.setPolicyId((Short.parseShort(serviceOrder.getPolicyId().toString())));
 	    			servicioOrderSave.setReceivedBy(serviceOrder.getReceivedBy());

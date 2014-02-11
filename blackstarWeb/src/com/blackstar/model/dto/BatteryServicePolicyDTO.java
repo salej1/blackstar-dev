@@ -70,6 +70,8 @@ public class BatteryServicePolicyDTO {
 		this.signReceivedBy = serviceOrder.getsignReceivedBy();
 		this.receivedByPosition = serviceOrder.getReceivedByPosition();
 		this.serviceOrderNumber = serviceOrder.getServiceOrderNumber();
+		this.receivedByEmail = serviceOrder.getReceivedByEmail();
+		this.responsibleName = serviceOrder.getEmployeeNameListString();
 		
 		this.setCells(new ArrayList<BatteryCellServiceDTO>());
 		
@@ -106,6 +108,8 @@ public class BatteryServicePolicyDTO {
 		this.signReceivedBy = serviceOrder.getsignReceivedBy();
 		this.receivedByPosition = serviceOrder.getReceivedByPosition();
 		this.serviceOrderNumber = serviceOrder.getServiceOrderNumber();
+		this.receivedByEmail = serviceOrder.getReceivedByEmail();
+		this.responsibleName = serviceOrder.getEmployeeNameListString();
 		
 		this.bbServiceId = batteryServiceDTO.getBbServiceId();
 		this.serviceOrderId = batteryServiceDTO.getServiceOrderId();		
@@ -184,6 +188,7 @@ public class BatteryServicePolicyDTO {
 	private Integer temperature;
 	private String receivedByEmail;
 	private List<BatteryCellServiceDTO> cells;
+	private String responsibleName;
 	
 	public Integer getPolicyId() {
 		return policyId;
@@ -494,6 +499,14 @@ public class BatteryServicePolicyDTO {
 
 	public void setServiceTypeId(String serviceTypeId) {
 		this.serviceTypeId = serviceTypeId;
+	}
+
+	public String getResponsibleName() {
+		return responsibleName;
+	}
+
+	public void setResponsibleName(String responsibleName) {
+		this.responsibleName = responsibleName;
 	}
 	
 	

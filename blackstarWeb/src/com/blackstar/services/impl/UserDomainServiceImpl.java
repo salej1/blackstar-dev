@@ -8,18 +8,22 @@ import com.blackstar.services.interfaces.UserDomainService;
 
 public class UserDomainServiceImpl implements UserDomainService {
 
-  private UserDomainDAO dao = null;
+	private UserDomainDAO dao = null;
 
-  public UserDomainDAO getDao() {
-	return dao;
-  }
+	public UserDomainDAO getDao() {
+		return dao;
+	}
 
-  public void setDao(UserDomainDAO dao) {
-	this.dao = dao;
-  }
-  
-  public List<EmployeeDTO> getStaff(){
-	 return dao.getStaff();
-  }
-  
+	public void setDao(UserDomainDAO dao) {
+		this.dao = dao;
+	}
+
+	public List<EmployeeDTO> getStaff(){
+		return dao.getStaff();
+	}
+
+	@Override
+	public String getStaffByGroupJson(String group) {
+		return dao.getStaffByGroupJson(group).toString();
+	}
 }

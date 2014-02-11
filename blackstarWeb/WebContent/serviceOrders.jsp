@@ -10,8 +10,6 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery.ui.theme.css"/>
 		<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery-ui.min.css"/>
-		<script src="${pageContext.request.contextPath}/js/jquery-1.10.1.min.js"></script>
-		<script src="${pageContext.request.contextPath}/js/jquery-ui.js"></script>
 		<script src="${pageContext.request.contextPath}/DataTables-1.9.4/media/js/jquery.dataTables.js"></script>
 
 		<title>Ordenes de servicio</title>
@@ -48,11 +46,6 @@
 			<c:if test="${sysCallCenter == true}">
 				<!-- Seleccion de filtro por oficina -->
 				<c:import url="officeFilter.jsp"></c:import>
-				<script type="text/javascript">
-					$(function(){
-						officeFilter_init();
-					});
-				</script>
 
 				<!-- Tabla De Ordenes De Servicio Por Revisar - NewServiceOrders.jsp -->
 				<c:import url="newServiceOrders.jsp"></c:import>
@@ -67,6 +60,13 @@
 				<script type="text/javascript">
 					$(function(){
 						pendingServiceOrders_init();
+					});
+				</script>
+				
+				<!-- La inicializacion debe ser despues de que se pintaron las tablas -->
+				<script type="text/javascript">
+					$(function(){
+						officeFilter_init();
 					});
 				</script>
 			</c:if>

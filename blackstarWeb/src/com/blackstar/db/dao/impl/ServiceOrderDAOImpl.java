@@ -10,6 +10,7 @@ import org.json.JSONObject;
 import com.blackstar.db.dao.AbstractDAO;
 import com.blackstar.db.dao.interfaces.ServiceOrderDAO;
 import com.blackstar.db.dao.mapper.JSONRowMapper;
+import com.blackstar.model.Employee;
 import com.blackstar.model.Serviceorder;
 import com.blackstar.model.dto.AirCoServiceDTO;
 import com.blackstar.model.dto.BatteryCellServiceDTO;
@@ -145,6 +146,23 @@ public class ServiceOrderDAOImpl extends AbstractDAO implements ServiceOrderDAO 
 								};
 	
 	Integer idOS = getJdbcTemplate().queryForInt(sqlBuilder.toString() ,args);
+	
+	// Insertando la lista de empleados
+	for(Employee employee : orderService.getEmployeeList()){
+		sqlBuilder = new StringBuilder();
+		sqlBuilder.append("CALL AddServiceOrderEmployee(?,?,?,?,?)");
+		
+		args = new Object[]{
+				idOS.toString(),
+				employee.getEmail(),
+				df.format(orderService.getCreated()).toString(),
+				orderService.getCreatedBy(),
+				orderService.getCreatedByUsr()
+		};
+		
+		getJdbcTemplate().update(sqlBuilder.toString(), args);
+	}
+	
 	return idOS;
   }
 

@@ -26,19 +26,14 @@
 	<c:set var="sysCallCenter" scope="request" value="${user.belongsToGroup['Call Center'] || user.belongsToGroup['Coordinador']}" />
 	<c:if test="${sysCallCenter == true}">
 
-		<!-- Tabla De Tickets Por Asignar - Unassignedtickets.jsp -->
-		<c:import url="unassignedTickets.jsp"></c:import>
-		<script type="text/javascript">
-			$(function(){
-				unassignedTickets_init();
-			});
-		</script>
-
 		<!-- Seleccion de filtro por oficina -->
 		<c:import url="officeFilter.jsp"></c:import>
-		<script type="text/javascript">
+
+		<!-- Tabla De Tickets Por Asignar - Unassignedtickets.jsp -->
+		<c:import url="unassignedTickets.jsp"></c:import>
+				<script type="text/javascript">
 			$(function(){
-				officeFilter_init();
+				unassignedTickets_init();
 			});
 		</script>
 
@@ -57,6 +52,14 @@
 				pendingServiceOrders_init();
 			});
 		</script>
+
+		<!-- La inicializacion se hace una vez que se pintaron las tablas -->
+		<script type="text/javascript">
+			$(function(){
+				officeFilter_init();
+			});
+		</script>
+
 	</c:if>
 
 <!-- Fin Contenido De Perfiles Syscallcenter Y Syscoordinator -->

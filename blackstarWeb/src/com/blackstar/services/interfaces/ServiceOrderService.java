@@ -58,4 +58,5 @@ public interface ServiceOrderService {
 	
 	// Recuperacion del seguimiento asociado
 	public List<FollowUpDTO> getServiceFollowUps(Integer serviceOrderId);
+
 }

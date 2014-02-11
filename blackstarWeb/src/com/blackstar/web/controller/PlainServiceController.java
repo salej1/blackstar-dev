@@ -75,6 +75,7 @@ public class PlainServiceController extends AbstractController {
 	  				  plainServicePolicyDTO.setServiceTypeId("C");
 	  				  plainServicePolicyDTO.setTicketNumber(ticket.getTicketNumber());
 	  				  model.addAttribute("serviceOrder", plainServicePolicyDTO);
+	  				  model.addAttribute("serviceEmployees", udService.getStaffByGroupJson(Globals.GROUP_SERVICE));
 	  				  model.addAttribute("mode", "new");
 		  		  }
 		  		  else if( operation==2)
@@ -99,6 +100,7 @@ public class PlainServiceController extends AbstractController {
 	  				  plainServicePolicyDTO.setServiceTypeId("C");
 	  				  plainServicePolicyDTO.setTicketNumber("NA");
 	  				  model.addAttribute("serviceOrder", plainServicePolicyDTO);
+	  				  model.addAttribute("serviceEmployees", udService.getStaffByGroupJson(Globals.GROUP_SERVICE));
 	  				  model.addAttribute("mode", "new");
 		  		  }
 		  		  
@@ -138,7 +140,7 @@ public class PlainServiceController extends AbstractController {
 		    		servicioOrderSave.setPolicyId((Short.parseShort(serviceOrder.getPolicyId().toString())));
 		    		servicioOrderSave.setReceivedBy(serviceOrder.getReceivedBy());
 		    		servicioOrderSave.setReceivedByPosition(serviceOrder.getReceivedByPosition());
-		    		servicioOrderSave.setResponsible(serviceOrder.getResponsible());
+		    		servicioOrderSave.setEmployeeListString(serviceOrder.getResponsible());
 		    		servicioOrderSave.setServiceDate(serviceOrder.getServiceDate());
 		    		servicioOrderSave.setServiceOrderNumber(serviceOrder.getServiceOrderNumber());
 		    		servicioOrderSave.setServiceTypeId(serviceOrder.getServiceTypeId().toCharArray()[0]);

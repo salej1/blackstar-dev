@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<%@page isELIgnored="false"%>
+<%@ page isELIgnored="false"%>
 <!DOCTYPE html>
 <c:set var="pageSection" scope="request" value="ordenesServicio" />
 <c:import url="header.jsp"></c:import>
@@ -17,10 +17,17 @@
 	<link href="${pageContext.request.contextPath}/js/glow/1.7.0/widgets/widgets.css" type="text/css" rel="stylesheet" />
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery.ui.theme.css">
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery-ui.min.css">
-	<!-- <script src="${pageContext.request.contextPath}/js/flashcanvas.js"></script> -->
 	<script src="${pageContext.request.contextPath}/js/dateFormat.js"></script>
 	<script type="text/javascript" charset="utf-8">
-	
+
+	function split( val ) {
+      return val.split( /,\s*/ );
+    }
+
+    function extractLast( term ) {
+      return split( term ).pop();
+    }
+
 	$(document).ready(function () {
 			
 		// Binding serviceTypes con campo oculto de tipo de servicio
@@ -40,6 +47,8 @@
 			$("#observations").attr("disabled", "");
 			$("#receivedBy").attr("disabled", "");
 			$("#receivedByPosition").attr("disabled", "");
+			$("#receivedByEmail").attr("disabled", "");
+			$("#responsibleName").attr("disabled", "");
 			var isEng = "${ user.belongsToGroup['Implementacion y Servicio']}";
 			if(isEng == "true"){
 				$("#guardarServicio").hide();
@@ -47,17 +56,47 @@
 		}
 		else{
 			$("#serviceDate").val(dateNow());
-			$("#closed").val(dateNow());
-			$("#closed").bind("click", function(){
-				$(this).val(dateNow());
+			$("#responsibleName").val("${ user.userName }");
+			$("#responsible").val("${ user.userEmail }");
+			var strEpmloyees = '${serviceEmployees}';
+			var empData = $.parseJSON(strEpmloyees);
+
+			$("#responsibleName").bind( "keydown", function( event ) {
+		        if ( event.keyCode === $.ui.keyCode.TAB &&
+		            $( this ).data( "ui-autocomplete" ).menu.active ) {
+		          event.preventDefault();
+		        }
+		      }).autocomplete({
+				minLength: 0,
+				source: function( request, response ) {
+		          response( $.ui.autocomplete.filter(
+		            empData, extractLast( request.term ) ) );
+		        },
+				focus: function() {
+		          return false;
+		        },select: function( event, ui ) {
+		        	var terms = this.value.split(/,\s*/);
+		            terms.pop();
+		            terms.push( ui.item.label );
+		            terms.push( "" );
+		            this.value = terms.join( ", " );
+
+		            $("#responsible").val($("#responsible").val() + ";" + ui.item.value );
+		            return false;
+				}
 			});
-			$("#responsible").val("${ user.userName }");
+
+		    // Sincronizando los campos de firma
+		    $("#serviceOrder").submit(function(){
+				$("#signCreated").val($("#signCreatedCapture").val())
+				$("#signReceivedBy").val($("#signReceivedByCapture").val())
+			});
 		}
 			
 		// inicializando el dialogo para agregar seguimientos
 		initFollowUpDlg("serviceOrder", "osDetail?serviceOrderId=${serviceOrder.serviceOrderId}");
 
-		// Cierre del ticket
+		// Cierre de la OS
 		$("#closeBtn").bind("click", function(){
 			$("serviceStatusId").val('C');
 		});
@@ -231,7 +270,8 @@
 								</tr>
 								<tr>
 									<td>Nombre</td>
-									<td><form:input path="responsible" type="text" style="width:95%;" readOnly="true" /></td>
+									<td><form:input path="responsibleName" type="text" style="width:95%;"/></td>
+									<form:hidden path="responsible" style="width:95%;"/>
 									<td>Nombre</td>
 									<td><form:input path="receivedBy" type="text" style="width:95%;" required="true"/></td>
 								</tr>
@@ -264,55 +304,42 @@
 									</tr>
 								<tbody>
 							</table>
-							
-
 					</div>
-					</div>
+				</div>
 										
 					<form:hidden path="policyId"/>
 
-					<!-- Control de firma -->
-					<!-- Signature capture box # 1 -->
-			          <div id="signCapDialog" title="Capture su firma en el cuadro" class="signBoxDlg">
-			            <div id="signCapture">
-			              <canvas class="signPad" width="330" height="115"></canvas>
-			              <form:hidden path="signCreated" class="output"/>
-			            </div>
-			          </div>
-			          
-			          <!-- Signature capture box # 2 -->
-			          <div id="signCapDialog2" title="Capture su firma en el cuadro" class="signBoxDlg">
-			            <div id="signCapture2">
-			              <canvas class="signPad" width="330" height="115"></canvas>
-			              <form:hidden path="signReceivedBy" class="output"/>
-			            </div>
-			          </div>
-
-					<c:import url="signatureFragment.jsp"></c:import>
+					<!-- Campos de firma -->
+					<form:hidden path="signCreated"/>
+			        <form:hidden path="signReceivedBy"/>
 			</form:form>
-							<!-- Adjuntos -->
-							<c:import url="_attachments.jsp"></c:import>
-							<!-- Control de secuencia y captura de seguimiento -->
-							<c:import url="followUpControl.jsp"></c:import>
-							<script type="text/javascript" charset="utf-8">
-								$(function(){
-									initFollowUpDlg("os", "/osDetail/show.do?serviceOrderId=${serviceOrder.serviceOrderId}");
-								});
-							</script>
-							<c:if test="${serviceOrder.serviceOrderId > 0}">
-								<table>
-									<tbody>
-										<tr>
-											<td>
-												<button class="searchButton" onclick="addSeguimiento(${serviceOrder.serviceOrderId}, '${serviceOrder.serviceOrderNumber}');">Agregar seguimiento</button>
-												<c:if test="${ user.belongsToGroup['Coordinador']}">
-													<button class="searchButton" id="closeBtn">Cerrar</button>
-												</c:if>
-											</td>
-										</tr>
-									<tbody>
-								</table>
-							</c:if>	
+
+			<!-- Fragmento de Firma -->
+			<c:import url="signatureFragment.jsp"></c:import>
+
+			<!-- Adjuntos -->
+			<c:import url="_attachments.jsp"></c:import>
+			<!-- Control de secuencia y captura de seguimiento -->
+			<c:import url="followUpControl.jsp"></c:import>
+			<script type="text/javascript" charset="utf-8">
+				$(function(){
+					initFollowUpDlg("os", "/osDetail/show.do?serviceOrderId=${serviceOrder.serviceOrderId}");
+				});
+			</script>
+			<c:if test="${serviceOrder.serviceOrderId > 0}">
+				<table>
+					<tbody>
+						<tr>
+							<td>
+								<button class="searchButton" onclick="addSeguimiento(${serviceOrder.serviceOrderId}, '${serviceOrder.serviceOrderNumber}');">Agregar seguimiento</button>
+								<c:if test="${ user.belongsToGroup['Coordinador']}">
+									<button class="searchButton" id="closeBtn">Cerrar</button>
+								</c:if>
+							</td>
+						</tr>
+					<tbody>
+				</table>
+			</c:if>	
 		</div>
 	</body>
 </html>

@@ -145,12 +145,111 @@
 -- 26   30/01/2014	SAG		Se Integra:
 -- 								blackstarDb.LastError
 -- -----------------------------------------------------------------------------
-use blackstarDb;
+-- 26   09/02/2014	SAG		Se Corrigen:
+-- 								blackstarDb.GetServiceOrders
+-- 								blackstarDb.GetPersonalServiceOrders
+--							Se Integra:
+--								blackstarDb.GetServiceOrderById
+--								blackstarDb.GetServiceOrderByNumber
+--								blackstarDb.GetServiceOrderEmployeeList
+--								blackstarDb.AddServiceOrderEmployee
+--								blackstarDb.GetAutocompleteEmployeeList
+-- -----------------------------------------------------------------------------
+-- 26   10/02/2014	SAG		Se Corrigen:
+-- 								blackstarDb.GetAirCoServiceByIdService
+--								blackstarDb.GetBatteryServiceByIdService
+--								blackstarDb.GetEmergencyPlantServiceByIdService
+--								blackstarDb.GetUPSServiceByIdService
+-- -----------------------------------------------------------------------------
 
+
+use blackstarDb;
 
 DELIMITER $$
 
 
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetAutocompleteEmployeeList
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetAutocompleteEmployeeList$$
+CREATE PROCEDURE blackstarDb.GetAutocompleteEmployeeList(pUserGroup VARCHAR(100))
+BEGIN
+
+	SELECT 
+		u.name AS label,
+		u.email AS value
+	FROM blackstarUser_userGroup ug
+		INNER JOIN blackstarUser u ON u.blackstarUserId = ug.blackstarUserId
+		INNER JOIN userGroup g ON g.userGroupId = ug.userGroupId
+	WHERE g.externalId = pUserGroup
+	ORDER BY u.name;
+	
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.AddServiceOrderEmployee
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.AddServiceOrderEmployee$$
+CREATE PROCEDURE blackstarDb.AddServiceOrderEmployee(pSoId INTEGER, pEmployee VARCHAR(100), pCreated DATETIME, pCreatedBy VARCHAR(100), pCreatedByUsr VARCHAR(100))
+BEGIN
+
+	INSERT INTO serviceOrderEmployee(
+		serviceOrderId,
+		employeeId,
+		created,
+		createdBy,
+		createdByUsr
+	)
+	SELECT
+		pSoId,
+		pEmployee,
+		pCreated,
+		pCreatedBy,
+		pCreatedByUsr;
+	
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetServiceOrderEmployeeList
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetServiceOrderEmployeeList$$
+CREATE PROCEDURE blackstarDb.GetServiceOrderEmployeeList(pSoId INTEGER)
+BEGIN
+
+	SELECT 
+		email as email,
+		name as name
+	FROM serviceOrderEmployee s
+		INNER JOIN blackstarUser u ON s.employeeId = u.email
+	WHERE serviceOrderId = pSoId;
+	
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetServiceOrderByNumber
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetServiceOrderByNumber$$
+CREATE PROCEDURE blackstarDb.GetServiceOrderByNumber(pSoNumber VARCHAR(100))
+BEGIN
+
+	SELECT *
+	FROM serviceOrder s
+	WHERE serviceOrderNumber = pSoNumber;
+	
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetServiceOrderById
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetServiceOrderById$$
+CREATE PROCEDURE blackstarDb.GetServiceOrderById(pId INTEGER)
+BEGIN
+
+	SELECT *
+	FROM serviceOrder s
+	WHERE serviceOrderId = pId;
+	
+END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.LastError
@@ -402,8 +501,8 @@ BEGIN
 		INNER JOIN equipmentType et ON et.equipmentTypeId = p.equipmentTypeId
 		INNER JOIN office o ON p.officeId = o.officeId
 	where serviceStatus = pStatus
-	AND so.asignee = pUser
-	ORDER BY serviceDate;
+	AND (so.asignee = pUser OR so.responsible = pUser)
+	ORDER BY serviceDate DESC;
 
 END$$
 
@@ -1171,7 +1270,7 @@ END$$
 	-- blackstarDb.GetServiceOrders
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetServiceOrders$$
-CREATE PROCEDURE blackstarDb.GetServiceOrders(IN status VARCHAR(20))
+CREATE PROCEDURE blackstarDb.GetServiceOrders(IN status VARCHAR(200))
 BEGIN
 
 	SELECT 
@@ -1195,8 +1294,8 @@ BEGIN
 		INNER JOIN equipmentType et ON p.equipmenttypeId = et.equipmenttypeId
 		INNER JOIN office of on p.officeId = of.officeId
      LEFT OUTER JOIN ticket t on t.ticketId = so.ticketId
-	WHERE ss.serviceStatus = status
-	ORDER BY serviceOrderNumber ;
+	WHERE ss.serviceStatus IN(status) 
+	ORDER BY serviceDate DESC ;
 	
 END$$
 
@@ -1324,7 +1423,7 @@ BEGIN
 		condLectureVoltageControl, condLectureMotorCurrent, condReviewThermostat, condModel, condSerialNumber, condBrand, observations
 	from aaService 
 	where 
-		aaServiceId = idService;
+		serviceOrderId = idService;
 END$$
 
 -- -----------------------------------------------------------------------------
@@ -1339,7 +1438,7 @@ BEGIN
 		rackClean, rackCleanStatus, rackCleanComments, serialNoDateManufact, batteryTemperature, voltageBus, temperature
 	from bbService 
 	where 
-		bbServiceId = idService;
+		serviceOrderId = idService;
 END$$
 
 -- -----------------------------------------------------------------------------
@@ -1395,7 +1494,7 @@ BEGIN
 	inner join  epServiceLectures G on  A.epServiceId  = G.epServiceId 
 	inner join  epServiceParams H on  A.epServiceId  = H.epServiceId 
 	where 
-		A.epServiceId  = idService;
+		A.serviceOrderId  = idService;
 END$$
 
 -- -----------------------------------------------------------------------------
@@ -1434,7 +1533,7 @@ BEGIN
 	inner join  upsServiceGeneralTest  C on  A.upsServiceId = C.upsServiceId
 	inner join  upsServiceParams  D on  A.upsServiceId = D.upsServiceId
 	where 
-		A.upsServiceId = idService;
+		A.serviceOrderId = idService;
 
 END$$
 -- -----------------------------------------------------------------------------

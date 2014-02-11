@@ -15,6 +15,7 @@ import com.blackstar.db.DAOFactory;
 import com.blackstar.interfaces.IEmailService;
 import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
+import com.blackstar.model.AirCoService;
 import com.blackstar.model.Equipmenttype;
 import com.blackstar.model.Policy;
 import com.blackstar.model.Serviceorder;
@@ -70,15 +71,17 @@ public class AirCoServiceController extends AbstractController {
 	  				  airCoServicePolicyDTO.setServiceStatusId("N");
 	  				  airCoServicePolicyDTO.setServiceTypeId("P");
 	  				  model.addAttribute("serviceOrder", airCoServicePolicyDTO);
+	  				  model.addAttribute("serviceEmployees", udService.getStaffByGroupJson(Globals.GROUP_SERVICE));
 	  				  model.addAttribute("mode", "new");
 		  		  }
 		  		  else if( operation==2)
 		  		  {
 		  			  Integer idOrder = Integer.parseInt(idObject);
+		  			  AirCoServiceDTO aircoService = service.getAirCoService(idOrder);
 		  			  Serviceorder serviceOrder = this.daoFactory.getServiceOrderDAO().getServiceOrderById(idOrder);
 		  			  Policy policy = this.daoFactory.getPolicyDAO().getPolicyById(serviceOrder.getPolicyId());
 	  				  Equipmenttype equipType = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
-	  				  airCoServicePolicyDTO = new AirCoServicePolicyDTO(policy, equipType.getEquipmentType(), serviceOrder );
+	  				  airCoServicePolicyDTO = new AirCoServicePolicyDTO(policy, equipType.getEquipmentType(), serviceOrder, aircoService );
 	  				  model.addAttribute("serviceOrder", airCoServicePolicyDTO);
 	  				  model.addAttribute("mode", "detail");
 		  		  }
@@ -91,6 +94,7 @@ public class AirCoServiceController extends AbstractController {
 	  				  airCoServicePolicyDTO.setServiceStatusId("N");
 	  				  airCoServicePolicyDTO.setServiceTypeId("P");
 	  				  model.addAttribute("serviceOrder", airCoServicePolicyDTO);
+	  				  model.addAttribute("serviceEmployees", udService.getStaffByGroupJson(Globals.GROUP_SERVICE));
 	  				  model.addAttribute("mode", "new");
 		  		  }
 		  		model.addAttribute("osAttachmentFolder", gdService.getAttachmentFolderId(airCoServicePolicyDTO.getServiceOrderNumber()));
@@ -120,12 +124,10 @@ public class AirCoServiceController extends AbstractController {
 	    if(serviceOrder.getServiceOrderId()==null){
 	      //Crear orden de servicio
 	      Serviceorder servicioOrderSave = new Serviceorder();
-	      servicioOrderSave.setAsignee( serviceOrder.getResponsible());
-	      servicioOrderSave.setClosed(serviceOrder.getClosed());
 	      servicioOrderSave.setPolicyId((Short.parseShort(serviceOrder.getPolicyId().toString())));
 	      servicioOrderSave.setReceivedBy(serviceOrder.getReceivedBy());
 	      servicioOrderSave.setReceivedByPosition(serviceOrder.getReceivedByPosition());
-	      servicioOrderSave.setResponsible(serviceOrder.getResponsible());
+	      servicioOrderSave.setEmployeeListString(serviceOrder.getResponsible());
 	      servicioOrderSave.setServiceDate(serviceOrder.getServiceDate());
 	      servicioOrderSave.setServiceOrderNumber(serviceOrder.getServiceOrderNumber());
 	      servicioOrderSave.setServiceTypeId(serviceOrder.getServiceTypeId().toCharArray()[0]);
@@ -138,12 +140,11 @@ public class AirCoServiceController extends AbstractController {
 	    } else {
 	    	//Actualizar orden de servicio
 	    	Serviceorder servicioOrderSave = new Serviceorder();
-	    	servicioOrderSave.setAsignee( serviceOrder.getResponsible());
 	    	servicioOrderSave.setClosed(serviceOrder.getClosed());
 	    	servicioOrderSave.setPolicyId((Short.parseShort(serviceOrder.getPolicyId().toString())));
 	    	servicioOrderSave.setReceivedBy(serviceOrder.getReceivedBy());
 	    	servicioOrderSave.setReceivedByPosition(serviceOrder.getReceivedByPosition());
-	    	servicioOrderSave.setResponsible(serviceOrder.getResponsible());
+	    	servicioOrderSave.setEmployeeListString(serviceOrder.getResponsible());
 	    	servicioOrderSave.setServiceDate(serviceOrder.getServiceDate());
 	    	servicioOrderSave.setServiceOrderNumber(serviceOrder.getServiceOrderNumber());
 	    	servicioOrderSave.setServiceTypeId(serviceOrder.getServiceTypeId().toCharArray()[0]);

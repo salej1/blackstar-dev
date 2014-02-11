@@ -1,3 +1,20 @@
+          
+           <!-- Signature capture box # 1 -->
+            <div id="signCapDialog" title="Capture su firma en el cuadro" class="signBoxDlg">
+              <div id="signCapture">
+                <canvas class="signPad" width="330" height="115"></canvas>
+                <input type="hidden" id="signCreatedCapture" class="output"/>
+              </div>
+            </div>
+            
+            <!-- Signature capture box # 2 -->
+            <div id="signCapDialog2" title="Capture su firma en el cuadro" class="signBoxDlg">
+              <div id="signCapture2">
+                <canvas class="signPad" width="330" height="115"></canvas>
+                <input type="hidden" id="signReceivedByCapture" class="output"/>
+              </div>
+            </div>
+
           <script src="${pageContext.request.contextPath}/js/jquery.signaturepad.min.js"></script>
           <script src="${pageContext.request.contextPath}/js/json2.min.js"></script> 
           <script type="text/javascript">
@@ -34,7 +51,7 @@
                 modal: true,
                 buttons: {
                   "Aceptar": function() {
-                    $('#leftSign').signaturePad().regenerate($('#signCreated').val()); 
+                    $('#leftSign').signaturePad().regenerate($('#signCreatedCapture').val()); 
                     $( this ).dialog( "close" );
                   },
                   
@@ -56,7 +73,7 @@
                 modal: true,
                 buttons: {
                   "Aceptar": function() {
-                    $('#rightSign').signaturePad().regenerate($('#signReceivedBy').val()); 
+                    $('#rightSign').signaturePad().regenerate($('#signReceivedByCapture').val()); 
                     $( this ).dialog( "close" );
                   },
                   

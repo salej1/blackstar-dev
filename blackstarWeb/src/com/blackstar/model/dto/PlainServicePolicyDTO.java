@@ -2,6 +2,7 @@ package com.blackstar.model.dto;
 
 import java.util.Date;
 
+import com.blackstar.model.Employee;
 import com.blackstar.model.Policy;
 import com.blackstar.model.Serviceorder;
 
@@ -69,6 +70,12 @@ public class PlainServicePolicyDTO {
 		this.serviceTypeId = serviceOrder.getServiceTypeId().toString();
 		this.isWrong = serviceOrder.getIsWrong()>0?true:false;
 		this.receivedByEmail = serviceOrder.getReceivedByEmail();
+		this.responsibleName = serviceOrder.getResponsible();
+		if(serviceOrder.getEmployeeList().size() > 0){
+			// Se reescriben responsible y responsibleName para las OS que tengan lista de empleados
+			this.responsible = serviceOrder.getEmployeeListString();
+			this.responsibleName = serviceOrder.getEmployeeNameListString();
+		}
 	}
 	
 	public PlainServicePolicyDTO(Policy policy, String equipmentType, Serviceorder serviceOrder,  PlainServiceDTO plainServiceDTO)
@@ -105,13 +112,18 @@ public class PlainServicePolicyDTO {
 		this.serviceTypeId = serviceOrder.getServiceTypeId().toString();
 		this.isWrong = serviceOrder.getIsWrong()>0?true:false;
 		this.receivedByEmail = serviceOrder.getReceivedByEmail();
-		
+		this.responsibleName = serviceOrder.getResponsibleName();
 		this.plainServiceId = plainServiceDTO.getPlainServiceId();
 		this.troubleDescription = plainServiceDTO.getTroubleDescription();
 		this.techParam = plainServiceDTO.getTechParam();
 		this.workDone = plainServiceDTO.getWorkDone();
 		this.materialUsed = plainServiceDTO.getMaterialUsed();
 		this.observations = plainServiceDTO.getObservations();
+		if(serviceOrder.getEmployeeList().size() > 0){
+			// Se reescriben responsible y responsibleName para las OS que tengan lista de empleados
+			this.responsible = serviceOrder.getEmployeeListString();
+			this.responsibleName = serviceOrder.getEmployeeNameListString();
+		}
 	}
 	
 	
@@ -156,7 +168,7 @@ public class PlainServicePolicyDTO {
 	private String materialUsed;
 	private String observations;
 	private Boolean isWrong;
-
+	private String responsibleName;
 	
 	public Integer getPolicyId() {
 		return policyId;
@@ -466,5 +478,13 @@ public class PlainServicePolicyDTO {
 
 	public void setReceivedByEmail(String receivedByEmail) {
 		this.receivedByEmail = receivedByEmail;
+	}
+
+	public String getResponsibleName() {
+		return responsibleName;
+	}
+
+	public void setResponsibleName(String responsibleName) {
+		this.responsibleName = responsibleName;
 	}
 }

@@ -73,15 +73,17 @@ public class BatteryServiceController extends AbstractController {
 					  batteryServicePolicyDTO.setServiceStatusId("N");
 					  batteryServicePolicyDTO.setServiceTypeId("P");
 	  				  model.addAttribute("serviceOrder", batteryServicePolicyDTO);
+	  				  model.addAttribute("serviceEmployees", udService.getStaffByGroupJson(Globals.GROUP_SERVICE));
 					  model.addAttribute("mode", "new");
 		  		  }
 		  		  else if( operation==2)
 		  		  {
 		  			  Integer idOrder = Integer.parseInt(idObject);
+		  			  BatteryServiceDTO batService = service.getBateryService(idOrder);
 		  			  Serviceorder serviceOrder = this.daoFactory.getServiceOrderDAO().getServiceOrderById(idOrder);
 		  			  Policy policy = this.daoFactory.getPolicyDAO().getPolicyById(serviceOrder.getPolicyId());
 	  				  Equipmenttype equipType = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
-	  				  batteryServicePolicyDTO = new BatteryServicePolicyDTO(policy, equipType.getEquipmentType(), serviceOrder );
+	  				  batteryServicePolicyDTO = new BatteryServicePolicyDTO(policy, equipType.getEquipmentType(), serviceOrder, batService );
 	  				  model.addAttribute("serviceOrder", batteryServicePolicyDTO);
 					  model.addAttribute("mode", "detail");
 		  		  }
@@ -94,6 +96,7 @@ public class BatteryServiceController extends AbstractController {
 					  batteryServicePolicyDTO.setServiceStatusId("N");
 					  batteryServicePolicyDTO.setServiceTypeId("P");
 	  				  model.addAttribute("serviceOrder", batteryServicePolicyDTO);
+	  				  model.addAttribute("serviceEmployees", udService.getStaffByGroupJson(Globals.GROUP_SERVICE));
 					  model.addAttribute("mode", "new");
 		  		  }
 
@@ -125,8 +128,6 @@ public class BatteryServiceController extends AbstractController {
 	     if(serviceOrder.getServiceOrderId()==null) {
    	       //Crear orden de servicio
 	       Serviceorder servicioOrderSave = new Serviceorder();
-	       servicioOrderSave.setAsignee( serviceOrder.getResponsible());
-	       servicioOrderSave.setClosed(serviceOrder.getClosed());
 	       servicioOrderSave.setPolicyId((Short.parseShort(serviceOrder.getPolicyId().toString())));
 	       servicioOrderSave.setReceivedBy(serviceOrder.getReceivedBy());
 	       servicioOrderSave.setReceivedByPosition(serviceOrder.getReceivedByPosition());
@@ -142,7 +143,6 @@ public class BatteryServiceController extends AbstractController {
 	     } else {
 	    	  //Actualizar orden de servicio
 	    	  Serviceorder servicioOrderSave = new Serviceorder();
-	    	  servicioOrderSave.setAsignee( serviceOrder.getResponsible());
 	    	  servicioOrderSave.setClosed(serviceOrder.getClosed());
 	    	  servicioOrderSave.setPolicyId((Short.parseShort(serviceOrder.getPolicyId().toString())));
 	    	  servicioOrderSave.setReceivedBy(serviceOrder.getReceivedBy());

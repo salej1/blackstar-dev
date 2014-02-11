@@ -66,7 +66,8 @@ public class UpsServicePolicyDTO {
 		this.signReceivedBy = serviceOrder.getsignReceivedBy();
 		this.receivedByPosition = serviceOrder.getReceivedByPosition();
 		this.serviceOrderNumber = serviceOrder.getServiceOrderNumber();
-		
+		this.receivedByEmail = serviceOrder.getReceivedByEmail();
+		this.responsibleName = serviceOrder.getEmployeeNameListString();
 	}
 	
 	public UpsServicePolicyDTO(Policy policy, String equipmentType, Serviceorder serviceOrder,  UpsServiceDTO upsService)
@@ -100,6 +101,8 @@ public class UpsServicePolicyDTO {
 		this.signReceivedBy = serviceOrder.getsignReceivedBy();
 		this.receivedByPosition = serviceOrder.getReceivedByPosition();
 		this.serviceOrderNumber = serviceOrder.getServiceOrderNumber();
+		this.receivedByEmail = serviceOrder.getReceivedByEmail();
+		this.responsibleName = serviceOrder.getEmployeeNameListString();
 		
 		this.upsServiceId = upsService.getUpsServiceId();
 		this.estatusEquipment = upsService.getEstatusEquipment();
@@ -171,6 +174,7 @@ public class UpsServicePolicyDTO {
 	private String receivedByPosition;
 	private String serviceOrderNumber;
 	private String serviceTypeId;
+	private String	responsibleName;
 	
 	private Integer upsServiceId;	
 	private String estatusEquipment;
@@ -605,5 +609,13 @@ public class UpsServicePolicyDTO {
 
 	public void setServiceTypeId(String serviceTypeId) {
 		this.serviceTypeId = serviceTypeId;
+	}
+
+	public String getResponsibleName() {
+		return responsibleName;
+	}
+
+	public void setResponsibleName(String responsibleName) {
+		this.responsibleName = responsibleName;
 	}
 }

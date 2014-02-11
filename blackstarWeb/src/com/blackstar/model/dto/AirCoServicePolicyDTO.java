@@ -67,7 +67,7 @@ public class AirCoServicePolicyDTO {
 		this.receivedByPosition = serviceOrder.getReceivedByPosition();
 		this.receivedByEmail = serviceOrder.getReceivedByEmail();
 		this.serviceOrderNumber = serviceOrder.getServiceOrderNumber();
-		
+		this.responsibleName = serviceOrder.getEmployeeNameListString();
 	}
 	
 	public AirCoServicePolicyDTO(Policy policy, String equipmentType, Serviceorder serviceOrder,  AirCoServiceDTO airCo)
@@ -101,6 +101,8 @@ public class AirCoServicePolicyDTO {
 		this.signReceivedBy = serviceOrder.getsignReceivedBy();
 		this.receivedByPosition = serviceOrder.getReceivedByPosition();
 		this.serviceOrderNumber = serviceOrder.getServiceOrderNumber();
+		this.receivedByEmail = serviceOrder.getReceivedByEmail();
+		this.responsibleName = serviceOrder.getEmployeeNameListString();
 		
 		this.aaServiceId = airCo.getAaServiceId();
 		this.evaDescription = airCo.getEvaDescription();
@@ -239,6 +241,7 @@ public class AirCoServicePolicyDTO {
 	private String condBrand;
 	private String observations;
 	private String receivedByEmail;
+	private String responsibleName;
 	
 	public Integer getPolicyId() {
 		return policyId;
@@ -729,5 +732,13 @@ public class AirCoServicePolicyDTO {
 
 	public void setServiceTypeId(String serviceTypeId) {
 		this.serviceTypeId = serviceTypeId;
+	}
+
+	public String getResponsibleName() {
+		return responsibleName;
+	}
+
+	public void setResponsibleName(String responsibleName) {
+		this.responsibleName = responsibleName;
 	}
 }

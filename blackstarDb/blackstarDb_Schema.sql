@@ -17,7 +17,10 @@
 -- --   --------   -------  ------------------------------------
 -- 4    28/11/2013  JAGH  	Se agregan tablas para captura de OS
 -- --   --------   -------  ------------------------------------
--- 5   12/12/2013  SAG  	Se agrega sequence y sequenceNumberPool
+-- 5    12/12/2013  SAG  	Se agrega sequence y sequenceNumberPool
+-- --   --------   -------  ------------------------------------
+-- 6    09/02/2014  SAG  	Se cambia serviceOrderAdditionalEngineer por
+-- 							serviceOrderEmployee
 -- ---------------------------------------------------------------------------
 
 use blackstarDb;
@@ -31,6 +34,30 @@ BEGIN
 -- -----------------------------------------------------------------------------
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
+
+-- ELIMINANDO TABLA serviceOrderAdditionalEngineer
+	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'serviceOrderAdditionalEngineer') = 1 THEN
+		DROP TABLE serviceOrderAdditionalEngineer;
+	END IF;
+
+-- AGREGANDO TABLA serviceOrderEmployee
+	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'serviceOrderEmployee') = 0 THEN
+		  CREATE TABLE blackstarDb.serviceOrderEmployee(
+			serviceOrderEmployeeId INTEGER NOT NULL AUTO_INCREMENT,
+			serviceOrderId INTEGER NOT NULL,
+			employeeId VARCHAR(100) NOT NULL,
+			isDefault TINYINT NOT NULL DEFAULT 0,
+			created DATETIME NULL,
+			createdBy NVARCHAR(50) NULL,
+			createdByUsr NVARCHAR(50) NULL,
+			PRIMARY KEY (serviceOrderEmployeeId),
+			KEY(serviceOrderId),
+			UNIQUE UQ_serviceOrderEmployee_serviceOrderEmployeeId(serviceOrderEmployeeId)
+		) ENGINE=INNODB;
+		
+		ALTER TABLE blackstarDb.serviceOrderEmployee ADD CONSTRAINT FK_serviceOrderEmployee_servideOrderId
+		FOREIGN KEY (serviceOrderId) REFERENCES serviceOrder (serviceOrderId);
+	END IF;
 
 -- AGREGANDO COLUMNA receivedByEmail a ServiceOrder -- ESTA COLUMNA DETERMINA EL EMAIL AL QUE SE ENVIARA COPIA DE LA OS
 	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'serviceOrder' AND COLUMN_NAME = 'receivedByEmail') = 0  THEN

@@ -21,7 +21,15 @@
 	<script src="${pageContext.request.contextPath}/js/dateFormat.js"></script>
 	
 	<script type="text/javascript" charset="utf-8">
-	
+		
+		function split( val ) {
+	      return val.split( /,\s*/ );
+	    }
+
+	    function extractLast( term ) {
+	      return split( term ).pop();
+	    }
+
 		$(document).ready(function () {
 						
 			$("#serviceDate").val(dateNow());
@@ -29,28 +37,73 @@
 			// Asignacion de campos iniciales
 			var mode = "${mode}";
 			if(mode == "detail"){
+				$("#receivedBy").attr("disabled", "");
+				$("#receivedByPosition").attr("disabled", "");
+				$("#receivedByEmail").attr("disabled", "");
+				$("#responsibleName").attr("disabled", "");
+				var isEng = "${ user.belongsToGroup['Implementacion y Servicio']}";
+				if(isEng == "true"){
+					$("#guardarServicio").hide();
+				}
 			}
 			else{
-				$("#responsible").val("${ user.userName }");
+				$("#responsibleName").val("${ user.userName }");
+				$("#responsible").val("${ user.userEmail }");
+				var strEpmloyees = '${serviceEmployees}';
+				var empData = $.parseJSON(strEpmloyees);
+
+				$("#responsibleName").bind( "keydown", function( event ) {
+			        if ( event.keyCode === $.ui.keyCode.TAB &&
+			            $( this ).data( "ui-autocomplete" ).menu.active ) {
+			          event.preventDefault();
+			        }
+			      }).autocomplete({
+					minLength: 0,
+					source: function( request, response ) {
+			          response( $.ui.autocomplete.filter(
+			            empData, extractLast( request.term ) ) );
+			        },
+					focus: function() {
+			          return false;
+			        },select: function( event, ui ) {
+			        	var terms = this.value.split(/,\s*/);
+			            terms.pop();
+			            terms.push( ui.item.label );
+			            terms.push( "" );
+			            this.value = terms.join( ", " );
+
+			            $("#responsible").val($("#responsible").val() + ";" + ui.item.value );
+			            return false;
+					}
+				});
+
+			    // Sincronizando los campos de firma
+			    $("#serviceOrder").submit(function(){
+					$("#signCreated").val($("#signCreatedCapture").val())
+					$("#signReceivedBy").val($("#signReceivedByCapture").val())
+				});
 			}
 
 			// inicializando el dialogo para agregar seguimientos
 			initFollowUpDlg("serviceOrder", "osDetail?serviceOrderId=${serviceOrder.serviceOrderId}");
+
+			// Cierre de la OS
+			$("#closeBtn").bind("click", function(){
+				$("serviceStatusId").val('C');
+			});
 		});
 
 		function isNumberKey(evt){
+		     var charCode = (evt.which) ? evt.which : event.keyCode;
+	         if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57)){
+	            return false;
+	         }
 
-
-		      var charCode = (evt.which) ? evt.which : event.keyCode;
-		    	         if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57))
-		    	            return false;
-
-		    	         return true;
+	         return true;
 		}
 		
 	</script> 
 	
-		 
 	</head>
 	<body>
 		<div id="content" class="container_16 clearfix">
@@ -309,7 +362,8 @@
 								</tr>
 								<tr>
 									<td>Nombre</td>
-									<td><form:input path="responsible" type="text" style="width:95%;" readOnly="true" /></td>
+									<td><form:input path="responsibleName" type="text" style="width:95%;"/></td>
+									<form:hidden path="responsible" style="width:95%;"/>
 									<td>Nombre</td>
 									<td><form:input path="receivedBy" type="text" style="width:95%;" required="true"/></td>
 								</tr>
@@ -341,43 +395,33 @@
 					
 					<form:hidden path="policyId"/>
 					
-					<!-- Control de firma -->
-					<!-- Signature capture box # 1 -->
-			          <div id="signCapDialog" title="Capture su firma en el cuadro" class="signBoxDlg">
-			            <div id="signCapture">
-			              <canvas class="signPad" width="330" height="115"></canvas>
-			              <form:hidden path="signCreated" class="output"/>
-			            </div>
-			          </div>
-			          
-			          <!-- Signature capture box # 2 -->
-			          <div id="signCapDialog2" title="Capture su firma en el cuadro" class="signBoxDlg">
-			            <div id="signCapture2">
-			              <canvas class="signPad" width="330" height="115"></canvas>
-			              <form:hidden path="signReceivedBy" class="output"/>
-			            </div>
-			          </div>
-			          
-					<c:import url="signatureFragment.jsp"></c:import>
+					<!-- Campos de firma -->
+					<form:hidden path="signCreated"/>
+			        <form:hidden path="signReceivedBy"/>
 			</form:form>
-							<!-- Adjuntos -->
-							<c:import url="_attachments.jsp"></c:import>
-							<!-- Control de secuencia y captura de seguimiento -->
-							<c:import url="followUpControl.jsp"></c:import>
-							<c:if test="${serviceOrder.serviceOrderId > 0}">
-								<table>
-									<tbody>
-										<tr>
-											<td>
-												<button class="searchButton" onclick="addSeguimiento(${serviceOrder.serviceOrderId}, '${serviceOrder.serviceOrderNumber}');">Agregar seguimiento</button>
-												<c:if test="${ user.belongsToGroup['Coordinador']}">
-													<button class="searchButton" id="closeBtn">Cerrar</button>
-												</c:if>
-											</td>
-										</tr>
-									<tbody>
-								</table>	
-							</c:if>
+	          
+			<!-- Fragmento de Firma -->
+			<c:import url="signatureFragment.jsp"></c:import>
+
+			<!-- Adjuntos -->
+			<c:import url="_attachments.jsp"></c:import>
+			
+			<!-- Control de secuencia y captura de seguimiento -->
+			<c:import url="followUpControl.jsp"></c:import>
+			<c:if test="${serviceOrder.serviceOrderId > 0}">
+				<table>
+					<tbody>
+						<tr>
+							<td>
+								<button class="searchButton" onclick="addSeguimiento(${serviceOrder.serviceOrderId}, '${serviceOrder.serviceOrderNumber}');">Agregar seguimiento</button>
+								<c:if test="${ user.belongsToGroup['Coordinador']}">
+									<button class="searchButton" id="closeBtn">Cerrar</button>
+								</c:if>
+							</td>
+						</tr>
+					<tbody>
+				</table>	
+			</c:if>
 		</div>
 	</body>
 </html>
