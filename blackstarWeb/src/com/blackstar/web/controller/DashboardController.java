@@ -169,8 +169,7 @@ public class DashboardController extends AbstractController {
 	public @ResponseBody String pendingPersonalServiceOrders(ModelMap model, @ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession) {
 		String retVal;
 		try {
-			retVal = service.getPersonalServiceOrders(userSession.getUser().getUserEmail(), "PENDIENTE");
-			retVal += "," + service.getPersonalServiceOrders(userSession.getUser().getUserEmail(), "NUEVO");
+			retVal = service.getPersonalServiceOrders(userSession.getUser().getUserEmail());
 		} catch (Exception e) {
 			Logger.Log(LogLevel.ERROR,
 					e.getStackTrace()[0].toString(), e);

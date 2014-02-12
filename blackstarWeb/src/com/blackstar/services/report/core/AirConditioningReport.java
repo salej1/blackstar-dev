@@ -22,7 +22,7 @@ public class AirConditioningReport extends AbstractReport {
 	printEvaporator();
 	printCondenser();
 	printObservations();
-	printFooter(data.getSignCreated(), data.getResponsible(), data.getClosed()
+	printFooter(data.getSignCreated(), data.getResponsibleName(), data.getClosed()
                        , data.getSignReceivedBy(), data.getReceivedBy(), data
                                                    .getReceivedByPosition());
   }
@@ -35,7 +35,7 @@ public class AirConditioningReport extends AbstractReport {
 	drawer.text(data.getProject(), 436, 98, true);
 	drawer.hLine(0, 555, 102);
 	drawer.text("DOMICILIO: ", 5, 113, false);
-	drawer.text(data.getEquipmentAddress(), 52, 113, true);
+	drawer.text(trimAddress(data.getEquipmentAddress()), 52, 113, true);
 	drawer.text("TELÉFONO: ", 389, 113, false);
 	drawer.text(data.getContactPhone(), 436, 113, true);
 	drawer.hLine(0, 555, 117);
@@ -49,7 +49,7 @@ public class AirConditioningReport extends AbstractReport {
 	drawer.text("No. DE SERIE: ", 5, 143, false);
 	drawer.text(data.getSerialNumber(), 61, 143, true);
 	drawer.text("FECHA Y HORA DE LLEGADA: ", 320, 143, false);
-	drawer.text(data.getServiceDate().toString(), 436, 143, true);
+	drawer.text(format(data.getServiceDate()), 436, 143, true);
 	drawer.hLine(0, 555, 147);
 	drawer.vLine(87, 147, 0);
 	drawer.vLine(87, 147, 555);

@@ -25,6 +25,7 @@ import com.blackstar.model.Ticket;
 import com.blackstar.model.UserSession;
 import com.blackstar.model.dto.BatteryServiceDTO;
 import com.blackstar.model.dto.BatteryServicePolicyDTO;
+import com.blackstar.model.dto.EmergencyPlantServicePolicyDTO;
 import com.blackstar.services.interfaces.ReportService;
 import com.blackstar.services.interfaces.ServiceOrderService;
 import com.blackstar.web.AbstractController;
@@ -131,7 +132,7 @@ public class BatteryServiceController extends AbstractController {
 	       servicioOrderSave.setPolicyId((Short.parseShort(serviceOrder.getPolicyId().toString())));
 	       servicioOrderSave.setReceivedBy(serviceOrder.getReceivedBy());
 	       servicioOrderSave.setReceivedByPosition(serviceOrder.getReceivedByPosition());
-	       servicioOrderSave.setResponsible(serviceOrder.getResponsible());
+	       servicioOrderSave.setEmployeeListString(serviceOrder.getResponsible());
 	       servicioOrderSave.setServiceDate(serviceOrder.getServiceDate());
 	       servicioOrderSave.setServiceOrderNumber(serviceOrder.getServiceOrderNumber());
 	       servicioOrderSave.setServiceTypeId(serviceOrder.getServiceTypeId().toCharArray()[0]);
@@ -157,9 +158,9 @@ public class BatteryServiceController extends AbstractController {
 	     }
 	     if(serviceOrder.getBbServiceId()==null) {
 	    	serviceOrder.setServiceOrderId(idServicio);
-	    	//Crear orden de servicio de AirCo
+	    	//Crear orden de servicio de Battery
 	    	service.saveBateryService(new BatteryServiceDTO(serviceOrder), "AirCoServiceController", userSession.getUser().getUserName());
-	    	saveReport(serviceOrder);
+	    	commit(serviceOrder);
 	     }
     } catch(Exception e){
 	    Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
@@ -170,10 +171,18 @@ public class BatteryServiceController extends AbstractController {
     return "dashboard";
   }
 	    
-  private void saveReport(BatteryServicePolicyDTO serviceOrder) throws Exception {
-	Integer id = serviceOrder.getServiceOrderId();
-	String parentId = gdService.getReportsFolderId(id);
-	gdService.insertFileFromStream(id, "application/pdf", "ServiceOrder.pdf"
-	    			      , parentId, rpService.getBatteryReport(serviceOrder));
+  private void saveReport(Integer id, byte[] report) throws Exception {
+  	String parentId = gdService.getReportsFolderId(id);
+  	gdService.insertFileFromStream(id, "application/pdf", "ServiceOrder.pdf", parentId, report);
+  }
+  
+  private void sendNotification(String to, byte [] report){
+  	gmService.sendEmail(to, "Reporte de servicio a baterias", "Reporte de servicio a baterias", "ServiceOrder.pdf", report);
+  }
+  
+  private void commit(BatteryServicePolicyDTO serviceOrder) throws Exception {
+    byte [] report = rpService.getBatteryReport(serviceOrder);
+    saveReport(serviceOrder.getServiceOrderId(), report);
+    sendNotification(serviceOrder.getReceivedByEmail(), report);
   }
 }

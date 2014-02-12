@@ -6,8 +6,12 @@ import com.google.api.client.http.GenericUrl;
 import com.google.api.services.admin.directory.DirectoryScopes;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -43,5 +47,21 @@ public class Utils {
     GenericUrl requestUrl = new GenericUrl(req.getRequestURL().toString());
     requestUrl.setRawPath(Globals.AUTH_CALLBACK_SERVLET_PATH);
     return requestUrl.build();
+  }
+  
+  public static Date getCurerntDateTime(){
+	  Calendar c = Calendar.getInstance(TimeZone.getTimeZone(Globals.DEFAULT_TIME_ZONE));
+	  return c.getTime();
+  }
+  
+  public static String getDateString(Date date){
+	  SimpleDateFormat sdf = new SimpleDateFormat(Globals.DATE_FORMAT_PATTERN);
+	  return sdf.format(date);
+  }
+  
+  public static String noCommas(String string){
+	  String retVal = string.trim();
+	  retVal = retVal.replaceAll(", $", "");
+	  return retVal;
   }
 }

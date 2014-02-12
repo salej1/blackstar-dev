@@ -2,12 +2,15 @@ package com.blackstar.services.report;
 
 import java.util.Date;
 
+import com.blackstar.common.Utils;
 import com.blackstar.services.report.util.PDFDrawer;
 import com.pdfjet.Color;
 
 public abstract class AbstractReport {
 	
   protected PDFDrawer drawer = null;
+  
+  private static final int MAX_ADDRES_LEN = 60;
 	
   protected abstract void run(Object data) throws Exception;
 	
@@ -51,14 +54,14 @@ public abstract class AbstractReport {
 	drawer.vLine(670, 770, 555);
 		
 	drawer.text("FIRMA:", 5, 695);
-	drawer.drawSignature(signCreated, .6F, 40,678);
+	drawer.drawSignature(signCreated, .4F, 40,687);
 	drawer.text("NOMBRE:", 5, 750);
-	drawer.text(responsible, 45, 750, true);
+	drawer.text(noCommas(responsible), 45, 750, true);
 	drawer.text("FECHA Y HORA DE SALIDA:", 5, 765);
-	drawer.text(closed.toString(), 113, 765, true);
+	drawer.text(format(closed), 113, 765, true);
 		
 	drawer.text("FIRMA:", 281, 695);
-	drawer.drawSignature(signReceivedBy, .6F, 320,678);
+	drawer.drawSignature(signReceivedBy, .4F, 320,687);
 	drawer.text("NOMBRE:", 281, 750);
 	drawer.text(receivedBy, 321, 750, true);
 	drawer.text("PUESTO:", 281, 765);	  
@@ -70,5 +73,19 @@ public abstract class AbstractReport {
 	drawer.text("TRAM: 1 AÑO", 443, 790);
 	drawer.text("www.gposac.com.mx", 235, 785, true, 0x0155A5);
   }
-
+  
+  protected String format(Date date){
+	  return Utils.getDateString(date);
+  }
+  
+  protected String noCommas(String string){
+	 return  Utils.noCommas(string);
+  }
+  
+  protected String trimAddress(String address){
+	  if(address.length() > MAX_ADDRES_LEN){
+		  address = address.substring(0, MAX_ADDRES_LEN);
+	  }
+	  return address;
+  }
 }

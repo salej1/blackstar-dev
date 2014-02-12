@@ -104,49 +104,49 @@
 	<body>
 		<div id="content" class="container_16 clearfix">
 		<form:form  commandName="serviceOrder" action="save.do" method="POST">			
-				<div class="grid_16">					
-					<div class="box">
-						<h2>UPS</h2>
-							<table>
-								<tr>
-									<td>Folio:</td>
-									<td><form:input path="serviceOrderNumber" type="text" style="width:95%;" maxlength="5" /></td>
-									<c:if test="${serviceOrder.serviceOrderId > 0}">
-										<td colspan="2"><a href='${pageContext.request.contextPath}/report/show.do?serviceOrderId=${serviceOrder.serviceOrderId}' target="_blank">Ver PDF</a><img src='${pageContext.request.contextPath}/img/pdf.png'/>	
-									</c:if>	
-									</td>
-								</tr>
-								<tr>
-									<td>Cliente</td>
-									<td colspan="5"><form:input path="customer" type="text" style="width:95%;" readOnly="true" /></td>
-									<td>Contrato/Proyecto</td>
-									<td colspan="3"><form:input path="project" type="text" style="width:95%;" readOnly="true" /></td>
-								</tr>
-								<tr>
-									<td>Domicilio</td>
-									<td colspan="5"><form:textarea path="equipmentAddress" style="width:95%;height:50px;" readOnly="true"></form:textarea></td>
-									<td>Telefono</td>
-									<td><form:input type="text" path="contactPhone" style="width:95%;" readOnly="true" /></td>
-								</tr>
-								<tr>
-									<td>Marca</td>
-									<td><form:input path="brand" type="text" style="width:95%;" readOnly="true" /></td>
-									<td>Modelo</td>
-									<td><form:input path="model" type="text" style="width:95%;" readOnly="true" /></td>
-									<td>Capacidad</td>
-									<td><form:input path="capacity" type="text" style="width:95%;" readOnly="true" /></td>
-										
-								</tr>
-								<tr>
-									<td>NO. DE SERIE</td>
-									<td><form:input path="serialNumber" type="text" style="width:95%;" readOnly="true" /></td>
-									<td>Fecha y hora de llegada</td>
-									<td><form:input path="serviceDate" type="text" style="width:95%;"  /></td>
-									<form:input path="serviceTypeId" type="hidden" value="P" />
-								</tr>
-							</table>
-						</div>					
-					</div>
+			<div class="grid_16">					
+				<div class="box">
+					<h2>UPS</h2>
+					<table>
+						<tr>
+							<td>Folio:</td>
+							<td><form:input path="serviceOrderNumber" type="text" style="width:95%;" maxlength="5" /></td>
+							<c:if test="${serviceOrder.serviceOrderId > 0}">
+								<td colspan="2"><a href='${pageContext.request.contextPath}/report/show.do?serviceOrderId=${serviceOrder.serviceOrderId}' target="_blank">Ver PDF</a><img src='${pageContext.request.contextPath}/img/pdf.png'/>	
+							</c:if>	
+							</td>
+						</tr>
+						<tr>
+							<td>Cliente</td>
+							<td colspan="5"><form:input path="customer" type="text" style="width:95%;" readOnly="true" /></td>
+							<td>Contrato/Proyecto</td>
+							<td colspan="3"><form:input path="project" type="text" style="width:95%;" readOnly="true" /></td>
+						</tr>
+						<tr>
+							<td>Domicilio</td>
+							<td colspan="5"><form:textarea path="equipmentAddress" style="width:95%;height:50px;" readOnly="true"></form:textarea></td>
+							<td>Telefono</td>
+							<td><form:input type="text" path="contactPhone" style="width:95%;" readOnly="true" /></td>
+						</tr>
+						<tr>
+							<td>Marca</td>
+							<td><form:input path="brand" type="text" style="width:95%;" readOnly="true" /></td>
+							<td>Modelo</td>
+							<td><form:input path="model" type="text" style="width:95%;" readOnly="true" /></td>
+							<td>Capacidad</td>
+							<td><form:input path="capacity" type="text" style="width:95%;" readOnly="true" /></td>
+								
+						</tr>
+						<tr>
+							<td>NO. DE SERIE</td>
+							<td><form:input path="serialNumber" type="text" style="width:95%;" readOnly="true" /></td>
+							<td>Fecha y hora de llegada</td>
+							<td><form:input path="serviceDate" type="text" style="width:95%;"  /></td>
+							<form:input path="serviceTypeId" type="hidden" value="P" />
+						</tr>
+					</table>
+				</div>					
+			</div>
 			<div class="grid_16">
 				<div class="box">
 					<table>
@@ -273,99 +273,86 @@
 						</tr>
 						
 					</table>
-							<table>
-								<thead>
-									<tr>
-										<th colspan="2">Realizado Por</th>
-										<th colspan="2">Servicio y/o equipo recibido a mi entera satisfaccion</th>
-									</tr>
-								</thead>
-								<tr>
-									<td colspan="2">
-										<span>Firma</span>
-										<div id="leftSign" class="signBox">
-											<canvas class="signPad" width="330" height="115"></canvas>
-										</div>
-									</td>
-									<td colspan="2" >
-										<span>Firma</span>
-										<div id="rightSign" class="signBox">
-											<canvas class="signPad" width="330" height="115"></canvas>
-										</div>
-									</td>
-								</tr>
-								<tr>
-									<td>Nombre</td>
-									<td><form:input path="responsibleName" type="text" style="width:95%;"/></td>
-									<form:hidden path="responsible" style="width:95%;"/>
-									<td>Nombre</td>
-									<td><form:input path="receivedBy" type="text" style="width:95%;" required="true"/></td>
-								</tr>
-								<tr>
-									<td colspan="2"></td>
-									<td>Puesto</td>
-									<td><form:input path="receivedByPosition"  style="width:95%;"  /></td>
-								</tr>		
-								<tr>
-									<td colspan="2"></td>
-									<td>Email</td>
-									<td><form:input path="receivedByEmail"  style="width:95%;" required="true" /></td>
-								</tr>				
-							</table>
+					<table>
+						<thead>
+							<tr>
+								<th colspan="2">Realizado Por</th>
+								<th colspan="2">Servicio y/o equipo recibido a mi entera satisfaccion</th>
+							</tr>
+						</thead>
+						<tr>
+							<td colspan="2">
+								<span>Firma</span>
+								<div id="leftSign" class="signBox">
+									<canvas class="signPad" width="330" height="115"></canvas>
+								</div>
+							</td>
+							<td colspan="2" >
+								<span>Firma</span>
+								<div id="rightSign" class="signBox">
+									<canvas class="signPad" width="330" height="115"></canvas>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>Nombre</td>
+							<td><form:input path="responsibleName" type="text" style="width:95%;"/></td>
+							<form:hidden path="responsible" style="width:95%;"/>
+							<td>Nombre</td>
+							<td><form:input path="receivedBy" type="text" style="width:95%;" required="true"/></td>
+						</tr>
+						<tr>
+							<td colspan="2"></td>
+							<td>Puesto</td>
+							<td><form:input path="receivedByPosition"  style="width:95%;"  /></td>
+						</tr>		
+						<tr>
+							<td colspan="2"></td>
+							<td>Email</td>
+							<td><form:input path="receivedByEmail"  style="width:95%;" required="true" /></td>
+						</tr>				
+					</table>
 
-							<table>
-								<tbody>
-									<tr>
-										<td>
-											<input class="searchButton" type="submit" value="Guardar servicio">
-										</td>
-									</tr>
-								<tbody>
-							</table>
-							
-
-					</div>
-					</div>
+					<table>
+						<tbody>
+							<tr>
+								<td>
+									<input class="searchButton" type="submit" value="Guardar servicio">
+								</td>
+							</tr>
+						<tbody>
+					</table>
+				</div>
+			</div>
 					
 					<form:hidden path="policyId"/>
-					
-					<!-- Control de firma -->
-					<!-- Signature capture box # 1 -->
-			          <div id="signCapDialog" title="Capture su firma en el cuadro" class="signBoxDlg">
-			            <div id="signCapture">
-			              <canvas class="signPad" width="330" height="115"></canvas>
-			              <form:hidden path="signCreated" class="output"/>
-			            </div>
-			          </div>
-			          
-			          <!-- Signature capture box # 2 -->
-			          <div id="signCapDialog2" title="Capture su firma en el cuadro" class="signBoxDlg">
-			            <div id="signCapture2">
-			              <canvas class="signPad" width="330" height="115"></canvas>
-			              <form:hidden path="signReceivedBy" class="output"/>
-			            </div>
-			          </div>
-			          
-					<c:import url="signatureFragment.jsp"></c:import>
+
+					<!-- Campos de firma -->
+					<form:hidden path="signCreated"/>
+			        <form:hidden path="signReceivedBy"/>
 			</form:form>
-							<!-- Adjuntos -->
-							<c:import url="_attachments.jsp"></c:import>
-							<!-- Control de secuencia y captura de seguimiento -->
-							<c:import url="followUpControl.jsp"></c:import>
-							<c:if test="${serviceOrder.serviceOrderId > 0}">
-								<table>
-									<tbody>
-										<tr>
-											<td>
-												<button class="searchButton" onclick="addSeguimiento(${serviceOrder.serviceOrderId}, '${serviceOrder.serviceOrderNumber}');">Agregar seguimiento</button>
-												<c:if test="${ user.belongsToGroup['Coordinador']}">
-													<button class="searchButton" id="closeBtn">Cerrar</button>
-												</c:if>
-											</td>
-										</tr>
-									<tbody>
-								</table>	
-							</c:if>
+					
+			<!-- Fragmento de Firma -->
+			<c:import url="signatureFragment.jsp"></c:import>
+
+			<!-- Adjuntos -->
+			<c:import url="_attachments.jsp"></c:import>
+			<!-- Control de secuencia y captura de seguimiento -->
+			<c:import url="followUpControl.jsp"></c:import>
+			<c:if test="${serviceOrder.serviceOrderId > 0}">
+				<table>
+					<tbody>
+						<tr>
+							<td>
+								<button class="searchButton" onclick="addSeguimiento(${serviceOrder.serviceOrderId}, '${serviceOrder.serviceOrderNumber}');">Agregar seguimiento</button>
+								<c:if test="${ user.belongsToGroup['Coordinador']}">
+									<button class="searchButton" id="closeBtn">Cerrar</button>
+								</c:if>
+							</td>
+						</tr>
+					<tbody>
+				</table>	
+			</c:if>
 		</div>
 	</body>
 </html>

@@ -22,6 +22,7 @@ import com.blackstar.model.Ticket;
 import com.blackstar.model.UserSession;
 import com.blackstar.model.dto.EmergencyPlantServiceDTO;
 import com.blackstar.model.dto.EmergencyPlantServicePolicyDTO;
+import com.blackstar.model.dto.PlainServicePolicyDTO;
 import com.blackstar.services.interfaces.ReportService;
 import com.blackstar.services.interfaces.ServiceOrderService;
 import com.blackstar.web.AbstractController;
@@ -114,10 +115,12 @@ public class EmergencyPlantServiceController extends AbstractController {
 		  return "emergencyPlantService";
 	  }
 	  
-  @RequestMapping(value = "/save.do", method = RequestMethod.POST)
-  public String save(@ModelAttribute("serviceOrder") EmergencyPlantServicePolicyDTO serviceOrder,
-	    		     @ModelAttribute(Globals.SESSION_KEY_PARAM)  UserSession userSession,
-                                              ModelMap model) throws Exception {
+	  
+	  @RequestMapping(value = "/save.do", method = RequestMethod.POST)
+	  public String save(
+			  @ModelAttribute("serviceOrder") EmergencyPlantServicePolicyDTO serviceOrder,
+			  @ModelAttribute(Globals.SESSION_KEY_PARAM)  UserSession userSession,
+              ModelMap model) throws Exception {
 	    	int idServicio = 0;
 			try{
 				// Verificar si existe una orden de servicio
@@ -128,7 +131,7 @@ public class EmergencyPlantServiceController extends AbstractController {
 	    			servicioOrderSave.setPolicyId((Short.parseShort(serviceOrder.getPolicyId().toString())));
 	    			servicioOrderSave.setReceivedBy(serviceOrder.getReceivedBy());
 	    			servicioOrderSave.setReceivedByPosition(serviceOrder.getReceivedByPosition());
-	    			servicioOrderSave.setResponsible(serviceOrder.getResponsible());
+	    			servicioOrderSave.setEmployeeListString(serviceOrder.getResponsible());
 	    			servicioOrderSave.setServiceDate(serviceOrder.getServiceDate());
 	    			servicioOrderSave.setServiceOrderNumber(serviceOrder.getServiceOrderNumber());
 	    			servicioOrderSave.setServiceTypeId(serviceOrder.getServiceTypeId().toCharArray()[0]);
@@ -160,12 +163,12 @@ public class EmergencyPlantServiceController extends AbstractController {
 	    			serviceOrder.setServiceOrderId(idServicio);
 	    			//Crear orden de servicio de AirCo
 	    			service.saveEmergencyPlantService(new EmergencyPlantServiceDTO(serviceOrder), "EmergencyPlantServiceController", userSession.getUser().getUserName());
-	    			saveReport(serviceOrder);
+	    			commit(serviceOrder);
 	    		}
 			}
 			catch (Exception e) 
 			{
-				Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
+				Logger.Log(LogLevel.ERROR, e.getStackTrace().toString(), e);
 				e.printStackTrace();
 				model.addAttribute("errorDetails", e.getMessage() + " - " + e.getStackTrace()[0].toString());
 				return "error";
@@ -173,11 +176,20 @@ public class EmergencyPlantServiceController extends AbstractController {
 
 	    	return "dashboard";
 	    }
+	  
+	    private void saveReport(Integer id, byte[] report) throws Exception {
+	    	String parentId = gdService.getReportsFolderId(id);
+	    	gdService.insertFileFromStream(id, "application/pdf", "ServiceOrder.pdf", parentId, report);
+	    }
 	    
-  private void saveReport(EmergencyPlantServicePolicyDTO serviceOrder) throws Exception {
-	Integer id = serviceOrder.getServiceOrderId();
-	String parentId = gdService.getReportsFolderId(id);
-	gdService.insertFileFromStream(id, "application/pdf", "ServiceOrder.pdf"
-	    		   , parentId, rpService.getEmergencyPlantReport(serviceOrder));
-  }
+	    private void sendNotification(String to, byte [] report){
+	    	gmService.sendEmail(to, "Orden de Servicio", "Orden de Servicio", "ServiceOrder.pdf", report);
+	    }
+	    
+	    private void commit(EmergencyPlantServicePolicyDTO serviceOrder) throws Exception {
+	      byte [] report = rpService.getEmergencyPlantReport(serviceOrder);
+	      saveReport(serviceOrder.getServiceOrderId(), report);
+	      sendNotification(serviceOrder.getReceivedByEmail(), report);
+	    }
+
 }

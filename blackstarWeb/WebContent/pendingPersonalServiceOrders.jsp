@@ -55,7 +55,7 @@
 			<table cellpadding="0" cellspacing="0" border="0" class="display" id="dtOrdenesPersonalesPendientes">
 				<thead>
 					<tr>
-						<th>Folio</th>
+						<th style="width:90px;">Folio</th>
 						<th></th>
 						<th>Ticket</th>
 						<th>Tipo</th>

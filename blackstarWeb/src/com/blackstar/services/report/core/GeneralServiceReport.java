@@ -19,7 +19,7 @@ public class GeneralServiceReport extends AbstractReport {
 	printDetails();
 	printRequerements();
 	printObservations();
-	printFooter(data.getSignCreated(), data.getResponsible(), data.getClosed()
+	printFooter(data.getSignCreated(), data.getResponsibleName(), data.getClosed()
 			              , data.getSignReceivedBy(), data.getReceivedBy(), data
 			                                          .getReceivedByPosition());
   }
@@ -32,9 +32,9 @@ public class GeneralServiceReport extends AbstractReport {
 	drawer.text(data.getTicketId(), 438, 98, true);
 	drawer.hLine(0, 555, 102);
 	drawer.text("DOMICILIO : ", 5, 113, false);
-	drawer.text(data.getEquipmentAddress(), 55, 113, true);
+	drawer.text(trimAddress(data.getEquipmentAddress()), 55, 113, true);
 	drawer.text("FECHA Y HORA DE LLEGADA : ", 317, 113, false);
-	drawer.text(data.getServiceDate().toString(), 438, 113, true);
+	drawer.text(format(data.getServiceDate()), 438, 113, true);
 	drawer.hLine(0, 555, 117);
 	drawer.text("SOLICITANTE : ", 5, 128, false);
 	drawer.text(data.getContactName(), 64, 128, true);

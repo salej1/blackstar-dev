@@ -48,6 +48,7 @@
  
   <bean id="gmService" class="com.blackstar.services.GmailService" parent="abstractService">
     <property name="mailSender" ref="mailSender" />
+	<property name="defaultFrom" value="sergio.gomez@innso.com.mx"/>
   </bean>
 
   <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">

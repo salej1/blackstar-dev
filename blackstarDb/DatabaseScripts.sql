@@ -797,9 +797,18 @@ DROP PROCEDURE blackstarDb.upgradeSchema;
 --								blackstarDb.AddServiceOrderEmployee
 --								blackstarDb.GetAutocompleteEmployeeList
 -- -----------------------------------------------------------------------------
+-- 26   10/02/2014	SAG		Se Corrigen:
+-- 								blackstarDb.GetAirCoServiceByIdService
+--								blackstarDb.GetBatteryServiceByIdService
+--								blackstarDb.GetEmergencyPlantServiceByIdService
+--								blackstarDb.GetUPSServiceByIdService
+-- -----------------------------------------------------------------------------
+-- 27	`11/02/2014	SAG 	Se modifica:
+--								blackstarDb.GetPersonalServiceOrders
+-- -----------------------------------------------------------------------------
+
 
 use blackstarDb;
-
 
 DELIMITER $$
 
@@ -813,7 +822,7 @@ BEGIN
 
 	SELECT 
 		u.name AS label,
-		u.email AS value, 
+		u.email AS value
 	FROM blackstarUser_userGroup ug
 		INNER JOIN blackstarUser u ON u.blackstarUserId = ug.blackstarUserId
 		INNER JOIN userGroup g ON g.userGroupId = ug.userGroupId
@@ -841,7 +850,7 @@ BEGIN
 		pEmployee,
 		pCreated,
 		pCreatedBy,
-		pCreatedByUsr
+		pCreatedByUsr;
 	
 END$$
 
@@ -853,11 +862,11 @@ CREATE PROCEDURE blackstarDb.GetServiceOrderEmployeeList(pSoId INTEGER)
 BEGIN
 
 	SELECT 
-		employee as email
+		email as email,
 		name as name
 	FROM serviceOrderEmployee s
 		INNER JOIN blackstarUser u ON s.employeeId = u.email
-	WHERE serviceOrderId = pSoNumber;
+	WHERE serviceOrderId = pSoId;
 	
 END$$
 
@@ -870,7 +879,6 @@ BEGIN
 
 	SELECT *
 	FROM serviceOrder s
-		INNER JOIN blackstarUser u ON s.responsible = u.email
 	WHERE serviceOrderNumber = pSoNumber;
 	
 END$$
@@ -884,7 +892,6 @@ BEGIN
 
 	SELECT *
 	FROM serviceOrder s
-		INNER JOIN blackstarUser u ON s.responsible = u.email
 	WHERE serviceOrderId = pId;
 	
 END$$
@@ -1115,7 +1122,7 @@ END$$
 	-- blackstarDb.GetPersonalServiceOrders
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetPersonalServiceOrders$$
-CREATE PROCEDURE blackstarDb.GetPersonalServiceOrders(pUser VARCHAR(100), pStatus VARCHAR(50))
+CREATE PROCEDURE blackstarDb.GetPersonalServiceOrders(pUser VARCHAR(100))
 BEGIN
 
 	SELECT 
@@ -1138,8 +1145,9 @@ BEGIN
 		INNER JOIN policy p ON p.policyId = so.policyId
 		INNER JOIN equipmentType et ON et.equipmentTypeId = p.equipmentTypeId
 		INNER JOIN office o ON p.officeId = o.officeId
-	where serviceStatus = pStatus
-	AND (so.asignee = pUser OR so.responsible = pUser)
+		INNER JOIN serviceOrderEmployee se ON so.serviceOrderId = se.serviceOrderId
+	where serviceStatus IN ('NUEVO', 'PENDIENTE')
+	AND (so.asignee = pUser OR se.employeeId = pUser)
 	ORDER BY serviceDate DESC;
 
 END$$
@@ -2061,7 +2069,7 @@ BEGIN
 		condLectureVoltageControl, condLectureMotorCurrent, condReviewThermostat, condModel, condSerialNumber, condBrand, observations
 	from aaService 
 	where 
-		aaServiceId = idService;
+		serviceOrderId = idService;
 END$$
 
 -- -----------------------------------------------------------------------------
@@ -2076,7 +2084,7 @@ BEGIN
 		rackClean, rackCleanStatus, rackCleanComments, serialNoDateManufact, batteryTemperature, voltageBus, temperature
 	from bbService 
 	where 
-		bbServiceId = idService;
+		serviceOrderId = idService;
 END$$
 
 -- -----------------------------------------------------------------------------
@@ -2132,7 +2140,7 @@ BEGIN
 	inner join  epServiceLectures G on  A.epServiceId  = G.epServiceId 
 	inner join  epServiceParams H on  A.epServiceId  = H.epServiceId 
 	where 
-		A.epServiceId  = idService;
+		A.serviceOrderId  = idService;
 END$$
 
 -- -----------------------------------------------------------------------------
@@ -2171,7 +2179,7 @@ BEGIN
 	inner join  upsServiceGeneralTest  C on  A.upsServiceId = C.upsServiceId
 	inner join  upsServiceParams  D on  A.upsServiceId = D.upsServiceId
 	where 
-		A.upsServiceId = idService;
+		A.serviceOrderId = idService;
 
 END$$
 -- -----------------------------------------------------------------------------

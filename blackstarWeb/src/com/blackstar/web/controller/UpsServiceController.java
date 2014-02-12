@@ -23,6 +23,7 @@ import com.blackstar.model.Policy;
 import com.blackstar.model.Serviceorder;
 import com.blackstar.model.Ticket;
 import com.blackstar.model.UserSession;
+import com.blackstar.model.dto.AirCoServicePolicyDTO;
 import com.blackstar.model.dto.EmergencyPlantServicePolicyDTO;
 import com.blackstar.model.dto.UpsServiceDTO;
 import com.blackstar.model.dto.UpsServicePolicyDTO;
@@ -135,7 +136,7 @@ public class UpsServiceController extends AbstractController {
 	    			servicioOrderSave.setPolicyId((Short.parseShort(serviceOrder.getPolicyId().toString())));
 	    			servicioOrderSave.setReceivedBy(serviceOrder.getReceivedBy());
 	    			servicioOrderSave.setReceivedByPosition(serviceOrder.getReceivedByPosition());
-	    			servicioOrderSave.setResponsible(serviceOrder.getResponsible());
+	    			servicioOrderSave.setEmployeeListString(serviceOrder.getResponsible());
 	    			servicioOrderSave.setServiceDate(serviceOrder.getServiceDate());
 	    			servicioOrderSave.setServiceOrderNumber(serviceOrder.getServiceOrderNumber());
 	    			servicioOrderSave.setServiceTypeId(serviceOrder.getServiceTypeId().toCharArray()[0]);
@@ -168,7 +169,7 @@ public class UpsServiceController extends AbstractController {
 	    			serviceOrder.setServiceOrderId(idServicio);
 	    			//Crear orden de servicio de UpsService
 	    			service.saveUpsService(new UpsServiceDTO(serviceOrder), "UpsServiceController", userSession.getUser().getUserName());
-	    			saveReport(serviceOrder);
+	    			commit(serviceOrder);
 	    		}
 			}
 			catch (Exception e) 
@@ -182,10 +183,18 @@ public class UpsServiceController extends AbstractController {
 	    	return "dashboard";
 	    }
 	    
-  private void saveReport(UpsServicePolicyDTO serviceOrder) throws Exception {
-	Integer id = serviceOrder.getServiceOrderId();
-	String parentId = gdService.getReportsFolderId(id);
-	gdService.insertFileFromStream(id, "application/pdf", "ServiceOrder.pdf"
-	    	      , parentId, rpService.getUPSReport(serviceOrder));
-  }
+	     private void commit(UpsServicePolicyDTO serviceOrder) throws Exception {
+	    	byte [] report = rpService.getUPSReport(serviceOrder);
+	    	saveReport(serviceOrder.getServiceOrderId(), report);
+	    	sendNotification(serviceOrder.getReceivedByEmail(), report);
+	      }
+	      
+	      private void saveReport(Integer id, byte[] report) throws Exception {
+	      	String parentId = gdService.getReportsFolderId(id);
+	      	gdService.insertFileFromStream(id, "application/pdf", "ServiceOrder.pdf", parentId, report);
+	      }
+	      
+	      private void sendNotification(String to, byte [] report){
+	      	gmService.sendEmail(to, "Reporte de servicio de UPS", "Reporte de servicio de UPS", "ServiceOrder.pdf", report);
+	      }
 }

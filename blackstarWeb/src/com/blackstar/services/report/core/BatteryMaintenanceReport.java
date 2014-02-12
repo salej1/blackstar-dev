@@ -24,7 +24,7 @@ public class BatteryMaintenanceReport extends AbstractReport {
 	printFeatures();
 	printDetails();
 	printGrid();
-	printFooter(data.getSignCreated(), data.getResponsible(), data.getClosed()
+	printFooter(data.getSignCreated(), data.getResponsibleName(), data.getClosed()
                        , data.getSignReceivedBy(), data.getReceivedBy(), data
                                                     .getReceivedByPosition());
   }
@@ -51,7 +51,7 @@ public class BatteryMaintenanceReport extends AbstractReport {
 	drawer.text("TIPO: ", 200, 143, false);
 	drawer.text(data.getEquipmentType(), 223, 143, true);
 	drawer.text("FECHA Y HORA DE LLEGADA: ", 323, 143, false);
-	drawer.text(data.getServiceDate().toString(), 440, 143, true);
+	drawer.text(format(data.getServiceDate()), 440, 143, true);
 	drawer.hLine(0, 555, 147);
 	drawer.vLine(87, 147, 0);
 	drawer.vLine(87, 147, 555);

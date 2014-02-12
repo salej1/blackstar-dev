@@ -29,7 +29,12 @@ import org.springframework.mail.javamail.MimeMessagePreparator;
 public class GmailService implements IEmailService{
 
 	private JavaMailSenderImpl  mailSender;
+	private String defaultFrom;
 	
+	public void setDefaultFrom(String defaultFrom) {
+		this.defaultFrom = defaultFrom;
+	}
+
 	public void setMailSender(JavaMailSenderImpl mailSender) {
 		this.mailSender = mailSender;
 	}
@@ -75,6 +80,7 @@ public class GmailService implements IEmailService{
 		        helper.addAttachment(attachmentName, new ByteArrayResource(file));
 			  }
 			  helper.setTo(to);
+			  helper.setFrom(defaultFrom);
 			  helper.setSubject(subject);
 			  helper.setText(body);
 			} 

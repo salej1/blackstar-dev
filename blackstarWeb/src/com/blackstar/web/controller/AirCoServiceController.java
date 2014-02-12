@@ -177,13 +177,11 @@ public class AirCoServiceController extends AbstractController {
   
   private void saveReport(Integer id, byte[] report) throws Exception {
   	String parentId = gdService.getReportsFolderId(id);
-  	gdService.insertFileFromStream(id, "application/pdf"
-  			   , "ServiceOrder.pdf", parentId, report);
+  	gdService.insertFileFromStream(id, "application/pdf", "ServiceOrder.pdf", parentId, report);
   }
   
   private void sendNotification(String to, byte [] report){
-  	gmService.sendEmail(to, "Orden de Servicio", "Orden de Servicio"
-  			                          , "ServiceOrder.pdf", report);
+  	gmService.sendEmail(to, "Reporte de servicio de Aire Acondicionado", "Reporte de servicio de Aire Acondicionado", "ServiceOrder.pdf", report);
   }
 
 }

@@ -161,6 +161,9 @@
 --								blackstarDb.GetEmergencyPlantServiceByIdService
 --								blackstarDb.GetUPSServiceByIdService
 -- -----------------------------------------------------------------------------
+-- 27	`11/02/2014	SAG 	Se modifica:
+--								blackstarDb.GetPersonalServiceOrders
+-- -----------------------------------------------------------------------------
 
 
 use blackstarDb;
@@ -477,7 +480,7 @@ END$$
 	-- blackstarDb.GetPersonalServiceOrders
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetPersonalServiceOrders$$
-CREATE PROCEDURE blackstarDb.GetPersonalServiceOrders(pUser VARCHAR(100), pStatus VARCHAR(50))
+CREATE PROCEDURE blackstarDb.GetPersonalServiceOrders(pUser VARCHAR(100))
 BEGIN
 
 	SELECT 
@@ -500,8 +503,9 @@ BEGIN
 		INNER JOIN policy p ON p.policyId = so.policyId
 		INNER JOIN equipmentType et ON et.equipmentTypeId = p.equipmentTypeId
 		INNER JOIN office o ON p.officeId = o.officeId
-	where serviceStatus = pStatus
-	AND (so.asignee = pUser OR so.responsible = pUser)
+		INNER JOIN serviceOrderEmployee se ON so.serviceOrderId = se.serviceOrderId
+	where serviceStatus IN ('NUEVO', 'PENDIENTE')
+	AND (so.asignee = pUser OR se.employeeId = pUser)
 	ORDER BY serviceDate DESC;
 
 END$$

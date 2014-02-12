@@ -28,7 +28,7 @@ public class EmergencyPlantServiceReport extends AbstractReport {
 	printReading();
 	printOthers();
 	printObservations();
-	printFooter(data.getSignCreated(), data.getResponsible(), data.getClosed()
+	printFooter(data.getSignCreated(), data.getResponsibleName(), data.getClosed()
                        , data.getSignReceivedBy(), data.getReceivedBy(), data
                                                    .getReceivedByPosition());
   }
@@ -42,14 +42,14 @@ public class EmergencyPlantServiceReport extends AbstractReport {
 	drawer.text(data.getProject(), 436, 98, true);
 	drawer.hLine(0, 555, 102);
 	drawer.text("DOMICILIO: ", 5, 113, false);
-	drawer.text(data.getEquipmentAddress(), 52, 113, true);
+	drawer.text(trimAddress(data.getEquipmentAddress()), 52, 113, true);
 	drawer.text("TELÉFONO: ", 389, 113, false);
 	drawer.text(data.getContactPhone(), 436, 113, true);
 	drawer.hLine(0, 555, 117);
 	drawer.text("CAPACIDAD: ", 5, 128, false);
 	drawer.text(data.getCapacity(), 56, 128, true);
 	drawer.text("FECHA Y HORA DE LLEGADA: ", 320, 128, false);
-	drawer.text(data.getServiceDate().toString(), 436, 128, true);
+	drawer.text(format(data.getServiceDate()), 436, 128, true);
 	drawer.hLine(0, 555, 132);
 	drawer.vLine(87, 132, 0);
 	drawer.vLine(87, 132, 555);
@@ -125,11 +125,11 @@ public class EmergencyPlantServiceReport extends AbstractReport {
 	drawer.text(data.getClockLecture().toString(), 463, 258, true);
 	drawer.hLine(0, 555, 264, 0x0155A5);
 	drawer.text("ULTIMO CAMBIO DE ACEITE: ", 2, 273, false, 0, 6);
-	drawer.text(data.getOilChange().toString(), 95, 273, true);
+	drawer.text(format(data.getOilChange()), 95, 273, true);
 	drawer.text("ULTIMA FECHA DE AFINACION: ", 186, 273, false, 0, 6);
-	drawer.text(data.getTuningDate().toString(), 279, 273, true);
+	drawer.text(format(data.getTuningDate()), 279, 273, true);
 	drawer.text("ULTIMO SERVICIO CORRECTIVO: ", 370, 273, false, 0, 5.6f);
-	drawer.text(data.getServiceCorrective().toString(), 463, 273, true);
+	drawer.text(format(data.getServiceCorrective()), 463, 273, true);
 	drawer.hLine(0, 555, 275, 0x0155A5);
 	
 	drawer.vLine(141, 275, 0, 0x0155A5);
