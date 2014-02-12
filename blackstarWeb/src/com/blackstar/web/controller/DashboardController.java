@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.blackstar.common.Globals;
-import com.blackstar.interfaces.IUserService;
 import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
 import com.blackstar.model.TicketController;
@@ -183,5 +182,27 @@ public class DashboardController extends AbstractController {
 	//================================================================================
     //  FIN INGENIEROS DE SERVICIO
     //================================================================================
+	
+	//================================================================================
+    //  GRUPO SAC
+    //================================================================================
+	
+	
+	// Ordenes de servicio Asignadas asignados
+	@RequestMapping(value="/assignedServiceOrdersJson.do", method=RequestMethod.GET)
+	public @ResponseBody String assignedServiceOrdersJson(ModelMap model
+		  , @ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession){
+		String retVal;
+		try{
+			retVal = service.getAssignedServiceOrders(userSession.getUser()
+					                                       .getUserName());
+		}
+		catch(Exception e){
+			Logger.Log(LogLevel.ERROR,e.getStackTrace()[0].toString(), e);
+			e.printStackTrace();
+			return "error";
+		}
+		return retVal;
+	}
 
 }

@@ -530,7 +530,9 @@
 			<c:import url="signatureFragment.jsp"></c:import>
 
 			<!-- Adjuntos -->
-			<c:import url="_attachments.jsp"></c:import>
+			<c:if test="${isOperativeUser == true}">
+			  <c:import url="_attachments.jsp"></c:import>
+			</c:if>
 			
 			<!-- Control de secuencia y captura de seguimiento -->
 			<c:import url="followUpControl.jsp"></c:import>
@@ -539,9 +541,11 @@
 					<tbody>
 						<tr>
 							<td>
-								<button class="searchButton" onclick="addSeguimiento(${serviceOrder.serviceOrderId}, '${serviceOrder.serviceOrderNumber}');">Agregar seguimiento</button>
-								<c:if test="${ user.belongsToGroup['Coordinador']}">
+							    <c:if test="${isOperativeUser == true}">
+								  <button class="searchButton" onclick="addSeguimiento(${serviceOrder.serviceOrderId}, '${serviceOrder.serviceOrderNumber}');">Agregar seguimiento</button>
+								  <c:if test="${ user.belongsToGroup['Coordinador']}">
 									<button class="searchButton" id="closeBtn">Cerrar</button>
+								  </c:if>
 								</c:if>
 							</td>
 						</tr>

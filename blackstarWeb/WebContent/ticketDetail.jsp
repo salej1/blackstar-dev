@@ -133,7 +133,7 @@
 <body>
 
 <div id="content" class="container_16 clearfix">
-			
+<c:set var="isOperativeUser" scope="request" value="${user.belongsToGroup['Call Center'] || user.belongsToGroup['Coordinador'] || user.belongsToGroup['Implementacion y Servicio']}" />
 <!--   CONTENT COLUMN   -->		
 				<div class="grid_16">					
 					<div class="box">
@@ -154,7 +154,9 @@
 												>${ employee.userName }</option>
 											</c:forEach>
 										</select>
-										<button class="searchButton" onclick="javascript:assignNow(); return false;">Asignar ahora</button>
+										<c:if test="${isOperativeUser == true}">
+										   <button class="searchButton" onclick="javascript:assignNow(); return false;">Asignar ahora</button>
+										</c:if>
 									</td>
 								</tr>
 								<tr><td>Marca temporal</td><td><input id="lbCreated" type="text" readonly="true"  style="width:95%;" /></td></tr>
@@ -201,15 +203,17 @@
 								<tr>
 									<td>
 										<p></p>
-										<button class="searchButton" onclick="addSeguimiento(${ticketF.ticketId}, '${ticketF.ticketNumber}');">Agregar seguimiento</button>
-										<c:choose>
+										<c:if test="${isOperativeUser == true}">
+										  <button class="searchButton" onclick="addSeguimiento(${ticketF.ticketId}, '${ticketF.ticketNumber}');">Agregar seguimiento</button>
+										  <c:choose>
 											<c:when test="${ticketstatusT.ticketStatus == 'CERRADO' || ticketstatusT.ticketStatus == 'CERRADO FT'}">
 												<button class="searchButton" onclick="reopenTicket(${ticketF.ticketId}, '${ticketF.ticketNumber}');">Reabrir ticket</button>
 											</c:when>
 											<c:otherwise>
 												<button class="searchButton" onclick="closeTicket(${ticketF.ticketId}, '${ticketF.ticketNumber}');">Cerrar Ticket</button>
 											</c:otherwise>
-										</c:choose>
+										  </c:choose>
+										</c:if>
 									</td>
 								</tr>
 							<tbody>

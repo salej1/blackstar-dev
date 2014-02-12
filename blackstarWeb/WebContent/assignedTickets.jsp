@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <script type="text/javascript">
 	
 	// Inicializacion de tabla de tickets asignados
@@ -8,8 +9,8 @@
 	
 	// Funcion que muestra la tabla de tickets asignados
 	function getAssignedTickets(){
-		$.getJSON("/dashboard/assignedTicketsJson.do", function(data){ 
-			
+		$.getJSON("/dashboard/assignedTicketsJson.do", function(data){
+			var isOperativeUser = "${user.belongsToGroup['Call Center'] || user.belongsToGroup['Coordinador'] || user.belongsToGroup['Implementacion y Servicio']}";
 			// Inicializacion de tabla de ticets asignados
 			$('#assignedTicketsTable').dataTable({	    		
 				"bProcessing": true,
@@ -33,7 +34,7 @@
 						  ],
 				"aoColumnDefs" : [
 									{"mRender" : function(data, type, row){return "<div><a href=${pageContext.request.contextPath}/ticketDetail?ticketId=" + row.DT_RowId + ">" + data + "</a></div>";}, "aTargets" : [0]},
-									{"mRender" : function(data, type, row){return "<div><a href=/plainService/show.do?operation=1&idObject=" + row.DT_RowId +">Crear O.S.</a></div>";}, "aTargets" : [7]}	       
+									{"mRender" : function(data, type, row){if(isOperativeUser == 'true'){return "<div><a href=/plainService/show.do?operation=1&idObject=" + row.DT_RowId +">Crear O.S.</a></div>";} else{return "<div>Crear O.S.</div>";}}, "aTargets" : [7]}	       
 								 ]}
 			);
 		});

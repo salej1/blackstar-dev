@@ -8,8 +8,8 @@ import com.blackstar.db.dao.interfaces.DashboardDAO;
 import com.blackstar.services.AbstractService;
 import com.blackstar.services.interfaces.DashboardService;
 
-public class DashboardServiceImpl extends AbstractService implements
-		DashboardService {
+public class DashboardServiceImpl extends AbstractService 
+                                  implements DashboardService {
 
 	private DashboardDAO dao;
 
@@ -50,5 +50,11 @@ public class DashboardServiceImpl extends AbstractService implements
 	@Override
 	public List<String> getOfficesList() {
 		return dao.getOfficesList();
+	}
+	
+	@Override
+	public String getAssignedServiceOrders(String userName){
+	  List<JSONObject> assignedTickets = dao.getAssignedServiceOrders(userName);
+	  return assignedTickets != null? assignedTickets.toString() : "";
 	}
 }

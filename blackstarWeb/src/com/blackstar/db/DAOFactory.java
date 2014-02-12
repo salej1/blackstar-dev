@@ -24,7 +24,6 @@ public abstract class DAOFactory implements Serializable {
 	public abstract OfficeDAO getOfficeDAO();
 	public abstract ServiceOrderDAO getServiceOrderDAO();
 	public abstract FollowUpDAO getFollowUpDAO();
-	public abstract UserDAO getUserDAO();
 	public abstract ServiceTypeDAO getServiceTypeDAO();
 
 	  public static DAOFactory getDAOFactory(int whichFactory) {

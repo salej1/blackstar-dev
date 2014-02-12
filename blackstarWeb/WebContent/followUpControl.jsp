@@ -80,9 +80,11 @@
 </script>
 <!--Tabla que muestra el hilo de seguimiento que se le ha dato al ticket/OS-->
 <table id="followUpTable">
-	<thead>
+    <c:if test="${isOperativeUser == true}">
+	  <thead>
 		<th>Seguimiento</th>
-	</thead>
+	  </thead>
+	</c:if>
 	<tbody>
 		<tr>
 			<td id="seguimientoContent">

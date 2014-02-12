@@ -94,8 +94,7 @@
 </head>
 <body>
 
-<div id="content" class="container_16 clearfix">
-			
+<div id="content" class="container_16 clearfix">			
 <!--   CONTENT COLUMN   -->			
 				<div class="grid_16">					
 					<div class="box">
@@ -253,7 +252,7 @@
 								</tr>
 							</table>							
 
-							
+							<c:if test="${isOperativeUser == true}">
 							<!-- Control de secuencia y captura de seguimiento -->
 							<c:import url="followUpControl.jsp"></c:import>
 							<table>
@@ -273,7 +272,7 @@
 							
 							<!-- Adjuntos -->
 							<c:import url="_attachments.jsp"></c:import>
-							
+							</c:if>
 							<form id="osUpdateForm" action="/osDetail" method="POST">
 								<input type="hidden" name="serviceOrderId" id="serviceOrderId" value="${serviceOrderDetail.serviceOrderId}"/>
 								<input type="hidden" name="isWrong" id="isWrong"/>

@@ -145,7 +145,7 @@
 -- 26   30/01/2014	SAG		Se Integra:
 -- 								blackstarDb.LastError
 -- -----------------------------------------------------------------------------
--- 26   09/02/2014	SAG		Se Corrigen:
+-- 27   09/02/2014	SAG		Se Corrigen:
 -- 								blackstarDb.GetServiceOrders
 -- 								blackstarDb.GetPersonalServiceOrders
 --							Se Integra:
@@ -155,11 +155,14 @@
 --								blackstarDb.AddServiceOrderEmployee
 --								blackstarDb.GetAutocompleteEmployeeList
 -- -----------------------------------------------------------------------------
--- 26   10/02/2014	SAG		Se Corrigen:
+-- 28   10/02/2014	SAG		Se Corrigen:
 -- 								blackstarDb.GetAirCoServiceByIdService
 --								blackstarDb.GetBatteryServiceByIdService
 --								blackstarDb.GetEmergencyPlantServiceByIdService
 --								blackstarDb.GetUPSServiceByIdService
+-- -----------------------------------------------------------------------------
+-- 29   12/02/2014	SAG		Se Integra:
+-- 								blackstarDb.GetAssignedServiceOrders
 -- -----------------------------------------------------------------------------
 
 
@@ -167,6 +170,36 @@ use blackstarDb;
 
 DELIMITER $$
 
+-- -----------------------------------------------------------------------------
+	-- blackstarManage.GetAssignedServiceOrders
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstardb.GetAssignedServiceOrders;
+CREATE PROCEDURE blackstardb.`GetAssignedServiceOrders`(IN responsible VARCHAR(100))
+BEGIN
+	SELECT 
+		so.ServiceOrderId AS DT_RowId,
+		so.serviceOrderNumber AS serviceOrderNumber,
+		'' AS placeHolder,
+		IFNULL(t.ticketNumber, '') AS ticketNumber,
+		st.serviceType AS serviceType,
+		DATE(so.created) AS created,
+		p.customer AS customer,
+		et.equipmentType AS equipmentType,
+		p.project AS project,
+		of.officeName AS officeName,
+		p.brand AS brand,
+		p.serialNumber AS serialNumber,
+		ss.serviceStatus AS serviceStatus
+	FROM serviceOrder so 
+		INNER JOIN serviceType st ON so.servicetypeId = st.servicetypeId
+		INNER JOIN serviceStatus ss ON so.serviceStatusId = ss.serviceStatusId
+		INNER JOIN policy p ON so.policyId = p.policyId
+		INNER JOIN equipmentType et ON p.equipmenttypeId = et.equipmenttypeId
+		INNER JOIN office of on p.officeId = of.officeId
+     LEFT OUTER JOIN ticket t on t.ticketId = so.ticketId
+	WHERE so.responsible LIKE CONCAT('%', responsible, '%')
+	ORDER BY serviceOrderNumber ;
+END;
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetAutocompleteEmployeeList

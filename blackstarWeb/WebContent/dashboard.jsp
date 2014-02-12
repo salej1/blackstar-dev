@@ -108,6 +108,22 @@
 
 <!-- Fin Contenido De Perfil Sysservicio -->
 
+	<c:set var="sysGpoSAC" scope="request" value="${user.belongsToGroup['Grupo SAC']}" />
+	<c:if test="${sysGpoSAC == true}">
+		<c:import url="assignedTickets.jsp"></c:import>
+		<script type="text/javascript">
+			$(function(){
+				assignedTickets_init();
+			});
+		</script>
+		<c:import url="assignedServiceOrders.jsp"></c:import>
+			<script type="text/javascript">
+			  $(function(){
+				  assignedServiceOrders_init();
+			  });
+			</script>
+	</c:if>
+
 </div>
 </body>
 </html>

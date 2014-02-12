@@ -377,8 +377,9 @@ public class Serviceorder implements java.io.Serializable {
 	
 	public String getEmployeeNameListString(){
 		StringBuilder buff = new StringBuilder();
-		
-		for(Employee soemp : getEmployeeList()){
+		List<Employee> employeeList = getEmployeeList();
+		if(employeeList != null){
+		  for(Employee soemp : employeeList){
 			if(buff.length() > 0){
 				buff.append(", ");
 				buff.append(soemp.getName());
@@ -386,6 +387,7 @@ public class Serviceorder implements java.io.Serializable {
 			else{
 				buff.append(soemp.getName());	
 			}
+		  }
 		}
 		
 		return buff.toString();

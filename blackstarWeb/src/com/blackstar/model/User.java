@@ -23,6 +23,18 @@ public class User implements java.io.Serializable {
 		return userEmail;
 	}
 	
+	public void setUserEmail(String userEmail) {
+		this.userEmail = userEmail;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public void setUserGroups(List<String> userGroups) {
+		this.userGroups = userGroups;
+	}
+	
 	public User(String _email, String _userName) {
 		userName = _userName;
 		userEmail = _email;
