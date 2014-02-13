@@ -67,28 +67,32 @@ public class GmailService implements IEmailService{
 			//throw new RuntimeException(e);
 		}
 	}
-	
-	
-  @Override
-  public void sendEmail(final String to, final String subject, final String body,
-	                           final String attachmentName, final byte[] file) {
-    try {
-		 mailSender.send(new MimeMessagePreparator() {
-			public void prepare(MimeMessage mimeMessage) throws Exception {
-			  MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
-			  if(attachmentName != null && file != null){
-		        helper.addAttachment(attachmentName, new ByteArrayResource(file));
-			  }
-			  helper.setTo(to);
-			  helper.setFrom(defaultFrom);
-			  helper.setSubject(subject);
-			  helper.setText(body);
-			} 
-		 });
-    } catch (Exception e) {
-    	Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
-		//throw new RuntimeException(e);
+		
+	@Override
+	public void sendEmail(final String to, final String subject, final String body,
+			final String attachmentName, final byte[] file) {
+		try {
+			mailSender.send(new MimeMessagePreparator() {
+				public void prepare(MimeMessage mimeMessage) throws Exception {
+					MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
+					if(attachmentName != null && file != null){
+						helper.addAttachment(attachmentName, new ByteArrayResource(file));
+					}
+					helper.setTo(to);
+					helper.setFrom(defaultFrom);
+					helper.setSubject(subject);
+					helper.setText(body);
+				} 
+			});
+		} catch (Exception e) {
+			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
+			//throw new RuntimeException(e);
+		}
 	}
-  }
+
+	@Override
+	public void sendEmail(String to, String subject, String body) {
+		sendEmail(defaultFrom, to, subject, body);
+	}
 
 }

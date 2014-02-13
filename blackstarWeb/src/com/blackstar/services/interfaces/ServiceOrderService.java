@@ -48,7 +48,9 @@ public interface ServiceOrderService {
   
 	// Servicios de recuperacion de equipos
 	public String getEquipmentByType(String type);
-	public String getEquipmentTypeBySOId(Integer serviceOrderId);
+	
+	// Servicio de identificacion de OS
+	public String getServiceOrderTypeBySOId(Integer serviceOrderId);
 	
 	// Servicio de recuperacion de tipos de servicios
 	public List<ServiceTypeDTO> getServiceTypeList();

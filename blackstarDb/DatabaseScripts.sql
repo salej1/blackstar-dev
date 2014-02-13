@@ -803,8 +803,12 @@ DROP PROCEDURE blackstarDb.upgradeSchema;
 --								blackstarDb.GetEmergencyPlantServiceByIdService
 --								blackstarDb.GetUPSServiceByIdService
 -- -----------------------------------------------------------------------------
--- 27	`11/02/2014	SAG 	Se modifica:
+-- 27	11/02/2014	SAG 	Se modifica:
 --								blackstarDb.GetPersonalServiceOrders
+-- -----------------------------------------------------------------------------
+-- 28	12/02/2014	SAG 	Se reemplaza:
+--								blackstarDb.GetEquipmentTypeBySOId por
+--								blackstarDb.GetServiceOrderTypeBySOId
 -- -----------------------------------------------------------------------------
 
 
@@ -941,18 +945,31 @@ BEGIN
 END$$
 
 -- -----------------------------------------------------------------------------
-	-- blackstarDb.GetEquipmentTypeBySOId
+	-- blackstarDb.GetServiceOrderTypeBySOId
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetEquipmentTypeBySOId$$
-CREATE PROCEDURE blackstarDb.GetEquipmentTypeBySOId(pServiceOrderId INT)
+DROP PROCEDURE IF EXISTS blackstarDb.GetServiceOrderTypeBySOId$$
+CREATE PROCEDURE blackstarDb.GetServiceOrderTypeBySOId(pServiceOrderId INT)
 BEGIN
 
-	SELECT 
-		equipmentTypeId AS equipmentTypeId
-	FROM serviceOrder so
-		INNER JOIN policy p ON so.policyId = p.policyId
-	WHERE serviceOrderId = pServiceOrderId;
-
+	IF(SELECT COUNT(*) FROM aaService WHERE serviceOrderId = pServiceOrderId) > 0 THEN
+		SELECT 'A' AS SoTypeId;
+	ELSE
+		IF(SELECT COUNT(*) FROM bbService WHERE serviceOrderId = pServiceOrderId) > 0 THEN
+			SELECT 'B' AS SoTypeId;
+		ELSE
+			IF(SELECT COUNT(*) FROM epService WHERE serviceOrderId = pServiceOrderId) > 0 THEN
+				SELECT 'P' AS SoTypeId;
+			ELSE
+				IF(SELECT COUNT(*) FROM upsService WHERE serviceOrderId = pServiceOrderId) > 0 THEN
+					SELECT 'U' AS SoTypeId;
+				ELSE
+					SELECT 'X' AS SoTypeId;
+				END IF;
+			END IF;
+		END IF;
+	END IF;
+	
 END$$
 
 -- -----------------------------------------------------------------------------

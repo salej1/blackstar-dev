@@ -26,4 +26,8 @@ public class UserDomainServiceImpl implements UserDomainService {
 	public String getStaffByGroupJson(String group) {
 		return dao.getStaffByGroupJson(group).toString();
 	}
+	
+	public List<EmployeeDTO> getStaff(String group){
+		return dao.getStaff(group);
+	}
 }

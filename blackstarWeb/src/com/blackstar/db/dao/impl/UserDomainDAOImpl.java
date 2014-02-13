@@ -23,4 +23,10 @@ public class UserDomainDAOImpl extends AbstractDAO implements UserDomainDAO {
 		String sql = "CALL GetAutocompleteEmployeeList(?)";
 		return getJdbcTemplate().query(sql, new Object[]{group}, new JSONRowMapper());
 	}
+	
+	public List<EmployeeDTO> getStaff(String group){
+		StringBuilder sqlBuilder = new StringBuilder("CALL GetDomainEmployeesByGroup(?);");
+		return (List<EmployeeDTO>) getJdbcTemplate().query(sqlBuilder.toString(), new Object[]{group}
+				, getMapperFor(EmployeeDTO.class));
+	}
 }

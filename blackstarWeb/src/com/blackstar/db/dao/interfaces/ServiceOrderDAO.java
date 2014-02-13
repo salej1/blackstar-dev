@@ -48,7 +48,7 @@ public interface ServiceOrderDAO {
 	public List<JSONObject> getServiceOrderHistory();
 	
 	public List<JSONObject> getEquipmentByType(String type);
-	public String getEquipmentTypeBySOId(Integer serviceOrderId);
+	public String getServiceOrderTypeBySOId(Integer serviceOrderId);
 	
 	public List<ServiceStatusDTO> getServiceStatusList();
 	

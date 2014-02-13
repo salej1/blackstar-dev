@@ -688,8 +688,8 @@ public class ServiceOrderDAOImpl extends AbstractDAO implements ServiceOrderDAO 
 
 
 	@Override
-	public String getEquipmentTypeBySOId(Integer serviceOrderId) {
-		String sqlQuery = "CALL GetEquipmentTypeBySOId(?);";
+	public String getServiceOrderTypeBySOId(Integer serviceOrderId) {
+		String sqlQuery = "CALL GetServiceOrderTypeBySOId(?);";
 		return getJdbcTemplate().queryForObject(sqlQuery, new Object[]{serviceOrderId}, String.class); 
 	}
 

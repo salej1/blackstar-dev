@@ -21,5 +21,5 @@ Date.prototype.format = function(format) //author: meizz
 
 function dateNow(){
   var d = new Date();
-  return d.format('dd/MM/yyyy h:mm:ss');
+  return d.format('dd/MM/yyyy hh:mm:ss');
 }

@@ -10,4 +10,5 @@ public interface UserDomainDAO {
 
 	public List<EmployeeDTO> getStaff();
 	public List<JSONObject> getStaffByGroupJson(String group);
+	public List<EmployeeDTO> getStaff(String group);
 }

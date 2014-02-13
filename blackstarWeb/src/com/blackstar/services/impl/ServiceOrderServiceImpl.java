@@ -149,8 +149,8 @@ public List<ServiceTypeDTO> getServiceTypeList() {
 }
 
 @Override
-public String getEquipmentTypeBySOId(Integer serviceOrderId) {
-	return dao.getEquipmentTypeBySOId(serviceOrderId);
+public String getServiceOrderTypeBySOId(Integer serviceOrderId) {
+	return dao.getServiceOrderTypeBySOId(serviceOrderId);
 }
 
 @Override

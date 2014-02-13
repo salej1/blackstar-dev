@@ -39,7 +39,7 @@ public class ServiceOrderController extends AbstractController {
   public String  setup(@RequestParam(required = true) Integer serviceOrderId, HttpServletResponse response) {
 	String url = "error";
 	try {
-		String equipmentType = service.getEquipmentTypeBySOId(serviceOrderId);
+		String equipmentType = service.getServiceOrderTypeBySOId(serviceOrderId);
 		String params = "/show.do?operation=2&idObject=" + serviceOrderId;
 		String aTemplate = "/aircoService";
 		String bTemplate = "/batteryService";

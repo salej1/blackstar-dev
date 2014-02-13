@@ -10,4 +10,5 @@ public interface UserDomainService {
 	
 	// Lista de empleados por grupo - JSON
 	public String getStaffByGroupJson(String group);
+	public List<EmployeeDTO> getStaff(String group);
 }

@@ -50,4 +50,7 @@ public class Globals {
 	  public static final String GROUP_SERVICE = "sysServicio";
 	  public static final String GROUP_CALL_CENTER = "sysCallCenter";
 	  public static final String GROUP_COORDINATOR = "sysCoordinador";
-}
+	  
+	  // time format
+	  public static final String DEFAULT_TIME_ZONE = "America/Mexico_City";
+	  public static final String DATE_FORMAT_PATTERN = "dd/MM/yyyy hh:mm:ss a";}

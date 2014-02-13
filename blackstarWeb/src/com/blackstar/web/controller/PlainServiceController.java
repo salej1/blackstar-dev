@@ -1,6 +1,7 @@
 package com.blackstar.web.controller;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.blackstar.common.Globals;
+import com.blackstar.common.Utils;
 import com.blackstar.db.DAOFactory;
 import com.blackstar.interfaces.IEmailService;
 import com.blackstar.logging.LogLevel;
@@ -23,6 +25,7 @@ import com.blackstar.model.Policy;
 import com.blackstar.model.Serviceorder;
 import com.blackstar.model.Ticket;
 import com.blackstar.model.UserSession;
+import com.blackstar.model.dto.EmployeeDTO;
 import com.blackstar.model.dto.PlainServiceDTO;
 import com.blackstar.model.dto.PlainServicePolicyDTO;
 import com.blackstar.services.interfaces.ReportService;
@@ -82,7 +85,11 @@ public class PlainServiceController extends AbstractController {
 		  		  {
 		  			  Integer idOrderService = Integer.parseInt(idObject);
 		  			  PlainServiceDTO plainServiceDTO = service.getPlainService(idOrderService);
-		  			  Serviceorder serviceOrder = this.daoFactory.getServiceOrderDAO().getServiceOrderById(plainServiceDTO.getServiceOrderId());
+	  				  if(plainServiceDTO == null){
+	  					  plainServiceDTO = new PlainServiceDTO();
+	  					  plainServiceDTO.setServiceOrderId(idOrderService);
+	  				  }
+		  			  Serviceorder serviceOrder = this.daoFactory.getServiceOrderDAO().getServiceOrderById(idOrderService);
 		  			  Policy policy = this.daoFactory.getPolicyDAO().getPolicyById(serviceOrder.getPolicyId());
 	  				  Equipmenttype equipType = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
 	  				  plainServicePolicyDTO = new PlainServicePolicyDTO(policy, equipType.getEquipmentType(), serviceOrder,  plainServiceDTO);
@@ -180,7 +187,7 @@ public class PlainServiceController extends AbstractController {
 				 e.printStackTrace();
 				 return "error";
 	    	}
-	    	return "dashboard";
+	    	return "redirect:/dashboard/show.do";
 	    }
 	    
 	    private void saveReport(Integer id, byte[] report) throws Exception {
@@ -192,9 +199,27 @@ public class PlainServiceController extends AbstractController {
 	    	gmService.sendEmail(to, "Orden de Servicio", "Orden de Servicio", "ServiceOrder.pdf", report);
 	    }
 	    
+	    private void callCenterLink(PlainServicePolicyDTO serviceOrder){
+	    	String who = serviceOrder.getResponsible().split(";")[0];
+	    	StringBuilder asignee = new StringBuilder();
+	    	String message = "Orden de servicio creada";
+	    	
+	    	List<EmployeeDTO> receivers = udService.getStaff(Globals.GROUP_CALL_CENTER);
+	    	
+	    	for(EmployeeDTO emp : receivers){
+	    		asignee.append(emp.getEmail() + ";");
+	    	}
+	    	
+	    	com.blackstar.model.ServiceOrderController.AssignServiceOrder(serviceOrder.getServiceOrderId(), Utils.noCommas(asignee.toString()), who, message);
+	    }
+	    
 	    private void commit(PlainServicePolicyDTO serviceOrder) throws Exception {
 	      byte [] report = rpService.getGeneralReport(serviceOrder);
 	      saveReport(serviceOrder.getServiceOrderId(), report);
 	      sendNotification(serviceOrder.getReceivedByEmail(), report);
+	      // enviar email a Call Center en caso de tener ticket asociado
+	      if(serviceOrder.getTicketNumber() != null && !serviceOrder.getTicketNumber().equals("")){
+	    	  callCenterLink(serviceOrder);
+	      }
 	    }
 	}

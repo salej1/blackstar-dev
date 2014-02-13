@@ -31,9 +31,9 @@
 		$(document).ready(function () {
 			
 			$( "#serviceDate" ).val(dateNow());
-			$( "#oilChange" ).datepicker();
-			$( "#tuningDate" ).datepicker();
-			$( "#serviceCorrective" ).datepicker();
+			$( "#oilChange" ).datepicker({ dateFormat: 'dd/mm/yy', onSelect: function(date, obj){$(this).val(date+" 00:00:00")}});
+			$( "#tuningDate" ).datepicker({ dateFormat: 'dd/mm/yy', onSelect: function(date, obj){$(this).val(date+" 00:00:00")}});
+			$( "#serviceCorrective" ).datepicker({ dateFormat: 'dd/mm/yy', onSelect: function(date, obj){$(this).val(date+" 00:00:00")}});
 			
 			// Asignacion de campos iniciales
 			var mode = "${mode}";
