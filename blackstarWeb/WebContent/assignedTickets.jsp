@@ -10,7 +10,7 @@
 	// Funcion que muestra la tabla de tickets asignados
 	function getAssignedTickets(){
 		$.getJSON("/dashboard/assignedTicketsJson.do", function(data){
-			var isOperativeUser = "${user.belongsToGroup['Call Center'] || user.belongsToGroup['Coordinador'] || user.belongsToGroup['Implementacion y Servicio']}";
+			var isOperativeUser = "${user.belongsToGroup['Call Center'] || user.belongsToGroup['Coordinador'] || user.belongsToGroup['Implementacion y Servicio'] || user.belongsToGroup['Supervisor']}";
 			// Inicializacion de tabla de ticets asignados
 			$('#assignedTicketsTable').dataTable({	    		
 				"bProcessing": true,

@@ -161,8 +161,10 @@
 --								blackstarDb.GetEmergencyPlantServiceByIdService
 --								blackstarDb.GetUPSServiceByIdService
 -- -----------------------------------------------------------------------------
--- 29   12/02/2014	SAG		Se Integra:
+-- 29   12/02/2014	DCB		Se Integra:
 -- 								blackstarDb.GetAssignedServiceOrders
+-- 								blackstarDb.GetTeamTickets
+-- 								blackstarDb.GetTeamServiceOrders
 -- -----------------------------------------------------------------------------
 
 
@@ -171,9 +173,105 @@ use blackstarDb;
 DELIMITER $$
 
 -- -----------------------------------------------------------------------------
+	-- blackstarManage.GetTeamServiceOrders
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstardb.GetTeamServiceOrders$$
+CREATE PROCEDURE blackstardb.`GetTeamServiceOrders`(pUser VARCHAR(100))
+BEGIN
+DECLARE userId INT(4);
+
+SELECT bu.blackstarUserId 
+INTO userId
+FROM blackstaruser bu
+WHERE bu.email = pUser;
+
+SELECT 
+		so.serviceOrderNumber AS serviceOrderNumber,
+    so.ServiceOrderId AS DT_RowId,
+		'' AS placeHolder,
+		IFNULL(t.ticketNumber, '') AS ticketNumber,
+		st.serviceType AS serviceType,
+		DATE(so.created) AS created,
+		p.customer AS customer,
+		et.equipmentType AS equipmentType,
+		p.project AS project,
+		of.officeName AS officeName,
+		p.brand AS brand,
+		p.serialNumber AS serialNumber,
+		ss.serviceStatus AS serviceStatus
+	FROM serviceOrder so 
+		INNER JOIN serviceType st ON so.servicetypeId = st.servicetypeId
+		INNER JOIN serviceStatus ss ON so.serviceStatusId = ss.serviceStatusId
+		INNER JOIN policy p ON so.policyId = p.policyId
+		INNER JOIN equipmentType et ON p.equipmenttypeId = et.equipmenttypeId
+		INNER JOIN office of on p.officeId = of.officeId
+     LEFT OUTER JOIN ticket t on t.ticketId = so.ticketId
+		WHERE SUBSTRING_INDEX(SUBSTRING_INDEX(so.responsible, '/', 1), '/', -1) IN (SELECT bu.name 
+                     FROM blackstaruser bu
+                     INNER JOIN userrelationship ur on bu.blackstarUserId = ur.employeeId
+                     WHERE ur.supervisorId = userId)
+          OR SUBSTRING_INDEX(SUBSTRING_INDEX(so.responsible, '/', 2), '/', -1) IN (SELECT bu.name 
+                     FROM blackstaruser bu
+                     INNER JOIN userrelationship ur on bu.blackstarUserId = ur.employeeId
+                     WHERE ur.supervisorId = userId)                     
+          OR SUBSTRING_INDEX(SUBSTRING_INDEX(so.responsible, '/', 3), '/', -1) IN (SELECT bu.name 
+                     FROM blackstaruser bu
+                     INNER JOIN userrelationship ur on bu.blackstarUserId = ur.employeeId
+                     WHERE ur.supervisorId = userId)
+          OR SUBSTRING_INDEX(SUBSTRING_INDEX(so.responsible, '/', 4), '/', -1) IN (SELECT bu.name 
+                     FROM blackstaruser bu
+                     INNER JOIN userrelationship ur on bu.blackstarUserId = ur.employeeId
+                     WHERE ur.supervisorId = userId)
+          OR SUBSTRING_INDEX(SUBSTRING_INDEX(so.responsible, '/', 5), '/', -1) IN (SELECT bu.name 
+                     FROM blackstaruser bu
+                     INNER JOIN userrelationship ur on bu.blackstarUserId = ur.employeeId
+                     WHERE ur.supervisorId = userId)
+          OR SUBSTRING_INDEX(SUBSTRING_INDEX(so.responsible, '/', 6), '/', -1) IN (SELECT bu.name 
+                     FROM blackstaruser bu
+                     INNER JOIN userrelationship ur on bu.blackstarUserId = ur.employeeId
+                     WHERE ur.supervisorId = userId)   
+          GROUP BY so.serviceOrderNumber    
+          ORDER BY serviceOrderNumber;
+END$$		  
+
+-- -----------------------------------------------------------------------------
 	-- blackstarManage.GetAssignedServiceOrders
 -- -----------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS blackstardb.GetAssignedServiceOrders;
+DROP PROCEDURE IF EXISTS blackstardb.GetTeamTickets$$
+CREATE PROCEDURE blackstardb.`GetTeamTickets`(pUser VARCHAR(100))
+BEGIN
+DECLARE userId INT(4);
+
+SELECT bu.blackstarUserId 
+INTO userId
+FROM blackstaruser bu
+WHERE bu.email = pUser;
+ 
+SELECT t.ticketId AS DT_RowId,
+		   t.ticketNumber AS ticketNumber,
+		   t.created AS ticketDate,
+		   p.customer AS customer,
+		   e.equipmentType AS equipmentType,
+		   p.responseTimeHR AS responseTime,
+		   p.project AS project,
+		   ts.ticketStatus AS ticketStatus,
+		   '' AS placeHolder
+FROM ticket t
+	INNER JOIN policy p ON p.policyId = t.policyId
+	INNER JOIN equipmentType e ON e.equipmentTypeId = p.equipmentTypeId
+	INNER JOIN ticketStatus ts ON t.ticketStatusId = ts.ticketStatusId
+WHERE t.asignee  IN (SELECT bu.email 
+                     FROM blackstaruser bu
+                     INNER JOIN userrelationship ur on bu.blackstarUserId = ur.employeeId
+                     WHERE ur.supervisorId = userId)
+AND t.closed IS NULL
+ORDER BY ticketDate;
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarManage.GetAssignedServiceOrders
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstardb.GetAssignedServiceOrders$$
 CREATE PROCEDURE blackstardb.`GetAssignedServiceOrders`(IN responsible VARCHAR(100))
 BEGIN
 	SELECT 
@@ -199,7 +297,7 @@ BEGIN
      LEFT OUTER JOIN ticket t on t.ticketId = so.ticketId
 	WHERE so.responsible LIKE CONCAT('%', responsible, '%')
 	ORDER BY serviceOrderNumber ;
-END;
+END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetAutocompleteEmployeeList

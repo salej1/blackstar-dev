@@ -57,4 +57,16 @@ public class DashboardServiceImpl extends AbstractService
 	  List<JSONObject> assignedTickets = dao.getAssignedServiceOrders(userName);
 	  return assignedTickets != null? assignedTickets.toString() : "";
 	}
+	
+	@Override
+	public String getTeamServiceOrders(String userName){
+	  List<JSONObject> assignedTickets = dao.getTeamServiceOrders(userName);
+	  return assignedTickets != null? assignedTickets.toString() : "";
+	}
+	
+	@Override
+	public String getTeamTickets(String userName){
+	  List<JSONObject> assignedTickets = dao.getTeamTickets(userName);
+	  return assignedTickets != null? assignedTickets.toString() : "";
+	}
 }

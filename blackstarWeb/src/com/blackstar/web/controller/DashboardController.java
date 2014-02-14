@@ -204,5 +204,50 @@ public class DashboardController extends AbstractController {
 		}
 		return retVal;
 	}
+	//================================================================================
+    //  FIN GRUPO SAC
+    //================================================================================
+
+	//================================================================================
+    //  ENCARGADOS DE AREA
+    //================================================================================
+	
+	// Ordenes de servicio asignadas a miembros del equipo
+		@RequestMapping(value="/teamServiceOrdersJson.do", method=RequestMethod.GET)
+		public @ResponseBody String teamServiceOrdersJson(ModelMap model
+			  , @ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession){
+			String retVal;
+			try{
+				retVal = service.getTeamServiceOrders(userSession.getUser()
+						                                  .getUserEmail());
+			}
+			catch(Exception e){
+				Logger.Log(LogLevel.ERROR,e.getStackTrace()[0].toString(), e);
+				e.printStackTrace();
+				return "error";
+			}
+			return retVal;
+		}
+		
+		// Tickets asignados a miembros del equipo
+		@RequestMapping(value="/teamTicketsJson.do", method=RequestMethod.GET)
+		public @ResponseBody String teamTicketsJson(ModelMap model
+			  , @ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession){
+			String retVal;
+			try{
+				retVal = service.getTeamTickets(userSession.getUser()
+						                            .getUserEmail());
+			}
+			catch(Exception e){
+				Logger.Log(LogLevel.ERROR,e.getStackTrace()[0].toString(), e);
+				e.printStackTrace();
+				return "error";
+			}
+			return retVal;
+		}		
+		
+	//================================================================================
+	//  FIN ENCARGADOS DE AREA
+	//================================================================================		
 
 }

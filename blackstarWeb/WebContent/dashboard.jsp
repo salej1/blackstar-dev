@@ -108,6 +108,8 @@
 
 <!-- Fin Contenido De Perfil Sysservicio -->
 
+
+<!-- Inicia Contenido De Perfil Grupo SAC -->
 	<c:set var="sysGpoSAC" scope="request" value="${user.belongsToGroup['Grupo SAC']}" />
 	<c:if test="${sysGpoSAC == true}">
 		<c:import url="assignedTickets.jsp"></c:import>
@@ -124,6 +126,51 @@
 			</script>
 	</c:if>
 
+<!-- Inicia Contenido De Perfil sysConsultant -->
+	<c:set var="sysConsultant" scope="request" value="${user.belongsToGroup['Consultor']}" />
+	<c:if test="${sysConsultant == true}">
+		<c:import url="assignedTickets.jsp"></c:import>
+		<script type="text/javascript">
+			$(function(){
+				assignedTickets_init();
+			});
+		</script>
+		<c:import url="assignedServiceOrders.jsp"></c:import>
+			<script type="text/javascript">
+			  $(function(){
+				  assignedServiceOrders_init();
+			  });
+			</script>
+	</c:if>	
+	
+	<!-- Inicia Contenido De Perfil Encargados de Area -->
+    <c:set var="sysSupervisor" scope="request" value="${user.belongsToGroup['Supervisor']}" />
+    <c:if test="${sysSupervisor == true}">
+		<c:import url="assignedTickets.jsp"></c:import>
+		<script type="text/javascript">
+			$(function(){
+				assignedTickets_init();
+			});
+		</script>
+		<c:import url="teamTickets.jsp"></c:import>
+		<script type="text/javascript">
+			$(function(){
+				teamTickets_init();
+			});
+		</script>
+		<c:import url="assignedServiceOrders.jsp"></c:import>
+			<script type="text/javascript">
+			  $(function(){
+				  assignedServiceOrders_init();
+			  });
+		</script>
+		<c:import url="teamServiceOrders.jsp"></c:import>
+			<script type="text/javascript">
+			  $(function(){
+				  teamServiceOrders_init();
+			  });
+		</script>
+	</c:if>	
 </div>
 </body>
 </html>

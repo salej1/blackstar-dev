@@ -34,6 +34,19 @@ BEGIN
 -- -----------------------------------------------------------------------------
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
+IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'userRelationship') = 0 THEN
+CREATE TABLE `userRelationship` (
+  `userRelationshipId` int(11) NOT NULL AUTO_INCREMENT,
+  `supervisorId` int(11) NOT NULL,
+  `employeeId` int(11) NOT NULL,
+  PRIMARY KEY (`userRelationshipId`),
+  UNIQUE KEY `UQ_userRelationship_supervisorId_employeeId` (`userRelationshipId`),
+  KEY `supervisorId` (`supervisorId`),
+  KEY `employeeId` (`employeeId`),
+  CONSTRAINT `FK_userRelationship_supervisor` FOREIGN KEY (`supervisorId`) REFERENCES `blackstaruser` (`blackstarUserId`),
+  CONSTRAINT `FK_userRelationship_employee` FOREIGN KEY (`employeeId`) REFERENCES `blackstaruser` (`blackstarUserId`)
+) ENGINE=InnoDB;
+
 
 -- ELIMINANDO TABLA serviceOrderAdditionalEngineer
 	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'serviceOrderAdditionalEngineer') = 1 THEN

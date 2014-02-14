@@ -11,4 +11,6 @@ public interface DashboardService {
 	public String getAssignedTickets(String user);
 	public List<String> getOfficesList();
 	public String getAssignedServiceOrders(String userName);
+	public String getTeamServiceOrders(String userName);
+	public String getTeamTickets(String userName);
 }

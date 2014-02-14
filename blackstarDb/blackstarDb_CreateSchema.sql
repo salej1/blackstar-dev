@@ -25,6 +25,18 @@ USE blackstarDb;
 
 SET FOREIGN_KEY_CHECKS=0;
 
+CREATE TABLE `userrelationship` (
+  `userrelationshipId` int(11) NOT NULL AUTO_INCREMENT,
+  `supervisorId` int(11) NOT NULL,
+  `employeeId` int(11) NOT NULL,
+  PRIMARY KEY (`userrelationshipId`),
+  UNIQUE KEY `UQ_userrelationship_supervisorId_employeeId` (`userrelationshipId`),
+  KEY `supervisorId` (`supervisorId`),
+  KEY `employeeId` (`employeeId`),
+  CONSTRAINT `FK_userrelationship_supervisor` FOREIGN KEY (`supervisorId`) REFERENCES `blackstaruser` (`blackstarUserId`),
+  CONSTRAINT `FK_userrelationship_employee` FOREIGN KEY (`employeeId`) REFERENCES `blackstaruser` (`blackstarUserId`)
+) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8;
+
 CREATE TABLE blackstarUser_userGroup(
 	blackstarUser_userGroupId INTEGER NOT NULL AUTO_INCREMENT,
 	blackstarUserId INTEGER NOT NULL,

@@ -13,4 +13,6 @@ public interface DashboardDAO {
 	public List<JSONObject> getAssignedTickets(String user);
 	public List<String> getOfficesList();
 	public List<JSONObject> getAssignedServiceOrders(String userName);
+	public List<JSONObject> getTeamServiceOrders(String userName);
+	public List<JSONObject> getTeamTickets(String userName);
 }

@@ -28,7 +28,7 @@
 			
 		</script>
 	</head>
-	    <c:set var="isOperativeUser" scope="request" value="${user.belongsToGroup['Call Center'] || user.belongsToGroup['Coordinador'] || user.belongsToGroup['Implementacion y Servicio']}" />
+	    <c:set var="isOperativeUser" scope="request" value="${user.belongsToGroup['Call Center'] || user.belongsToGroup['Coordinador'] || user.belongsToGroup['Implementacion y Servicio'] || user.belongsToGroup['Supervisor']}" />
         <c:set var="sysCallCenter" scope="request" value="${user.belongsToGroup['Call Center']}" />
 		<h1 id="head">
 			<div class="logo">

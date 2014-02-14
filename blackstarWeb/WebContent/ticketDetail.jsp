@@ -133,7 +133,6 @@
 <body>
 
 <div id="content" class="container_16 clearfix">
-<c:set var="isOperativeUser" scope="request" value="${user.belongsToGroup['Call Center'] || user.belongsToGroup['Coordinador'] || user.belongsToGroup['Implementacion y Servicio']}" />
 <!--   CONTENT COLUMN   -->		
 				<div class="grid_16">					
 					<div class="box">
