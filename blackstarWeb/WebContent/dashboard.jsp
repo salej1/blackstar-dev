@@ -171,6 +171,23 @@
 			  });
 		</script>
 	</c:if>	
+	
+		<!-- Inicia Contenido De Perfil Gerencia -->
+    <c:set var="sysManager" scope="request" value="${user.belongsToGroup['Gerente']}" />
+    <c:if test="${sysManager == true}">
+        <c:import url="activeTickets.jsp"></c:import>
+		<script type="text/javascript">
+			$(function(){
+				activeTickets_init();
+			});
+		</script>
+		<c:import url="activeServiceOrders.jsp"></c:import>
+		<script type="text/javascript">
+			$(function(){
+				activeServiceOrders_init();
+			});
+		</script>
+    </c:if>
 </div>
 </body>
 </html>

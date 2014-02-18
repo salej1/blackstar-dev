@@ -1,9 +1,13 @@
 package com.blackstar.web.controller;
 
+import java.util.List;
+
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.json.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -19,6 +23,7 @@ import com.blackstar.model.TicketController;
 import com.blackstar.model.UserSession;
 import com.blackstar.services.interfaces.DashboardService;
 import com.blackstar.web.AbstractController;
+import com.google.api.client.http.HttpResponse;
 
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -249,5 +254,86 @@ public class DashboardController extends AbstractController {
 	//================================================================================
 	//  FIN ENCARGADOS DE AREA
 	//================================================================================		
-
+	
+	//================================================================================
+	//  GERENTES
+	//================================================================================
+		
+	// Tickets activos
+	@RequestMapping(value="/activeTicketsJson.do", method=RequestMethod.GET)
+	public @ResponseBody String getActiveTicketsJson(ModelMap model
+		  , @ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession){
+	  String retVal;
+	  try {
+		   retVal = service.getActiveTickets();
+	  } catch(Exception e){
+			Logger.Log(LogLevel.ERROR,e.getStackTrace()[0].toString(), e);
+			e.printStackTrace();
+			return "error";
+	  }
+	  return retVal;
+	}
+	
+	// Ordenes de servicio activas
+	@RequestMapping(value="/activeServiceOrdersJson.do", method=RequestMethod.GET)
+	public @ResponseBody String getActiveServiceOrdersJson(ModelMap model
+		  , @ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession){
+	  String retVal;
+	  try {
+		   retVal = service.getActiveServiceOrders();
+	  } catch(Exception e){
+			Logger.Log(LogLevel.ERROR,e.getStackTrace()[0].toString(), e);
+			e.printStackTrace();
+			return "error";
+	  }
+	  return retVal;
+	}	
+	
+	// Ordenes de servicio activas (Archivo)
+	@RequestMapping(value="/getServiceOrdersFile.do", method=RequestMethod.GET)
+	public @ResponseBody void getServiceOrdersFile(ModelMap model
+		                         , HttpServletResponse response) {
+	  List<JSONObject> objList = null;
+	  ServletOutputStream out = null;
+	  try {
+		   response.setContentType("application/json;charset=UTF-8");
+		   response.setHeader("Content-Type", "application/json");
+		   response.setHeader("Content-Disposition",
+		            "attachment;filename=ServiceOrders.json");
+		   objList = service.getActiveServiceOrdersObj();
+		   out = response.getOutputStream();
+		   for(JSONObject obj : objList){
+			   out.write((obj.toString() + "\n").getBytes());
+		   }
+	  } catch(Exception e){
+			Logger.Log(LogLevel.ERROR,e.getStackTrace()[0].toString(), e);
+			e.printStackTrace();
+	  }
+	}
+	
+	// Ordenes de servicio activas (Archivo)
+	@RequestMapping(value="/getTicketsFile.do", method=RequestMethod.GET)
+	public @ResponseBody void getTicketsFile(ModelMap model
+		                         , HttpServletResponse response) {
+	  List<JSONObject> objList = null;
+	  ServletOutputStream out = null;
+	  try {
+		   response.setContentType("application/json;charset=UTF-8");
+		   response.setHeader("Content-Type", "application/json");
+		   response.setHeader("Content-Disposition",
+		            "attachment;filename=ServiceOrders.json");
+		   objList = service.getActiveTicketsObj();
+		   out = response.getOutputStream();
+		   for(JSONObject obj : objList){
+			   out.write((obj.toString() + "\n").getBytes());
+		   }
+	  } catch(Exception e){
+			Logger.Log(LogLevel.ERROR,e.getStackTrace()[0].toString(), e);
+			e.printStackTrace();
+	  }
+	}	
+	//================================================================================
+	//  FIN GERENTES
+	//================================================================================
+		
 }

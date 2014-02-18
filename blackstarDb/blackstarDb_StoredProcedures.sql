@@ -165,12 +165,69 @@
 -- 								blackstarDb.GetAssignedServiceOrders
 -- 								blackstarDb.GetTeamTickets
 -- 								blackstarDb.GetTeamServiceOrders
+-- 								blackstarDb.GetActiveTickets
+-- 								blackstarDb.GetActiveServiceOrder
 -- -----------------------------------------------------------------------------
 
 
 use blackstarDb;
 
 DELIMITER $$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarManage.GetActiveServiceOrder
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstardb.GetActiveServiceOrder;
+CREATE PROCEDURE blackstardb.`GetActiveServiceOrder`()
+BEGIN
+SELECT 
+		so.ServiceOrderId AS DT_RowId,
+		so.serviceOrderNumber AS serviceOrderNumber,
+		'' AS placeHolder,
+		IFNULL(t.ticketNumber, '') AS ticketNumber,
+		st.serviceType AS serviceType,
+		DATE(so.created) AS created,
+		p.customer AS customer,
+		et.equipmentType AS equipmentType,
+		p.project AS project,
+		of.officeName AS officeName,
+		p.brand AS brand,
+		p.serialNumber AS serialNumber,
+		ss.serviceStatus AS serviceStatus
+	FROM serviceOrder so 
+		INNER JOIN serviceType st ON so.servicetypeId = st.servicetypeId
+		INNER JOIN serviceStatus ss ON so.serviceStatusId = ss.serviceStatusId
+		INNER JOIN policy p ON so.policyId = p.policyId
+		INNER JOIN equipmentType et ON p.equipmenttypeId = et.equipmenttypeId
+		INNER JOIN office of on p.officeId = of.officeId
+     LEFT OUTER JOIN ticket t on t.ticketId = so.ticketId
+	WHERE so.closed IS NULL
+	ORDER BY so.created;
+  END;
+  
+-- -----------------------------------------------------------------------------
+	-- blackstarManage.GetActiveTickets
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstardb.GetActiveTickets$$
+CREATE PROCEDURE blackstardb.`GetActiveTickets`()
+BEGIN
+SELECT 
+		t.ticketId AS DT_RowId,
+		t.ticketNumber AS ticketNumber,
+		t.created AS ticketDate,
+		p.customer AS customer,
+		e.equipmentType AS equipmentType,
+		p.responseTimeHR AS responseTime,
+		p.project AS project,
+		ts.ticketStatus AS ticketStatus,
+		'' AS placeHolder
+FROM ticket t
+	INNER JOIN policy p ON p.policyId = t.policyId
+	INNER JOIN equipmentType e ON e.equipmentTypeId = p.equipmentTypeId
+	INNER JOIN ticketStatus ts ON t.ticketStatusId = ts.ticketStatusId
+WHERE t.closed IS NULL
+ORDER BY ticketDate;
+END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarManage.GetTeamServiceOrders
