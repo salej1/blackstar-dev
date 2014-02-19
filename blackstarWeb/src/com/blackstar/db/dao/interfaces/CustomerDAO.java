@@ -6,15 +6,9 @@ import java.util.List;
 import org.json.JSONObject;
 
 import com.blackstar.model.Customer;
-import com.blackstar.model.dto.AirCoServiceDTO;
-import com.blackstar.model.dto.BatteryCellServiceDTO;
-import com.blackstar.model.dto.BatteryServiceDTO;
-import com.blackstar.model.dto.EmergencyPlantServiceDTO;
-import com.blackstar.model.dto.FollowUpDTO;
-import com.blackstar.model.dto.OrderserviceDTO;
-import com.blackstar.model.dto.PlainServiceDTO;
-import com.blackstar.model.dto.ServiceStatusDTO;
-import com.blackstar.model.dto.UpsServiceDTO;
+import com.blackstar.model.dto.CustomerDTO;
+
+
 
 public interface CustomerDAO 
 {
@@ -23,6 +17,9 @@ public interface CustomerDAO
 	public Customer getCustomerById(int id);
 	public int insertCustomer(Customer customer);
 	public boolean updateCustomer(Customer customer);
+	
+	public CustomerDTO CustomerById(Integer id);
+	public List<JSONObject> getCustomers();
 	
 /*	public OrderserviceDTO getServiceOrderByIdOrNumber(Integer serviceOrderId, String orderNumber);
 	public List<FollowUpDTO> getFollows (Integer serviceOrderId);

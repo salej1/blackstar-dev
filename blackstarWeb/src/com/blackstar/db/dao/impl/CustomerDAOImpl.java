@@ -85,16 +85,26 @@ public class CustomerDAOImpl extends AbstractDAO implements CustomerDAO
 		return idOS;
 	}
 	
-	public List<JSONObject> getCustomer() {
+	/*public List<JSONObject> getCustomer() {
 		String sqlQuery = "CALL GetAllCustomers();";
 		return getJdbcTemplate().query(sqlQuery, new JSONRowMapper()); 
 	}
-	
+	*/
 
 	@Override
 	public boolean updateCustomer(Customer customer) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+	@Override
+	public CustomerDTO CustomerById(Integer id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public List<JSONObject> getCustomers() {
+		String sqlQuery = "CALL GetAllCustomers();";
+		return getJdbcTemplate().query(sqlQuery, new JSONRowMapper()); 
 	}
 
 }
