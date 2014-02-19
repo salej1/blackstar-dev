@@ -8,10 +8,20 @@ import com.blackstar.db.dao.AbstractDAO;
 import com.blackstar.db.dao.interfaces.CustomerDAO;
 import com.blackstar.db.dao.mapper.JSONRowMapper;
 import com.blackstar.model.Customer;
+import com.blackstar.model.dto.CustomerDTO;
 
 public class CustomerDAOImpl extends AbstractDAO implements CustomerDAO
 {
 
+	public CustomerDTO getCustomerById(Integer customerId)
+	{
+		CustomerDTO customer=null;
+		StringBuilder sqlBuilder = new StringBuilder();
+		sqlBuilder.append("CALL GetCustomeById(?)");
+		customer = (CustomerDTO) getJdbcTemplate().queryForObject(sqlBuilder.toString()
+				, new Object []{customerId}, getMapperFor(CustomerDTO.class));
+		return customer;
+	}
 	@Override
 	public Customer findCustomer() {
 		// TODO Auto-generated method stub
