@@ -69,6 +69,11 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
     <servlet-name>FollowUp</servlet-name>
     <servlet-class>com.blackstar.web.FollowUp</servlet-class>
   </servlet>
+  <servlet>
+    <display-name>Customers</display-name>
+    <servlet-name>Customers</servlet-name>
+    <servlet-class>com.blackstar.web.Customers</servlet-class>
+  </servlet>
   <servlet-mapping>
         <servlet-name>BlackStarWeb</servlet-name>
         <url-pattern>*.do</url-pattern>
@@ -114,6 +119,10 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
   <servlet-mapping>
     <servlet-name>AddFollowUp</servlet-name>
     <url-pattern>/addFollowUp</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>Customers</servlet-name>
+    <url-pattern>/customers</url-pattern>
   </servlet-mapping>
   <servlet>
     <description></description>

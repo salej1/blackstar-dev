@@ -1,72 +1,81 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
- 
-  
-  <!--::::::::::::::::::::::::::::::: Template :::::::::::::::::::::::::::::::-->
-   <bean id ="abstractService" class="com.blackstar.services.AbstractService">
-   </bean>
-   
-   <!--::::::::::::::::::::::::::::::: Commons :::::::::::::::::::::::::::::::-->
-  <bean id="userDomainService" class="com.blackstar.services.impl.UserDomainServiceImpl" parent="abstractService">
-      <property name="dao" ref="userDomainDAO" />
-  </bean>
-  
-  <bean id="googleDriveService" class="com.blackstar.services.impl.GoogleDriveServiceImpl" parent="abstractService" init-method="init">
-    <property name="serviceAccountId" value="435070024686-qo4ir0cvgafjrkhvi14hkletlq0f90c8@developer.gserviceaccount.com"/>
-    <property name="serviceAccountUser" value="sergio.gomez@innso.com.mx"/>
-  </bean>
-  
-  
-  <!--::::::::::::::::::::::::::::::: Service Controller :::::::::::::::::::::::::::::::-->
-  <bean id="securityService" class="com.blackstar.services.impl.SecurityServiceImpl" parent="abstractService" init-method="init">
-      <property name="secretsPath" value="#{ systemProperties['com.google.appengine.runtime.environment'] == 'Production'? 'config/prod_client_secrets.json' : 'config/dev_client_secrets.json' }" 
-      />
-      <property name="authorities">
-		<list value-type="java.lang.String" >
-		    <value>https://www.googleapis.com/auth/drive.file</value>
-		    <value>https://www.googleapis.com/auth/drive</value>
-		    <value>https://www.googleapis.com/auth/userinfo.email</value>
-		    <value>https://www.googleapis.com/auth/userinfo.profile</value>
-		</list>
-	  </property>
-  </bean>
-  
-  <bean id="dashboardService" class="com.blackstar.services.impl.DashboardServiceImpl" parent="abstractService">
-      <property name="dao" ref="dashboardDAO" />
-  </bean>
-  
-  <bean id="serviceOrderService" class="com.blackstar.services.impl.ServiceOrderServiceImpl" parent="abstractService">
-      <property name="dao" ref="serviceOrderDAO" />
-      <property name="typeDao" ref="serviceTypeDAO" />
-  </bean>
-  
-  <bean id="reportService" class="com.blackstar.services.impl.ReportServiceImpl" parent="abstractService"/>
- 
-  <bean id="gmService" class="com.blackstar.services.GmailService" parent="abstractService">
-    <property name="mailSender" ref="mailSender" />
-  </bean>
 
-  <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
-    <property name="host" value="smtp.gmail.com" />
-    <property name="port" value="587" />
-    <property name="username" value="portal-servicios@gposac.com.mx" />
-    <property name="password" value="SACPORTAL" />
 
-    <property name="javaMailProperties">
-     <props>
-         <prop key="mail.smtp.auth">true</prop>
-         <prop key="mail.smtp.starttls.enable">true</prop>
-      </props>
-    </property>
-  </bean>
-  
-  <bean id="offlineOSService" class="com.blackstar.services.impl.OfflineOSServiceImpl" parent="abstractService">
-    <property name="soService" ref="serviceOrderService" />
-    <property name="rpService" ref="reportService" />
-  </bean>
+	<!--::::::::::::::::::::::::::::::: Template ::::::::::::::::::::::::::::::: -->
+	<bean id="abstractService" class="com.blackstar.services.AbstractService">
+	</bean>
+
+	<!--::::::::::::::::::::::::::::::: Commons ::::::::::::::::::::::::::::::: -->
+	<bean id="userDomainService" class="com.blackstar.services.impl.UserDomainServiceImpl"
+		parent="abstractService">
+		<property name="dao" ref="userDomainDAO" />
+	</bean>
+
+	<bean id="googleDriveService" class="com.blackstar.services.impl.GoogleDriveServiceImpl"
+		parent="abstractService" init-method="init">
+		<property name="serviceAccountId"
+			value="435070024686-qo4ir0cvgafjrkhvi14hkletlq0f90c8@developer.gserviceaccount.com" />
+		<property name="serviceAccountUser" value="sergio.gomez@innso.com.mx" />
+	</bean>
+
+
+	<!--::::::::::::::::::::::::::::::: Service Controller ::::::::::::::::::::::::::::::: -->
+	<bean id="securityService" class="com.blackstar.services.impl.SecurityServiceImpl"
+		parent="abstractService" init-method="init">
+		<property name="secretsPath"
+			value="#{ systemProperties['com.google.appengine.runtime.environment'] == 'Production'? 'config/prod_client_secrets.json' : 'config/dev_client_secrets.json' }" />
+		<property name="authorities">
+			<list value-type="java.lang.String">
+				<value>https://www.googleapis.com/auth/drive.file</value>
+				<value>https://www.googleapis.com/auth/drive</value>
+				<value>https://www.googleapis.com/auth/userinfo.email</value>
+				<value>https://www.googleapis.com/auth/userinfo.profile</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="dashboardService" class="com.blackstar.services.impl.DashboardServiceImpl"
+		parent="abstractService">
+		<property name="dao" ref="dashboardDAO" />
+	</bean>
+
+	<bean id="serviceOrderService" class="com.blackstar.services.impl.ServiceOrderServiceImpl"
+		parent="abstractService">
+		<property name="dao" ref="serviceOrderDAO" />
+		<property name="typeDao" ref="serviceTypeDAO" />
+	</bean>
+
+	<bean id="reportService" class="com.blackstar.services.impl.ReportServiceImpl"
+		parent="abstractService" />
+
+	<bean id="gmService" class="com.blackstar.services.GmailService"
+		parent="abstractService">
+		<property name="mailSender" ref="mailSender" />
+	</bean>
+
+	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host" value="smtp.gmail.com" />
+		<property name="port" value="587" />
+		<property name="username" value="portal-servicios@gposac.com.mx" />
+		<property name="password" value="SACPORTAL" />
+
+		<property name="javaMailProperties">
+			<props>
+				<prop key="mail.smtp.auth">true</prop>
+				<prop key="mail.smtp.starttls.enable">true</prop>
+			</props>
+		</property>
+	</bean>
+
+	<bean id="offlineOSService" class="com.blackstar.services.impl.OfflineOSServiceImpl"
+		parent="abstractService">
+		<property name="soService" ref="serviceOrderService" />
+		<property name="rpService" ref="reportService" />
+	</bean>
 
 </beans>

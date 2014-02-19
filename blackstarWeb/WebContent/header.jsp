@@ -71,7 +71,7 @@
 				<li><a href="${pageContext.request.contextPath}/tickets">Tickets</a></li>
 				<li><a href="${pageContext.request.contextPath}/serviceOrders/show.do">Ordenes de servicio</a></li>
 				<c:if test="${sysCallCenter == true}">
-				  <li><span class="active"" onclick="window.location = '/seguimiento'">Seguimiento</span></li>
+				  <li><span class="active" onclick="window.location = '/seguimiento'">Seguimiento</span></li>
 				</c:if>
 				<li><a href="${pageContext.request.contextPath}/encuestas">Encuestas de servicio</a></li>
 				<li><a href="${pageContext.request.contextPath}/indicadores">Indicadores Serv.</a></li>
