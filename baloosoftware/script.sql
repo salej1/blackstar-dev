@@ -213,6 +213,7 @@ insert into city values(0, 22, 'Tolimán ');
 -- Clientes --
 CREATE TABLE IF NOT EXISTS `blackstarDb`.`customer` (
   `customerId` INT NOT NULL AUTO_INCREMENT ,
+  `customerType` ENUM('P', 'C') NOT NULL default 'P',
   `rfc` VARCHAR(14) NOT NULL ,
   `companyName` VARCHAR(60) NOT NULL ,
   `tradeName` VARCHAR(40) NOT NULL ,
