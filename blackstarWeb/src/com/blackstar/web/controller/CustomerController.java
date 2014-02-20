@@ -30,7 +30,7 @@ public class CustomerController extends AbstractController
 {
 	private CustomerService customerService;
 
-	public void setService(CustomerService customerService)
+	public void setCustomerService(CustomerService customerService)
 	{
 		this.customerService = customerService;
 	}
@@ -102,6 +102,8 @@ public class CustomerController extends AbstractController
 	@RequestMapping(value = "/show.do", method = RequestMethod.GET)
 	public String show(ModelMap model, HttpServletRequest req, HttpServletResponse resp)
 	{
+		model.addAttribute("leafletList", customerService.getCustomersList());
+		model.addAttribute("customerList", customerService.getCustomersList());
 		return "customers";
 	}
 }

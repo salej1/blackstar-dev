@@ -29,25 +29,27 @@ public class Customers extends HttpServlet
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
-//		JSONArray jsTickets = new JSONArray();
-//		ResultSet rsTickets;
-//		try {
-//			BlackstarDataAccess da = new BlackstarDataAccess();
-//			rsTickets = da.executeQuery("CALL GetAllTickets()");
-//			jsTickets = ResultSetConverter
-//					.convertResultSetToJSONArray(rsTickets);
-//
-//			request.setAttribute("ticketsList", jsTickets.toString());
-//
-//			da.closeConnection();
-//
-//			IUserService dir = UserServiceFactory.getUserService();
-//			request.setAttribute("employees", dir.getEmployeeList());
-//		} catch (Exception e) {
-//			Logger.Log(LogLevel.FATAL, e.getStackTrace()[0].toString(), e);
-//		}
-//
-//		request.getRequestDispatcher("/tickets.jsp").forward(request, response);
+		BlackstarDataAccess blackstarDataAccess;
+		JSONArray jsTickets;
+		ResultSet rsTickets;
+
+		try
+		{
+			jsTickets = new JSONArray();
+			blackstarDataAccess = new BlackstarDataAccess();
+			rsTickets = blackstarDataAccess.executeQuery("CALL GetAllTickets()");
+			jsTickets = ResultSetConverter.convertResultSetToJSONArray(rsTickets);
+
+			request.setAttribute("ticketsList", jsTickets.toString());
+
+			blackstarDataAccess.closeConnection();
+
+			IUserService dir = UserServiceFactory.getUserService();
+			request.setAttribute("employees", dir.getEmployeeList());
+		} catch (Exception e) {
+			Logger.Log(LogLevel.FATAL, e.getStackTrace()[0].toString(), e);
+		}
+
 		request.getRequestDispatcher("/customers.jsp").forward(request, response);
 	}
 

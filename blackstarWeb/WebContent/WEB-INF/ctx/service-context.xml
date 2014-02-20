@@ -78,4 +78,7 @@
 		<property name="rpService" ref="reportService" />
 	</bean>
 
+	<bean id="customerService" class="com.blackstar.services.impl.CustomerServiceImpl" parent="abstractService">
+	</bean>
+
 </beans>
