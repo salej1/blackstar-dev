@@ -80,8 +80,11 @@
    <bean class="com.blackstar.web.controller.ServiceOrdersController" parent="abstractController">
       <property name="service" ref="serviceOrderService" />
    </bean>
+   <bean class="com.blackstar.web.controller.SurveyServiceController" parent="abstractController">
+      <property name="surveyServiceService" ref="surveyServiceService" />
+   </bean>
    <bean class="com.blackstar.web.controller.ReportController" parent="abstractController">
        <property name="urlPreffix" value="https://docs.google.com/a/gposac.com.mx/file/d/"/>
        <property name="urlSufix" value="/edit"/>
-   </bean>
+   </bean>   
 </beans>

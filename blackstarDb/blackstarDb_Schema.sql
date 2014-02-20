@@ -19,7 +19,9 @@
 -- --   --------   -------  ------------------------------------
 -- 5    12/12/2013  SAG  	Se agrega sequence y sequenceNumberPool
 -- --   --------   -------  ------------------------------------
--- 6    09/02/2014  SAG  	Se cambia serviceOrderAdditionalEngineer por
+-- 6	26/01/2014  LERV  	Se agrega tabla surveyService
+-- --   --------   -------  ------------------------------------
+-- 7    09/02/2014  SAG  	Se cambia serviceOrderAdditionalEngineer por
 -- 							serviceOrderEmployee
 -- ---------------------------------------------------------------------------
 
@@ -626,6 +628,43 @@ IF (SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackst
 	)ENGINE=INNODB; 		
 END IF;
 
+
+IF (SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'surveyService') = 0 THEN
+
+	CREATE TABLE blackstardb.surveyService (
+		surveyServiceId INT NOT NULL AUTO_INCREMENT,
+		company VARCHAR(45) NULL,
+		namePerson VARCHAR(45) NULL,
+		email VARCHAR(45) NULL,
+		telephone VARCHAR(45) NULL,
+		datePerson DATE NULL,
+		questionTreatment VARCHAR(45) NULL,
+		reasonTreatment VARCHAR(45) NULL,
+		questionIdentificationPersonal VARCHAR(45) NULL,
+		questionIdealEquipment VARCHAR(45) NULL,
+		surveyServicecol VARCHAR(45) NULL,
+		reasonIdealEquipment VARCHAR(45) NULL,
+		questionTime VARCHAR(45) NULL,
+		reasonTime VARCHAR(45) NULL,
+		questionUniform VARCHAR(45) NULL,
+		reasonUniform VARCHAR(45) NULL,
+		qualification INT NULL,
+		serviceOrderId INT NULL,
+		sign VARCHAR(45) NULL,
+		suggestion VARCHAR(255) NULL,
+		created DATETIME NULL,
+		createdBy NVARCHAR(50) NULL,
+		createdByUsr NVARCHAR(50) NULL,
+		modified DATETIME NULL,
+		modifiedBy NVARCHAR(50) NULL,
+		modifiedByUsr NVARCHAR(50) NULL,
+		PRIMARY KEY (surveyServiceId),
+		UNIQUE UQ_surveyService_surveyServiceId(surveyServiceId),
+		KEY (serviceOrderId),
+		FOREIGN KEY (serviceOrderId) REFERENCES serviceOrder (serviceOrderId)
+	)ENGINE=INNODB; 
+		
+END IF;
 
 	
 -- -----------------------------------------------------------------------------

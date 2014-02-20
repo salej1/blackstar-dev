@@ -142,10 +142,15 @@
 --							Se modifica:
 --								blackstarDb.AddserviceOrder
 -- -----------------------------------------------------------------------------
--- 26   30/01/2014	SAG		Se Integra:
+-- 26   26/01/2014	LERV	Se Integra:
+-- 								blackstarDb.GetServiceOrderByUser
+--								blackstarDb.AddSurveyService
+--										
+-- -----------------------------------------------------------------------------
+-- 27   30/01/2014	SAG		Se Integra:
 -- 								blackstarDb.LastError
 -- -----------------------------------------------------------------------------
--- 26   09/02/2014	SAG		Se Corrigen:
+-- 28   09/02/2014	SAG		Se Corrigen:
 -- 								blackstarDb.GetServiceOrders
 -- 								blackstarDb.GetPersonalServiceOrders
 --							Se Integra:
@@ -155,19 +160,20 @@
 --								blackstarDb.AddServiceOrderEmployee
 --								blackstarDb.GetAutocompleteEmployeeList
 -- -----------------------------------------------------------------------------
--- 26   10/02/2014	SAG		Se Corrigen:
+-- 29   10/02/2014	SAG		Se Corrigen:
 -- 								blackstarDb.GetAirCoServiceByIdService
 --								blackstarDb.GetBatteryServiceByIdService
 --								blackstarDb.GetEmergencyPlantServiceByIdService
 --								blackstarDb.GetUPSServiceByIdService
 -- -----------------------------------------------------------------------------
--- 27	11/02/2014	SAG 	Se modifica:
+-- 30	11/02/2014	SAG 	Se modifica:
 --								blackstarDb.GetPersonalServiceOrders
 -- -----------------------------------------------------------------------------
--- 28	12/02/2014	SAG 	Se reemplaza:
+-- 31	12/02/2014	SAG 	Se reemplaza:
 --								blackstarDb.GetEquipmentTypeBySOId por
 --								blackstarDb.GetServiceOrderTypeBySOId
 -- -----------------------------------------------------------------------------
+
 
 
 use blackstarDb;
@@ -2094,7 +2100,87 @@ modifiedByUsr = modifiedByUsr
 where serviceOrderId = serviceOrderId;
 END$$
 
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetServiceOrderByUser
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetServiceOrderByUser$$
+CREATE PROCEDURE blackstarDb.GetServiceOrderByUser ()
+BEGIN
 
+	SELECT 
+		serviceOrderId,
+		serviceOrderNumber 
+	FROM serviceorder 
+	WHERE created >= CURDATE() 
+	ORDER BY createdByUsr;
+
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.AddSurveyService
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.AddSurveyService$$
+CREATE PROCEDURE blackstarDb.AddSurveyService(
+	company varchar(255),
+	namePerson varchar(255),
+	email varchar(255),
+	telephone varchar(45),
+	datePerson datetime,
+	questiontreatment varchar(255),
+	reasontreatment varchar(255),
+	questionIdentificationPersonal varchar(255),
+	questionIdealEquipment varchar(255),
+	reasonIdealEquipment varchar(255),
+	questionTime varchar(255),
+	reasonTime varchar(255),
+	questionUniform varchar(255),
+	reasonUniform varchar(255),
+	qualification int,
+	serviceOrderId  int(11) ,
+	sign varchar(255),
+	suggestion varchar(255)
+)
+BEGIN 
+	INSERT INTO surveyService (company,namePerson,email
+	,telephone,datePerson,questiontreatment,reasontreatment,questionIdentificationPersonal,
+	questionIdealEquipment,reasonIdealEquipment,questionTime,reasonTime,
+	questionUniform,reasonUniform,qualification,serviceOrderId,sign,suggestion)
+	values(company,namePerson,email
+	,telephone,datePerson,questiontreatment,reasontreatment,
+	questionIdentificationPersonal,questionIdealEquipment,reasonIdealEquipment,
+	questionTime,reasonTime,questionUniform,reasonUniform,qualification,
+	serviceOrderId,sign,suggestion);
+	select LAST_INSERT_ID();
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetsurveyServiceById
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetsurveyServiceById$$
+CREATE PROCEDURE blackstarDb.GetsurveyServiceById(surveyServiceId INTEGER)
+BEGIN
+	SELECT 
+		surveyServiceId,
+		company,
+		namePerson as name,
+		email,
+		telephone,
+		datePerson as date,
+		questionTreatment,
+		reasonTreatment,
+		questionIdentificationPersonal,
+		questionIdealEquipment,
+		questionTime,
+		reasonTime,
+		questionUniform,
+		reasonUniform,
+		qualification,
+		serviceOrderId,
+		sign,
+		suggestion
+	FROM surveyService 
+	WHERE surveyServiceId = surveyServiceId;
+END$$
 -- -----------------------------------------------------------------------------
 	-- FIN DE LOS STORED PROCEDURES
 -- -----------------------------------------------------------------------------
