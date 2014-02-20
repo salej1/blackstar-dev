@@ -12,14 +12,13 @@ import com.blackstar.model.dto.CustomerDTO;
 
 public interface CustomerDAO 
 {
-	public Customer findCustomer();
-	public List<Customer> selectAllCustomer();
-	public Customer getCustomerById(int id);
+	
 	public int insertCustomer(Customer customer);
 	public boolean updateCustomer(Customer customer);
 	
-	public CustomerDTO CustomerById(Integer id);
+	public CustomerDTO getCustomerById(Integer id);
 	public List<JSONObject> getCustomers();
+	public List<JSONObject> getLeaflets();
 	
 /*	public OrderserviceDTO getServiceOrderByIdOrNumber(Integer serviceOrderId, String orderNumber);
 	public List<FollowUpDTO> getFollows (Integer serviceOrderId);

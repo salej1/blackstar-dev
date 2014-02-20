@@ -22,23 +22,6 @@ public class CustomerDAOImpl extends AbstractDAO implements CustomerDAO
 				, new Object []{customerId}, getMapperFor(CustomerDTO.class));
 		return customer;
 	}
-	@Override
-	public Customer findCustomer() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<Customer> selectAllCustomer() {
-		return null;
-		
-	}
-
-	@Override
-	public Customer getCustomerById(int id) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@SuppressWarnings("deprecation")
 	@Override
@@ -93,17 +76,56 @@ public class CustomerDAOImpl extends AbstractDAO implements CustomerDAO
 
 	@Override
 	public boolean updateCustomer(Customer customer) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-	@Override
-	public CustomerDTO CustomerById(Integer id) {
-		// TODO Auto-generated method stub
-		return null;
+		StringBuilder sqlBuilder = new StringBuilder();
+		sqlBuilder.append("CALL UpdateCustomer(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+		Object [] args=new Object[]
+				{
+					customer.getCustomerId()+"",
+					customer.getCustomerType()+"",
+					customer.getRfc()+"",
+					customer.getCompanyName()+"",
+					customer.getTradeName()+"",
+					customer.getPhoneCode1()+"",
+					customer.getPhoneCode2()+"",
+					customer.getPhone1()+"",
+					customer.getPhone2()+"",
+					customer.getExtension1()+"",
+					customer.getExtension2()+"",
+					customer.getEmail1()+"",
+					customer.getEmail2()+"",
+					customer.getStreet()+"",
+					customer.getExternalNumber()+"",
+					customer.getInternalNumber()+"",
+					customer.getColony()+"",
+					customer.getTown()+"",
+					customer.getCountry()+"",
+					customer.getPostcode()+"",
+					customer.getAdvance()+"",
+					customer.getTimeLimit()+"",
+					customer.getSettlementTimeLimit()+"",
+					customer.getCurp()+"",
+					customer.getContactPerson()+"",
+					customer.getRetention()+"",
+					customer.getCityId()+"",
+					customer.getPaymentTermsId()+"",
+					customer.getCurrencyId()+"",
+					customer.getIvaId()+"",
+					customer.getClassificationId()+"",
+					customer.getOriginId()+"",
+					customer.getSeller()+""
+				};
+		getJdbcTemplate().update(sqlBuilder.toString(), args);
+		return true;
 	}
 	@Override
 	public List<JSONObject> getCustomers() {
-		String sqlQuery = "CALL GetAllCustomers();";
+		String sqlQuery = "CALL GetAllCustomers('C');";
+		return getJdbcTemplate().query(sqlQuery, new JSONRowMapper()); 
+	}
+
+	@Override
+	public List<JSONObject> getLeaflets() {
+		String sqlQuery = "CALL GetAllCustomers('P');";
 		return getJdbcTemplate().query(sqlQuery, new JSONRowMapper()); 
 	}
 
