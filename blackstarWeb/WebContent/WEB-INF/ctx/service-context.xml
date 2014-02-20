@@ -68,7 +68,7 @@
     <property name="rpService" ref="reportService" />
   </bean>
   
-  <bean id="serviceCustomer" class="com.blackstar.services.impl.CustomerServiceImpl" parent="abstractService">
+  <bean id="customerService" class="com.blackstar.services.impl.CustomerServiceImpl" parent="abstractService">
       <property name="dao" ref="customerDAO" />
   </bean>
 

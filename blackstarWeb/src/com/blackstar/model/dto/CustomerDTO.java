@@ -1,6 +1,6 @@
 package com.blackstar.model.dto;
 
-public class CustomerDTO 
+public class CustomerDTO
 {
 	private Integer customerId;
 	private String customerType;
@@ -35,7 +35,11 @@ public class CustomerDTO
 	private Integer classificationId;
 	private Integer originId;
 	private Integer seller;
-	
+
+	public CustomerDTO()
+	{
+	}
+
 	public CustomerDTO(String customerType, String rfc,
 			String companyName, String tradeName, String phoneCode1,
 			String phoneCode2, String phone1, String phone2, String extension1,
@@ -344,9 +348,4 @@ public class CustomerDTO
 	public void setSeller(Integer seller) {
 		this.seller = seller;
 	}
-
-	
-	
-	
-
 }

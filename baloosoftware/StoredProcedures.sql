@@ -57,7 +57,7 @@ END$$
 DROP PROCEDURE IF EXISTS blackstarDb.GetAllCustomers$$
 CREATE PROCEDURE blackstarDb.GetAllCustomers(customerType enum('P', 'C'))
 BEGIN
-SELECT cu.customerId AS DT_RowId, cu.customerType AS customerType, cu.companyName AS companyName, concat(ci.name, ', ', go.name) AS city, cu.contactPerson AS contactPerson, cu.email1 AS contactEmail FROM customer cu INNER JOIN city ci ON cu.cityId = ci.cityId INNER JOIN government go ON ci.governmentId = go.governmentId WHERE cu.customerType = customerType ORDER BY cu.customerId ASC;
+SELECT cu.customerId AS customerId, cu.customerType AS customerType, cu.companyName AS companyName, concat(ci.name, ', ', go.name) AS city, cu.contactPerson AS contactPerson, cu.email1 AS contactEmail FROM customer cu INNER JOIN city ci ON cu.cityId = ci.cityId INNER JOIN government go ON ci.governmentId = go.governmentId WHERE cu.customerType = customerType ORDER BY cu.customerId ASC;
 END$$
 
 -- -----------------------------------------------------------------------------

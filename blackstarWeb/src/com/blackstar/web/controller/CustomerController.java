@@ -1,7 +1,5 @@
 package com.blackstar.web.controller;
 
-import java.util.Date;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -14,13 +12,9 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.blackstar.common.Globals;
 import com.blackstar.model.Customer;
-import com.blackstar.model.Serviceorder;
 import com.blackstar.model.UserSession;
 import com.blackstar.model.dto.CustomerDTO;
-import com.blackstar.model.dto.PlainServiceDTO;
-import com.blackstar.model.dto.PlainServicePolicyDTO;
 import com.blackstar.services.interfaces.CustomerService;
-import com.blackstar.services.interfaces.ServiceOrderService;
 import com.blackstar.web.AbstractController;
 
 @Controller
@@ -35,8 +29,22 @@ public class CustomerController extends AbstractController
 		this.customerService = customerService;
 	}
 
+	@RequestMapping(value = "/add.do", method = RequestMethod.GET)
+	public String add(@ModelAttribute("customerDTO") CustomerDTO customerDTO, @ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession, ModelMap model, HttpServletRequest req, HttpServletResponse resp)
+	{
+		return "customer";
+	}
+
+	@RequestMapping(value = "/show.do", method = RequestMethod.GET)
+	public String show(ModelMap model, HttpServletRequest req, HttpServletResponse resp)
+	{
+		model.addAttribute("leafletList", customerService.getLeafletList());
+		model.addAttribute("customerList", customerService.getCustomerList());
+		return "customers";
+	}
+
 	@RequestMapping(value = "/save.do", method = RequestMethod.POST)
-	public String save(@ModelAttribute("customer") CustomerDTO customerDTO, @ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession, ModelMap model, HttpServletRequest req, HttpServletResponse resp)
+	public String save(@ModelAttribute("customerDTO") CustomerDTO customerDTO, @ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession, ModelMap model, HttpServletRequest req, HttpServletResponse resp)
 	{
 		Customer customer;
 		int idCustomer;
@@ -78,7 +86,7 @@ public class CustomerController extends AbstractController
 				customer.setTimeLimit(customerDTO.getTimeLimit());
 				customer.setTown(customerDTO.getTown());
 				customer.setTradeName(customerDTO.getTradeName());
-//				idCustomer = customerService.saveCustomer(customer, "PlainServiceController", userSession.getUser().getUserName());
+				idCustomer = customerService.saveCustomer(customer);
 			}
 			else
 			{
@@ -92,18 +100,11 @@ public class CustomerController extends AbstractController
 			{
 				details.append(element.toString() + "\n");
 			}
-			model.addAttribute("errorDetails", details.toString());
+			//model.addAttribute("errorDetails", details.toString());
+			model.addAttribute("errorDetails", customerDTO.getRfc());
 			e.printStackTrace();
 			return "error";
 		}
-		return "customers";
-	}
-
-	@RequestMapping(value = "/show.do", method = RequestMethod.GET)
-	public String show(ModelMap model, HttpServletRequest req, HttpServletResponse resp)
-	{
-		model.addAttribute("leafletList", customerService.getCustomersList());
-		model.addAttribute("customerList", customerService.getCustomersList());
-		return "customers";
+		return "customer";
 	}
 }
