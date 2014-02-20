@@ -86,5 +86,9 @@
    <bean class="com.blackstar.web.controller.ReportController" parent="abstractController">
        <property name="urlPreffix" value="https://docs.google.com/a/gposac.com.mx/file/d/"/>
        <property name="urlSufix" value="/edit"/>
-   </bean>   
+   </bean>
+   <bean class="com.blackstar.web.controller.IndicadoresServicioController" parent="abstractController">
+       <property name="service" ref="indicadoresServicioService" />
+   </bean>
+ 
 </beans>
