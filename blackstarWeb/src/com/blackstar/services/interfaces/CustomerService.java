@@ -10,7 +10,7 @@ public interface CustomerService
 {
 public CustomerDTO getCustomerById(Integer customerId);
 public List<CustomerDTO> getCustomersList();
-public String getCustomerHistory();
+public String getCustomers();
 public int saveCustomer (Customer customer);
 public void updateCustomer(Customer customer);
 

@@ -20,11 +20,7 @@ public class CustomerServiceImpl extends AbstractService implements CustomerServ
 		this.dao = dao;
 	}
 
-	@Override
-	public CustomerDTO getCustomerById(Integer customerId) {
-		// TODO Auto-generated method stub
-		return dao.CustomerById(customerId);
-	}
+	
 
 	@Override
 	public List<CustomerDTO> getCustomersList() {
@@ -32,9 +28,9 @@ public class CustomerServiceImpl extends AbstractService implements CustomerServ
 	}
 
 	@Override
-	public String getCustomerHistory() {
-		List<JSONObject> history = dao.getCustomers();
-		return history.toString();
+	public String getCustomers() {
+		List<JSONObject> customers = dao.getCustomers();
+		return customers.toString();
 	}
 
 	@Override
@@ -47,5 +43,15 @@ public class CustomerServiceImpl extends AbstractService implements CustomerServ
 		dao.updateCustomer(customer);
 		
 	}
+
+
+
+	@Override
+	public CustomerDTO getCustomerById(Integer customerId) {
+		return dao.getCustomerById(customerId);
+	}
+
+
+
 
 }

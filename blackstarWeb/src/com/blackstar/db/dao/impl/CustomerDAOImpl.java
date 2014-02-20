@@ -22,23 +22,6 @@ public class CustomerDAOImpl extends AbstractDAO implements CustomerDAO
 				, new Object []{customerId}, getMapperFor(CustomerDTO.class));
 		return customer;
 	}
-	@Override
-	public Customer findCustomer() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<Customer> selectAllCustomer() {
-		return null;
-		
-	}
-
-	@Override
-	public Customer getCustomerById(int id) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@SuppressWarnings("deprecation")
 	@Override
@@ -135,13 +118,14 @@ public class CustomerDAOImpl extends AbstractDAO implements CustomerDAO
 		return true;
 	}
 	@Override
-	public CustomerDTO CustomerById(Integer id) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	@Override
 	public List<JSONObject> getCustomers() {
-		String sqlQuery = "CALL GetAllCustomers();";
+		String sqlQuery = "CALL GetAllCustomers('C');";
+		return getJdbcTemplate().query(sqlQuery, new JSONRowMapper()); 
+	}
+
+	@Override
+	public List<JSONObject> getLeaflets() {
+		String sqlQuery = "CALL GetAllCustomers('P');";
 		return getJdbcTemplate().query(sqlQuery, new JSONRowMapper()); 
 	}
 
