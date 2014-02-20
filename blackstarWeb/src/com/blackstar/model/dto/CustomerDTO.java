@@ -3,7 +3,7 @@ package com.blackstar.model.dto;
 public class CustomerDTO 
 {
 	
-	private int customerId;
+	private Integer customerId;
 	private String customerType;
 	private String rfc;
 	private String companyName;
@@ -29,24 +29,24 @@ public class CustomerDTO
 	private String curp;
 	private String contactPerson;
 	private Double retention;
-	private int cityId;
-	private int paymentTermsId;
+	private Integer cityId;
+	private Integer paymentTermsId;
 	private String currencyId;
-	private int ivaId;
-	private int classificationId;
-	private int originId;
-	private int seller;
+	private Integer ivaId;
+	private Integer classificationId;
+	private Integer originId;
+	private Integer seller;
 	
-	public CustomerDTO(int customerId, String customerType, String rfc,
+	public CustomerDTO(Integer customerId, String customerType, String rfc,
 			String companyName, String tradeName, String phoneCode1,
 			String phoneCode2, String phone1, String phone2, String extension1,
 			String extension2, String email1, String email2, String street,
 			String externalNumber, String internalNumber, String colony,
 			String town, String country, String postcode, Double advance,
 			String timeLimit, String settlementTimeLimit, String curp,
-			String contactPerson, Double retention, int cityId,
-			int paymentTermsId, String currencyId, int ivaId,
-			int classificationId, int originId, int seller) {
+			String contactPerson, Double retention, Integer cityId,
+			Integer paymentTermsId, String currencyId, Integer ivaId,
+			Integer classificationId, Integer originId, Integer seller) {
 		super();
 		this.customerId = customerId;
 		this.customerType = customerType;
@@ -83,11 +83,11 @@ public class CustomerDTO
 		this.seller = seller;
 	}
 
-	public int getCustomerId() {
+	public Integer getCustomerId() {
 		return customerId;
 	}
 
-	public void setCustomerId(int customerId) {
+	public void setCustomerId(Integer customerId) {
 		this.customerId = customerId;
 	}
 
@@ -291,19 +291,19 @@ public class CustomerDTO
 		this.retention = retention;
 	}
 
-	public int getCityId() {
+	public Integer getCityId() {
 		return cityId;
 	}
 
-	public void setCityId(int cityId) {
+	public void setCityId(Integer cityId) {
 		this.cityId = cityId;
 	}
 
-	public int getPaymentTermsId() {
+	public Integer getPaymentTermsId() {
 		return paymentTermsId;
 	}
 
-	public void setPaymentTermsId(int paymentTermsId) {
+	public void setPaymentTermsId(Integer paymentTermsId) {
 		this.paymentTermsId = paymentTermsId;
 	}
 
@@ -315,37 +315,38 @@ public class CustomerDTO
 		this.currencyId = currencyId;
 	}
 
-	public int getIvaId() {
+	public Integer getIvaId() {
 		return ivaId;
 	}
 
-	public void setIvaId(int ivaId) {
+	public void setIvaId(Integer ivaId) {
 		this.ivaId = ivaId;
 	}
 
-	public int getClassificationId() {
+	public Integer getClassificationId() {
 		return classificationId;
 	}
 
-	public void setClassificationId(int classificationId) {
+	public void setClassificationId(Integer classificationId) {
 		this.classificationId = classificationId;
 	}
 
-	public int getOriginId() {
+	public Integer getOriginId() {
 		return originId;
 	}
 
-	public void setOriginId(int originId) {
+	public void setOriginId(Integer originId) {
 		this.originId = originId;
 	}
 
-	public int getSeller() {
+	public Integer getSeller() {
 		return seller;
 	}
 
-	public void setSeller(int seller) {
+	public void setSeller(Integer seller) {
 		this.seller = seller;
 	}
+
 	
 	
 	
