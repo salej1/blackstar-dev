@@ -18,6 +18,7 @@
 	</script>
 	</head>
 <body>
+<!-- Seccion de despliegue del error -->
 <div id="content" class="container_16 clearfix">
 	<div><p><img src="/img/error.png" alt=""> Error. No se pudo completar la operación</p></div>
 	<p><a href="" id="detailsLink">Mostrar Detalles</a></p>
