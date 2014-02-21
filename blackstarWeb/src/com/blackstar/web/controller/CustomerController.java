@@ -32,7 +32,13 @@ public class CustomerController extends AbstractController
 	@RequestMapping(value = "/add.do", method = RequestMethod.GET)
 	public String add(@ModelAttribute("customerDTO") CustomerDTO customerDTO, @ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession, ModelMap model, HttpServletRequest req, HttpServletResponse resp)
 	{
+		model.addAttribute("classificationList", customerService.getClassficationList());
+		model.addAttribute("currencyList", customerService.getCurrencyList());
 		model.addAttribute("governmentList", customerService.getGovernmentList());
+		model.addAttribute("ivaList", customerService.getIVAList());
+		model.addAttribute("originList", customerService.getOriginList());
+		model.addAttribute("paymentTermsList", customerService.getPaymentTermsList());
+		model.addAttribute("sellerList", customerService.getSellerList());
 		return "customer";
 	}
 
@@ -89,10 +95,6 @@ public class CustomerController extends AbstractController
 				customer.setTradeName(customerDTO.getTradeName());
 				idCustomer = customerService.saveCustomer(customer);
 			}
-			else
-			{
-				// Actualizar cliente
-			}
 		}
 		catch(Exception e)
 		{
@@ -101,11 +103,10 @@ public class CustomerController extends AbstractController
 			{
 				details.append(element.toString() + "\n");
 			}
-			//model.addAttribute("errorDetails", details.toString());
-			model.addAttribute("errorDetails", customerDTO.getRfc());
+			model.addAttribute("errorDetails", details.toString());
 			e.printStackTrace();
 			return "error";
 		}
-		return "customer";
+		return "customers";
 	}
 }

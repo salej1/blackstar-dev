@@ -14,9 +14,6 @@ import javax.persistence.Table;
 @Table(name = "customer",catalog = "blackstarDb")
 public class Customer implements Serializable
 {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private int customerId;
 	private String customerType;

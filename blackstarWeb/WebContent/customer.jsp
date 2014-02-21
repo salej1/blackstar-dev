@@ -23,7 +23,6 @@
 					<img src="../img/navigate-right.png" /><a href="">Crear cédula de proyecto</a>
 				</p>
 			</div>
-
 			<div class="grid_16">
 				<div class="box">
 					<h2>Nuevo prospecto</h2>
@@ -93,13 +92,10 @@
 							<td></td>
 							<td>Ciudad:</td>
 							<td>
-							<select name="" id="" style="width: 95%;">
-									<option value="">Aguascalientes</option>
-									<option value="">Culiacan</option>
-									<option value="">Durango</option>
-									<option value="">Hermosillo</option>
-									<option value="">Morelia</option>
-							</select></td>
+								<form:select path="cityId" style="width: 95%;">
+									<form:option value="450">Morelia</form:option>
+								</form:select>
+							</td>
 							<td>Municipio:</td>
 							<td><form:input path="town" type="text" style="width: 95%;" /></td>
 						</tr>
@@ -123,7 +119,7 @@
 						<tr>
 							<td>Condiciones</td>
 							<td colspan="2">
-								<form:select path="governmentId" items="${governmentList}" itemLabel="name" itemValue="governmentId" style="width: 95%;" />
+								<form:select path="paymentTermsId" items="${paymentTermsList}" itemLabel="name" itemValue="paymentTermsId" style="width: 95%;" />
 							</td>
 						</tr>
 						<tr id="rowCredito">
@@ -140,43 +136,30 @@
 						<tr>
 							<td>Moneda</td>
 							<td colspan="2">
-								<select name="" id="" style="width: 95%;">
-									<option value="mxn">Pesos</option>
-									<option value="usd">Dolares</option>
-								</select>
+								<form:select path="currencyId" items="${currencyList}" itemLabel="pluralName" itemValue="currencyId" style="width: 95%;" />
 							</td>
 							<td>IVA</td>
-							<td colspan="2"><select name="" id="" style="width: 95%;">
-									<option value="">16%</option>
-							</select></td>
+							<td colspan="2">
+								<form:select path="ivaId" items="${ivaList}" itemLabel="percentage" itemValue="ivaId" style="width: 95%;" />
+							</td>
 						</tr>
 						<tr>
 							<td>Vendedor</td>
-							<td colspan="2"><select name="" id="" style="width: 95%;">
-									<option value="">Ivan Ramirez Rios</option>
-									<option value="">Rogelio Valadez</option>
-									<option value="">Liliana Diaz</option>
-							</select></td>
+							<td colspan="2">
+								<form:select path="seller" items="${sellerList}" itemLabel="name" itemValue="blackstarUserId" style="width: 95%;" />
+							</td>
 							<td>Contacto</td>
 							<td colspan="2"><form:input path="contactPerson" type="text" style="width: 95%;" /></td>
 						</tr>
 						<tr>
 							<td>Clasificacion</td>
-							<td colspan="2"><select name="" id="" style="width: 95%;">
-									<option value="">Integrador</option>
-									<option value="">IP</option>
-									<option value="">Gobierno</option>
-							</select></td>
+							<td colspan="2">
+								<form:select path="classificationId" items="${classificationList}" itemLabel="name" itemValue="classificationId" style="width: 95%;" />
+							</td>
 							<td>Origen</td>
-							<td colspan="2"><select name="" id="">
-									<option value="">CLIENTE</option>
-									<option value="">CST</option>
-									<option value="">INTERNET</option>
-									<option value="">MAILING</option>
-									<option value="">REVISTA</option>
-									<option value="">REFERIDO</option>
-									<option value="">OTRO</option>
-							</select></td>
+							<td colspan="2">
+								<form:select path="originId" items="${originList}" itemLabel="name" itemValue="originId" />
+							</td>
 						</tr>
 						<tr>
 							<td>CURP</td>
@@ -187,7 +170,7 @@
 					</table>
 					<p></p>
 					<div>
-						<button class="searchButton" onclick="window.history.back();">Guardar</button>
+						<button class="searchButton" type="submit">Guardar</button>
 						<button class="searchButton" onclick="window.history.back();">Cancelar</button>
 					</div>
 				</div>

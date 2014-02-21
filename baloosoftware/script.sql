@@ -237,7 +237,7 @@ create table if not exists `blackstarDb`.`customer` (
   `settlementTimeLimit` varchar(20) not null ,
   `curp` varchar(18) not null ,
   `contactPerson` varchar(50) not null ,
-  `retention` decimal(3, 2) default 0.0,
+  `retention` double default 0.0,
   `cityId` int not null ,
   `paymenttermsId` int not null ,
   `currencyId` varchar(3) not null ,

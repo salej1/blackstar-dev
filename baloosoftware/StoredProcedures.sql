@@ -31,7 +31,7 @@ CREATE PROCEDURE blackstarDb.AddCustomer(
   settlementTimeLimit varchar(20),
   curp varchar(18),
   contactPerson varchar(50),
-  retention decimal(3, 2),
+  retention double,
   cityId int(11),
   paymentTermsId int(11),
   currencyId varchar(3),
@@ -89,7 +89,7 @@ CREATE PROCEDURE blackstarDb.UpdateCustomer(
   settlementTimeLimit varchar(20),
   curp varchar(18),
   contactPerson varchar(50),
-  retention decimal(3, 2),
+  retention double,
   cityId int(11),
   paymentTermsId int(11),
   currencyId varchar(3),
@@ -200,6 +200,8 @@ END$$
 -- blackstarDb.GetAllSellers
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetAllSellers$$
+CREATE PROCEDURE blackstarDb.GetAllSellers()
+BEGIN
 SELECT bsu.blackstarUserId AS blackstarUserId, bsu.name AS name, bsu.email AS email FROM blackstarUser bsu
 inner join blackstarUser_userGroup bsug
 on bsu.blackstarUserId=bsug.blackstarUserId 
