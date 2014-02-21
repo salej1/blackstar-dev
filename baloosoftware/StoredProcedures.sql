@@ -169,5 +169,32 @@ BEGIN
 SELECT cu.currencyId AS currencyId, cu.singleName AS singleName, cu.pluralName AS pluralName FROM currency cu ORDER BY cu.pluralName ASC;
 END$$
 
+-- -----------------------------------------------------------------------------
+-- blackstarDb.GetAllClassifications
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetAllClassifications$$
+CREATE PROCEDURE blackstarDb.GetAllClassifications()
+BEGIN
+SELECT cl.classificationId AS classificationId, cl.name AS name FROM classification cl ORDER BY cl.name ASC;
+END$$
+
+-- -----------------------------------------------------------------------------
+-- blackstarDb.GetAllIVA
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetAllIVA$$
+CREATE PROCEDURE blackstarDb.GetAllIVA()
+BEGIN
+SELECT ivaId, percentage FROM iva ORDER BY percentage ASC;
+END$$
+
+-- -----------------------------------------------------------------------------
+-- blackstarDb.GetAllOrigins
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetAllOrigins$$
+CREATE PROCEDURE blackstarDb.GetAllOrigins()
+BEGIN
+SELECT o.originId AS originId, o.name AS name FROM origin o ORDER BY o.name ASC;
+END$$
+
 DELIMITER ;
 
