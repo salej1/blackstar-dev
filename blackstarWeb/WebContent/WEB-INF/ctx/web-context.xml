@@ -102,4 +102,5 @@
 		parent="abstractController">
 		<property name="customerService" ref="customerService" />
 	</bean>
+	<context:annotation-config />
 </beans>

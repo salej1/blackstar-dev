@@ -7,6 +7,7 @@ import org.json.JSONObject;
 import com.blackstar.db.dao.interfaces.CustomerDAO;
 import com.blackstar.model.Customer;
 import com.blackstar.model.dto.CustomerDTO;
+import com.blackstar.model.dto.CustomerListDTO;
 import com.blackstar.services.AbstractService;
 import com.blackstar.services.interfaces.CustomerService;
 
@@ -15,7 +16,6 @@ public class CustomerServiceImpl extends AbstractService implements CustomerServ
 
 	private CustomerDAO dao=null;
 	
-	
 	public void setDao(CustomerDAO dao) {
 		this.dao = dao;
 	}
@@ -23,13 +23,24 @@ public class CustomerServiceImpl extends AbstractService implements CustomerServ
 	
 
 	@Override
-	public List<CustomerDTO> getCustomersList() {
-	return null;
+	public List<CustomerListDTO> getCustomerList() {
+		return dao.getCustomerList();
 	}
 
 	@Override
-	public String getCustomers() {
-		List<JSONObject> customers = dao.getCustomers();
+	public List<CustomerListDTO> getLeafletList() {
+		return dao.getLeafletList();
+	}
+
+	@Override
+	public String getCustomerJSON() {
+		List<JSONObject> customers = dao.getCustomerJSON();
+		return customers.toString();
+	}
+
+	@Override
+	public String getLeafletJSON() {
+		List<JSONObject> customers = dao.getLeafletJSON();
 		return customers.toString();
 	}
 

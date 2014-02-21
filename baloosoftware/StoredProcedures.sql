@@ -57,7 +57,7 @@ END$$
 DROP PROCEDURE IF EXISTS blackstarDb.GetAllCustomers$$
 CREATE PROCEDURE blackstarDb.GetAllCustomers(customerType enum('P', 'C'))
 BEGIN
-SELECT cu.customerId AS DT_RowId, cu.customerType AS customerType, cu.companyName AS companyName, concat(ci.name, ', ', go.name) AS city, cu.contactPerson AS contactPerson, cu.email1 AS contactEmail FROM customer cu INNER JOIN city ci ON cu.cityId = ci.cityId INNER JOIN government go ON ci.governmentId = go.governmentId WHERE cu.customerType = customerType ORDER BY cu.customerId ASC;
+SELECT cu.customerId AS customerId, cu.customerType AS customerType, cu.companyName AS companyName, concat(ci.name, ', ', go.name) AS city, cu.contactPerson AS contactPerson, cu.email1 AS contactEmail FROM customer cu INNER JOIN city ci ON cu.cityId = ci.cityId INNER JOIN government go ON ci.governmentId = go.governmentId WHERE cu.customerType = customerType ORDER BY cu.customerId ASC;
 END$$
 
 -- -----------------------------------------------------------------------------
@@ -131,6 +131,69 @@ classificationId=classificationId,
 originId=originId,
 seller=seller
 where customerId=customerId;
+END$$
+
+-- -----------------------------------------------------------------------------
+-- blackstarDb.GetAllGovernments
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetAllGovernments$$
+CREATE PROCEDURE blackstarDb.GetAllGovernments()
+BEGIN
+SELECT go.governmentId AS governmentId, go.name AS name FROM government go ORDER BY go.name ASC;
+END$$
+
+-- -----------------------------------------------------------------------------
+-- blackstarDb.GetAllCities
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetAllCities$$
+CREATE PROCEDURE blackstarDb.GetAllCities(governmentId int(11))
+BEGIN
+SELECT ci.cityId AS cityId, ci.name AS name FROM city ci WHERE ci.governmentId = governmentId ORDER BY ci.name ASC;
+END$$
+
+-- -----------------------------------------------------------------------------
+-- blackstarDb.GetAllPaymentTerms
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetAllPaymentTerms$$
+CREATE PROCEDURE blackstarDb.GetAllPaymentTerms()
+BEGIN
+SELECT pt.paymentTermsId AS paymentTermsId, pt.name AS name FROM paymentTerms pt ORDER BY pt.name ASC;
+END$$
+
+-- -----------------------------------------------------------------------------
+-- blackstarDb.GetAllCurrency
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetAllCurrency$$
+CREATE PROCEDURE blackstarDb.GetAllCurrency()
+BEGIN
+SELECT cu.currencyId AS currencyId, cu.singleName AS singleName, cu.pluralName AS pluralName FROM currency cu ORDER BY cu.pluralName ASC;
+END$$
+
+-- -----------------------------------------------------------------------------
+-- blackstarDb.GetAllClassifications
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetAllClassifications$$
+CREATE PROCEDURE blackstarDb.GetAllClassifications()
+BEGIN
+SELECT cl.classificationId AS classificationId, cl.name AS name FROM classification cl ORDER BY cl.name ASC;
+END$$
+
+-- -----------------------------------------------------------------------------
+-- blackstarDb.GetAllIVA
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetAllIVA$$
+CREATE PROCEDURE blackstarDb.GetAllIVA()
+BEGIN
+SELECT ivaId, percentage FROM iva ORDER BY percentage ASC;
+END$$
+
+-- -----------------------------------------------------------------------------
+-- blackstarDb.GetAllOrigins
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetAllOrigins$$
+CREATE PROCEDURE blackstarDb.GetAllOrigins()
+BEGIN
+SELECT o.originId AS originId, o.name AS name FROM origin o ORDER BY o.name ASC;
 END$$
 
 DELIMITER ;

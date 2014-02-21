@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
- 
   
   <!--::::::::::::::::::::::::::::::: Template :::::::::::::::::::::::::::::::-->
    <bean id ="abstractService" class="com.blackstar.services.AbstractService">
@@ -69,7 +68,7 @@
     <property name="rpService" ref="reportService" />
   </bean>
   
-  <bean id="serviceCustomer" class="com.blackstar.services.impl.CustomerServiceImpl" parent="abstractService">
+  <bean id="customerService" class="com.blackstar.services.impl.CustomerServiceImpl" parent="abstractService">
       <property name="dao" ref="customerDAO" />
   </bean>
 

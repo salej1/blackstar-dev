@@ -9,6 +9,7 @@ import com.blackstar.db.dao.interfaces.CustomerDAO;
 import com.blackstar.db.dao.mapper.JSONRowMapper;
 import com.blackstar.model.Customer;
 import com.blackstar.model.dto.CustomerDTO;
+import com.blackstar.model.dto.CustomerListDTO;
 
 public class CustomerDAOImpl extends AbstractDAO implements CustomerDAO
 {
@@ -112,15 +113,28 @@ public class CustomerDAOImpl extends AbstractDAO implements CustomerDAO
 		return true;
 	}
 	@Override
-	public List<JSONObject> getCustomers() {
+	public List<JSONObject> getCustomerJSON() {
 		String sqlQuery = "CALL GetAllCustomers('C');";
 		return getJdbcTemplate().query(sqlQuery, new JSONRowMapper()); 
 	}
 
 	@Override
-	public List<JSONObject> getLeaflets() {
+	public List<JSONObject> getLeafletJSON() {
 		String sqlQuery = "CALL GetAllCustomers('P');";
 		return getJdbcTemplate().query(sqlQuery, new JSONRowMapper()); 
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<CustomerListDTO> getCustomerList()
+	{
+		return (List<CustomerListDTO>) getJdbcTemplate().query("CALL GetAllCustomers('C');", getMapperFor(CustomerListDTO.class));
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<CustomerListDTO> getLeafletList()
+	{
+		return (List<CustomerListDTO>) getJdbcTemplate().query("CALL GetAllCustomers('P');", getMapperFor(CustomerListDTO.class));
+	}
 }
