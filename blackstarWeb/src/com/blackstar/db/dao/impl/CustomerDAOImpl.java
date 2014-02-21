@@ -10,6 +10,7 @@ import com.blackstar.db.dao.mapper.JSONRowMapper;
 import com.blackstar.model.Customer;
 import com.blackstar.model.dto.CustomerDTO;
 import com.blackstar.model.dto.CustomerListDTO;
+import com.blackstar.model.dto.GovernmentDTO;
 
 public class CustomerDAOImpl extends AbstractDAO implements CustomerDAO
 {
@@ -142,5 +143,12 @@ public class CustomerDAOImpl extends AbstractDAO implements CustomerDAO
 	public List<CustomerListDTO> getLeafletList()
 	{
 		return (List<CustomerListDTO>) getJdbcTemplate().query("CALL GetAllCustomers('P');", getMapperFor(CustomerListDTO.class));
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<GovernmentDTO> getGovernmentList()
+	{
+		return (List<GovernmentDTO>) getJdbcTemplate().query("CALL GetAllGovernments();", getMapperFor(GovernmentDTO.class));
 	}
 }

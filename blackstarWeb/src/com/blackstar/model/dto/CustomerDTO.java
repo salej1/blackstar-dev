@@ -1,55 +1,54 @@
 package com.blackstar.model.dto;
 
-public class CustomerDTO
-{
-	private Integer customerId;
-	private String customerType;
-	private String rfc;
-	private String companyName;
-	private String tradeName;
-	private String phoneCode1;
-	private String phoneCode2;
-	private String phone1;
-	private String phone2;
-	private String extension1;
-	private String extension2;
-	private String email1;
-	private String email2;
-	private String street;
-	private String externalNumber;
-	private String internalNumber;
-	private String colony;
-	private String town;
-	private String country;
-	private String postcode;
+public class CustomerDTO {
 	private Double advance;
-	private String timeLimit;
-	private String settlementTimeLimit;
-	private String curp;
-	private String contactPerson;
 	private Double retention;
 	private Integer cityId;
-	private Integer paymentTermsId;
-	private String currencyId;
-	private Integer ivaId;
 	private Integer classificationId;
+	private Integer customerId;
+	private Integer governmentId;
+	private Integer ivaId;
 	private Integer originId;
+	private Integer paymentTermsId;
 	private Integer seller;
+	private String colony;
+	private String companyName;
+	private String contactPerson;
+	private String country;
+	private String curp;
+	private String currencyId;
+	private String customerType;
+	private String email1;
+	private String email2;
+	private String extension1;
+	private String extension2;
+	private String externalNumber;
+	private String internalNumber;
+	private String phone1;
+	private String phone2;
+	private String phoneCode1;
+	private String phoneCode2;
+	private String postcode;
+	private String rfc;
+	private String settlementTimeLimit;
+	private String street;
+	private String timeLimit;
+	private String town;
+	private String tradeName;
 
-	public CustomerDTO()
-	{
+	public CustomerDTO() {
 	}
 
-	public CustomerDTO(String customerType, String rfc,
-			String companyName, String tradeName, String phoneCode1,
-			String phoneCode2, String phone1, String phone2, String extension1,
-			String extension2, String email1, String email2, String street,
-			String externalNumber, String internalNumber, String colony,
-			String town, String country, String postcode, Double advance,
-			String timeLimit, String settlementTimeLimit, String curp,
-			String contactPerson, Double retention, Integer cityId,
-			Integer paymentTermsId, String currencyId, Integer ivaId,
-			Integer classificationId, Integer originId, Integer seller) {
+	public CustomerDTO(String customerType, String rfc, String companyName,
+			String tradeName, String phoneCode1, String phoneCode2,
+			String phone1, String phone2, String extension1, String extension2,
+			String email1, String email2, String street, String externalNumber,
+			String internalNumber, String colony, String town, String country,
+			String postcode, Double advance, String timeLimit,
+			String settlementTimeLimit, String curp, String contactPerson,
+			Double retention, Integer cityId, Integer paymentTermsId,
+			String currencyId, Integer ivaId, Integer classificationId,
+			Integer originId, Integer seller) {
 		super();
 		this.customerType = customerType;
 		this.rfc = rfc;
@@ -347,5 +346,13 @@ public class CustomerDTO
 
 	public void setSeller(Integer seller) {
 		this.seller = seller;
+	}
+
+	public Integer getGovernmentId() {
+		return governmentId;
+	}
+
+	public void setGovernmentId(Integer governmentId) {
+		this.governmentId = governmentId;
 	}
 }

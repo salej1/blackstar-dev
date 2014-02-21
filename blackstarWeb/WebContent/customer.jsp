@@ -93,8 +93,6 @@
 							<td></td>
 							<td>Ciudad:</td>
 							<td>
-							<form:select path="" items="" itemLabel="" itemValue="">
-							</form:select>
 							<select name="" id="" style="width: 95%;">
 									<option value="">Aguascalientes</option>
 									<option value="">Culiacan</option>
@@ -108,13 +106,9 @@
 						<tr>
 							<td></td>
 							<td>Estado:</td>
-							<td><select name="" id="" style="width: 95%;">
-									<option value="">Aguascalientes</option>
-									<option value="">Baja California Norte</option>
-									<option value="">Baja California Sur</option>
-									<option value="">Campeche</option>
-									<option value="">Colima</option>
-							</select></td>
+							<td>
+								<form:select path="governmentId" items="${governmentList}" itemLabel="name" itemValue="governmentId" style="width: 95%;" />
+							</td>
 							<td>País:</td>
 							<td><form:input path="country" type="text" style="width: 95%;" /></td>
 						</tr>
@@ -128,10 +122,9 @@
 						</tr>
 						<tr>
 							<td>Condiciones</td>
-							<td colspan="2"><select name="" id="" style="width: 95%;" onchange="credChange($(this).val());">
-									<option value="c">Contado</option>
-									<option value="r" selected="selected">Credito</option>
-							</select></td>
+							<td colspan="2">
+								<form:select path="governmentId" items="${governmentList}" itemLabel="name" itemValue="governmentId" style="width: 95%;" />
+							</td>
 						</tr>
 						<tr id="rowCredito">
 							<td></td>

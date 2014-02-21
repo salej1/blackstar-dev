@@ -32,6 +32,7 @@ public class CustomerController extends AbstractController
 	@RequestMapping(value = "/add.do", method = RequestMethod.GET)
 	public String add(@ModelAttribute("customerDTO") CustomerDTO customerDTO, @ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession, ModelMap model, HttpServletRequest req, HttpServletResponse resp)
 	{
+		model.addAttribute("governmentList", customerService.getGovernmentList());
 		return "customer";
 	}
 
