@@ -196,5 +196,18 @@ BEGIN
 SELECT o.originId AS originId, o.name AS name FROM origin o ORDER BY o.name ASC;
 END$$
 
+-- -----------------------------------------------------------------------------
+-- blackstarDb.GetAllSellers
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetAllSellers$$
+ SELECT bsu.blackstarUserId AS blackstarUserId, bsu.name AS name, bsu.email AS email FROM blackstarUser bsu
+    -> inner join blackstarUser_userGroup bsug
+    -> on bsu.blackstarUserId=bsug.blackstarUserId 
+    -> inner join userGroup ug
+    -> on ug.userGroupId=bsug.userGroupId
+    -> where ug.userGroupId=(select userGroupID from userGroup ug where ug.externalId='sysSales')
+    -> ORDER BY bsu.name ASC;
+END$$
+
 DELIMITER ;
 
