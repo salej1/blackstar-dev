@@ -69,12 +69,6 @@ public class CustomerDAOImpl extends AbstractDAO implements CustomerDAO
 		Integer idOS = getJdbcTemplate().queryForInt(sqlBuilder.toString() ,args);
 		return idOS;
 	}
-	
-	/*public List<JSONObject> getCustomer() {
-		String sqlQuery = "CALL GetAllCustomers();";
-		return getJdbcTemplate().query(sqlQuery, new JSONRowMapper()); 
-	}
-	*/
 
 	@Override
 	public boolean updateCustomer(Customer customer) {
