@@ -186,11 +186,96 @@
 --								blackstarDb.GetEquipmentTypeBySOId por
 --								blackstarDb.GetServiceOrderTypeBySOId
 -- -----------------------------------------------------------------------------
+-- 33	20/02/2014	SAG 	Se integra:
+--								blackstarDb.GetPersonalSurveyServiceList
+--								blackstarDb.GetAllSurveyServiceList
+--								blackstarDb.AddSurveyToServiceOrder
+--								blackstarDb.GetSurveyServiceLinkedServices
+-- -----------------------------------------------------------------------------
 
 use blackstarDb;
 
 DELIMITER $$
 
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetSurveyServiceLinkedServices
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetSurveyServiceLinkedServices$$
+CREATE PROCEDURE blackstarDb.GetSurveyServiceLinkedServices(pSurveyServiceId INT)
+BEGIN
+
+	SELECT 
+		serviceOrderNumber AS serviceOrderNumber,
+		serviceOrderId AS serviceOrderId
+	FROM serviceOrder
+	WHERE surveyServiceId = pSurveyServiceId;
+	
+END$$
+
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.AddSurveyToServiceOrder
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.AddSurveyToServiceOrder$$
+CREATE PROCEDURE blackstarDb.AddSurveyToServiceOrder(pServiceOrderNumber VARCHAR(100), pSurveyServiceId INT, pModifiedBy VARCHAR(100), user VARCHAR(100))
+BEGIN
+
+	UPDATE serviceOrder SET
+		surveyServiceId = pSurveyServiceId,
+		modified = NOW(),
+		modifiedBy = pModifiedBy,
+		modifiedByUsr = user
+	WHERE 
+		serviceOrderNumber = pServiceOrderNumber;
+	
+END$$
+
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetAllSurveyServiceList
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetAllSurveyServiceList$$
+CREATE PROCEDURE blackstarDb.GetAllSurveyServiceList()
+BEGIN
+
+	SELECT DISTINCT
+		s.surveyServiceId AS DT_RowId,
+		s.surveyServiceId AS surveyServiceNumber,
+		p.customer AS customer,
+		p.project AS project,
+		s.surveyDate AS surveyDate,
+		s.score AS score
+	FROM surveyService s
+		INNER JOIN serviceOrder o ON o.surveyServiceId = s.surveyServiceId
+		INNER JOIN policy p ON o.policyId = p.policyId
+	ORDER BY surveyDate DESC;
+
+END$$
+
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetPersonalSurveyServiceList
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetPersonalSurveyServiceList$$
+CREATE PROCEDURE blackstarDb.GetPersonalSurveyServiceList(pUser VARCHAR(100))
+BEGIN
+
+	SELECT 
+		s.surveyServiceId AS DT_RowId,
+		s.surveyServiceNumber AS surveyServiceNumber,
+		p.customer AS customer,
+		p.project AS project,
+		s.surveyDate AS surveyDate,
+		s.score AS score
+	FROM surveyService s
+		INNER JOIN serviceOrder o ON o.surveyServiceId = s.surveyServiceId
+		INNER JOIN policy p ON o.policyId = p.policyId
+		INNER JOIN serviceOrderEmployee e ON e.serviceOrderId = o.serviceOrderId
+	WHERE
+		e.employeeId = pUser;
+
+END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetAutocompleteEmployeeList
@@ -286,65 +371,67 @@ BEGIN
 	ORDER BY errorLogId DESC 
 	LIMIT 2;
 	
+END$$
+
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetServiceCenterIdList
 -- -----------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS blackstardb.GetServiceCenterIdList$$
-CREATE PROCEDURE blackstardb.`GetServiceCenterIdList`()
-BEGIN
-SELECT *
-FROM servicecenter;
+DROP PROCEDURE IF EXISTS blackstarDb.GetServiceCenterIdList$$
+CREATE PROCEDURE blackstarDb.GetServiceCenterIdList()
+	BEGIN
+	SELECT *
+	FROM serviceCenter;
 END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetStatusKPI
 -- -----------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS blackstardb.GetStatusKPI$$
-CREATE PROCEDURE blackstardb.`GetStatusKPI`(pType CHAR(1))
+DROP PROCEDURE IF EXISTS blackstarDb.GetStatusKPI$$
+CREATE PROCEDURE blackstarDb.GetStatusKPI(pType CHAR(1))
 BEGIN
-SELECT ts.ticketStatus as name, count(*) as value
-FROM ticket tk
-INNER JOIN policy py on tk.policyId = py.policyId
-INNER JOIN servicecenter sc ON py.serviceCenterId = sc.serviceCenterId
-INNER JOIN ticketstatus ts ON tk.ticketStatusId = ts.ticketStatusId
-WHERE tk.created >= STR_TO_DATE(CONCAT('01-01-',YEAR(NOW())),'%d-%m-%Y')
-AND sc.serviceCenterId LIKE pType
-GROUP BY tk.ticketStatusId;
+	SELECT ts.ticketStatus as name, count(*) as value
+	FROM ticket tk
+	INNER JOIN policy py on tk.policyId = py.policyId
+	INNER JOIN serviceCenter sc ON py.serviceCenterId = sc.serviceCenterId
+	INNER JOIN ticketStatus ts ON tk.ticketStatusId = ts.ticketStatusId
+	WHERE tk.created >= STR_TO_DATE(CONCAT('01-01-',YEAR(NOW())),'%d-%m-%Y')
+	AND sc.serviceCenterId LIKE pType
+	GROUP BY tk.ticketStatusId;
 END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetTicketsByServiceCenterKPI
 -- -----------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS blackstardb.GetTicketsByServiceCenterKPI$$
-CREATE PROCEDURE blackstardb.`GetTicketsByServiceCenterKPI`()
+DROP PROCEDURE IF EXISTS blackstarDb.GetTicketsByServiceCenterKPI$$
+CREATE PROCEDURE blackstarDb.GetTicketsByServiceCenterKPI()
 BEGIN
-SELECT sc.serviceCenter as name, count(*) as value
-FROM ticket tk
-INNER JOIN policy py on tk.policyId = py.policyId
-INNER JOIN servicecenter sc ON py.serviceCenterId = sc.serviceCenterId
-WHERE tk.created >= STR_TO_DATE(CONCAT('01-01-',YEAR(NOW())),'%d-%m-%Y')
-GROUP BY sc.serviceCenter;
+	SELECT sc.serviceCenter as name, count(*) as value
+	FROM ticket tk
+	INNER JOIN policy py on tk.policyId = py.policyId
+	INNER JOIN serviceCenter sc ON py.serviceCenterId = sc.serviceCenterId
+	WHERE tk.created >= STR_TO_DATE(CONCAT('01-01-',YEAR(NOW())),'%d-%m-%Y')
+	GROUP BY sc.serviceCenter;
 END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetReportsByEquipmentTypeKPI
 -- -----------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS blackstardb.GetReportsByEquipmentTypeKPI$$
-CREATE PROCEDURE blackstardb.`GetReportsByEquipmentTypeKPI`()
+DROP PROCEDURE IF EXISTS blackstarDb.GetReportsByEquipmentTypeKPI$$
+CREATE PROCEDURE blackstarDb.GetReportsByEquipmentTypeKPI()
 BEGIN
-SELECT et.equipmentType as name , count(*) as value
-FROM ticket tk
-INNER JOIN policy py on py.policyId = tk.policyId
-INNER JOIN equipmenttype et ON et.equipmentTypeId = py.equipmentTypeId
-WHERE tk.created >= STR_TO_DATE(CONCAT('01-01-',YEAR(NOW())),'%d-%m-%Y')
-GROUP BY py.equipmentTypeId$$
-END;
+	SELECT et.equipmentType as name , count(*) as value
+	FROM ticket tk
+	INNER JOIN policy py on py.policyId = tk.policyId
+	INNER JOIN equipmentType et ON et.equipmentTypeId = py.equipmentTypeId
+	WHERE tk.created >= STR_TO_DATE(CONCAT('01-01-',YEAR(NOW())),'%d-%m-%Y')
+	GROUP BY py.equipmentTypeId;
+END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetResumeOSKPI
 -- -----------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS blackstardb.GetResumeOSKPI$$
-CREATE PROCEDURE blackstardb.`GetResumeOSKPI`()
+DROP PROCEDURE IF EXISTS blackstarDb.GetResumeOSKPI$$
+CREATE PROCEDURE blackstarDb.GetResumeOSKPI()
 BEGIN
 SELECT so.serviceUnit as serviceUnit,
        py.project as project,
@@ -370,8 +457,8 @@ SELECT so.serviceUnit as serviceUnit,
        py.finalUser as finalUser,
        ss.qualification as qualification,
        ss.comments as comments
-FROM serviceorder so
-INNER JOIN surveyservice ss on so.serviceOrderId = ss.serviceOrderId
+FROM serviceOrder so
+INNER JOIN surveyService ss on so.serviceOrderId = ss.serviceOrderId
 INNER JOIN policy py on so.policyId = py.policyId
 WHERE so.created >= STR_TO_DATE(CONCAT('01-01-',YEAR(NOW())),'%d-%m-%Y');
 END$$
@@ -379,14 +466,14 @@ END$$
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetReportOSResumeKPI
 -- -----------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS blackstardb.GetReportOSResumeKPI$$
-CREATE PROCEDURE blackstardb.GetReportOSResumeKPI()
+DROP PROCEDURE IF EXISTS blackstarDb.GetReportOSResumeKPI$$
+CREATE PROCEDURE blackstarDb.GetReportOSResumeKPI()
 BEGIN
 SELECT so.serviceUnit office, count(*) numServiceOrders, survey.obCount numObervations
-FROM serviceorder so
+FROM serviceOrder so
 INNER JOIN (SELECT so.serviceUnit, count(*) obCount
-            FROM surveyservice ss
-            INNER JOIN serviceorder so on so.serviceOrderId = ss.serviceOrderId
+            FROM surveyService ss
+            INNER JOIN serviceOrder so on so.serviceOrderId = ss.serviceOrderId
             WHERE ss.datePerson >= STR_TO_DATE(CONCAT('01-01-',YEAR(NOW())),'%d-%m-%Y')
             GROUP BY so.serviceUnit) AS survey ON so.serviceUnit = survey.serviceUnit 
 WHERE so.closed >= STR_TO_DATE(CONCAT('01-01-',YEAR(NOW())),'%d-%m-%Y')
@@ -396,24 +483,24 @@ END$$
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetReportOSTableKPI
 -- -----------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS blackstardb.GetReportOSTableKPI$$
-CREATE PROCEDURE blackstardb.GetReportOSTableKPI()
+DROP PROCEDURE IF EXISTS blackstarDb.GetReportOSTableKPI$$
+CREATE PROCEDURE blackstarDb.GetReportOSTableKPI()
 BEGIN
 SELECT os.serviceOrderId as serviceOrderId
        , ss.comments as comments
        , ss.serviceComments as serviceComments
        , os.responsible as responsible
        , os.serviceUnit as office
-FROM serviceorder os
-INNER JOIN surveyservice ss on os.serviceOrderId = ss.serviceOrderId
+FROM serviceOrder os
+INNER JOIN surveyService ss on os.serviceOrderId = ss.serviceOrderId
 ORDER BY office ASC;
 END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetMaxReportsByUserKPI
 -- -----------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS blackstardb.GetMaxReportsByUserKPI$$
-CREATE PROCEDURE blackstardb.GetMaxReportsByUserKPI()
+DROP PROCEDURE IF EXISTS blackstarDb.GetMaxReportsByUserKPI$$
+CREATE PROCEDURE blackstarDb.GetMaxReportsByUserKPI()
 BEGIN
 SELECT tk.employee as employee,
        py.customer as customer,
@@ -430,8 +517,8 @@ END$$
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetConcurrentFailuresKPI
 -- -----------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS blackstardb.GetConcurrentFailuresKPI$$
-CREATE PROCEDURE blackstardb.GetConcurrentFailuresKPI()
+DROP PROCEDURE IF EXISTS blackstarDb.GetConcurrentFailuresKPI$$
+CREATE PROCEDURE blackstarDb.GetConcurrentFailuresKPI()
 BEGIN
   SELECT  tk.employee as employee, 
           py.customer as customer,
@@ -457,8 +544,8 @@ END$$
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetPoliciesKPI
 -- -----------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS blackstardb.GetPoliciesKPI$$
-CREATE PROCEDURE blackstardb.GetPoliciesKPI()
+DROP PROCEDURE IF EXISTS blackstarDb.GetPoliciesKPI$$
+CREATE PROCEDURE blackstarDb.GetPoliciesKPI()
 BEGIN
 SELECT py.policyId as policyId,
        IFNULL(of.officeName, '') as officeName,
@@ -490,16 +577,16 @@ SELECT py.policyId as policyId,
        IFNULL(sc.serviceCenter, '') as serviceCenter
 	FROM policy py
   INNER JOIN office of ON py.officeId = of.officeId
-  INNER JOIN equipmenttype eq ON eq.equipmentTypeId = py.equipmentTypeId
-  INNER JOIN servicecenter sc ON py.serviceCenterId = sc.serviceCenterId
+  INNER JOIN equipmentType eq ON eq.equipmentTypeId = py.equipmentTypeId
+  INNER JOIN serviceCenter sc ON py.serviceCenterId = sc.serviceCenterId
 	WHERE py.created >= STR_TO_DATE(CONCAT('01-01-',YEAR(NOW())),'%d-%m-%Y')
     ORDER BY py.created ASC;
 END$$
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetTicketsKPI
 -- -----------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS blackstardb.GetTicketsKPI$$
-CREATE PROCEDURE blackstardb.GetTicketsKPI()
+DROP PROCEDURE IF EXISTS blackstarDb.GetTicketsKPI$$
+CREATE PROCEDURE blackstarDb.GetTicketsKPI()
 BEGIN
 
 SELECT 
@@ -507,7 +594,7 @@ SELECT
 		tk.ticketNumber AS ticketNumber,
 		tk.created AS created,
 		p.customer AS customer,
-		et.equipmenttype AS equipmentType,
+		et.equipmentType AS equipmentType,
 		ts.ticketStatus AS ticketStatus,
 		IFNULL(bu.name, '') AS asignee,
     IFNULL(p.equipmentLocation, '') AS equipmentLocation,
@@ -517,7 +604,7 @@ SELECT
 	FROM ticket tk 
 		INNER JOIN ticketStatus ts ON tk.ticketStatusId = ts.ticketStatusId
 		INNER JOIN policy p ON tk.policyId = p.policyId
-		INNER JOIN equipmentType et ON p.equipmenttypeId = et.equipmenttypeId
+		INNER JOIN equipmentType et ON p.equipmentTypeId = et.equipmentTypeId
 		INNER JOIN office of on p.officeId = of.officeId
 		LEFT OUTER JOIN blackstarUser bu ON bu.email = tk.asignee
 	WHERE tk.created >= STR_TO_DATE(CONCAT('01-01-',YEAR(NOW())),'%d-%m-%Y')
@@ -682,7 +769,7 @@ BEGIN
 		INNER JOIN serviceType st ON so.servicetypeId = st.servicetypeId
 		INNER JOIN serviceStatus ss ON so.serviceStatusId = ss.serviceStatusId
 		INNER JOIN policy p ON so.policyId = p.policyId
-		INNER JOIN equipmentType et ON p.equipmenttypeId = et.equipmenttypeId
+		INNER JOIN equipmentType et ON p.equipmentTypeId = et.equipmentTypeId
 		INNER JOIN office of on p.officeId = of.officeId
      LEFT OUTER JOIN ticket t on t.ticketId = so.ticketId
 	ORDER BY so.ServiceOrderId DESC;
@@ -1493,7 +1580,7 @@ BEGIN
 		p.contactName AS contactName,
 		p.serialNumber AS serialNumber,
 		p.customer AS customer,
-		et.equipmenttype AS equipmentType,
+		et.equipmentType AS equipmentType,
 		p.responseTimeHR AS responseTimeHR,
 		p.project AS project,
 		ts.ticketStatus AS ticketStatus,
@@ -1501,7 +1588,7 @@ BEGIN
 	FROM ticket tk 
 		INNER JOIN ticketStatus ts ON tk.ticketStatusId = ts.ticketStatusId
 		INNER JOIN policy p ON tk.policyId = p.policyId
-		INNER JOIN equipmentType et ON p.equipmenttypeId = et.equipmenttypeId
+		INNER JOIN equipmentType et ON p.equipmentTypeId = et.equipmentTypeId
 		INNER JOIN office of on p.officeId = of.officeId
 	WHERE IFNULL(employee, '') = ''
 		AND closed IS NULL;
@@ -1522,7 +1609,7 @@ BEGIN
 		p.contactName AS contactName,
 		p.serialNumber AS serialNumber,
 		p.customer AS customer,
-		et.equipmenttype AS equipmentType,
+		et.equipmentType AS equipmentType,
 		p.responseTimeHR AS responseTimeHR,
 		p.project AS project,
 		ts.ticketStatus AS ticketStatus,
@@ -1531,7 +1618,7 @@ BEGIN
 	FROM ticket tk 
 		INNER JOIN ticketStatus ts ON tk.ticketStatusId = ts.ticketStatusId
 		INNER JOIN policy p ON tk.policyId = p.policyId
-		INNER JOIN equipmentType et ON p.equipmenttypeId = et.equipmenttypeId
+		INNER JOIN equipmentType et ON p.equipmentTypeId = et.equipmentTypeId
 		INNER JOIN office of on p.officeId = of.officeId
 		LEFT OUTER JOIN blackstarUser bu ON bu.email = tk.asignee
 	WHERE tk.created > '01-01' + YEAR(NOW())
@@ -1565,7 +1652,7 @@ BEGIN
 		INNER JOIN serviceType st ON so.servicetypeId = st.servicetypeId
 		INNER JOIN serviceStatus ss ON so.serviceStatusId = ss.serviceStatusId
 		INNER JOIN policy p ON so.policyId = p.policyId
-		INNER JOIN equipmentType et ON p.equipmenttypeId = et.equipmenttypeId
+		INNER JOIN equipmentType et ON p.equipmentTypeId = et.equipmentTypeId
 		INNER JOIN office of on p.officeId = of.officeId
      LEFT OUTER JOIN ticket t on t.ticketId = so.ticketId
 	WHERE ss.serviceStatus IN(status) 
@@ -1587,7 +1674,7 @@ BEGIN
 		p.contactName AS contactName,
 		p.serialNumber AS serialNumber,
 		p.customer AS customer,
-		et.equipmenttype AS equipmentType,
+		et.equipmentType AS equipmentType,
 		tk.solutionTimeDeviationHr AS solutionTimeDeviationHr,
 		p.project AS project,
 		ts.ticketStatus AS ticketStatus,
@@ -1595,7 +1682,7 @@ BEGIN
 	FROM ticket tk 
 		INNER JOIN ticketStatus ts ON tk.ticketStatusId = ts.ticketStatusId
 		INNER JOIN policy p ON tk.policyId = p.policyId
-		INNER JOIN equipmentType et ON p.equipmenttypeId = et.equipmenttypeId
+		INNER JOIN equipmentType et ON p.equipmentTypeId = et.equipmentTypeId
 		INNER JOIN office of on p.officeId = of.officeId
 	WHERE ts.ticketStatus = status;
 	
@@ -2357,7 +2444,7 @@ BEGIN
 	SELECT 
 		serviceOrderId,
 		serviceOrderNumber 
-	FROM serviceorder 
+	FROM serviceOrder 
 	WHERE created >= CURDATE() 
 	ORDER BY createdByUsr;
 
@@ -2371,8 +2458,8 @@ CREATE PROCEDURE blackstarDb.AddSurveyService(
 	company varchar(255),
 	namePerson varchar(255),
 	email varchar(255),
-	telephone varchar(45),
-	datePerson datetime,
+	phone varchar(45),
+	surveyDate datetime,
 	questiontreatment varchar(255),
 	reasontreatment varchar(255),
 	questionIdentificationPersonal varchar(255),
@@ -2382,51 +2469,48 @@ CREATE PROCEDURE blackstarDb.AddSurveyService(
 	reasonTime varchar(255),
 	questionUniform varchar(255),
 	reasonUniform varchar(255),
-	qualification int,
-	serviceOrderId  int(11) ,
-	sign varchar(255),
-	suggestion varchar(255)
+	score int,
+	sign text,
+	suggestion varchar(255),
+	created datetime,
+	createdBy varchar(100),
+	createdByUsr varchar(100)
 )
 BEGIN 
-	INSERT INTO surveyService (company,namePerson,email
-	,telephone,datePerson,questiontreatment,reasontreatment,questionIdentificationPersonal,
-	questionIdealEquipment,reasonIdealEquipment,questionTime,reasonTime,
-	questionUniform,reasonUniform,qualification,serviceOrderId,sign,suggestion)
-	values(company,namePerson,email
-	,telephone,datePerson,questiontreatment,reasontreatment,
-	questionIdentificationPersonal,questionIdealEquipment,reasonIdealEquipment,
-	questionTime,reasonTime,questionUniform,reasonUniform,qualification,
-	serviceOrderId,sign,suggestion);
-	select LAST_INSERT_ID();
+	INSERT INTO surveyService 
+		(company,namePerson,email,phone,surveyDate,questiontreatment,reasontreatment,questionIdentificationPersonal,questionIdealEquipment,reasonIdealEquipment,questionTime,reasonTime,questionUniform,reasonUniform,score,sign,suggestion,created,createdBy,createdByUsr)
+	VALUES
+		(company,namePerson,email,phone,surveyDate,questiontreatment,reasontreatment,questionIdentificationPersonal,questionIdealEquipment,reasonIdealEquipment,questionTime,reasonTime,questionUniform,reasonUniform,score,sign,suggestion,created,createdBy,createdByUsr);
+select LAST_INSERT_ID();
 END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetsurveyServiceById
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetsurveyServiceById$$
-CREATE PROCEDURE blackstarDb.GetsurveyServiceById(surveyServiceId INTEGER)
+CREATE PROCEDURE blackstarDb.GetsurveyServiceById(pSurveyServiceId INTEGER)
 BEGIN
 	SELECT 
 		surveyServiceId,
 		company,
 		namePerson as name,
 		email,
-		telephone,
-		datePerson as date,
+		phone,
+		surveyDate as date,
 		questionTreatment,
 		reasonTreatment,
 		questionIdentificationPersonal,
 		questionIdealEquipment,
+		reasonIdealEquipment,
 		questionTime,
 		reasonTime,
 		questionUniform,
 		reasonUniform,
-		qualification,
-		serviceOrderId,
+		score,
 		sign,
 		suggestion
 	FROM surveyService 
-	WHERE surveyServiceId = surveyServiceId;
+	WHERE surveyServiceId = pSurveyServiceId;
 END$$
 -- -----------------------------------------------------------------------------
 	-- FIN DE LOS STORED PROCEDURES

@@ -631,13 +631,14 @@ END IF;
 
 IF (SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'surveyService') = 0 THEN
 
-	CREATE TABLE blackstardb.surveyService (
+	CREATE TABLE blackstarDb.surveyService (
 		surveyServiceId INT NOT NULL AUTO_INCREMENT,
-		company VARCHAR(45) NULL,
+		surveyServiceNumber VARCHAR(50),
+		company varchar(255),
 		namePerson VARCHAR(45) NULL,
 		email VARCHAR(45) NULL,
-		telephone VARCHAR(45) NULL,
-		datePerson DATE NULL,
+		phone VARCHAR(45) NULL,
+		surveyDate DATE NULL,
 		questionTreatment VARCHAR(45) NULL,
 		reasonTreatment VARCHAR(45) NULL,
 		questionIdentificationPersonal VARCHAR(45) NULL,
@@ -648,10 +649,9 @@ IF (SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackst
 		reasonTime VARCHAR(45) NULL,
 		questionUniform VARCHAR(45) NULL,
 		reasonUniform VARCHAR(45) NULL,
-		qualification INT NULL,
-		serviceOrderId INT NULL,
-		sign VARCHAR(45) NULL,
-		suggestion VARCHAR(255) NULL,
+		score INT NULL,
+		sign TEXT NULL,
+		suggestion TEXT NULL,
 		created DATETIME NULL,
 		createdBy NVARCHAR(50) NULL,
 		createdByUsr NVARCHAR(50) NULL,
@@ -659,11 +659,18 @@ IF (SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackst
 		modifiedBy NVARCHAR(50) NULL,
 		modifiedByUsr NVARCHAR(50) NULL,
 		PRIMARY KEY (surveyServiceId),
-		UNIQUE UQ_surveyService_surveyServiceId(surveyServiceId),
-		KEY (serviceOrderId),
-		FOREIGN KEY (serviceOrderId) REFERENCES serviceOrder (serviceOrderId)
+		UNIQUE UQ_surveyService_surveyServiceId(surveyServiceId)
 	)ENGINE=INNODB; 
-		
+
+END IF;
+
+IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'serviceOrder' AND COLUMN_NAME = 'surveyServiceId') = 0  THEN
+
+	ALTER TABLE blackstarDb.serviceOrder ADD surveyServiceId INT;
+	ALTER TABLE blackstarDb.serviceOrder ADD CONSTRAINT FK_serviceOrder_surveyService
+		FOREIGN KEY (surveyServiceId) REFERENCES surveyService (surveyServiceId);
+
+
 END IF;
 
 	

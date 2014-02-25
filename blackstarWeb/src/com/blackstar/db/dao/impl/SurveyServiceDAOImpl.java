@@ -7,33 +7,33 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONObject;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 
 import com.blackstar.db.dao.AbstractDAO;
 import com.blackstar.db.dao.interfaces.SurveyServiceDAO;
+import com.blackstar.db.dao.mapper.JSONRowMapper;
 import com.blackstar.model.Serviceorder;
 import com.blackstar.model.SurveyService;
 
 public class SurveyServiceDAOImpl extends AbstractDAO implements SurveyServiceDAO{
 
-	private static final String GET_SERVICE_ORDER_BY_USER = "CALL GetServiceOrderByUser";
 	
-	
-	public void saveSurvey(SurveyService surveyService) {
+	public Integer saveSurvey(SurveyService surveyService) {
 		StringBuilder sqlBuilder = new StringBuilder();
 		DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-		sqlBuilder.append("CALL AddSurveyService(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+		sqlBuilder.append("CALL AddSurveyService(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);");
 
 		
 		Object[] args = new Object []{
 										surveyService.getCompany(),
 										""+surveyService.getName()+"",
 										""+surveyService.getEmail()+"",
-										""+surveyService.getTelephone()+"",
+										""+surveyService.getPhone()+"",
 										""+df.format(surveyService.getDate())+"",
 										""+surveyService.getQuestionTreatment()+"",
-										""+surveyService.getReasontreatment()+"",
+										""+surveyService.getReasonTreatment()+"",
 										""+surveyService.getQuestionIdentificationPersonal()+"",
 										""+surveyService.getQuestionIdealEquipment()+"",
 										""+surveyService.getReasonIdealEquipment()+"",
@@ -41,16 +41,17 @@ public class SurveyServiceDAOImpl extends AbstractDAO implements SurveyServiceDA
 										""+surveyService.getReasonTime()+"",
 										""+surveyService.getQuestionUniform()+"",
 										""+surveyService.getReasonUniform()+"",
-										""+surveyService.getQualification()+"",
-										""+surveyService.getServiceOrderId()+"", //ordenes de servicio asociadas a una encuesta de servicio ordenadas por usuario
-										//"1000",
+										""+surveyService.getScore()+"",
 										""+surveyService.getSign()+"",
-										""+surveyService.getSuggestion()+""
+										""+surveyService.getSuggestion()+"",
+										""+df.format(surveyService.getCreated())+"",
+										""+surveyService.getCreatedBy()+"",
+										""+surveyService.getCreatedByUsr()+""
 										};
 		
-		getJdbcTemplate().update(sqlBuilder.toString() ,args);
+		Integer id = getJdbcTemplate().queryForInt(sqlBuilder.toString() ,args);
 		
-		
+		return id;
 	}
 
 
@@ -59,7 +60,7 @@ public class SurveyServiceDAOImpl extends AbstractDAO implements SurveyServiceDA
 	public List<Serviceorder> getServiceOrder() {
 		List<Serviceorder> result = null;
 		try{
-			result= (List<Serviceorder>) getJdbcTemplate().query(GET_SERVICE_ORDER_BY_USER, new Object[] {}, new RowMapper(){
+			result= (List<Serviceorder>) getJdbcTemplate().query("CALL GetSe", new Object[] {}, new RowMapper(){
 				@Override
 				public Object mapRow(java.sql.ResultSet arg0, int arg1)
 						throws SQLException {
@@ -81,21 +82,51 @@ public class SurveyServiceDAOImpl extends AbstractDAO implements SurveyServiceDA
 	}
 
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public SurveyService getSurveyServiceById(Integer surveyServiceId) {
-		SurveyService surveyService = new SurveyService();
-			
 		StringBuilder sqlBuilder = new StringBuilder();
-		List <SurveyService> surveyServiceArray = new ArrayList<SurveyService>();
-		
 		sqlBuilder.append("CALL GetSurveyServiceById(?)");
 		
-		surveyServiceArray = (List <SurveyService> ) getJdbcTemplate().query(sqlBuilder.toString(), new Object []{surveyServiceId}, getMapperFor(SurveyService.class));
+		SurveyService survey = (SurveyService) getJdbcTemplate().queryForObject(sqlBuilder.toString(), new Object []{surveyServiceId}, getMapperFor(SurveyService.class));
 		
-		if(surveyServiceArray.size()>0)
-		surveyService = surveyServiceArray.get(surveyServiceId-1);
+		return survey;
 		
-		return surveyService;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Serviceorder> getLinkedServiceOrderList(Integer surveyServiceId) {
+		String sql = "CALL GetSurveyServiceLinkedServices(?)";
+				
+		List<Serviceorder> retVal = (List<Serviceorder>) getJdbcTemplate().query(sql, new Object[]{surveyServiceId}, getMapperFor(Serviceorder.class));
+		return retVal;
+	}
+	
+	@Override
+	public List<JSONObject> getPersonalSurveyServiceList(String user) {
+		String sql = "CALL GetPersonalSurveyServiceList(?)";
+		
+		List<JSONObject> retVal = getJdbcTemplate().query(sql, new Object[]{user}, new JSONRowMapper());
+		return retVal;
+	}
+
+
+	@Override
+	public List<JSONObject> getAllSurveyServiceList() {
+		String sql = "CALL GetAllSurveyServiceList()";
+		
+		List<JSONObject> retVal = getJdbcTemplate().query(sql, new JSONRowMapper());
+		return retVal;
+	}
+
+
+	@Override
+	public void LinkSurveyServiceOrder(String order, Integer surveyServiceId, String modifiedBy, String user) {
+		
+		String sql = "CALL AddSurveyToServiceOrder(?,?,?,?)";
+		
+		getJdbcTemplate().update(sql, new Object[]{order, surveyServiceId.toString(), modifiedBy, user});
 		
 	}
 

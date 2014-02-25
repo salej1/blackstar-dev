@@ -16,8 +16,8 @@
   </bean>
   
   <bean id="googleDriveService" class="com.blackstar.services.impl.GoogleDriveServiceImpl" parent="abstractService" init-method="init">
-    <property name="serviceAccountId" value="313287673617@developer.gserviceaccount.com"/>
-    <property name="serviceAccountUser" value="portal-servicios@gposac.com.mx"/>
+    <property name="serviceAccountId" value="435070024686-qo4ir0cvgafjrkhvi14hkletlq0f90c8@developer.gserviceaccount.com"/>
+    <property name="serviceAccountUser" value="sergio.gomez@innso.com.mx"/>
   </bean>
   
   
@@ -44,12 +44,11 @@
       <property name="typeDao" ref="serviceTypeDAO" />
   </bean>
   
-  <bean id="reportService" class="com.blackstar.services.impl.ReportServiceImpl" parent="abstractService">
-  </bean>
-
+  <bean id="reportService" class="com.blackstar.services.impl.ReportServiceImpl" parent="abstractService"/>
+ 
   <bean id="gmService" class="com.blackstar.services.GmailService" parent="abstractService">
     <property name="mailSender" ref="mailSender" />
-	<property name="defaultFrom" value="portal-servicios@gposac.com.mx"/>
+	<property name="defaultFrom" value="sergio.gomez@innso.com.mx"/>
   </bean>
 
   <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
@@ -67,10 +66,10 @@
   </bean>
   
   <bean id="offlineOSService" class="com.blackstar.services.impl.OfflineOSServiceImpl" parent="abstractService">
-     <property name="soService" ref="serviceOrderService" />
-     <property name="rpService" ref="reportService" />
+    <property name="soService" ref="serviceOrderService" />
+    <property name="rpService" ref="reportService" />
   </bean>
-  
+
   <bean id="indicadoresServicioService" class="com.blackstar.services.impl.IndicadoresServicioServiceImpl" parent="abstractService">
       <property name="dao" ref="indicadoresServicioDAO" />
   </bean>

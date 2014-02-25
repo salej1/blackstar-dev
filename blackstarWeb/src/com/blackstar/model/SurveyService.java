@@ -5,12 +5,13 @@ import java.util.List;
 
 public class SurveyService {
 
+	private Integer surveyServiceId;
 	private String company;
 	private String name;
 	private String email;
-	private String telephone;
+	private String phone;
 	private Date date;
-	private String reasontreatment;			
+	private String reasonTreatment;			
 	private String questionIdentificationPersonal;	
 	private String questionIdealEquipment;
 	private String reasonIdealEquipment;	
@@ -18,11 +19,53 @@ public class SurveyService {
 	private String reasonTime;	
 	private String questionUniform;
 	private String reasonUniform;	
-	private Integer qualification;
+	private Integer score;
 	private String suggestion;
-	private Integer serviceOrderId;
 	private String sign;
 	private String questionTreatment;
+	private Date created;
+	private String createdBy;
+	private String createdByUsr;
+	private Date modified;
+	private String modifiedBy;
+	private String modifiedByUsr;
+	
+	public Date getCreated() {
+		return created;
+	}
+	public void setCreated(Date created) {
+		this.created = created;
+	}
+	public String getCreatedBy() {
+		return createdBy;
+	}
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+	public String getCreatedByUsr() {
+		return createdByUsr;
+	}
+	public void setCreatedByUsr(String createdByUsr) {
+		this.createdByUsr = createdByUsr;
+	}
+	public Date getModified() {
+		return modified;
+	}
+	public void setModified(Date modified) {
+		this.modified = modified;
+	}
+	public String getModifiedBy() {
+		return modifiedBy;
+	}
+	public void setModifiedBy(String modifiedBy) {
+		this.modifiedBy = modifiedBy;
+	}
+	public String getModifiedByUsr() {
+		return modifiedByUsr;
+	}
+	public void setModifiedByUsr(String modifiedByUsr) {
+		this.modifiedByUsr = modifiedByUsr;
+	}
 	public String getCompany() {
 		return company;
 	}
@@ -41,11 +84,11 @@ public class SurveyService {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	public String getTelephone() {
-		return telephone;
+	public String getPhone() {
+		return phone;
 	}
-	public void setTelephone(String telephone) {
-		this.telephone = telephone;
+	public void setPhone(String phone) {
+		this.phone = phone;
 	}
 	public Date getDate() {
 		return date;
@@ -53,11 +96,11 @@ public class SurveyService {
 	public void setDate(Date date) {
 		this.date = date;
 	}
-	public String getReasontreatment() {
-		return reasontreatment;
+	public String getReasonTreatment() {
+		return reasonTreatment;
 	}
-	public void setReasontreatment(String reasontreatment) {
-		this.reasontreatment = reasontreatment;
+	public void setReasonTreatment(String reasontreatment) {
+		this.reasonTreatment = reasontreatment;
 	}
 	public String getQuestionIdentificationPersonal() {
 		return questionIdentificationPersonal;
@@ -102,23 +145,17 @@ public class SurveyService {
 	public void setReasonUniform(String reasonUniform) {
 		this.reasonUniform = reasonUniform;
 	}
-	public Integer getQualification() {
-		return qualification;
+	public Integer getScore() {
+		return score;
 	}
-	public void setQualification(Integer qualification) {
-		this.qualification = qualification;
+	public void setScore(Integer score) {
+		this.score = score;
 	}
 	public String getSuggestion() {
 		return suggestion;
 	}
 	public void setSuggestion(String suggestion) {
 		this.suggestion = suggestion;
-	}
-	public Integer getServiceOrderId() {
-		return serviceOrderId;
-	}
-	public void setServiceOrderId(Integer serviceOrderId) {
-		this.serviceOrderId = serviceOrderId;
 	}
 	public String getSign() {
 		return sign;
@@ -131,6 +168,12 @@ public class SurveyService {
 	}
 	public void setQuestionTreatment(String questionTreatment) {
 		this.questionTreatment = questionTreatment;
+	}
+	public Integer getSurveyServiceId() {
+		return surveyServiceId;
+	}
+	public void setSurveyServiceId(Integer surveyServiceId) {
+		this.surveyServiceId = surveyServiceId;
 	}
 	
 	

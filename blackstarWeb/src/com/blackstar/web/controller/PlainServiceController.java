@@ -179,12 +179,8 @@ public class PlainServiceController extends AbstractController {
                  }
 	    	}
 	    	catch(Exception e){
-				 StringBuilder details = new StringBuilder(e.toString() + "\n");
-				 for(StackTraceElement element : e.getStackTrace()){
-					 details.append(element.toString() + "\n");
-				 }
-				 model.addAttribute("errorDetails", details.toString());
-				 e.printStackTrace();
+	    		 Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
+				 model.addAttribute("errorDetails", e.getMessage() + " - " + e.getStackTrace()[0].toString());
 				 return "error";
 	    	}
 	    	return "redirect:/dashboard/show.do";

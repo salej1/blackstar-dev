@@ -46,7 +46,7 @@
 				<c:if test="${sysCallCenter == true}">
 				  <li><a href="${pageContext.request.contextPath}/seguimiento">Seguimiento</a></li>
 				</c:if>
-				<li><a href="${pageContext.request.contextPath}/surveyService/show.do">Encuestas de servicio</a></li>
+				<li><a href="${pageContext.request.contextPath}/surveyServices/show.do">Encuestas de servicio</a></li>
 				<li><a href="${pageContext.request.contextPath}/indServicios/show.do">Indicadores Serv.</a></li>
 			</c:when>
 			<c:when test="${pageSection == 'tickets'}">
@@ -54,7 +54,7 @@
 				<li><span class="active" onclick="window.location = '/tickets'">Tickets</span></li>
 				<li><a href="${pageContext.request.contextPath}/serviceOrders/show.do">Ordenes de servicio</a></li>
 				<li><a href="${pageContext.request.contextPath}/seguimiento">Seguimiento</a></li>
-				<li><a href="${pageContext.request.contextPath}/surveyService/show.do">Encuestas de servicio</a></li>
+				<li><a href="${pageContext.request.contextPath}/surveyServices/show.do">Encuestas de servicio</a></li>
 				<li><a href="${pageContext.request.contextPath}/indServicios/show.do">Indicadores Serv.</a></li>
 			</c:when>
 			<c:when test="${pageSection == 'ordenesServicio'}">  
@@ -64,7 +64,7 @@
 				<c:if test="${sysCallCenter == true}">
 				  <li><a href="${pageContext.request.contextPath}/seguimiento">Seguimiento</a></li>
 				</c:if>
-				<li><a href="${pageContext.request.contextPath}/surveyService/show.do">Encuestas de servicio</a></li>
+				<li><a href="${pageContext.request.contextPath}/surveyServices/show.do">Encuestas de servicio</a></li>
 				<li><a href="${pageContext.request.contextPath}/indServicios/show.do">Indicadores Serv.</a></li>
 			</c:when>
 			<c:when test="${pageSection == 'seguimiento'}">
@@ -74,7 +74,7 @@
 				<c:if test="${sysCallCenter == true}">
 				  <li><span class="active" onclick="window.location = '/seguimiento'">Seguimiento</span></li>
 				</c:if>
-				<li><a href="${pageContext.request.contextPath}/surveyService/show.do">Encuestas de servicio</a></li>
+				<li><a href="${pageContext.request.contextPath}/surveyServices/show.do">Encuestas de servicio</a></li>
 				<li><a href="${pageContext.request.contextPath}/indServicios/show.do">Indicadores Serv.</a></li>
 			</c:when>			
 			<c:when test="${pageSection == 'encuestas'}">
@@ -84,7 +84,7 @@
 				<c:if test="${sysCallCenter == true}">
 				  <li><a href="${pageContext.request.contextPath}/seguimiento">Seguimiento</a></li>
 				</c:if>
-				<li><span class="active" onclick="window.location = '/surveyService/show.do'">Encuestas de servicio</span></li>
+				<li><span class="active" onclick="window.location = '/surveyServices/show.do'">Encuestas de servicio</span></li>
 				<li><a href="${pageContext.request.contextPath}/indServicios/show.do">Indicadores Serv.</a></li>
 			</c:when>			
 			<c:when test="${pageSection == 'indicadores'}">
@@ -94,7 +94,7 @@
 				<c:if test="${sysCallCenter == true}">
 				  <li><a href="${pageContext.request.contextPath}/seguimiento">Seguimiento</a></li>
 				</c:if>
-				<li><a href="${pageContext.request.contextPath}/surveyService/show.do">Encuestas de servicio</a></li>
+				<li><a href="${pageContext.request.contextPath}/surveyServices/show.do">Encuestas de servicio</a></li>
 				<li><span class="active" onclick="window.location = '/indServicios/show.do'">Indicadores Serv.</span></li>
 			</c:when>		
 			<c:otherwise>
@@ -104,7 +104,7 @@
 				<c:if test="${sysCallCenter == true}">
 				  <li><a href="${pageContext.request.contextPath}/seguimiento">Seguimiento</a></li>
 				</c:if>
-				<li><a href="${pageContext.request.contextPath}/surveyService/show.do">Encuestas de servicio</a></li>
+				<li><a href="${pageContext.request.contextPath}/surveyServices/show.do">Encuestas de servicio</a></li>
 				<li><a href="${pageContext.request.contextPath}/indServicios/show.do">Indicadores Serv.</a></li>
 			</c:otherwise>
 		</c:choose>
