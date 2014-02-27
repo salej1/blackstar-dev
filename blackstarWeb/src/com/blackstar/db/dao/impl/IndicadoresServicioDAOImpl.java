@@ -10,6 +10,7 @@ import com.blackstar.db.dao.mapper.JSONRowMapper;
 import com.blackstar.model.Servicecenter;
 import com.blackstar.model.sp.GetConcurrentFailuresKPI;
 import com.blackstar.model.sp.GetReportOSTableKPI;
+import com.blackstar.model.sp.GetStatisticsKPI;
 
 @SuppressWarnings("unchecked")
 public class IndicadoresServicioDAOImpl extends AbstractDAO 
@@ -83,5 +84,11 @@ public class IndicadoresServicioDAOImpl extends AbstractDAO
   public List<JSONObject> getGeneralAverage(){
 	String sqlQuery = "CALL GetGeneralAverageKPI();";
 	return getJdbcTemplate().query(sqlQuery, new Object[]{}, new JSONRowMapper()); 
+  }
+  
+  public List<GetStatisticsKPI> getStatisticsKPI() {
+	String sqlQuery = "CALL GetStatisticsKPI();";
+	return (List<GetStatisticsKPI> )getJdbcTemplate().query(sqlQuery
+			, new Object[]{}, getMapperFor(GetStatisticsKPI.class)); 
   }
 }

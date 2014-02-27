@@ -34,7 +34,7 @@
 		    </div>
 			<div>
 				<div>
-					<img src="/img/navigate-right.png"/><a href="#">Estadisticas</a>
+					<img src="/img/navigate-right.png"/><a href="#" id="getStatics" onclick="go('getStatics')">Estadisticas</a>
 				</div>
 				<div>
 					<img src="/img/navigate-right.png"/><a href="#" id="getCharts" onclick="go('getCharts')">Graficas generales</a>

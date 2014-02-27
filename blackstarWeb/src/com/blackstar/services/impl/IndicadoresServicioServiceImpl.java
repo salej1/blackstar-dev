@@ -12,6 +12,7 @@ import com.blackstar.model.Chart;
 import com.blackstar.model.Servicecenter;
 import com.blackstar.model.sp.GetConcurrentFailuresKPI;
 import com.blackstar.model.sp.GetReportOSTableKPI;
+import com.blackstar.model.sp.GetStatisticsKPI;
 import com.blackstar.services.AbstractService;
 import com.blackstar.services.interfaces.IndicadoresServicioService;
 
@@ -218,6 +219,10 @@ public class IndicadoresServicioServiceImpl extends AbstractService
   public String getGeneralAverage(){
 	List<JSONObject> jsonData = dao.getGeneralAverage();
 	return jsonData != null ? jsonData.toString() : "";
+  }
+  
+  public List<GetStatisticsKPI> getStatisticsKPI(){
+	return dao.getStatisticsKPI();
   }
 
 }

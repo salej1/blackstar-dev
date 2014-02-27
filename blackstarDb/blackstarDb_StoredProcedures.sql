@@ -154,12 +154,51 @@
 --                              blackstarDb.GetTicketsByServiceCenterKPI
 --                              blackstarDb.GetStatusKPI
 --                              blackstarDb.GetServiceCenterIdList
+--                              blackstarDb.GetStatisticsKPI
 -- -----------------------------------------------------------------------------
 use blackstarDb;
 
 
 DELIMITER $$
 
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetServiceCenterIdList
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstardb.GetStatisticsKPI$$
+CREATE PROCEDURE blackstardb.`GetStatisticsKPI`()
+BEGIN
+SELECT officeName, project, customer, count(*) as pNumber,  nPolicies.number as tPolicies
+                                 , SUM(rNumber) as nReports, nReports.number as tReports
+FROM(
+SELECT of.officeName, py.project, py.customer, tk.rNumber
+       FROM policy py
+       INNER JOIN office of ON of.officeId = py.officeId    
+       INNER JOIN (SELECT policyId, count(*) rNumber FROM ticket 
+                   WHERE ticket.created >= STR_TO_DATE(CONCAT('01-01-',YEAR(NOW())),'%d-%m-%Y') 
+                   GROUP BY policyId) tk on tk.policyId = py.policyId
+       AND py.endDate >= NOW()
+UNION ALL      
+SELECT of.officeName, py.project, py.customer, 0 as rNumber
+FROM policy py
+INNER JOIN office of ON of.officeId = py.officeId   
+WHERE py.policyId NOT IN (SELECT py.policyId
+                          FROM policy py
+                          INNER JOIN (SELECT policyId, count(*) rNumber 
+                                      FROM ticket 
+                                      WHERE ticket.created >= STR_TO_DATE(CONCAT('01-01-',YEAR(NOW())),'%d-%m-%Y')
+                                      GROUP BY policyId) tk on tk.policyId = py.policyId
+                          AND py.endDate >= NOW())
+AND py.endDate >= NOW()
+) data
+INNER JOIN (SELECT COUNT(*) as number FROM policy py WHERE py.endDate >= NOW()) nPolicies
+INNER JOIN (SELECT count(*) as number
+            FROM ticket tk
+            INNER JOIN policy py on py.policyId = tk.policyId
+            WHERE tk.created >= STR_TO_DATE(CONCAT('01-01-',YEAR(NOW())),'%d-%m-%Y') 
+                  AND py.endDate > NOW()) nReports
+GROUP BY  officeName, project, customer
+ORDER BY officeName, project, customer;
+END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetServiceCenterIdList
@@ -238,8 +277,8 @@ SELECT so.serviceUnit as serviceUnit,
        so.responsible as responsible,
        so.receivedBy as receivedBy,
        so.serviceComments as serviceComments,
-       so.closed as closed,
-       so.hasErrors as hasErrors,
+       IFNULL(so.closed, '') as closed,
+       IFNULL(so.hasErrors, '0') as hasErrors,
        '' as materialUsed,
        py.cst as cst,
        py.finalUser as finalUser,

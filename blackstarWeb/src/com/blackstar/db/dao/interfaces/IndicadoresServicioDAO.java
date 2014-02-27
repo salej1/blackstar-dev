@@ -7,6 +7,7 @@ import org.json.JSONObject;
 import com.blackstar.model.Servicecenter;
 import com.blackstar.model.sp.GetConcurrentFailuresKPI;
 import com.blackstar.model.sp.GetReportOSTableKPI;
+import com.blackstar.model.sp.GetStatisticsKPI;
 
 public interface IndicadoresServicioDAO {
 	
@@ -23,5 +24,6 @@ public interface IndicadoresServicioDAO {
   public List<Servicecenter> getServiceCenterIdList();
   public List<JSONObject> getUserAverage();
   public List<JSONObject> getGeneralAverage();
+  public List<GetStatisticsKPI> getStatisticsKPI();
 	
 }
