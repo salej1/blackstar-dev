@@ -211,5 +211,38 @@ where ug.userGroupId=(select userGroupID from userGroup ug where ug.externalId='
 ORDER BY bsu.name ASC;
 END$$
 
+-- -----------------------------------------------------------------------------
+-- blackstarDb.AddWarrantProject
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.AddWarrantProject$$
+CREATE PROCEDURE blackstarDb.AddWarrantProject(
+warrantProjectId int(11),
+status varchar(15),
+customerId int(11),
+costCenter varchar(15),
+exchangeRate double,
+date date,
+contactName varchar(45),
+ubicationProject varchar(45),
+paymentTermsId int (11),
+deliveryTime varchar(15),
+intercom varchar(15),
+totalProject double,
+bonds int(11),
+totalProductsServices double,
+entryId int(11))
+BEGIN
+INSERT INTO warrantProject
+( warrantProjectId,status,customerId,costCenter,exchangeRate,date,contactName,ubicationProject,paymentTermsId,deliveryTime,intercom,totalProject,
+bonds,totalProductsServices,entryId
+)
+VALUES
+(
+ warrantProjectId,status,customerId,costCenter,exchangeRate,date,contactName,ubicationProject,paymentTermsId,deliveryTime,intercom,totalProject,
+bonds,totalProductsServices,entryId
+);
+select LAST_INSERT_ID();
+END$$
+
 DELIMITER ;
 
