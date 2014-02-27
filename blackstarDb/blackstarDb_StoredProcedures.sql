@@ -164,7 +164,7 @@ use blackstarDb;
 DELIMITER $$
 
 -- -----------------------------------------------------------------------------
-	-- blackstarDb.GetServiceCenterIdList
+	-- blackstarDb.GetStatisticsKPI
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetStatisticsKPI$$
 CREATE PROCEDURE blackstarDb.`GetStatisticsKPI`()
@@ -208,28 +208,28 @@ END$$
 DROP PROCEDURE IF EXISTS blackstarDb.GetGeneralAverageKPI$$
 CREATE PROCEDURE blackstarDb.`GetGeneralAverageKPI`()
 BEGIN
-SELECT so.serviceUnit as office, AVG(ss.qualification) as average
-FROM serviceorder so
-INNER JOIN surveyservice ss ON so.serviceOrderId = ss.serviceOrderId
+SELECT so.serviceUnit as office, IFNULL(AVG(ss.qualification),0) as average
+FROM serviceOrder so
+INNER JOIN surveyService ss ON so.serviceOrderId = ss.serviceOrderId
 WHERE so.created >= STR_TO_DATE(CONCAT('01-01-',YEAR(NOW())),'%d-%m-%Y')
 GROUP BY so.serviceUnit
 UNION
-SELECT 'GENERAL', AVG(ss.qualification)
-FROM serviceorder so
-INNER JOIN surveyservice ss ON so.serviceOrderId = ss.serviceOrderId
+SELECT 'GENERAL', IFNULL(AVG(ss.qualification),0)
+FROM serviceOrder so
+INNER JOIN surveyService ss ON so.serviceOrderId = ss.serviceOrderId
 WHERE so.created >= STR_TO_DATE(CONCAT('01-01-',YEAR(NOW())),'%d-%m-%Y');
 END$$
 
 -- -----------------------------------------------------------------------------
-	-- blackstarDb.GetServiceCenterIdList
+	-- blackstarDb.GetUserAverageKPI
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetUserAverageKPI$$
 CREATE PROCEDURE blackstarDb.`GetUserAverageKPI`()
 BEGIN
 SELECT so.responsible as responsable, AVG(ss.qualification) as average
-      , (select count(*) from serviceorder so1 where so1.isWrong > 0 and so1.responsible = so.responsible) as wrongOs
-FROM serviceorder so
-INNER JOIN surveyservice ss ON so.serviceOrderId = ss.serviceOrderId
+      , (select count(*) from serviceOrder so1 where so1.isWrong > 0 and so1.responsible = so.responsible) as wrongOs
+FROM serviceOrder so
+INNER JOIN surveyService ss ON so.serviceOrderId = ss.serviceOrderId
 WHERE so.created >= STR_TO_DATE(CONCAT('01-01-',YEAR(NOW())),'%d-%m-%Y')
 GROUP BY so.responsible;
 END$$
@@ -242,7 +242,7 @@ DROP PROCEDURE IF EXISTS blackstarDb.GetServiceCenterIdList$$
 CREATE PROCEDURE blackstarDb.`GetServiceCenterIdList`()
 BEGIN
 SELECT *
-FROM servicecenter;
+FROM serviceCenter;
 END$$
 
 -- -----------------------------------------------------------------------------
@@ -254,8 +254,8 @@ BEGIN
 SELECT ts.ticketStatus as name, count(*) as value
 FROM ticket tk
 INNER JOIN policy py on tk.policyId = py.policyId
-INNER JOIN servicecenter sc ON py.serviceCenterId = sc.serviceCenterId
-INNER JOIN ticketstatus ts ON tk.ticketStatusId = ts.ticketStatusId
+INNER JOIN serviceCenter sc ON py.serviceCenterId = sc.serviceCenterId
+INNER JOIN ticketStatus ts ON tk.ticketStatusId = ts.ticketStatusId
 WHERE tk.created >= STR_TO_DATE(CONCAT('01-01-',YEAR(NOW())),'%d-%m-%Y')
 AND sc.serviceCenterId LIKE pType
 GROUP BY tk.ticketStatusId;
@@ -270,7 +270,7 @@ BEGIN
 SELECT sc.serviceCenter as name, count(*) as value
 FROM ticket tk
 INNER JOIN policy py on tk.policyId = py.policyId
-INNER JOIN servicecenter sc ON py.serviceCenterId = sc.serviceCenterId
+INNER JOIN serviceCenter sc ON py.serviceCenterId = sc.serviceCenterId
 WHERE tk.created >= STR_TO_DATE(CONCAT('01-01-',YEAR(NOW())),'%d-%m-%Y')
 GROUP BY sc.serviceCenter;
 END$$
@@ -284,7 +284,7 @@ BEGIN
 SELECT et.equipmentType as name , count(*) as value
 FROM ticket tk
 INNER JOIN policy py on py.policyId = tk.policyId
-INNER JOIN equipmenttype et ON et.equipmentTypeId = py.equipmentTypeId
+INNER JOIN equipmentType et ON et.equipmentTypeId = py.equipmentTypeId
 WHERE tk.created >= STR_TO_DATE(CONCAT('01-01-',YEAR(NOW())),'%d-%m-%Y')
 GROUP BY py.equipmentTypeId;
 END$$
@@ -319,8 +319,8 @@ SELECT so.serviceUnit as serviceUnit,
        py.finalUser as finalUser,
        ss.qualification as qualification,
        ss.comments as comments
-FROM serviceorder so
-INNER JOIN surveyservice ss on so.serviceOrderId = ss.serviceOrderId
+FROM serviceOrder so
+INNER JOIN surveyService ss on so.serviceOrderId = ss.serviceOrderId
 INNER JOIN policy py on so.policyId = py.policyId
 WHERE so.created >= STR_TO_DATE(CONCAT('01-01-',YEAR(NOW())),'%d-%m-%Y');
 END$$
@@ -329,13 +329,13 @@ END$$
 	-- blackstarDb.GetReportOSResumeKPI
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetReportOSResumeKPI$$
-CREATE PROCEDURE blackstarDb.GetReportOSResumeKPI()
+CREATE PROCEDURE blackstarDb.`GetReportOSResumeKPI`()
 BEGIN
 SELECT so.serviceUnit office, count(*) numServiceOrders, survey.obCount numObervations
-FROM serviceorder so
+FROM serviceOrder so
 INNER JOIN (SELECT so.serviceUnit, count(*) obCount
-            FROM surveyservice ss
-            INNER JOIN serviceorder so on so.serviceOrderId = ss.serviceOrderId
+            FROM surveyService ss
+            INNER JOIN serviceOrder so on so.serviceOrderId = ss.serviceOrderId
             WHERE ss.datePerson >= STR_TO_DATE(CONCAT('01-01-',YEAR(NOW())),'%d-%m-%Y')
             GROUP BY so.serviceUnit) AS survey ON so.serviceUnit = survey.serviceUnit 
 WHERE so.closed >= STR_TO_DATE(CONCAT('01-01-',YEAR(NOW())),'%d-%m-%Y')
@@ -346,15 +346,15 @@ END$$
 	-- blackstarDb.GetReportOSTableKPI
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetReportOSTableKPI$$
-CREATE PROCEDURE blackstarDb.GetReportOSTableKPI()
+CREATE PROCEDURE blackstarDb.`GetReportOSTableKPI`()
 BEGIN
 SELECT os.serviceOrderId as serviceOrderId
        , ss.comments as comments
        , ss.serviceComments as serviceComments
        , os.responsible as responsible
        , os.serviceUnit as office
-FROM serviceorder os
-INNER JOIN surveyservice ss on os.serviceOrderId = ss.serviceOrderId
+FROM serviceOrder os
+INNER JOIN surveyService ss on os.serviceOrderId = ss.serviceOrderId
 ORDER BY office ASC;
 END$$
 
@@ -380,9 +380,9 @@ END$$
 	-- blackstarDb.GetConcurrentFailuresKPI
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetConcurrentFailuresKPI$$
-CREATE PROCEDURE blackstarDb.GetConcurrentFailuresKPI()
+CREATE PROCEDURE blackstarDb.`GetConcurrentFailuresKPI`()
 BEGIN
-  SELECT  tk.employee as employee, 
+SELECT  tk.employee as employee, 
           py.customer as customer,
           py.equipmentTypeId as equipmentTypeId,
           py.brand as brand,
@@ -392,7 +392,7 @@ BEGIN
           tk.ticketNumber as ticketNumber,
           tk.created as created
   FROM ticket tk
-  INNER JOIN Policy py on tk.policyId = py.policyId
+  INNER JOIN policy py on tk.policyId = py.policyId
   LEFT OUTER JOIN blackstarUser bu ON bu.email = tk.asignee
   WHERE py.policyId in (
         SELECT tk.policyId
@@ -401,13 +401,13 @@ BEGIN
         GROUP BY tk.policyId
         HAVING count(1) > 1)
   ORDER BY tk.created, tk.policyId ASC;
-END$$
+  END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetPoliciesKPI
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetPoliciesKPI$$
-CREATE PROCEDURE blackstarDb.GetPoliciesKPI()
+CREATE PROCEDURE blackstarDb.`GetPoliciesKPI`()
 BEGIN
 SELECT py.policyId as policyId,
        IFNULL(of.officeName, '') as officeName,
@@ -439,8 +439,8 @@ SELECT py.policyId as policyId,
        IFNULL(sc.serviceCenter, '') as serviceCenter
 	FROM policy py
   INNER JOIN office of ON py.officeId = of.officeId
-  INNER JOIN equipmenttype eq ON eq.equipmentTypeId = py.equipmentTypeId
-  INNER JOIN servicecenter sc ON py.serviceCenterId = sc.serviceCenterId
+  INNER JOIN equipmentType eq ON eq.equipmentTypeId = py.equipmentTypeId
+  INNER JOIN serviceCenter sc ON py.serviceCenterId = sc.serviceCenterId
 	WHERE py.endDate >= STR_TO_DATE(CONCAT('01-01-',YEAR(NOW())),'%d-%m-%Y')
     ORDER BY py.endDate ASC;
 END$$

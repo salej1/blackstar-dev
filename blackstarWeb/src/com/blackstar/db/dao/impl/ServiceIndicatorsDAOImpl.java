@@ -17,78 +17,78 @@ public class ServiceIndicatorsDAOImpl extends AbstractDAO
                                         implements ServiceIndicatorsDAO {
 	
   public List<JSONObject> getTickets(){
-	String sqlQuery = "CALL GetTicketsKPI();";
-	return getJdbcTemplate().query(sqlQuery, new Object[]{}, new JSONRowMapper()); 
+	String sqlQuery = "CALL GetTicketsKPI()";
+	return getJdbcTemplate().query(sqlQuery,  new JSONRowMapper()); 
   }
 	
   public List<JSONObject> getPolicies(){
-	String sqlQuery = "CALL GetPoliciesKPI();";
-	return getJdbcTemplate().query(sqlQuery, new Object[]{}, new JSONRowMapper()); 
+	String sqlQuery = "CALL GetPoliciesKPI()";
+	return getJdbcTemplate().query(sqlQuery,  new JSONRowMapper()); 
   }
   
   
   public List<GetConcurrentFailuresKPI> getConcurrentFailures(){
-	String sqlQuery = "CALL GetConcurrentFailuresKPI();";
+	String sqlQuery = "CALL GetConcurrentFailuresKPI()";
 	return (List<GetConcurrentFailuresKPI> )getJdbcTemplate().query(sqlQuery
-			, new Object[]{}, getMapperFor(GetConcurrentFailuresKPI.class)); 
+			,  getMapperFor(GetConcurrentFailuresKPI.class)); 
   }
   
   public List<JSONObject> getMaxPeportsByUser(){
-	String sqlQuery = "CALL GetMaxReportsByUserKPI();";
-	return getJdbcTemplate().query(sqlQuery, new Object[]{}, new JSONRowMapper()); 
+	String sqlQuery = "CALL GetMaxReportsByUserKPI()";
+	return getJdbcTemplate().query(sqlQuery,  new JSONRowMapper()); 
   }
   
   public List<GetReportOSTableKPI> getReportOSTable() {
-	String sqlQuery = "CALL GetReportOSTableKPI();";
+	String sqlQuery = "CALL GetReportOSTableKPI()";
 	return (List<GetReportOSTableKPI> )getJdbcTemplate().query(sqlQuery
-			, new Object[]{}, getMapperFor(GetReportOSTableKPI.class)); 
+			,  getMapperFor(GetReportOSTableKPI.class)); 
   }
   
   public List<JSONObject> getReportOSResume(){
-	String sqlQuery = "CALL GetReportOSResumeKPI();";
-	return getJdbcTemplate().query(sqlQuery, new Object[]{}, new JSONRowMapper()); 
+	String sqlQuery = "CALL GetReportOSResumeKPI()";
+	return getJdbcTemplate().query(sqlQuery,  new JSONRowMapper()); 
   }
   
   public List<JSONObject> getOSResume(){
-	String sqlQuery = "CALL GetResumeOSKPI();";
-	return getJdbcTemplate().query(sqlQuery, new Object[]{}, new JSONRowMapper()); 
+	String sqlQuery = "CALL GetResumeOSKPI()";
+	return getJdbcTemplate().query(sqlQuery,  new JSONRowMapper()); 
   }
   
   public List<JSONObject> getReportByEquipmentType(){
-	String sqlQuery = "CALL GetReportsByEquipmentTypeKPI();";
-	return getJdbcTemplate().query(sqlQuery, new Object[]{}, new JSONRowMapper()); 
+	String sqlQuery = "CALL GetReportsByEquipmentTypeKPI()";
+	return getJdbcTemplate().query(sqlQuery,  new JSONRowMapper()); 
   }
   
   public List<JSONObject> getTicketsByServiceCenter(){
-	String sqlQuery = "CALL GetTicketsByServiceCenterKPI();";
-	return getJdbcTemplate().query(sqlQuery, new Object[]{}, new JSONRowMapper()); 
+	String sqlQuery = "CALL GetTicketsByServiceCenterKPI()";
+	return getJdbcTemplate().query(sqlQuery,  new JSONRowMapper()); 
   }
   
   public List<JSONObject> getStatus(String servicecenterId){
-	String sqlQuery = "CALL GetStatusKPI(?);";
+	String sqlQuery = "CALL GetStatusKPI(?)";
 	return getJdbcTemplate().query(sqlQuery, new Object[]{servicecenterId}
 	                                               , new JSONRowMapper()); 
   }
   
   public List<Servicecenter> getServiceCenterIdList(){
-	String sqlQuery = "CALL GetServiceCenterIdList();";
+	String sqlQuery = "CALL GetServiceCenterIdList()";
 	return (List<Servicecenter> )getJdbcTemplate().query(sqlQuery
-			, new Object[]{}, getMapperFor(Servicecenter.class)); 
+			,  getMapperFor(Servicecenter.class)); 
   }
   
   public List<JSONObject> getUserAverage(){
-	String sqlQuery = "CALL GetUserAverageKPI();";
-	return getJdbcTemplate().query(sqlQuery, new Object[]{}, new JSONRowMapper()); 
+	String sqlQuery = "CALL GetUserAverageKPI()";
+	return getJdbcTemplate().query(sqlQuery,  new JSONRowMapper()); 
   }
   
   public List<JSONObject> getGeneralAverage(){
-	String sqlQuery = "CALL GetGeneralAverageKPI();";
-	return getJdbcTemplate().query(sqlQuery, new Object[]{}, new JSONRowMapper()); 
+	String sqlQuery = "CALL GetGeneralAverageKPI()";
+	return getJdbcTemplate().query(sqlQuery,  new JSONRowMapper()); 
   }
   
   public List<GetStatisticsKPI> getStatisticsKPI() {
-	String sqlQuery = "CALL GetStatisticsKPI();";
+	String sqlQuery = "CALL GetStatisticsKPI()";
 	return (List<GetStatisticsKPI> )getJdbcTemplate().query(sqlQuery
-			, new Object[]{}, getMapperFor(GetStatisticsKPI.class)); 
+			                , getMapperFor(GetStatisticsKPI.class)); 
   }
 }

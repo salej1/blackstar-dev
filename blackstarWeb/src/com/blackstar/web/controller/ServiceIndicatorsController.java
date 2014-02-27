@@ -114,6 +114,9 @@ public class ServiceIndicatorsController extends AbstractController {
 	try {
 		model.addAttribute("charts", service.getCharts());
 	} catch (Exception e) {
+		for(StackTraceElement t : e.getStackTrace()){
+			System.out.println(t.toString());
+		}
 		Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 		e.printStackTrace();
 		model.addAttribute("errorDetails", e.getStackTrace()[0].toString());
@@ -144,6 +147,9 @@ public class ServiceIndicatorsController extends AbstractController {
 		Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 		e.printStackTrace();
 		model.addAttribute("errorDetails", e.getStackTrace()[0].toString());
+		for(StackTraceElement t : e.getStackTrace()){
+			System.out.println(t.toString());
+		}
 		return "error";
 	}
 	return "_indServStatics";

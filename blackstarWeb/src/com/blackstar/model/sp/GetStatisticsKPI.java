@@ -5,11 +5,11 @@ public class GetStatisticsKPI {
 	private String officeName;
 	private String project;
 	private String customer;
-	private int pNumber;
-	private int tPolicies;
-	private int nReports;
-	private int tReports;
-	private int oReports;
+	private Integer pNumber;
+	private Integer tPolicies;
+	private Integer nReports;
+	private Integer tReports;
+	private Integer oReports;
 	
 	public String getOfficeName() {
 		return officeName;
@@ -29,34 +29,34 @@ public class GetStatisticsKPI {
 	public void setCustomer(String customer) {
 		this.customer = customer;
 	}
-	public int getpNumber() {
+	public Integer getpNumber() {
 		return pNumber;
 	}
-	public void setpNumber(int pNumber) {
+	public void setpNumber(Integer pNumber) {
 		this.pNumber = pNumber;
 	}
-	public int gettPolicies() {
+	public Integer gettPolicies() {
 		return tPolicies;
 	}
-	public void settPolicies(int tPolicies) {
+	public void settPolicies(Integer tPolicies) {
 		this.tPolicies = tPolicies;
 	}
-	public int getnReports() {
+	public Integer getnReports() {
 		return nReports;
 	}
-	public void setnReports(int nReports) {
+	public void setnReports(Integer nReports) {
 		this.nReports = nReports;
 	}
-	public int gettReports() {
+	public Integer gettReports() {
 		return tReports;
 	}
-	public void settReports(int tReports) {
+	public void settReports(Integer tReports) {
 		this.tReports = tReports;
 	}
-	public int getoReports() {
+	public Integer getoReports() {
 		return oReports;
 	}
-	public void setoReports(int oReports) {
+	public void setoReports(Integer oReports) {
 		this.oReports = oReports;
 	}
 
