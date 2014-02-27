@@ -9,6 +9,7 @@ public class GetStatisticsKPI {
 	private int tPolicies;
 	private int nReports;
 	private int tReports;
+	private int oReports;
 	
 	public String getOfficeName() {
 		return officeName;
@@ -51,6 +52,12 @@ public class GetStatisticsKPI {
 	}
 	public void settReports(int tReports) {
 		this.tReports = tReports;
+	}
+	public int getoReports() {
+		return oReports;
+	}
+	public void setoReports(int oReports) {
+		this.oReports = oReports;
 	}
 
 }
