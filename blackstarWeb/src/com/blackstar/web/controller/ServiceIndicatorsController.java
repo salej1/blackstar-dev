@@ -9,18 +9,18 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import com.blackstar.common.Globals;
 import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
-import com.blackstar.services.interfaces.IndicadoresServicioService;
+import com.blackstar.services.interfaces.ServiceIndicatorsService;
 import com.blackstar.web.AbstractController;
 
 
 @Controller
 @RequestMapping("/indServicios")
 @SessionAttributes({Globals.SESSION_KEY_PARAM})
-public class IndicadoresServicioController extends AbstractController {
+public class ServiceIndicatorsController extends AbstractController {
 	
-  private IndicadoresServicioService service;
+  private ServiceIndicatorsService service;
 	
-  public void setService(IndicadoresServicioService service) {
+  public void setService(ServiceIndicatorsService service) {
 	this.service = service;
   }
   

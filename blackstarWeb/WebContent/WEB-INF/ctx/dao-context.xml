@@ -39,6 +39,6 @@
        <bean id="dashboardDAO" class="com.blackstar.db.dao.impl.DashboardDAOImpl" parent="abstractDAO"/>
        <bean id="serviceOrderDAO" class="com.blackstar.db.dao.impl.ServiceOrderDAOImpl" parent="abstractDAO"/>
        <bean id="serviceTypeDAO" class="com.blackstar.db.dao.impl.ServiceTypeDAOImpl" parent="abstractDAO"/>
-       <bean id="indicadoresServicioDAO" class="com.blackstar.db.dao.impl.IndicadoresServicioDAOImpl" parent="abstractDAO"/>
+       <bean id="serviceIndicatorsDAO" class="com.blackstar.db.dao.impl.ServiceIndicatorsDAOImpl" parent="abstractDAO"/>
 
 </beans>

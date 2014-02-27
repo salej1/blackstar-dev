@@ -15,11 +15,11 @@
 			"bProcessing": true,
 			"bFilter": true,
 			"bLengthChange": false,
-			"iDisplayLength": 10,
+			"bPaginate": false,
 			"bInfo": false,
 			"sPaginationType": "full_numbers",
 			"aaData": data,
-			"sDom": '<"top"i>rt<"bottom"flp><"clear">',
+			"sDom": '<"top"i>rt<"bottom"><"clear">',
 			"aaSorting": [],
 			"aoColumns": [
 						  { "mData": "employee" },

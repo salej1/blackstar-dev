@@ -5,7 +5,7 @@ import java.util.List;
 import org.json.JSONObject;
 
 import com.blackstar.db.dao.AbstractDAO;
-import com.blackstar.db.dao.interfaces.IndicadoresServicioDAO;
+import com.blackstar.db.dao.interfaces.ServiceIndicatorsDAO;
 import com.blackstar.db.dao.mapper.JSONRowMapper;
 import com.blackstar.model.Servicecenter;
 import com.blackstar.model.sp.GetConcurrentFailuresKPI;
@@ -13,8 +13,8 @@ import com.blackstar.model.sp.GetReportOSTableKPI;
 import com.blackstar.model.sp.GetStatisticsKPI;
 
 @SuppressWarnings("unchecked")
-public class IndicadoresServicioDAOImpl extends AbstractDAO 
-                                        implements IndicadoresServicioDAO {
+public class ServiceIndicatorsDAOImpl extends AbstractDAO 
+                                        implements ServiceIndicatorsDAO {
 	
   public List<JSONObject> getTickets(){
 	String sqlQuery = "CALL GetTicketsKPI();";

@@ -9,7 +9,7 @@ import com.blackstar.model.sp.GetConcurrentFailuresKPI;
 import com.blackstar.model.sp.GetReportOSTableKPI;
 import com.blackstar.model.sp.GetStatisticsKPI;
 
-public interface IndicadoresServicioDAO {
+public interface ServiceIndicatorsDAO {
 	
   public List<JSONObject> getTickets();
   public List<JSONObject> getPolicies();

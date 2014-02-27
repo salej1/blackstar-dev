@@ -154,6 +154,8 @@
 --                              blackstarDb.GetTicketsByServiceCenterKPI
 --                              blackstarDb.GetStatusKPI
 --                              blackstarDb.GetServiceCenterIdList
+--                              blackstarDb.GetUserAverageKPI
+--                              blackstarDb.GetGeneralAverageKPI
 --                              blackstarDb.GetStatisticsKPI
 -- -----------------------------------------------------------------------------
 use blackstarDb;
@@ -199,6 +201,39 @@ INNER JOIN (SELECT count(*) as number
 GROUP BY  officeName, project, customer
 ORDER BY officeName, project, customer;
 END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetGeneralAverageKPI
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstardb.GetGeneralAverageKPI$$
+CREATE PROCEDURE blackstardb.`GetGeneralAverageKPI`()
+BEGIN
+SELECT so.serviceUnit as office, AVG(ss.qualification) as average
+FROM serviceorder so
+INNER JOIN surveyservice ss ON so.serviceOrderId = ss.serviceOrderId
+WHERE so.created >= STR_TO_DATE(CONCAT('01-01-',YEAR(NOW())),'%d-%m-%Y')
+GROUP BY so.serviceUnit
+UNION
+SELECT 'GENERAL', AVG(ss.qualification)
+FROM serviceorder so
+INNER JOIN surveyservice ss ON so.serviceOrderId = ss.serviceOrderId
+WHERE so.created >= STR_TO_DATE(CONCAT('01-01-',YEAR(NOW())),'%d-%m-%Y');
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetServiceCenterIdList
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstardb.GetUserAverageKPI$$
+CREATE PROCEDURE blackstardb.`GetUserAverageKPI`()
+BEGIN
+SELECT so.responsible as responsable, AVG(ss.qualification) as average
+      , (select count(*) from serviceorder so1 where so1.isWrong > 0 and so1.responsible = so.responsible) as wrongOs
+FROM serviceorder so
+INNER JOIN surveyservice ss ON so.serviceOrderId = ss.serviceOrderId
+WHERE so.created >= STR_TO_DATE(CONCAT('01-01-',YEAR(NOW())),'%d-%m-%Y')
+GROUP BY so.responsible;
+END$$
+
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetServiceCenterIdList
@@ -406,8 +441,8 @@ SELECT py.policyId as policyId,
   INNER JOIN office of ON py.officeId = of.officeId
   INNER JOIN equipmenttype eq ON eq.equipmentTypeId = py.equipmentTypeId
   INNER JOIN servicecenter sc ON py.serviceCenterId = sc.serviceCenterId
-	WHERE py.created >= STR_TO_DATE(CONCAT('01-01-',YEAR(NOW())),'%d-%m-%Y')
-    ORDER BY py.created ASC;
+	WHERE py.endDate >= STR_TO_DATE(CONCAT('01-01-',YEAR(NOW())),'%d-%m-%Y')
+    ORDER BY py.endDate ASC;
 END$$
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetTicketsKPI

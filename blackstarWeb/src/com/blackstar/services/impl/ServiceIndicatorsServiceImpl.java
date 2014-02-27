@@ -7,20 +7,20 @@ import java.util.Map;
 
 import org.json.JSONObject;
 
-import com.blackstar.db.dao.interfaces.IndicadoresServicioDAO;
+import com.blackstar.db.dao.interfaces.ServiceIndicatorsDAO;
 import com.blackstar.model.Chart;
 import com.blackstar.model.Servicecenter;
 import com.blackstar.model.sp.GetConcurrentFailuresKPI;
 import com.blackstar.model.sp.GetReportOSTableKPI;
 import com.blackstar.model.sp.GetStatisticsKPI;
 import com.blackstar.services.AbstractService;
-import com.blackstar.services.interfaces.IndicadoresServicioService;
+import com.blackstar.services.interfaces.ServiceIndicatorsService;
 
 @SuppressWarnings("serial")
-public class IndicadoresServicioServiceImpl extends AbstractService 
-                            implements IndicadoresServicioService {
+public class ServiceIndicatorsServiceImpl extends AbstractService 
+                            implements ServiceIndicatorsService {
 	
-  private IndicadoresServicioDAO dao = null;
+  private ServiceIndicatorsDAO dao = null;
   public static final Map<String , String> MONTHS = new HashMap<String , String>() {{
         put("01", "lbl-ENERO");
         put("02", "lbl-FEBRERO");
@@ -42,7 +42,7 @@ public class IndicadoresServicioServiceImpl extends AbstractService
     put("QRO", "lbl-QUERETARO");
   }};
   
-  public void setDao(IndicadoresServicioDAO dao) {
+  public void setDao(ServiceIndicatorsDAO dao) {
 	this.dao = dao;
   }
   

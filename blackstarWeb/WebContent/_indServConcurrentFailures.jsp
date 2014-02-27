@@ -9,10 +9,10 @@
 			"bProcessing": true,
 			"bFilter": true,
 			"bLengthChange": false,
-			"iDisplayLength": 10,
+			"bPaginate": false,
 			"bInfo": false,
 			"sPaginationType": "full_numbers",
-			"sDom": '<"top"i>rt<"bottom"flp><"clear">',
+			"sDom": '<"top"i>rt<"bottom"><"clear">',
 			"aaSorting": [],
 			"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
 			      $('td:eq(6)', nRow).css('background', "#86A2CE")

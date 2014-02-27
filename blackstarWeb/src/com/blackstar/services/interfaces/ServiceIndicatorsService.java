@@ -7,7 +7,7 @@ import com.blackstar.model.sp.GetConcurrentFailuresKPI;
 import com.blackstar.model.sp.GetReportOSTableKPI;
 import com.blackstar.model.sp.GetStatisticsKPI;
 
-public interface IndicadoresServicioService {
+public interface ServiceIndicatorsService {
 
 	public String getTickets() throws Exception;
 	public String getPolicies() throws Exception;
