@@ -29,10 +29,10 @@
 			"bProcessing": true,
 			"bFilter": true,
 			"bLengthChange": false,
-			"iDisplayLength": 10,
+			"bPaginate": false,
 			"bInfo": false,
 			"sPaginationType": "full_numbers",
-			"sDom": '<"top"i>rt<"bottom"flp><"clear">',
+			"sDom": '<"top"i>rt<"bottom"><"clear">',
 			"aaSorting": [],
 			"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
 			      if( $('td:eq(0)', nRow).html().indexOf("lbl-") == 0){

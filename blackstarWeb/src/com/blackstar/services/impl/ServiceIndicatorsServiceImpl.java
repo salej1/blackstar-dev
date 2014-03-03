@@ -1,25 +1,27 @@
 package com.blackstar.services.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.json.JSONObject;
 
-import com.blackstar.db.dao.interfaces.IndicadoresServicioDAO;
+import com.blackstar.db.dao.interfaces.ServiceIndicatorsDAO;
 import com.blackstar.model.Chart;
 import com.blackstar.model.Servicecenter;
 import com.blackstar.model.sp.GetConcurrentFailuresKPI;
 import com.blackstar.model.sp.GetReportOSTableKPI;
+import com.blackstar.model.sp.GetStatisticsKPI;
 import com.blackstar.services.AbstractService;
-import com.blackstar.services.interfaces.IndicadoresServicioService;
+import com.blackstar.services.interfaces.ServiceIndicatorsService;
 
 @SuppressWarnings("serial")
-public class IndicadoresServicioServiceImpl extends AbstractService 
-                            implements IndicadoresServicioService {
+public class ServiceIndicatorsServiceImpl extends AbstractService 
+                            implements ServiceIndicatorsService {
 	
-  private IndicadoresServicioDAO dao = null;
+  private ServiceIndicatorsDAO dao = null;
   public static final Map<String , String> MONTHS = new HashMap<String , String>() {{
         put("01", "lbl-ENERO");
         put("02", "lbl-FEBRERO");
@@ -41,7 +43,7 @@ public class IndicadoresServicioServiceImpl extends AbstractService
     put("QRO", "lbl-QUERETARO");
   }};
   
-  public void setDao(IndicadoresServicioDAO dao) {
+  public void setDao(ServiceIndicatorsDAO dao) {
 	this.dao = dao;
   }
   
@@ -174,21 +176,21 @@ public class IndicadoresServicioServiceImpl extends AbstractService
 	return jsonData != null ? jsonData.toString() : "";
   }
   
-  public List<Chart> getCharts(){
+  public List<Chart> getCharts(String project, Date startDate, Date endDate){
 	List<Chart> charts = new ArrayList<Chart>();
 	List<Servicecenter> serviceCenters = null;
 	Chart chart = new Chart();
 	chart.setTitle("TIPO DE EQUIPOS REPORTADOS");
 	chart.setIs3d(true);
 	chart.setType("pie");
-	chart.setData(dao.getReportByEquipmentType().toString().replaceAll("\"", "'"));
+	chart.setData(dao.getReportByEquipmentType(project, startDate, endDate).toString().replaceAll("\"", "'"));
 	charts.add(chart);
 	
 	chart = new Chart();
 	chart.setTitle("TICKETS POR CENTRO DE SERVICIO");
 	chart.setIs3d(false);
 	chart.setType("bar");
-	chart.setData(dao.getTicketsByServiceCenter().toString().replaceAll("\"", "'"));
+	chart.setData(dao.getTicketsByServiceCenter(project, startDate, endDate).toString().replaceAll("\"", "'"));
 	charts.add(chart);
 	
 	serviceCenters = dao.getServiceCenterIdList();
@@ -202,7 +204,7 @@ public class IndicadoresServicioServiceImpl extends AbstractService
 		} else {
 			chart.setType("pie");
 		}
-		chart.setData(dao.getStatus(String.valueOf(serviceCenter.getServiceCenterId()))
+		chart.setData(dao.getStatus(String.valueOf(serviceCenter.getServiceCenterId()), project, startDate, endDate)
 				                    .toString().replaceAll("\"", "'"));
 		charts.add(chart);
 	}
@@ -219,5 +221,33 @@ public class IndicadoresServicioServiceImpl extends AbstractService
 	List<JSONObject> jsonData = dao.getGeneralAverage();
 	return jsonData != null ? jsonData.toString() : "";
   }
+  
+  public List<GetStatisticsKPI> getStatisticsKPI(String project, Date startDate, Date endDate){
+	List<GetStatisticsKPI> statics = dao.getStatisticsKPI(project, startDate, endDate);
+	GetStatisticsKPI obj = null;
+	int counter = 0;
+	String of ;
+	if(statics.size() > 0){
+	  of = statics.get(0).getOfficeName();
+	 for(int i = 0; i< statics.size(); i++){
+		obj = statics.get(i);
+	    if (! of.equals(obj.getOfficeName())){
+			of = obj.getOfficeName();
+			statics.get(i-1).setoReports(counter);
+			counter = 0;
+	    } 
+	    if (i == statics.size() -1){
+	    	statics.get(i).setoReports(counter);
+	    }
+	    counter += obj.getnReports();
+	  }
+	}
+	return statics;
+  }
+
+@Override
+public List<String> getProjectList() {
+	return dao.getProjectList();
+}
 
 }

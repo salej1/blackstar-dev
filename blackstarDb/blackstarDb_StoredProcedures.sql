@@ -154,6 +154,9 @@
 --                              blackstarDb.GetTicketsByServiceCenterKPI
 --                              blackstarDb.GetStatusKPI
 --                              blackstarDb.GetServiceCenterIdList
+--                              blackstarDb.GetUserAverageKPI
+--                              blackstarDb.GetGeneralAverageKPI
+--                              blackstarDb.GetStatisticsKPI
 -- -----------------------------------------------------------------------------
 -- 27   26/01/2014	LERV	Se Integra:
 -- 								blackstarDb.GetServiceOrderByUser
@@ -192,10 +195,122 @@
 --								blackstarDb.AddSurveyToServiceOrder
 --								blackstarDb.GetSurveyServiceLinkedServices
 -- -----------------------------------------------------------------------------
+-- 34	02/03/2014	SAG 	Se modifican:
+--								blackstarDb.GetStatisticsKPI
+--								blackstarDb.GetReportsByEquipmentTypeKPI
+--								blackstarDb.GetTicketsByServiceCenterKPI
+--								blackstarDb.GetStatusKPI
+-- -----------------------------------------------------------------------------
 
 use blackstarDb;
 
 DELIMITER $$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetStatisticsKPI
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetStatisticsKPI$$
+CREATE PROCEDURE blackstarDb.GetStatisticsKPI(pProject varchar(100), pStartDate DATETIME, pEndDate DATETIME)
+BEGIN
+IF pProject = 'All' THEN
+	SELECT officeName, project, customer, count(*) as pNumber,  nPolicies.number as tPolicies
+	                                 , SUM(rNumber) as nReports, nReports.number as tReports
+	FROM(
+	SELECT of.officeName, py.project, py.customer, tk.rNumber
+	       FROM policy py
+	       INNER JOIN office of ON of.officeId = py.officeId    
+	       INNER JOIN (SELECT policyId, count(*) rNumber FROM ticket 
+	                   WHERE ticket.created >= pStartDate AND ticket.created < pEndDate
+	                   GROUP BY policyId) tk on tk.policyId = py.policyId
+	       AND py.endDate >= NOW()
+	UNION ALL      
+	SELECT of.officeName, py.project, py.customer, 0 as rNumber
+	FROM policy py
+	INNER JOIN office of ON of.officeId = py.officeId   
+	WHERE py.policyId NOT IN (SELECT py.policyId
+	                          FROM policy py
+	                          INNER JOIN (SELECT policyId, count(*) rNumber 
+	                                      FROM ticket 
+	                                      WHERE ticket.created >= pStartDate AND ticket.created < pEndDate
+	                                      GROUP BY policyId) tk on tk.policyId = py.policyId
+	                          AND py.endDate >= NOW())
+	AND py.endDate >= NOW()
+	) data
+	INNER JOIN (SELECT COUNT(*) as number FROM policy py WHERE py.endDate >= NOW()) nPolicies
+	INNER JOIN (SELECT count(*) as number
+	            FROM ticket tk
+	            INNER JOIN policy py on py.policyId = tk.policyId
+	            WHERE tk.created >= pStartDate AND tk.created < pEndDate
+	                  AND py.endDate > NOW()) nReports
+	GROUP BY  officeName, project, customer
+	ORDER BY officeName, project, customer;
+ELSE
+	SELECT officeName, project, customer, count(*) as pNumber,  nPolicies.number as tPolicies
+	                                 , SUM(rNumber) as nReports, nReports.number as tReports
+	FROM(
+	SELECT of.officeName, py.project, py.customer, tk.rNumber
+	       FROM policy py
+	       INNER JOIN office of ON of.officeId = py.officeId    
+	       INNER JOIN (SELECT policyId, count(*) rNumber FROM ticket 
+	                   WHERE ticket.created >= pStartDate AND ticket.created < pEndDate
+	                   GROUP BY policyId) tk on tk.policyId = py.policyId
+	       AND py.endDate >= NOW()
+	UNION ALL      
+	SELECT of.officeName, py.project, py.customer, 0 as rNumber
+	FROM policy py
+	INNER JOIN office of ON of.officeId = py.officeId   
+	WHERE py.policyId NOT IN (SELECT py.policyId
+	                          FROM policy py
+	                          INNER JOIN (SELECT policyId, count(*) rNumber 
+	                                      FROM ticket 
+	                                      WHERE ticket.created >= pStartDate AND ticket.created < pEndDate
+	                                      GROUP BY policyId) tk on tk.policyId = py.policyId
+	                          AND py.endDate >= NOW())
+	AND py.endDate >= NOW()
+	) data
+	INNER JOIN (SELECT COUNT(*) as number FROM policy py WHERE py.endDate >= NOW()) nPolicies
+	INNER JOIN (SELECT count(*) as number
+	            FROM ticket tk
+	            INNER JOIN policy py on py.policyId = tk.policyId
+	            WHERE tk.created >= pStartDate AND tk.created < pEndDate
+	                  AND py.endDate > NOW()) nReports
+	WHERE project = pProject
+	GROUP BY  officeName, project, customer
+	ORDER BY officeName, project, customer;
+END IF;
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetGeneralAverageKPI
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetGeneralAverageKPI$$
+CREATE PROCEDURE blackstarDb.`GetGeneralAverageKPI`()
+BEGIN
+SELECT so.serviceUnit as office, IFNULL(AVG(ss.qualification),0) as average
+FROM serviceOrder so
+INNER JOIN surveyService ss ON so.serviceOrderId = ss.serviceOrderId
+WHERE so.created >= STR_TO_DATE(CONCAT('01-01-',YEAR(NOW())),'%d-%m-%Y')
+GROUP BY so.serviceUnit
+UNION
+SELECT 'GENERAL', IFNULL(AVG(ss.qualification),0)
+FROM serviceOrder so
+INNER JOIN surveyService ss ON so.serviceOrderId = ss.serviceOrderId
+WHERE so.created >= STR_TO_DATE(CONCAT('01-01-',YEAR(NOW())),'%d-%m-%Y');
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetUserAverageKPI
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetUserAverageKPI$$
+CREATE PROCEDURE blackstarDb.`GetUserAverageKPI`()
+BEGIN
+SELECT so.responsible as responsable, AVG(ss.qualification) as average
+      , (select count(*) from serviceOrder so1 where so1.isWrong > 0 and so1.responsible = so.responsible) as wrongOs
+FROM serviceOrder so
+INNER JOIN surveyService ss ON so.serviceOrderId = ss.serviceOrderId
+WHERE so.created >= STR_TO_DATE(CONCAT('01-01-',YEAR(NOW())),'%d-%m-%Y')
+GROUP BY so.responsible;
+END$$
 
 
 -- -----------------------------------------------------------------------------
@@ -377,61 +492,93 @@ END$$
 	-- blackstarDb.GetServiceCenterIdList
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetServiceCenterIdList$$
-CREATE PROCEDURE blackstarDb.GetServiceCenterIdList()
-	BEGIN
-	SELECT *
-	FROM serviceCenter;
+CREATE PROCEDURE blackstarDb.`GetServiceCenterIdList`()
+BEGIN
+SELECT *
+FROM serviceCenter;
 END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetStatusKPI
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetStatusKPI$$
-CREATE PROCEDURE blackstarDb.GetStatusKPI(pType CHAR(1))
+CREATE PROCEDURE blackstarDb.`GetStatusKPI`(pType CHAR(1), pProject varchar(100), startDate DATETIME, endDate DATETIME)
 BEGIN
+IF pProject = 'All' THEN
 	SELECT ts.ticketStatus as name, count(*) as value
 	FROM ticket tk
 	INNER JOIN policy py on tk.policyId = py.policyId
 	INNER JOIN serviceCenter sc ON py.serviceCenterId = sc.serviceCenterId
 	INNER JOIN ticketStatus ts ON tk.ticketStatusId = ts.ticketStatusId
-	WHERE tk.created >= STR_TO_DATE(CONCAT('01-01-',YEAR(NOW())),'%d-%m-%Y')
+	WHERE tk.created >= startDate AND tk.created <= endDate
 	AND sc.serviceCenterId LIKE pType
 	GROUP BY tk.ticketStatusId;
+ELSE
+	SELECT ts.ticketStatus as name, count(*) as value
+	FROM ticket tk
+	INNER JOIN policy py on tk.policyId = py.policyId
+	INNER JOIN serviceCenter sc ON py.serviceCenterId = sc.serviceCenterId
+	INNER JOIN ticketStatus ts ON tk.ticketStatusId = ts.ticketStatusId
+	WHERE tk.created >= startDate AND tk.created <= endDate
+	AND sc.serviceCenterId LIKE pType
+	AND py.project = pProject
+	GROUP BY tk.ticketStatusId;
+END IF;
 END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetTicketsByServiceCenterKPI
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetTicketsByServiceCenterKPI$$
-CREATE PROCEDURE blackstarDb.GetTicketsByServiceCenterKPI()
+CREATE PROCEDURE blackstarDb.GetTicketsByServiceCenterKPI(pProject varchar(100), startDate DATETIME, endDate DATETIME)
 BEGIN
+IF pProject = 'All' THEN
 	SELECT sc.serviceCenter as name, count(*) as value
 	FROM ticket tk
 	INNER JOIN policy py on tk.policyId = py.policyId
 	INNER JOIN serviceCenter sc ON py.serviceCenterId = sc.serviceCenterId
-	WHERE tk.created >= STR_TO_DATE(CONCAT('01-01-',YEAR(NOW())),'%d-%m-%Y')
+	WHERE tk.created >= startDate AND tk.created <= endDate
 	GROUP BY sc.serviceCenter;
+ELSE
+	SELECT sc.serviceCenter as name, count(*) as value
+	FROM ticket tk
+	INNER JOIN policy py on tk.policyId = py.policyId
+	INNER JOIN serviceCenter sc ON py.serviceCenterId = sc.serviceCenterId
+	WHERE tk.created >= startDate AND tk.created <= endDate
+	AND py.project = pProject
+	GROUP BY sc.serviceCenter;
+END IF;
 END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetReportsByEquipmentTypeKPI
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetReportsByEquipmentTypeKPI$$
-CREATE PROCEDURE blackstarDb.GetReportsByEquipmentTypeKPI()
+CREATE PROCEDURE blackstarDb.GetReportsByEquipmentTypeKPI(pProject varchar(100), startDate DATETIME, endDate DATETIME)
 BEGIN
+IF pProject = 'All' THEN
 	SELECT et.equipmentType as name , count(*) as value
 	FROM ticket tk
 	INNER JOIN policy py on py.policyId = tk.policyId
 	INNER JOIN equipmentType et ON et.equipmentTypeId = py.equipmentTypeId
-	WHERE tk.created >= STR_TO_DATE(CONCAT('01-01-',YEAR(NOW())),'%d-%m-%Y')
+	WHERE tk.created >= startDate AND tk.created <= endDate
 	GROUP BY py.equipmentTypeId;
+ELSE
+	SELECT et.equipmentType as name , count(*) as value
+	FROM ticket tk
+	INNER JOIN policy py on py.policyId = tk.policyId
+	INNER JOIN equipmentType et ON et.equipmentTypeId = py.equipmentTypeId
+	WHERE tk.created >= startDate AND tk.created <= endDate
+	AND py.project = pProject
+	GROUP BY py.equipmentTypeId;
+END IF;
 END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetResumeOSKPI
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetResumeOSKPI$$
-CREATE PROCEDURE blackstarDb.GetResumeOSKPI()
+CREATE PROCEDURE blackstarDb.`GetResumeOSKPI`()
 BEGIN
 SELECT so.serviceUnit as serviceUnit,
        py.project as project,
@@ -450,8 +597,8 @@ SELECT so.serviceUnit as serviceUnit,
        so.responsible as responsible,
        so.receivedBy as receivedBy,
        so.serviceComments as serviceComments,
-       so.closed as closed,
-       so.hasErrors as hasErrors,
+       IFNULL(so.closed, '') as closed,
+       IFNULL(so.hasErrors, '0') as hasErrors,
        '' as materialUsed,
        py.cst as cst,
        py.finalUser as finalUser,
@@ -467,7 +614,7 @@ END$$
 	-- blackstarDb.GetReportOSResumeKPI
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetReportOSResumeKPI$$
-CREATE PROCEDURE blackstarDb.GetReportOSResumeKPI()
+CREATE PROCEDURE blackstarDb.`GetReportOSResumeKPI`()
 BEGIN
 SELECT so.serviceUnit office, count(*) numServiceOrders, survey.obCount numObervations
 FROM serviceOrder so
@@ -484,7 +631,7 @@ END$$
 	-- blackstarDb.GetReportOSTableKPI
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetReportOSTableKPI$$
-CREATE PROCEDURE blackstarDb.GetReportOSTableKPI()
+CREATE PROCEDURE blackstarDb.`GetReportOSTableKPI`()
 BEGIN
 SELECT os.serviceOrderId as serviceOrderId
        , ss.comments as comments
@@ -518,9 +665,9 @@ END$$
 	-- blackstarDb.GetConcurrentFailuresKPI
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetConcurrentFailuresKPI$$
-CREATE PROCEDURE blackstarDb.GetConcurrentFailuresKPI()
+CREATE PROCEDURE blackstarDb.`GetConcurrentFailuresKPI`()
 BEGIN
-  SELECT  tk.employee as employee, 
+SELECT  tk.employee as employee, 
           py.customer as customer,
           py.equipmentTypeId as equipmentTypeId,
           py.brand as brand,
@@ -530,7 +677,7 @@ BEGIN
           tk.ticketNumber as ticketNumber,
           tk.created as created
   FROM ticket tk
-  INNER JOIN Policy py on tk.policyId = py.policyId
+  INNER JOIN policy py on tk.policyId = py.policyId
   LEFT OUTER JOIN blackstarUser bu ON bu.email = tk.asignee
   WHERE py.policyId in (
         SELECT tk.policyId
@@ -539,13 +686,13 @@ BEGIN
         GROUP BY tk.policyId
         HAVING count(1) > 1)
   ORDER BY tk.created, tk.policyId ASC;
-END$$
+  END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetPoliciesKPI
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetPoliciesKPI$$
-CREATE PROCEDURE blackstarDb.GetPoliciesKPI()
+CREATE PROCEDURE blackstarDb.`GetPoliciesKPI`()
 BEGIN
 SELECT py.policyId as policyId,
        IFNULL(of.officeName, '') as officeName,
@@ -579,8 +726,8 @@ SELECT py.policyId as policyId,
   INNER JOIN office of ON py.officeId = of.officeId
   INNER JOIN equipmentType eq ON eq.equipmentTypeId = py.equipmentTypeId
   INNER JOIN serviceCenter sc ON py.serviceCenterId = sc.serviceCenterId
-	WHERE py.created >= STR_TO_DATE(CONCAT('01-01-',YEAR(NOW())),'%d-%m-%Y')
-    ORDER BY py.created ASC;
+	WHERE py.endDate >= STR_TO_DATE(CONCAT('01-01-',YEAR(NOW())),'%d-%m-%Y')
+    ORDER BY py.endDate ASC;
 END$$
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetTicketsKPI

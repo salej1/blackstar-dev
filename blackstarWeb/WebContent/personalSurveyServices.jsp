@@ -1,16 +1,16 @@
 <script type="text/javascript">
 	
 	// Inicializacion de tabla de tickets y dialogo de asignacion
-	function surveyServicesHistory_init(){
+	function personalSurveyServices_init(){
 
 		// Tabla de Ordenes de servicio nuevas
-		getSurveyServiceHistory();
+		getPersonalSurveyServices();
 	}	
 	 
-	function getSurveyServiceHistory(){
-		$.getJSON("/surveyServices/surveyServiceHistory.do", function(data){
+	function getPersonalSurveyServices(){
+		$.getJSON("/surveyServices/personalSurveyServices.do", function(data){
 			// Inicializacion de la tabla de nuevas ordenes de servicio
-			$('#dtSurveyServiceHistory').dataTable({	    		
+			$('#dtPersonalSurveyServices').dataTable({	    		
 				"bProcessing": true,
 				"bFilter": true,
 				"bLengthChange": false,
@@ -41,11 +41,11 @@
 -->
 <div class="grid_16">
 	<div class="box">
-		<h2>Historial de encuestas de servicio</h2>
+		<h2>Mis Encuestas de servicio</h2>
 		<div class="utils">
 			
 		</div>
-		<table cellpadding="0" cellspacing="0" border="0" class="display" id="dtSurveyServiceHistory">
+		<table cellpadding="0" cellspacing="0" border="0" class="display" id="dtPersonalSurveyServices">
 			<thead>
 				<tr>
 					<th style="width:80px;">No. Encuesta</th>
