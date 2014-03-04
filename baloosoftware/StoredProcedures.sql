@@ -221,7 +221,7 @@ status varchar(15),
 customerId int(11),
 costCenter varchar(15),
 exchangeRate double,
-date date,
+updateDate date,
 contactName varchar(45),
 ubicationProject varchar(45),
 paymentTermsId int (11),
@@ -233,16 +233,26 @@ totalProductsServices double,
 entryId int(11))
 BEGIN
 INSERT INTO warrantProject
-( warrantProjectId,status,customerId,costCenter,exchangeRate,date,contactName,ubicationProject,paymentTermsId,deliveryTime,intercom,totalProject,
+( warrantProjectId,status,customerId,costCenter,exchangeRate,updateDate,contactName,ubicationProject,paymentTermsId,deliveryTime,intercom,totalProject,
 bonds,totalProductsServices,entryId
 )
 VALUES
 (
- warrantProjectId,status,customerId,costCenter,exchangeRate,date,contactName,ubicationProject,paymentTermsId,deliveryTime,intercom,totalProject,
+ warrantProjectId,status,customerId,costCenter,exchangeRate,updateDate,contactName,ubicationProject,paymentTermsId,deliveryTime,intercom,totalProject,
 bonds,totalProductsServices,entryId
 );
 select LAST_INSERT_ID();
 END$$
+
+-- -----------------------------------------------------------------------------
+-- blackstarDb.GetAllWarrantProjects
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetAllWarrantProjects$$
+CREATE PROCEDURE blackstarDb.GetAllWarrantProjects()
+BEGIN
+SELECT wp.warrantProjectId as warrantProjectId,wp.updateDate as updateDate from warrantProject wp order by updateDate asc;
+END$$
+
 
 DELIMITER ;
 
