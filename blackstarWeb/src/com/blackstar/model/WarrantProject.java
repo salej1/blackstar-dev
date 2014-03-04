@@ -16,10 +16,10 @@ public class WarrantProject implements Serializable
 	 private int customerId;
 	 private String costCenter;
 	 private Double exchangeRate;
-	 private Date date;
+	 private Date updateDate;
 	 private String contactName;
 	 private String ubicationProject;
-	 private int paymentId;
+	 private int paymentTermsId;
 	 private String deliveryTime;
 	 private String intercom;
 	 private Double totalProject;
@@ -57,11 +57,11 @@ public class WarrantProject implements Serializable
 	public void setExchangeRate(Double exchangeRate) {
 		this.exchangeRate = exchangeRate;
 	}
-	public Date getDate() {
-		return date;
+	public Date getUpdateDate() {
+		return updateDate;
 	}
-	public void setDate(Date date) {
-		this.date = date;
+	public void setUpdateDate(Date updateDate) {
+		this.updateDate = updateDate;
 	}
 	public String getContactName() {
 		return contactName;
@@ -75,11 +75,11 @@ public class WarrantProject implements Serializable
 	public void setUbicationProject(String ubicationProject) {
 		this.ubicationProject = ubicationProject;
 	}
-	public int getPaymentId() {
-		return paymentId;
+	public int getPaymentTermsId() {
+		return paymentTermsId;
 	}
-	public void setPaymentId(int paymentId) {
-		this.paymentId = paymentId;
+	public void setPaymentTermsId(int paymentTermsId) {
+		this.paymentTermsId = paymentTermsId;
 	}
 	public String getDeliveryTime() {
 		return deliveryTime;

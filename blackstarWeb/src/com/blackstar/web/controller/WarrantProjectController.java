@@ -41,7 +41,7 @@ public class WarrantProjectController extends AbstractController
 	public String show(ModelMap model, HttpServletRequest req, HttpServletResponse resp)
 	{
 		model.addAttribute("warrantProjectList", warrantProjectService.getWarrantProjectList());
-		return "warrantProjects";
+		return "quotations";
 	}
 	
 	@RequestMapping(value = "/save.do", method = RequestMethod.POST)
@@ -60,10 +60,10 @@ public class WarrantProjectController extends AbstractController
 				warrantProject.setCustomerId(warrantProjectDTO.getCustomerId());
 				warrantProject.setCostCenter(warrantProjectDTO.getCostCenter());
 				warrantProject.setExchangeRate(warrantProjectDTO.getExchangeRate());
-				warrantProject.setDate(warrantProjectDTO.getDate());
+				warrantProject.setUpdateDate(warrantProjectDTO.getUpdateDate());
 				warrantProject.setContactName(warrantProjectDTO.getContactName());
 				warrantProject.setUbicationProject(warrantProjectDTO.getUbicationProject());
-				warrantProject.setPaymentId(warrantProjectDTO.getPaymentId());
+				warrantProject.setPaymentTermsId(warrantProjectDTO.getPaymentTermsId());
 				warrantProject.setDeliveryTime(warrantProjectDTO.getDeliveryTime());
 				warrantProject.setIntercom(warrantProjectDTO.getIntercom());
 				warrantProject.setTotalProject(warrantProjectDTO.getTotalProject());
@@ -84,6 +84,6 @@ public class WarrantProjectController extends AbstractController
 			e.printStackTrace();
 			return "error";
 		}
-		return "warrantProjects";
+		return "customers";
 	}
 }

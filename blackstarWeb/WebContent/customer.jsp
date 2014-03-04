@@ -93,7 +93,7 @@
 							<td>Ciudad:</td>
 							<td>
 								<form:select path="cityId" style="width: 95%;">
-									<form:option value="450">Morelia</form:option>
+									<form:option value="57">Morelia</form:option>
 								</form:select>
 							</td>
 							<td>Municipio:</td>

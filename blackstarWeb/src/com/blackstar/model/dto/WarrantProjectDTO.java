@@ -11,10 +11,10 @@ public class WarrantProjectDTO implements Serializable
 	 private Integer customerId;
 	 private String costCenter;
 	 private Double exchangeRate;
-	 private Date date;
+	 private Date updateDate;
 	 private String contactName;
 	 private String ubicationProject;
-	 private Integer paymentId;
+	 private Integer paymentTermsId;
 	 private String deliveryTime;
 	 private String intercom;
 	 private Double totalProject;
@@ -66,12 +66,14 @@ public class WarrantProjectDTO implements Serializable
 		this.exchangeRate = exchangeRate;
 	}
 
-	public Date getDate() {
-		return date;
+	
+
+	public Date getUpdateDate() {
+		return updateDate;
 	}
 
-	public void setDate(Date date) {
-		this.date = date;
+	public void setUpdateDate(Date updateDate) {
+		this.updateDate = updateDate;
 	}
 
 	public String getContactName() {
@@ -90,12 +92,12 @@ public class WarrantProjectDTO implements Serializable
 		this.ubicationProject = ubicationProject;
 	}
 
-	public Integer getPaymentId() {
-		return paymentId;
+	public Integer getPaymentTermsId() {
+		return paymentTermsId;
 	}
 
-	public void setPaymentId(Integer paymentId) {
-		this.paymentId = paymentId;
+	public void setPaymentTermsId(Integer paymentTermsId) {
+		this.paymentTermsId = paymentTermsId;
 	}
 
 	public String getDeliveryTime() {

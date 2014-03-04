@@ -42,5 +42,6 @@
 	<bean id="serviceOrderDAO" class="com.blackstar.db.dao.impl.ServiceOrderDAOImpl" parent="abstractDAO" />
 	<bean id="serviceTypeDAO" class="com.blackstar.db.dao.impl.ServiceTypeDAOImpl" parent="abstractDAO" />
 	<bean id="customerDAO" class="com.blackstar.db.dao.impl.CustomerDAOImpl" parent="abstractDAO" />
+	<bean id="warrantProjectDAO" class="com.blackstar.db.dao.impl.WarrantProjectDAOImpl" parent="abstractDAO" />
 
 </beans>

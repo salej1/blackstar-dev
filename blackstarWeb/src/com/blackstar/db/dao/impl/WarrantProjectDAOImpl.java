@@ -21,23 +21,23 @@ public class WarrantProjectDAOImpl extends AbstractDAO implements WarrantProject
 	public int insertWarrantProject(WarrantProject warrantProject) 
 	{
 		StringBuilder sqlBuilder = new StringBuilder();
-		sqlBuilder.append("CALL AddWarrantProject(0,?,?,?,?,?,?,?,?,?,?,?,?,?,?);");
+		sqlBuilder.append("CALL AddWarrantProject(0,?,4,?,?,?,?,?,?,?,?,?,?,?,1);");
 		Object[] args = new Object[]
 		{
 				warrantProject.getStatus() + "",
-				warrantProject.getCustomerId() + "",
+				//warrantProject.getCustomerId() + "",
 				warrantProject.getCostCenter() + "",
 				warrantProject.getExchangeRate() + "",
-				warrantProject.getDate() + "",
+				warrantProject.getUpdateDate() + "",
 				warrantProject.getContactName() + "",
 				warrantProject.getUbicationProject() + "",
-				warrantProject.getPaymentId() + "",
+				warrantProject.getPaymentTermsId() + "",
 				warrantProject.getDeliveryTime() + "",
 				warrantProject.getIntercom() + "",
 				warrantProject.getTotalProject() + "",
 				warrantProject.getBonds() + "",
-				warrantProject.getTotalProductsServices() + "",
-				warrantProject.getEntryId() + ""
+				warrantProject.getTotalProductsServices()
+				
 		};
 		return getJdbcTemplate().queryForInt(sqlBuilder.toString(),args);
 	}
