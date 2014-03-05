@@ -250,7 +250,9 @@ END$$
 DROP PROCEDURE IF EXISTS blackstarDb.GetAllWarrantProjects$$
 CREATE PROCEDURE blackstarDb.GetAllWarrantProjects()
 BEGIN
-SELECT wp.warrantProjectId as warrantProjectId,wp.updateDate as updateDate from warrantProject wp order by updateDate asc;
+SELECT wp.warrantProjectId as warrantProjectId,wp.updateDate as updateDate, wp.totalProject as totalProject,c.companyName as customer from warrantProject wp 
+inner join customer c on c.customerId=wp.customerId
+order by wp.updateDate asc;
 END$$
 
 
