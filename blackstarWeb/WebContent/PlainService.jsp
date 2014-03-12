@@ -278,12 +278,12 @@
 								<tr>
 									<td colspan="2"></td>
 									<td>Puesto</td>
-									<td><form:input path="receivedByPosition"  style="width:95%;" required="true" /></td>
+									<td><form:input path="receivedByPosition"  style="width:95%;" /></td>
 								</tr>	
 								<tr>
 									<td colspan="2"></td>
 									<td>Email</td>
-									<td><form:input path="receivedByEmail"  style="width:95%;" required="true" /></td>
+									<td><form:input path="receivedByEmail"  style="width:95%;" /></td>
 								</tr>
 								<c:if test="${ user.belongsToGroup['Coordinador']}">
 									<tr>

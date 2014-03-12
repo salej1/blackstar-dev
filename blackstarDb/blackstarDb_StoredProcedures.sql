@@ -919,7 +919,7 @@ BEGIN
 		INNER JOIN equipmentType et ON p.equipmentTypeId = et.equipmentTypeId
 		INNER JOIN office of on p.officeId = of.officeId
      LEFT OUTER JOIN ticket t on t.ticketId = so.ticketId
-	ORDER BY so.ServiceOrderId DESC;
+	ORDER BY so.serviceDate DESC;
 	
 END$$
 
@@ -1007,8 +1007,8 @@ BEGIN
 		INNER JOIN policy p ON p.policyId = so.policyId
 		INNER JOIN equipmentType et ON et.equipmentTypeId = p.equipmentTypeId
 		INNER JOIN office o ON p.officeId = o.officeId
-		INNER JOIN serviceOrderEmployee se ON so.serviceOrderId = se.serviceOrderId
-	where serviceStatus IN ('NUEVO', 'PENDIENTE')
+		LEFT OUTER JOIN serviceOrderEmployee se ON so.serviceOrderId = se.serviceOrderId
+	WHERE serviceStatus IN ('NUEVO', 'PENDIENTE')
 	AND (so.asignee = pUser OR se.employeeId = pUser)
 	ORDER BY serviceDate DESC;
 
@@ -1408,8 +1408,13 @@ BEGIN
 		'AddFollowUpToTicket',
 		pCreatedBy;
 
+	-- ACTUALIZAR LA OS
 	UPDATE serviceOrder SET
-		serviceStatusId = 'E'
+		serviceStatusId = 'E',
+		asignee = pAsignee,
+		modified = pCreated,
+		modifiedBy = 'AddFollowUpToTicket',
+		modifiedByUsr = pCreatedBy
 	WHERE serviceOrderId = pOsId;
 
 END$$

@@ -11,7 +11,7 @@
 		$.getJSON("/serviceOrders/serviceOrdersHistoryJson.do", function(data){
 			// Inicializacion de tabla de ordenes de servicio con algun pendiente
 			$('#dtOrdersHistory').dataTable({	
-					"bProcessing": true,
+					"bProcessing": false,
 					"bFilter": true,
 					"bLengthChange": false,
 					"iDisplayLength": 10,
@@ -19,6 +19,7 @@
 					"sPaginationType": "full_numbers",
 					"aaData": data,
 					"sDom": '<"top"i>rt<"bottom"flp><"clear">',
+					"aaSorting": [],
 					"aoColumns": [
 							  { "mData": "serviceOrderNumber" },
 							  { "mData": "placeHolder" },
@@ -32,7 +33,7 @@
 							  { "mData": "serviceStatus" }
 
 							  ],
-					"aoColumnDefs" : [{"mRender" : function(data, type, row){return "<div align='center' style='width:70px;' ><a href='${pageContext.request.contextPath}/osDetail/show.do?serviceOrderId=" + row.DT_RowId + "'>" + data + "</a></div>";}, "aTargets" : [0]},
+					"aoColumnDefs" : [{"mRender" : function(data, type, row){return "<div align='center' style='width:85px;' ><a href='${pageContext.request.contextPath}/osDetail/show.do?serviceOrderId=" + row.DT_RowId + "'>" + data + "</a></div>";}, "aTargets" : [0]},
 									  {"mRender" : function(data, type, row){return "<a href='${pageContext.request.contextPath}/report/show.do?serviceOrderId=" + row.DT_RowId + "' target='_blank'><img src='${pageContext.request.contextPath}/img/pdf.png'</a>" ;}, "aTargets" : [1]},
 									  {"mRender" : function(data, type, row){return "<div align='center'><a href='${pageContext.request.contextPath}/ticketDetail?ticketNumber=" + data + "'>" + data + "</a></div>";}, "aTargets" : [2]}	    		    	       
 									   ]}
@@ -54,7 +55,7 @@
 			<table cellpadding="0" cellspacing="0" border="0" class="display" id="dtOrdersHistory">
 				<thead>
 					<tr>
-						<th>Folio</th>
+						<th style="width:90px">Folio</th>
 						<th></th>
 						<th>Ticket</th>
 						<th>Tipo</th>

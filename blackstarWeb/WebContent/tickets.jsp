@@ -41,6 +41,7 @@
 			"sPaginationType": "full_numbers",
 			"aaData": data,
 			"sDom": '<"top"i>rt<"bottom"flp><"clear">',
+			"aaSorting": [],
 			"aoColumns": [
 						  { "mData": "ticketNumber" },
 						  { "mData": "created" },
@@ -99,7 +100,7 @@
 		<div class="grid_16">
 
 			<div class="box">
-							<h2>Ultimos tickets</h2>
+							<h2>Historial de tickets</h2>
 							<div class="utils">
 								
 			</div>

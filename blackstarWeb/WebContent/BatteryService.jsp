@@ -304,7 +304,7 @@
 								<tr>
 									<td colspan="2"></td>
 									<td>Email</td>
-									<td><form:input path="receivedByEmail"  style="width:95%;" required="true" /></td>
+									<td><form:input path="receivedByEmail"  style="width:95%;" /></td>
 								</tr>			
 							</table>
 

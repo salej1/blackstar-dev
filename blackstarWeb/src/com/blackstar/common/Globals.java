@@ -16,7 +16,7 @@ public class Globals {
 	public static final String SESSION_KEY_PARAM = "uSession";
 	
 	  public static final String GOOGLE_DRIVER_CLASS = "com.mysql.jdbc.GoogleDriver";
-	  public static final String CONNECTION_STRING_TEMPLATE = "jdbc:google:rdbms://innso-blackstar-dev:innso-blackstar-dev2/%s";
+	  public static final String CONNECTION_STRING_TEMPLATE = "jdbc:google:rdbms://gposac-blackstar-pro:gposac-blackstar-pro/%s";
 	  public static final String DEFAULT_DRIVER_CLASS = "com.mysql.jdbc.Driver";
 	  public static final String LOCAL_CONNECTION_STRING_TEMPLATE = "jdbc:mysql://localhost:3306/%s";
 	  /**
@@ -53,4 +53,5 @@ public class Globals {
 	  
 	  // time format
 	  public static final String DEFAULT_TIME_ZONE = "America/Mexico_City";
-	  public static final String DATE_FORMAT_PATTERN = "dd/MM/yyyy hh:mm:ss a";}
+	  public static final String DATE_FORMAT_PATTERN = "dd/MM/yyyy hh:mm:ss a";
+}

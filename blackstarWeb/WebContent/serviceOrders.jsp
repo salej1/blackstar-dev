@@ -11,6 +11,7 @@
 		<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery.ui.theme.css"/>
 		<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery-ui.min.css"/>
 		<script src="${pageContext.request.contextPath}/DataTables-1.9.4/media/js/jquery.dataTables.js"></script>
+		<script src="${pageContext.request.contextPath}/js/jquery.cookie.js"></script>
 
 		<title>Ordenes de servicio</title>
 	</head>
