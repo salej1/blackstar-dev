@@ -255,6 +255,15 @@ inner join customer c on c.customerId=wp.customerId
 order by wp.updateDate asc;
 END$$
 
+-- -----------------------------------------------------------------------------
+-- blackstarDb.GetAllServiceTypes
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetAllServiceTypes$$
+CREATE PROCEDURE blackstarDb.GetAllServiceTypes()
+BEGIN
+SELECT st.serviceTypeId AS serviceTypeId, st.serviceType AS serviceType FROM serviceType st ORDER BY st.serviceType ASC;
+END$$
+
 
 DELIMITER ;
 
