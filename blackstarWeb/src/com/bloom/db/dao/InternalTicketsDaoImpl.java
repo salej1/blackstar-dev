@@ -2,6 +2,7 @@ package com.bloom.db.dao;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.jdbc.core.RowMapper;
@@ -30,6 +31,11 @@ public class InternalTicketsDaoImpl extends AbstractDAO implements InternalTicke
 	
 	public List<InternalTicketBean> getPendingTickets(){
 		String sqlQuery = "CALL getPendingTickets();";
+		
+		List<InternalTicketBean> listaTickets = new ArrayList<InternalTicketBean>();
+		
+		InternalTicketBean ticket = new InternalTicketBean();
+		
 		return getJdbcTemplate().query(sqlQuery, new InternalTicketMapper());  
 	}
     
