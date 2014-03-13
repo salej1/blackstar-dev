@@ -11,16 +11,33 @@ public class InternalTicketsServiceImpl extends AbstractService implements
 
 	private InternalTicketsDao internalTicketsDao;
 
-	public void setInternalTicketsDao(InternalTicketsDao dao) {
-		this.internalTicketsDao = dao;
-	}
-	
-	
+
 	@Override
 	public List<InternalTicketBean> getPendingTickets(){
 		List<InternalTicketBean> listaTickets = internalTicketsDao.getPendingTickets();
 		return listaTickets;
 	}
+	
+	/**
+	 * @return the internalTicketsDao
+	 */
+	public InternalTicketsDao getInternalTicketsDao() {
+		return internalTicketsDao;
+	}
+
+
+
+	/**
+	 * @param internalTicketsDao the internalTicketsDao to set
+	 */
+	public void setInternalTicketsDao(InternalTicketsDao internalTicketsDao) {
+		this.internalTicketsDao = internalTicketsDao;
+	}
+
+
+
+
+	
 	
 
 }

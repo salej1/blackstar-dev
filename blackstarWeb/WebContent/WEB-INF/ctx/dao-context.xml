@@ -42,6 +42,6 @@
        <bean id="serviceTypeDAO" class="com.blackstar.db.dao.impl.ServiceTypeDAOImpl" parent="abstractDAO"/>
 	   
 	   <!-- Implementacion de BLOOM HELPDESK -->
-	   <bean id="internalTicketsDAO" class="com.bloom.db.dao.DashboardDAOImpl" parent="abstractDAO"/>       
+	   <bean id="internalTicketsDao" class="com.bloom.db.dao.InternalTicketsDaoImpl" parent="abstractDAO"/>       
 
 </beans>

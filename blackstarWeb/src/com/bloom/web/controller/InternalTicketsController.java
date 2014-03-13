@@ -41,6 +41,25 @@ public class InternalTicketsController extends AbstractController {
 	
 
 	
+	/**
+	 * @return the internalTicketsService
+	 */
+	public InternalTicketsService getInternalTicketsService() {
+		return internalTicketsService;
+	}
+
+
+
+	/**
+	 * @param internalTicketsService the internalTicketsService to set
+	 */
+	public void setInternalTicketsService(
+			InternalTicketsService internalTicketsService) {
+		this.internalTicketsService = internalTicketsService;
+	}
+
+
+
 	@RequestMapping(value = "/generarUnidadesCliente.htm", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
     RespuestaJsonBean generarUnidadesCliente(HttpServletRequest request, Map<String, Object> model,
@@ -49,12 +68,7 @@ public class InternalTicketsController extends AbstractController {
 		return new RespuestaJsonBean();
 	}
 
-	/**
-	 * @param internalTicketsService the internalTicketsService to set
-	 */
-	private void setInternalTicketsService(InternalTicketsService internalTicketsService) {
-		this.internalTicketsService = internalTicketsService;
-	}	
+
 	
 
 	// Ordenes de servicio nuevas
