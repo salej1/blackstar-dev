@@ -84,4 +84,11 @@
        <property name="urlPreffix" value="https://docs.google.com/a/gposac.com.mx/file/d/"/>
        <property name="urlSufix" value="/edit"/>
    </bean>
+   
+   <bean class="com.bloom.web.controller.InternalTicketsController" parent="abstractController">
+      <property name="internalTicketsService" ref="internalTicketsService" />
+   </bean>
+   
+   
+   
 </beans>

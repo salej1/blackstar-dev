@@ -52,6 +52,16 @@
 				pendingServiceOrders_init();
 			});
 		</script>
+		
+
+		<!-- Tabla De Tickets internos pendientes - pendingInternalTickets.jsp -->
+		<c:import url="bloom/pendingInternalTickets.jsp"></c:import>
+		<script type="text/javascript">
+			$(function(){
+				pendingInternalTicketsInit();
+			});
+		</script>
+		
 
 		<!-- La inicializacion se hace una vez que se pintaron las tablas -->
 		<script type="text/javascript">

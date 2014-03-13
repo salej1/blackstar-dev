@@ -23,7 +23,8 @@
        
        <bean id="dsBlackStartProd" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">  
              <property name="driverClassName" value="com.mysql.jdbc.GoogleDriver"/>  
-             <property name="url" value="jdbc:google:rdbms://innso-blackstar-dev:innso-blackstar-dev2/blackstarDb"/>  
+             <property name="url" value="jdbc:google:rdbms://innso-blackstar-dev:innso-blackstar-dev/blackstarDb"/>  
+                                        
        </bean>
        
        <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
@@ -39,5 +40,8 @@
        <bean id="dashboardDAO" class="com.blackstar.db.dao.impl.DashboardDAOImpl" parent="abstractDAO"/>
        <bean id="serviceOrderDAO" class="com.blackstar.db.dao.impl.ServiceOrderDAOImpl" parent="abstractDAO"/>
        <bean id="serviceTypeDAO" class="com.blackstar.db.dao.impl.ServiceTypeDAOImpl" parent="abstractDAO"/>
+	   
+	   <!-- Implementacion de BLOOM HELPDESK -->
+	   <bean id="internalTicketsDAO" class="com.bloom.db.dao.DashboardDAOImpl" parent="abstractDAO"/>       
 
 </beans>
