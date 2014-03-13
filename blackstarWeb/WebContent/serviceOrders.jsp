@@ -25,9 +25,15 @@
 				</div>
 			</div>
 			<p><small>&nbsp;</small></p>
+<!-- Inicia seccion Coordinadoras -->
+			<c:set var="sysServicio" scope="request" value="${user.belongsToGroup['Coordinador']}" />
+			<c:if test="${sysServicio == true}">
+				<c:import url="newOpenOSLinks.jsp"></c:import>
+			</c:if>
+<!-- Fin seccion Coordinadoras -->
 
-<!-- Seccion compartida Servicio y Coordinador -->
-			<c:set var="sysServicio" scope="request" value="${user.belongsToGroup['Implementacion y Servicio'] || user.belongsToGroup['Coordinador']}" />
+<!-- Seccion perfil Servicio -->
+			<c:set var="sysServicio" scope="request" value="${user.belongsToGroup['Implementacion y Servicio'] }" />
 			<c:if test="${sysServicio == true}">
 	
 <!-- Links Para Crear Ordenes De Servicio -->
@@ -40,7 +46,7 @@
 		<!-- Fin Links Para Crear Ordenes De Servicio -->
 
 			</c:if>
-<!-- Fin Seccion compartida Servicio y Coordinador -->
+<!-- Fin Seccion perfil Servicio -->
 
 <!-- Inicia Contenido De Perfiles SysCallCenter Y SysCoordinador-->
 			<c:set var="sysCallCenter" scope="request" value="${user.belongsToGroup['Call Center'] || user.belongsToGroup['Coordinador']}" />

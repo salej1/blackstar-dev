@@ -22,6 +22,14 @@
 
 <!--   CONTENT COLUMN   -->		
 
+<!-- Inicia Contenido De Perfil Syscoordinador-->
+<c:set var="sysCallCenter" scope="request" value="${user.belongsToGroup['Coordinador']}" />
+	<c:if test="${sysCallCenter == true}">
+		<!-- Links para crear ordenes de servicio abiertas -->
+		<c:import url="newOpenOSLinks.jsp"></c:import>
+	</c:if>
+<!-- Fin Contenido De Perfil Syscoordinador-->
+
 <!-- Inicia Contenido De Perfiles Syscallcenter Y Syscoordinador-->
 	<c:set var="sysCallCenter" scope="request" value="${user.belongsToGroup['Call Center'] || user.belongsToGroup['Coordinador']}" />
 	<c:if test="${sysCallCenter == true}">

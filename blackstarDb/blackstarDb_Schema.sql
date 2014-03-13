@@ -23,6 +23,9 @@
 -- --   --------   -------  ------------------------------------
 -- 7    09/02/2014  SAG  	Se cambia serviceOrderAdditionalEngineer por
 -- 							serviceOrderEmployee
+-- --   --------   -------  ------------------------------------
+-- 8    12/03/2014  SAG  	Se agrega openCustomerId a policy
+--							Se agrega la entidad openCustomer
 -- ---------------------------------------------------------------------------
 
 use blackstarDb;
@@ -36,6 +39,40 @@ BEGIN
 -- -----------------------------------------------------------------------------
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
+
+-- AGREGANDO TABLA openCustomer - REPRESENTA LOS CLIENTES SIN POLIZA QUE SOLICITAN SERVICIOS ESPORADICOS
+	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'openCustomer') = 0 THEN
+		 CREATE TABLE blackstarDb.openCustomer(
+			openCustomerId INTEGER NOT NULL AUTO_INCREMENT,
+			customerName VARCHAR(200),
+			address VARCHAR(500) NULL,
+			phone VARCHAR(100) NULL,
+			equipmentTypeId CHAR(1),
+			brand VARCHAR(100) NULL,
+			model VARCHAR(100) NULL,
+			capacity VARCHAR(100) NULL,
+			serialNumber VARCHAR(100),
+			contactName VARCHAR(100) NULL,
+			contactEmail VARCHAR(100) NULL,
+			created DATETIME NULL,
+			createdBy NVARCHAR(50) NULL,
+			createdByUsr NVARCHAR(50) NULL,
+			PRIMARY KEY (openCustomerId),
+			KEY(equipmentTypeId),
+			UNIQUE UQ_openCustomer_openCustomerId(openCustomerId)
+		) ENGINE=INNODB;
+
+		 ALTER TABLE openCustomer ADD CONSTRAINT FK_openCustomer_equipmentTypeId
+		 FOREIGN KEY(equipmentTypeId) REFERENCES equipmentType(equipmentTypeId);
+		
+	END IF;
+-- AGREGANDO COLUMNA openCustomerId a ServiceOrder -- ESTA COLUMNA ASOCIA LA OS CON UN EQUIPO SIN POLIZA
+	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'serviceOrder' AND COLUMN_NAME = 'openCustomerId') = 0  THEN
+		ALTER TABLE serviceOrder ADD openCustomerId INT NULL;
+
+		ALTER TABLE blackstarDb.serviceOrder ADD CONSTRAINT FK_openCustomer_openCustomerId
+		FOREIGN KEY (openCustomerId) REFERENCES openCustomer (openCustomerId);
+	END IF;
 
 -- ELIMINANDO TABLA serviceOrderAdditionalEngineer
 	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'serviceOrderAdditionalEngineer') = 1 THEN

@@ -16,8 +16,36 @@
 
 USE blackstarDbTransfer;
 
-ALTER TABLE blackstarDbTransfer.ticket MODIFY serialNumber VARCHAR(100) NULL DEFAULT NULL;
 
-ALTER TABLE blackstarDbTransfer.policy ADD equipmentUser VARCHAR(100) NULL DEFAULT NULL;
+DELIMITER $$
 
-ALTER TABLE blackstarDbTransfer.ticket ADD project  VARCHAR(100) NULL DEFAULT NULL;
+DROP PROCEDURE IF EXISTS blackstarDbTransfer.upgradeSchema$$
+CREATE PROCEDURE blackstarDbTransfer.upgradeSchema()
+BEGIN
+
+-- -----------------------------------------------------------------------------
+-- INICIO SECCION DE CAMBIOS
+-- -----------------------------------------------------------------------------
+
+	ALTER TABLE blackstarDbTransfer.ticket MODIFY serialNumber VARCHAR(100) NULL DEFAULT NULL;
+
+	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDbTransfer' AND TABLE_NAME = 'policy' AND COLUMN_NAME = 'equipmentUser') = 0  THEN
+		ALTER TABLE blackstarDbTransfer.policy ADD equipmentUser VARCHAR(100) NULL DEFAULT NULL;
+	END IF;
+
+	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDbTransfer' AND TABLE_NAME = 'ticket' AND COLUMN_NAME = 'project') = 0  THEN
+		ALTER TABLE blackstarDbTransfer.ticket ADD project  VARCHAR(100) NULL DEFAULT NULL;
+	END IF;
+
+
+-- -----------------------------------------------------------------------------
+-- FIN SECCION DE CAMBIOS - NO CAMBIAR CODIGO FUERA DE ESTA SECCION
+-- -----------------------------------------------------------------------------
+
+END$$
+
+DELIMITER ;
+
+CALL blackstarDbTransfer.upgradeSchema();
+
+DROP PROCEDURE blackstarDbTransfer.upgradeSchema;

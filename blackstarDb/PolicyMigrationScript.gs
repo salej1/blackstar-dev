@@ -11,9 +11,11 @@
 ** PR   Date    	Author	Description
 ** --   --------   -------  ------------------------------------
 ** 1    17/09/2013  SAG  	Version inicial: Exporta el archivo de polizas a BD blackstarDbTransfer
+** --   --------   -------  ------------------------------------
+** 1    06/03/2014  SAG  	Version inicial: Exporta el archivo de polizas a BD blackstarDbTransfer
 *****************************************************************************/
 
-function main() {
+function policyMain() {
 	// Log init and timestamp
 	var formattedDate = Utilities.formatDate(new Date(), "CST", "yyyy-MM-dd HH:mm:ss");
 	Logger.log("Iniciando carga de polizas a base de datos: %s", formattedDate);
@@ -55,7 +57,7 @@ function closeDbConnection(conn){
 	}
 }
 
-function startLoadJob(conn, sqlLog) {
+function startPolicyLoadJob(conn, sqlLog) {
 
 	// Load the equipment type Ids
 	var eqTypes = loadEquipmentTypes(conn);
@@ -78,7 +80,7 @@ String.prototype.trim = function() {
 	return this.replace(/^\s+|\s+$/g,"");
 }
 
-function sendToDatabase(policy, conn, eqTypes, sqlLog){
+function sendPolicyToDatabase(policy, conn, eqTypes, sqlLog){
 	// sql string initialization
 	var sql = "	INSERT INTO `blackstarDbTransfer`.`policy`	\
 	(	\
@@ -285,7 +287,7 @@ function policySync(){
 
 }
 
-function startSyncJob(conn, sqlLog){
+function startPolicySyncJob(conn, sqlLog){
 
 	// Load the equipment type Ids
 	var eqTypes = loadEquipmentTypes(conn);

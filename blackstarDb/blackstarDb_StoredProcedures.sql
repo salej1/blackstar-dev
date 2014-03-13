@@ -201,10 +201,56 @@
 --								blackstarDb.GetTicketsByServiceCenterKPI
 --								blackstarDb.GetStatusKPI
 -- -----------------------------------------------------------------------------
+-- 35	12/03/2014	SAG 	Se Agregan:
+--								blackstarDb.AddOpenCustomer
+--								blackstarDb.GetOpenCustomerById
+-- -----------------------------------------------------------------------------
 
 use blackstarDb;
 
 DELIMITER $$
+
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetOpenCustomerById
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetOpenCustomerById$$
+CREATE PROCEDURE blackstarDb.GetOpenCustomerById(pOpenCustomerId INT)
+BEGIN
+	SELECT *
+	FROM blackstarDb.openCustomer
+	WHERE openCustomerId = pOpenCustomerId;
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.AddOpenCustomer
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.AddOpenCustomer$$
+CREATE PROCEDURE blackstarDb.AddOpenCustomer(
+	customerName VARCHAR(200),
+	address VARCHAR(500),
+	phone VARCHAR(100),
+	equipmentTypeId CHAR(1),
+	brand VARCHAR(100),
+	model VARCHAR(100),
+	capacity VARCHAR(100),
+	serialNumber VARCHAR(100),
+	contactName VARCHAR(100),
+	contactEmail VARCHAR(100),
+	created DATETIME,
+	createdBy NVARCHAR(50),
+	createdByUsr NVARCHAR(50)
+)
+BEGIN
+	INSERT INTO blackstarDb.openCustomer(
+		customerName, address, phone, equipmentTypeId, brand, model, capacity, serialNumber, contactName, contactEmail, created, createdBy, createdByUsr
+	)
+	VALUES(
+		customerName, address, phone, equipmentTypeId, brand, model, capacity, serialNumber, contactName, contactEmail, created, createdBy, createdByUsr
+	);
+
+	SELECT LAST_INSERT_ID();
+END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetStatisticsKPI
@@ -898,28 +944,51 @@ DROP PROCEDURE IF EXISTS blackstarDb.GetAllServiceOrders$$
 CREATE PROCEDURE blackstarDb.GetAllServiceOrders()
 BEGIN
 
-	SELECT 
-		so.ServiceOrderId AS DT_RowId,
-		so.serviceOrderNumber AS serviceOrderNumber,
-		'' AS placeHolder,
-		IFNULL(t.ticketNumber, '') AS ticketNumber,
-		st.serviceType AS serviceType,
-		DATE(so.serviceDate) AS serviceDate,
-		p.customer AS customer,
-		et.equipmentType AS equipmentType,
-		p.project AS project,
-		of.officeName AS officeName,
-		p.brand AS brand,
-		p.serialNumber AS serialNumber,
-		ss.serviceStatus AS serviceStatus
-	FROM serviceOrder so 
-		INNER JOIN serviceType st ON so.servicetypeId = st.servicetypeId
-		INNER JOIN serviceStatus ss ON so.serviceStatusId = ss.serviceStatusId
-		INNER JOIN policy p ON so.policyId = p.policyId
-		INNER JOIN equipmentType et ON p.equipmentTypeId = et.equipmentTypeId
-		INNER JOIN office of on p.officeId = of.officeId
-     LEFT OUTER JOIN ticket t on t.ticketId = so.ticketId
-	ORDER BY so.serviceDate DESC;
+	SELECT * FROM(
+		SELECT 
+			so.ServiceOrderId AS DT_RowId,
+			so.serviceOrderNumber AS serviceOrderNumber,
+			'' AS placeHolder,
+			IFNULL(t.ticketNumber, '') AS ticketNumber,
+			st.serviceType AS serviceType,
+			DATE(so.serviceDate) AS serviceDate,
+			p.customer AS customer,
+			et.equipmentType AS equipmentType,
+			p.project AS project,
+			of.officeName AS officeName,
+			p.brand AS brand,
+			p.serialNumber AS serialNumber,
+			ss.serviceStatus AS serviceStatus
+		FROM serviceOrder so 
+			INNER JOIN serviceType st ON so.servicetypeId = st.servicetypeId
+			INNER JOIN serviceStatus ss ON so.serviceStatusId = ss.serviceStatusId
+			INNER JOIN policy p ON so.policyId = p.policyId
+			INNER JOIN equipmentType et ON p.equipmentTypeId = et.equipmentTypeId
+			INNER JOIN office of on p.officeId = of.officeId
+	     LEFT OUTER JOIN ticket t on t.ticketId = so.ticketId
+	     UNION
+	     SELECT 
+			so.ServiceOrderId AS DT_RowId,
+			so.serviceOrderNumber AS serviceOrderNumber,
+			'' AS placeHolder,
+			IFNULL(t.ticketNumber, '') AS ticketNumber,
+			st.serviceType AS serviceType,
+			DATE(so.serviceDate) AS serviceDate,
+			oc.customerName AS customer,
+			et.equipmentType AS equipmentType,
+			'' AS project,
+			'' AS officeName,
+			oc.brand AS brand,
+			oc.serialNumber AS serialNumber,
+			ss.serviceStatus AS serviceStatus
+		FROM serviceOrder so 
+			INNER JOIN serviceType st ON so.servicetypeId = st.servicetypeId
+			INNER JOIN serviceStatus ss ON so.serviceStatusId = ss.serviceStatusId
+			INNER JOIN openCustomer oc ON so.openCustomerId = oc.openCustomerId
+			INNER JOIN equipmentType et ON oc.equipmentTypeId = et.equipmentTypeId
+	     LEFT OUTER JOIN ticket t on t.ticketId = so.ticketId
+	) A
+	ORDER BY A.serviceDate DESC;
 	
 END$$
 
@@ -2550,13 +2619,14 @@ CREATE PROCEDURE blackstarDb.AddserviceOrder (
   created datetime ,
   createdBy varchar(50) ,
   createdByUsr varchar(50) ,
-  receivedByEmail varchar(100)
+  receivedByEmail varchar(100),
+  openCustomerId int
 )
 BEGIN
 insert into serviceOrder
-(serviceOrderNumber,serviceTypeId,ticketId,policyId,serviceUnit,serviceDate,responsible,additionalEmployees,receivedBy,serviceComments,serviceStatusId,closed,consultant,coordinator,asignee,hasErrors,isWrong,signCreated,signReceivedBy,receivedByPosition,created,createdBy,createdByUsr,receivedByEmail)
+(serviceOrderNumber,serviceTypeId,ticketId,policyId,serviceUnit,serviceDate,responsible,additionalEmployees,receivedBy,serviceComments,serviceStatusId,closed,consultant,coordinator,asignee,hasErrors,isWrong,signCreated,signReceivedBy,receivedByPosition,created,createdBy,createdByUsr,receivedByEmail,openCustomerId)
 values
-(serviceOrderNumber,serviceTypeId,ticketId,policyId,serviceUnit,serviceDate,responsible,additionalEmployees,receivedBy,serviceComments,serviceStatusId,closed,consultant,coordinator,asignee,hasErrors,isWrong,signCreated,signReceivedBy,receivedByPosition,created,createdBy,createdByUsr,receivedByEmail);
+(serviceOrderNumber,serviceTypeId,ticketId,policyId,serviceUnit,serviceDate,responsible,additionalEmployees,receivedBy,serviceComments,serviceStatusId,closed,consultant,coordinator,asignee,hasErrors,isWrong,signCreated,signReceivedBy,receivedByPosition,created,createdBy,createdByUsr,receivedByEmail,openCustomerId);
 select LAST_INSERT_ID();
 END$$
 -- -----------------------------------------------------------------------------

@@ -3,6 +3,7 @@ package com.blackstar.model.dto;
 
 import java.util.Date;
 
+import com.blackstar.model.OpenCustomer;
 import com.blackstar.model.Policy;
 import com.blackstar.model.Serviceorder;
 
@@ -10,6 +11,25 @@ public class AirCoServicePolicyDTO {
 
 	public AirCoServicePolicyDTO()
 	{
+		this.closed = new Date();
+		this.serviceDate = new Date();
+	}
+	
+	public AirCoServicePolicyDTO(OpenCustomer customer, String equipmentType)
+	{
+		this.customer = customer.getCustomerName();
+		this.finalUser = customer.getContactEmail();
+		this.project = "";
+		this.equipmentTypeId = equipmentType.charAt(0);
+		this.equipmentType = equipmentType;
+		this.brand = customer.getBrand();
+		this.model = customer.getModel();
+		this.serialNumber = customer.getSerialNumber();
+		this.capacity = customer.getCapacity();
+		this.equipmentAddress = customer.getAddress();
+		this.contactName = customer.getContactName();
+		this.contactPhone = customer.getPhone();
+		
 		this.closed = new Date();
 		this.serviceDate = new Date();
 	}

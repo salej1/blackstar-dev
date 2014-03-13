@@ -46,7 +46,8 @@
 					$("#guardarServicio").hide();
 				}
 			}
-			else{
+
+			if(mode == "new-policy" || mode == "new-open"){
 				$("#responsibleName").val("${ user.userName }");
 				$("#responsible").val("${ user.userEmail }");
 				var strEpmloyees = '${serviceEmployees}';
@@ -76,12 +77,40 @@
 			            return false;
 					}
 				});
+			}
 
+			if(mode == "new-policy"){
 			    // Sincronizando los campos de firma
 			    $("#serviceOrder").submit(function(){
 					$("#signCreated").val($("#signCreatedCapture").val())
 					$("#signReceivedBy").val($("#signReceivedByCapture").val())
 				});
+			}
+			
+			// Atributos de readonly
+			if(mode=="new-open"){
+				$("#serviceOrderNumber").attr("required", "");
+				$("#cutomer").attr("required", "");
+				$("#project").attr("disabled", "");
+				$("#equipmentAddress").attr("required", "");
+				$("#contactPhone").attr("required", "");
+				$("#brand").attr("required", "");
+				$("#model").attr("required", "");
+				$("#serialNumber").attr("required", "");
+				$("#serviceDate").attr("required", "");
+				$("#serviceDate").datepicker({ dateFormat: 'dd/mm/yy', onSelect: function(date, obj){$(this).val(date+" 00:00:00")}});
+				$("#signatureRow").hide();
+			}
+			else{
+				$("#serviceOrderNumber").attr("readonly", "");
+				$("#cutomer").attr("readonly", "");
+				$("#project").attr("readonly", "");
+				$("#equipmentAddress").attr("readonly", "");
+				$("#contactPhone").attr("readonly", "");
+				$("#brand").attr("readonly", "");
+				$("#model").attr("readonly", "");
+				$("#serialNumber").attr("readonly", "");
+				$("#serviceDate").attr("required", "");
 			}
 
 			// inicializando el dialogo para agregar seguimientos
@@ -114,7 +143,7 @@
 							<table>
 								<tr>
 									<td>Folio:</td>
-									<td><form:input path="serviceOrderNumber" type="text" style="width:95%;" maxlength="5" readOnly="true" /></td>
+									<td><form:input path="serviceOrderNumber" type="text" style="width:95%;" maxlength="10" /></td>
 									<td colspan="2">
 										<c:if test="${serviceOrder.serviceOrderId > 0}">
 											<a href='${pageContext.request.contextPath}/report/show.do?serviceOrderId=${serviceOrder.serviceOrderId}' target="_blank">Ver PDF</a><img src='${pageContext.request.contextPath}/img/pdf.png'/>	
@@ -123,30 +152,30 @@
 								</tr>
 								<tr>
 									<td>Cliente</td>
-									<td colspan="5"><form:input path="customer" type="text" style="width:95%;" readOnly="true" /></td>
+									<td colspan="5"><form:input path="customer" type="text" style="width:95%;" /></td>
 									<td>Contrato/Proyecto</td>
-									<td colspan="3"><form:input path="project" type="text" style="width:95%;" readOnly="true" /></td>
+									<td colspan="3"><form:input path="project" type="text" style="width:95%;" /></td>
 								</tr>
 								<tr>
 									<td>Domicilio</td>
-									<td colspan="5"><form:textarea path="equipmentAddress" style="width:95%;height:50px;" readOnly="true"></form:textarea></td>
+									<td colspan="5"><form:textarea path="equipmentAddress" style="width:95%;height:50px;"></form:textarea></td>
 									<td>Telefono</td>
-									<td><form:input type="text" path="contactPhone" style="width:95%;" readOnly="true" /></td>
+									<td><form:input type="text" path="contactPhone" style="width:95%;" /></td>
 								</tr>
 								<tr>
 									<td>Equipo</td>
 									<td><form:input path="equipmentType" type="text" style="width:95%;" readOnly="true" /></td>
 									<td style="padding-left:10px;">Marca</td>
-									<td><form:input path="brand" type="text" style="width:95%;" readOnly="true" /></td>
+									<td><form:input path="brand" type="text" style="width:95%;" /></td>
 									<td>Modelo</td>
-									<td><form:input path="model" type="text" style="width:95%;" readOnly="true" /></td>
+									<td><form:input path="model" type="text" style="width:95%;" /></td>
 									<td>Serie</td>
-									<td><form:input path="serialNumber" type="text" style="width:95%;" readOnly="true" /></td>
+									<td><form:input path="serialNumber" type="text" style="width:95%;" /></td>
 										
 								</tr>
 								<tr>
 									<td>Fecha y hora de llegada</td>
-									<td><form:input path="serviceDate" type="text" style="width:95%;" readOnly="true"  /></td>
+									<td><form:input path="serviceDate" type="text" style="width:95%;" /></td>
 									<form:input path="serviceTypeId" type="hidden" value="P" />
 								</tr>
 							</table>
@@ -346,7 +375,7 @@
 										<th colspan="2">Servicio y/o equipo recibido a mi entera satisfaccion</th>
 									</tr>
 								</thead>
-								<tr>
+								<tr id="signatureRow">
 									<td colspan="2">
 										<span>Firma</span>
 										<div id="leftSign" class="signBox">

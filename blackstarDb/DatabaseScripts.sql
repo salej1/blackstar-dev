@@ -23,6 +23,9 @@
 -- --   --------   -------  ------------------------------------
 -- 7    09/02/2014  SAG  	Se cambia serviceOrderAdditionalEngineer por
 -- 							serviceOrderEmployee
+-- --   --------   -------  ------------------------------------
+-- 8    12/03/2014  SAG  	Se agrega openCustomerId a policy
+--							Se agrega la entidad openCustomer
 -- ---------------------------------------------------------------------------
 
 use blackstarDb;
@@ -36,6 +39,40 @@ BEGIN
 -- -----------------------------------------------------------------------------
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
+
+-- AGREGANDO TABLA openCustomer - REPRESENTA LOS CLIENTES SIN POLIZA QUE SOLICITAN SERVICIOS ESPORADICOS
+	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'openCustomer') = 0 THEN
+		 CREATE TABLE blackstarDb.openCustomer(
+			openCustomerId INTEGER NOT NULL AUTO_INCREMENT,
+			customerName VARCHAR(200),
+			address VARCHAR(500) NULL,
+			phone VARCHAR(100) NULL,
+			equipmentTypeId CHAR(1),
+			brand VARCHAR(100) NULL,
+			model VARCHAR(100) NULL,
+			capacity VARCHAR(100) NULL,
+			serialNumber VARCHAR(100),
+			contactName VARCHAR(100) NULL,
+			contactEmail VARCHAR(100) NULL,
+			created DATETIME NULL,
+			createdBy NVARCHAR(50) NULL,
+			createdByUsr NVARCHAR(50) NULL,
+			PRIMARY KEY (openCustomerId),
+			KEY(equipmentTypeId),
+			UNIQUE UQ_openCustomer_openCustomerId(openCustomerId)
+		) ENGINE=INNODB;
+
+		 ALTER TABLE openCustomer ADD CONSTRAINT FK_openCustomer_equipmentTypeId
+		 FOREIGN KEY(equipmentTypeId) REFERENCES equipmentType(equipmentTypeId);
+		
+	END IF;
+-- AGREGANDO COLUMNA openCustomerId a ServiceOrder -- ESTA COLUMNA ASOCIA LA OS CON UN EQUIPO SIN POLIZA
+	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'serviceOrder' AND COLUMN_NAME = 'openCustomerId') = 0  THEN
+		ALTER TABLE serviceOrder ADD openCustomerId INT NULL;
+
+		ALTER TABLE blackstarDb.serviceOrder ADD CONSTRAINT FK_openCustomer_openCustomerId
+		FOREIGN KEY (openCustomerId) REFERENCES openCustomer (openCustomerId);
+	END IF;
 
 -- ELIMINANDO TABLA serviceOrderAdditionalEngineer
 	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'serviceOrderAdditionalEngineer') = 1 THEN
@@ -889,10 +926,56 @@ DROP PROCEDURE blackstarDb.upgradeSchema;
 --								blackstarDb.GetTicketsByServiceCenterKPI
 --								blackstarDb.GetStatusKPI
 -- -----------------------------------------------------------------------------
+-- 35	12/03/2014	SAG 	Se Agregan:
+--								blackstarDb.AddOpenCustomer
+--								blackstarDb.GetOpenCustomerById
+-- -----------------------------------------------------------------------------
 
 use blackstarDb;
 
 DELIMITER $$
+
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetOpenCustomerById
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetOpenCustomerById$$
+CREATE PROCEDURE blackstarDb.GetOpenCustomerById(pOpenCustomerId INT)
+BEGIN
+	SELECT *
+	FROM blackstarDb.openCustomer
+	WHERE openCustomerId = pOpenCustomerId;
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.AddOpenCustomer
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.AddOpenCustomer$$
+CREATE PROCEDURE blackstarDb.AddOpenCustomer(
+	customerName VARCHAR(200),
+	address VARCHAR(500),
+	phone VARCHAR(100),
+	equipmentTypeId CHAR(1),
+	brand VARCHAR(100),
+	model VARCHAR(100),
+	capacity VARCHAR(100),
+	serialNumber VARCHAR(100),
+	contactName VARCHAR(100),
+	contactEmail VARCHAR(100),
+	created DATETIME,
+	createdBy NVARCHAR(50),
+	createdByUsr NVARCHAR(50)
+)
+BEGIN
+	INSERT INTO blackstarDb.openCustomer(
+		customerName, address, phone, equipmentTypeId, brand, model, capacity, serialNumber, contactName, contactEmail, created, createdBy, createdByUsr
+	)
+	VALUES(
+		customerName, address, phone, equipmentTypeId, brand, model, capacity, serialNumber, contactName, contactEmail, created, createdBy, createdByUsr
+	);
+
+	SELECT LAST_INSERT_ID();
+END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetStatisticsKPI
@@ -1607,7 +1690,7 @@ BEGIN
 		INNER JOIN equipmentType et ON p.equipmentTypeId = et.equipmentTypeId
 		INNER JOIN office of on p.officeId = of.officeId
      LEFT OUTER JOIN ticket t on t.ticketId = so.ticketId
-	ORDER BY so.ServiceOrderId DESC;
+	ORDER BY so.serviceDate DESC;
 	
 END$$
 
@@ -1695,8 +1778,8 @@ BEGIN
 		INNER JOIN policy p ON p.policyId = so.policyId
 		INNER JOIN equipmentType et ON et.equipmentTypeId = p.equipmentTypeId
 		INNER JOIN office o ON p.officeId = o.officeId
-		INNER JOIN serviceOrderEmployee se ON so.serviceOrderId = se.serviceOrderId
-	where serviceStatus IN ('NUEVO', 'PENDIENTE')
+		LEFT OUTER JOIN serviceOrderEmployee se ON so.serviceOrderId = se.serviceOrderId
+	WHERE serviceStatus IN ('NUEVO', 'PENDIENTE')
 	AND (so.asignee = pUser OR se.employeeId = pUser)
 	ORDER BY serviceDate DESC;
 
@@ -2096,8 +2179,13 @@ BEGIN
 		'AddFollowUpToTicket',
 		pCreatedBy;
 
+	-- ACTUALIZAR LA OS
 	UPDATE serviceOrder SET
-		serviceStatusId = 'E'
+		serviceStatusId = 'E',
+		asignee = pAsignee,
+		modified = pCreated,
+		modifiedBy = 'AddFollowUpToTicket',
+		modifiedByUsr = pCreatedBy
 	WHERE serviceOrderId = pOsId;
 
 END$$
@@ -3233,7 +3321,8 @@ CREATE PROCEDURE blackstarDb.AddserviceOrder (
   created datetime ,
   createdBy varchar(50) ,
   createdByUsr varchar(50) ,
-  receivedByEmail varchar(100)
+  receivedByEmail varchar(100),
+  openCustomerId int
 )
 BEGIN
 insert into serviceOrder
@@ -3352,24 +3441,57 @@ END$$
 -- -----------------------------------------------------------------------------
 DELIMITER ;
 
--- -----------------------------------------------------
+-- ---------------------------------------------------------------------------
 -- File:	blackstarDbTransfer_Schema.sql    
 -- Name:	blackstarDbTransfer_Schema
 -- Desc:	Implementa cambios en el esquema de la BD blackstarDbTransfer
 -- Auth:	Sergio A Gomez
 -- Date:	20/12/2013
--- -----------------------------------------------------
+-- ---------------------------------------------------------------------------
 -- Change History
--- -----------------------------------------------------
+-- ---------------------------------------------------------------------------
 -- PR   Date    	Author	Description
--- --   --------   -------  ------------------------------------
+-- --   --------   -------  --------------------------------------------------
 -- 1    08/08/2013  SAG  	Se aumenta el tamaño de ticket.serialNumber
--- -----------------------------------------------------
+-- ---------------------------------------------------------------------------
+-- 1    04/03/2014  SAG  	Se agregan columnas de portal
+-- ---------------------------------------------------------------------------
 
 USE blackstarDbTransfer;
 
-ALTER TABLE blackstarDbTransfer.ticket MODIFY serialNumber VARCHAR(100) NULL DEFAULT NULL;
 
+DELIMITER $$
+
+DROP PROCEDURE IF EXISTS blackstarDbTransfer.upgradeSchema$$
+CREATE PROCEDURE blackstarDbTransfer.upgradeSchema()
+BEGIN
+
+-- -----------------------------------------------------------------------------
+-- INICIO SECCION DE CAMBIOS
+-- -----------------------------------------------------------------------------
+
+	ALTER TABLE blackstarDbTransfer.ticket MODIFY serialNumber VARCHAR(100) NULL DEFAULT NULL;
+
+	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDbTransfer' AND TABLE_NAME = 'policy' AND COLUMN_NAME = 'equipmentUser') = 0  THEN
+		ALTER TABLE blackstarDbTransfer.policy ADD equipmentUser VARCHAR(100) NULL DEFAULT NULL;
+	END IF;
+
+	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDbTransfer' AND TABLE_NAME = 'ticket' AND COLUMN_NAME = 'project') = 0  THEN
+		ALTER TABLE blackstarDbTransfer.ticket ADD project  VARCHAR(100) NULL DEFAULT NULL;
+	END IF;
+
+
+-- -----------------------------------------------------------------------------
+-- FIN SECCION DE CAMBIOS - NO CAMBIAR CODIGO FUERA DE ESTA SECCION
+-- -----------------------------------------------------------------------------
+
+END$$
+
+DELIMITER ;
+
+CALL blackstarDbTransfer.upgradeSchema();
+
+DROP PROCEDURE blackstarDbTransfer.upgradeSchema;
 
 -- -----------------------------------------------------------------------------
 -- File:	blackstarDbTransfer_LoadTransferData.sql   
@@ -3716,6 +3838,18 @@ use blackstarDb;
 use blackstarDbTransfer;
 
 CALL ExecuteTransfer();
+
+use blackstarDb;
+
+-- ELIMINANDO LOS TIOS DE SERVICIO INNECESARIOS
+UPDATE serviceOrder SET serviceTypeId = 'I' WHERE serviceTypeId = 'O';
+UPDATE serviceOrder SET serviceTypeId = 'A' WHERE serviceTypeId = 'M';
+UPDATE serviceOrder SET serviceTypeId = 'D' WHERE serviceTypeId = 'R';
+UPDATE serviceOrder SET serviceTypeId = 'P' WHERE serviceTypeId = 'N';
+UPDATE serviceOrder SET serviceTypeId = 'P' WHERE serviceTypeId = 'V';
+
+DELETE FROM serviceType
+WHERE serviceTypeId IN('O', 'M', 'R', 'N', 'V');
 -- -----------------------------------------------------------------------------
 -- FIN - SINCRONIZACION DE DATOS
 -- -----------------------------------------------------------------------------
