@@ -23,10 +23,18 @@
 <!--   CONTENT COLUMN   -->		
 
 <!-- Inicia Contenido De Perfil Syscoordinador-->
-<c:set var="sysCallCenter" scope="request" value="${user.belongsToGroup['Coordinador']}" />
-	<c:if test="${sysCallCenter == true}">
-		<!-- Links para crear ordenes de servicio abiertas -->
-		<c:import url="newOpenOSLinks.jsp"></c:import>
+<c:set var="captOsLinks" scope="request" value="${user.belongsToGroup['Coordinador'] || user.belongsToGroup['Implementacion y Servicio']}" />
+	<c:if test="${captOsLinks == true}">
+
+<!-- Links Para Crear Ordenes De Servicio -->
+		<c:import url="newOSLinks.jsp"></c:import>
+		<script type="text/javascript">
+			$(function(){
+				newOSLinks_init();
+			});
+		</script>
+<!-- Fin Links Para Crear Ordenes De Servicio -->
+
 	</c:if>
 <!-- Fin Contenido De Perfil Syscoordinador-->
 
@@ -77,15 +85,6 @@
 	<c:set var="sysServicio" scope="request" value="${user.belongsToGroup['Implementacion y Servicio']}" />
 	<c:if test="${sysServicio == true}">
 
-<!-- Links Para Crear Ordenes De Servicio -->
-		<c:import url="newOSLinks.jsp"></c:import>
-		<script type="text/javascript">
-			$(function(){
-				newOSLinks_init();
-			});
-		</script>
-<!-- Fin Links Para Crear Ordenes De Servicio -->
-
 <!-- Tabla de servicios programados -->
 		<c:import url="scheduledPersonalServices.jsp"></c:import>
 		<script type="text/javascript">
@@ -115,6 +114,18 @@
 	</c:if>
 
 <!-- Fin Contenido De Perfil Sysservicio -->
+
+<!-- Tabla de tickets abiertos para usuarios de acceso limitado (clientes) -->
+	<c:set var="sysCustomer" scope="request" value="${user.belongsToGroup['Cliente']}" />
+	<c:if test="${sysCustomer == true}">
+		<c:import url="openLimitedTickets.jsp"></c:import>
+		<script type="text/javascript">
+			$(function(){
+				openLimitedTickets_init();
+			});
+		</script>
+	</c:if>
+<!-- Fin Tabla de tickets abiertos para usuarios de acceso limitado (clientes) -->
 
 </div>
 </body>

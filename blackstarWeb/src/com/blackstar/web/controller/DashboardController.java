@@ -169,7 +169,7 @@ public class DashboardController extends AbstractController {
 	public @ResponseBody String pendingPersonalServiceOrders(ModelMap model, @ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession) {
 		String retVal;
 		try {
-			retVal = service.getPersonalServiceOrders(userSession.getUser().getUserEmail());
+			retVal = service.getOpenLimitedTicketsJson(userSession.getUser().getUserEmail());
 		} catch (Exception e) {
 			Logger.Log(LogLevel.ERROR,
 					e.getStackTrace()[0].toString(), e);
@@ -182,5 +182,44 @@ public class DashboardController extends AbstractController {
 	//================================================================================
     //  FIN INGENIEROS DE SERVICIO
     //================================================================================
+
+    //================================================================================
+    //  CLIENTES
+    //================================================================================
+	
+	// Tickets abiertos de cliente
+	@RequestMapping(value = "/openLimitedTicketsJson.do", method = RequestMethod.GET)
+	public @ResponseBody String openLimitedTicketsJson(ModelMap model, @ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession) {
+		String retVal;
+		try {
+			retVal = service.getPersonalServiceOrders(userSession.getUser().getUserEmail());
+		} catch (Exception e) {
+			Logger.Log(LogLevel.ERROR,
+					e.getStackTrace()[0].toString(), e);
+			e.printStackTrace();
+			return "error";
+		}
+		return retVal;
+	}
+
+	// Ordenes en proceso de clientes
+	@RequestMapping(value = "/pendingLimitedServiceOrdersJson.do", method = RequestMethod.GET)
+	public @ResponseBody String pendingLimitedServiceOrdersJson(ModelMap model, @ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession) {
+		String retVal;
+		try {
+			retVal = service.getLimitedServiceOrdersJson(userSession.getUser().getUserEmail(), "PENDIENTE");
+		} catch (Exception e) {
+			Logger.Log(LogLevel.ERROR,
+					e.getStackTrace()[0].toString(), e);
+			e.printStackTrace();
+			return "error";
+		}
+		return retVal;
+	}
+	
+    //================================================================================
+    //  FIN CLIENTES
+    //================================================================================
+
 
 }

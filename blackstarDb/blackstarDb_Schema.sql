@@ -26,6 +26,8 @@
 -- --   --------   -------  ------------------------------------
 -- 8    12/03/2014  SAG  	Se agrega openCustomerId a policy
 --							Se agrega la entidad openCustomer
+-- --   --------   -------  ------------------------------------
+-- 9    13/03/2014  SAG  	Se agrega equipmentUser a policy
 -- ---------------------------------------------------------------------------
 
 use blackstarDb;
@@ -39,6 +41,11 @@ BEGIN
 -- -----------------------------------------------------------------------------
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
+
+-- AGREGANDO COLUMNA equipmentUser A policy
+	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'policy' AND COLUMN_NAME = 'equipmentUser') = 0  THEN
+		ALTER TABLE blackstarDb.policy ADD equipmentUser VARCHAR(100) NULL DEFAULT NULL;
+	END IF;
 
 -- AGREGANDO TABLA openCustomer - REPRESENTA LOS CLIENTES SIN POLIZA QUE SOLICITAN SERVICIOS ESPORADICOS
 	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'openCustomer') = 0 THEN

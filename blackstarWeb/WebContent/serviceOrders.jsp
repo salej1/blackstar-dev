@@ -94,6 +94,17 @@
 			</c:if>
 <!-- Fin Historial De Ordenes De Servicio -->
 
+<!-- Historial de ordenes de servicio para Clientes -->
+			<c:set var="sysCliente" scope="request" value="${user.belongsToGroup['Cliente']}" />
+			<c:if test="${sysCliente == true}">
+			<c:import url="limitedServiceOrdersHistory.jsp"></c:import>
+				<script type="text/javascript">
+					$(function(){
+						limitedServiceOrdersHistory_init();
+					});
+				</script>
+			</c:if>
+<!-- Fin Historial de ordenes de servicio para Clientes -->
 		</div>
 	</body>
 </html>

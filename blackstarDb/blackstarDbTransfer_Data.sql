@@ -1,20 +1,18 @@
 -- -----------------------------------------------------------------------------
--- File:blackstarDb_startupData.sql
--- Name:blackstarDb_startupData
--- Desc:Hace una carga inicial de usuarios para poder operar el sistema
+-- File:blackstarDbTransfer_startupData.sql
+-- Name:blackstarDbTransfer_startupData
+-- Desc:Implementa cambios en los datos de la base de datos de transferencia
 -- Auth:Sergio A Gomez
--- Date:22/10/2013
+-- Date:13/03/2014
 -- -----------------------------------------------------------------------------
 -- Change History
 -- -----------------------------------------------------------------------------
 -- PR   Date    AuthorDescription
 -- --   --------   -------  ------------------------------------
--- 1    22/10/2013  SAG  	Version inicial. Usuarios basicos de GPO Sac
--- --   --------   -------  ------------------------------------
--- 2    12/11/2013  SAG  	Version 1.1. Se agrega ExecuteTransfer
+-- 1    13/03/2014  SAG  	Version inicial. 
 -- ---------------------------------------------------------------------------
 
-use blackstarDb;
+use blackstarDbTransfer;
 
 -- -----------------------------------------------------------------------------
 -- ACTUALIZACION DE DATOS
@@ -36,18 +34,14 @@ UPDATE equipmentType SET equipmentType = 'PISO FALSO' WHERE equipmentTypeId = 'L
 DELETE FROM equipmentType WHERE equipmentTypeId IN('T','R','H','J','K','W');
 
 -- ELIMINANDO LOS TIPOS DE SERVICIO INNECESARIOS
-UPDATE serviceOrder SET serviceTypeId = 'I' WHERE serviceTypeId = 'O';
-UPDATE serviceOrder SET serviceTypeId = 'A' WHERE serviceTypeId = 'M';
-UPDATE serviceOrder SET serviceTypeId = 'D' WHERE serviceTypeId = 'R';
-UPDATE serviceOrder SET serviceTypeId = 'P' WHERE serviceTypeId = 'N';
-UPDATE serviceOrder SET serviceTypeId = 'P' WHERE serviceTypeId = 'V';
+UPDATE serviceTx SET serviceTypeId = 'I' WHERE serviceTypeId = 'O';
+UPDATE serviceTx SET serviceTypeId = 'A' WHERE serviceTypeId = 'M';
+UPDATE serviceTx SET serviceTypeId = 'D' WHERE serviceTypeId = 'R';
+UPDATE serviceTx SET serviceTypeId = 'P' WHERE serviceTypeId = 'N';
+UPDATE serviceTx SET serviceTypeId = 'P' WHERE serviceTypeId = 'V';
 
 DELETE FROM serviceType
 WHERE serviceTypeId IN('O', 'M', 'R', 'N', 'V');
-
-use blackstarDbTransfer;
-
-CALL ExecuteTransfer();
 
 -- -----------------------------------------------------------------------------
 -- FIN - ACTUALIZACION DE DATOS

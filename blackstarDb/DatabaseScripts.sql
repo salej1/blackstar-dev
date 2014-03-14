@@ -26,6 +26,8 @@
 -- --   --------   -------  ------------------------------------
 -- 8    12/03/2014  SAG  	Se agrega openCustomerId a policy
 --							Se agrega la entidad openCustomer
+-- --   --------   -------  ------------------------------------
+-- 9    13/03/2014  SAG  	Se agrega equipmentUser a policy
 -- ---------------------------------------------------------------------------
 
 use blackstarDb;
@@ -39,6 +41,11 @@ BEGIN
 -- -----------------------------------------------------------------------------
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
+
+-- AGREGANDO COLUMNA equipmentUser A policy
+	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'policy' AND COLUMN_NAME = 'equipmentUser') = 0  THEN
+		ALTER TABLE blackstarDb.policy ADD equipmentUser VARCHAR(100) NULL DEFAULT NULL;
+	END IF;
 
 -- AGREGANDO TABLA openCustomer - REPRESENTA LOS CLIENTES SIN POLIZA QUE SOLICITAN SERVICIOS ESPORADICOS
 	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'openCustomer') = 0 THEN
@@ -930,11 +937,133 @@ DROP PROCEDURE blackstarDb.upgradeSchema;
 --								blackstarDb.AddOpenCustomer
 --								blackstarDb.GetOpenCustomerById
 -- -----------------------------------------------------------------------------
+-- 36	12/03/2014	SAG 	Se Agregan:
+--								blackstarDb.GetOpenLimitedTickets
+--								blackstarDb.GetLimitedTicketList
+--								blackstarDb.GetLimitedServiceOrders
+--								blackstarDb.GetLimitedServiceOrderList
+-- -----------------------------------------------------------------------------
 
 use blackstarDb;
 
 DELIMITER $$
 
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetLimitedServiceOrderList
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetLimitedServiceOrderList$$
+CREATE PROCEDURE blackstarDb.GetLimitedServiceOrderList(pUser VARCHAR(100))
+BEGIN
+	SELECT 
+		so.ServiceOrderId AS DT_RowId,
+		so.serviceOrderNumber AS serviceOrderNumber,
+		'' AS placeHolder,
+		IFNULL(t.ticketNumber, '') AS ticketNumber,
+		st.serviceType AS serviceType,
+		DATE(so.serviceDate) AS serviceDate,
+		p.customer AS customer,
+		et.equipmentType AS equipmentType,
+		p.project AS project,
+		of.officeName AS officeName,
+		p.brand AS brand,
+		p.serialNumber AS serialNumber,
+		ss.serviceStatus AS serviceStatus
+	FROM serviceOrder so 
+		INNER JOIN serviceType st ON so.servicetypeId = st.servicetypeId
+		INNER JOIN serviceStatus ss ON so.serviceStatusId = ss.serviceStatusId
+		INNER JOIN policy p ON so.policyId = p.policyId
+		INNER JOIN equipmentType et ON p.equipmentTypeId = et.equipmentTypeId
+		INNER JOIN office of on p.officeId = of.officeId
+    LEFT OUTER JOIN ticket t on t.ticketId = so.ticketId
+    WHERE p.equipmentUser = pUser
+	ORDER BY so.serviceDate DESC;
+	
+END$$
+
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetLimitedServiceOrders
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetLimitedServiceOrders$$
+CREATE PROCEDURE blackstarDb.GetLimitedServiceOrders(status VARCHAR(200), pUser VARCHAR(100))
+BEGIN
+
+	SELECT 
+		so.ServiceOrderId AS DT_RowId,
+		so.serviceOrderNumber AS serviceOrderNumber,
+		'' AS placeHolder,
+		IFNULL(t.ticketNumber, '') AS ticketNumber,
+		st.serviceType AS serviceType,
+		DATE(so.created) AS created,
+		p.customer AS customer,
+		et.equipmentType AS equipmentType,
+		p.project AS project,
+		of.officeName AS officeName,
+		p.brand AS brand,
+		p.serialNumber AS serialNumber,
+		ss.serviceStatus AS serviceStatus
+	FROM serviceOrder so 
+		INNER JOIN serviceType st ON so.servicetypeId = st.servicetypeId
+		INNER JOIN serviceStatus ss ON so.serviceStatusId = ss.serviceStatusId
+		INNER JOIN policy p ON so.policyId = p.policyId
+		INNER JOIN equipmentType et ON p.equipmentTypeId = et.equipmentTypeId
+		INNER JOIN office of on p.officeId = of.officeId
+     LEFT OUTER JOIN ticket t on t.ticketId = so.ticketId
+	WHERE ss.serviceStatus IN(status) 
+	AND p.equipmentUser = pUser
+	ORDER BY serviceDate DESC ;
+	
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetLimitedTicketList
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetLimitedTicketList$$
+CREATE PROCEDURE blackstarDb.GetLimitedTicketList(pUser VARCHAR(100))
+BEGIN
+	SELECT 
+		t.ticketId AS DT_RowId,
+		t.ticketNumber AS ticketNumber,
+		t.created AS ticketDate,
+		p.customer AS customer,
+		e.equipmentType AS equipmentType,
+		p.responseTimeHR AS responseTime,
+		p.project AS project,
+		ts.ticketStatus AS ticketStatus,
+		'' AS placeHolder
+	FROM ticket t
+		INNER JOIN policy p ON p.policyId = t.policyId
+		INNER JOIN equipmentType e ON e.equipmentTypeId = p.equipmentTypeId
+		INNER JOIN ticketStatus ts ON t.ticketStatusId = ts.ticketStatusId
+	WHERE p.equipmentUser = pUser
+	ORDER BY ticketDate;
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetOpenLimitedTickets
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetOpenLimitedTickets$$
+CREATE PROCEDURE blackstarDb.GetOpenLimitedTickets(pUser VARCHAR(100))
+BEGIN
+	SELECT 
+		t.ticketId AS DT_RowId,
+		t.ticketNumber AS ticketNumber,
+		t.created AS ticketDate,
+		p.customer AS customer,
+		e.equipmentType AS equipmentType,
+		p.responseTimeHR AS responseTime,
+		p.project AS project,
+		ts.ticketStatus AS ticketStatus,
+		'' AS placeHolder
+	FROM ticket t
+		INNER JOIN policy p ON p.policyId = t.policyId
+		INNER JOIN equipmentType e ON e.equipmentTypeId = p.equipmentTypeId
+		INNER JOIN ticketStatus ts ON t.ticketStatusId = ts.ticketStatusId
+	WHERE p.equipmentUser = pUser
+	AND t.closed IS NULL
+	ORDER BY ticketDate;
+END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetOpenCustomerById
@@ -1669,28 +1798,51 @@ DROP PROCEDURE IF EXISTS blackstarDb.GetAllServiceOrders$$
 CREATE PROCEDURE blackstarDb.GetAllServiceOrders()
 BEGIN
 
-	SELECT 
-		so.ServiceOrderId AS DT_RowId,
-		so.serviceOrderNumber AS serviceOrderNumber,
-		'' AS placeHolder,
-		IFNULL(t.ticketNumber, '') AS ticketNumber,
-		st.serviceType AS serviceType,
-		DATE(so.serviceDate) AS serviceDate,
-		p.customer AS customer,
-		et.equipmentType AS equipmentType,
-		p.project AS project,
-		of.officeName AS officeName,
-		p.brand AS brand,
-		p.serialNumber AS serialNumber,
-		ss.serviceStatus AS serviceStatus
-	FROM serviceOrder so 
-		INNER JOIN serviceType st ON so.servicetypeId = st.servicetypeId
-		INNER JOIN serviceStatus ss ON so.serviceStatusId = ss.serviceStatusId
-		INNER JOIN policy p ON so.policyId = p.policyId
-		INNER JOIN equipmentType et ON p.equipmentTypeId = et.equipmentTypeId
-		INNER JOIN office of on p.officeId = of.officeId
-     LEFT OUTER JOIN ticket t on t.ticketId = so.ticketId
-	ORDER BY so.serviceDate DESC;
+	SELECT * FROM(
+		SELECT 
+			so.ServiceOrderId AS DT_RowId,
+			so.serviceOrderNumber AS serviceOrderNumber,
+			'' AS placeHolder,
+			IFNULL(t.ticketNumber, '') AS ticketNumber,
+			st.serviceType AS serviceType,
+			DATE(so.serviceDate) AS serviceDate,
+			p.customer AS customer,
+			et.equipmentType AS equipmentType,
+			p.project AS project,
+			of.officeName AS officeName,
+			p.brand AS brand,
+			p.serialNumber AS serialNumber,
+			ss.serviceStatus AS serviceStatus
+		FROM serviceOrder so 
+			INNER JOIN serviceType st ON so.servicetypeId = st.servicetypeId
+			INNER JOIN serviceStatus ss ON so.serviceStatusId = ss.serviceStatusId
+			INNER JOIN policy p ON so.policyId = p.policyId
+			INNER JOIN equipmentType et ON p.equipmentTypeId = et.equipmentTypeId
+			INNER JOIN office of on p.officeId = of.officeId
+	     LEFT OUTER JOIN ticket t on t.ticketId = so.ticketId
+	     UNION
+	     SELECT 
+			so.ServiceOrderId AS DT_RowId,
+			so.serviceOrderNumber AS serviceOrderNumber,
+			'' AS placeHolder,
+			IFNULL(t.ticketNumber, '') AS ticketNumber,
+			st.serviceType AS serviceType,
+			DATE(so.serviceDate) AS serviceDate,
+			oc.customerName AS customer,
+			et.equipmentType AS equipmentType,
+			'' AS project,
+			'' AS officeName,
+			oc.brand AS brand,
+			oc.serialNumber AS serialNumber,
+			ss.serviceStatus AS serviceStatus
+		FROM serviceOrder so 
+			INNER JOIN serviceType st ON so.servicetypeId = st.servicetypeId
+			INNER JOIN serviceStatus ss ON so.serviceStatusId = ss.serviceStatusId
+			INNER JOIN openCustomer oc ON so.openCustomerId = oc.openCustomerId
+			INNER JOIN equipmentType et ON oc.equipmentTypeId = et.equipmentTypeId
+	     LEFT OUTER JOIN ticket t on t.ticketId = so.ticketId
+	) A
+	ORDER BY A.serviceDate DESC;
 	
 END$$
 
@@ -1802,13 +1954,13 @@ BEGIN
 		p.project AS project,
 		ts.ticketStatus AS ticketStatus,
 		'' AS placeHolder
-FROM ticket t
-	INNER JOIN policy p ON p.policyId = t.policyId
-	INNER JOIN equipmentType e ON e.equipmentTypeId = p.equipmentTypeId
-	INNER JOIN ticketStatus ts ON t.ticketStatusId = ts.ticketStatusId
-WHERE t.asignee = pUser
-AND t.closed IS NULL
-ORDER BY ticketDate;
+	FROM ticket t
+		INNER JOIN policy p ON p.policyId = t.policyId
+		INNER JOIN equipmentType e ON e.equipmentTypeId = p.equipmentTypeId
+		INNER JOIN ticketStatus ts ON t.ticketStatusId = ts.ticketStatusId
+	WHERE t.asignee = pUser
+	AND t.closed IS NULL
+	ORDER BY ticketDate;
 
 END$$
 
@@ -3326,9 +3478,9 @@ CREATE PROCEDURE blackstarDb.AddserviceOrder (
 )
 BEGIN
 insert into serviceOrder
-(serviceOrderNumber,serviceTypeId,ticketId,policyId,serviceUnit,serviceDate,responsible,additionalEmployees,receivedBy,serviceComments,serviceStatusId,closed,consultant,coordinator,asignee,hasErrors,isWrong,signCreated,signReceivedBy,receivedByPosition,created,createdBy,createdByUsr,receivedByEmail)
+(serviceOrderNumber,serviceTypeId,ticketId,policyId,serviceUnit,serviceDate,responsible,additionalEmployees,receivedBy,serviceComments,serviceStatusId,closed,consultant,coordinator,asignee,hasErrors,isWrong,signCreated,signReceivedBy,receivedByPosition,created,createdBy,createdByUsr,receivedByEmail,openCustomerId)
 values
-(serviceOrderNumber,serviceTypeId,ticketId,policyId,serviceUnit,serviceDate,responsible,additionalEmployees,receivedBy,serviceComments,serviceStatusId,closed,consultant,coordinator,asignee,hasErrors,isWrong,signCreated,signReceivedBy,receivedByPosition,created,createdBy,createdByUsr,receivedByEmail);
+(serviceOrderNumber,serviceTypeId,ticketId,policyId,serviceUnit,serviceDate,responsible,additionalEmployees,receivedBy,serviceComments,serviceStatusId,closed,consultant,coordinator,asignee,hasErrors,isWrong,signCreated,signReceivedBy,receivedByPosition,created,createdBy,createdByUsr,receivedByEmail,openCustomerId);
 select LAST_INSERT_ID();
 END$$
 -- -----------------------------------------------------------------------------
@@ -3508,6 +3660,8 @@ DROP PROCEDURE blackstarDbTransfer.upgradeSchema;
 -- -----------------------------------------------------------------------------
 -- 2    08/11/2013  SAG  	Se convierte a SP
 -- -----------------------------------------------------------------------------
+-- 3    13/03/2014  SAG  	Soporte para un equipo en mas de una poliza
+-- -----------------------------------------------------------------------------
 
 use blackstarDbTransfer;
 
@@ -3550,18 +3704,27 @@ BEGIN
 		exceptionParts,
 		serviceCenterId,
 		observations,
+		equipmentUser,
 		created,
 		createdBy,
 		crratedByUsr
 	)
-	SELECT o.officeId, policyType, customerContract, customer, finalUser, project, cst, equipmentTypeId, brand, model, 
-			serialNumber, capacity, equipmentAddress, equipmentLocation, contact, contactPhone, contactEmail, startDate, endDate, visitsPerYear, 
-			responseTimeHR, solutionTimeHR, penalty, service, includesParts, exceptionParts, serviceCenterId, observations,
-			CURRENT_DATE(), 'PolicyTransfer', 'sergio.aga'
+	SELECT o.officeId, p.policyType, p.customerContract, p.customer, p.finalUser, p.project, p.cst, p.equipmentTypeId, p.brand, p.model,
+		p.serialNumber, p.capacity, p.equipmentAddress, p.equipmentLocation, p.contact, p.contactPhone, p.contactEmail, p.startDate, p.endDate, p.visitsPerYear,
+		p.responseTimeHR, p.solutionTimeHR, p.penalty, p.service, p.includesParts, p.exceptionParts, s.serviceCenterId, p.observations, p.equipmentUser,
+		CURRENT_DATE(), 'PolicyTransfer', 'sergio.aga'
 	FROM blackstarDbTransfer.policy p
 		INNER JOIN blackstarDb.office o ON p.office = o.officeName
 		INNER JOIN blackstarDb.serviceCenter s ON s.serviceCenter = p.serviceCenter
-	WHERE p.serialNumber NOT IN (SELECT DISTINCT serialNumber FROM blackstarDb.policy);
+		LEFT OUTER JOIN blackstarDb.policy bp on p.serialNumber = bp.serialNumber AND p.project = bp.project
+	WHERE bp.policyId IS NULL;
+
+	-- ACTUALIZAR LOS CORREOS DE ACCESO A CLIENTES
+	UPDATE blackstarDb.policy bp 
+		INNER JOIN blackstarDbTransfer.policy p ON p.serialNumber = bp.serialNumber AND p.project = bp.project
+	SET
+		bp.equipmentUser = p.equipmentUser;
+
 -- -----------------------------------------------------------------------------
 
 
@@ -3815,6 +3978,56 @@ END$$
 DELIMITER ;
 
 -- -----------------------------------------------------------------------------
+-- File:blackstarDbTransfer_startupData.sql
+-- Name:blackstarDbTransfer_startupData
+-- Desc:Implementa cambios en los datos de la base de datos de transferencia
+-- Auth:Sergio A Gomez
+-- Date:13/03/2014
+-- -----------------------------------------------------------------------------
+-- Change History
+-- -----------------------------------------------------------------------------
+-- PR   Date    AuthorDescription
+-- --   --------   -------  ------------------------------------
+-- 1    13/03/2014  SAG  	Version inicial. 
+-- ---------------------------------------------------------------------------
+
+use blackstarDbTransfer;
+
+-- -----------------------------------------------------------------------------
+-- ACTUALIZACION DE DATOS
+-- -----------------------------------------------------------------------------
+
+-- CAMBIAR LOS EQUIPOS QUE SE VAN A ELIMINAR
+UPDATE policy SET equipmentTypeId = 'B' WHERE equipmentTypeId = 'T';
+UPDATE policy SET equipmentTypeId = 'M' WHERE equipmentTypeId = 'R';
+UPDATE policy SET equipmentTypeId = 'O' WHERE equipmentTypeId = 'H';
+UPDATE policy SET equipmentTypeId = 'A' WHERE equipmentTypeId = 'J';
+UPDATE policy SET equipmentTypeId = 'A' WHERE equipmentTypeId = 'K';
+UPDATE policy SET equipmentTypeId = 'I' WHERE equipmentTypeId = 'W';
+
+-- ELIMINANDO LOS TIPOS DE EQUIPOS INNECESARIOS
+UPDATE equipmentType SET equipmentType = 'BB' WHERE equipmentTypeId = 'B';
+UPDATE equipmentType SET equipmentType = 'MODULO' WHERE equipmentTypeId = 'O';
+UPDATE equipmentType SET equipmentType = 'PISO FALSO' WHERE equipmentTypeId = 'L';
+
+DELETE FROM equipmentType WHERE equipmentTypeId IN('T','R','H','J','K','W');
+
+-- ELIMINANDO LOS TIPOS DE SERVICIO INNECESARIOS
+UPDATE serviceTx SET serviceTypeId = 'I' WHERE serviceTypeId = 'O';
+UPDATE serviceTx SET serviceTypeId = 'A' WHERE serviceTypeId = 'M';
+UPDATE serviceTx SET serviceTypeId = 'D' WHERE serviceTypeId = 'R';
+UPDATE serviceTx SET serviceTypeId = 'P' WHERE serviceTypeId = 'N';
+UPDATE serviceTx SET serviceTypeId = 'P' WHERE serviceTypeId = 'V';
+
+DELETE FROM serviceType
+WHERE serviceTypeId IN('O', 'M', 'R', 'N', 'V');
+
+-- -----------------------------------------------------------------------------
+-- FIN - ACTUALIZACION DE DATOS
+-- -----------------------------------------------------------------------------
+
+
+-- -----------------------------------------------------------------------------
 -- File:blackstarDb_startupData.sql
 -- Name:blackstarDb_startupData
 -- Desc:Hace una carga inicial de usuarios para poder operar el sistema
@@ -3829,19 +4042,29 @@ DELIMITER ;
 -- --   --------   -------  ------------------------------------
 -- 2    12/11/2013  SAG  	Version 1.1. Se agrega ExecuteTransfer
 -- ---------------------------------------------------------------------------
-use blackstarDb;
-
-
--- -----------------------------------------------------------------------------
--- SINCRONIZACION DE DATOS
--- -----------------------------------------------------------------------------
-use blackstarDbTransfer;
-
-CALL ExecuteTransfer();
 
 use blackstarDb;
 
--- ELIMINANDO LOS TIOS DE SERVICIO INNECESARIOS
+-- -----------------------------------------------------------------------------
+-- ACTUALIZACION DE DATOS
+-- -----------------------------------------------------------------------------
+
+-- CAMBIAR LOS EQUIPOS QUE SE VAN A ELIMINAR
+UPDATE policy SET equipmentTypeId = 'B' WHERE equipmentTypeId = 'T';
+UPDATE policy SET equipmentTypeId = 'M' WHERE equipmentTypeId = 'R';
+UPDATE policy SET equipmentTypeId = 'O' WHERE equipmentTypeId = 'H';
+UPDATE policy SET equipmentTypeId = 'A' WHERE equipmentTypeId = 'J';
+UPDATE policy SET equipmentTypeId = 'A' WHERE equipmentTypeId = 'K';
+UPDATE policy SET equipmentTypeId = 'I' WHERE equipmentTypeId = 'W';
+
+-- ELIMINANDO LOS TIPOS DE EQUIPOS INNECESARIOS
+UPDATE equipmentType SET equipmentType = 'BB' WHERE equipmentTypeId = 'B';
+UPDATE equipmentType SET equipmentType = 'MODULO' WHERE equipmentTypeId = 'O';
+UPDATE equipmentType SET equipmentType = 'PISO FALSO' WHERE equipmentTypeId = 'L';
+
+DELETE FROM equipmentType WHERE equipmentTypeId IN('T','R','H','J','K','W');
+
+-- ELIMINANDO LOS TIPOS DE SERVICIO INNECESARIOS
 UPDATE serviceOrder SET serviceTypeId = 'I' WHERE serviceTypeId = 'O';
 UPDATE serviceOrder SET serviceTypeId = 'A' WHERE serviceTypeId = 'M';
 UPDATE serviceOrder SET serviceTypeId = 'D' WHERE serviceTypeId = 'R';
@@ -3850,8 +4073,13 @@ UPDATE serviceOrder SET serviceTypeId = 'P' WHERE serviceTypeId = 'V';
 
 DELETE FROM serviceType
 WHERE serviceTypeId IN('O', 'M', 'R', 'N', 'V');
+
+use blackstarDbTransfer;
+
+CALL ExecuteTransfer();
+
 -- -----------------------------------------------------------------------------
--- FIN - SINCRONIZACION DE DATOS
+-- FIN - ACTUALIZACION DE DATOS
 -- -----------------------------------------------------------------------------
 
 

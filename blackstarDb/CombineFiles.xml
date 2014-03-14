@@ -10,6 +10,7 @@
 		<file name ="blackstarDbTransfer_StoredProcedures.sql"/>
 		<file name ="blackstarManage_StoredProcedures.sql"/>
 		
+		<file name ="blackstarDbTransfer_Data.sql"/>
 		<file name ="blackstarDb_Data.sql"/>
 	</files>
 	<outputs>

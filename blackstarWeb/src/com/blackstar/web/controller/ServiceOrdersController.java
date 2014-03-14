@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import com.blackstar.common.Globals;
 import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
+import com.blackstar.model.UserSession;
 import com.blackstar.services.interfaces.ServiceOrderService;
 import com.blackstar.web.AbstractController;
 
@@ -76,5 +78,19 @@ public class ServiceOrdersController extends AbstractController{
 				return "error";
 			}
 			return retVal;
+	}
+
+	@RequestMapping(value = "/limitedServiceOrdersHistoryJson.do", method = RequestMethod.GET)
+	public @ResponseBody String limitedServiceOrdersHistoryJson(ModelMap model, @ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession) {
+		String retVal;
+		try {
+			retVal = service.getLimitedServiceOrdersHistoryJson(userSession.getUser().getUserEmail());
+		} catch (Exception e) {
+			Logger.Log(LogLevel.ERROR,
+					e.getStackTrace()[0].toString(), e);
+			e.printStackTrace();
+			return "error";
+		}
+		return retVal;
 	}
 }

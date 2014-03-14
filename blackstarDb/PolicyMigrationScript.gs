@@ -12,7 +12,7 @@
 ** --   --------   -------  ------------------------------------
 ** 1    17/09/2013  SAG  	Version inicial: Exporta el archivo de polizas a BD blackstarDbTransfer
 ** --   --------   -------  ------------------------------------
-** 1    06/03/2014  SAG  	Version inicial: Exporta el archivo de polizas a BD blackstarDbTransfer
+** 2    13/03/2014  SAG  	Se Integra equipmentUser
 *****************************************************************************/
 
 function policyMain() {
@@ -28,7 +28,7 @@ function policyMain() {
 		var conn = getDbConnection();
 		
 		// start loading
-		sqlLog = startLoadJob(conn, sqlLog);
+		sqlLog = startPolicyLoadJob(conn, sqlLog);
 		closeDbConnection(conn);
 		
 		// Log out
@@ -47,7 +47,7 @@ function policyMain() {
 }
 
 function getDbConnection(){
-	var conn = Jdbc.getCloudSqlConnection("jdbc:google:rdbms://salej1-blackstar-dev:salej1-blackstar-dev/blackstarDbTransfer");
+	var conn = Jdbc.getCloudSqlConnection("jdbc:google:rdbms://gposac-blackstar-pro:gposac-blackstar-pro/blackstarDbTransfer");
 	return conn;
 }
 
@@ -68,9 +68,9 @@ function startPolicyLoadJob(conn, sqlLog) {
 	// For every row of data, generate an policy object.
 	var data = pd.getValues();
 	
-	for(var i = 1; i < data.length; i++){
+	for(var i = 0; i < data.length; i++){
 		var currPolicy = data[i];
-		sqlLog = sendToDatabase(currPolicy, conn, eqTypes, sqlLog);
+		sqlLog = sendPolicyToDatabase(currPolicy, conn, eqTypes, sqlLog);
 	}  
 	
 	return sqlLog;
@@ -112,13 +112,14 @@ function sendPolicyToDatabase(policy, conn, eqTypes, sqlLog){
 	`exceptionParts`,	\
 	`serviceCenter`,	\
 	`observations`,	\
+	`equipmentUser`,	\
 	`created`,	\
 	`createdBy`,	\
 	`createdByUsr`)	\
 	VALUES(";
 	
 	// reading the values
-	var ix = 1;
+	var ix = 0;
 	var office = policy[ix]; ix++;
 	var policyType = policy[ix]; ix++;
 	var customerContract = policy[ix]; ix++;
@@ -153,11 +154,16 @@ function sendPolicyToDatabase(policy, conn, eqTypes, sqlLog){
 	var exceptionParts = policy[ix]; ix++;
 	var serviceCenter = policy[ix]; ix++;
 	var observations = policy[ix]; ix++;
+	var zone = policy[ix]; ix++;
+	var equipmentUser = policy[ix]; ix++;
 	var created = new Date();
 	var createdBy = "PolicyMigrationScript";
 	var createdByUsr = "sergio.aga";
 
 	// fetching derived values
+	if(equipmentType == "SERVICIO DE DESCONTAMINACIÓN DATA CENTER"){
+		equipmentType = "SERVICIO DE DESCONTAMINACION DATA CENTER";
+	}
 	var equipmentTypeId = eqTypes[equipmentType.trim()];
 	
 	if(equipmentTypeId == null){
@@ -206,6 +212,7 @@ function sendPolicyToDatabase(policy, conn, eqTypes, sqlLog){
 	sql = sql + Utilities.formatString("'%s',",exceptionParts);
 	sql = sql + Utilities.formatString("'%s',",serviceCenter);
 	sql = sql + Utilities.formatString("'%s',",observations);
+	sql = sql + Utilities.formatString("'%s',",equipmentUser);
 	sql = sql + Utilities.formatString("'%s',",Utilities.formatDate(created, "CST", "yyyy-MM-dd HH:mm:ss"));
 	sql = sql + Utilities.formatString("'%s',",createdBy);
 	sql = sql + Utilities.formatString("'%s');",createdByUsr);
@@ -268,7 +275,7 @@ function policySync(){
 		var conn = getDbConnection();
 		
 		// start syncing
-		sqlLog = startSyncJob(conn, sqlLog);
+		sqlLog = startPolicySyncJob(conn, sqlLog);
 		closeDbConnection(conn);
 		
 		// Log out
@@ -297,17 +304,17 @@ function startPolicySyncJob(conn, sqlLog){
 	
 	// start point at the spreadsheet
 	const offset = 4;
-	var startRec = policyCount + offset + 1;
+	var startRec = policyCount + offset;
 	
 	// iterate looking for new policies
-	var range = "A" + startRec.toString() + ":AC" + startRec.toString();
+	var range = "A" + startRec.toString() + ":AE" + startRec.toString();
 	var data = SpreadsheetApp.getActiveSpreadsheet().getRange(range).getValues();
 	var currPolicy = data[0];
 	
 	while(currPolicy != null && currPolicy[0] != null && currPolicy[0].toString() != ""){
 		sqlLog = sendToDatabase(currPolicy, conn, eqTypes, sqlLog);
 		startRec++;
-		range = "A" + startRec.toString() + ":AC" + startRec.toString();
+		range = "A" + startRec.toString() + ":AE" + startRec.toString();
 		data = SpreadsheetApp.getActiveSpreadsheet().getRange(range).getValues();
 		currPolicy = data[0];
 	}	

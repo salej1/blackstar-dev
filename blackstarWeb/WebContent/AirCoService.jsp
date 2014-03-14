@@ -91,7 +91,6 @@
 			if(mode=="new-open"){
 				$("#serviceOrderNumber").attr("required", "");
 				$("#cutomer").attr("required", "");
-				$("#project").attr("disabled", "");
 				$("#equipmentAddress").attr("required", "");
 				$("#contactPhone").attr("required", "");
 				$("#brand").attr("required", "");
@@ -103,7 +102,7 @@
 			}
 			else{
 				$("#serviceOrderNumber").attr("readonly", "");
-				$("#cutomer").attr("readonly", "");
+				$("#customer").attr("readonly", "");
 				$("#project").attr("readonly", "");
 				$("#equipmentAddress").attr("readonly", "");
 				$("#contactPhone").attr("readonly", "");

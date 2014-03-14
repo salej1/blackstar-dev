@@ -138,6 +138,12 @@ public String getServiceOrderHistory() {
 }
 
 @Override
+public String getLimitedServiceOrdersHistoryJson(String user){
+	List<JSONObject> history = dao.getLimitedServiceOrdersHistory(user);
+	return history.toString();
+}
+
+@Override
 public String getEquipmentByType(String type) {
 	List<JSONObject> equipment = dao.getEquipmentByType(type);
 	return equipment.toString();

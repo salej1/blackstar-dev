@@ -51,4 +51,16 @@ public class DashboardServiceImpl extends AbstractService implements
 	public List<String> getOfficesList() {
 		return dao.getOfficesList();
 	}
+
+	@Override
+	public String getOpenLimitedTicketsJson(String user) {
+		List<JSONObject> tickets = dao.getOpenLimitedTickets(user);
+		return tickets.toString();
+	}
+
+	@Override
+	public String getLimitedServiceOrdersJson(String user, String status) {
+		List<JSONObject> tickets = dao.getLimitedServiceOrders(user, status);
+		return tickets.toString();
+	}	
 }

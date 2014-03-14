@@ -15,6 +15,7 @@ import com.blackstar.db.BlackstarDataAccess;
 import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
 import com.blackstar.model.TicketController;
+import com.blackstar.model.UserSession;
 import com.blackstar.services.IUserService;
 import com.blackstar.services.UserServiceFactory;
 
@@ -43,7 +44,14 @@ public class Tickets extends HttpServlet {
 		try
 		{
 			BlackstarDataAccess da = new BlackstarDataAccess();
-			rsTickets = da.executeQuery("CALL GetAllTickets()");
+			UserSession user = (UserSession) request.getSession().getAttribute(Globals.SESSION_KEY_PARAM);
+			if(user.getUser().getBelongsToGroup().get("Cliente")){
+				rsTickets = da.executeQuery(String.format("CALL GetLimitedTicketList('%s')", user.getUser().getUserEmail()));
+			}
+			else{
+				rsTickets = da.executeQuery("CALL GetAllTickets()");
+			}
+			
 			jsTickets = ResultSetConverter.convertResultSetToJSONArray(rsTickets);
 			
 			request.setAttribute("ticketsList", jsTickets.toString());	

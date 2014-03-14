@@ -10,4 +10,6 @@ public interface DashboardService {
 	public String getScheduledServices(String user);
 	public String getAssignedTickets(String user);
 	public List<String> getOfficesList();
+	public String getOpenLimitedTicketsJson(String user);
+	public String getLimitedServiceOrdersJson(String user, String status);
 }

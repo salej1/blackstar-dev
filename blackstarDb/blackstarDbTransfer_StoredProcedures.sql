@@ -13,6 +13,8 @@
 -- -----------------------------------------------------------------------------
 -- 2    08/11/2013  SAG  	Se convierte a SP
 -- -----------------------------------------------------------------------------
+-- 3    13/03/2014  SAG  	Soporte para un equipo en mas de una poliza
+-- -----------------------------------------------------------------------------
 
 use blackstarDbTransfer;
 
@@ -55,18 +57,27 @@ BEGIN
 		exceptionParts,
 		serviceCenterId,
 		observations,
+		equipmentUser,
 		created,
 		createdBy,
 		crratedByUsr
 	)
-	SELECT o.officeId, policyType, customerContract, customer, finalUser, project, cst, equipmentTypeId, brand, model, 
-			serialNumber, capacity, equipmentAddress, equipmentLocation, contact, contactPhone, contactEmail, startDate, endDate, visitsPerYear, 
-			responseTimeHR, solutionTimeHR, penalty, service, includesParts, exceptionParts, serviceCenterId, observations,
-			CURRENT_DATE(), 'PolicyTransfer', 'sergio.aga'
+	SELECT o.officeId, p.policyType, p.customerContract, p.customer, p.finalUser, p.project, p.cst, p.equipmentTypeId, p.brand, p.model,
+		p.serialNumber, p.capacity, p.equipmentAddress, p.equipmentLocation, p.contact, p.contactPhone, p.contactEmail, p.startDate, p.endDate, p.visitsPerYear,
+		p.responseTimeHR, p.solutionTimeHR, p.penalty, p.service, p.includesParts, p.exceptionParts, s.serviceCenterId, p.observations, p.equipmentUser,
+		CURRENT_DATE(), 'PolicyTransfer', 'sergio.aga'
 	FROM blackstarDbTransfer.policy p
 		INNER JOIN blackstarDb.office o ON p.office = o.officeName
 		INNER JOIN blackstarDb.serviceCenter s ON s.serviceCenter = p.serviceCenter
-	WHERE p.serialNumber NOT IN (SELECT DISTINCT serialNumber FROM blackstarDb.policy);
+		LEFT OUTER JOIN blackstarDb.policy bp on p.serialNumber = bp.serialNumber AND p.project = bp.project
+	WHERE bp.policyId IS NULL;
+
+	-- ACTUALIZAR LOS CORREOS DE ACCESO A CLIENTES
+	UPDATE blackstarDb.policy bp 
+		INNER JOIN blackstarDbTransfer.policy p ON p.serialNumber = bp.serialNumber AND p.project = bp.project
+	SET
+		bp.equipmentUser = p.equipmentUser;
+
 -- -----------------------------------------------------------------------------
 
 

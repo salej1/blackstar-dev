@@ -178,6 +178,92 @@ public class AirCoServicePolicyDTO {
 	}
 	
 
+	public AirCoServicePolicyDTO(OpenCustomer customer, String equipmentType, Serviceorder serviceOrder,  AirCoServiceDTO airCo)
+	{
+		this.customer = customer.getCustomerName();
+		this.finalUser = customer.getContactEmail();
+		this.project = "";
+		this.equipmentTypeId = equipmentType.charAt(0);
+		this.equipmentType = equipmentType;
+		this.brand = customer.getBrand();
+		this.model = customer.getModel();
+		this.serialNumber = customer.getSerialNumber();
+		this.capacity = customer.getCapacity();
+		this.equipmentAddress = customer.getAddress();
+		this.contactName = customer.getContactName();
+		this.contactPhone = customer.getPhone();
+		
+		this.serviceOrderId = serviceOrder.getServiceOrderId();
+		this.ticketId = serviceOrder.getTicketId();
+		this.serviceDate = serviceOrder.getServiceDate();
+		this.responsible = serviceOrder.getResponsible();
+		this.receivedBy = serviceOrder.getReceivedBy();
+		this.serviceStatusId = serviceOrder.getStatusId();
+		this.closed = serviceOrder.getClosed();
+		this.consultant = serviceOrder.getConsultant();
+		this.coordinator = serviceOrder.getCoordinator();
+		this.asignee = serviceOrder.getAsignee();
+		this.signCreated = serviceOrder.getSignCreated();
+		this.signReceivedBy = serviceOrder.getsignReceivedBy();
+		this.receivedByPosition = serviceOrder.getReceivedByPosition();
+		this.serviceOrderNumber = serviceOrder.getServiceOrderNumber();
+		this.receivedByEmail = serviceOrder.getReceivedByEmail();
+		this.responsibleName = serviceOrder.getEmployeeNameListString();
+		
+		this.aaServiceId = airCo.getAaServiceId();
+		this.evaDescription = airCo.getEvaDescription();
+		this.evaValTemp = airCo.getEvaValTemp();
+		this.evaValHum = airCo.getEvaValHum();
+		this.evaSetpointTemp = airCo.getEvaSetpointTemp();
+		this.evaSetpointHum = airCo.getEvaSetpointHum();
+		this.evaFlagCalibration = airCo.getEvaFlagCalibration();
+		this.evaReviewFilter = airCo.getEvaReviewFilter();
+		this.evaReviewStrip = airCo.getEvaReviewStrip();
+		this.evaCleanElectricSystem = airCo.getEvaCleanElectricSystem();
+		this.evaCleanControlCard = airCo.getEvaCleanControlCard();
+		this.evaCleanTray = airCo.getEvaCleanTray();
+		this.evaLectrurePreasureHigh = airCo.getEvaLectrurePreasureHigh();
+		this.evaLectrurePreasureLow = airCo.getEvaLectrurePreasureLow();
+		this.evaLectureTemp = airCo.getEvaLectureTemp();
+		this.evaLectureOilColor = airCo.getEvaLectureOilColor();
+		this.evaLectureOilLevel = airCo.getEvaLectureOilLevel();
+		this.evaLectureCoolerColor = airCo.getEvaLectureCoolerColor();
+		this.evaLectureCoolerLevel = airCo.getEvaLectureCoolerLevel();
+		this.evaCheckOperatation = airCo.getEvaCheckOperatation();
+		this.evaCheckNoise = airCo.getEvaCheckNoise();
+		this.evaCheckIsolated = airCo.getEvaCheckIsolated();
+		this.evaLectureVoltageGroud = airCo.getEvaLectureVoltageGroud();
+		this.evaLectureVoltagePhases = airCo.getEvaLectureVoltagePhases();
+		this.evaLectureVoltageControl = airCo.getEvaLectureVoltageControl();
+		this.evaLectureCurrentMotor1 = airCo.getEvaLectureCurrentMotor1();
+		this.evaLectureCurrentMotor2 = airCo.getEvaLectureCurrentMotor2();
+		this.evaLectureCurrentMotor3 = airCo.getEvaLectureCurrentMotor3();
+		this.evaLectureCurrentCompressor1 = airCo.getEvaLectureCurrentCompressor1();
+		this.evaLectureCurrentCompressor2 = airCo.getEvaLectureCurrentCompressor2();
+		this.evaLectureCurrentCompressor3 = airCo.getEvaLectureCurrentCompressor3();
+		this.evaLectureCurrentHumidifier1 = airCo.getEvaLectureCurrentHumidifier1();
+		this.evaLectureCurrentHumidifier2 = airCo.getEvaLectureCurrentHumidifier2();
+		this.evaLectureCurrentHumidifier3 = airCo.getEvaLectureCurrentHumidifier3();
+		this.evaLectureCurrentHeater1 = airCo.getEvaLectureCurrentHeater1();
+		this.evaLectureCurrentHeater2 = airCo.getEvaLectureCurrentHeater2();
+		this.evaLectureCurrentHeater3 = airCo.getEvaLectureCurrentHeater3();
+		this.evaCheckFluidSensor = airCo.getEvaCheckFluidSensor();
+		this.evaRequirMaintenance = airCo.getEvaRequirMaintenance();
+		this.condReview = airCo.getCondReview();
+		this.condCleanElectricSystem = airCo.getCondCleanElectricSystem();
+		this.condClean = airCo.getCondClean();
+		this.condLectureVoltageGroud = airCo.getCondLectureVoltageGroud();
+		this.condLectureVoltagePhases = airCo.getCondLectureVoltagePhases();
+		this.condLectureVoltageControl = airCo.getCondLectureVoltageControl();
+		this.condLectureMotorCurrent = airCo.getCondLectureMotorCurrent();
+		this.condReviewThermostat = airCo.getCondReviewThermostat();
+		this.condModel = airCo.getCondModel();
+		this.condSerialNumber = airCo.getCondSerialNumber();
+		this.condBrand = airCo.getCondBrand();
+		this.observations = airCo.getObservations();
+	}
+	
+
 	private Integer policyId;
 	private String customer;
 	private String finalUser;

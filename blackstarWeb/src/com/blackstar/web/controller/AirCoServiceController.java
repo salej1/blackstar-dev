@@ -86,9 +86,23 @@ public class AirCoServiceController extends AbstractController {
 		  			  Integer idOrder = Integer.parseInt(idObject);
 		  			  AirCoServiceDTO aircoService = service.getAirCoService(idOrder);
 		  			  Serviceorder serviceOrder = this.daoFactory.getServiceOrderDAO().getServiceOrderById(idOrder);
-		  			  Policy policy = this.daoFactory.getPolicyDAO().getPolicyById(serviceOrder.getPolicyId());
-	  				  Equipmenttype equipType = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
-	  				  airCoServicePolicyDTO = new AirCoServicePolicyDTO(policy, equipType.getEquipmentType(), serviceOrder, aircoService );
+		  			  Equipmenttype equipType;
+		  			  
+		  			  // Verificar si la OS pertenece a poliza o a cliente abierto
+		  			  if(serviceOrder.getPolicyId() != null && serviceOrder.getPolicyId() > 0){
+		  				Policy policy = this.daoFactory.getPolicyDAO().getPolicyById(serviceOrder.getPolicyId());
+		  				equipType = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
+		  				airCoServicePolicyDTO = new AirCoServicePolicyDTO(policy, equipType.getEquipmentType(), serviceOrder, aircoService );
+		  			  }
+		  			  else if(serviceOrder.getOpenCustomerId() != null && serviceOrder.getOpenCustomerId() > 0){
+		  				OpenCustomer customer = ocService.GetOpenCustomerById(serviceOrder.getOpenCustomerId());
+		  				if(customer.getEquipmentTypeId() == null || customer.getEquipmentTypeId() == ""){
+		  					throw new Exception("Cliente asociado a la OS no tiene tipo de equipo valido registrado");
+		  				}
+		  				equipType = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(customer.getEquipmentTypeId().charAt(0));
+		  				airCoServicePolicyDTO = new AirCoServicePolicyDTO(customer, equipType.getEquipmentType(), serviceOrder, aircoService );
+		  			  }
+	  				  
 	  				  model.addAttribute("serviceOrder", airCoServicePolicyDTO);
 	  				  model.addAttribute("mode", "detail");
 		  		  }

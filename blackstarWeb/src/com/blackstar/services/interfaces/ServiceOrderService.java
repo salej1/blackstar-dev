@@ -45,6 +45,8 @@ public interface ServiceOrderService {
 	// Servicios de despliegue de listados de ordenes de servicio
 	public String getServiceOrdersByStatus(String status);
 	public String getServiceOrderHistory();
+	public String getLimitedServiceOrdersHistoryJson(String user);
+
   
 	// Servicios de recuperacion de equipos
 	public String getEquipmentByType(String type);

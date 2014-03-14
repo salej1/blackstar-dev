@@ -34,24 +34,34 @@
 			buttons: {
 				"Aceptar": function() {
 					if(selected){
-					  moveToCaptureScreen(loadedType);
+					  moveToCaptureScreen("policy", loadedType);
 					} else {
 						$( this ).dialog( "close" );
 					}
 				},
-				
+				"Sin Poliza": function(){
+					moveToCaptureScreen("open", loadedType);
+				},
+
 				"Cancelar": function() {
 				$( this ).dialog( "close" );
-			}}
-		});	
-	}
+				}}
+			});	
+		}
 
 	// Funcion de redireccion a pagina de captura de OS especifica
-	function moveToCaptureScreen(type){
-		var urlTemplate = "PAGE/show.do?operation=3&idObject=SN";
-		var eq = $("#eqSearch").val();
-
-		switch(type){
+	function moveToCaptureScreen(captureType, equipmentType){
+		var urlTemplate = "";
+		if(captureType == "policy"){
+			urlTemplate = "PAGE/show.do?operation=3&idObject=SN";
+			var eq = $("#eqSearch").val();
+			urlTemplate = urlTemplate.replace("SN", eq);
+		}
+		 else{
+			urlTemplate = "PAGE/show.do?operation=4&idObject=Open";
+		}
+		
+		switch(equipmentType){
 			case 'A': urlTemplate = urlTemplate.replace("PAGE", "/aircoService");
 				break;
 			case 'B': urlTemplate = urlTemplate.replace("PAGE", "/batteryService");
@@ -63,8 +73,6 @@
 			default: urlTemplate = urlTemplate.replace("PAGE", "/plainService");
 				break;
 		}
-
-		urlTemplate = urlTemplate.replace("SN", eq);
 
 		window.location = urlTemplate;
 	}

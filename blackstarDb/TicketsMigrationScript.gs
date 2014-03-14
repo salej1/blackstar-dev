@@ -18,9 +18,11 @@
 ** 4    19/11/2013  SAG  	Correccion de AutoComit
 ** --   --------   -------  ------------------------------------
 ** 5    17/12/2013  SAG  	Soporte para lineas en blanco
+** --   --------   -------  ------------------------------------
+** 6    13/03/2014  SAG  	Adaptaciones
 *****************************************************************************/
 
-function main() {
+function ticketMain() {
 	// Log init and timestamp
 	var formattedDate = Utilities.formatDate(new Date(), "CST", "yyyy-MM-dd HH:mm:ss");
 	Logger.log("Iniciando carga de tickets a base de datos: %s", formattedDate);
@@ -52,7 +54,7 @@ function main() {
 }
 
 function getDbConnection(){
-	var conn = Jdbc.getCloudSqlConnection("jdbc:google:rdbms://salej1-blackstar-dev:salej1-blackstar-dev/blackstarDbTransfer");
+	var conn = Jdbc.getCloudSqlConnection("jdbc:google:rdbms://gposac-blackstar-pro:gposac-blackstar-pro/blackstarDbTransfer");
 	return conn;
 }
 
@@ -103,24 +105,27 @@ function sendToDatabase(ticket, conn, policies, sqlLog){
 			VALUES(";
 				
 	// reading the values
-	var created = ticket[ 0 ];
-	var user = ticket[ 1 ];
-	var contact = ticket[ 2 ];
-	var contactPhone = ticket[ 3 ];
-	var contactEmail = ticket[ 4 ];
-	var serialNumber = ticket[ 5 ];
-	var observations = ticket[ 6 ];
-	var ticketNumber = ticket[ 21 ];
-	var rawPhoneResolved = ticket[ 22 ];
+	var ix = 0;
+	var created = ticket[ ix ]; ix++;
+	var user = ticket[ ix ]; ix++;
+	var contact = ticket[ ix ]; ix++;
+	var contactPhone = ticket[ ix ]; ix++;
+	var contactEmail = ticket[ ix ]; ix++;
+	var serialNumber = ticket[ ix ]; ix++;
+	var observations = ticket[ ix ]; ix++;
+	ix = 22;
+	var ticketNumber = ticket[ ix ]; ix++;
+	var rawPhoneResolved = ticket[ ix ]; ix++;
 	var phoneResolved = 0;
 	if(rawPhoneResolved == "SI"){
 		phoneResolved = 1;
 	}
-	var arrival = ticket[ 23 ];
-	var followUp = ticket[ 25 ];
-	var closed = ticket[ 26 ];
-	var serviceOrderNumber = ticket[ 27 ];
-	var employee = ticket[ 28 ];
+	var arrival = ticket[ ix ]; ix++;
+	ix = 26;
+	var followUp = ticket[ ix ]; ix++;
+	var closed = ticket[ ix ]; ix++;
+	var serviceOrderNumber = ticket[ ix ]; ix++;
+	var employee = ticket[ ix ]; ix++;
 	var createdBy = "TicketMigrationScript";
 	var createdByUsr = "sergio.aga";
 
@@ -181,7 +186,7 @@ function loadPolicies(conn){
 	var rs = stmt.execute("use blackstarDbTransfer;");
 	var policies = { };
 	
-	rs = stmt.executeQuery("select policyId, serialNumber from policy");
+	rs = stmt.executeQuery("select policyId, serialNumber from policy where NOW() > startDate AND NOW() < endDate;");
 	while(rs.next()){
 		policies[rs.getString(2)] = rs.getInt(1);
 	}

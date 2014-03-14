@@ -205,11 +205,133 @@
 --								blackstarDb.AddOpenCustomer
 --								blackstarDb.GetOpenCustomerById
 -- -----------------------------------------------------------------------------
+-- 36	12/03/2014	SAG 	Se Agregan:
+--								blackstarDb.GetOpenLimitedTickets
+--								blackstarDb.GetLimitedTicketList
+--								blackstarDb.GetLimitedServiceOrders
+--								blackstarDb.GetLimitedServiceOrderList
+-- -----------------------------------------------------------------------------
 
 use blackstarDb;
 
 DELIMITER $$
 
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetLimitedServiceOrderList
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetLimitedServiceOrderList$$
+CREATE PROCEDURE blackstarDb.GetLimitedServiceOrderList(pUser VARCHAR(100))
+BEGIN
+	SELECT 
+		so.ServiceOrderId AS DT_RowId,
+		so.serviceOrderNumber AS serviceOrderNumber,
+		'' AS placeHolder,
+		IFNULL(t.ticketNumber, '') AS ticketNumber,
+		st.serviceType AS serviceType,
+		DATE(so.serviceDate) AS serviceDate,
+		p.customer AS customer,
+		et.equipmentType AS equipmentType,
+		p.project AS project,
+		of.officeName AS officeName,
+		p.brand AS brand,
+		p.serialNumber AS serialNumber,
+		ss.serviceStatus AS serviceStatus
+	FROM serviceOrder so 
+		INNER JOIN serviceType st ON so.servicetypeId = st.servicetypeId
+		INNER JOIN serviceStatus ss ON so.serviceStatusId = ss.serviceStatusId
+		INNER JOIN policy p ON so.policyId = p.policyId
+		INNER JOIN equipmentType et ON p.equipmentTypeId = et.equipmentTypeId
+		INNER JOIN office of on p.officeId = of.officeId
+    LEFT OUTER JOIN ticket t on t.ticketId = so.ticketId
+    WHERE p.equipmentUser = pUser
+	ORDER BY so.serviceDate DESC;
+	
+END$$
+
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetLimitedServiceOrders
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetLimitedServiceOrders$$
+CREATE PROCEDURE blackstarDb.GetLimitedServiceOrders(status VARCHAR(200), pUser VARCHAR(100))
+BEGIN
+
+	SELECT 
+		so.ServiceOrderId AS DT_RowId,
+		so.serviceOrderNumber AS serviceOrderNumber,
+		'' AS placeHolder,
+		IFNULL(t.ticketNumber, '') AS ticketNumber,
+		st.serviceType AS serviceType,
+		DATE(so.created) AS created,
+		p.customer AS customer,
+		et.equipmentType AS equipmentType,
+		p.project AS project,
+		of.officeName AS officeName,
+		p.brand AS brand,
+		p.serialNumber AS serialNumber,
+		ss.serviceStatus AS serviceStatus
+	FROM serviceOrder so 
+		INNER JOIN serviceType st ON so.servicetypeId = st.servicetypeId
+		INNER JOIN serviceStatus ss ON so.serviceStatusId = ss.serviceStatusId
+		INNER JOIN policy p ON so.policyId = p.policyId
+		INNER JOIN equipmentType et ON p.equipmentTypeId = et.equipmentTypeId
+		INNER JOIN office of on p.officeId = of.officeId
+     LEFT OUTER JOIN ticket t on t.ticketId = so.ticketId
+	WHERE ss.serviceStatus IN(status) 
+	AND p.equipmentUser = pUser
+	ORDER BY serviceDate DESC ;
+	
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetLimitedTicketList
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetLimitedTicketList$$
+CREATE PROCEDURE blackstarDb.GetLimitedTicketList(pUser VARCHAR(100))
+BEGIN
+	SELECT 
+		t.ticketId AS DT_RowId,
+		t.ticketNumber AS ticketNumber,
+		t.created AS ticketDate,
+		p.customer AS customer,
+		e.equipmentType AS equipmentType,
+		p.responseTimeHR AS responseTime,
+		p.project AS project,
+		ts.ticketStatus AS ticketStatus,
+		'' AS placeHolder
+	FROM ticket t
+		INNER JOIN policy p ON p.policyId = t.policyId
+		INNER JOIN equipmentType e ON e.equipmentTypeId = p.equipmentTypeId
+		INNER JOIN ticketStatus ts ON t.ticketStatusId = ts.ticketStatusId
+	WHERE p.equipmentUser = pUser
+	ORDER BY ticketDate;
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetOpenLimitedTickets
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetOpenLimitedTickets$$
+CREATE PROCEDURE blackstarDb.GetOpenLimitedTickets(pUser VARCHAR(100))
+BEGIN
+	SELECT 
+		t.ticketId AS DT_RowId,
+		t.ticketNumber AS ticketNumber,
+		t.created AS ticketDate,
+		p.customer AS customer,
+		e.equipmentType AS equipmentType,
+		p.responseTimeHR AS responseTime,
+		p.project AS project,
+		ts.ticketStatus AS ticketStatus,
+		'' AS placeHolder
+	FROM ticket t
+		INNER JOIN policy p ON p.policyId = t.policyId
+		INNER JOIN equipmentType e ON e.equipmentTypeId = p.equipmentTypeId
+		INNER JOIN ticketStatus ts ON t.ticketStatusId = ts.ticketStatusId
+	WHERE p.equipmentUser = pUser
+	AND t.closed IS NULL
+	ORDER BY ticketDate;
+END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetOpenCustomerById
@@ -1100,13 +1222,13 @@ BEGIN
 		p.project AS project,
 		ts.ticketStatus AS ticketStatus,
 		'' AS placeHolder
-FROM ticket t
-	INNER JOIN policy p ON p.policyId = t.policyId
-	INNER JOIN equipmentType e ON e.equipmentTypeId = p.equipmentTypeId
-	INNER JOIN ticketStatus ts ON t.ticketStatusId = ts.ticketStatusId
-WHERE t.asignee = pUser
-AND t.closed IS NULL
-ORDER BY ticketDate;
+	FROM ticket t
+		INNER JOIN policy p ON p.policyId = t.policyId
+		INNER JOIN equipmentType e ON e.equipmentTypeId = p.equipmentTypeId
+		INNER JOIN ticketStatus ts ON t.ticketStatusId = ts.ticketStatusId
+	WHERE t.asignee = pUser
+	AND t.closed IS NULL
+	ORDER BY ticketDate;
 
 END$$
 

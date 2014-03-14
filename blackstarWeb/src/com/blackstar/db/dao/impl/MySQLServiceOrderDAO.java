@@ -380,4 +380,10 @@ public class MySQLServiceOrderDAO implements ServiceOrderDAO, Serializable {
 		return null;
 	}
 
+	@Override
+	public List<JSONObject> getLimitedServiceOrdersHistory(String user) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

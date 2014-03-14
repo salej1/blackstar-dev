@@ -113,42 +113,28 @@
 					"aoColumns": [
 								  { "mData": "num" },
 								  { "mData": "created" },
-								  { "mData": "createdBy" },
 								  { "mData": "contactName" },
-								  { "mData": "contactPhone" },
-								  { "mData": "contactEmail" },
 								  { "mData": "serialNumber" },
 								  { "mData": "observations" },
 								  { "mData": "customer" },
 								  { "mData": "equipmentType" },
-								  { "mData": "brand" },
-								  { "mData": "model" },
-								  { "mData": "capacity" },
-								  { "mData": "responseTimeHr" },
-								  { "mData": "solutionTimeHr" },
-								  { "mData": "equipmentAddress" },
 								  { "mData": "equipmentLocation" },
-								  { "mData": "includesParts" },
-								  { "mData": "exceptionParts" },
 								  { "mData": "serviceCenter" },
-								  { "mData": "office" },
 								  { "mData": "project" },
 								  { "mData": "ticketNumber" },
 								  { "mData": "phoneResolved" },
 								  { "mData": "arrival" },
-								  { "mData": "responseTimeDeviationHr" },
 								  { "mData": "followUps" },
 								  { "mData": "closed" },
 								  { "mData": "serviceOrderNumber" },
 								  { "mData": "employee" },
-								  { "mData": "solutionTime" },
 								  { "mData": "solutionTimeDeviationHr" },
 								  { "mData": "ticketStatus" },
 								  { "mData": "Cerrar" },
 								  { "mData": "num" }
 
 							  ],
-					"aoColumnDefs" : [{"mRender" : function(data, type, row){ticketNumberMap[row.DT_RowId] = data; return data;}, "aTargets" : [22]},	
+					"aoColumnDefs" : [{"mRender" : function(data, type, row){ticketNumberMap[row.DT_RowId] = data; return data;}, "aTargets" : [10]},	
 									  {"mRender" : function(rawData, type, row){
 														if(rawData != null){
 															var outerTemplate = '<div onclick="addSeguimiento('+ row.DT_RowId + ', \'' + ticketNumberMap[row.DT_RowId] + '\');" style="width:700px;">INNER_TEMPLATE</div>';
@@ -190,9 +176,9 @@
 														else{
 															return '';
 														}
-													}, "aTargets" : [26]},
-									  {"mRender" : function(data, type, row){return "<a href='osDetail?osNum=" + data  + "'>" + data + "</a>";}, "aTargets" : [28]},	    		    	       
-									  {"mRender" : function(data, type, row){ticketStatusMap[row.DT_RowId] = data; return data;}, "aTargets" : [32]},	    		    	       
+													}, "aTargets" : [13]},
+									  {"mRender" : function(data, type, row){return "<a href='osDetail?osNum=" + data  + "'>" + data + "</a>";}, "aTargets" : [15]},	    		    	       
+									  {"mRender" : function(data, type, row){ticketStatusMap[row.DT_RowId] = data; return data;}, "aTargets" : [18]},	    		    	       
 									  {"mRender" : function(data, type, row){
 														if(ticketStatusMap[row.DT_RowId] == "CERRADO" || ticketStatusMap[row.DT_RowId] == "CERRADO FT"){
 															return "<a href='#' class='edit' onclick='javascript: reopenTicket(" + row.DT_RowId + ", \"" + data + "\"); return false;'>Reabrir ticlet</a>";
@@ -200,7 +186,7 @@
 														else{
 															return "<a href='#' class='edit' onclick='javascript: closeTicket(" + row.DT_RowId + ", \"" + data + "\"); return false;'>Cerrar ticket</a>";
 														}
-													}, "aTargets" : [33]}	    		    	       
+													}, "aTargets" : [19]}	    		    	       
 									 ]}
 				);
 				
@@ -222,35 +208,21 @@
 					<tr>
 						<th>#</th>
 						<th style="width:150px;">Marca temporal</th>
-						<th>Nombre usuario</th>
 						<th style="width:180px;">Contacto</th>
-						<th>Telefóno Contacto</th>
-						<th>E-mail</th>
 						<th>Número de serie</th>
 						<th style="width:700px;">Observaciones</th>
 						<th style="width:180px;">Cliente</th>
 						<th>Equipo</th>
-						<th>Marca</th>
-						<th>Modelo</th>
-						<th>Cap.</th>
-						<th>T. Resp. Comp.</th>
-						<th>T. Sol. Comp.</th>
-						<th style="width:230px;">Direccion</th>
 						<th>Ubicacion</th>
-						<th>Incluye Partes</th>
-						<th>Excepcion Partes</th>
 						<th>Centro Servicio</th>
-						<th>Oficina</th>
 						<th>Proyecto</th>
 						<th>Ticket</th>
 						<th>Solucion Tel.</th>
 						<th style="width:150px;">F. Llegada</th>
-						<th>Desviación TR</th>
 						<th style="width:700px;">Seguimiento</th>
 						<th style="width:150px;">Cierre</th>
 						<th>Numero Reporte</th>
 						<th style="width:180px;">Ingeniero</th>
-						<th>T.Sol. HR</th>
 						<th>Desviación</th>
 						<th style="width:120px;">Estatus</th>
 						<th>Cerrar Ticket</th>
