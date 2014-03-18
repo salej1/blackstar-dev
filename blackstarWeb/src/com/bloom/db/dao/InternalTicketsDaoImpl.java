@@ -3,12 +3,14 @@ package com.bloom.db.dao;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.jdbc.core.RowMapper;
 
 import com.blackstar.db.dao.AbstractDAO;
 import com.bloom.common.bean.InternalTicketBean;
+import com.bloom.common.utils.DataTypeUtil;
 
 public class InternalTicketsDaoImpl extends AbstractDAO implements InternalTicketsDao {
 
@@ -36,7 +38,26 @@ public class InternalTicketsDaoImpl extends AbstractDAO implements InternalTicke
 		
 		InternalTicketBean ticket = new InternalTicketBean();
 		
-		return getJdbcTemplate().query(sqlQuery, new InternalTicketMapper());  
+		
+		ticket.setId(1);
+		ticket.setTicketNumber("SAC32");
+		ticket.setCreated(new Date());
+		ticket.setCreatedStr(DataTypeUtil.formatearFechaDD_MM_AAAA(ticket.getCreated()));
+		
+		ticket.setPetitionerArea("Ventas");
+		ticket.setServiceTypeDescr("Pregunta Tecnica");
+		ticket.setDeadline(new Date());
+		ticket.setDeadlineStr(DataTypeUtil.formatearFechaDD_MM_AAAA(ticket.getCreated()));	
+		
+		ticket.setApplicantAreaName("CG140");
+		ticket.setOfficeName("MXO");
+		
+		
+		
+		//return getJdbcTemplate().query(sqlQuery, new InternalTicketMapper());
+		listaTickets.add(ticket);
+		
+		return listaTickets;
 	}
     
 

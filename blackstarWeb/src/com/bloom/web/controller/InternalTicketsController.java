@@ -1,5 +1,6 @@
 package com.bloom.web.controller;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,6 +23,7 @@ import com.blackstar.model.TicketController;
 import com.blackstar.model.UserSession;
 import com.blackstar.services.interfaces.DashboardService;
 import com.blackstar.web.AbstractController;
+import com.bloom.common.bean.InternalTicketBean;
 import com.bloom.common.bean.RespuestaJsonBean;
 import com.bloom.services.InternalTicketsService;
 
@@ -60,12 +62,28 @@ public class InternalTicketsController extends AbstractController {
 
 
 
-	@RequestMapping(value = "/generarUnidadesCliente.htm", method = RequestMethod.POST, produces = "application/json")
-    public @ResponseBody
-    RespuestaJsonBean generarUnidadesCliente(HttpServletRequest request, Map<String, Object> model,
-            @RequestParam(value = "idCliente") Long idCliente) {
+	@RequestMapping(value = "/getPendingTickets.do", method = RequestMethod.GET, produces = "application/json")
+	@ResponseBody
+    RespuestaJsonBean generarUnidadesCliente(ModelMap model, @ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession) {
 		
-		return new RespuestaJsonBean();
+		RespuestaJsonBean respuesta = new RespuestaJsonBean();
+		
+        List<InternalTicketBean> registros = internalTicketsService.getPendingTickets();
+        
+        if (registros == null || registros.isEmpty()) {
+            respuesta.setEstatus("preventivo");
+            respuesta.setMensaje("No se encontraron Tickets Pendientes");
+            //log.info("No se encontraron registros de Emisiones Generadas");
+        } else {
+            String resumen = "Se encontraron " + registros.size() + " Tickets Pendientes";
+            //log.info("Se encontraron " + registros.size() + " Emisiones Generadas");
+            respuesta.setEstatus("ok");
+            respuesta.setLista(registros);
+            respuesta.setMensaje(resumen);
+        }		
+		
+		
+        return respuesta;
 	}
 
 

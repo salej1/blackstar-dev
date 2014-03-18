@@ -114,7 +114,19 @@
 			});
 		</script>
 <!-- Fin Tabla De Ordenes De Servicio Con Pendientes -->
+	
+			<!-- Tabla De Tickets internos pendientes - pendingInternalTickets.jsp -->
+		<c:import url="pendingInternalTickets.jsp"></c:import>
+		<script type="text/javascript">
+			$(function(){
+				pendingInternalTicketsInit();
+			});
+		</script>
+	
+	
 	</c:if>
+	
+	
 
 <!-- Fin Contenido De Perfil Sysservicio -->
 

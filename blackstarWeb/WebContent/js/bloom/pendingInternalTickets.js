@@ -1,50 +1,133 @@
+// Inicializacion de tabla de tickets y dialogo de asignacion
+function pendingInternalTicketsInit() {
 
-	// Inicializacion de tabla de tickets y dialogo de asignacion
-	function pendingInternalTicketsInit(){
+	// Tabla de tickets pendientes
+	getPendingTickets();
+}
 
-		// Tabla de Ordenes de servicio nuevas
-		getNewServiceOrders();
-	}	
+function getPendingTickets() {
 
-	// funcion de filtrado por oficina
-	function newServiceOrders_filter(office){
-		// tabla de OS nuevas
-		var newSOTable = $('#dtOrdenesPorRevisar').dataTable();
-			newSOTable.fnFilter(office, 8);
-	 }
-	 
-	function getNewServiceOrders(){
-		$.getJSON("/dashboard/newServiceOrdersJson.do", function(data){
-			// Inicializacion de la tabla de nuevas ordenes de servicio
-			$('#dtOrdenesPorRevisar').dataTable({	    		
-				"bProcessing": true,
-				"bFilter": true,
-				"bLengthChange": false,
-				"iDisplayLength": 10,
-				"bInfo": false,
-				"sPaginationType": "full_numbers",
-				"aaData": data,
-				"sDom": '<"top"i>rt<"bottom"flp><"clear">',
-				"aoColumns": [
-							  { "mData": "serviceOrderNumber" },
-							  { "mData": "placeHolder" },
-							  { "mData": "ticketNumber" },
-							  { "mData": "serviceType" },
-							  { "mData": "created" },
-							  { "mData": "customer" },
-							  { "mData": "equipmentType" },
-							  { "mData": "project" },
-							  { "mData": "officeName" },
-							  { "mData": "brand" },
-							  { "mData": "serialNumber" }
+	$
+			.ajax({
+				url : "/bloom/getPendingTickets.do",
+				type : "GET",
+				dataType : "json",
+				beforeSend : function() {
 
-						  ],
-					"aoColumnDefs" : [{"mRender" : function(data, type, row){return "<div align='center' style='width:70px;' ><a href='${pageContext.request.contextPath}/osDetail/show.do?serviceOrderId=" + row.DT_RowId + "'>" + data + "</a></div>";}, "aTargets" : [0]},
-									  {"mRender" : function(data, type, row){return "<a href='${pageContext.request.contextPath}/report/show.do?serviceOrderId=" + row.DT_RowId + "' target='_blank'><img src='${pageContext.request.contextPath}/img/pdf.png'</a>" ;}, "aTargets" : [1]},
-									  {"mRender" : function(data){return "<div align='center'><a href='${pageContext.request.contextPath}/ticketDetail?ticketId=" + data + "'>" + data + "</a></div>";}, "aTargets" : [2]}	    		    	       
-									   ]}
-			);
+				},
+				success : function(respuestaJson) {
+					var listaInternalTickets = respuestaJson.lista;
+					
+					// Inicializacion de la tabla de nuevas ordenes de servicio
+					$('#dtGridTicketsInternos')
+							.dataTable(
+									{
+										"bProcessing" : true,
+										"bFilter" : true,
+										"bLengthChange" : false,
+										"iDisplayLength" : 10,
+										"bInfo" : false,
+										"sPaginationType" : "full_numbers",
+										"aaData" : listaInternalTickets,
+										"sDom" : '<"top"i>rt<"bottom"flp><"clear">',
+										"aoColumns" : [ {
+											"mData" : "ticketNumber"
+										}, {
+											"mData" : "createdStr"
+										}, {
+											"mData" : "petitionerArea"
+										}, {
+											"mData" : "serviceTypeDescr"
+										}, {
+											"mData" : "deadlineStr"
+										}, {
+											"mData" : "applicantAreaName"
+										}, {
+											"mData" : "officeName"
+										}
 
-			newServiceOrders_filter(officePref);
-		});
-	}
+										],
+										"aoColumnDefs" : [ {
+											"mRender" : function(data, type,
+													row) {
+												return "<div align='center' style='width:70px;' ><a href='${pageContext.request.contextPath}/bloom/detailTicket.do?id="
+														+ row.DT_RowId
+														+ "'>"
+														+ data + "</a></div>";
+											},
+											"aTargets" : [ 0 ]
+										}
+
+										]
+									});
+
+				},
+				error : function() {
+				}
+			});
+
+}
+
+// // funcion de filtrado por oficina
+// function newServiceOrders_filter(office){
+// // tabla de OS nuevas
+// var newSOTable = $('#dtGridTicketsInternos').dataTable();
+// newSOTable.fnFilter(office, 8);
+// }
+
+function getPendingTickets2() {
+	$
+			.getJSON(
+					"/bloom/getPendingTickets.do",
+					function(data) {
+
+						var listaInternalTickets = data.lista;
+
+						// Inicializacion de la tabla de nuevas ordenes de
+						// servicio
+						$('#dtGridTicketsInternos')
+								.dataTable(
+										{
+											"bProcessing" : true,
+											"bFilter" : true,
+											"bLengthChange" : false,
+											"iDisplayLength" : 10,
+											"bInfo" : false,
+											"sPaginationType" : "full_numbers",
+											"aaData" : listaInternalTickets,
+											"sDom" : '<"top"i>rt<"bottom"flp><"clear">',
+											"aoColumns" : [ {
+												"mData" : "TicketNumber"
+											}, {
+												"mData" : "CreatedStr"
+											}, {
+												"mData" : "petitionerArea"
+											}, {
+												"mData" : "ServiceTypeDescr"
+											}, {
+												"mData" : "DeadlineStr"
+											}, {
+												"mData" : "ApplicantAreaName"
+											}, {
+												"mData" : "OfficeName"
+											}
+
+											],
+											"aoColumnDefs" : [ {
+												"mRender" : function(data,
+														type, row) {
+													return "<div align='center' style='width:70px;' ><a href='${pageContext.request.contextPath}/bloom/detailTicket.do?id="
+															+ row.DT_RowId
+															+ "'>"
+															+ data
+															+ "</a></div>";
+												},
+												"aTargets" : [ 0 ]
+											}
+
+											]
+										});
+
+						// newServiceOrders_filter(officePref);
+					});
+}

@@ -14,14 +14,20 @@ public class InternalTicketBean {
 	private Integer id;
 
 	private String officeId;
+	
+	private String officeName;
 
 	private Integer applicantUserId;
 
 	private Integer serviceTypeId;
 
+	private String serviceTypeDescr;
+
 	private Integer statusId;
 
 	private Integer applicantAreaId;
+
+	private String applicantAreaName;
 
 	private String ticketNumber;
 
@@ -33,15 +39,101 @@ public class InternalTicketBean {
 
 	private Date created;
 
-	private String createdBy;
+	private String createdStr;
 
-	private Integer createdByUsr;
+	private String createdUserName;
+
+	private Integer createdUserId;
 
 	private Date modified;
 
 	private String modifiedBy;
 
 	private Integer modifiedByUsr;
+
+	private String petitionerArea;
+
+
+	private Date deadline;
+
+	private String deadlineStr;	
+
+
+	/**
+	 * @return the createdStr
+	 */
+	public String getCreatedStr() {
+		return createdStr;
+	}
+
+	/**
+	 * @param createdStr
+	 *            the createdStr to set
+	 */
+	public void setCreatedStr(String createdStr) {
+		this.createdStr = createdStr;
+	}
+
+	/**
+	 * @return the deadline
+	 */
+	public Date getDeadline() {
+		return deadline;
+	}
+
+	/**
+	 * @param deadline
+	 *            the deadline to set
+	 */
+	public void setDeadline(Date deadline) {
+		this.deadline = deadline;
+	}
+
+	/**
+	 * @return the deadlineStr
+	 */
+	public String getDeadlineStr() {
+		return deadlineStr;
+	}
+
+	/**
+	 * @param deadlineStr
+	 *            the deadlineStr to set
+	 */
+	public void setDeadlineStr(String deadlineStr) {
+		this.deadlineStr = deadlineStr;
+	}
+
+
+	/**
+	 * @return the serviceTypeDescr
+	 */
+	public String getServiceTypeDescr() {
+		return serviceTypeDescr;
+	}
+
+	/**
+	 * @param serviceTypeDescr
+	 *            the serviceTypeDescr to set
+	 */
+	public void setServiceTypeDescr(String serviceTypeDescr) {
+		this.serviceTypeDescr = serviceTypeDescr;
+	}
+
+	/**
+	 * @return the petitionerArea
+	 */
+	public String getPetitionerArea() {
+		return petitionerArea;
+	}
+
+	/**
+	 * @param petitionerArea
+	 *            the petitionerArea to set
+	 */
+	public void setPetitionerArea(String petitionerArea) {
+		this.petitionerArea = petitionerArea;
+	}
 
 	/**
 	 * @return the id
@@ -208,35 +300,7 @@ public class InternalTicketBean {
 		this.created = created;
 	}
 
-	/**
-	 * @return the createdBy
-	 */
-	public String getCreatedBy() {
-		return createdBy;
-	}
 
-	/**
-	 * @param createdBy
-	 *            the createdBy to set
-	 */
-	public void setCreatedBy(String createdBy) {
-		this.createdBy = createdBy;
-	}
-
-	/**
-	 * @return the createdByUsr
-	 */
-	public Integer getCreatedByUsr() {
-		return createdByUsr;
-	}
-
-	/**
-	 * @param createdByUsr
-	 *            the createdByUsr to set
-	 */
-	public void setCreatedByUsr(Integer createdByUsr) {
-		this.createdByUsr = createdByUsr;
-	}
 
 	/**
 	 * @return the modified
@@ -251,6 +315,62 @@ public class InternalTicketBean {
 	 */
 	public void setModified(Date modified) {
 		this.modified = modified;
+	}
+
+	/**
+	 * @return the officeName
+	 */
+	public String getOfficeName() {
+		return officeName;
+	}
+
+	/**
+	 * @param officeName the officeName to set
+	 */
+	public void setOfficeName(String officeName) {
+		this.officeName = officeName;
+	}
+
+	/**
+	 * @return the applicantAreaName
+	 */
+	public String getApplicantAreaName() {
+		return applicantAreaName;
+	}
+
+	/**
+	 * @param applicantAreaName the applicantAreaName to set
+	 */
+	public void setApplicantAreaName(String applicantAreaName) {
+		this.applicantAreaName = applicantAreaName;
+	}
+
+	/**
+	 * @return the createdUserName
+	 */
+	public String getCreatedUserName() {
+		return createdUserName;
+	}
+
+	/**
+	 * @param createdUserName the createdUserName to set
+	 */
+	public void setCreatedUserName(String createdUserName) {
+		this.createdUserName = createdUserName;
+	}
+
+	/**
+	 * @return the createdUserId
+	 */
+	public Integer getCreatedUserId() {
+		return createdUserId;
+	}
+
+	/**
+	 * @param createdUserId the createdUserId to set
+	 */
+	public void setCreatedUserId(Integer createdUserId) {
+		this.createdUserId = createdUserId;
 	}
 
 	/**
