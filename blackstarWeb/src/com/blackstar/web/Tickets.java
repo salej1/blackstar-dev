@@ -45,7 +45,7 @@ public class Tickets extends HttpServlet {
 		{
 			BlackstarDataAccess da = new BlackstarDataAccess();
 			UserSession user = (UserSession) request.getSession().getAttribute(Globals.SESSION_KEY_PARAM);
-			if(user.getUser().getBelongsToGroup().get("Cliente")){
+			if(user.getUser().getBelongsToGroup().get("Cliente") != null && user.getUser().getBelongsToGroup().get("Cliente")){
 				rsTickets = da.executeQuery(String.format("CALL GetLimitedTicketList('%s')", user.getUser().getUserEmail()));
 			}
 			else{

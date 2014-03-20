@@ -25,26 +25,18 @@
 				</div>
 			</div>
 			<p><small>&nbsp;</small></p>
-<!-- Inicia seccion Coordinadoras -->
-			<c:set var="sysServicio" scope="request" value="${user.belongsToGroup['Coordinador']}" />
-			<c:if test="${sysServicio == true}">
-				<c:import url="newOpenOSLinks.jsp"></c:import>
-			</c:if>
-<!-- Fin seccion Coordinadoras -->
+<!-- Inicia Contenido De Perfil Coordinadoras e Ingenieros de Servicio-->
+			<c:set var="captOsLinks" scope="request" value="${user.belongsToGroup['Coordinador'] || user.belongsToGroup['Implementacion y Servicio']}" />
+			<c:if test="${captOsLinks == true}">
 
-<!-- Seccion perfil Servicio -->
-			<c:set var="sysServicio" scope="request" value="${user.belongsToGroup['Implementacion y Servicio'] }" />
-			<c:if test="${sysServicio == true}">
-	
 <!-- Links Para Crear Ordenes De Servicio -->
-				<c:import url="newOSLinks.jsp"></c:import>
-				<script type="text/javascript">
-					$(function(){
-						newOSLinks_init();
-					});
-				</script>
-		<!-- Fin Links Para Crear Ordenes De Servicio -->
-
+			<c:import url="newOSLinks.jsp"></c:import>
+			<script type="text/javascript">
+				$(function(){
+					newOSLinks_init();
+				});
+			</script>
+<!-- Fin Links Para Crear Ordenes De Servicio -->
 			</c:if>
 <!-- Fin Seccion perfil Servicio -->
 
