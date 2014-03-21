@@ -115,17 +115,27 @@
 
 <!-- Fin Contenido De Perfil Sysservicio -->
 
-<!-- Tabla de tickets abiertos para usuarios de acceso limitado (clientes) -->
+<!-- Contenido para clientes -->
+
 	<c:set var="sysCustomer" scope="request" value="${user.belongsToGroup['Cliente']}" />
 	<c:if test="${sysCustomer == true}">
+<!-- Tabla de tickets abiertos para usuarios de acceso limitado (clientes) -->
 		<c:import url="openLimitedTickets.jsp"></c:import>
 		<script type="text/javascript">
 			$(function(){
 				openLimitedTickets_init();
 			});
 		</script>
-	</c:if>
 <!-- Fin Tabla de tickets abiertos para usuarios de acceso limitado (clientes) -->
+
+		<c:import url="pendingLimitedServiceOrders.jsp"></c:import>
+		<script type="text/javascript">
+			$(function(){
+				pendingLimitedServiceOrders_init();
+			});
+		</script>
+	</c:if>
+<!-- Fin Contenido para clientes -->
 
 </div>
 </body>

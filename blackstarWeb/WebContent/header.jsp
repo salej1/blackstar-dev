@@ -53,7 +53,9 @@
 				<li><a href="${pageContext.request.contextPath}/dashboard/show.do">Inicio</a></li>
 				<li><span class="active" onclick="window.location = '/tickets'">Tickets</span></li>
 				<li><a href="${pageContext.request.contextPath}/serviceOrders/show.do">Ordenes de servicio</a></li>
-				<li><a href="${pageContext.request.contextPath}/seguimiento">Seguimiento</a></li>
+				<c:if test="${sysCallCenter == true}">
+					<li><a href="${pageContext.request.contextPath}/seguimiento">Seguimiento</a></li>
+				</c:if>
 				<li><a href="${pageContext.request.contextPath}/surveyServices/show.do">Encuestas de servicio</a></li>
 				<li><a href="${pageContext.request.contextPath}/indServicios/show.do">Indicadores Serv.</a></li>
 			</c:when>

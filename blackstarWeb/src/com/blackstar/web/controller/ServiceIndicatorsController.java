@@ -4,6 +4,7 @@ import java.util.Date;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import com.blackstar.common.Globals;
 import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
+import com.blackstar.model.UserSession;
 import com.blackstar.services.interfaces.ServiceIndicatorsService;
 import com.blackstar.web.AbstractController;
 
@@ -28,8 +30,21 @@ public class ServiceIndicatorsController extends AbstractController {
   }
   
   @RequestMapping(value= "/show.do", method = RequestMethod.GET)
-  public String  show(ModelMap model){
-	  model.addAttribute("projects", service.getProjectList());
+  public String  show(ModelMap model,  @ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession){
+	  try{
+		  if(userSession.getUser().getBelongsToGroup().get("Cliente") != null && userSession.getUser().getBelongsToGroup().get("Cliente") == true){
+			  model.addAttribute("projects", service.getLimitedProjectList(userSession.getUser().getUserEmail()));
+		  }
+		  else{
+			  model.addAttribute("projects", service.getProjectList());
+		  }
+	  }catch (Exception e) {
+		Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
+		e.printStackTrace();
+		model.addAttribute("errorDetails", e.getStackTrace()[0].toString());
+		return "error";
+	}
+  
 	return "indicadoresServicios";
   }
 	
@@ -118,9 +133,15 @@ public class ServiceIndicatorsController extends AbstractController {
 		  @RequestParam(required = true) Date startDate,
 		  @RequestParam(required = true) Date endDate,
 		  @RequestParam(required = true) String project,
-		  ModelMap model){
+		  ModelMap model,  
+		  @ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession){
 	try {
-		model.addAttribute("charts", service.getCharts(project, startDate, endDate));
+		 if(userSession.getUser().getBelongsToGroup().get("Cliente") != null && userSession.getUser().getBelongsToGroup().get("Cliente") == true){
+			 model.addAttribute("charts", service.getCharts(project, startDate, endDate, userSession.getUser().getUserEmail()));
+		 }
+		 else{
+			 model.addAttribute("charts", service.getCharts(project, startDate, endDate, ""));
+		 }
 	} catch (Exception e) {
 		for(StackTraceElement t : e.getStackTrace()){
 			System.out.println(t.toString());

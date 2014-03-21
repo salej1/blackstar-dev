@@ -205,17 +205,63 @@
 --								blackstarDb.AddOpenCustomer
 --								blackstarDb.GetOpenCustomerById
 -- -----------------------------------------------------------------------------
--- 36	12/03/2014	SAG 	Se Agregan:
+-- 36	18/03/2014	SAG 	Se Agregan:
 --								blackstarDb.GetOpenLimitedTickets
 --								blackstarDb.GetLimitedTicketList
 --								blackstarDb.GetLimitedServiceOrders
 --								blackstarDb.GetLimitedServiceOrderList
+-- -----------------------------------------------------------------------------
+-- 35	20/03/2014	SAG 	Se Agregan:
+--								blackstarDb.GetLimitedSurveyServiceList
+--								blackstarDb.GetLimitedProjectList
+--							Se modifican:
+--								blackstarDb.GetStatusKPI
+--								blackstarDb.GetReportsByEquipmentTypeKPI
+--								blackstarDb.GetTicketsByServiceCenterKPI
 -- -----------------------------------------------------------------------------
 
 use blackstarDb;
 
 DELIMITER $$
 
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetLimitedProjectList
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetLimitedProjectList$$
+CREATE PROCEDURE blackstarDb.GetLimitedProjectList(pUser VARCHAR(100))
+BEGIN
+
+	SELECT DISTINCT 
+		p.project as project
+	FROM blackstarDb.policy p
+	WHERE p.startDate <= NOW() AND NOW() <= p.endDate
+	AND p.equipmentUser = pUser
+	ORDER BY project;
+
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetLimitedSurveyServiceList
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetLimitedSurveyServiceList$$
+CREATE PROCEDURE blackstarDb.GetLimitedSurveyServiceList(pUser VARCHAR(100))
+BEGIN
+	
+	SELECT DISTINCT
+		s.surveyServiceId AS DT_RowId,
+		s.surveyServiceId AS surveyServiceNumber,
+		p.customer AS customer,
+		p.project AS project,
+		s.surveyDate AS surveyDate,
+		s.score AS score
+	FROM surveyService s
+		INNER JOIN serviceOrder o ON o.surveyServiceId = s.surveyServiceId
+		INNER JOIN policy p ON o.policyId = p.policyId
+    WHERE p.equipmentUser = pUser
+	ORDER BY surveyDate DESC;
+	
+END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetLimitedServiceOrderList
@@ -293,19 +339,23 @@ BEGIN
 	SELECT 
 		t.ticketId AS DT_RowId,
 		t.ticketNumber AS ticketNumber,
-		t.created AS ticketDate,
+		t.created AS created,
+		p.contactName AS contactName,
+		p.serialNumber AS serialNumber,
 		p.customer AS customer,
 		e.equipmentType AS equipmentType,
-		p.responseTimeHR AS responseTime,
+		p.responseTimeHR AS responseTimeHR,
 		p.project AS project,
 		ts.ticketStatus AS ticketStatus,
-		'' AS placeHolder
+		IFNULL(bu.name, '') AS asignee,
+		'' AS asignar
 	FROM ticket t
 		INNER JOIN policy p ON p.policyId = t.policyId
 		INNER JOIN equipmentType e ON e.equipmentTypeId = p.equipmentTypeId
 		INNER JOIN ticketStatus ts ON t.ticketStatusId = ts.ticketStatusId
+		LEFT OUTER JOIN blackstarUser bu ON bu.email = t.asignee
 	WHERE p.equipmentUser = pUser
-	ORDER BY ticketDate;
+	ORDER BY created;
 END$$
 
 -- -----------------------------------------------------------------------------
@@ -670,27 +720,52 @@ END$$
 	-- blackstarDb.GetStatusKPI
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetStatusKPI$$
-CREATE PROCEDURE blackstarDb.`GetStatusKPI`(pType CHAR(1), pProject varchar(100), startDate DATETIME, endDate DATETIME)
+CREATE PROCEDURE blackstarDb.`GetStatusKPI`(pType CHAR(1), pProject varchar(100), startDate DATETIME, endDate DATETIME, pUser VARCHAR(100))
 BEGIN
 IF pProject = 'All' THEN
-	SELECT ts.ticketStatus as name, count(*) as value
-	FROM ticket tk
-	INNER JOIN policy py on tk.policyId = py.policyId
-	INNER JOIN serviceCenter sc ON py.serviceCenterId = sc.serviceCenterId
-	INNER JOIN ticketStatus ts ON tk.ticketStatusId = ts.ticketStatusId
-	WHERE tk.created >= startDate AND tk.created <= endDate
-	AND sc.serviceCenterId LIKE pType
-	GROUP BY tk.ticketStatusId;
+	IF pUser = '' THEN
+		SELECT ts.ticketStatus as name, count(*) as value
+		FROM ticket tk
+			INNER JOIN policy py on tk.policyId = py.policyId
+			INNER JOIN serviceCenter sc ON py.serviceCenterId = sc.serviceCenterId
+			INNER JOIN ticketStatus ts ON tk.ticketStatusId = ts.ticketStatusId
+		WHERE tk.created >= startDate AND tk.created <= endDate
+			AND sc.serviceCenterId LIKE pType
+		GROUP BY tk.ticketStatusId;
+	ELSE
+		SELECT ts.ticketStatus as name, count(*) as value
+		FROM ticket tk
+			INNER JOIN policy py on tk.policyId = py.policyId
+			INNER JOIN serviceCenter sc ON py.serviceCenterId = sc.serviceCenterId
+			INNER JOIN ticketStatus ts ON tk.ticketStatusId = ts.ticketStatusId
+		WHERE tk.created >= startDate AND tk.created <= endDate
+			AND sc.serviceCenterId LIKE pType
+			AND py.equipmentUser = pUser
+		GROUP BY tk.ticketStatusId;
+	END IF;
 ELSE
-	SELECT ts.ticketStatus as name, count(*) as value
-	FROM ticket tk
-	INNER JOIN policy py on tk.policyId = py.policyId
-	INNER JOIN serviceCenter sc ON py.serviceCenterId = sc.serviceCenterId
-	INNER JOIN ticketStatus ts ON tk.ticketStatusId = ts.ticketStatusId
-	WHERE tk.created >= startDate AND tk.created <= endDate
-	AND sc.serviceCenterId LIKE pType
-	AND py.project = pProject
-	GROUP BY tk.ticketStatusId;
+	IF pUser = '' THEN
+		SELECT ts.ticketStatus as name, count(*) as value
+		FROM ticket tk
+			INNER JOIN policy py on tk.policyId = py.policyId
+			INNER JOIN serviceCenter sc ON py.serviceCenterId = sc.serviceCenterId
+			INNER JOIN ticketStatus ts ON tk.ticketStatusId = ts.ticketStatusId
+		WHERE tk.created >= startDate AND tk.created <= endDate
+			AND sc.serviceCenterId LIKE pType
+			AND py.project = pProject
+		GROUP BY tk.ticketStatusId;
+	ELSE
+		SELECT ts.ticketStatus as name, count(*) as value
+		FROM ticket tk
+			INNER JOIN policy py on tk.policyId = py.policyId
+			INNER JOIN serviceCenter sc ON py.serviceCenterId = sc.serviceCenterId
+			INNER JOIN ticketStatus ts ON tk.ticketStatusId = ts.ticketStatusId
+		WHERE tk.created >= startDate AND tk.created <= endDate
+			AND sc.serviceCenterId LIKE pType
+			AND py.project = pProject
+			AND py.equipmentUser = pUser
+		GROUP BY tk.ticketStatusId;
+	END IF;
 END IF;
 END$$
 
@@ -698,23 +773,44 @@ END$$
 	-- blackstarDb.GetTicketsByServiceCenterKPI
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetTicketsByServiceCenterKPI$$
-CREATE PROCEDURE blackstarDb.GetTicketsByServiceCenterKPI(pProject varchar(100), startDate DATETIME, endDate DATETIME)
+CREATE PROCEDURE blackstarDb.GetTicketsByServiceCenterKPI(pProject varchar(100), startDate DATETIME, endDate DATETIME, pUser VARCHAR(100))
 BEGIN
 IF pProject = 'All' THEN
-	SELECT sc.serviceCenter as name, count(*) as value
-	FROM ticket tk
-	INNER JOIN policy py on tk.policyId = py.policyId
-	INNER JOIN serviceCenter sc ON py.serviceCenterId = sc.serviceCenterId
-	WHERE tk.created >= startDate AND tk.created <= endDate
-	GROUP BY sc.serviceCenter;
+	IF pUser = '' THEN
+		SELECT sc.serviceCenter as name, count(*) as value
+		FROM ticket tk
+			INNER JOIN policy py on tk.policyId = py.policyId
+			INNER JOIN serviceCenter sc ON py.serviceCenterId = sc.serviceCenterId
+		WHERE tk.created >= startDate AND tk.created <= endDate
+		GROUP BY sc.serviceCenter;
+	ELSE
+		SELECT sc.serviceCenter as name, count(*) as value
+		FROM ticket tk
+			INNER JOIN policy py on tk.policyId = py.policyId
+			INNER JOIN serviceCenter sc ON py.serviceCenterId = sc.serviceCenterId
+		WHERE tk.created >= startDate AND tk.created <= endDate
+			AND py.equipmentUser = pUser
+		GROUP BY sc.serviceCenter;
+	END IF;
 ELSE
-	SELECT sc.serviceCenter as name, count(*) as value
-	FROM ticket tk
-	INNER JOIN policy py on tk.policyId = py.policyId
-	INNER JOIN serviceCenter sc ON py.serviceCenterId = sc.serviceCenterId
-	WHERE tk.created >= startDate AND tk.created <= endDate
-	AND py.project = pProject
-	GROUP BY sc.serviceCenter;
+	IF pUser = '' THEN
+		SELECT sc.serviceCenter as name, count(*) as value
+		FROM ticket tk
+			INNER JOIN policy py on tk.policyId = py.policyId
+			INNER JOIN serviceCenter sc ON py.serviceCenterId = sc.serviceCenterId
+		WHERE tk.created >= startDate AND tk.created <= endDate
+			AND py.project = pProject
+		GROUP BY sc.serviceCenter;
+	ELSE
+		SELECT sc.serviceCenter as name, count(*) as value
+		FROM ticket tk
+			INNER JOIN policy py on tk.policyId = py.policyId
+			INNER JOIN serviceCenter sc ON py.serviceCenterId = sc.serviceCenterId
+		WHERE tk.created >= startDate AND tk.created <= endDate
+			AND py.project = pProject
+			AND py.equipmentUser = pUser
+		GROUP BY sc.serviceCenter;
+	END IF;
 END IF;
 END$$
 
@@ -722,23 +818,44 @@ END$$
 	-- blackstarDb.GetReportsByEquipmentTypeKPI
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetReportsByEquipmentTypeKPI$$
-CREATE PROCEDURE blackstarDb.GetReportsByEquipmentTypeKPI(pProject varchar(100), startDate DATETIME, endDate DATETIME)
+CREATE PROCEDURE blackstarDb.GetReportsByEquipmentTypeKPI(pProject varchar(100), startDate DATETIME, endDate DATETIME, pUser VARCHAR(100))
 BEGIN
 IF pProject = 'All' THEN
-	SELECT et.equipmentType as name , count(*) as value
-	FROM ticket tk
-	INNER JOIN policy py on py.policyId = tk.policyId
-	INNER JOIN equipmentType et ON et.equipmentTypeId = py.equipmentTypeId
-	WHERE tk.created >= startDate AND tk.created <= endDate
-	GROUP BY py.equipmentTypeId;
+	IF pUser = '' THEN
+		SELECT et.equipmentType as name , count(*) as value
+		FROM ticket tk
+			INNER JOIN policy py on py.policyId = tk.policyId
+			INNER JOIN equipmentType et ON et.equipmentTypeId = py.equipmentTypeId
+		WHERE tk.created >= startDate AND tk.created <= endDate
+		GROUP BY py.equipmentTypeId;
+	ELSE
+		SELECT et.equipmentType as name , count(*) as value
+		FROM ticket tk
+		INNER JOIN policy py on py.policyId = tk.policyId
+		INNER JOIN equipmentType et ON et.equipmentTypeId = py.equipmentTypeId
+		WHERE tk.created >= startDate AND tk.created <= endDate
+			AND py.equipmentUser = pUser
+		GROUP BY py.equipmentTypeId;
+	END IF;
 ELSE
-	SELECT et.equipmentType as name , count(*) as value
-	FROM ticket tk
-	INNER JOIN policy py on py.policyId = tk.policyId
-	INNER JOIN equipmentType et ON et.equipmentTypeId = py.equipmentTypeId
-	WHERE tk.created >= startDate AND tk.created <= endDate
-	AND py.project = pProject
-	GROUP BY py.equipmentTypeId;
+	IF pUser = '' THEN
+		SELECT et.equipmentType as name , count(*) as value
+		FROM ticket tk
+			INNER JOIN policy py on py.policyId = tk.policyId
+			INNER JOIN equipmentType et ON et.equipmentTypeId = py.equipmentTypeId
+		WHERE tk.created >= startDate AND tk.created <= endDate
+			AND py.project = pProject
+		GROUP BY py.equipmentTypeId;
+	ELSE
+		SELECT et.equipmentType as name , count(*) as value
+		FROM ticket tk
+			INNER JOIN policy py on py.policyId = tk.policyId
+			INNER JOIN equipmentType et ON et.equipmentTypeId = py.equipmentTypeId
+		WHERE tk.created >= startDate AND tk.created <= endDate
+			AND py.project = pProject
+			AND py.equipmentUser = pUser
+		GROUP BY py.equipmentTypeId;
+	END IF;
 END IF;
 END$$
 

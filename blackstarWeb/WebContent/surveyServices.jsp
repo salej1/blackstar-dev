@@ -16,33 +16,50 @@
 	</head>
 	<body>
 
-<!--   CONTENT COLUMN   -->		
-		<div id="content" class="container_16 clearfix">
-			<div>
-				<div>
-					<img src="/img/navigate-right.png"/><a href="/surveyServiceDetail/show.do?operation=1&idObject=0">Crear Encuesta de Servicio</a>
-				</div>
-			</div>
-			<p><small>&nbsp;</small></p>
-
-			<!-- Tabla de Mis Encuestas de Servicio para Ingenieros de servicio -->
-			<c:set var="sysServicio" scope="request" value="${user.belongsToGroup['Implementacion y Servicio']}" />
-			<c:if test="${sysServicio == true}">
-			<c:import url="personalSurveyServices.jsp"></c:import> <!-- TODO: Implementar -->
+<!--   CONTENT COLUMN   -->	
+	<div id="content" class="container_16 clearfix">
+		<c:set var="isCustomer" scope="request" value="${user.belongsToGroup['Cliente']}"/>
+		<c:choose>
+			<c:when test="${isCustomer == true}">
+				<!-- Historico de encuestas para clientes -->
+				<c:import url="limitedSurveyServiceHistory.jsp"></c:import>
 				<script type="text/javascript">
 					$(function(){
-						personalSurveyServices_init();
+						limitedSurveyServiceHistory_init();
 					});
 				</script>
-			</c:if>
-			
-			<!-- Tabla de historico de encuestas de servicio -->
-			<c:import url="surveyServicesHistory.jsp"></c:import>
-			<script type="text/javascript">
-				$(function(){
-					surveyServicesHistory_init();
-				});
-			</script>
-		</div>
+			</c:when>
+			<c:otherwise>
+				<c:set var="canCreate" scope="request" value="${user.belongsToGroup['Implementacion y Servicio'] || user.belongsToGroup['Coordinador']}" />
+				<c:if test="${canCreate == true}">
+					<div>
+						<div>
+							<img src="/img/navigate-right.png"/><a href="/surveyServiceDetail/show.do?operation=1&idObject=0">Crear Encuesta de Servicio</a>
+						</div>
+					</div>
+				</c:if>
+				<p><small>&nbsp;</small></p>
+
+				<!-- Tabla de Mis Encuestas de Servicio para Ingenieros de servicio -->
+				<c:set var="sysServicio" scope="request" value="${user.belongsToGroup['Implementacion y Servicio']}" />
+				<c:if test="${sysServicio == true}">
+					<c:import url="personalSurveyServices.jsp"></c:import> <!-- TODO: Implementar -->
+					<script type="text/javascript">
+						$(function(){
+							personalSurveyServices_init();
+						});
+					</script>
+				</c:if>
+				
+				<!-- Tabla de historico de encuestas de servicio -->
+				<c:import url="surveyServicesHistory.jsp"></c:import>
+				<script type="text/javascript">
+					$(function(){
+						surveyServicesHistory_init();
+					});
+				</script>
+			</c:otherwise>
+		</c:choose>	
+	</div>
 	</body>
 </html>

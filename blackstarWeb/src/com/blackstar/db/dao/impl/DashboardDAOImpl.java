@@ -54,7 +54,7 @@ public class DashboardDAOImpl extends AbstractDAO implements DashboardDAO {
 
 	@Override
 	public List<JSONObject> getLimitedServiceOrders(String user, String status){
-		String sqlQuery = "CALL GetLimitedServiceOrders(?);";
-		return getJdbcTemplate().query(sqlQuery, new Object[]{user, status}, new JSONRowMapper()); 
+		String sqlQuery = "CALL GetLimitedServiceOrders(?,?);";
+		return getJdbcTemplate().query(sqlQuery, new Object[]{status, user}, new JSONRowMapper()); 
 	}
 }

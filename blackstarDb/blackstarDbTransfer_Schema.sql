@@ -13,6 +13,8 @@
 -- ---------------------------------------------------------------------------
 -- 1    04/03/2014  SAG  	Se agregan columnas de portal
 -- ---------------------------------------------------------------------------
+-- 1    19/03/2014  SAG  	Se agrega tabla equipmentUserSync
+-- ---------------------------------------------------------------------------
 
 USE blackstarDbTransfer;
 
@@ -26,6 +28,16 @@ BEGIN
 -- -----------------------------------------------------------------------------
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
+
+	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDbTransfer' AND TABLE_NAME = 'equipmentUserSync') = 0 THEN
+		 CREATE TABLE blackstarDbTransfer.equipmentUserSync(
+			equipmentUserSyncId INTEGER NOT NULL AUTO_INCREMENT,
+			customerName VARCHAR(500),
+			equipmentUser VARCHAR(100) NULL,
+			KEY(equipmentUserSyncId)
+		) ENGINE=INNODB;
+
+	END IF;
 
 	ALTER TABLE blackstarDbTransfer.ticket MODIFY serialNumber VARCHAR(100) NULL DEFAULT NULL;
 

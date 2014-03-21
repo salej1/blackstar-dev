@@ -20,6 +20,8 @@
 ** 5    17/12/2013  SAG  	Soporte para lineas en blanco
 ** --   --------   -------  ------------------------------------
 ** 6    13/03/2014  SAG  	Adaptaciones
+** --   --------   -------  ------------------------------------
+** 6    19/03/2014  SAG  	Se agrega Project a inserciones
 *****************************************************************************/
 
 function ticketMain() {
@@ -100,6 +102,7 @@ function sendToDatabase(ticket, conn, policies, sqlLog){
 			 `arrival`, \
 			 `serviceOrderNumber`, \
 			 `employee`, \
+			 `project`, \
 			 `createdBy`, \
 			 `createdByUsr`) \
 			VALUES(";
@@ -113,7 +116,9 @@ function sendToDatabase(ticket, conn, policies, sqlLog){
 	var contactEmail = ticket[ ix ]; ix++;
 	var serialNumber = ticket[ ix ]; ix++;
 	var observations = ticket[ ix ]; ix++;
-	ix = 22;
+	ix = 20;
+	var project = ticket[ix]; ix++;
+	ix++; 
 	var ticketNumber = ticket[ ix ]; ix++;
 	var rawPhoneResolved = ticket[ ix ]; ix++;
 	var phoneResolved = 0;
@@ -168,6 +173,7 @@ function sendToDatabase(ticket, conn, policies, sqlLog){
 	}
 	sql = sql + Utilities.formatString("'%s',",serviceOrderNumber);
 	sql = sql + Utilities.formatString("'%s',",employee);
+	sql = sql + Utilities.formatString("'%s',",project);
 	sql = sql + Utilities.formatString("'%s',",createdBy);
 	sql = sql + Utilities.formatString("'%s');",createdByUsr);
 	

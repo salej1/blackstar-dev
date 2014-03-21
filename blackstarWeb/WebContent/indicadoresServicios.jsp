@@ -105,33 +105,45 @@
 					</table>
 				</div>
 				<hr>  
-				<div>
-					<img src="/img/navigate-right.png"/><a href="#" id="getStatics" onclick="go('getStatics')">Estadisticas</a>
-				</div>
-				<div>
-					<img src="/img/navigate-right.png"/><a href="#" id="getCharts" onclick="go('getCharts')">Graficas generales</a>
-				</div>
-				<div>
-					<img src="/img/navigate-right.png"/><a href="#" id="getMaxReportsByUser" onclick="go('getMaxReportsByUser')">Usuarios que mas reportan</a>
-				</div>
-				<div>
-					<img src="/img/navigate-right.png"/><a href="#" id="getTickets" onclick="go('getTickets')">Tickets</a>
-				</div>
-				<div>
-					<img src="/img/navigate-right.png"/><a href="#" id="getConcurrentFailures" onclick="go('getConcurrentFailures')">Fallas recurrentes</a>
-				</div>
-				<div>
-					<img src="/img/navigate-right.png"/><a href="#" id="getAverage" onclick="go('getAverage')">Promedios</a>
-				</div>
-				<div>
-					<img src="/img/navigate-right.png"/><a href="#" id="getReportOS" onclick="go('getReportOS')">Reporte Ordenes de servicio</a>
-				</div>
-				<div>
-					<img src="/img/navigate-right.png"/><a href="#" id="getOSResume" onclick="go('getOSResume')">Resumen Ordenes de servicio</a>
-				</div>
-				<div>
-					<img src="/img/navigate-right.png"/><a href="#" id="getPolicies" onclick="go('getPolicies')">Concentrado polizas</a>
-				</div>
+				<!-- Seccion links para acceso a clientes -->
+				<c:set var="isCustomer" scope="request" value="${user.belongsToGroup['Cliente']}" />
+				<c:choose>
+					<c:when test="${isCustomer == true}">
+						<div>
+							<img src="/img/navigate-right.png"/><a href="#" id="getCharts" onclick="go('getCharts')">Graficas generales</a>
+						</div>
+					</c:when>
+					<c:otherwise>
+						<!-- Seccion links para empleados GPO SAC -->
+						<div>
+							<img src="/img/navigate-right.png"/><a href="#" id="getStatics" onclick="go('getStatics')">Estadisticas</a>
+						</div>
+						<div>
+							<img src="/img/navigate-right.png"/><a href="#" id="getCharts" onclick="go('getCharts')">Graficas generales</a>
+						</div>
+						<div>
+							<img src="/img/navigate-right.png"/><a href="#" id="getMaxReportsByUser" onclick="go('getMaxReportsByUser')">Usuarios que mas reportan</a>
+						</div>
+						<div>
+							<img src="/img/navigate-right.png"/><a href="#" id="getTickets" onclick="go('getTickets')">Tickets</a>
+						</div>
+						<div>
+							<img src="/img/navigate-right.png"/><a href="#" id="getConcurrentFailures" onclick="go('getConcurrentFailures')">Fallas recurrentes</a>
+						</div>
+						<div>
+							<img src="/img/navigate-right.png"/><a href="#" id="getAverage" onclick="go('getAverage')">Promedios</a>
+						</div>
+						<div>
+							<img src="/img/navigate-right.png"/><a href="#" id="getReportOS" onclick="go('getReportOS')">Reporte Ordenes de servicio</a>
+						</div>
+						<div>
+							<img src="/img/navigate-right.png"/><a href="#" id="getOSResume" onclick="go('getOSResume')">Resumen Ordenes de servicio</a>
+						</div>
+						<div>
+							<img src="/img/navigate-right.png"/><a href="#" id="getPolicies" onclick="go('getPolicies')">Concentrado polizas</a>
+						</div>
+					</c:otherwise>
+				</c:choose>
 			</div>	
 		</div>
 		<div id="indicatorDetail"></div>

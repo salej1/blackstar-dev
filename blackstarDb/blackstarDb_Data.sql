@@ -45,6 +45,9 @@ UPDATE serviceOrder SET serviceTypeId = 'P' WHERE serviceTypeId = 'V';
 DELETE FROM serviceType
 WHERE serviceTypeId IN('O', 'M', 'R', 'N', 'V');
 
+DELETE FROM ticket WHERE ticketId = 434;
+DELETE FROM ticket WHERE ticketId = 432;
+
 use blackstarDbTransfer;
 
 CALL ExecuteTransfer();

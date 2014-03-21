@@ -14,6 +14,7 @@ public interface SurveyServiceDAO {
 	SurveyService getSurveyServiceById(Integer surveyServiceId);
 	List<JSONObject> getPersonalSurveyServiceList(String user);
 	List<JSONObject> getAllSurveyServiceList();
+	List<JSONObject> getLimitedSurveyServiceList(String user);
 	void LinkSurveyServiceOrder(String order, Integer surveyServiceId, String modifiedBy, String user);
 	List<Serviceorder> getLinkedServiceOrderList(Integer surveyServiceId);
 }

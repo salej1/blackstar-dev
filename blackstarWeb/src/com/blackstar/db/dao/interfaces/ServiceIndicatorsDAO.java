@@ -19,12 +19,13 @@ public interface ServiceIndicatorsDAO {
   public List<GetReportOSTableKPI> getReportOSTable();
   public List<JSONObject> getReportOSResume();
   public List<JSONObject> getOSResume();
-  public List<JSONObject> getReportByEquipmentType(String project, Date startDate, Date endDate);
-  public List<JSONObject> getTicketsByServiceCenter(String project, Date startDate, Date endDate);
-  public List<JSONObject> getStatus(String servicecenterId, String project, Date startDate, Date endDate);
+  public List<JSONObject> getReportByEquipmentType(String project, Date startDate, Date endDate, String customer);
+  public List<JSONObject> getTicketsByServiceCenter(String project, Date startDate, Date endDate, String customer);
+  public List<JSONObject> getStatus(String servicecenterId, String project, Date startDate, Date endDate, String customer);
   public List<Servicecenter> getServiceCenterIdList();
   public List<JSONObject> getUserAverage();
   public List<JSONObject> getGeneralAverage();
   public List<GetStatisticsKPI> getStatisticsKPI(String project, Date startDate, Date endDate);
   public List<String> getProjectList();
+  public List<String> getLimitedProjectList(String user);
 }

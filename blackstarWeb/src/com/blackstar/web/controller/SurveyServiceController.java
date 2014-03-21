@@ -73,4 +73,19 @@ public class SurveyServiceController extends AbstractController {
 		}
 		return retVal;
 	}
+	
+	// Historico de encuestas de servicio para clientes
+		@RequestMapping(value = "/limitedSurveyServiceHistory.do", method = RequestMethod.GET)
+		public @ResponseBody String limitedSurveyServiceHistory(ModelMap model) {
+			String retVal;
+			try {
+				retVal = service.getAllSurveyServiceList().toString();
+			} catch (Exception ex) {
+				Logger.Log(LogLevel.ERROR,
+						Thread.currentThread().getStackTrace()[1].toString(), ex);
+				ex.printStackTrace();
+				return "error";
+			}
+			return retVal;
+		}
 }

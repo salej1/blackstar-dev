@@ -1,14 +1,14 @@
 <script type="text/javascript">
 	
-	// Inicializacion de tabla de tickets y dialogo de asignacion
-	function surveyServicesHistory_init(){
+	// Inicializacion de encuestas de servicio
+	function limitedSurveyServiceHistory_init(){
 
-		// Tabla de Ordenes de servicio nuevas
-		getSurveyServiceHistory();
+		// Tabla de historico de encuestas de servicio para clientes
+		getLimitedSurveyServiceHistory();
 	}	
 	 
-	function getSurveyServiceHistory(){
-		$.getJSON("/surveyServices/surveyServiceHistory.do", function(data){
+	function getLimitedSurveyServiceHistory(){
+		$.getJSON("/surveyServices/limitedSurveyServiceHistory.do", function(data){
 			// Inicializacion de la tabla de nuevas ordenes de servicio
 			$('#dtSurveyServiceHistory').dataTable({	    		
 				"bProcessing": true,

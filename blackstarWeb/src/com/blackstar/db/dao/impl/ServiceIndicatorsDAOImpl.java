@@ -55,19 +55,19 @@ public class ServiceIndicatorsDAOImpl extends AbstractDAO
 	return getJdbcTemplate().query(sqlQuery,  new JSONRowMapper()); 
   }
   
-  public List<JSONObject> getReportByEquipmentType(String project, Date startDate, Date endDate){
-	String sqlQuery = "CALL GetReportsByEquipmentTypeKPI(?,?,?)";
-	return getJdbcTemplate().query(sqlQuery, new Object[]{project, startDate, endDate},  new JSONRowMapper()); 
+  public List<JSONObject> getReportByEquipmentType(String project, Date startDate, Date endDate, String customer){
+		String sqlQuery = "CALL GetReportsByEquipmentTypeKPI(?,?,?,?)";
+		return getJdbcTemplate().query(sqlQuery, new Object[]{project, startDate, endDate, customer},  new JSONRowMapper()); 
   }
   
-  public List<JSONObject> getTicketsByServiceCenter(String project, Date startDate, Date endDate){
-	String sqlQuery = "CALL GetTicketsByServiceCenterKPI(?,?,?)";
-	return getJdbcTemplate().query(sqlQuery, new Object[]{project, startDate, endDate},  new JSONRowMapper()); 
+  public List<JSONObject> getTicketsByServiceCenter(String project, Date startDate, Date endDate, String customer){
+	String sqlQuery = "CALL GetTicketsByServiceCenterKPI(?,?,?,?)";
+	return getJdbcTemplate().query(sqlQuery, new Object[]{project, startDate, endDate, customer},  new JSONRowMapper()); 
   }
   
-  public List<JSONObject> getStatus(String servicecenterId, String project, Date startDate, Date endDate){
-	String sqlQuery = "CALL GetStatusKPI(?,?,?,?)";
-	return getJdbcTemplate().query(sqlQuery, new Object[]{servicecenterId, project, startDate, endDate}
+  public List<JSONObject> getStatus(String servicecenterId, String project, Date startDate, Date endDate, String customer){
+	String sqlQuery = "CALL GetStatusKPI(?,?,?,?,?)";
+	return getJdbcTemplate().query(sqlQuery, new Object[]{servicecenterId, project, startDate, endDate, customer}
 	                                               , new JSONRowMapper()); 
   }
   
@@ -97,5 +97,11 @@ public class ServiceIndicatorsDAOImpl extends AbstractDAO
 	public List<String> getProjectList() {
 		String sqlQuery = "CALL GetProjectList()";
 		return (List<String>) getJdbcTemplate().queryForList(sqlQuery, String.class);
+	}
+
+	@Override
+	public List<String> getLimitedProjectList(String user) {
+		String sqlQuery = "CALL GetLimitedProjectList(?)";
+		return (List<String>) getJdbcTemplate().queryForList(sqlQuery, new Object[]{user}, String.class);
 	}
 }

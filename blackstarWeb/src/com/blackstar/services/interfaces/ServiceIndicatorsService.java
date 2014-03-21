@@ -17,9 +17,10 @@ public interface ServiceIndicatorsService {
 	public String getReportOSResumeKPI() throws Exception;
 	public List<GetReportOSTableKPI> getReportOSTable() throws Exception;
 	public String getOSResume() throws Exception;
-	public List<Chart> getCharts(String project, Date startDate, Date endDate) throws Exception;
+	public List<Chart> getCharts(String project, Date startDate, Date endDate, String user) throws Exception;
 	public String getUserAverage();
 	public String getGeneralAverage();
 	public List<GetStatisticsKPI> getStatisticsKPI(String project, Date startDate, Date endDate);
 	public List<String> getProjectList();
+	public List<String> getLimitedProjectList(String user);
 }

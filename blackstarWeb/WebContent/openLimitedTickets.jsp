@@ -46,7 +46,7 @@
 -->
 <div class="grid_16">
 	<div class="box">
-		<h2>tickets de cliente abiertos</h2>
+		<h2>Tickets abiertos</h2>
 		<div class="utils">
 			
 		</div>

@@ -130,4 +130,13 @@ public class SurveyServiceDAOImpl extends AbstractDAO implements SurveyServiceDA
 		
 	}
 
+
+	@Override
+	public List<JSONObject> getLimitedSurveyServiceList(String user) {
+		String sql = "CALL GetLimitedSurveyServiceList(?)";
+		
+		List<JSONObject> retVal = getJdbcTemplate().query(sql, new Object[]{user}, new JSONRowMapper());
+		return retVal;
+	}
+
 }

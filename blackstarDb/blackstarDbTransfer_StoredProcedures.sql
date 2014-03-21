@@ -99,7 +99,7 @@ BEGIN
 	SELECT p.policyId, tt.ticketNumber, tt.user, tt.observations, phoneResolved, tt.arrival, tt.employee, tt.closed, tt.created, 'TicketTransfer', 'sergio.aga'
 	FROM blackstarDbTransfer.ticket tt
 		INNER JOIN blackstarDbTransfer.policy pt ON tt.policyId = pt.policyId	
-		INNER JOIN blackstarDb.policy p ON p.serialNumber = pt.serialNumber AND pt.serialNumber != 'NA'
+		INNER JOIN blackstarDb.policy p ON p.serialNumber = pt.serialNumber AND pt.serialNumber != 'NA' AND p.project = pt.project
 	WHERE tt.ticketNumber NOT IN (SELECT ticketNumber FROM blackstarDb.ticket);
 	
 	-- ACTUALIZAR TIEMPOS DE RESPUESTA
@@ -273,6 +273,29 @@ BEGIN
 
 	UPDATE blackstarDb.followUp SET	
 		followUp = REPLACE( followUp,'\n','');
+-- -----------------------------------------------------------------------------
+
+
+-- -----------------------------------------------------------------------------
+	-- SINCRONIZACION Y ACCESO A USUARIOS DE CLIENTES
+	INSERT INTO blackstarDbTransfer.equipmentUserSync (customerName, equipmentUser)
+	SELECT DISTINCT customer, equipmentUser FROM policy
+	WHERE ifnull(equipmentUser, '') != '';
+
+    SET @c = 1 ;
+    SET @max = (SELECT count(*) FROM equipmentUserSync) ;   
+    SET @customer = '';
+    SET @access = '';
+    WHILE @c <= @max DO
+    	SET  @customer = (SELECT customerName FROM equipmentUserSync WHERE equipmentUserSyncId = @c);
+    	SET  @access = (SELECT equipmentUser FROM equipmentUserSync WHERE equipmentUserSyncId = @c);
+    	Call blackstarDb.UpsertUser(@access, @customer);
+		Call blackstarDb.CreateUserGroup('sysCliente','Cliente',@access);
+
+      	SET @c = @c + 1 ;
+    END WHILE ;
+
+    TRUNCATE TABLE equipmentUserSync;
 -- -----------------------------------------------------------------------------
 END$$
 

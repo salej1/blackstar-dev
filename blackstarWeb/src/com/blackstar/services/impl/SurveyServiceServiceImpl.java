@@ -70,4 +70,10 @@ public class SurveyServiceServiceImpl extends AbstractService  implements Survey
 		return retVal;
 	}
 
+
+	@Override
+	public List<JSONObject> getLimitedSurveyServiceList(String user) {
+		return surveyServiceDAO.getLimitedSurveyServiceList(user);
+	}
+
 }

@@ -14,5 +14,6 @@ public interface SurveyServiceService {
 	SurveyService getSurveyServiceById(Integer surveyServiceId);
 	List<JSONObject> getPersonalSurveyServiceList(String user);
 	List<JSONObject> getAllSurveyServiceList();
+	List<JSONObject> getLimitedSurveyServiceList(String user);
 	List<String> getSurveyLinkedServices(Integer surveyServiceId);
 }
