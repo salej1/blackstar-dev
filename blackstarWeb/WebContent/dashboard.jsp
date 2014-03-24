@@ -14,6 +14,7 @@
 <script src="${pageContext.request.contextPath}/js/jquery-ui.js"></script>
 <script src="${pageContext.request.contextPath}/DataTables-1.9.4/media/js/jquery.dataTables.js"></script>
 <script src="${pageContext.request.contextPath}/js/jquery.cookie.js"></script>
+<script src="${pageContext.request.contextPath}/js/common/utils.js"></script>
 
 <title>Portal de Servicios</title>
 </head>
@@ -54,13 +55,7 @@
 		</script>
 		
 
-		<!-- Tabla De Tickets internos pendientes - pendingInternalTickets.jsp -->
-		<c:import url="bloom/pendingInternalTickets.jsp"></c:import>
-		<script type="text/javascript">
-			$(function(){
-				pendingInternalTicketsInit();
-			});
-		</script>
+
 		
 
 		<!-- La inicializacion se hace una vez que se pintaron las tablas -->
@@ -125,10 +120,28 @@
 	
 	
 	</c:if>
+	<!-- Fin Contenido De Perfil Sysservicio -->
+	
+	<!-- Inicia Contenido De Perfil sysHelpDesk -->
+	<c:set var="sysHelpDesk" scope="request" value="${user.belongsToGroup['Mesa de Ayuda']}" />
 	
 	
+	
+	
+	<c:if test="${sysHelpDesk == true}">
+	<!-- Fin Contenido De Perfil sysHelpDesk -->
+	
+			<!-- Tabla De Tickets internos pendientes - pendingInternalTickets.jsp -->
+		<c:import url="pendingInternalTickets.jsp"></c:import>
+		<script type="text/javascript">
+			$(function(){
+				pendingInternalTicketsInit();
+			});
+		</script>
+	
+	</c:if>
 
-<!-- Fin Contenido De Perfil Sysservicio -->
+
 
 </div>
 </body>

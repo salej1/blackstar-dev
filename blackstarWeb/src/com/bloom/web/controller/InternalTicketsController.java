@@ -19,8 +19,14 @@ import com.blackstar.common.Globals;
 import com.blackstar.interfaces.IUserService;
 import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
+import com.blackstar.model.Equipmenttype;
+import com.blackstar.model.Policy;
+import com.blackstar.model.Serviceorder;
+import com.blackstar.model.Ticket;
 import com.blackstar.model.TicketController;
 import com.blackstar.model.UserSession;
+import com.blackstar.model.dto.PlainServiceDTO;
+import com.blackstar.model.dto.PlainServicePolicyDTO;
 import com.blackstar.services.interfaces.DashboardService;
 import com.blackstar.web.AbstractController;
 import com.bloom.common.bean.InternalTicketBean;
@@ -87,6 +93,34 @@ public class InternalTicketsController extends AbstractController {
 	}
 
 
+	
+	  @RequestMapping(value= "/newInternalTicket.do", method = RequestMethod.GET)
+	  public String  newInternalTicket(ModelMap model)
+	  {
+		  
+		  System.out.println("");
+		  
+		  
+//		  try
+//		  {
+//			 
+//	  		 
+//		  } 
+//		  catch (Exception e) 
+//		  {
+//				 Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
+//				 model.addAttribute("errorDetails", e.getMessage() + " - " + e.getStackTrace()[0].toString());
+//				 return "error";
+//		  }
+		  
+		  return "newInternalTicketDetail";
+	  }
+	  
+	
+	
+	
+	
+	
 	
 
 	// Ordenes de servicio nuevas
