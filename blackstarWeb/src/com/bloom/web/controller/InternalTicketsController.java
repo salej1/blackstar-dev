@@ -113,7 +113,7 @@ public class InternalTicketsController extends AbstractController {
 //				 return "error";
 //		  }
 		  
-		  return "newInternalTicketDetail";
+		  return "bloomNewInternalTicket";
 	  }
 	  
 	
