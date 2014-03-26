@@ -82,6 +82,7 @@ public class InternalTicketsController extends AbstractController {
 		 model.addAttribute("ticketDetail", ticketDetail);
 		 model.addAttribute("osAttachmentFolder", gdService
 				        .getAttachmentFolderId(ticketDetail.getTicketNumber()));
+		 model.addAttribute("accessToken", gdService.getAccessToken());
 		 model.addAttribute("ticketTeam", ticketTeamStr);
 	} catch (Exception e) {
 		Logger.Log(LogLevel.ERROR,e.getStackTrace()[0].toString(), e);
