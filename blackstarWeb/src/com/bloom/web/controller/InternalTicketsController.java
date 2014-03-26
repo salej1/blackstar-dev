@@ -1,28 +1,23 @@
 package com.bloom.web.controller;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.blackstar.common.Globals;
-import com.blackstar.interfaces.IUserService;
 import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
-import com.blackstar.model.TicketController;
-import com.blackstar.model.UserSession;
-import com.blackstar.services.interfaces.DashboardService;
 import com.blackstar.web.AbstractController;
 import com.bloom.common.bean.RespuestaJsonBean;
+import com.bloom.model.dto.TicketTeamDTO;
 import com.bloom.services.InternalTicketsService;
 
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -67,6 +62,31 @@ public class InternalTicketsController extends AbstractController {
 		
 		return new RespuestaJsonBean();
 	}
+	
+  @RequestMapping(value = "/ticketDetail/show.do", method = RequestMethod.GET)
+  public String show(@RequestParam(required = true) Integer ticketId
+				                                 , ModelMap model) {
+	StringBuilder ticketTeamStr = new StringBuilder();
+	List<TicketTeamDTO> ticketTeam = null;
+	try {
+		 ticketTeam = internalTicketsService.getTicketTeam(ticketId);
+		 model.addAttribute("ticketDetail", internalTicketsService
+				                       .getTicketDetail(ticketId));
+		 for(int i = 0; i< ticketTeam.size() ; i++){
+		   ticketTeamStr.append(ticketTeam.get(i).getBlackstarUserName());
+		   if(i < (ticketTeam.size() - 1)){
+			   ticketTeamStr.append(" / ");
+		   }
+		 }
+		 model.addAttribute("ticketTeam", ticketTeamStr);
+	} catch (Exception e) {
+		Logger.Log(LogLevel.ERROR,e.getStackTrace()[0].toString(), e);
+		e.printStackTrace();
+		model.addAttribute("errorDetails", e.getStackTrace()[0].toString());
+		return "error";
+	}
+	return "bloom/ticketDetail";
+  }
 
 
 	
