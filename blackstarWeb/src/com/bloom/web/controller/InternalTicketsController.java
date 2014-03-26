@@ -17,6 +17,7 @@ import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
 import com.blackstar.web.AbstractController;
 import com.bloom.common.bean.RespuestaJsonBean;
+import com.bloom.model.dto.TicketDetailDTO;
 import com.bloom.model.dto.TicketTeamDTO;
 import com.bloom.services.InternalTicketsService;
 
@@ -68,16 +69,19 @@ public class InternalTicketsController extends AbstractController {
 				                                 , ModelMap model) {
 	StringBuilder ticketTeamStr = new StringBuilder();
 	List<TicketTeamDTO> ticketTeam = null;
+	TicketDetailDTO ticketDetail = null;
 	try {
 		 ticketTeam = internalTicketsService.getTicketTeam(ticketId);
-		 model.addAttribute("ticketDetail", internalTicketsService
-				                       .getTicketDetail(ticketId));
+		 ticketDetail = internalTicketsService.getTicketDetail(ticketId);
 		 for(int i = 0; i< ticketTeam.size() ; i++){
-		   ticketTeamStr.append(ticketTeam.get(i).getBlackstarUserName());
-		   if(i < (ticketTeam.size() - 1)){
+			ticketTeamStr.append(ticketTeam.get(i).getBlackstarUserName());
+			if(i < (ticketTeam.size() - 1)){
 			   ticketTeamStr.append(" / ");
-		   }
-		 }
+			}
+	     }
+		 model.addAttribute("ticketDetail", ticketDetail);
+		 model.addAttribute("osAttachmentFolder", gdService
+				        .getAttachmentFolderId(ticketDetail.getTicketNumber()));
 		 model.addAttribute("ticketTeam", ticketTeamStr);
 	} catch (Exception e) {
 		Logger.Log(LogLevel.ERROR,e.getStackTrace()[0].toString(), e);

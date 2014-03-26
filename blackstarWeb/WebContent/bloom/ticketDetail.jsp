@@ -275,28 +275,8 @@ function fillText(fld)
 									</tr>
 								<tbody>
 							</table>
-							<table id="attachments">
-								<thead>
-									<tr>
-										<th colspan="3">Archivos Adjuntos</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr>
-										<td id="img1PH" style="width:150px;"></td>
-										<td id="img2PH" style="width:150px;"></td>
-										<td id="img3PH" style="width:150px;"></td>
-									</tr>
-									<tr>
-										<td id="img1Desc"></td>
-										<td id="img2Desc"></td>
-										<td id="img3Desc"></td>
-									</tr>
-									<tr>
-										<td colspan="2"><button class="searchButton" onclick="$('#attachmentImgDlg').dialog('open');">Adjuntar Archivo</button></td>
-									</tr>
-								</tbody>
-							</table>
+							<!-- Adjuntos -->
+							<c:import url="/_attachments.jsp"></c:import>
 							<table>
 								<tbody>
 									<tr>
