@@ -87,27 +87,50 @@ $(document).ready(function () {
 					});
 					
 					
-					
+					function cargaCombosFormulario() {
+						
+					    for (var i = 0; i < listaAreas.length; i++) {
+					    	$("#slAreaSolicitante").append(new Option(listaAreas[i].descripcion, listaAreas[i].id));
+					    }
+					    
+					    
+					    for (var i = 0; i < listaServicios.length; i++) {
+					    	$("#slTipoServicio").append(new Option(listaServicios[i].descripcion, listaServicios[i].id));
+					    }
+
+					    for (var i = 0; i < listaProyectos.length; i++) {
+					    	$("#slProyecto").append(new Option(listaProyectos[i].descripcion, listaProyectos[i].id));
+					    }
+
+					    for (var i = 0; i < listaOficinas.length; i++) {
+					    	$("#slOficina").append(new Option(listaOficinas[i].descripcion, listaOficinas[i].id));
+					    }
+
+						
+					}
 					
 					
 					function consultarDatosFormulario() {
-					    ocultarMensajes();
+					
 					    $.ajax({
 					        url: "/bloomCatalog/getData.do",
-					        type: "POST",
+					        type: "GET",
 					        dataType: "json",
 					        async: false,
 					        beforeSend: function() {
 					            
 					        },
 					        success: function(respuestaJson) {
-					            ocultarMensajes();
+					            
 					            if (respuestaJson.estatus === "ok") {
 					            	
 					            	listaProyectos = respuestaJson.listaMap.listaProyectos;
 					            	listaAreas = respuestaJson.listaMap2.listaAreas;
 					            	listaServicios = respuestaJson.listaMap2.listaServicios;
 					            	listaOficinas = respuestaJson.listaMap2.listaOficinas;
+					            	
+					            	cargaCombosFormulario();
+					            	
 
 					            } else {
 					                if (respuestaJson.estatus === "preventivo") {

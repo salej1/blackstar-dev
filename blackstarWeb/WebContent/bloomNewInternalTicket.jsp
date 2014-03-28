@@ -70,11 +70,7 @@
 							<tr>
 								<td>Solicitante</td>
 								<td>
-									<select name="" id="" style="width:200px;">
-										<option value="Ventas">Ventas</option>
-										<option value="Gerente de area">Gerente de area</option>
-										<option value="Implementacion y Servicio">Implementacion y Servicio</option>
-										<option value="Otros">Otros</option>
+									<select name="slAreaSolicitante" id="slAreaSolicitante" style="width:200px;">
 									</select>
 								</td>
 							</tr>
@@ -82,17 +78,7 @@
 							<tr>
 								<td>Tipo</td>
 								<td>
-									<select name="" id="reqType" style="width:200px;" onchange="updateAttItems();">
-										<option value="Apoyo a Visita">Apoyo a Visita</option>
-										<option value="Aprobacion de Proy. 50K USD" >Aprobación de Proy. 50K USD	</option>
-										<option value="Cedula de Costos" >Cédula de Costos</option>
-										<option value="Costo" >Costo</option>
-										<option value="Levantamiento" >Levantamiento</option>
-										<option value="Parte o Refaccion" >Parte o Refaccion</option>
-										<option value="Planos 3D" >Planos 3D</option>
-										<option value="Popuesta de Unifilares" >Popuesta de Unifilares</option>
-										<option value="Precio de Lista" >Precio de Lista </option>
-										<option value="Pregunta Tecnica" >Pregunta Técnica</option>
+									<select name="slTipoServicio" id="slTipoServicio" style="width:200px;" onchange="updateAttItems();">
 									</select>
 								</td>
 							</tr>
@@ -109,21 +95,18 @@
 							<tr>
 								<td>Proyecto</td>
 								<td>
-									<select name="" id="" style="width:200px;">
-										<option value="">CM150</option>
-										<option value="">C409</option>
-										<option value="">Cablemas</option>
-										<option value="">CG140</option>
-										<option value="">CG236</option>
-										<option value="">CG350</option>
-										<option value="">CG370</option>
-										<option value="">CG418</option>
+									<select name="slProyecto" id="slProyecto" style="width:200px;">
 									</select>
 								</td>
 							</tr>
 							<tr>
 								<td>Oficina</td>
-								<td><input type="text" style="width:95%;" readOnly="true" value="GDL"/></td>
+								<td>
+								
+								<select name="slOficina" id="slOficina" style="width:200px;">
+									</select>
+								
+								</td>
 								<!-- <td></td> -->
 							</tr>
 							</table>
