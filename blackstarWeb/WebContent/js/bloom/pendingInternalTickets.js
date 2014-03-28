@@ -41,7 +41,7 @@ function getPendingTickets() {
 										}, {
 											"mData" : "deadlineStr"
 										}, {
-											"mData" : "applicantAreaName"
+											"mData" : "project"
 										}, {
 											"mData" : "officeName"
 										}
@@ -107,7 +107,7 @@ function getPendingTickets2() {
 											}, {
 												"mData" : "DeadlineStr"
 											}, {
-												"mData" : "ApplicantAreaName"
+												"mData" : "project"
 											}, {
 												"mData" : "OfficeName"
 											}

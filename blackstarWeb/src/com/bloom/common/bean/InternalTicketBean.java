@@ -11,7 +11,7 @@ import java.util.Date;
  */
 public class InternalTicketBean {
 
-	private Integer id;
+	private Long id;
 
 	private String officeId;
 	
@@ -26,8 +26,6 @@ public class InternalTicketBean {
 	private Integer statusId;
 
 	private Integer applicantAreaId;
-
-	private String applicantAreaName;
 
 	private String ticketNumber;
 
@@ -52,12 +50,45 @@ public class InternalTicketBean {
 	private Integer modifiedByUsr;
 
 	private String petitionerArea;
-
+	
+	private Integer petitionerAreaId;
 
 	private Date deadline;
 
-	private String deadlineStr;	
+	private String deadlineStr;
+	
+	private String project;
 
+	
+	/**
+	 * @return the project
+	 */
+	public String getProject() {
+		return project;
+	}
+
+	/**
+	 * @param project the project to set
+	 */
+	public void setProject(String project) {
+		this.project = project;
+	}
+
+	/**
+	 * @return the petitionerAreaId
+	 */
+	public Integer getPetitionerAreaId() {
+		return petitionerAreaId;
+	}
+
+	/**
+	 * @param petitionerAreaId the petitionerAreaId to set
+	 */
+	public void setPetitionerAreaId(Integer petitionerAreaId) {
+		this.petitionerAreaId = petitionerAreaId;
+	}
+	
+	
 
 	/**
 	 * @return the createdStr
@@ -138,7 +169,7 @@ public class InternalTicketBean {
 	/**
 	 * @return the id
 	 */
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
 
@@ -146,7 +177,7 @@ public class InternalTicketBean {
 	 * @param id
 	 *            the id to set
 	 */
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -329,20 +360,6 @@ public class InternalTicketBean {
 	 */
 	public void setOfficeName(String officeName) {
 		this.officeName = officeName;
-	}
-
-	/**
-	 * @return the applicantAreaName
-	 */
-	public String getApplicantAreaName() {
-		return applicantAreaName;
-	}
-
-	/**
-	 * @param applicantAreaName the applicantAreaName to set
-	 */
-	public void setApplicantAreaName(String applicantAreaName) {
-		this.applicantAreaName = applicantAreaName;
 	}
 
 	/**

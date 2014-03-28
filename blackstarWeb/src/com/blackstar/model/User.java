@@ -9,6 +9,10 @@ import java.util.Map;
 public class User implements java.io.Serializable {
 	String userEmail;
 	String userName;
+	
+	Long userId;
+	
+
 	List<String> userGroups = new ArrayList<String>();
 	
 	public List<String> getUserGroups() {
@@ -26,6 +30,28 @@ public class User implements java.io.Serializable {
 	public User(String _email, String _userName) {
 		userName = _userName;
 		userEmail = _email;
+	}
+	
+	public User(String _email, String _userName, Long _userId) {
+		this.userName = _userName;
+		this.userEmail = _email;
+		this.userId = _userId;
+	}
+	
+	
+	
+	/**
+	 * @return the userId
+	 */
+	public Long getUserId() {
+		return userId;
+	}
+
+	/**
+	 * @param userId the userId to set
+	 */
+	public void setUserId(Long userId) {
+		this.userId = userId;
 	}
 	
 	public User(){

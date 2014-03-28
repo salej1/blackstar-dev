@@ -31,6 +31,7 @@ import com.blackstar.services.interfaces.DashboardService;
 import com.blackstar.web.AbstractController;
 import com.bloom.common.bean.InternalTicketBean;
 import com.bloom.common.bean.RespuestaJsonBean;
+import com.bloom.common.exception.ServiceException;
 import com.bloom.services.InternalTicketsService;
 
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -74,21 +75,40 @@ public class InternalTicketsController extends AbstractController {
 		
 		RespuestaJsonBean respuesta = new RespuestaJsonBean();
 		
-        List<InternalTicketBean> registros = internalTicketsService.getPendingTickets();
+		Long userId= userSession.getUser().getUserId();
+		
+		try{
+			
+	        List<InternalTicketBean> registros = internalTicketsService.getPendingTickets(userId);
+	        
+	        if (registros == null || registros.isEmpty()) {
+	            respuesta.setEstatus("preventivo");
+	            respuesta.setMensaje("No se encontraron Tickets Pendientes");
+	            //log.info("No se encontraron registros de Emisiones Generadas");
+	        } else {
+	            String resumen = "Se encontraron " + registros.size() + " Tickets Pendientes";
+	            //log.info("Se encontraron " + registros.size() + " Emisiones Generadas");
+	            respuesta.setEstatus("ok");
+	            respuesta.setLista(registros);
+	            respuesta.setMensaje(resumen);
+	        }		
+
+			
+		} catch (ServiceException e) {
+            
+			Logger.Log(LogLevel.ERROR, e.getMessage(), e);
+            
+            respuesta.setEstatus("error");
+            respuesta.setMensaje(e.getMessage());
+        } catch (Exception e) {
+        	
+        	Logger.Log(LogLevel.ERROR, e.getMessage(), e);
+            
+            respuesta.setEstatus("error");
+            respuesta.setMensaje("Error al obtener tickets internos pendientes. Por favor intente m\u00e1s tarde.");
+        }
+		
         
-        if (registros == null || registros.isEmpty()) {
-            respuesta.setEstatus("preventivo");
-            respuesta.setMensaje("No se encontraron Tickets Pendientes");
-            //log.info("No se encontraron registros de Emisiones Generadas");
-        } else {
-            String resumen = "Se encontraron " + registros.size() + " Tickets Pendientes";
-            //log.info("Se encontraron " + registros.size() + " Emisiones Generadas");
-            respuesta.setEstatus("ok");
-            respuesta.setLista(registros);
-            respuesta.setMensaje(resumen);
-        }		
-		
-		
         return respuesta;
 	}
 
