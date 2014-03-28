@@ -19,7 +19,7 @@ import com.bloom.db.dao.CatalogInternalTicketsDao;
  * @author oscar.martinez
  */
 @Service
-public class CatalogoServiceImpl implements CatalogoService {
+public class CatalogServiceImpl implements CatalogService {
 
     private static final String ERROR_CONSULTA_CAT =
             "Error al consultar el catalogo";
@@ -31,7 +31,7 @@ public class CatalogoServiceImpl implements CatalogoService {
 
 
 	@Override
-    public List<CatalogoBean<String>> consultarProjectos()
+    public List<CatalogoBean<String>> consultarProyectos()
             throws ServiceException {
         try {
             
@@ -88,6 +88,19 @@ public class CatalogoServiceImpl implements CatalogoService {
         }
     }
 
+
+	@Override
+    public List<CatalogoBean<Integer>> consultarDocumentosPorServicio(int idTipoServicio)
+            throws ServiceException {
+        try {
+            
+        	return getCatalogInternalTicketsDao().consultarDocumentosPorServicio(idTipoServicio);
+            
+        } catch (DAOException e) {
+            
+            throw new ServiceException(ERROR_CONSULTA_CAT, e);
+        }
+    }
 	
 	
 	

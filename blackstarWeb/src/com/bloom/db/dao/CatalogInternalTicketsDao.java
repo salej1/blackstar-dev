@@ -2,10 +2,9 @@ package com.bloom.db.dao;
 
 import java.util.List;
 
-import org.json.JSONObject;
 
 import com.bloom.common.bean.CatalogoBean;
-import com.bloom.common.bean.InternalTicketBean;
+
 import com.bloom.common.exception.DAOException;
 
 public interface CatalogInternalTicketsDao {
@@ -38,6 +37,15 @@ public interface CatalogInternalTicketsDao {
 	 * @throws DAOException
 	 */
 	public List<CatalogoBean<Integer>> consultarOficinas() throws DAOException;	
+	
+	
+	/**
+	 * Consultar documentos por servicio.
+	 * @param tipoServicio
+	 * @return
+	 * @throws DAOException
+	 */
+	public List<CatalogoBean<Integer>> consultarDocumentosPorServicio(int tipoServicio) throws DAOException;
 		
 	
 	

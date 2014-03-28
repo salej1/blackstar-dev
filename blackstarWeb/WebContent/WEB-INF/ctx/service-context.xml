@@ -76,6 +76,10 @@
       <property name="internalTicketsDao" ref="internalTicketsDao" />
   </bean>
   
+
+  <bean id="catalogService" class="com.bloom.services.CatalogServiceImpl" parent="abstractService">
+      <property name="catalogInternalTicketsDao" ref="catalogInternalTicketsDao" />
+  </bean>
   
 
 </beans>

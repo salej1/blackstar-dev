@@ -1,5 +1,6 @@
 package com.bloom.common.bean;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -16,6 +17,8 @@ public class RespuestaJsonBean {
     private String mensajeAlterno = "";
     private String json = "";
     private List<?> lista = null;
+    private HashMap<?, ?> listaMap = null;
+    private HashMap<?, ?> listaMap2 = null;
     private Object dto;
     private Map<String, Object> datos = null;
 
@@ -92,4 +95,32 @@ public class RespuestaJsonBean {
     public void setDatos(Map<String, Object> datos) {
         this.datos = datos;
     }
+
+	/**
+	 * @return the listaMap
+	 */
+	public HashMap<?, ?> getListaMap() {
+		return listaMap;
+	}
+
+	/**
+	 * @param listaMap the listaMap to set
+	 */
+	public void setListaMap(HashMap<?, ?> listaMap) {
+		this.listaMap = listaMap;
+	}
+
+	/**
+	 * @return the listaMap2
+	 */
+	public HashMap<?, ?> getListaMap2() {
+		return listaMap2;
+	}
+
+	/**
+	 * @param listaMap2 the listaMap2 to set
+	 */
+	public void setListaMap2(HashMap<?, ?> listaMap2) {
+		this.listaMap2 = listaMap2;
+	}
 }

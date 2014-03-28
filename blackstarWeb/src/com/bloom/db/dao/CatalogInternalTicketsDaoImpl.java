@@ -25,6 +25,8 @@ public class CatalogInternalTicketsDaoImpl extends AbstractDAO implements Catalo
 	
 	private static final String QUERY_OFICINAS = "CALL getBloomOffice()";
 	
+	private static final String QUERY_DOCUMENTOS = "CALL getBloomDocumentsByService(%d)";
+	
     private static final String ERROR_CONSULTA_CAT =
             "Error al consultar el catálogo";
     
@@ -110,6 +112,28 @@ public class CatalogInternalTicketsDaoImpl extends AbstractDAO implements Catalo
                     new CatalogoMapper<Integer>("id", "label")));
 
             return listaOficinas;
+
+        } catch (EmptyResultDataAccessException e) {
+        	Logger.Log(LogLevel.WARNING, EMPTY_CONSULTA_CAT, e);
+            return Collections.emptyList();
+        } catch (DataAccessException e) {
+        	Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
+            throw new DAOException(ERROR_CONSULTA_CAT, e);
+        }
+    }
+    
+
+    @Override
+    public List<CatalogoBean<Integer>> consultarDocumentosPorServicio(int tipoServicio) throws DAOException {
+
+        List<CatalogoBean<Integer>> listaDocumentos = new ArrayList<CatalogoBean<Integer>>();
+
+        try {
+        	
+        	listaDocumentos.addAll(getJdbcTemplate().query(String.format(QUERY_DOCUMENTOS, tipoServicio),
+                    new CatalogoMapper<Integer>("id", "label")));
+
+            return listaDocumentos;
 
         } catch (EmptyResultDataAccessException e) {
         	Logger.Log(LogLevel.WARNING, EMPTY_CONSULTA_CAT, e);

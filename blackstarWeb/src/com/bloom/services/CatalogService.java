@@ -14,14 +14,14 @@ import java.util.List;
  *
  * @author oscar.martinez
  */
-public interface CatalogoService {
+public interface CatalogService {
     
 	/**
 	 * Consulta proyectos para la pantalla
 	 * @return
 	 * @throws ServiceException
 	 */
-	public List<CatalogoBean<String>> consultarProjectos()
+	public List<CatalogoBean<String>> consultarProyectos()
             throws ServiceException;
 	
 	
@@ -49,6 +49,16 @@ public interface CatalogoService {
      * @throws ServiceException
      */
     public List<CatalogoBean<Integer>> consultarAreaSolicitante()
+            throws ServiceException;    
+    
+    
+    /**
+     * Consultar documentos por id tipo de servicio
+     * @param idTipoServicio
+     * @return
+     * @throws ServiceException
+     */
+    public List<CatalogoBean<Integer>> consultarDocumentosPorServicio(int idTipoServicio)
             throws ServiceException;    
 
 }

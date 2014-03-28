@@ -1,4 +1,12 @@
-					$(document).ready(function () {
+var listaProyectos;
+var listaAreas;
+var listaServicios;
+var listaOficinas;
+					
+
+
+
+$(document).ready(function () {
 						var attCounter = 0;
 						
 						$("#myDate").datepicker();
@@ -71,8 +79,49 @@
 						
 						// Seguimiento$("#seguimientoCapture").hide();
 						$("#seguimientoCapture").hide();
+						
+						
+						consultarDatosFormulario();
+						
 					
 					});
+					
+					
+					
+					
+					
+					function consultarDatosFormulario() {
+					    ocultarMensajes();
+					    $.ajax({
+					        url: "/bloomCatalog/getData.do",
+					        type: "POST",
+					        dataType: "json",
+					        async: false,
+					        beforeSend: function() {
+					            
+					        },
+					        success: function(respuestaJson) {
+					            ocultarMensajes();
+					            if (respuestaJson.estatus === "ok") {
+					            	
+					            	listaProyectos = respuestaJson.listaMap.listaProyectos;
+					            	listaAreas = respuestaJson.listaMap2.listaAreas;
+					            	listaServicios = respuestaJson.listaMap2.listaServicios;
+					            	listaOficinas = respuestaJson.listaMap2.listaOficinas;
+
+					            } else {
+					                if (respuestaJson.estatus === "preventivo") {
+					                } else {
+					                }
+					            }
+
+					        },
+					        error: function() {
+					        }
+					    });
+					}
+					
+					
 					
 					function updateAttItems(){
 						var tickType = $("#reqType option:selected").val();
