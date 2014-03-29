@@ -15,9 +15,12 @@
 --								bloomDb.BloomUpdateTransferTeam
 -- 								bloomDb.BloomUpdateTransferUsers
 -- 								bloomDb.BloomTransfer
--- 2    24/03/2014	DCB		Se Integraa GetBloomTicketDetail
--- 3    24/03/2014	DCB		Se Integraa GetBloomTicketTeam
--- -----------------------------------------------------------------------------
+-- 2    24/03/2014	DCB		Se Integra GetBloomTicketDetail
+-- 3    24/03/2014	DCB		Se Integra GetBloomTicketTeam
+-- 4    28/03/2014	DCB		Se Integra AddFollowUpToBloomTicket
+--                          Se Integra UpsertBloomTicketTeam
+--                          Se Integra GetBloomFollowUpByTicket
+--------------------------------------------------------------------------------
 
 
 use blackstarDb;
@@ -310,7 +313,7 @@ END$$
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetBloomTicketTeam
 -- -----------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS blackstardb.GetBloomTicketTeam;
+DROP PROCEDURE IF EXISTS blackstardb.GetBloomTicketTeam$$
 CREATE PROCEDURE blackstardb.`GetBloomTicketTeam`(ticket INTEGER)
 BEGIN
 
@@ -323,6 +326,52 @@ FROM ((SELECT _id id, ticketId ticketId, workerRoleTypeId workerRoleTypeId, blac
        LEFT JOIN (SELECT wrt._id refId, wrt.name as workerRoleTypeName 
            FROM bloomWorkerRoleType wrt) AS j2
            ON ticketTeam.workerRoleTypeId = j2.refId);
-END;
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.AddFollowUpToBloomTicket
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstardb.AddFollowUpToBloomTicket$$
+CREATE PROCEDURE blackstardb.`AddFollowUpToBloomTicket`(pTicketId INTEGER, pCreatedByUsrId INTEGER, pMessage TEXT)
+BEGIN
+  DECLARE pCreatedByUsrMail VARCHAR(100);
+  
+  SET pCreatedByUsrMail = (SELECT email FROM blackstaruser WHERE blackstarUserId = pCreatedByUsrId);
+	INSERT INTO blackstarDb.followUp(bloomTicketId, followup, created, createdBy, createdByUsr)
+	VALUES(pTicketId, pMessage, NOW(), 'AddFollowUpToBloomTicket', pCreatedByUsrMail);
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.UpsertBloomTicketTeam
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstardb.UpsertBloomTicketTeam$$
+CREATE PROCEDURE blackstardb.`UpsertBloomTicketTeam`(pTicketId INTEGER, pWorkerRoleTypeId INTEGER, pBlackstarUserId INTEGER)
+BEGIN
+
+DECLARE counter INTEGER; 
+
+SET counter = (SELECT count(*) 
+               FROM bloomTicketTeam 
+               WHERE ticketId = pTicketId AND blackstarUserId = pBlackstarUserId);
+IF(counter = 0) THEN
+  INSERT INTO blackstarDb.bloomTicketTeam(ticketId, workerRoleTypeId, blackstarUserId)
+  VALUES(pTicketId, pWorkerRoleTypeId, pBlackstarUserId);
+END IF;
+    
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetBloomFollowUpByTicket
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstardb.GetBloomFollowUpByTicket$$
+CREATE PROCEDURE blackstardb.`GetBloomFollowUpByTicket`(pTicketId INTEGER)
+BEGIN
+	SELECT created AS created, u2.name AS createdByUsr, u.name AS asignee, followup AS followup
+	FROM followUp f
+		   LEFT OUTER JOIN blackstarUser u ON f.asignee = u.email
+		   LEFT OUTER JOIN blackstarUser u2 ON f.createdByUsr = u2.email
+	WHERE bloomTicketId = pTicketId
+	ORDER BY created;
+END$$
 
 DELIMITER ;

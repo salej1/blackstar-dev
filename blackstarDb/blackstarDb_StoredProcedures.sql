@@ -168,6 +168,8 @@
 --								blackstarDb.GetEquipmentTypeBySOId por
 --								blackstarDb.GetServiceOrderTypeBySOId
 -- -----------------------------------------------------------------------------
+-- 29	28/03/2014	DCB 	Se agrega el campo blackstarUserId a blackstarDb.GetDomainEmployees
+-- -----------------------------------------------------------------------------
 
 
 use blackstarDb;
@@ -1160,7 +1162,7 @@ DROP PROCEDURE IF EXISTS blackstarDb.GetDomainEmployees$$
 CREATE PROCEDURE blackstarDb.GetDomainEmployees()
 BEGIN
 
-	SELECT DISTINCT email AS email, name AS name
+	SELECT DISTINCT blackstarUserId as id, email AS email, name AS name
 	FROM blackstarUser
 	ORDER BY name;
 	
@@ -2093,7 +2095,6 @@ modifiedBy = modifiedBy ,
 modifiedByUsr = modifiedByUsr 
 where serviceOrderId = serviceOrderId;
 END$$
-
 
 -- -----------------------------------------------------------------------------
 	-- FIN DE LOS STORED PROCEDURES

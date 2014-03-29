@@ -204,29 +204,21 @@ function fillText(fld)
 					function addSeguimiento(){
 						var d = new Date(); 
 						$("#seguimientoCapture").show();	
-						$("#seguimientoStamp").html(d.format('dd/MM/yyyy h:mm:ss') + ' Raul:');
+						$("#seguimientoStamp").html(d.format('dd/MM/yyyy h:mm:ss') + ' ${ user.userName }');
 						$("#seguimientoText").val('');
+						$("#who").val('-1');
 					}
 					
 					function applySeguimiento(){
-						var template = '<div class="comment"><p><strong>TIMESTAMP: Raul: WHO</strong></p><p><small>MYCOMMENT</small></p></div>';
-						var d = new Date(); 
-						var content = template.replace('TIMESTAMP', d.format('dd/MM/yyyy h:mm:ss'));
-						content = content.replace('MYCOMMENT', $("#seguimientoText").val());
-						content = content.replace('WHO', $("#who option:selected").val());
-						var currSegContent = $("#seguimientoContent").html();
-						currSegContent = currSegContent + content;
-						$("#seguimientoContent").html(currSegContent);
-						$("#seguimientoCapture").hide();
+						$("#followDetail").load("${pageContext.request.contextPath}/bloom/ticketDetail/addFollow.do?ticketId=${ticketDetail.id}&userId=" 
+								                      + $("#who").val() + "&comment=" + $("#seguimientoText").val().replace(/ /g, '%20'));
+						$("#seguimientoCapture").hide();	
 					}
 					
 					function cancelAddSeguimiento(){
 						$("#seguimientoCapture").hide();
 					}
-					
-					function fillSeguimiento(){
-						$("#seguimientoText").val('Se conocen los precios de los fletes y el precio unitario de unas de las baterias esprando el precio que falta. Ya fue enviado via correo el precio que faltaba.');
-					}
+		
 				</script>
 				<div class="grid_15">
 					<div class="box">
@@ -240,26 +232,24 @@ function fillText(fld)
 										</td>
 									</tr>
 									<tr>
+									    <td id="followDetail">
+									       <c:import url="_ticketFollow.jsp"></c:import>
+									    </td>
+									</tr>
+									<tr>
 										<td id="seguimientoCapture" class="comment">
 											<div>
 												<Label id="seguimientoStamp">stamp</Label>
 											</div>
 											<div> Asignar a:
-												<select id="who" style="width:200px;">
-													<option value="Alberto Lopez Gomez">Alberto Lopez Gomez</option>
-													<option value="Alejandra Diaz">Alejandra Diaz</option>
-													<option value="Alejandro Monroy">Alejandro Monroy</option>
-													<option value="Angeles Avila">Angeles Avila</option>
-													<option value="Armando Perez Pinto">Armando Perez Pinto</option>
-													<option value="Gonzalo Ramirez">Gonzalo Ramirez</option>
-													<option value="Jose Alberto Jonguitud Gallardo">Jose Alberto Jonguitud Gallardo</option>
-													<option value="Marlem Samano">Marlem Samano</option>
-													<option value="Martin Vazquez">Martin Vazquez</option>
-													<option value="Reynaldo Garcia">Reynaldo Garcia</option>
-													<option value="Sergio  Gallegos">Sergio  Gallegos</option>
-												</select>
+												  <select id="who" style="width:200px;">
+												    <option value="-1">Seleccione</option>
+												    <c:forEach var="current" items="${staff}" >
+												       <option value="${current.id}">${current.name}</option>
+												    </c:forEach>
+												  </select>
 												<p></p>
-												<textarea id="seguimientoText" rows="5" style="width:65%;" onclick="fillSeguimiento();"></textarea>
+												<textarea id="seguimientoText" rows="5" style="width:65%;"></textarea>
 												<button class="searchButton" onclick="applySeguimiento();">Agregar</button>
 												<button class="searchButton" onclick="cancelAddSeguimiento();">Cancelar</button>
 											</div>

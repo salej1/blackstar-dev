@@ -6,8 +6,9 @@ public class EmployeeDTO implements Serializable {
 	
 	private static final long serialVersionUID = 3609765585538661484L;
 	
-	String email;
-	String name;
+	private Integer id;
+	private String email;
+	private String name;
 	
 	public String getEmail() {
 		return email;
@@ -20,5 +21,11 @@ public class EmployeeDTO implements Serializable {
 	}
 	public void setName(String name) {
 		this.name = name;
+	}
+	public Integer getId() {
+		return id;
+	}
+	public void setId(Integer id) {
+		this.id = id;
 	}
 }
