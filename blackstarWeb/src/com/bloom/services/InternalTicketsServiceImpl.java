@@ -6,6 +6,7 @@ import com.blackstar.model.Followup;
 import com.blackstar.services.AbstractService;
 import com.bloom.common.bean.InternalTicketBean;
 import com.bloom.db.dao.InternalTicketsDao;
+import com.bloom.model.dto.DeliverableTypeDTO;
 import com.bloom.model.dto.TicketDetailDTO;
 import com.bloom.model.dto.TicketTeamDTO;
 
@@ -46,6 +47,14 @@ public class InternalTicketsServiceImpl extends AbstractService
   
   public List<Followup> getFollowUps(Integer ticketId){
 	return internalTicketsDao.getFollowUps(ticketId);
+  }
+  
+  public List<DeliverableTypeDTO> getDeliverableTypes(){
+	 return internalTicketsDao.getDeliverableTypes();
+  }
+  
+  public void addDeliverableTrace(Integer ticketId, Integer deliverableTypeId){
+	internalTicketsDao.addDeliverableTrace(ticketId, deliverableTypeId);
   }
 
 }

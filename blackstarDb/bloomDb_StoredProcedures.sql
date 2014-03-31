@@ -20,6 +20,8 @@
 -- 4    28/03/2014	DCB		Se Integra AddFollowUpToBloomTicket
 --                          Se Integra UpsertBloomTicketTeam
 --                          Se Integra GetBloomFollowUpByTicket
+-- 5    31/03/2014  DCB     Se integra GetBloomDeliverableType  
+--                  DCB     Se integra AddBloomDelivarable  
 --------------------------------------------------------------------------------
 
 
@@ -372,6 +374,34 @@ BEGIN
 		   LEFT OUTER JOIN blackstarUser u2 ON f.createdByUsr = u2.email
 	WHERE bloomTicketId = pTicketId
 	ORDER BY created;
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetBloomDeliverableType
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstardb.GetBloomDeliverableType$$
+CREATE PROCEDURE blackstardb.`GetBloomDeliverableType`()
+BEGIN
+	SELECT _id id, name name, description description FROM bloomDeliverableType;
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.AddBloomDelivarable
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstardb.AddBloomDelivarable$$
+CREATE PROCEDURE blackstardb.`AddBloomDelivarable`(pTicketId INTEGER, pDeliverableTypeId INTEGER)
+BEGIN
+DECLARE counter INTEGER;
+
+  SET counter = (SELECT count(*) 
+                 FROM bloomDeliverableTrace 
+                 WHERE bloomTicketId = pTicketId AND deliverableTypeId = pDeliverableTypeId);
+  IF (counter > 0) THEN
+    UPDATE bloomDeliverableTrace SET delivered = 1, date = NOW();
+  ELSE 
+	  INSERT INTO bloomDeliverableTrace (bloomTicketId, deliverableTypeId, delivered, date)
+    VALUES (pTicketId, pDeliverableTypeId, 1, NOW());
+  END IF;  
 END$$
 
 DELIMITER ;

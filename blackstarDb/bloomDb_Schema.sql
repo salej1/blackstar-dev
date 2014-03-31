@@ -127,7 +127,7 @@ BEGIN
  -- AGREGANDO TABLA bloomDeliverableTrace
 	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'bloomDeliverableTrace') = 0 THEN
 		 CREATE TABLE bloomDeliverableTrace(
-           _id Int(11) NOT NULL,
+           _id Int(11) NOT NULL AUTO_INCREMENT,,
            bloomTicketId Int(11) NOT NULL,
            deliverableTypeId Int(11) NOT NULL,
            delivered Int(11) DEFAULT 0,

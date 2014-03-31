@@ -5,6 +5,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -74,6 +76,7 @@ public class InternalTicketsController extends AbstractController {
 		 model.addAttribute("ticketTeam", ticketTeamStr);
 		 model.addAttribute("staff", udService.getStaff());
 		 model.addAttribute("followUps", internalTicketsService.getFollowUps(ticketId));
+		 model.addAttribute("deliverableTypes", internalTicketsService.getDeliverableTypes());
 	} catch (Exception e) {
 		Logger.Log(LogLevel.ERROR,e.getStackTrace()[0].toString(), e);
 		e.printStackTrace();
@@ -99,6 +102,23 @@ public class InternalTicketsController extends AbstractController {
 			return "error";
 	}
 	return "bloom/_ticketFollow";
+  }
+  
+  @RequestMapping(value = "/ticketDetail/addDeliverableTrace.do", method = RequestMethod.GET)
+  public ResponseEntity<HttpStatus> addDeliverableTrace(@RequestParam(required = true) Integer ticketId
+		                        , @RequestParam(required = true) Integer deliverableTypeId
+				                                                       , ModelMap model) {
+	try {
+		 if(deliverableTypeId > 0){
+		   internalTicketsService.addDeliverableTrace(ticketId, deliverableTypeId);
+		 }
+	} catch (Exception e) {
+		Logger.Log(LogLevel.ERROR,e.getStackTrace()[0].toString(), e);
+		e.printStackTrace();
+		model.addAttribute("errorDetails", e.getStackTrace()[0].toString());
+		return new ResponseEntity<HttpStatus>(HttpStatus.BAD_REQUEST);
+	}
+	return new ResponseEntity<HttpStatus>(HttpStatus.OK);
   }
 	
 

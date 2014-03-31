@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.RowMapper;
 import com.blackstar.db.dao.AbstractDAO;
 import com.blackstar.model.Followup;
 import com.bloom.common.bean.InternalTicketBean;
+import com.bloom.model.dto.DeliverableTypeDTO;
 import com.bloom.model.dto.TicketDetailDTO;
 import com.bloom.model.dto.TicketTeamDTO;
 
@@ -62,6 +63,18 @@ public class InternalTicketsDaoImpl extends AbstractDAO implements InternalTicke
 	StringBuilder sqlBuilder = new StringBuilder("CALL GetBloomFollowUpByTicket(?);");
 	return (List<Followup>) getJdbcTemplate().query(sqlBuilder.toString()
 		        , new Object[]{ticketId}, getMapperFor(Followup.class));
+  }
+  
+  public List<DeliverableTypeDTO> getDeliverableTypes(){
+	StringBuilder sqlBuilder = new StringBuilder("CALL GetBloomDeliverableType();");
+	return (List<DeliverableTypeDTO>) getJdbcTemplate().query(sqlBuilder.toString()
+			                             , getMapperFor(DeliverableTypeDTO.class));
+  }
+  
+  public void addDeliverableTrace(Integer ticketId, Integer deliverableTypeId){
+	StringBuilder sqlBuilder = new StringBuilder("CALL AddBloomDelivarable(?, ?);");
+	getJdbcTemplate().update(sqlBuilder.toString(), new Object[]{ticketId
+			                                       , deliverableTypeId});
   }
     
 }

@@ -52,6 +52,11 @@ function fillText(fld)
 	return text[fld];
 }
 
+  function customPickerCallBack(data) {
+	$("#attachmentFileName").val(data.docs[0].name);
+    $('#attachmentDlg').dialog('open');
+  }
+
 </script>
 <!--   CONTENT   -->
 			<div id="content" class="container_16 clearfix">
@@ -139,14 +144,15 @@ function fillText(fld)
 							modal: true,
 							buttons: {
 								"Aceptar": function() {
-									$( this ).dialog( "close" );
-									var af = $("#folioAttached").val();
-									$("#fldFolio").val(af);
-								},
-								
-								"Cancelar": function() {
-								$( this ).dialog( "close" );
-							}}
+									$.ajax({
+								        type: "GET",
+								        url: "addDeliverableTrace.do",
+								        data: "ticketId=${ticketDetail.id}&deliverableTypeId=" + $("#attachmentType").val(),
+								        success: function(html) {
+								        	$('#attachmentDlg').dialog( "close" );
+								        }
+								    });
+								}}
 						});
 						
 						//Save confirm dialog
@@ -177,26 +183,7 @@ function fillText(fld)
 									$( this ).dialog( "close" );
 							}}
 						});
-						
-						//Attachment Img dialog
-						$("#attachmentImgDlg").dialog({
-							autoOpen: false,
-							height: 340,
-							width: 420,
-							modal: true,
-							buttons: {
-								"Aceptar": function() {
-									$( this ).dialog( "close" );
-									attCounter++;
-									$('#img'+attCounter+'PH').html("<img src='img/bigPdf.png' alt='' />");
-									$('#img'+attCounter+'Desc').html($("#attachment option:selected").val());
-								},
-								
-								"Cancelar": function() {
-								$( this ).dialog( "close" );
-							}}
-						});
-						
+
 						// Seguimiento$("#seguimientoCapture").hide();
 						$("#seguimientoCapture").hide();
 					});
@@ -280,39 +267,17 @@ function fillText(fld)
 				</div>				
 <!--   ~ CONTENT COLUMN   -->
 				
-				<!-- Attachment section -->
-				<div id="attachmentDlg" title="Importar orden de servicio">
-					<p>Número de Folio: <input type="text" id="folioAttached"/></p>
-					<p></p>
-					<p>Seleccione el archivo que desea adjuntar</p>
-					<input type="file" name="somename" size="80"/> 
-					<p></p>
-					<p>Seleccione la entrada que corresponde al archivo</p>
-					<select name="entrada" id="entrada">
-						<option value="">Cedula de costos</option>
-						<option value="">Cedula de proyectos</option>
-						<option value="">CheckList de levantamiento</option>
-						<option value="">Floor Map</option>
-						<option value="">Hoja de visita</option>
-					</select>
-				</div>
 				
 				<!-- Attachment Img section -->
-				<div id="attachmentImgDlg" title="Adjuntar archivo">
+				<div id="attachmentDlg" title="Referencia">
 					<p></p>
-					<p>Seleccione el archivo que desea adjuntar</p>
-					<input type="file" name="somename" size="80"/> 
-					<p>Seleccione la entrada que corresponde al archivo</p>
-					<select name="attachment" id="attachment">
-						<option value="Cedula de costos">Cedula de costos</option>
-						<option value="Cedula de proyectos">Cedula de proyectos</option>
-						<option value="CheckList de levantamiento">CheckList de levantamiento</option>
-						<option value="Encuesta de satisfaccion">Encuesta de satisfaccion</option>
-						<option value="Floor Map">Floor Map</option>
-						<option value="Hoja de visita">Hoja de visita</option>
-						<option value="Imagenes 3D del site">Imagenes 3D del site</option>
-						<option value="Validacion de proyecto">Validacion de proyecto</option>
-						<option value="Propuesta de unifilar">Propuesta de unifilar</option>
+					<p>Tipo de archivo</p>
+					<input id="attachmentFileName" size="80" readOnly="true"/> 
+					<select id="attachmentType" style="width:200px;">
+					   <option value="-1">Sin referencia</option>
+					     <c:forEach var="current" items="${deliverableTypes}" >
+					        <option value="${current.id}">${current.name}</option>
+					     </c:forEach>
 					</select>
 
 				</div>
