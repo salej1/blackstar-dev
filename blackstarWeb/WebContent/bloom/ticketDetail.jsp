@@ -43,14 +43,92 @@ Date.prototype.format = function(format) //author: meizz
       RegExp.$1.length==1 ? o[k] :
         ("00"+ o[k]).substr((""+ o[k]).length));
   return format;
+};
+
+$(document).ready(function () {
+	
+	//Attachment dialog
+	$("#attachmentDlg").dialog({
+		autoOpen: false,
+		height: 270,
+		width: 420,
+		modal: true,
+		buttons: {
+			"Aceptar": function() {
+				$.ajax({
+			        type: "GET",
+			        url: "addDeliverableTrace.do",
+			        data: "ticketId=${ticketDetail.id}&deliverableTypeId=" + $("#attachmentType").val(),
+			        success: function(html) {
+			        	$('#attachmentDlg').dialog( "close" );
+			        }
+			    });
+			}}
+	});
+	
+	//Save confirm dialog
+	$("#saveConfirm").dialog({
+		autoOpen: false,
+		height: 250,
+		width: 380,
+		modal: true,
+		buttons: {
+			"Aceptar": function() {
+				$( this ).dialog( "close" );
+				window.location = 'dashboard.html';
+			},
+			
+			"Cancelar": function() {
+			$( this ).dialog( "close" );
+		}}
+	});
+	
+	//History dialog
+	$("#historyDlg").dialog({
+		autoOpen: false,
+		height: 380,
+		width: 500,
+		modal: true,
+		buttons: {
+			"Cerrar": function() {
+				$( this ).dialog( "close" );
+		}}
+	});
+
+	// Seguimiento$("#seguimientoCapture").hide();
+	$("#seguimientoCapture").hide();
+});
+
+
+function addSeguimiento(){
+	var d = new Date(); 
+	$("#seguimientoCapture").show();	
+	$("#seguimientoStamp").html(d.format('dd/MM/yyyy h:mm:ss') + ' ${ user.userName }');
+	$("#seguimientoText").val('');
+	$("#who").val('-1');
 }
 
-function fillText(fld)
-{
-	var text = [" Se acudio al levantamiento, la persona que acudio a la cita fue el Ing. Jose luis Esteva  pero aun no ha proporcionado la informacion a Carlos Hernandez para que el le de respuesta al cliente, el Ing ahora se encuenta en Nayarit y se hablara con el el lunes "];
-	
-	return text[fld];
+function applySeguimiento(){
+	$("#followDetail").load("${pageContext.request.contextPath}/bloom/ticketDetail/addFollow.do?ticketId=${ticketDetail.id}&userId=" 
+			                      + $("#who").val() + "&comment=" + $("#seguimientoText").val().replace(/ /g, '%20'));
+	$("#seguimientoCapture").hide();	
 }
+
+  function assignNow(){
+	  $.ajax({
+	        type: "GET",
+	        url: "assignTicket.do",
+	        data: "ticketId=${ticketDetail.id}&userId=" + $("#selectAsignee").val(),
+	        success: function(html) {
+	        	alert("Usuario asignado correctamente");
+	        }
+	    });
+  }
+
+function cancelAddSeguimiento(){
+	$("#seguimientoCapture").hide();
+}
+
 
   function customPickerCallBack(data) {
 	$("#attachmentFileName").val(data.docs[0].name);
@@ -69,6 +147,25 @@ function fillText(fld)
 					
 						</div>
 						<table>
+							<tr>
+									<td style="width:200px;">Asignado a:</td>
+									<td colspan="4">
+										<select id="selectAsignee"  style="width:100%;">
+											<c:forEach var="employee" items="${staff}">
+												<option value="${employee.id}"
+												  <c:forEach var="current" items="${ticketTeam}">
+												    <c:if test="${ (current.blackstarUserId == employee.id) && (current.workerRoleTypeId == 1) }">
+													  selected = "true"
+												    </c:if>
+												  </c:forEach>
+												>${employee.name}</option>
+											</c:forEach>
+										</select>
+									</td>
+									<td>
+									  <button class="searchButton" onclick="javascript:assignNow(); return false;">Asignar ahora</button>
+									</td>
+								</tr>
 							<tr>
 								<td>Folio:</td>
 								<td colspan="3" style="width:200px;"><input type="text" id="fldFolio" style="width:95%;" readOnly="true" value="${ticketDetail.ticketNumber}"/></td>
@@ -101,12 +198,6 @@ function fillText(fld)
 								<!-- <td></td> -->
 							</tr>
 							<tr>
-								<td>Persona asignada</td>
-								<td colspan="7">
-								    <input type="text" style="width:95%;" readOnly="true" value="${ticketTeam}"/>
-								 </td>
-							</tr>
-							<tr>
 								<td>Fecha y hora de respuesa</td>
 								<td colspan="3"><input type="text" style="width:95%;" readOnly="true" value="${ticketDetail.responseDate}"/></td>
 								<td>Desv. fecha solicitada</td>
@@ -132,81 +223,7 @@ function fillText(fld)
 <!--   ~ CONTENT COLUMN   -->
 
 <!--   CONTENT COLUMN   -->				
-				<script type="text/javascript">
-					$(document).ready(function () {
-						var attCounter = 0;
-						
-						//Attachment dialog
-						$("#attachmentDlg").dialog({
-							autoOpen: false,
-							height: 270,
-							width: 420,
-							modal: true,
-							buttons: {
-								"Aceptar": function() {
-									$.ajax({
-								        type: "GET",
-								        url: "addDeliverableTrace.do",
-								        data: "ticketId=${ticketDetail.id}&deliverableTypeId=" + $("#attachmentType").val(),
-								        success: function(html) {
-								        	$('#attachmentDlg').dialog( "close" );
-								        }
-								    });
-								}}
-						});
-						
-						//Save confirm dialog
-						$("#saveConfirm").dialog({
-							autoOpen: false,
-							height: 250,
-							width: 380,
-							modal: true,
-							buttons: {
-								"Aceptar": function() {
-									$( this ).dialog( "close" );
-									window.location = 'dashboard.html';
-								},
-								
-								"Cancelar": function() {
-								$( this ).dialog( "close" );
-							}}
-						});
-						
-						//History dialog
-						$("#historyDlg").dialog({
-							autoOpen: false,
-							height: 380,
-							width: 500,
-							modal: true,
-							buttons: {
-								"Cerrar": function() {
-									$( this ).dialog( "close" );
-							}}
-						});
-
-						// Seguimiento$("#seguimientoCapture").hide();
-						$("#seguimientoCapture").hide();
-					});
-					
-					function addSeguimiento(){
-						var d = new Date(); 
-						$("#seguimientoCapture").show();	
-						$("#seguimientoStamp").html(d.format('dd/MM/yyyy h:mm:ss') + ' ${ user.userName }');
-						$("#seguimientoText").val('');
-						$("#who").val('-1');
-					}
-					
-					function applySeguimiento(){
-						$("#followDetail").load("${pageContext.request.contextPath}/bloom/ticketDetail/addFollow.do?ticketId=${ticketDetail.id}&userId=" 
-								                      + $("#who").val() + "&comment=" + $("#seguimientoText").val().replace(/ /g, '%20'));
-						$("#seguimientoCapture").hide();	
-					}
-					
-					function cancelAddSeguimiento(){
-						$("#seguimientoCapture").hide();
-					}
-		
-				</script>
+				
 				<div class="grid_15">
 					<div class="box">
 						<h2>Seguimiento</h2>

@@ -350,17 +350,18 @@ DROP PROCEDURE IF EXISTS blackstardb.UpsertBloomTicketTeam$$
 CREATE PROCEDURE blackstardb.`UpsertBloomTicketTeam`(pTicketId INTEGER, pWorkerRoleTypeId INTEGER, pBlackstarUserId INTEGER)
 BEGIN
 
-DECLARE counter INTEGER; 
-
-SET counter = (SELECT count(*) 
-               FROM bloomTicketTeam 
-               WHERE ticketId = pTicketId AND blackstarUserId = pBlackstarUserId);
-IF(counter = 0) THEN
-  INSERT INTO blackstarDb.bloomTicketTeam(ticketId, workerRoleTypeId, blackstarUserId)
-  VALUES(pTicketId, pWorkerRoleTypeId, pBlackstarUserId);
+IF NOT EXISTS (SELECT * FROM bloomTicketTeam 
+               WHERE ticketId = pTicketId AND blackstarUserId = pBlackstarUserId) THEN
+    INSERT INTO blackstarDb.bloomTicketTeam(ticketId, workerRoleTypeId, blackstarUserId)
+    VALUES(pTicketId, pWorkerRoleTypeId, pBlackstarUserId);   
+END IF;
+IF (pWorkerRoleTypeId = 1) THEN
+    UPDATE blackstarDb.bloomTicketTeam SET workerRoleTypeId = 2
+    WHERE ticketId = pTicketId AND blackstarUserId != pBlackstarUserId;
 END IF;
     
 END$$
+
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetBloomFollowUpByTicket

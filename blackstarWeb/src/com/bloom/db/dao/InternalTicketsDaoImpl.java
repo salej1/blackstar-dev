@@ -75,6 +75,6 @@ public class InternalTicketsDaoImpl extends AbstractDAO implements InternalTicke
 	StringBuilder sqlBuilder = new StringBuilder("CALL AddBloomDelivarable(?, ?);");
 	getJdbcTemplate().update(sqlBuilder.toString(), new Object[]{ticketId
 			                                       , deliverableTypeId});
-  }
+  } 
     
 }

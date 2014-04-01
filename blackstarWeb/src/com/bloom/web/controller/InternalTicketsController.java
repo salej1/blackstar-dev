@@ -1,6 +1,5 @@
 package com.bloom.web.controller;
 
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,7 +20,6 @@ import com.blackstar.services.interfaces.UserDomainService;
 import com.blackstar.web.AbstractController;
 import com.bloom.common.bean.RespuestaJsonBean;
 import com.bloom.model.dto.TicketDetailDTO;
-import com.bloom.model.dto.TicketTeamDTO;
 import com.bloom.services.InternalTicketsService;
 
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -57,26 +55,20 @@ public class InternalTicketsController extends AbstractController {
   @RequestMapping(value = "/ticketDetail/show.do", method = RequestMethod.GET)
   public String showDetail(@RequestParam(required = true) Integer ticketId
 				                                       , ModelMap model) {
-	StringBuilder ticketTeamStr = new StringBuilder();
-	List<TicketTeamDTO> ticketTeam = null;
 	TicketDetailDTO ticketDetail = null;
 	try {
-		 ticketTeam = internalTicketsService.getTicketTeam(ticketId);
 		 ticketDetail = internalTicketsService.getTicketDetail(ticketId);
-		 for(int i = 0; i< ticketTeam.size() ; i++){
-			ticketTeamStr.append(ticketTeam.get(i).getBlackstarUserName());
-			if(i < (ticketTeam.size() - 1)){
-			   ticketTeamStr.append(" / ");
-			}
-	     }
+		 model.addAttribute("ticketTeam", internalTicketsService
+				                      .getTicketTeam(ticketId));
 		 model.addAttribute("ticketDetail", ticketDetail);
 		 model.addAttribute("osAttachmentFolder", gdService
 				        .getAttachmentFolderId(ticketDetail.getTicketNumber()));
 		 model.addAttribute("accessToken", gdService.getAccessToken());
-		 model.addAttribute("ticketTeam", ticketTeamStr);
 		 model.addAttribute("staff", udService.getStaff());
-		 model.addAttribute("followUps", internalTicketsService.getFollowUps(ticketId));
-		 model.addAttribute("deliverableTypes", internalTicketsService.getDeliverableTypes());
+		 model.addAttribute("followUps", internalTicketsService
+				                      .getFollowUps(ticketId));
+		 model.addAttribute("deliverableTypes", internalTicketsService
+				                              .getDeliverableTypes());
 	} catch (Exception e) {
 		Logger.Log(LogLevel.ERROR,e.getStackTrace()[0].toString(), e);
 		e.printStackTrace();
@@ -93,7 +85,7 @@ public class InternalTicketsController extends AbstractController {
 				                                    , ModelMap model) {
 	try {
 		internalTicketsService.addFollow(ticketId, userId, comment);
-		internalTicketsService.addTicketTeam(ticketId, 1, userId);
+		internalTicketsService.addTicketTeam(ticketId, 2, userId);
 		model.addAttribute("followUps", internalTicketsService.getFollowUps(ticketId));
 	} catch (Exception e) {
 			Logger.Log(LogLevel.ERROR,e.getStackTrace()[0].toString(), e);
@@ -112,6 +104,20 @@ public class InternalTicketsController extends AbstractController {
 		 if(deliverableTypeId > 0){
 		   internalTicketsService.addDeliverableTrace(ticketId, deliverableTypeId);
 		 }
+	} catch (Exception e) {
+		Logger.Log(LogLevel.ERROR,e.getStackTrace()[0].toString(), e);
+		e.printStackTrace();
+		model.addAttribute("errorDetails", e.getStackTrace()[0].toString());
+		return new ResponseEntity<HttpStatus>(HttpStatus.BAD_REQUEST);
+	}
+	return new ResponseEntity<HttpStatus>(HttpStatus.OK);
+  }
+  
+  @RequestMapping(value = "/ticketDetail/assignTicket.do", method = RequestMethod.GET)
+  public ResponseEntity<HttpStatus> assignTicket(@RequestParam(required = true) Integer ticketId
+		      , @RequestParam(required = true) Integer userId, ModelMap model) {
+	try {
+		internalTicketsService.addTicketTeam(ticketId, 1, userId);
 	} catch (Exception e) {
 		Logger.Log(LogLevel.ERROR,e.getStackTrace()[0].toString(), e);
 		e.printStackTrace();
