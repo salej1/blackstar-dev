@@ -8,7 +8,7 @@
 
     function createPicker() {
       var attachmentFolderId = '${osAttachmentFolder}';
-      var docsView = new google.picker.View(google.picker.ViewId.DOCS_IMAGES);
+      var docsView = new google.picker.View(google.picker.ViewId.DOCS);
       var uploadView = new google.picker.DocsUploadView().setParent(attachmentFolderId);
       docsView.setParent(attachmentFolderId);
       picker = new google.picker.PickerBuilder()

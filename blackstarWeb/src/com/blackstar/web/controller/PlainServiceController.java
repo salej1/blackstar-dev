@@ -114,6 +114,7 @@ public class PlainServiceController extends AbstractController {
 		  		  model.addAttribute("serviceTypes", service.getServiceTypeList());
 				  model.addAttribute("serviceStatuses", service.getServiceStatusList());
 				  model.addAttribute("osAttachmentFolder", gdService.getAttachmentFolderId(plainServicePolicyDTO.getServiceOrderNumber()));
+				  model.addAttribute("accessToken", gdService.getAccessToken());
 	  		  }
 			  else
 			  {

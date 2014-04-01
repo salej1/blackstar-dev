@@ -15,7 +15,6 @@ import com.blackstar.db.DAOFactory;
 import com.blackstar.interfaces.IEmailService;
 import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
-import com.blackstar.model.AirCoService;
 import com.blackstar.model.Equipmenttype;
 import com.blackstar.model.OpenCustomer;
 import com.blackstar.model.Policy;
@@ -114,6 +113,7 @@ public class AirCoServiceController extends AbstractController {
 	  				  model.addAttribute("mode", "new-open");
 		  		  }
 		  		model.addAttribute("osAttachmentFolder", gdService.getAttachmentFolderId(airCoServicePolicyDTO.getServiceOrderNumber()));
+		  		model.addAttribute("accessToken", gdService.getAccessToken());
 	  		  }
 			  else
 			  {
