@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.blackstar.common.Globals;
 import com.blackstar.logging.LogLevel;
@@ -36,7 +37,7 @@ public class CatalogController extends AbstractController {
 
 	@RequestMapping(value = "/getData.do", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	RespuestaJsonBean generarUnidadesCliente(ModelMap model,
+	RespuestaJsonBean getData(ModelMap model,
 			@ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession) {
 
 		RespuestaJsonBean respuesta = new RespuestaJsonBean();
@@ -77,6 +78,41 @@ public class CatalogController extends AbstractController {
 
 		return respuesta;
 	}
+	
+	
+	
+	
+	@RequestMapping(value = "/getDocumentos.do", method = RequestMethod.GET, produces = "application/json")
+	@ResponseBody
+	RespuestaJsonBean getDocumentos(ModelMap model,
+			@ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession,
+			@RequestParam(value = "idTipoServicio", required = true) final Integer idTipoServicio) {
+
+		RespuestaJsonBean respuesta = new RespuestaJsonBean();
+
+	
+		List<CatalogoBean<Integer>> listaDocumentos;
+
+
+
+		try {
+
+		
+			listaDocumentos = catalogService.consultarDocumentosPorServicio(idTipoServicio);
+			respuesta.setLista(listaDocumentos);
+
+			
+			respuesta.setEstatus("ok");
+
+		} catch (ServiceException se) {
+			Logger.Log(LogLevel.ERROR, se.getMessage(), se);
+			respuesta.setEstatus("error");
+			respuesta.setMensaje(se.getMessage());
+		}
+
+		return respuesta;
+	}
+	
 
 	/**
 	 * @return the catalogService

@@ -4,7 +4,7 @@ var listaServicios;
 var listaOficinas;
 					
 
-
+var idTipoServicio;
 
 $(document).ready(function () {
 						var attCounter = 0;
@@ -81,6 +81,12 @@ $(document).ready(function () {
 						$("#seguimientoCapture").hide();
 						
 						
+						 $('#slTipoServicio').on('change', function() {
+						        // when game select changes, filter the character list to the selected game
+							 idTipoServicio= parseInt($('#slTipoServicio').val());
+						 });
+						
+						
 						consultarDatosFormulario();
 						
 					
@@ -143,6 +149,50 @@ $(document).ready(function () {
 					        }
 					    });
 					}
+					
+					
+					
+					
+					function consultarDocumentos() {
+					    
+					    $.ajax({
+					    	url: "/bloomCatalog/getDocumentos.do",
+					        type: "GET",
+					        data: {idTipoServicio: idTipoServicio},
+					        dataType: "json",
+					        beforeSend: function() {
+					            //mostrarMensajeCargando
+					        },
+					        success: function(respuestaJson) {
+					           
+					            if (respuestaJson.estatus === "ok") {
+
+					                listaDocuentos = respuestaJson.lista;
+					                
+					                $('#slDocumento').children().remove();
+					                
+					                for (var i = 0; i < listaDocuentos.length; i++) {
+								    	$("#slDocumento").append(new Option(listaDocuentos[i].descripcion, listaDocuentos[i].id));
+								    }
+					                
+					                $('#saveConfirm').dialog('open');
+								    
+					               
+					            } else {
+					                if (respuestaJson.estatus === "preventivo") {
+					                    //mostrarMensajePreventivo
+					                } else {
+					                    //mostrarMensajeError
+					                }
+					            }
+
+					        },
+					        error: function() {
+					           					            //mostrarMensajeError
+					        }
+					    });
+					}
+					
 					
 					
 					

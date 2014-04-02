@@ -139,7 +139,7 @@
 										<td id="img3Desc"></td>
 									</tr>
 									<tr>
-										<td><button class="searchButton" onclick="$('#attachmentImgDlg').dialog('open');">Adjuntar Archivo</button></td>
+										<td><button class="searchButton" onclick="consultarDocumentos();">Adjuntar Archivo</button></td>
 									</tr>
 								</tbody>
 							</table>
@@ -163,17 +163,7 @@
 					<p>Seleccione el archivo que desea adjuntar</p>
 					<input type="file" name="somename" size="80"/> 
 					<p>Seleccione la entrada que corresponde al archivo</p>
-					<select name="attachment" id="attachment">
-						<option value="Cedula de costos">Cedula de costos</option>
-						<option value="Cedula de proyectos">Cedula de proyectos</option>
-						<option value="CheckList de levantamiento">CheckList de levantamiento</option>
-						<option value="Encuesta de satisfaccion">Encuesta de satisfaccion</option>
-						<option value="Floor Map">Floor Map</option>
-						<option value="Hoja de visita">Hoja de visita</option>
-						<option value="Imagenes 3D del site">Imagenes 3D del site</option>
-						<option value="Validacion de proyecto">Validacion de proyecto</option>
-						<option value="Propuesta de unifilar">Propuesta de unifilar</option>
-					</select>
+					<select name="slDocumento" id="slDocumento"></select>
 
 				</div>
 				
