@@ -15,6 +15,7 @@
 -- -----------------------------------------------------------------------------
 -- 3    13/03/2014  SAG  	Soporte para un equipo en mas de una poliza
 -- -----------------------------------------------------------------------------
+-- 4	01/04/2014	SAG		Se implementa modelo STTP para tickets
 
 use blackstarDbTransfer;
 
@@ -82,25 +83,49 @@ BEGIN
 
 
 -- -----------------------------------------------------------------------------
-	-- LLENAR BASE DE DATOS DE TICKETS
+	-- INSERTAR TICKETS NUEVOS
 	INSERT INTO blackstarDb.ticket(
 		policyId,
 		ticketNumber,
-		user,
-		observations,
-		phoneResolved,
-		arrival,
-		employee,
-		closed,
-		created,
 		createdBy,
 		createdByUsr
 	)
-	SELECT p.policyId, tt.ticketNumber, tt.user, tt.observations, phoneResolved, tt.arrival, tt.employee, tt.closed, tt.created, 'TicketTransfer', 'sergio.aga'
+	SELECT p.policyId, tt.ticketNumber, 'TicketTransfer', 'sergio.aga'
 	FROM blackstarDbTransfer.ticket tt
 		INNER JOIN blackstarDbTransfer.policy pt ON tt.policyId = pt.policyId	
 		INNER JOIN blackstarDb.policy p ON p.serialNumber = pt.serialNumber AND pt.serialNumber != 'NA' AND p.project = pt.project
 	WHERE tt.ticketNumber NOT IN (SELECT ticketNumber FROM blackstarDb.ticket);
+
+	-- ACTUALIZAR ESTATUS TICKETS EXISTENTES
+	UPDATE blackstarDb.ticket t 
+		INNER JOIN blackstarDbTransfer.ticket tt ON t.ticketNumber = tt.ticketNumber SET
+		t.observations = tt.observations,
+		t.phoneResolved = tt.phoneResolved,
+		t.arrival = tt.arrival,
+		t.employee = tt.employee,
+		t.user = tt.user,
+		t.created = tt.created
+	WHERE tt.processed = 0;
+
+	-- ACTUALIZAR CERRADO SELECTIVO DE TICKETS
+	UPDATE blackstarDb.ticket t 
+		INNER JOIN blackstarDbTransfer.ticket tt ON t.ticketNumber = tt.ticketNumber SET
+		t.closed = tt.closed
+	WHERE tt.processed = 0
+	AND t.closed IS NULL AND tt.closed IS NOT NULL;
+
+	-- ACTUALIZACION DEL SERVICE ID DE CIERRE DEL TICKET
+	UPDATE blackstarDb.ticket t
+		INNER JOIN blackstarDbTransfer.ticket tt ON t.ticketNumber = tt.ticketNumber
+		INNER JOIN blackstarDb.serviceOrder so ON tt.serviceOrderNumber = so.serviceOrderNumber	
+	SET
+		t.serviceOrderId = so.serviceOrderId
+	WHERE tt.processed = 0;	
+
+	-- MARCAR COMO PROCESSED
+	UPDATE blackstarDbTransfer.ticket SET
+		processed = 1
+	WHERE processed = 0;
 	
 	-- ACTUALIZAR TIEMPOS DE RESPUESTA
 	UPDATE blackstarDb.ticket SET 
@@ -196,14 +221,7 @@ BEGIN
 		LEFT OUTER JOIN blackstarDb.followUp f ON o.serviceOrderId = f.serviceOrderId
 	WHERE st.followUp IS NOT NULL
 	AND f.followUpId IS NULL;
-	
-	-- ACTUALIZACION DEL SERVICE ID DE CIERRE DEL TICKET
-	UPDATE blackstarDb.ticket t
-		INNER JOIN blackstarDbTransfer.ticket tt ON t.ticketNumber = tt.ticketNumber
-		INNER JOIN blackstarDb.serviceOrder so ON tt.serviceOrderNumber = so.serviceOrderNumber	
-	SET
-		t.serviceOrderId = so.serviceOrderId;	
-	
+
 	-- ACTUALIZACION DEL ESTADO DE LOS TICKETS
 	CALL blackstarDb.UpdateTicketStatus();
 -- -----------------------------------------------------------------------------

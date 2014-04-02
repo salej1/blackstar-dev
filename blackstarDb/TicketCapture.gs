@@ -23,6 +23,9 @@
   seguimiento.getRange(urenglon,6).setValue(serie);
   seguimiento.getRange(urenglon,7).setValue(observaciones);
   seguimiento.getRange(urenglon,23).setValue(ano+"-"+ticket);
+  // Escribiendo semilla de transferencia
+  seguimiento.getRange(urenglon,45).setValue(1);
+  //
   var cliente = ss.getSheetByName("Seguimiento").getRange(urenglon,8).getValue();
   var equipo = ss.getSheetByName("Seguimiento").getRange(urenglon,9).getValue();
   var marca = ss.getSheetByName("Seguimiento").getRange(urenglon,10).getValue();
@@ -188,3 +191,7 @@ if (centroserv == "Altamira SH")
              
 
 }
+
+
+
+

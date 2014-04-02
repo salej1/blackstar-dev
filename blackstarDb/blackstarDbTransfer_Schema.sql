@@ -11,9 +11,11 @@
 -- --   --------   -------  --------------------------------------------------
 -- 1    08/08/2013  SAG  	Se aumenta el tamaño de ticket.serialNumber
 -- ---------------------------------------------------------------------------
--- 1    04/03/2014  SAG  	Se agregan columnas de portal
+-- 2    04/03/2014  SAG  	Se agregan columnas de portal
 -- ---------------------------------------------------------------------------
--- 1    19/03/2014  SAG  	Se agrega tabla equipmentUserSync
+-- 3    19/03/2014  SAG  	Se agrega tabla equipmentUserSync
+-- ---------------------------------------------------------------------------
+-- 4	01/04/2014	SAG		Se agrega processed a ticket 
 -- ---------------------------------------------------------------------------
 
 USE blackstarDbTransfer;
@@ -29,6 +31,12 @@ BEGIN
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
 
+	-- Agregando ticket.processed
+	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDbTransfer' AND TABLE_NAME = 'ticket' AND COLUMN_NAME = 'processed') = 0  THEN
+		ALTER TABLE blackstarDbTransfer.ticket ADD processed INT NULL DEFAULT 1;
+	END IF;
+
+	-- Agregando equipmentUserSync
 	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDbTransfer' AND TABLE_NAME = 'equipmentUserSync') = 0 THEN
 		 CREATE TABLE blackstarDbTransfer.equipmentUserSync(
 			equipmentUserSyncId INTEGER NOT NULL AUTO_INCREMENT,
