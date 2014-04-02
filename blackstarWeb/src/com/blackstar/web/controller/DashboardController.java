@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.blackstar.common.Globals;
-import com.blackstar.interfaces.IUserService;
 import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
 import com.blackstar.model.TicketController;
@@ -48,7 +47,7 @@ public class DashboardController extends AbstractController {
 			if(session.getAttribute("staff") == null){
 				session.setAttribute("staff", udService.getStaff());
 			}
-		} catch (Exception e) {
+		} catch (final Throwable e) {
 			Logger.Log(LogLevel.ERROR,
 					e.getStackTrace()[0].toString(), e);
 			e.printStackTrace();
