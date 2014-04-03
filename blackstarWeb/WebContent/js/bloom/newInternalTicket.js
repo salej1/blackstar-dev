@@ -5,11 +5,16 @@ var listaOficinas;
 					
 
 var idTipoServicio;
+var diasLimitesTipoServicio;
+var fechaLimite;
 
 $(document).ready(function () {
 						var attCounter = 0;
 						
+						fechaLimite = new Date();
+						
 						$("#myDate").datepicker();
+						$("#myDate").datepicker( "setDate", new Date());
 						
 						//Attachment dialog
 						$("#attachmentDlg").dialog({
@@ -84,10 +89,28 @@ $(document).ready(function () {
 						 $('#slTipoServicio').on('change', function() {
 						        // when game select changes, filter the character list to the selected game
 							 idTipoServicio= parseInt($('#slTipoServicio').val());
+							 
+							 diasLimitesTipoServicio=0;
+							 for (var i = 0; i < listaServicios.length; i++) {
+								 if(listaServicios[i].id===idTipoServicio){
+									 diasLimitesTipoServicio=parseInt(listaServicios[i].extra);
+									 break;
+								 }
+							 }
+							 
+							 fechaLimite = new Date();
+							 
+							 fechaLimite.setDate(fechaLimite.getDate() + diasLimitesTipoServicio);
+							 
+							 $("#myDate").datepicker( "setDate", fechaLimite);
+							  
 						 });
 						
 						
 						consultarDatosFormulario();
+						
+						
+						attachmentFolderId=$("#fldFolio").val();
 						
 					
 					});
@@ -157,7 +180,7 @@ $(document).ready(function () {
 					    
 					    $.ajax({
 					    	url: "/bloomCatalog/getDocumentos.do",
-					        type: "GET",
+					        type: "POST",
 					        data: {idTipoServicio: idTipoServicio},
 					        dataType: "json",
 					        beforeSend: function() {
@@ -175,7 +198,7 @@ $(document).ready(function () {
 								    	$("#slDocumento").append(new Option(listaDocuentos[i].descripcion, listaDocuentos[i].id));
 								    }
 					                
-					                $('#saveConfirm').dialog('open');
+					                $('#attachmentImgDlg').dialog('open');
 								    
 					               
 					            } else {

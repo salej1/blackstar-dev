@@ -1,5 +1,6 @@
 package com.bloom.web.controller;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -32,6 +33,8 @@ import com.blackstar.web.AbstractController;
 import com.bloom.common.bean.InternalTicketBean;
 import com.bloom.common.bean.RespuestaJsonBean;
 import com.bloom.common.exception.ServiceException;
+import com.bloom.common.utils.DataTypeUtil;
+import com.bloom.common.utils.FolioTicketUtil;
 import com.bloom.services.InternalTicketsService;
 
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -115,23 +118,18 @@ public class InternalTicketsController extends AbstractController {
 
 	
 	  @RequestMapping(value= "/newInternalTicket.do", method = RequestMethod.GET)
-	  public String  newInternalTicket(ModelMap model)
+	  public String  newInternalTicket(ModelMap model,@ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession)
 	  {
 		  
-		  System.out.println("");
+		  Date tiempoActual = new Date();
 		  
+		  String folio = FolioTicketUtil.generarNumeroTickets("SAC",tiempoActual);
+		  String email = userSession.getUser().getUserEmail();
+		  String horaTicket = DataTypeUtil.formatearFechaDD_MM_AAAA_HH_MM_SS(tiempoActual);
 		  
-//		  try
-//		  {
-//			 
-//	  		 
-//		  } 
-//		  catch (Exception e) 
-//		  {
-//				 Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
-//				 model.addAttribute("errorDetails", e.getMessage() + " - " + e.getStackTrace()[0].toString());
-//				 return "error";
-//		  }
+		  model.addAttribute("folioTicket", folio);
+		  model.addAttribute("emailTicket", email);
+		  model.addAttribute("horaTicket", horaTicket);
 		  
 		  return "bloomNewInternalTicket";
 	  }

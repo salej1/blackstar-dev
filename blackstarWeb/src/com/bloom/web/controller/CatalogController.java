@@ -82,7 +82,7 @@ public class CatalogController extends AbstractController {
 	
 	
 	
-	@RequestMapping(value = "/getDocumentos.do", method = RequestMethod.GET, produces = "application/json")
+	@RequestMapping(value = "/getDocumentos.do", method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
 	RespuestaJsonBean getDocumentos(ModelMap model,
 			@ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession,

@@ -1,8 +1,15 @@
 package com.blackstar.web;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
+
+import java.util.Date;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -42,4 +49,26 @@ public class AbstractController {
               //Register it as custom editor for the Date type
       binder.registerCustomEditor(Date.class, editor);
   }
+  
+  
+  protected JSONObject requestParamsToJSON(HttpServletRequest req) {
+      JSONObject jsonObj = new JSONObject();
+      Map<String, String[]> params = req.getParameterMap();
+      
+      try{
+          for (Map.Entry<String, String[]> entry : params.entrySet()) {
+              String v[] = entry.getValue();
+              Object o = (v.length == 1) ? v[0] : v;
+              jsonObj.put(entry.getKey(), o);
+          }
+    	  
+      }catch(JSONException e){
+    	  
+      }
+      
+      return jsonObj;
+  }
+  
+  
+  
 }

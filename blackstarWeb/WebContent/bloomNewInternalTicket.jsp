@@ -48,7 +48,7 @@
 	</head>
 	<body>
 		<div id="content" class="container_16 clearfix">
-		<form:form  commandName="serviceOrder" action="save.do" method="POST">			
+					
 			<div class="grid_16">					
 					<div class="box">
 						<h2>TICKET INTERNO</h2>
@@ -56,16 +56,16 @@
 
 							<tr>
 								<td style="width:200px;">Folio:</td>
-								<td><input type="text" id="fldFolio" style="width:95%;" readOnly="true" value="SAC45"/></td>
+								<td><input type="text" id="fldFolio" style="width:95%;" readOnly="true" value="${folioTicket}"/></td>
 								<td></td>
 							</tr>
 							<tr>
 								<td>Marca temporal:</td>
-								<td><input type="text" id="fldFolio" style="width:95%;" readOnly="true" value="29/10/2013 6:14:12 PM"/></td>
+								<td><input type="text" id="fldFolio" style="width:95%;" readOnly="true" value="${horaTicket}"/></td>
 							</tr>
 							<tr>
 								<td>Usuario</td>
-								<td><input type="text" style="width:95%;" readOnly="true" value="luis.andrade@gposac.com.mx"/></td>
+								<td><input type="text" style="width:95%;" readOnly="true" value="${emailTicket}"/></td>
 							</tr>
 							<tr>
 								<td>Solicitante</td>
@@ -84,7 +84,7 @@
 							</tr>
 							<tr>
 								<td>Fecha Limite</td>
-								<td><input id="myDate" type="text" style="width:95%;" readOnly="true" value="3/04/2013"/></td>
+								<td><input id="myDate" type="text" style="width:95%;" readOnly="true"/></td>
 							</tr>
 							<tr>
 								<td>Descripcion de la solicitud</td>
@@ -167,13 +167,18 @@
 
 				</div>
 				
+							<!-- Adjuntos -->
+				<c:import url="_attachments.jsp"></c:import>
+				
+				
+				
 				<div id="saveConfirm" title="Cerrar Ticket SAC45">
 					<p>¿Confirma que desea enviar la requisicion general SAC45?</p>
 				</div>
 						
 			
 			
-		</form:form>
+		
 		</div>
 	</body>
 </html>
