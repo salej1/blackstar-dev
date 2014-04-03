@@ -138,9 +138,11 @@ public class ServiceIndicatorsController extends AbstractController {
 	try {
 		 if(userSession.getUser().getBelongsToGroup().get("Cliente") != null && userSession.getUser().getBelongsToGroup().get("Cliente") == true){
 			 model.addAttribute("charts", service.getCharts(project, startDate, endDate, userSession.getUser().getUserEmail()));
+			 model.addAttribute("availabilityKpi", service.getAvailability(project, startDate, endDate, userSession.getUser().getUserEmail()));
 		 }
 		 else{
 			 model.addAttribute("charts", service.getCharts(project, startDate, endDate, ""));
+			 model.addAttribute("availabilityKpi", service.getAvailability(project, startDate, endDate, ""));
 		 }
 	} catch (Exception e) {
 		for(StackTraceElement t : e.getStackTrace()){

@@ -9,6 +9,7 @@ import com.blackstar.db.dao.AbstractDAO;
 import com.blackstar.db.dao.interfaces.ServiceIndicatorsDAO;
 import com.blackstar.db.dao.mapper.JSONRowMapper;
 import com.blackstar.model.Servicecenter;
+import com.blackstar.model.dto.AvailabilityKpiDTO;
 import com.blackstar.model.sp.GetConcurrentFailuresKPI;
 import com.blackstar.model.sp.GetReportOSTableKPI;
 import com.blackstar.model.sp.GetStatisticsKPI;
@@ -103,5 +104,13 @@ public class ServiceIndicatorsDAOImpl extends AbstractDAO
 	public List<String> getLimitedProjectList(String user) {
 		String sqlQuery = "CALL GetLimitedProjectList(?)";
 		return (List<String>) getJdbcTemplate().queryForList(sqlQuery, new Object[]{user}, String.class);
+	}
+
+	@Override
+	public AvailabilityKpiDTO getAvailability(String project, Date startDate,
+			Date endDate, String customer) {
+		String sqlQuery = "CALL GetAvailabilityKPI(?,?,?,?)";
+		return (AvailabilityKpiDTO)getJdbcTemplate().queryForObject(sqlQuery, new Object[]{project, startDate, endDate, customer}
+				                , getMapperFor(AvailabilityKpiDTO.class)); 
 	}
 }

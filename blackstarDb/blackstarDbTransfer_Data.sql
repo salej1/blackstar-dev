@@ -10,13 +10,18 @@
 -- PR   Date    AuthorDescription
 -- --   --------   -------  ------------------------------------
 -- 1    13/03/2014  SAG  	Version inicial. 
--- ---------------------------------------------------------------------------
+-- -----------------------------------------------------------------------------
+-- 2 	03/04/2014	SAG		Reemplazo de oficinas no-estandar
+-- -----------------------------------------------------------------------------
 
 use blackstarDbTransfer;
 
 -- -----------------------------------------------------------------------------
 -- ACTUALIZACION DE DATOS
 -- -----------------------------------------------------------------------------
+
+-- OFICINAS NO ESTANDAR
+UPDATE policy SET serviceCenter = 'Villahermosa IS' WHERE serviceCenter = 'ISEC';
 
 -- CAMBIAR LOS EQUIPOS QUE SE VAN A ELIMINAR
 UPDATE policy SET equipmentTypeId = 'B' WHERE equipmentTypeId = 'T';

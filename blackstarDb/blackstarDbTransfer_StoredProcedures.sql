@@ -96,17 +96,6 @@ BEGIN
 		INNER JOIN blackstarDb.policy p ON p.serialNumber = pt.serialNumber AND pt.serialNumber != 'NA' AND p.project = pt.project
 	WHERE tt.ticketNumber NOT IN (SELECT ticketNumber FROM blackstarDb.ticket);
 
-	-- ACTUALIZAR ESTATUS TICKETS EXISTENTES
-	UPDATE blackstarDb.ticket t 
-		INNER JOIN blackstarDbTransfer.ticket tt ON t.ticketNumber = tt.ticketNumber SET
-		t.observations = tt.observations,
-		t.phoneResolved = tt.phoneResolved,
-		t.arrival = tt.arrival,
-		t.employee = tt.employee,
-		t.user = tt.user,
-		t.created = tt.created
-	WHERE tt.processed = 0;
-
 	-- ACTUALIZAR CERRADO SELECTIVO DE TICKETS
 	UPDATE blackstarDb.ticket t 
 		INNER JOIN blackstarDbTransfer.ticket tt ON t.ticketNumber = tt.ticketNumber SET
@@ -122,11 +111,21 @@ BEGIN
 		t.serviceOrderId = so.serviceOrderId
 	WHERE tt.processed = 0;	
 
-	-- MARCAR COMO PROCESSED
-	UPDATE blackstarDbTransfer.ticket SET
-		processed = 1
-	WHERE processed = 0;
-	
+	-- ACTUALIZAR ESTATUS TICKETS EXISTENTES
+	UPDATE blackstarDb.ticket t 
+		INNER JOIN blackstarDbTransfer.ticket tt ON t.ticketNumber = tt.ticketNumber SET
+		t.observations = tt.observations,
+		t.phoneResolved = tt.phoneResolved,
+		t.arrival = tt.arrival,
+		t.employee = tt.employee,
+		t.user = tt.user,
+		t.created = tt.created,
+		t.contact = tt.contact,
+		t.contactPhone = tt.contactPhone,
+		t.contactEmail = tt.contactEmail,
+		tt.processed = 1
+	WHERE tt.processed = 0;
+
 	-- ACTUALIZAR TIEMPOS DE RESPUESTA
 	UPDATE blackstarDb.ticket SET 
 		realResponseTime =  TIMESTAMPDIFF(HOUR, created, IFNULL(arrival, CURRENT_DATE()));

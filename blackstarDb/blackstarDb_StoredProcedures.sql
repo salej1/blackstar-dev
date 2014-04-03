@@ -219,11 +219,130 @@
 --								blackstarDb.GetReportsByEquipmentTypeKPI
 --								blackstarDb.GetTicketsByServiceCenterKPI
 -- -----------------------------------------------------------------------------
+-- 36	02/04/2014	SAG 	Se agrega:
+-- 								blackstarDb.GetAvailabilityKPI
+-- -----------------------------------------------------------------------------
 
 use blackstarDb;
 
 DELIMITER $$
 
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetAvailabilityKPI
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetAvailabilityKPI$$
+CREATE PROCEDURE blackstarDb.GetAvailabilityKPI(pProject VARCHAR(100), pStartDate DATETIME, pEndDate DATETIME, customer VARCHAR(100))
+BEGIN
+	-- Variables auxiliares para calculos
+	DECLARE elapsedHr INT; 
+	DECLARE equipmentNum INT; 
+	DECLARE downTimeSum INT; 
+	DECLARE equipmentHr INT; 
+	DECLARE availability DECIMAL(5,2); 
+	DECLARE averageSolutionTime INT;
+	DECLARE totalTickets INT;
+	DECLARE onTimeResolvedTickets	DECIMAL(5,2);
+	DECLARE onTimeAttendedTickets DECIMAL(5,2);
+
+	-- Tabla temporal con los equipos en scope
+	CREATE TEMPORARY TABLE IF NOT EXISTS selectedEquipment(
+		policyId INT,
+		solutionTimeHR INT,
+		responseTimeHR INT
+	) ENGINE = MEMORY;
+
+	IF customer = '' THEN 
+		IF pProject = 'All' THEN
+			INSERT INTO selectedEquipment(policyId, solutionTimeHR, responseTimeHR) 
+			SELECT policyId, solutionTimeHR, responseTimeHR
+			FROM policy 
+			WHERE NOT (endDate < pStartDate OR startDate > pEndDate);
+		ELSE
+			INSERT INTO selectedEquipment(policyId, solutionTimeHR, responseTimeHR) 
+			SELECT policyId, solutionTimeHR, responseTimeHR
+			FROM policy 
+			WHERE NOT (endDate < pStartDate OR startDate > pEndDate)
+				AND project = pProject;
+		END IF;
+	ELSE
+		IF pProject = 'All' THEN
+			INSERT INTO selectedEquipment(policyId, solutionTimeHR, responseTimeHR) 
+			SELECT policyId, solutionTimeHR, responseTimeHR
+			FROM policy 
+			WHERE equipmentUser = customer 
+				AND NOT (endDate < pStartDate OR startDate > pEndDate);
+		ELSE
+			INSERT INTO selectedEquipment(policyId, solutionTimeHR, responseTimeHR) 
+			SELECT policyId, solutionTimeHR, responseTimeHR
+			FROM policy 
+			WHERE equipmentUser = customer 
+				AND NOT (endDate < pStartDate OR startDate > pEndDate)
+				AND project = pProject;
+		END IF;
+	END IF;
+
+	-- CALCULOS DISPONIBILIDAD
+
+	-- tiempo transcurrido en horas
+	SELECT (DATEDIFF(pEndDate, pStartDate) * 24) INTO elapsedHr;
+
+	-- numero de equipos
+	SELECT count(*) INTO equipmentNum FROM selectedEquipment;
+
+	-- horas-equipo
+	SELECT elapsedHr * equipmentNum INTO equipmentHr;
+
+	-- sumatoria de horas-equipo fuera
+	SELECT sum(solutionTime) INTO downTimeSum
+		FROM ticket t
+			INNER JOIN selectedEquipment e ON t.policyId = e.policyId
+		WHERE t.created > pStartDate
+			AND t.created < pEndDate;
+
+	-- porcentaje de disponibilidad
+	SELECT ((equipmentHr - downTimeSum) / equipmentHr) * 100 INTO availability;
+
+	-- tiempo promedio de solucion
+	SELECT avg(solutionTime) INTO averageSolutionTime
+		FROM ticket t
+			INNER JOIN selectedEquipment e ON t.policyId = e.policyId
+		WHERE t.created > pStartDate
+			AND t.created < pEndDate;
+
+	-- TICKETS SOLUCIONADOS EN TIEMPO
+
+	-- numero de tickets en scope
+	SELECT count(*) INTO totalTickets
+		FROM ticket t
+			INNER JOIN selectedEquipment e ON t.policyId = e.policyId
+		WHERE t.created > pStartDate
+			AND t.created < pEndDate;
+
+	SELECT (count(*) / totalTickets) * 100 INTO onTimeResolvedTickets
+		FROM ticket t
+			INNER JOIN selectedEquipment e ON t.policyId = e.policyId
+		WHERE t.created > pStartDate
+			AND t.created < pEndDate
+			AND t.solutionTime <= e.solutionTimeHR;
+
+	-- tickets atendidos a tiempo
+	SELECT (count(*) / totalTickets) * 100 INTO onTimeAttendedTickets
+		FROM ticket t
+			INNER JOIN selectedEquipment e ON t.policyId = e.policyId
+		WHERE t.created > pStartDate
+			AND t.created < pEndDate
+			AND t.realResponseTime <= e.responseTimeHR;
+
+	-- se elimina la tabla temporal
+	DROP TABLE selectedEquipment;
+	
+	-- datos de retorno
+	SELECT 	availability AS availability,
+			averageSolutionTime AS solutionAverageTime,
+			onTimeResolvedTickets AS onTimeResolvedTickets,
+			onTimeAttendedTickets AS onTimeAttendedTickets;
+END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetLimitedProjectList

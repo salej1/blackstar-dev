@@ -8,26 +8,28 @@
 -- Change History
 -- -----------------------------------------------------------------------------
 -- PR   Date    	Author	Description
--- --   --------   -------  ------------------------------------
+-- ---------------------------------------------------------------------------
 -- 1    11/11/2013  SAG  	Version inicial. Modificaciones a OS
--- --   --------   -------  ------------------------------------
+-- ---------------------------------------------------------------------------
 -- 2    12/11/2013  SAG  	Modificaciones a followUp - isSource
--- --   --------   -------  ------------------------------------
+-- ---------------------------------------------------------------------------
 -- 3    13/11/2013  SAG  	Se agrega scheduledService
--- --   --------   -------  ------------------------------------
+-- ---------------------------------------------------------------------------
 -- 4    28/11/2013  JAGH  	Se agregan tablas para captura de OS
--- --   --------   -------  ------------------------------------
+-- ---------------------------------------------------------------------------
 -- 5    12/12/2013  SAG  	Se agrega sequence y sequenceNumberPool
--- --   --------   -------  ------------------------------------
+-- ---------------------------------------------------------------------------
 -- 6	26/01/2014  LERV  	Se agrega tabla surveyService
--- --   --------   -------  ------------------------------------
+-- ---------------------------------------------------------------------------
 -- 7    09/02/2014  SAG  	Se cambia serviceOrderAdditionalEngineer por
 -- 							serviceOrderEmployee
--- --   --------   -------  ------------------------------------
+-- ---------------------------------------------------------------------------
 -- 8    12/03/2014  SAG  	Se agrega openCustomerId a policy
 --							Se agrega la entidad openCustomer
--- --   --------   -------  ------------------------------------
+-- ---------------------------------------------------------------------------
 -- 9    13/03/2014  SAG  	Se agrega equipmentUser a policy
+-- ---------------------------------------------------------------------------
+-- 10 	03/04/2014	SAG 	Se agregan campos de contacto para ticket
 -- ---------------------------------------------------------------------------
 
 use blackstarDb;
@@ -41,6 +43,17 @@ BEGIN
 -- -----------------------------------------------------------------------------
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
+
+-- AUMENTANDO CAPACIDAD DE CAMPOS DE CONTACTO
+	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'ticket' AND COLUMN_NAME = 'contact') = 0  THEN
+		ALTER TABLE blackstarDb.ticket ADD contact VARCHAR(200) NULL DEFAULT NULL;
+	END IF;
+	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'ticket' AND COLUMN_NAME = 'contactPhone') = 0  THEN
+		ALTER TABLE blackstarDb.ticket ADD contactPhone VARCHAR(200) NULL DEFAULT NULL;
+	END IF;
+	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'ticket' AND COLUMN_NAME = 'contactEmail') = 0  THEN
+		ALTER TABLE blackstarDb.ticket ADD contactEmail VARCHAR(200) NULL DEFAULT NULL;
+	END IF;
 
 -- AGREGANDO COLUMNA equipmentUser A policy
 	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'policy' AND COLUMN_NAME = 'equipmentUser') = 0  THEN
@@ -937,17 +950,182 @@ DROP PROCEDURE blackstarDb.upgradeSchema;
 --								blackstarDb.AddOpenCustomer
 --								blackstarDb.GetOpenCustomerById
 -- -----------------------------------------------------------------------------
--- 36	12/03/2014	SAG 	Se Agregan:
+-- 36	18/03/2014	SAG 	Se Agregan:
 --								blackstarDb.GetOpenLimitedTickets
 --								blackstarDb.GetLimitedTicketList
 --								blackstarDb.GetLimitedServiceOrders
 --								blackstarDb.GetLimitedServiceOrderList
+-- -----------------------------------------------------------------------------
+-- 35	20/03/2014	SAG 	Se Agregan:
+--								blackstarDb.GetLimitedSurveyServiceList
+--								blackstarDb.GetLimitedProjectList
+--							Se modifican:
+--								blackstarDb.GetStatusKPI
+--								blackstarDb.GetReportsByEquipmentTypeKPI
+--								blackstarDb.GetTicketsByServiceCenterKPI
+-- -----------------------------------------------------------------------------
+-- 36	02/04/2014	SAG 	Se agrega:
+-- 								blackstarDb.GetAvailabilityKPI
 -- -----------------------------------------------------------------------------
 
 use blackstarDb;
 
 DELIMITER $$
 
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetAvailabilityKPI
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetAvailabilityKPI$$
+CREATE PROCEDURE blackstarDb.GetAvailabilityKPI(pProject VARCHAR(100), pStartDate DATETIME, pEndDate DATETIME, customer VARCHAR(100))
+BEGIN
+	-- Variables auxiliares para calculos
+	DECLARE elapsedHr INT; 
+	DECLARE equipmentNum INT; 
+	DECLARE downTimeSum INT; 
+	DECLARE equipmentHr INT; 
+	DECLARE availability DECIMAL(5,2); 
+	DECLARE averageSolutionTime INT;
+	DECLARE totalTickets INT;
+	DECLARE onTimeResolvedTickets	DECIMAL(5,2);
+	DECLARE onTimeAttendedTickets DECIMAL(5,2);
+
+	-- Tabla temporal con los equipos en scope
+	CREATE TEMPORARY TABLE IF NOT EXISTS selectedEquipment(
+		policyId INT,
+		solutionTimeHR INT,
+		responseTimeHR INT
+	) ENGINE = MEMORY;
+
+	IF customer = '' THEN 
+		IF pProject = 'All' THEN
+			INSERT INTO selectedEquipment(policyId, solutionTimeHR, responseTimeHR) 
+			SELECT policyId, solutionTimeHR, responseTimeHR
+			FROM policy 
+			WHERE NOT (endDate < pStartDate OR startDate > pEndDate);
+		ELSE
+			INSERT INTO selectedEquipment(policyId, solutionTimeHR, responseTimeHR) 
+			SELECT policyId, solutionTimeHR, responseTimeHR
+			FROM policy 
+			WHERE NOT (endDate < pStartDate OR startDate > pEndDate)
+				AND project = pProject;
+		END IF;
+	ELSE
+		IF pProject = 'All' THEN
+			INSERT INTO selectedEquipment(policyId, solutionTimeHR, responseTimeHR) 
+			SELECT policyId, solutionTimeHR, responseTimeHR
+			FROM policy 
+			WHERE equipmentUser = customer 
+				AND NOT (endDate < pStartDate OR startDate > pEndDate);
+		ELSE
+			INSERT INTO selectedEquipment(policyId, solutionTimeHR, responseTimeHR) 
+			SELECT policyId, solutionTimeHR, responseTimeHR
+			FROM policy 
+			WHERE equipmentUser = customer 
+				AND NOT (endDate < pStartDate OR startDate > pEndDate)
+				AND project = pProject;
+		END IF;
+	END IF;
+
+	-- CALCULOS DISPONIBILIDAD
+
+	-- tiempo transcurrido en horas
+	SELECT (DATEDIFF(pEndDate, pStartDate) * 24) INTO elapsedHr;
+
+	-- numero de equipos
+	SELECT count(*) INTO equipmentNum FROM selectedEquipment;
+
+	-- horas-equipo
+	SELECT elapsedHr * equipmentNum INTO equipmentHr;
+
+	-- sumatoria de horas-equipo fuera
+	SELECT sum(solutionTime) INTO downTimeSum
+		FROM ticket t
+			INNER JOIN selectedEquipment e ON t.policyId = e.policyId
+		WHERE t.created > pStartDate
+			AND t.created < pEndDate;
+
+	-- porcentaje de disponibilidad
+	SELECT ((equipmentHr - downTimeSum) / equipmentHr) * 100 INTO availability;
+
+	-- tiempo promedio de solucion
+	SELECT avg(solutionTime) INTO averageSolutionTime
+		FROM ticket t
+			INNER JOIN selectedEquipment e ON t.policyId = e.policyId
+		WHERE t.created > pStartDate
+			AND t.created < pEndDate;
+
+	-- TICKETS SOLUCIONADOS EN TIEMPO
+
+	-- numero de tickets en scope
+	SELECT count(*) INTO totalTickets
+		FROM ticket t
+			INNER JOIN selectedEquipment e ON t.policyId = e.policyId
+		WHERE t.created > pStartDate
+			AND t.created < pEndDate;
+
+	SELECT (count(*) / totalTickets) * 100 INTO onTimeResolvedTickets
+		FROM ticket t
+			INNER JOIN selectedEquipment e ON t.policyId = e.policyId
+		WHERE t.created > pStartDate
+			AND t.created < pEndDate
+			AND t.solutionTime <= e.solutionTimeHR;
+
+	-- tickets atendidos a tiempo
+	SELECT (count(*) / totalTickets) * 100 INTO onTimeAttendedTickets
+		FROM ticket t
+			INNER JOIN selectedEquipment e ON t.policyId = e.policyId
+		WHERE t.created > pStartDate
+			AND t.created < pEndDate
+			AND t.realResponseTime <= e.responseTimeHR;
+
+	-- se elimina la tabla temporal
+	DROP TABLE selectedEquipment;
+	
+	-- datos de retorno
+	SELECT 	availability AS availability,
+			averageSolutionTime AS solutionAverageTime,
+			onTimeResolvedTickets AS onTimeResolvedTickets,
+			onTimeAttendedTickets AS onTimeAttendedTickets;
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetLimitedProjectList
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetLimitedProjectList$$
+CREATE PROCEDURE blackstarDb.GetLimitedProjectList(pUser VARCHAR(100))
+BEGIN
+
+	SELECT DISTINCT 
+		p.project as project
+	FROM blackstarDb.policy p
+	WHERE p.startDate <= NOW() AND NOW() <= p.endDate
+	AND p.equipmentUser = pUser
+	ORDER BY project;
+
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetLimitedSurveyServiceList
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetLimitedSurveyServiceList$$
+CREATE PROCEDURE blackstarDb.GetLimitedSurveyServiceList(pUser VARCHAR(100))
+BEGIN
+	
+	SELECT DISTINCT
+		s.surveyServiceId AS DT_RowId,
+		s.surveyServiceId AS surveyServiceNumber,
+		p.customer AS customer,
+		p.project AS project,
+		s.surveyDate AS surveyDate,
+		s.score AS score
+	FROM surveyService s
+		INNER JOIN serviceOrder o ON o.surveyServiceId = s.surveyServiceId
+		INNER JOIN policy p ON o.policyId = p.policyId
+    WHERE p.equipmentUser = pUser
+	ORDER BY surveyDate DESC;
+	
+END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetLimitedServiceOrderList
@@ -1025,19 +1203,23 @@ BEGIN
 	SELECT 
 		t.ticketId AS DT_RowId,
 		t.ticketNumber AS ticketNumber,
-		t.created AS ticketDate,
+		t.created AS created,
+		p.contactName AS contactName,
+		p.serialNumber AS serialNumber,
 		p.customer AS customer,
 		e.equipmentType AS equipmentType,
-		p.responseTimeHR AS responseTime,
+		p.responseTimeHR AS responseTimeHR,
 		p.project AS project,
 		ts.ticketStatus AS ticketStatus,
-		'' AS placeHolder
+		IFNULL(bu.name, '') AS asignee,
+		'' AS asignar
 	FROM ticket t
 		INNER JOIN policy p ON p.policyId = t.policyId
 		INNER JOIN equipmentType e ON e.equipmentTypeId = p.equipmentTypeId
 		INNER JOIN ticketStatus ts ON t.ticketStatusId = ts.ticketStatusId
+		LEFT OUTER JOIN blackstarUser bu ON bu.email = t.asignee
 	WHERE p.equipmentUser = pUser
-	ORDER BY ticketDate;
+	ORDER BY created;
 END$$
 
 -- -----------------------------------------------------------------------------
@@ -1402,27 +1584,52 @@ END$$
 	-- blackstarDb.GetStatusKPI
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetStatusKPI$$
-CREATE PROCEDURE blackstarDb.`GetStatusKPI`(pType CHAR(1), pProject varchar(100), startDate DATETIME, endDate DATETIME)
+CREATE PROCEDURE blackstarDb.`GetStatusKPI`(pType CHAR(1), pProject varchar(100), startDate DATETIME, endDate DATETIME, pUser VARCHAR(100))
 BEGIN
 IF pProject = 'All' THEN
-	SELECT ts.ticketStatus as name, count(*) as value
-	FROM ticket tk
-	INNER JOIN policy py on tk.policyId = py.policyId
-	INNER JOIN serviceCenter sc ON py.serviceCenterId = sc.serviceCenterId
-	INNER JOIN ticketStatus ts ON tk.ticketStatusId = ts.ticketStatusId
-	WHERE tk.created >= startDate AND tk.created <= endDate
-	AND sc.serviceCenterId LIKE pType
-	GROUP BY tk.ticketStatusId;
+	IF pUser = '' THEN
+		SELECT ts.ticketStatus as name, count(*) as value
+		FROM ticket tk
+			INNER JOIN policy py on tk.policyId = py.policyId
+			INNER JOIN serviceCenter sc ON py.serviceCenterId = sc.serviceCenterId
+			INNER JOIN ticketStatus ts ON tk.ticketStatusId = ts.ticketStatusId
+		WHERE tk.created >= startDate AND tk.created <= endDate
+			AND sc.serviceCenterId LIKE pType
+		GROUP BY tk.ticketStatusId;
+	ELSE
+		SELECT ts.ticketStatus as name, count(*) as value
+		FROM ticket tk
+			INNER JOIN policy py on tk.policyId = py.policyId
+			INNER JOIN serviceCenter sc ON py.serviceCenterId = sc.serviceCenterId
+			INNER JOIN ticketStatus ts ON tk.ticketStatusId = ts.ticketStatusId
+		WHERE tk.created >= startDate AND tk.created <= endDate
+			AND sc.serviceCenterId LIKE pType
+			AND py.equipmentUser = pUser
+		GROUP BY tk.ticketStatusId;
+	END IF;
 ELSE
-	SELECT ts.ticketStatus as name, count(*) as value
-	FROM ticket tk
-	INNER JOIN policy py on tk.policyId = py.policyId
-	INNER JOIN serviceCenter sc ON py.serviceCenterId = sc.serviceCenterId
-	INNER JOIN ticketStatus ts ON tk.ticketStatusId = ts.ticketStatusId
-	WHERE tk.created >= startDate AND tk.created <= endDate
-	AND sc.serviceCenterId LIKE pType
-	AND py.project = pProject
-	GROUP BY tk.ticketStatusId;
+	IF pUser = '' THEN
+		SELECT ts.ticketStatus as name, count(*) as value
+		FROM ticket tk
+			INNER JOIN policy py on tk.policyId = py.policyId
+			INNER JOIN serviceCenter sc ON py.serviceCenterId = sc.serviceCenterId
+			INNER JOIN ticketStatus ts ON tk.ticketStatusId = ts.ticketStatusId
+		WHERE tk.created >= startDate AND tk.created <= endDate
+			AND sc.serviceCenterId LIKE pType
+			AND py.project = pProject
+		GROUP BY tk.ticketStatusId;
+	ELSE
+		SELECT ts.ticketStatus as name, count(*) as value
+		FROM ticket tk
+			INNER JOIN policy py on tk.policyId = py.policyId
+			INNER JOIN serviceCenter sc ON py.serviceCenterId = sc.serviceCenterId
+			INNER JOIN ticketStatus ts ON tk.ticketStatusId = ts.ticketStatusId
+		WHERE tk.created >= startDate AND tk.created <= endDate
+			AND sc.serviceCenterId LIKE pType
+			AND py.project = pProject
+			AND py.equipmentUser = pUser
+		GROUP BY tk.ticketStatusId;
+	END IF;
 END IF;
 END$$
 
@@ -1430,23 +1637,44 @@ END$$
 	-- blackstarDb.GetTicketsByServiceCenterKPI
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetTicketsByServiceCenterKPI$$
-CREATE PROCEDURE blackstarDb.GetTicketsByServiceCenterKPI(pProject varchar(100), startDate DATETIME, endDate DATETIME)
+CREATE PROCEDURE blackstarDb.GetTicketsByServiceCenterKPI(pProject varchar(100), startDate DATETIME, endDate DATETIME, pUser VARCHAR(100))
 BEGIN
 IF pProject = 'All' THEN
-	SELECT sc.serviceCenter as name, count(*) as value
-	FROM ticket tk
-	INNER JOIN policy py on tk.policyId = py.policyId
-	INNER JOIN serviceCenter sc ON py.serviceCenterId = sc.serviceCenterId
-	WHERE tk.created >= startDate AND tk.created <= endDate
-	GROUP BY sc.serviceCenter;
+	IF pUser = '' THEN
+		SELECT sc.serviceCenter as name, count(*) as value
+		FROM ticket tk
+			INNER JOIN policy py on tk.policyId = py.policyId
+			INNER JOIN serviceCenter sc ON py.serviceCenterId = sc.serviceCenterId
+		WHERE tk.created >= startDate AND tk.created <= endDate
+		GROUP BY sc.serviceCenter;
+	ELSE
+		SELECT sc.serviceCenter as name, count(*) as value
+		FROM ticket tk
+			INNER JOIN policy py on tk.policyId = py.policyId
+			INNER JOIN serviceCenter sc ON py.serviceCenterId = sc.serviceCenterId
+		WHERE tk.created >= startDate AND tk.created <= endDate
+			AND py.equipmentUser = pUser
+		GROUP BY sc.serviceCenter;
+	END IF;
 ELSE
-	SELECT sc.serviceCenter as name, count(*) as value
-	FROM ticket tk
-	INNER JOIN policy py on tk.policyId = py.policyId
-	INNER JOIN serviceCenter sc ON py.serviceCenterId = sc.serviceCenterId
-	WHERE tk.created >= startDate AND tk.created <= endDate
-	AND py.project = pProject
-	GROUP BY sc.serviceCenter;
+	IF pUser = '' THEN
+		SELECT sc.serviceCenter as name, count(*) as value
+		FROM ticket tk
+			INNER JOIN policy py on tk.policyId = py.policyId
+			INNER JOIN serviceCenter sc ON py.serviceCenterId = sc.serviceCenterId
+		WHERE tk.created >= startDate AND tk.created <= endDate
+			AND py.project = pProject
+		GROUP BY sc.serviceCenter;
+	ELSE
+		SELECT sc.serviceCenter as name, count(*) as value
+		FROM ticket tk
+			INNER JOIN policy py on tk.policyId = py.policyId
+			INNER JOIN serviceCenter sc ON py.serviceCenterId = sc.serviceCenterId
+		WHERE tk.created >= startDate AND tk.created <= endDate
+			AND py.project = pProject
+			AND py.equipmentUser = pUser
+		GROUP BY sc.serviceCenter;
+	END IF;
 END IF;
 END$$
 
@@ -1454,23 +1682,44 @@ END$$
 	-- blackstarDb.GetReportsByEquipmentTypeKPI
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetReportsByEquipmentTypeKPI$$
-CREATE PROCEDURE blackstarDb.GetReportsByEquipmentTypeKPI(pProject varchar(100), startDate DATETIME, endDate DATETIME)
+CREATE PROCEDURE blackstarDb.GetReportsByEquipmentTypeKPI(pProject varchar(100), startDate DATETIME, endDate DATETIME, pUser VARCHAR(100))
 BEGIN
 IF pProject = 'All' THEN
-	SELECT et.equipmentType as name , count(*) as value
-	FROM ticket tk
-	INNER JOIN policy py on py.policyId = tk.policyId
-	INNER JOIN equipmentType et ON et.equipmentTypeId = py.equipmentTypeId
-	WHERE tk.created >= startDate AND tk.created <= endDate
-	GROUP BY py.equipmentTypeId;
+	IF pUser = '' THEN
+		SELECT et.equipmentType as name , count(*) as value
+		FROM ticket tk
+			INNER JOIN policy py on py.policyId = tk.policyId
+			INNER JOIN equipmentType et ON et.equipmentTypeId = py.equipmentTypeId
+		WHERE tk.created >= startDate AND tk.created <= endDate
+		GROUP BY py.equipmentTypeId;
+	ELSE
+		SELECT et.equipmentType as name , count(*) as value
+		FROM ticket tk
+		INNER JOIN policy py on py.policyId = tk.policyId
+		INNER JOIN equipmentType et ON et.equipmentTypeId = py.equipmentTypeId
+		WHERE tk.created >= startDate AND tk.created <= endDate
+			AND py.equipmentUser = pUser
+		GROUP BY py.equipmentTypeId;
+	END IF;
 ELSE
-	SELECT et.equipmentType as name , count(*) as value
-	FROM ticket tk
-	INNER JOIN policy py on py.policyId = tk.policyId
-	INNER JOIN equipmentType et ON et.equipmentTypeId = py.equipmentTypeId
-	WHERE tk.created >= startDate AND tk.created <= endDate
-	AND py.project = pProject
-	GROUP BY py.equipmentTypeId;
+	IF pUser = '' THEN
+		SELECT et.equipmentType as name , count(*) as value
+		FROM ticket tk
+			INNER JOIN policy py on py.policyId = tk.policyId
+			INNER JOIN equipmentType et ON et.equipmentTypeId = py.equipmentTypeId
+		WHERE tk.created >= startDate AND tk.created <= endDate
+			AND py.project = pProject
+		GROUP BY py.equipmentTypeId;
+	ELSE
+		SELECT et.equipmentType as name , count(*) as value
+		FROM ticket tk
+			INNER JOIN policy py on py.policyId = tk.policyId
+			INNER JOIN equipmentType et ON et.equipmentTypeId = py.equipmentTypeId
+		WHERE tk.created >= startDate AND tk.created <= endDate
+			AND py.project = pProject
+			AND py.equipmentUser = pUser
+		GROUP BY py.equipmentTypeId;
+	END IF;
 END IF;
 END$$
 
@@ -3603,12 +3852,16 @@ DELIMITER ;
 -- Change History
 -- ---------------------------------------------------------------------------
 -- PR   Date    	Author	Description
--- --   --------   -------  --------------------------------------------------
+-- ---------------------------------------------------------------------------
 -- 1    08/08/2013  SAG  	Se aumenta el tamaño de ticket.serialNumber
 -- ---------------------------------------------------------------------------
--- 1    04/03/2014  SAG  	Se agregan columnas de portal
+-- 2    04/03/2014  SAG  	Se agregan columnas de portal
 -- ---------------------------------------------------------------------------
--- 1    19/03/2014  SAG  	Se agrega tabla equipmentUserSync
+-- 3    19/03/2014  SAG  	Se agrega tabla equipmentUserSync
+-- ---------------------------------------------------------------------------
+-- 4	01/04/2014	SAG		Se agrega processed a ticket 
+-- ---------------------------------------------------------------------------
+-- 5 	03/04/2014	SAG 	Se incrementa tamaño de campos de contacto
 -- ---------------------------------------------------------------------------
 
 USE blackstarDbTransfer;
@@ -3624,11 +3877,23 @@ BEGIN
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
 
+	-- Aumentando capacidad de campos de contacto
+	ALTER TABLE ticket MODIFY contact VARCHAR(200);
+	ALTER TABLE ticket MODIFY contactPhone VARCHAR(200);
+	ALTER TABLE ticket MODIFY contactEmail VARCHAR(200);
+	
+	-- Agregando ticket.processed
+	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDbTransfer' AND TABLE_NAME = 'ticket' AND COLUMN_NAME = 'processed') = 0  THEN
+		ALTER TABLE blackstarDbTransfer.ticket ADD processed INT NULL DEFAULT 1;
+	END IF;
+
+	-- Agregando equipmentUserSync
 	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDbTransfer' AND TABLE_NAME = 'equipmentUserSync') = 0 THEN
 		 CREATE TABLE blackstarDbTransfer.equipmentUserSync(
 			equipmentUserSyncId INTEGER NOT NULL AUTO_INCREMENT,
 			customerName VARCHAR(500),
-			equipmentUser VARCHAR(100) NULL
+			equipmentUser VARCHAR(100) NULL,
+			KEY(equipmentUserSyncId)
 		) ENGINE=INNODB;
 
 	END IF;
@@ -3673,6 +3938,7 @@ DROP PROCEDURE blackstarDbTransfer.upgradeSchema;
 -- -----------------------------------------------------------------------------
 -- 3    13/03/2014  SAG  	Soporte para un equipo en mas de una poliza
 -- -----------------------------------------------------------------------------
+-- 4	01/04/2014	SAG		Se implementa modelo STTP para tickets
 
 use blackstarDbTransfer;
 
@@ -3740,26 +4006,49 @@ BEGIN
 
 
 -- -----------------------------------------------------------------------------
-	-- LLENAR BASE DE DATOS DE TICKETS
+	-- INSERTAR TICKETS NUEVOS
 	INSERT INTO blackstarDb.ticket(
 		policyId,
 		ticketNumber,
-		user,
-		observations,
-		phoneResolved,
-		arrival,
-		employee,
-		closed,
-		created,
 		createdBy,
 		createdByUsr
 	)
-	SELECT p.policyId, tt.ticketNumber, tt.user, tt.observations, phoneResolved, tt.arrival, tt.employee, tt.closed, tt.created, 'TicketTransfer', 'sergio.aga'
+	SELECT p.policyId, tt.ticketNumber, 'TicketTransfer', 'sergio.aga'
 	FROM blackstarDbTransfer.ticket tt
 		INNER JOIN blackstarDbTransfer.policy pt ON tt.policyId = pt.policyId	
 		INNER JOIN blackstarDb.policy p ON p.serialNumber = pt.serialNumber AND pt.serialNumber != 'NA' AND p.project = pt.project
 	WHERE tt.ticketNumber NOT IN (SELECT ticketNumber FROM blackstarDb.ticket);
-	
+
+	-- ACTUALIZAR CERRADO SELECTIVO DE TICKETS
+	UPDATE blackstarDb.ticket t 
+		INNER JOIN blackstarDbTransfer.ticket tt ON t.ticketNumber = tt.ticketNumber SET
+		t.closed = tt.closed
+	WHERE tt.processed = 0
+	AND t.closed IS NULL AND tt.closed IS NOT NULL;
+
+	-- ACTUALIZACION DEL SERVICE ID DE CIERRE DEL TICKET
+	UPDATE blackstarDb.ticket t
+		INNER JOIN blackstarDbTransfer.ticket tt ON t.ticketNumber = tt.ticketNumber
+		INNER JOIN blackstarDb.serviceOrder so ON tt.serviceOrderNumber = so.serviceOrderNumber	
+	SET
+		t.serviceOrderId = so.serviceOrderId
+	WHERE tt.processed = 0;	
+
+	-- ACTUALIZAR ESTATUS TICKETS EXISTENTES
+	UPDATE blackstarDb.ticket t 
+		INNER JOIN blackstarDbTransfer.ticket tt ON t.ticketNumber = tt.ticketNumber SET
+		t.observations = tt.observations,
+		t.phoneResolved = tt.phoneResolved,
+		t.arrival = tt.arrival,
+		t.employee = tt.employee,
+		t.user = tt.user,
+		t.created = tt.created,
+		t.contact = tt.contact,
+		t.contactPhone = tt.contactPhone,
+		t.contactEmail = tt.contactEmail,
+		tt.processed = 1
+	WHERE tt.processed = 0;
+
 	-- ACTUALIZAR TIEMPOS DE RESPUESTA
 	UPDATE blackstarDb.ticket SET 
 		realResponseTime =  TIMESTAMPDIFF(HOUR, created, IFNULL(arrival, CURRENT_DATE()));
@@ -3854,14 +4143,7 @@ BEGIN
 		LEFT OUTER JOIN blackstarDb.followUp f ON o.serviceOrderId = f.serviceOrderId
 	WHERE st.followUp IS NOT NULL
 	AND f.followUpId IS NULL;
-	
-	-- ACTUALIZACION DEL SERVICE ID DE CIERRE DEL TICKET
-	UPDATE blackstarDb.ticket t
-		INNER JOIN blackstarDbTransfer.ticket tt ON t.ticketNumber = tt.ticketNumber
-		INNER JOIN blackstarDb.serviceOrder so ON tt.serviceOrderNumber = so.serviceOrderNumber	
-	SET
-		t.serviceOrderId = so.serviceOrderId;	
-	
+
 	-- ACTUALIZACION DEL ESTADO DE LOS TICKETS
 	CALL blackstarDb.UpdateTicketStatus();
 -- -----------------------------------------------------------------------------
@@ -3940,22 +4222,20 @@ BEGIN
 	SELECT DISTINCT customer, equipmentUser FROM policy
 	WHERE ifnull(equipmentUser, '') != '';
 
-	DECLARE c int ; 
-    SET c = 1 ;
-    DECLARE max int ; 
-    SET max = (SELECT count(*) FROM equipmentUserSync) ;   
-    DECLARE cust varchar(500);
-    DECLARE access varchar(100);                      
-    WHILE c <= max DO
-    	SET  customer = (SELECT FROM equipmentUserSync WHERE equipmentUserSyncId = c);
-    	SET  access = (SELECT FROM equipmentUserSync WHERE equipmentUserSyncId = c);
-    	Call UpsertUser('', customer);
-		Call CreateUserGroup('sysCliente','Cliente','');
+    SET @c = 1 ;
+    SET @max = (SELECT count(*) FROM equipmentUserSync) ;   
+    SET @customer = '';
+    SET @access = '';
+    WHILE @c <= @max DO
+    	SET  @customer = (SELECT customerName FROM equipmentUserSync WHERE equipmentUserSyncId = @c);
+    	SET  @access = (SELECT equipmentUser FROM equipmentUserSync WHERE equipmentUserSyncId = @c);
+    	Call blackstarDb.UpsertUser(@access, @customer);
+		Call blackstarDb.CreateUserGroup('sysCliente','Cliente',@access);
 
-      	SET c = c + 1 ;
+      	SET @c = @c + 1 ;
     END WHILE ;
 
-    TRUNCATE TABLE equipmentUserSync
+    TRUNCATE TABLE equipmentUserSync;
 -- -----------------------------------------------------------------------------
 END$$
 
@@ -4025,13 +4305,18 @@ DELIMITER ;
 -- PR   Date    AuthorDescription
 -- --   --------   -------  ------------------------------------
 -- 1    13/03/2014  SAG  	Version inicial. 
--- ---------------------------------------------------------------------------
+-- -----------------------------------------------------------------------------
+-- 2 	03/04/2014	SAG		Reemplazo de oficinas no-estandar
+-- -----------------------------------------------------------------------------
 
 use blackstarDbTransfer;
 
 -- -----------------------------------------------------------------------------
 -- ACTUALIZACION DE DATOS
 -- -----------------------------------------------------------------------------
+
+-- OFICINAS NO ESTANDAR
+UPDATE policy SET serviceCenter = 'Villahermosa IS' WHERE serviceCenter = 'ISEC';
 
 -- CAMBIAR LOS EQUIPOS QUE SE VAN A ELIMINAR
 UPDATE policy SET equipmentTypeId = 'B' WHERE equipmentTypeId = 'T';
@@ -4096,9 +4381,13 @@ UPDATE policy SET equipmentTypeId = 'I' WHERE equipmentTypeId = 'W';
 -- ELIMINANDO LOS TIPOS DE EQUIPOS INNECESARIOS
 UPDATE equipmentType SET equipmentType = 'BB' WHERE equipmentTypeId = 'B';
 UPDATE equipmentType SET equipmentType = 'MODULO' WHERE equipmentTypeId = 'O';
-UPDATE equipmentType SET equipmentType = 'PISO FALSO' WHERE equipmentTypeId = 'L';
-
 DELETE FROM equipmentType WHERE equipmentTypeId IN('T','R','H','J','K','W');
+
+-- AGREGANDO NUEVOS TIPOS DE EQUIPO
+INSERT INTO blackstarDb.equipmentType(equipmentTypeId, equipmentType)
+SELECT 'L', 'PISO FALSO' FROM blackstarDb.equipmentType
+WHERE (SELECT count(*) FROM blackstarDb.equipmentType WHERE equipmentTypeId = 'L') = 0
+LIMIT 1;
 
 -- ELIMINANDO LOS TIPOS DE SERVICIO INNECESARIOS
 UPDATE serviceOrder SET serviceTypeId = 'I' WHERE serviceTypeId = 'O';

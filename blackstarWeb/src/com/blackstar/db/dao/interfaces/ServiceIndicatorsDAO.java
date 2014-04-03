@@ -6,6 +6,7 @@ import java.util.List;
 import org.json.JSONObject;
 
 import com.blackstar.model.Servicecenter;
+import com.blackstar.model.dto.AvailabilityKpiDTO;
 import com.blackstar.model.sp.GetConcurrentFailuresKPI;
 import com.blackstar.model.sp.GetReportOSTableKPI;
 import com.blackstar.model.sp.GetStatisticsKPI;
@@ -28,4 +29,5 @@ public interface ServiceIndicatorsDAO {
   public List<GetStatisticsKPI> getStatisticsKPI(String project, Date startDate, Date endDate);
   public List<String> getProjectList();
   public List<String> getLimitedProjectList(String user);
+  public AvailabilityKpiDTO getAvailability(String project, Date startDate, Date endDate, String customer);
 }

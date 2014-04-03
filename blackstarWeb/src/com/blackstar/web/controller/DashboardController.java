@@ -48,10 +48,14 @@ public class DashboardController extends AbstractController {
 				session.setAttribute("staff", udService.getStaff());
 			}
 		} catch (final Throwable e) {
+			String error = "";
+			for(StackTraceElement trace : e.getStackTrace()){
+				error = error + " at " + trace.toString();
+			}
 			Logger.Log(LogLevel.ERROR,
-					e.getStackTrace()[0].toString(), e);
+					error, e);
 			e.printStackTrace();
-			model.addAttribute("errorDetails", e.getStackTrace()[0].toString());
+			model.addAttribute("errorDetails", error);
 			return "error";
 		}
 		return "dashboard";

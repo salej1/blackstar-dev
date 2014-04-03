@@ -11,6 +11,7 @@ import org.json.JSONObject;
 import com.blackstar.db.dao.interfaces.ServiceIndicatorsDAO;
 import com.blackstar.model.Chart;
 import com.blackstar.model.Servicecenter;
+import com.blackstar.model.dto.AvailabilityKpiDTO;
 import com.blackstar.model.sp.GetConcurrentFailuresKPI;
 import com.blackstar.model.sp.GetReportOSTableKPI;
 import com.blackstar.model.sp.GetStatisticsKPI;
@@ -253,6 +254,12 @@ implements ServiceIndicatorsService {
 	@Override
 	public List<String> getLimitedProjectList(String user) {
 		return dao.getLimitedProjectList(user);
+	}
+
+	@Override
+	public AvailabilityKpiDTO getAvailability(String project, Date startDate,
+			Date endDate, String user) throws Exception {
+		return dao.getAvailability(project, startDate, endDate, user);
 	}
 
 }

@@ -31,9 +31,13 @@ UPDATE policy SET equipmentTypeId = 'I' WHERE equipmentTypeId = 'W';
 -- ELIMINANDO LOS TIPOS DE EQUIPOS INNECESARIOS
 UPDATE equipmentType SET equipmentType = 'BB' WHERE equipmentTypeId = 'B';
 UPDATE equipmentType SET equipmentType = 'MODULO' WHERE equipmentTypeId = 'O';
-UPDATE equipmentType SET equipmentType = 'PISO FALSO' WHERE equipmentTypeId = 'L';
-
 DELETE FROM equipmentType WHERE equipmentTypeId IN('T','R','H','J','K','W');
+
+-- AGREGANDO NUEVOS TIPOS DE EQUIPO
+INSERT INTO blackstarDb.equipmentType(equipmentTypeId, equipmentType)
+SELECT 'L', 'PISO FALSO' FROM blackstarDb.equipmentType
+WHERE (SELECT count(*) FROM blackstarDb.equipmentType WHERE equipmentTypeId = 'L') = 0
+LIMIT 1;
 
 -- ELIMINANDO LOS TIPOS DE SERVICIO INNECESARIOS
 UPDATE serviceOrder SET serviceTypeId = 'I' WHERE serviceTypeId = 'O';

@@ -8,26 +8,28 @@
 -- Change History
 -- -----------------------------------------------------------------------------
 -- PR   Date    	Author	Description
--- --   --------   -------  ------------------------------------
+-- ---------------------------------------------------------------------------
 -- 1    11/11/2013  SAG  	Version inicial. Modificaciones a OS
--- --   --------   -------  ------------------------------------
+-- ---------------------------------------------------------------------------
 -- 2    12/11/2013  SAG  	Modificaciones a followUp - isSource
--- --   --------   -------  ------------------------------------
+-- ---------------------------------------------------------------------------
 -- 3    13/11/2013  SAG  	Se agrega scheduledService
--- --   --------   -------  ------------------------------------
+-- ---------------------------------------------------------------------------
 -- 4    28/11/2013  JAGH  	Se agregan tablas para captura de OS
--- --   --------   -------  ------------------------------------
+-- ---------------------------------------------------------------------------
 -- 5    12/12/2013  SAG  	Se agrega sequence y sequenceNumberPool
--- --   --------   -------  ------------------------------------
+-- ---------------------------------------------------------------------------
 -- 6	26/01/2014  LERV  	Se agrega tabla surveyService
--- --   --------   -------  ------------------------------------
+-- ---------------------------------------------------------------------------
 -- 7    09/02/2014  SAG  	Se cambia serviceOrderAdditionalEngineer por
 -- 							serviceOrderEmployee
--- --   --------   -------  ------------------------------------
+-- ---------------------------------------------------------------------------
 -- 8    12/03/2014  SAG  	Se agrega openCustomerId a policy
 --							Se agrega la entidad openCustomer
--- --   --------   -------  ------------------------------------
+-- ---------------------------------------------------------------------------
 -- 9    13/03/2014  SAG  	Se agrega equipmentUser a policy
+-- ---------------------------------------------------------------------------
+-- 10 	03/04/2014	SAG 	Se agregan campos de contacto para ticket
 -- ---------------------------------------------------------------------------
 
 use blackstarDb;
@@ -41,6 +43,17 @@ BEGIN
 -- -----------------------------------------------------------------------------
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
+
+-- AUMENTANDO CAPACIDAD DE CAMPOS DE CONTACTO
+	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'ticket' AND COLUMN_NAME = 'contact') = 0  THEN
+		ALTER TABLE blackstarDb.ticket ADD contact VARCHAR(200) NULL DEFAULT NULL;
+	END IF;
+	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'ticket' AND COLUMN_NAME = 'contactPhone') = 0  THEN
+		ALTER TABLE blackstarDb.ticket ADD contactPhone VARCHAR(200) NULL DEFAULT NULL;
+	END IF;
+	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'ticket' AND COLUMN_NAME = 'contactEmail') = 0  THEN
+		ALTER TABLE blackstarDb.ticket ADD contactEmail VARCHAR(200) NULL DEFAULT NULL;
+	END IF;
 
 -- AGREGANDO COLUMNA equipmentUser A policy
 	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'policy' AND COLUMN_NAME = 'equipmentUser') = 0  THEN

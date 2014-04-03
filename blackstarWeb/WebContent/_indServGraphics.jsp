@@ -56,6 +56,32 @@
 
 
 	<div id="content" class="container_16 clearfix">
+    <div class="box">
+      <h2>DISPONIBILIDAD</h2>
+      <p/>
+      <table style="width:350px" cellpadding="0" cellspacing="0">
+        <tr>
+          <td style="width:250px"><h3>Disponiblidad</h3> </td>
+          <td style="width:50px"><h3> ${availabilityKpi.availability}</h3></td>
+          <td style="width:20px"><h3>%</h3></td>
+        </tr>
+        <tr>
+          <td><h3>Tiempo promedio de solucion</h3></td>
+          <td><h3>${availabilityKpi.solutionAverageTime}</h3></td>
+          <td><h3>Hr</h3></td>
+        </tr>
+        <tr>
+          <td><h3>Tickets solucionados en tiempo</h3></td>
+          <td><h3>${availabilityKpi.onTimeResolvedTickets}</h3></td>
+          <td><h3>%</h3></td>
+        </tr>
+        <tr>
+          <td><h3>Tickets atendidos en tiempo</h3></td>
+          <td><h3>${availabilityKpi.onTimeAttendedTickets}</h3></td>
+          <td><h3>%</h3></td>
+        </tr>
+      </table>
+      </div>
 	    <c:forEach var="chart" items="${charts}" varStatus="counter">
 	      <div class="grid_16">
 			  <div class="box">

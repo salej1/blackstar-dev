@@ -18,7 +18,7 @@
 			"bInfo": false,
 			"sPaginationType": "full_numbers",
 			"aaData": data,
-			"sDom": '<"top"i>rt<"bottom"><"clear">',
+			"sDom": '<"top"if>rt<"bottom"><"clear">',
 			"aaSorting": [],
 			"aoColumns": [
 						  { "mData": "officeName" },

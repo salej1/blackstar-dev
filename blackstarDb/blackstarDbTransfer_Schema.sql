@@ -8,7 +8,7 @@
 -- Change History
 -- ---------------------------------------------------------------------------
 -- PR   Date    	Author	Description
--- --   --------   -------  --------------------------------------------------
+-- ---------------------------------------------------------------------------
 -- 1    08/08/2013  SAG  	Se aumenta el tamaño de ticket.serialNumber
 -- ---------------------------------------------------------------------------
 -- 2    04/03/2014  SAG  	Se agregan columnas de portal
@@ -16,6 +16,8 @@
 -- 3    19/03/2014  SAG  	Se agrega tabla equipmentUserSync
 -- ---------------------------------------------------------------------------
 -- 4	01/04/2014	SAG		Se agrega processed a ticket 
+-- ---------------------------------------------------------------------------
+-- 5 	03/04/2014	SAG 	Se incrementa tamaño de campos de contacto
 -- ---------------------------------------------------------------------------
 
 USE blackstarDbTransfer;
@@ -31,6 +33,11 @@ BEGIN
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
 
+	-- Aumentando capacidad de campos de contacto
+	ALTER TABLE ticket MODIFY contact VARCHAR(200);
+	ALTER TABLE ticket MODIFY contactPhone VARCHAR(200);
+	ALTER TABLE ticket MODIFY contactEmail VARCHAR(200);
+	
 	-- Agregando ticket.processed
 	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDbTransfer' AND TABLE_NAME = 'ticket' AND COLUMN_NAME = 'processed') = 0  THEN
 		ALTER TABLE blackstarDbTransfer.ticket ADD processed INT NULL DEFAULT 1;

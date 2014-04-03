@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.blackstar.model.Chart;
+import com.blackstar.model.dto.AvailabilityKpiDTO;
 import com.blackstar.model.sp.GetConcurrentFailuresKPI;
 import com.blackstar.model.sp.GetReportOSTableKPI;
 import com.blackstar.model.sp.GetStatisticsKPI;
@@ -23,4 +24,5 @@ public interface ServiceIndicatorsService {
 	public List<GetStatisticsKPI> getStatisticsKPI(String project, Date startDate, Date endDate);
 	public List<String> getProjectList();
 	public List<String> getLimitedProjectList(String user);
+	public AvailabilityKpiDTO getAvailability(String project, Date startDate, Date endDate, String user) throws Exception;
 }
