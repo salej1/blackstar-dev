@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 public class User implements java.io.Serializable {
+	Integer blackstarUserId;
 	String userEmail;
 	String userName;
 	List<String> userGroups = new ArrayList<String>();
@@ -21,6 +22,12 @@ public class User implements java.io.Serializable {
 	
 	public String getUserEmail() {
 		return userEmail;
+	}
+	
+	public User(Integer _id, String _email, String _userName) {
+		blackstarUserId = _id;
+		userName = _userName;
+		userEmail = _email;
 	}
 	
 	public User(String _email, String _userName) {
@@ -66,5 +73,13 @@ public class User implements java.io.Serializable {
 		}
 		
 		return retval;
+	}
+
+	public Integer getBlackstarUserId() {
+		return blackstarUserId;
+	}
+
+	public void setBlackstarUserId(Integer blackstarUserId) {
+		this.blackstarUserId = blackstarUserId;
 	}
 }

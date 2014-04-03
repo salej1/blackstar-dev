@@ -120,6 +120,7 @@ BEGIN
            ticketId Int(11) NOT NULL,
            workerRoleTypeId Int(11) NOT NULL,
            blackstarUserId Int(11) NOT NULL,
+		   assignedDate Datetime NOT NULL,
            PRIMARY KEY (`_id`)
          )ENGINE=INNODB;
 	END IF;

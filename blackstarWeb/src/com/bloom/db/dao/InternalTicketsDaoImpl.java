@@ -9,6 +9,7 @@ import org.springframework.jdbc.core.RowMapper;
 
 import com.blackstar.db.dao.AbstractDAO;
 import com.blackstar.model.Followup;
+import com.blackstar.model.User;
 import com.bloom.common.bean.InternalTicketBean;
 import com.bloom.model.dto.DeliverableTypeDTO;
 import com.bloom.model.dto.TicketDetailDTO;
@@ -47,6 +48,18 @@ public class InternalTicketsDaoImpl extends AbstractDAO implements InternalTicke
 	StringBuilder sqlBuilder = new StringBuilder("CALL GetBloomTicketTeam(?);");
 	return (List<TicketTeamDTO>) getJdbcTemplate().query(sqlBuilder.toString()
 			     , new Object[]{ticketId}, getMapperFor(TicketTeamDTO.class));
+  }
+  
+  public List<User> getAsigneedUser(Integer ticketId){
+	StringBuilder sqlBuilder = new StringBuilder("CALL GetBloomTicketResponsible(?);");
+	return (List<User>) getJdbcTemplate().query(sqlBuilder.toString()
+				     , new Object[]{ticketId}, getMapperFor(User.class));
+  }
+  
+  public List<User> getResponseUser(Integer ticketId){
+	StringBuilder sqlBuilder = new StringBuilder("CALL GetBloomTicketUserForResponse(?);");
+	return (List<User>) getJdbcTemplate().query(sqlBuilder.toString()
+			     , new Object[]{ticketId}, getMapperFor(User.class));
   }
   
   public void addFollow(Integer ticketId, Integer userId, String comment){

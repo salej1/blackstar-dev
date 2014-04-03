@@ -82,16 +82,25 @@ public class InternalTicketsController extends AbstractController {
   public String addFollow(@RequestParam(required = true) Integer ticketId
 		                , @RequestParam(required = true) Integer userId
 		                , @RequestParam(required = true) String comment
+		                , @RequestParam(required = true) Integer userToAssign
 				                                    , ModelMap model) {
 	try {
+		//Comment
+		if(userToAssign == -2){
+			userToAssign = internalTicketsService.getAsigneed(ticketId)
+				                                 .getBlackstarUserId();
+		} else if (userToAssign == -3){ //Response
+			userToAssign = internalTicketsService.getResponseUser(ticketId)
+                                                    .getBlackstarUserId();
+		}
 		internalTicketsService.addFollow(ticketId, userId, comment);
-		internalTicketsService.addTicketTeam(ticketId, 2, userId);
+		internalTicketsService.addTicketTeam(ticketId, 1, userToAssign);
 		model.addAttribute("followUps", internalTicketsService.getFollowUps(ticketId));
 	} catch (Exception e) {
-			Logger.Log(LogLevel.ERROR,e.getStackTrace()[0].toString(), e);
-			e.printStackTrace();
-			model.addAttribute("errorDetails", e.getStackTrace()[0].toString());
-			return "error";
+		Logger.Log(LogLevel.ERROR,e.getStackTrace()[0].toString(), e);
+		e.printStackTrace();
+		model.addAttribute("errorDetails", e.getStackTrace()[0].toString());
+		return "error";
 	}
 	return "bloom/_ticketFollow";
   }
@@ -112,20 +121,4 @@ public class InternalTicketsController extends AbstractController {
 	}
 	return new ResponseEntity<HttpStatus>(HttpStatus.OK);
   }
-  
-  @RequestMapping(value = "/ticketDetail/assignTicket.do", method = RequestMethod.GET)
-  public ResponseEntity<HttpStatus> assignTicket(@RequestParam(required = true) Integer ticketId
-		      , @RequestParam(required = true) Integer userId, ModelMap model) {
-	try {
-		internalTicketsService.addTicketTeam(ticketId, 1, userId);
-	} catch (Exception e) {
-		Logger.Log(LogLevel.ERROR,e.getStackTrace()[0].toString(), e);
-		e.printStackTrace();
-		model.addAttribute("errorDetails", e.getStackTrace()[0].toString());
-		return new ResponseEntity<HttpStatus>(HttpStatus.BAD_REQUEST);
-	}
-	return new ResponseEntity<HttpStatus>(HttpStatus.OK);
-  }
-	
-
 }

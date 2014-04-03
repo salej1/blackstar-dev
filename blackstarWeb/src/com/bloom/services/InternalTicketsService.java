@@ -3,6 +3,7 @@ package com.bloom.services;
 import java.util.List;
 
 import com.blackstar.model.Followup;
+import com.blackstar.model.User;
 import com.bloom.common.bean.InternalTicketBean;
 import com.bloom.model.dto.DeliverableTypeDTO;
 import com.bloom.model.dto.TicketDetailDTO;
@@ -18,4 +19,6 @@ public interface InternalTicketsService {
 	public List<Followup> getFollowUps(Integer ticketId);
 	public List<DeliverableTypeDTO> getDeliverableTypes();
 	public void addDeliverableTrace(Integer ticketId, Integer deliverableTypeId);
+	public User getAsigneed(Integer ticketId);
+	public User getResponseUser(Integer ticketId);
 }

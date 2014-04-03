@@ -15,13 +15,14 @@
 --								bloomDb.BloomUpdateTransferTeam
 -- 								bloomDb.BloomUpdateTransferUsers
 -- 								bloomDb.BloomTransfer
--- 2    24/03/2014	DCB		Se Integra GetBloomTicketDetail
--- 3    24/03/2014	DCB		Se Integra GetBloomTicketTeam
--- 4    28/03/2014	DCB		Se Integra AddFollowUpToBloomTicket
---                          Se Integra UpsertBloomTicketTeam
---                          Se Integra GetBloomFollowUpByTicket
--- 5    31/03/2014  DCB     Se integra GetBloomDeliverableType  
---                  DCB     Se integra AddBloomDelivarable  
+-- 2    24/03/2014	DCB		Se Integra blackstarDb.GetBloomTicketDetail
+-- 3    24/03/2014	DCB		Se Integra blackstarDb.GetBloomTicketTeam
+-- 4    28/03/2014	DCB		Se Integra blackstarDb.AddFollowUpToBloomTicket
+--                          Se Integra blackstarDb.UpsertBloomTicketTeam
+--                          Se Integra blackstarDb.GetBloomFollowUpByTicket
+-- 5    31/03/2014  DCB     Se integra blackstarDb.GetBloomDeliverableType  
+--                  DCB     Se integra blackstarDb.AddBloomDelivarable  
+-- 5    02/04/2014  DCB     Se integra blackstarDb.GetBloomTicketResponsible
 --------------------------------------------------------------------------------
 
 
@@ -320,7 +321,7 @@ CREATE PROCEDURE blackstardb.`GetBloomTicketTeam`(ticket INTEGER)
 BEGIN
 
 SELECT *
-FROM ((SELECT _id id, ticketId ticketId, workerRoleTypeId workerRoleTypeId, blackstarUserId blackstarUserId
+FROM ((SELECT _id id, ticketId ticketId, workerRoleTypeId workerRoleTypeId, blackstarUserId blackstarUserId, assignedDate assignedDate
        FROM bloomTicketTeam WHERE ticketId = ticket) AS ticketTeam
        LEFT JOIN (SELECT bu.blackstarUserId refId, bu.name blackstarUserName
            FROM blackstaruser bu) AS j1
@@ -352,8 +353,11 @@ BEGIN
 
 IF NOT EXISTS (SELECT * FROM bloomTicketTeam 
                WHERE ticketId = pTicketId AND blackstarUserId = pBlackstarUserId) THEN
-    INSERT INTO blackstarDb.bloomTicketTeam(ticketId, workerRoleTypeId, blackstarUserId)
-    VALUES(pTicketId, pWorkerRoleTypeId, pBlackstarUserId);   
+    INSERT INTO blackstarDb.bloomTicketTeam(ticketId, workerRoleTypeId, blackstarUserId, assignedDate)
+    VALUES(pTicketId, pWorkerRoleTypeId, pBlackstarUserId, NOW());   
+ELSE
+   UPDATE blackstarDb.bloomTicketTeam SET assignedDate = NOW(), workerRoleTypeId = pWorkerRoleTypeId
+   WHERE ticketId = pTicketId AND blackstarUserId = pBlackstarUserId;
 END IF;
 IF (pWorkerRoleTypeId = 1) THEN
     UPDATE blackstarDb.bloomTicketTeam SET workerRoleTypeId = 2
@@ -403,6 +407,47 @@ DECLARE counter INTEGER;
 	  INSERT INTO bloomDeliverableTrace (bloomTicketId, deliverableTypeId, delivered, date)
     VALUES (pTicketId, pDeliverableTypeId, 1, NOW());
   END IF;  
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetBloomTicketResponsible
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstardb.GetBloomTicketResponsible$$
+CREATE PROCEDURE blackstardb.`GetBloomTicketResponsible`(pTicketId INTEGER)
+BEGIN
+
+DECLARE responsableId INTEGER;
+
+SET responsableId = (SELECT blackstarUserId 
+                     FROM bloomTicketTeam 
+                     WHERE ticketId = pTicketId
+                           AND workerRoleTypeId = 1
+                     LIMIT 1);
+SELECT * 
+FROM blackstaruser
+WHERE blackstarUserId = responsableId;
+
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetBloomTicketResponsible
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstardb.GetBloomTicketUserForResponse$$
+CREATE PROCEDURE blackstardb.`GetBloomTicketUserForResponse`(pTicketId INTEGER)
+BEGIN
+
+DECLARE responseUserId INTEGER;
+
+SET responseUserId = (SELECT blackstarUserId 
+                     FROM bloomTicketTeam 
+                     WHERE ticketId = pTicketId
+                           AND workerRoleTypeId = 2
+                     ORDER BY assignedDate DESC
+                     LIMIT 1);
+SELECT * 
+FROM blackstaruser
+WHERE blackstarUserId = responseUserId;
+
 END$$
 
 DELIMITER ;

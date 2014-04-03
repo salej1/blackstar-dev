@@ -1176,7 +1176,7 @@ DROP PROCEDURE IF EXISTS blackstarDb.GetUserData$$
 CREATE PROCEDURE blackstarDb.GetUserData(pEmail VARCHAR(100))
 BEGIN
 
-        SELECT u.email AS userEmail, u.name AS userName, g.name AS groupName
+        SELECT u.email AS userEmail, u.name AS userName, g.name AS groupName, u.blackstarUserId as blackstarUserId
         FROM blackstarUser_userGroup ug
                 INNER JOIN blackstarUser u ON u.blackstarUserId = ug.blackstarUserId
                 LEFT OUTER JOIN userGroup g ON g.userGroupId = ug.userGroupId

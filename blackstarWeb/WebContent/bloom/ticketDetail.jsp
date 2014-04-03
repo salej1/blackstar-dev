@@ -24,6 +24,9 @@
 	</head>
 	<body>
 <script type="text/javascript">
+
+  var followType;
+  
 Date.prototype.format = function(format) //author: meizz
 {
   var o = {
@@ -100,30 +103,34 @@ $(document).ready(function () {
 });
 
 
-function addSeguimiento(){
+function addSeguimiento(type){
 	var d = new Date(); 
 	$("#seguimientoCapture").show();	
 	$("#seguimientoStamp").html(d.format('dd/MM/yyyy h:mm:ss') + ' ${ user.userName }');
 	$("#seguimientoText").val('');
-	$("#who").val('-1');
+	$("#who").val("-1");
+	followType = type;
+	if(type == "1"){
+		$("#assignamentArea").show();
+	} else {
+		$("#assignamentArea").hide(); 
+	}
 }
 
 function applySeguimiento(){
-	$("#followDetail").load("${pageContext.request.contextPath}/bloom/ticketDetail/addFollow.do?ticketId=${ticketDetail.id}&userId=" 
-			                      + $("#who").val() + "&comment=" + $("#seguimientoText").val().replace(/ /g, '%20'));
+	var who;
+	if(followType == "1"){
+		who = $("#who").val();
+	} else if(followType == "2"){
+		who = "-2";
+	}else { 
+		who = "-3";
+	}
+	
+	$("#followDetail").load("${pageContext.request.contextPath}/bloom/ticketDetail/addFollow.do?ticketId=${ticketDetail.id}&userId=${ user.blackstarUserId }" 
+			                    + "&userToAssign=" + who + "&comment=" + $("#seguimientoText").val().replace(/ /g, '%20'));
 	$("#seguimientoCapture").hide();	
 }
-
-  function assignNow(){
-	  $.ajax({
-	        type: "GET",
-	        url: "assignTicket.do",
-	        data: "ticketId=${ticketDetail.id}&userId=" + $("#selectAsignee").val(),
-	        success: function(html) {
-	        	alert("Usuario asignado correctamente");
-	        }
-	    });
-  }
 
 function cancelAddSeguimiento(){
 	$("#seguimientoCapture").hide();
@@ -147,25 +154,6 @@ function cancelAddSeguimiento(){
 					
 						</div>
 						<table>
-							<tr>
-									<td style="width:200px;">Asignado a:</td>
-									<td colspan="4">
-										<select id="selectAsignee"  style="width:100%;">
-											<c:forEach var="employee" items="${staff}">
-												<option value="${employee.id}"
-												  <c:forEach var="current" items="${ticketTeam}">
-												    <c:if test="${ (current.blackstarUserId == employee.id) && (current.workerRoleTypeId == 1) }">
-													  selected = "true"
-												    </c:if>
-												  </c:forEach>
-												>${employee.name}</option>
-											</c:forEach>
-										</select>
-									</td>
-									<td>
-									  <button class="searchButton" onclick="javascript:assignNow(); return false;">Asignar ahora</button>
-									</td>
-								</tr>
 							<tr>
 								<td>Folio:</td>
 								<td colspan="3" style="width:200px;"><input type="text" id="fldFolio" style="width:95%;" readOnly="true" value="${ticketDetail.ticketNumber}"/></td>
@@ -196,6 +184,19 @@ function cancelAddSeguimiento(){
 								<td>Oficina</td>
 								<td><input type="text" style="width:95%;" readOnly="true" value="${ticketDetail.officeName}"/></td>
 								<!-- <td></td> -->
+							</tr>
+							<tr>
+								<td>Persona asignada
+								</td>
+								<td colspan="7">
+								    <input type="text" style="width:95%;" readOnly="true"
+                                             <c:forEach var="current" items="${ticketTeam}">
+												    <c:if test="${current.workerRoleTypeId == 1}">
+													  value="${current.blackstarUserName}"
+												    </c:if>
+												  </c:forEach>
+                                     />
+								 </td>
 							</tr>
 							<tr>
 								<td>Fecha y hora de respuesa</td>
@@ -245,7 +246,9 @@ function cancelAddSeguimiento(){
 											<div>
 												<Label id="seguimientoStamp">stamp</Label>
 											</div>
-											<div> Asignar a:
+											<div> 
+											   <div id="assignamentArea">
+											     Asignar a:
 												  <select id="who" style="width:200px;">
 												    <option value="-1">Seleccione</option>
 												    <c:forEach var="current" items="${staff}" >
@@ -253,6 +256,7 @@ function cancelAddSeguimiento(){
 												    </c:forEach>
 												  </select>
 												<p></p>
+												</div>
 												<textarea id="seguimientoText" rows="5" style="width:65%;"></textarea>
 												<button class="searchButton" onclick="applySeguimiento();">Agregar</button>
 												<button class="searchButton" onclick="cancelAddSeguimiento();">Cancelar</button>
@@ -264,7 +268,13 @@ function cancelAddSeguimiento(){
 								<tbody>
 									<tr>
 										<td>
-											<button class="searchButton" onclick="addSeguimiento();">Agregar seguimiento</button>
+											<button class="searchButton" onclick="addSeguimiento(1);">Asignar</button>
+										</td>
+										<td>
+											<button class="searchButton" onclick="addSeguimiento(3);">Responder</button>
+										</td>
+										<td>
+											<button class="searchButton" onclick="addSeguimiento(2);">Comentar</button>
 										</td>
 									</tr>
 								<tbody>

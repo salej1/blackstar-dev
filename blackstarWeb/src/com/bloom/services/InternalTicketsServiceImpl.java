@@ -3,6 +3,7 @@ package com.bloom.services;
 import java.util.List;
 
 import com.blackstar.model.Followup;
+import com.blackstar.model.User;
 import com.blackstar.services.AbstractService;
 import com.bloom.common.bean.InternalTicketBean;
 import com.bloom.db.dao.InternalTicketsDao;
@@ -56,5 +57,24 @@ public class InternalTicketsServiceImpl extends AbstractService
   public void addDeliverableTrace(Integer ticketId, Integer deliverableTypeId){
 	internalTicketsDao.addDeliverableTrace(ticketId, deliverableTypeId);
   }
+  
+  public User getAsigneed(Integer ticketId){
+	List<User> users = internalTicketsDao.getAsigneedUser(ticketId);
+	User asigneed = null;
+	if(users.size() > 0){
+	  asigneed = users.get(0);
+	}
+	return asigneed;
+  }
+  
+  public User getResponseUser(Integer ticketId){
+	List<User> users = internalTicketsDao.getResponseUser(ticketId);
+	User toResponse = null;
+	if(users.size() > 0){
+	  toResponse = users.get(0);
+	}
+	return toResponse;
+  }
+  
 
 }

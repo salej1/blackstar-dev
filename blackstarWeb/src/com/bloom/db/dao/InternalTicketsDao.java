@@ -11,7 +11,10 @@ import java.util.List;
 
 
 
+
+
 import com.blackstar.model.Followup;
+import com.blackstar.model.User;
 import com.bloom.common.bean.InternalTicketBean;
 import com.bloom.model.dto.DeliverableTypeDTO;
 import com.bloom.model.dto.TicketDetailDTO;
@@ -27,4 +30,6 @@ public interface InternalTicketsDao {
   public List<Followup> getFollowUps(Integer ticketId);
   public List<DeliverableTypeDTO> getDeliverableTypes();
   public void addDeliverableTrace(Integer ticketId, Integer deliverableTypeId);
+  public List<User> getAsigneedUser(Integer ticketId);
+  public List<User> getResponseUser(Integer ticketId);
 }

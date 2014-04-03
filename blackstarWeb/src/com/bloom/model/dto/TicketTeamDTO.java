@@ -1,5 +1,7 @@
 package com.bloom.model.dto;
 
+import java.util.Date;
+
 public class TicketTeamDTO {
 	
   private Integer id;
@@ -8,6 +10,7 @@ public class TicketTeamDTO {
   private String workerRoleTypeName;
   private Integer blackstarUserId;
   private String blackstarUserName;
+  private Date assignedDate;
   
   public Integer getId() {
 	return id;
@@ -44,6 +47,12 @@ public class TicketTeamDTO {
   }
   public void setBlackstarUserName(String blackstarUserString) {
 	this.blackstarUserName = blackstarUserString;
+  }
+  public Date getAssignedDate() {
+	return assignedDate;
+  }
+  public void setAssignedDate(Date assignedDate) {
+	this.assignedDate = assignedDate;
   }
   
 }
