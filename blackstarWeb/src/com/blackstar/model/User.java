@@ -82,4 +82,12 @@ public class User implements java.io.Serializable {
 	public void setBlackstarUserId(Integer blackstarUserId) {
 		this.blackstarUserId = blackstarUserId;
 	}
+
+	public void setUserEmail(String userEmail) {
+		this.userEmail = userEmail;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
 }

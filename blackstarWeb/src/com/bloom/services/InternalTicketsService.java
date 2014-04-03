@@ -21,4 +21,5 @@ public interface InternalTicketsService {
 	public void addDeliverableTrace(Integer ticketId, Integer deliverableTypeId);
 	public User getAsigneed(Integer ticketId);
 	public User getResponseUser(Integer ticketId);
+	public void sendNotification(Integer fromUserId, Integer toUserId , Integer ticketId, String detail);
 }

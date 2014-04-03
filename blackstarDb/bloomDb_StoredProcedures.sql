@@ -23,6 +23,7 @@
 -- 5    31/03/2014  DCB     Se integra blackstarDb.GetBloomDeliverableType  
 --                  DCB     Se integra blackstarDb.AddBloomDelivarable  
 -- 5    02/04/2014  DCB     Se integra blackstarDb.GetBloomTicketResponsible
+--                  DCB     Se integra blackstarDb.GetUserById
 --------------------------------------------------------------------------------
 
 
@@ -449,5 +450,20 @@ FROM blackstaruser
 WHERE blackstarUserId = responseUserId;
 
 END$$
+
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetBloomTicketResponsible
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstardb.GetUserById$$
+CREATE PROCEDURE blackstardb.`GetUserById`(pId INTEGER)
+BEGIN
+
+        SELECT u.blackstarUserId blackstarUserId, u.email userEmail, u.name userName
+        FROM blackstarUser u
+        WHERE u.blackstarUserId = pId;
+        
+END$$
+
 
 DELIMITER ;

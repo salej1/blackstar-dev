@@ -2,9 +2,12 @@ package com.bloom.services;
 
 import java.util.List;
 
+import com.blackstar.db.dao.interfaces.UserDAO;
+import com.blackstar.interfaces.IEmailService;
 import com.blackstar.model.Followup;
 import com.blackstar.model.User;
 import com.blackstar.services.AbstractService;
+import com.blackstar.services.EmailServiceFactory;
 import com.bloom.common.bean.InternalTicketBean;
 import com.bloom.db.dao.InternalTicketsDao;
 import com.bloom.model.dto.DeliverableTypeDTO;
@@ -15,9 +18,14 @@ public class InternalTicketsServiceImpl extends AbstractService
                                         implements InternalTicketsService {
 
   private InternalTicketsDao internalTicketsDao = null;
+  private UserDAO uDAO = null;
   
   public void setInternalTicketsDao(InternalTicketsDao internalTicketsDao) {
 	this.internalTicketsDao = internalTicketsDao;
+  }
+  
+  public void setuDAO(UserDAO uDAO) {
+	this.uDAO = uDAO;
   }
   
   @Override
@@ -75,6 +83,26 @@ public class InternalTicketsServiceImpl extends AbstractService
 	}
 	return toResponse;
   }
+  
+  public void sendNotification(Integer fromUserId, Integer toUserId , Integer ticketId, String detail){
+	StringBuilder message = new StringBuilder();
+	User to = uDAO.getUserById(toUserId);
+	User from = uDAO.getUserById(toUserId);
+	TicketDetailDTO ticket = getTicketDetail(ticketId);
+	IEmailService mail = EmailServiceFactory.getEmailService();
+	message.append(String.format("El ticket %s le ha sido asignada para dar seguimiento. Por favor revise a continuación los detalles: ", ticket.getTicketNumber()));
+	message.append(String.format("\r\n\r\n Solicitante: %s", ticket.getApplicantUserName() + " - " + ticket.getApplicantAreaName()));
+	message.append(String.format("\r\n\r\n Oficina: %s", ticket.getApplicantUserName() + " - " + ticket.getOfficeName()));
+	message.append(String.format("\r\n\r\n Tipo de Servicio: %s", ticket.getServiceTypeName()));
+	message.append(String.format("\r\n\r\n Proyecto: %s", ticket.getProject()));
+	message.append(String.format("\r\n\r\n Descripción: %s", ticket.getDescription()));
+	message.append(String.format("\r\n\r\n"));
+	message.append(String.format("\r\n\r\n Usuario que asignó: %s", from.getUserName()));
+	message.append(String.format("\r\n\r\n Mensaje: %s", detail));
+	mail.sendEmail(from.getUserEmail(), to.getUserEmail(), "Asignación de Ticket Interno " + ticket.getTicketNumber(), message.toString());
+  }
+
+
   
 
 }

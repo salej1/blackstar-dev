@@ -84,17 +84,23 @@ public class InternalTicketsController extends AbstractController {
 		                , @RequestParam(required = true) String comment
 		                , @RequestParam(required = true) Integer userToAssign
 				                                    , ModelMap model) {
+	boolean sendNotification = true;
 	try {
 		//Comment
 		if(userToAssign == -2){
 			userToAssign = internalTicketsService.getAsigneed(ticketId)
 				                                 .getBlackstarUserId();
+			sendNotification = false;
 		} else if (userToAssign == -3){ //Response
 			userToAssign = internalTicketsService.getResponseUser(ticketId)
                                                     .getBlackstarUserId();
 		}
 		internalTicketsService.addFollow(ticketId, userId, comment);
 		internalTicketsService.addTicketTeam(ticketId, 1, userToAssign);
+		if(sendNotification){
+		  internalTicketsService.sendNotification(userId, userToAssign, ticketId
+				                                                     , comment);
+		}
 		model.addAttribute("followUps", internalTicketsService.getFollowUps(ticketId));
 	} catch (Exception e) {
 		Logger.Log(LogLevel.ERROR,e.getStackTrace()[0].toString(), e);

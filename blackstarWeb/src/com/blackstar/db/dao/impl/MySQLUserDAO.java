@@ -62,5 +62,9 @@ public class MySQLUserDAO implements UserDAO {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	public User getUserById(Integer id){
+		return null;
+	}
 
 }
