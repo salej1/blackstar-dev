@@ -13,6 +13,7 @@ import java.util.List;
 
 
 
+
 import com.blackstar.model.Followup;
 import com.blackstar.model.User;
 import com.bloom.common.bean.InternalTicketBean;
@@ -32,4 +33,5 @@ public interface InternalTicketsDao {
   public void addDeliverableTrace(Integer ticketId, Integer deliverableTypeId);
   public List<User> getAsigneedUser(Integer ticketId);
   public List<User> getResponseUser(Integer ticketId);
+  public void closeTicket(Integer ticketId, Integer userId);
 }

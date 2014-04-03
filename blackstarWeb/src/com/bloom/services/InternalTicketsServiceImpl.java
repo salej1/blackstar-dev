@@ -102,7 +102,9 @@ public class InternalTicketsServiceImpl extends AbstractService
 	mail.sendEmail(from.getUserEmail(), to.getUserEmail(), "Asignación de Ticket Interno " + ticket.getTicketNumber(), message.toString());
   }
 
-
+  public void closeTicket(Integer ticketId, Integer userId){
+	 internalTicketsDao.closeTicket(ticketId, userId);
+  }
   
 
 }

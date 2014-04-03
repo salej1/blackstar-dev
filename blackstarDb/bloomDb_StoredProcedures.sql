@@ -24,6 +24,7 @@
 --                  DCB     Se integra blackstarDb.AddBloomDelivarable  
 -- 5    02/04/2014  DCB     Se integra blackstarDb.GetBloomTicketResponsible
 --                  DCB     Se integra blackstarDb.GetUserById
+-- 6    03/04/2014  DCB     Se integra blackstarDb.CloseBloomTicket
 --------------------------------------------------------------------------------
 
 
@@ -465,5 +466,37 @@ BEGIN
         
 END$$
 
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.CloseBloomTicket
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstardb.CloseBloomTicket;
+CREATE PROCEDURE blackstardb.`CloseBloomTicket`(pTicketId INTEGER, pUserId INTEGER)
+BEGIN
+	
+DECLARE inTime TINYINT DEFAULT 1;
+DECLARE desv FLOAT (30,20);
+DECLARE endDate DATETIME;
+DECLARE today DATETIME DEFAULT NOW();
+
+DELETE FROM messages;
+
+INSERT INTO messages values (pTicketId);
+SET endDate = (SELECT dueDate FROM bloomticket WHERE _id = pTicketId);
+INSERT INTO messages values (endDate);
+SET desv =  TO_DAYS(today) - TO_DAYS(endDate);
+
+
+INSERT INTO messages values (TO_DAYS(today));
+
+IF(desv > 0) THEN
+   SET inTime = 0;
+END IF;
+
+UPDATE bloomTicket 
+SET statusId = 5, reponseInTime = inTime, desviation = desv, modified = today
+  , responseDate = today, modifiedBy = "CloseBloomTicket", modifiedByUsr = pUserId
+WHERE _ID = pTicketId;
+	
+END;
 
 DELIMITER ;

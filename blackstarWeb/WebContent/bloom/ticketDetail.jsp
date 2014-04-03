@@ -76,10 +76,10 @@ $(document).ready(function () {
 		width: 380,
 		modal: true,
 		buttons: {
-			"Aceptar": function() {
-				$( this ).dialog( "close" );
-				window.location = 'dashboard.html';
-			},
+				"Aceptar": function() {
+					window.location.href = 'close.do?ticketId=${ticketDetail.id}&userId=${ user.blackstarUserId }';
+				}
+					,
 			
 			"Cancelar": function() {
 			$( this ).dialog( "close" );
@@ -309,8 +309,8 @@ function cancelAddSeguimiento(){
 
 				</div>
 				
-				<div id="saveConfirm" title="Cerrar Ticket SAC45">
-					<p>¿Confirma que desea cerrar las acciones pendientes en el ticket SAC45?</p>
+				<div id="saveConfirm" title="Cerrar Ticket ${ticketDetail.ticketNumber}">
+					<p>¿Confirma que desea cerrar las acciones pendientes en el ticket ${ticketDetail.ticketNumber}?</p>
 					<p>El ticket será asignado al personal de mesa de ayuda para su revision</p>
 				</div>
 				

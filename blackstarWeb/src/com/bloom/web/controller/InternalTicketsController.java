@@ -127,4 +127,19 @@ public class InternalTicketsController extends AbstractController {
 	}
 	return new ResponseEntity<HttpStatus>(HttpStatus.OK);
   }
+  
+  @RequestMapping(value = "/ticketDetail/close.do", method = RequestMethod.GET)
+  public String closeTicket(@RequestParam(required = true) Integer ticketId
+		                , @RequestParam(required = true) Integer userId
+				                                    , ModelMap model) {
+	try {
+		internalTicketsService.closeTicket(ticketId, userId);
+	} catch (Exception e) {
+		Logger.Log(LogLevel.ERROR,e.getStackTrace()[0].toString(), e);
+		e.printStackTrace();
+		model.addAttribute("errorDetails", e.getStackTrace()[0].toString());
+		return "error";
+	}
+	return "dashboard";
+  }
 }
