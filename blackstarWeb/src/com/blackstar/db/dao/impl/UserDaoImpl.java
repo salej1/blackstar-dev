@@ -26,6 +26,12 @@ public class UserDaoImpl extends AbstractDAO implements UserDAO{
 	}
 
 	@Override
+	public User getUserById(Integer id) {
+	  return (User)getJdbcTemplate().queryForObject("CALL GetUserById(?)",
+				        new Object[]{id} , this.getMapperFor(User.class));
+	}
+	
+	@Override
 	public List<User> getDomainUserList() {
 		return (List<User>)getJdbcTemplate().query("CALL GetDomainEmployees()", new UserRowMapper());
 	}

@@ -168,6 +168,24 @@
 --								blackstarDb.GetEquipmentTypeBySOId por
 --								blackstarDb.GetServiceOrderTypeBySOId
 -- -----------------------------------------------------------------------------
+-- 29	28/03/2014	DCB 	Se agrega el campo blackstarUserId a blackstarDb.GetDomainEmployees
+-- -----------------------------------------------------------------------------
+-- 30    24/03/2014	DCB		Se Integra blackstarDb.GetBloomTicketDetail
+-- -----------------------------------------------------------------------------
+-- 31    24/03/2014	DCB		Se Integra blackstarDb.GetBloomTicketTeam
+-- -----------------------------------------------------------------------------
+-- 32    28/03/2014	DCB		Se Integra blackstarDb.AddFollowUpToBloomTicket
+--                          Se Integra blackstarDb.UpsertBloomTicketTeam
+--                          Se Integra blackstarDb.GetBloomFollowUpByTicket
+-- -----------------------------------------------------------------------------
+-- 33    31/03/2014  DCB     Se integra blackstarDb.GetBloomDeliverableType  
+--                   DCB     Se integra blackstarDb.AddBloomDelivarable  
+-- -----------------------------------------------------------------------------
+-- 34    02/04/2014  DCB     Se integra blackstarDb.GetBloomTicketResponsible
+--                   DCB     Se integra blackstarDb.GetUserById
+-- -----------------------------------------------------------------------------
+-- 35    03/04/2014  DCB     Se integra blackstarDb.CloseBloomTicket
+-- -----------------------------------------------------------------------------
 
 
 use blackstarDb;
@@ -1160,7 +1178,7 @@ DROP PROCEDURE IF EXISTS blackstarDb.GetDomainEmployees$$
 CREATE PROCEDURE blackstarDb.GetDomainEmployees()
 BEGIN
 
-	SELECT DISTINCT email AS email, name AS name
+	SELECT DISTINCT blackstarUserId as id, email AS email, name AS name
 	FROM blackstarUser
 	ORDER BY name;
 	
@@ -1174,7 +1192,7 @@ DROP PROCEDURE IF EXISTS blackstarDb.GetUserData$$
 CREATE PROCEDURE blackstarDb.GetUserData(pEmail VARCHAR(100))
 BEGIN
 
-        SELECT u.email AS userEmail, u.name AS userName, g.name AS groupName
+        SELECT u.email AS userEmail, u.name AS userName, g.name AS groupName, u.blackstarUserId as blackstarUserId
         FROM blackstarUser_userGroup ug
                 INNER JOIN blackstarUser u ON u.blackstarUserId = ug.blackstarUserId
                 LEFT OUTER JOIN userGroup g ON g.userGroupId = ug.userGroupId
@@ -2095,6 +2113,226 @@ where serviceOrderId = serviceOrderId;
 END$$
 
 
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetBloomTicketDetail
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstardb.GetBloomTicketDetail$$
+CREATE PROCEDURE blackstardb.`GetBloomTicketDetail`(ticketId INTEGER)
+BEGIN
+
+SELECT *
+FROM ((SELECT _id id, applicantUserId applicantUserId, officeId officeId, serviceTypeId serviceTypeId
+             , statusId statusId, applicantAreaId applicantAreaId, dueDate, project, ticketNumber ticketNumber
+             , description description, reponseInTime reponseInTime, evaluation evaluation
+             , desviation desviation, responseDate responseDate, created created, createdBy createdBy
+             , createdByUsr createdByUsr, modified modified, modifiedBy modifiedBy, modifiedByUsr modifiedByUsr
+       FROM bloomticket WHERE _ID = ticketId) AS ticketDetail
+       LEFT JOIN (SELECT bu.blackstarUserId refId, bu.name applicantUserName
+           FROM blackstaruser bu) AS j1
+           ON ticketDetail.applicantUserId = j1.refId
+       LEFT JOIN (SELECT of.officeId refId, of.officeName as officeName 
+           FROM office of) AS j2
+           ON ticketDetail.officeId = j2.refId
+       LEFT JOIN (SELECT st._id refId, st.name as serviceTypeName 
+           FROM bloomServiceType st) AS j3
+           ON ticketDetail.serviceTypeId = j3.refId           
+       LEFT JOIN (SELECT sp._id refId, sp.name as statusName 
+           FROM bloomStatusType sp) AS j4
+           ON ticketDetail.statusId = j4.refId           
+       LEFT JOIN (SELECT aa._id refId, aa.name as applicantAreaName 
+           FROM bloomApplicantArea aa) AS j5
+           ON ticketDetail.applicantAreaId = j5.refId            
+       LEFT JOIN (SELECT bu.blackstarUserId refId, bu.name createdByUsrName
+           FROM blackstaruser bu) AS j6
+           ON ticketDetail.createdByUsr = j6.refId
+       LEFT JOIN (SELECT bu.blackstarUserId refId, bu.name modifiedByUsrName
+           FROM blackstaruser bu) AS j7
+           ON ticketDetail.modifiedByUsr = j7.refId);
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetBloomTicketTeam
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstardb.GetBloomTicketTeam$$
+CREATE PROCEDURE blackstardb.`GetBloomTicketTeam`(ticket INTEGER)
+BEGIN
+
+SELECT *
+FROM ((SELECT _id id, ticketId ticketId, workerRoleTypeId workerRoleTypeId, blackstarUserId blackstarUserId, assignedDate assignedDate
+       FROM bloomTicketTeam WHERE ticketId = ticket) AS ticketTeam
+       LEFT JOIN (SELECT bu.blackstarUserId refId, bu.name blackstarUserName
+           FROM blackstaruser bu) AS j1
+           ON ticketTeam.applicantUserId = j1.refId
+       LEFT JOIN (SELECT wrt._id refId, wrt.name as workerRoleTypeName 
+           FROM bloomWorkerRoleType wrt) AS j2
+           ON ticketTeam.workerRoleTypeId = j2.refId);
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.AddFollowUpToBloomTicket
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstardb.AddFollowUpToBloomTicket$$
+CREATE PROCEDURE blackstardb.`AddFollowUpToBloomTicket`(pTicketId INTEGER, pCreatedByUsrId INTEGER, pMessage TEXT)
+BEGIN
+  DECLARE pCreatedByUsrMail VARCHAR(100);
+  
+  SET pCreatedByUsrMail = (SELECT email FROM blackstaruser WHERE blackstarUserId = pCreatedByUsrId);
+	INSERT INTO blackstarDb.followUp(bloomTicketId, followup, created, createdBy, createdByUsr)
+	VALUES(pTicketId, pMessage, NOW(), 'AddFollowUpToBloomTicket', pCreatedByUsrMail);
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.UpsertBloomTicketTeam
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstardb.UpsertBloomTicketTeam$$
+CREATE PROCEDURE blackstardb.`UpsertBloomTicketTeam`(pTicketId INTEGER, pWorkerRoleTypeId INTEGER, pBlackstarUserId INTEGER)
+BEGIN
+
+IF NOT EXISTS (SELECT * FROM bloomTicketTeam 
+               WHERE ticketId = pTicketId AND blackstarUserId = pBlackstarUserId) THEN
+    INSERT INTO blackstarDb.bloomTicketTeam(ticketId, workerRoleTypeId, blackstarUserId, assignedDate)
+    VALUES(pTicketId, pWorkerRoleTypeId, pBlackstarUserId, NOW());   
+ELSE
+   UPDATE blackstarDb.bloomTicketTeam SET assignedDate = NOW(), workerRoleTypeId = pWorkerRoleTypeId
+   WHERE ticketId = pTicketId AND blackstarUserId = pBlackstarUserId;
+END IF;
+IF (pWorkerRoleTypeId = 1) THEN
+    UPDATE blackstarDb.bloomTicketTeam SET workerRoleTypeId = 2
+    WHERE ticketId = pTicketId AND blackstarUserId != pBlackstarUserId;
+END IF;
+    
+END$$
+
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetBloomFollowUpByTicket
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstardb.GetBloomFollowUpByTicket$$
+CREATE PROCEDURE blackstardb.`GetBloomFollowUpByTicket`(pTicketId INTEGER)
+BEGIN
+	SELECT created AS created, u2.name AS createdByUsr, u.name AS asignee, followup AS followup
+	FROM followUp f
+		   LEFT OUTER JOIN blackstarUser u ON f.asignee = u.email
+		   LEFT OUTER JOIN blackstarUser u2 ON f.createdByUsr = u2.email
+	WHERE bloomTicketId = pTicketId
+	ORDER BY created;
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetBloomDeliverableType
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstardb.GetBloomDeliverableType$$
+CREATE PROCEDURE blackstardb.`GetBloomDeliverableType`()
+BEGIN
+	SELECT _id id, name name, description description FROM bloomDeliverableType;
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.AddBloomDelivarable
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstardb.AddBloomDelivarable$$
+CREATE PROCEDURE blackstardb.`AddBloomDelivarable`(pTicketId INTEGER, pDeliverableTypeId INTEGER)
+BEGIN
+DECLARE counter INTEGER;
+
+  SET counter = (SELECT count(*) 
+                 FROM bloomDeliverableTrace 
+                 WHERE bloomTicketId = pTicketId AND deliverableTypeId = pDeliverableTypeId);
+  IF (counter > 0) THEN
+    UPDATE bloomDeliverableTrace SET delivered = 1, date = NOW();
+  ELSE 
+	  INSERT INTO bloomDeliverableTrace (bloomTicketId, deliverableTypeId, delivered, date)
+    VALUES (pTicketId, pDeliverableTypeId, 1, NOW());
+  END IF;  
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetBloomTicketResponsible
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstardb.GetBloomTicketResponsible$$
+CREATE PROCEDURE blackstardb.`GetBloomTicketResponsible`(pTicketId INTEGER)
+BEGIN
+
+DECLARE responsableId INTEGER;
+
+SET responsableId = (SELECT blackstarUserId 
+                     FROM bloomTicketTeam 
+                     WHERE ticketId = pTicketId
+                           AND workerRoleTypeId = 1
+                     LIMIT 1);
+SELECT * 
+FROM blackstaruser
+WHERE blackstarUserId = responsableId;
+
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetBloomTicketResponsible
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstardb.GetBloomTicketUserForResponse$$
+CREATE PROCEDURE blackstardb.`GetBloomTicketUserForResponse`(pTicketId INTEGER)
+BEGIN
+
+DECLARE responseUserId INTEGER;
+
+SET responseUserId = (SELECT blackstarUserId 
+                     FROM bloomTicketTeam 
+                     WHERE ticketId = pTicketId
+                           AND workerRoleTypeId = 2
+                     ORDER BY assignedDate DESC
+                     LIMIT 1);
+SELECT * 
+FROM blackstaruser
+WHERE blackstarUserId = responseUserId;
+
+END$$
+
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetBloomTicketResponsible
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstardb.GetUserById$$
+CREATE PROCEDURE blackstardb.`GetUserById`(pId INTEGER)
+BEGIN
+
+        SELECT u.blackstarUserId blackstarUserId, u.email userEmail, u.name userName
+        FROM blackstarUser u
+        WHERE u.blackstarUserId = pId;
+        
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.CloseBloomTicket
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstardb.CloseBloomTicket$$
+CREATE PROCEDURE blackstardb.`CloseBloomTicket`(pTicketId INTEGER, pUserId INTEGER)
+BEGIN
+	
+DECLARE inTime TINYINT DEFAULT 1;
+DECLARE desv FLOAT (30,20);
+DECLARE endDate DATETIME;
+DECLARE today DATETIME DEFAULT NOW();
+
+DELETE FROM messages;
+
+INSERT INTO messages values (pTicketId);
+SET endDate = (SELECT dueDate FROM bloomticket WHERE _id = pTicketId);
+INSERT INTO messages values (endDate);
+SET desv =  TO_DAYS(today) - TO_DAYS(endDate);
+
+
+INSERT INTO messages values (TO_DAYS(today));
+
+IF(desv > 0) THEN
+   SET inTime = 0;
+END IF;
+
+UPDATE bloomTicket 
+SET statusId = 5, reponseInTime = inTime, desviation = desv, modified = today
+  , responseDate = today, modifiedBy = "CloseBloomTicket", modifiedByUsr = pUserId
+WHERE _ID = pTicketId;
+	
+END$$
 -- -----------------------------------------------------------------------------
 	-- FIN DE LOS STORED PROCEDURES
 -- -----------------------------------------------------------------------------

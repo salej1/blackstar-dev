@@ -182,6 +182,59 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1
 COLLATE = latin1_swedish_ci;
 
+-- -----------------------------------------------------
+-- Table `blackstarDbTransfer`.`bloomTransferTicket`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `blackstarDbTransfer`.`bloomTransferTicket`
+(
+  `created` Varchar(100),
+  `createdByUsr` Varchar(100),
+  `applicantArea` Varchar(100),
+  `serviceType` Varchar(200),
+  `serviceTypeSS` Varchar(200),
+  `serviceTypeGeneral` Varchar(100),
+  `dueDate` Varchar(100),
+  `description` Text,
+  `serviceTypeManager` Varchar(100),
+  `project` Varchar(100),
+  `office` Varchar(20),
+  `ticketNumber` Varchar(20),
+  `responseDate` Varchar(100),
+  `responseInTime` Varchar(100),
+  `evaluation` Varchar(2),
+  `responseInHours` Varchar(50),
+  `desviation` Varchar(50),
+  `observations` Text
+)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1
+COLLATE = latin1_swedish_ci;
+
+-- -----------------------------------------------------
+-- Table `blackstarDbTransfer`.`bloomTransferTicketTeam`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `blackstarDbTransfer`.`bloomTransferTicketTeam`
+(
+  `ticketNumber` Varchar(20),
+  `userName` Varchar(200)
+)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1
+COLLATE = latin1_swedish_ci;
+
+-- -----------------------------------------------------
+-- Table `blackstarDbTransfer`.`bloomTransferFollow`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `blackstarDbTransfer`.`bloomTransferFollow`
+(
+  `ticketNumber` Varchar(20),
+  `date` Varchar(100),
+  `comment` Text
+)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1
+COLLATE = latin1_swedish_ci;
+
 
 -- -----------------------------------------------------
 -- Table `blackstarDbTransfer`.`serviceTx`

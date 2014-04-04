@@ -119,7 +119,7 @@ public class PlainServicePolicyDTO {
 		this.workDone = plainServiceDTO.getWorkDone();
 		this.materialUsed = plainServiceDTO.getMaterialUsed();
 		this.observations = plainServiceDTO.getObservations();
-		if(serviceOrder.getEmployeeList().size() > 0){
+		if(serviceOrder.getEmployeeList() != null && serviceOrder.getEmployeeList().size() > 0){
 			// Se reescriben responsible y responsibleName para las OS que tengan lista de empleados
 			this.responsible = serviceOrder.getEmployeeListString();
 			this.responsibleName = serviceOrder.getEmployeeNameListString();

@@ -25,6 +25,7 @@ public class MySQLUserDAO implements UserDAO {
 			while(rs.next()) {
 				if(user == null){
 					user = new User(
+					    rs.getInt("blackstarUserId"),
 						rs.getString("userEmail"),
 						rs.getString("userName")
 					);
@@ -59,6 +60,10 @@ public class MySQLUserDAO implements UserDAO {
 	@Override
 	public List<User> getDomainUserList() {
 		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	public User getUserById(Integer id){
 		return null;
 	}
 

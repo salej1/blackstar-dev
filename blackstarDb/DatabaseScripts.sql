@@ -21,6 +21,16 @@
 -- --   --------   -------  ------------------------------------
 -- 6    09/02/2014  SAG  	Se cambia serviceOrderAdditionalEngineer por
 -- 							serviceOrderEmployee
+-- 7    03/04/2014  DCB  	Carga de esquema Bloom
+--                              * bloomServiceType
+--                              * bloomWorkerRoleType
+--                              * bloomStatusType
+--                              * bloomApplicantArea
+--                              * bloomDeliverableType
+--                              * bloomRequiredDeliverable
+--                              * bloomTicket
+--                              * bloomTicketTeam
+--                              * bloomDeliverableTrace
 -- ---------------------------------------------------------------------------
 
 use blackstarDb;
@@ -626,6 +636,148 @@ IF (SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackst
 	)ENGINE=INNODB; 		
 END IF;
 
+-- AGREGANDO TABLA bloomServiceType
+	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'bloomServiceType') = 0 THEN
+		 CREATE TABLE blackstarDb.bloomServiceType(
+            _id Int(3) NOT NULL,
+            name Varchar(150) NOT NULL,
+            description Varchar(400) NOT NULL,
+            responseTime Int(2) NOT NULL,
+			PRIMARY KEY (_id),
+			UNIQUE UQ_bloomServiceType(name)
+         ) ENGINE=INNODB;
+	END IF;
+	
+-- AGREGANDO TABLA bloomWorkerRoleType
+	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'bloomWorkerRoleType') = 0 THEN
+		 CREATE TABLE blackstarDb.bloomWorkerRoleType(
+           _id Int(11) NOT NULL,
+           name Varchar(150) NOT NULL,
+           description Varchar(400) NOT NULL,
+		   PRIMARY KEY (_id),
+		   UNIQUE UQ_bloomWorkerRoleType(name)
+         )ENGINE=INNODB;
+	END IF;	
+	
+-- AGREGANDO TABLA bloomStatusType
+	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'bloomStatusType') = 0 THEN
+		 CREATE TABLE blackstarDb.bloomStatusType(
+           _id Int(11) NOT NULL,
+           name Varchar(150) NOT NULL,
+           description Varchar(400) NOT NULL,
+		   PRIMARY KEY (_id),
+		   UNIQUE UQ_bloomStatusType(name)
+         )ENGINE=INNODB;
+	END IF;	
+
+ -- AGREGANDO TABLA bloomApplicantArea
+	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'bloomApplicantArea') = 0 THEN
+		 CREATE TABLE blackstarDb.bloomApplicantArea(
+           _id Int(11) NOT NULL,
+           name Varchar(150) NOT NULL,
+           description Varchar(400) NOT NULL,
+		   PRIMARY KEY (_id),
+		   UNIQUE UQ_bloomApplicantArea(name)
+         )ENGINE=INNODB;
+	END IF;	
+	
+ -- AGREGANDO TABLA bloomDeliverableType
+	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'bloomDeliverableType') = 0 THEN
+		 CREATE TABLE blackstarDb.bloomDeliverableType(
+           _id Int(11) NOT NULL,
+           name Varchar(150) NOT NULL,
+           description Varchar(400) NOT NULL,
+		   PRIMARY KEY (_id),
+		   UNIQUE UQ_bloomDeliverableType(name)
+         )ENGINE=INNODB;
+	END IF;	
+
+ -- AGREGANDO TABLA bloomRequiredDeliverable
+	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'bloomRequiredDeliverable') = 0 THEN
+		 CREATE TABLE blackstarDb.bloomRequiredDeliverable(
+           _id Int(11) NOT NULL,
+           serviceTypeId Int(3) NOT NULL,
+           deliverableTypeId Int(11) NOT NULL,
+		   PRIMARY KEY (_id),
+		   UNIQUE UQ_bloomRequiredDeliverable(serviceTypeId, deliverableTypeId),
+		   FOREIGN KEY (serviceTypeId) REFERENCES bloomServiceType (_id),
+           FOREIGN KEY (deliverableTypeId) REFERENCES bloomDeliverableType (_id)
+         )ENGINE=INNODB;
+	END IF;	
+
+ -- AGREGANDO TABLA bloomTicket
+	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'bloomTicket') = 0 THEN
+		 CREATE TABLE blackstarDb.bloomTicket(
+           _id Int(11) NOT NULL AUTO_INCREMENT,
+           applicantUserId Int(11) NOT NULL,
+           officeId Char(1) NOT NULL,
+           serviceTypeId Int(3) NOT NULL,
+           statusId Int(11) NOT NULL,
+           applicantAreaId Int(11) NOT NULL,
+           dueDate Date NOT NULL,
+           project Varchar(50) NOT NULL,
+           ticketNumber Varchar(15) NOT NULL,
+           description Text NOT NULL,
+           reponseInTime Tinyint,
+           evaluation Int(2),
+           desviation Float(30,20),
+           responseDate Datetime,
+           created Datetime NOT NULL,
+           createdBy Varchar(50) NOT NULL,
+           createdByUsr Int(11) NOT NULL,
+           modified Datetime,
+           modifiedBy Varchar(50),
+           modifiedByUsr Int(11),
+           PRIMARY KEY (`_id`),
+		   FOREIGN KEY (officeId) REFERENCES office (officeId),
+           FOREIGN KEY (serviceTypeId) REFERENCES bloomServiceType (_id),
+           FOREIGN KEY (statusId) REFERENCES bloomStatusType (_id),
+           FOREIGN KEY (applicantUserId) REFERENCES blackstaruser (blackstarUserId),
+           FOREIGN KEY (applicantAreaId) REFERENCES bloomApplicantArea (_id),
+           FOREIGN KEY (createdByUsr) REFERENCES blackstaruser (blackstarUserId),
+           FOREIGN KEY (modifiedByUsr) REFERENCES blackstaruser (blackstarUserId),
+		   UNIQUE UQ_bloomTicket(ticketNumber)
+         )ENGINE=INNODB;
+	END IF;	
+
+ -- AGREGANDO TABLA bloomTicketTeam
+	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'bloomTicketTeam') = 0 THEN
+		 CREATE TABLE blackstarDb.bloomTicketTeam(
+           _id Int(11) NOT NULL AUTO_INCREMENT,
+           ticketId Int(11) NOT NULL,
+           workerRoleTypeId Int(11) NOT NULL,
+           blackstarUserId Int(11) NOT NULL,
+		   assignedDate Datetime NOT NULL,
+           PRIMARY KEY (`_id`),
+		   FOREIGN KEY (ticketId) REFERENCES bloomTicket (_id),
+           FOREIGN KEY (workerRoleTypeId) REFERENCES bloomWorkerRoleType (_id),
+           FOREIGN KEY (blackstarUserId) REFERENCES blackstaruser (blackstarUserId)
+         )ENGINE=INNODB;
+	END IF;
+
+ -- AGREGANDO TABLA bloomDeliverableTrace
+	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'bloomDeliverableTrace') = 0 THEN
+		 CREATE TABLE blackstarDb.bloomDeliverableTrace(
+           _id Int(11) NOT NULL AUTO_INCREMENT,
+           bloomTicketId Int(11) NOT NULL,
+           deliverableTypeId Int(11) NOT NULL,
+           delivered Int(11) DEFAULT 0,
+           date Datetime NOT NULL,
+		   PRIMARY KEY (_id),
+		   UNIQUE UQ_bloomDeliverableTrace(bloomTicketId,deliverableTypeId),
+		   FOREIGN KEY (bloomTicketId) REFERENCES bloomTicket (_id),
+           FOREIGN KEY (deliverableTypeId) REFERENCES bloomDeliverableType (_id)
+         )ENGINE=INNODB;
+	END IF;		
+	
+	
+	-- AGREGANDO COLUMNA bloomTicketId A followUp
+	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'followUp' AND COLUMN_NAME = 'bloomTicketId') =0  THEN
+		 ALTER TABLE blackstarDb.followUp ADD bloomTicketId Int(11);
+		 ALTER TABLE blackstarDb.followUp ADD CONSTRAINT R11 FOREIGN KEY (bloomTicketId) REFERENCES bloomTicket (_id) ON DELETE NO ACTION ON UPDATE NO ACTION;
+	END IF;
+
+
 
 	
 -- -----------------------------------------------------------------------------
@@ -809,6 +961,24 @@ DROP PROCEDURE blackstarDb.upgradeSchema;
 -- 28	12/02/2014	SAG 	Se reemplaza:
 --								blackstarDb.GetEquipmentTypeBySOId por
 --								blackstarDb.GetServiceOrderTypeBySOId
+-- -----------------------------------------------------------------------------
+-- 29	28/03/2014	DCB 	Se agrega el campo blackstarUserId a blackstarDb.GetDomainEmployees
+-- -----------------------------------------------------------------------------
+-- 30    24/03/2014	DCB		Se Integra blackstarDb.GetBloomTicketDetail
+-- -----------------------------------------------------------------------------
+-- 31    24/03/2014	DCB		Se Integra blackstarDb.GetBloomTicketTeam
+-- -----------------------------------------------------------------------------
+-- 32    28/03/2014	DCB		Se Integra blackstarDb.AddFollowUpToBloomTicket
+--                          Se Integra blackstarDb.UpsertBloomTicketTeam
+--                          Se Integra blackstarDb.GetBloomFollowUpByTicket
+-- -----------------------------------------------------------------------------
+-- 33    31/03/2014  DCB     Se integra blackstarDb.GetBloomDeliverableType  
+--                   DCB     Se integra blackstarDb.AddBloomDelivarable  
+-- -----------------------------------------------------------------------------
+-- 34    02/04/2014  DCB     Se integra blackstarDb.GetBloomTicketResponsible
+--                   DCB     Se integra blackstarDb.GetUserById
+-- -----------------------------------------------------------------------------
+-- 35    03/04/2014  DCB     Se integra blackstarDb.CloseBloomTicket
 -- -----------------------------------------------------------------------------
 
 
@@ -1802,7 +1972,7 @@ DROP PROCEDURE IF EXISTS blackstarDb.GetDomainEmployees$$
 CREATE PROCEDURE blackstarDb.GetDomainEmployees()
 BEGIN
 
-	SELECT DISTINCT email AS email, name AS name
+	SELECT DISTINCT blackstarUserId as id, email AS email, name AS name
 	FROM blackstarUser
 	ORDER BY name;
 	
@@ -1816,7 +1986,7 @@ DROP PROCEDURE IF EXISTS blackstarDb.GetUserData$$
 CREATE PROCEDURE blackstarDb.GetUserData(pEmail VARCHAR(100))
 BEGIN
 
-        SELECT u.email AS userEmail, u.name AS userName, g.name AS groupName
+        SELECT u.email AS userEmail, u.name AS userName, g.name AS groupName, u.blackstarUserId as blackstarUserId
         FROM blackstarUser_userGroup ug
                 INNER JOIN blackstarUser u ON u.blackstarUserId = ug.blackstarUserId
                 LEFT OUTER JOIN userGroup g ON g.userGroupId = ug.userGroupId
@@ -2738,6 +2908,226 @@ END$$
 
 
 -- -----------------------------------------------------------------------------
+	-- blackstarDb.GetBloomTicketDetail
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstardb.GetBloomTicketDetail$$
+CREATE PROCEDURE blackstardb.`GetBloomTicketDetail`(ticketId INTEGER)
+BEGIN
+
+SELECT *
+FROM ((SELECT _id id, applicantUserId applicantUserId, officeId officeId, serviceTypeId serviceTypeId
+             , statusId statusId, applicantAreaId applicantAreaId, dueDate, project, ticketNumber ticketNumber
+             , description description, reponseInTime reponseInTime, evaluation evaluation
+             , desviation desviation, responseDate responseDate, created created, createdBy createdBy
+             , createdByUsr createdByUsr, modified modified, modifiedBy modifiedBy, modifiedByUsr modifiedByUsr
+       FROM bloomticket WHERE _ID = ticketId) AS ticketDetail
+       LEFT JOIN (SELECT bu.blackstarUserId refId, bu.name applicantUserName
+           FROM blackstaruser bu) AS j1
+           ON ticketDetail.applicantUserId = j1.refId
+       LEFT JOIN (SELECT of.officeId refId, of.officeName as officeName 
+           FROM office of) AS j2
+           ON ticketDetail.officeId = j2.refId
+       LEFT JOIN (SELECT st._id refId, st.name as serviceTypeName 
+           FROM bloomServiceType st) AS j3
+           ON ticketDetail.serviceTypeId = j3.refId           
+       LEFT JOIN (SELECT sp._id refId, sp.name as statusName 
+           FROM bloomStatusType sp) AS j4
+           ON ticketDetail.statusId = j4.refId           
+       LEFT JOIN (SELECT aa._id refId, aa.name as applicantAreaName 
+           FROM bloomApplicantArea aa) AS j5
+           ON ticketDetail.applicantAreaId = j5.refId            
+       LEFT JOIN (SELECT bu.blackstarUserId refId, bu.name createdByUsrName
+           FROM blackstaruser bu) AS j6
+           ON ticketDetail.createdByUsr = j6.refId
+       LEFT JOIN (SELECT bu.blackstarUserId refId, bu.name modifiedByUsrName
+           FROM blackstaruser bu) AS j7
+           ON ticketDetail.modifiedByUsr = j7.refId);
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetBloomTicketTeam
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstardb.GetBloomTicketTeam$$
+CREATE PROCEDURE blackstardb.`GetBloomTicketTeam`(ticket INTEGER)
+BEGIN
+
+SELECT *
+FROM ((SELECT _id id, ticketId ticketId, workerRoleTypeId workerRoleTypeId, blackstarUserId blackstarUserId, assignedDate assignedDate
+       FROM bloomTicketTeam WHERE ticketId = ticket) AS ticketTeam
+       LEFT JOIN (SELECT bu.blackstarUserId refId, bu.name blackstarUserName
+           FROM blackstaruser bu) AS j1
+           ON ticketTeam.applicantUserId = j1.refId
+       LEFT JOIN (SELECT wrt._id refId, wrt.name as workerRoleTypeName 
+           FROM bloomWorkerRoleType wrt) AS j2
+           ON ticketTeam.workerRoleTypeId = j2.refId);
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.AddFollowUpToBloomTicket
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstardb.AddFollowUpToBloomTicket$$
+CREATE PROCEDURE blackstardb.`AddFollowUpToBloomTicket`(pTicketId INTEGER, pCreatedByUsrId INTEGER, pMessage TEXT)
+BEGIN
+  DECLARE pCreatedByUsrMail VARCHAR(100);
+  
+  SET pCreatedByUsrMail = (SELECT email FROM blackstaruser WHERE blackstarUserId = pCreatedByUsrId);
+	INSERT INTO blackstarDb.followUp(bloomTicketId, followup, created, createdBy, createdByUsr)
+	VALUES(pTicketId, pMessage, NOW(), 'AddFollowUpToBloomTicket', pCreatedByUsrMail);
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.UpsertBloomTicketTeam
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstardb.UpsertBloomTicketTeam$$
+CREATE PROCEDURE blackstardb.`UpsertBloomTicketTeam`(pTicketId INTEGER, pWorkerRoleTypeId INTEGER, pBlackstarUserId INTEGER)
+BEGIN
+
+IF NOT EXISTS (SELECT * FROM bloomTicketTeam 
+               WHERE ticketId = pTicketId AND blackstarUserId = pBlackstarUserId) THEN
+    INSERT INTO blackstarDb.bloomTicketTeam(ticketId, workerRoleTypeId, blackstarUserId, assignedDate)
+    VALUES(pTicketId, pWorkerRoleTypeId, pBlackstarUserId, NOW());   
+ELSE
+   UPDATE blackstarDb.bloomTicketTeam SET assignedDate = NOW(), workerRoleTypeId = pWorkerRoleTypeId
+   WHERE ticketId = pTicketId AND blackstarUserId = pBlackstarUserId;
+END IF;
+IF (pWorkerRoleTypeId = 1) THEN
+    UPDATE blackstarDb.bloomTicketTeam SET workerRoleTypeId = 2
+    WHERE ticketId = pTicketId AND blackstarUserId != pBlackstarUserId;
+END IF;
+    
+END$$
+
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetBloomFollowUpByTicket
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstardb.GetBloomFollowUpByTicket$$
+CREATE PROCEDURE blackstardb.`GetBloomFollowUpByTicket`(pTicketId INTEGER)
+BEGIN
+	SELECT created AS created, u2.name AS createdByUsr, u.name AS asignee, followup AS followup
+	FROM followUp f
+		   LEFT OUTER JOIN blackstarUser u ON f.asignee = u.email
+		   LEFT OUTER JOIN blackstarUser u2 ON f.createdByUsr = u2.email
+	WHERE bloomTicketId = pTicketId
+	ORDER BY created;
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetBloomDeliverableType
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstardb.GetBloomDeliverableType$$
+CREATE PROCEDURE blackstardb.`GetBloomDeliverableType`()
+BEGIN
+	SELECT _id id, name name, description description FROM bloomDeliverableType;
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.AddBloomDelivarable
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstardb.AddBloomDelivarable$$
+CREATE PROCEDURE blackstardb.`AddBloomDelivarable`(pTicketId INTEGER, pDeliverableTypeId INTEGER)
+BEGIN
+DECLARE counter INTEGER;
+
+  SET counter = (SELECT count(*) 
+                 FROM bloomDeliverableTrace 
+                 WHERE bloomTicketId = pTicketId AND deliverableTypeId = pDeliverableTypeId);
+  IF (counter > 0) THEN
+    UPDATE bloomDeliverableTrace SET delivered = 1, date = NOW();
+  ELSE 
+	  INSERT INTO bloomDeliverableTrace (bloomTicketId, deliverableTypeId, delivered, date)
+    VALUES (pTicketId, pDeliverableTypeId, 1, NOW());
+  END IF;  
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetBloomTicketResponsible
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstardb.GetBloomTicketResponsible$$
+CREATE PROCEDURE blackstardb.`GetBloomTicketResponsible`(pTicketId INTEGER)
+BEGIN
+
+DECLARE responsableId INTEGER;
+
+SET responsableId = (SELECT blackstarUserId 
+                     FROM bloomTicketTeam 
+                     WHERE ticketId = pTicketId
+                           AND workerRoleTypeId = 1
+                     LIMIT 1);
+SELECT * 
+FROM blackstaruser
+WHERE blackstarUserId = responsableId;
+
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetBloomTicketResponsible
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstardb.GetBloomTicketUserForResponse$$
+CREATE PROCEDURE blackstardb.`GetBloomTicketUserForResponse`(pTicketId INTEGER)
+BEGIN
+
+DECLARE responseUserId INTEGER;
+
+SET responseUserId = (SELECT blackstarUserId 
+                     FROM bloomTicketTeam 
+                     WHERE ticketId = pTicketId
+                           AND workerRoleTypeId = 2
+                     ORDER BY assignedDate DESC
+                     LIMIT 1);
+SELECT * 
+FROM blackstaruser
+WHERE blackstarUserId = responseUserId;
+
+END$$
+
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetBloomTicketResponsible
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstardb.GetUserById$$
+CREATE PROCEDURE blackstardb.`GetUserById`(pId INTEGER)
+BEGIN
+
+        SELECT u.blackstarUserId blackstarUserId, u.email userEmail, u.name userName
+        FROM blackstarUser u
+        WHERE u.blackstarUserId = pId;
+        
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.CloseBloomTicket
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstardb.CloseBloomTicket$$
+CREATE PROCEDURE blackstardb.`CloseBloomTicket`(pTicketId INTEGER, pUserId INTEGER)
+BEGIN
+	
+DECLARE inTime TINYINT DEFAULT 1;
+DECLARE desv FLOAT (30,20);
+DECLARE endDate DATETIME;
+DECLARE today DATETIME DEFAULT NOW();
+
+DELETE FROM messages;
+
+INSERT INTO messages values (pTicketId);
+SET endDate = (SELECT dueDate FROM bloomticket WHERE _id = pTicketId);
+INSERT INTO messages values (endDate);
+SET desv =  TO_DAYS(today) - TO_DAYS(endDate);
+
+
+INSERT INTO messages values (TO_DAYS(today));
+
+IF(desv > 0) THEN
+   SET inTime = 0;
+END IF;
+
+UPDATE bloomTicket 
+SET statusId = 5, reponseInTime = inTime, desviation = desv, modified = today
+  , responseDate = today, modifiedBy = "CloseBloomTicket", modifiedByUsr = pUserId
+WHERE _ID = pTicketId;
+	
+END$$
+-- -----------------------------------------------------------------------------
 	-- FIN DE LOS STORED PROCEDURES
 -- -----------------------------------------------------------------------------
 DELIMITER ;
@@ -3031,6 +3421,254 @@ END$$
 -- -----------------------------------------------------------------------------
 	-- FIN 
 -- -----------------------------------------------------------------------------
+
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDbTransfer.BloomUpdateTickets
+-- -----------------------------------------------------------------------------
+DROP FUNCTION IF EXISTS blackstarDbTransfer.BloomUpdateTickets$$
+CREATE FUNCTION `blackstarDbTransfer.BloomUpdateTickets`() RETURNS int(11)
+BEGIN
+
+  DECLARE counter INTEGER;
+  DECLARE done BOOLEAN DEFAULT 0;
+
+  DECLARE applicantUserId Int(11);
+  DECLARE officeL Char(1);
+  DECLARE serviceTypeId Int(3);
+  DECLARE applicantAreaId Int(11);
+  DECLARE createdByUsrId Int(11);
+  DECLARE bolResponseInTime Tinyint;
+
+  DECLARE created Varchar(100);
+  DECLARE createdByUsr Varchar(100);
+  DECLARE applicantArea Varchar(100);
+  DECLARE serviceType Varchar(200);
+  DECLARE serviceTypeSS Varchar(200);
+  DECLARE serviceTypeGeneral Varchar(100);
+  DECLARE dueDateStr Varchar(100);
+  DECLARE description Text;
+  DECLARE serviceTypeManager Varchar(100);
+  DECLARE project Varchar(100);
+  DECLARE officeStr Varchar(20);
+  DECLARE ticketNumber Varchar(20);
+  DECLARE responseDateStr Varchar(100);
+  DECLARE responseInTime Varchar(100);
+  DECLARE evaluation Varchar(2);
+  DECLARE responseInHours Varchar(50);
+  DECLARE desviation Varchar(50);
+  DECLARE observations Text;
+
+  DECLARE dueDate DateTime;
+  DECLARE responseDate DateTime;
+  DECLARE status Int;
+
+  DECLARE transfer_cursor CURSOR FOR 
+    SELECT * FROM bloomTransferTicket;
+    
+  DECLARE CONTINUE HANDLER FOR SQLSTATE '02000' SET done=1;
+
+  SET counter = 0;
+  OPEN transfer_cursor;
+
+  loop_lbl: LOOP
+      FETCH transfer_cursor INTO created, createdByUsr, applicantArea, serviceType, serviceTypeSS
+                               , serviceTypeGeneral, dueDateStr, description, serviceTypeManager, project
+                               , officeStr, ticketNumber, responseDateStr, responseInTime, evaluation
+                               , responseInHours, desviation, observations;
+      IF done = 1 THEN 
+			   LEAVE loop_lbl;
+		  END IF;                           
+      SET bolResponseInTime = 0;
+      SET createdByUsrId = IFNULL((SELECT blackStarUserId from blackstaruser where email = 'portal-servicios@gposac.com.mx'), -1);                               
+      SET applicantUserId = IFNULL((SELECT blackStarUserId from blackstaruser where email = createdByUsr), -1);
+      SET officeL = IFNULL((SELECT officeId from office where officeName = officeStr), '?');
+      SET serviceTypeId = IFNULL((SELECT _id from bloomServiceType where name = serviceType), -1);
+      SET applicantAreaId = IFNULL((SELECT _id from bloomApplicantArea where name = applicantArea), -1);
+      IF project IS NULL THEN
+        SET project = 'UNKNOWN';
+      END IF;
+      IF responseInTime = 'SI' THEN
+        SET bolResponseInTime = 1;
+        SET status = 5;
+      ELSEIF responseInTime IS NULL THEN
+        SET bolResponseInTime = null;
+        SET status = 2;
+      ELSE SET status = 2;
+      END IF;
+      IF dueDateStr IS NULL THEN
+         SET dueDate = NOW();
+      ELSE SET dueDate = STR_TO_DATE(dueDateStr, '%Y-%m-%d %T');
+      END IF;
+      IF responseDateStr IS NULL THEN
+         SET responseDate = NULL;
+      ELSE SET responseDate = STR_TO_DATE(responseDateStr, '%Y-%m-%d %T');
+      END IF;
+      IF evaluation = '' THEN
+         SET evaluation = '0';
+      END IF;   
+      IF desviation = '' THEN
+         SET desviation = '0';
+      END IF;
+      INSERT INTO blackstarDb.bloomticket(applicantUserId, officeId, serviceTypeId, statusId, applicantAreaId
+                  , dueDate, project, ticketNumber, description, reponseInTime, evaluation, desviation
+                  , responseDate, created, createdBy, createdByUsr, modified, modifiedBy, modifiedByUsr) 
+             VALUES(applicantUserId, officeL, serviceTypeId, status, applicantAreaId, dueDate, project
+                    , ticketNumber, description, bolResponseInTime, CAST(evaluation AS UNSIGNED INTEGER) , desviation, responseDate
+                    , STR_TO_DATE(created, '%Y-%m-%d %T'), 'BloomDataLoader', createdByUsrId, null, null, null);
+      SET counter = counter + 1;
+  END LOOP loop_lbl;
+
+  CLOSE transfer_cursor;    
+  RETURN counter;
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDbTransfer.BloomUpdateTransferFollow
+-- -----------------------------------------------------------------------------
+DROP FUNCTION IF EXISTS blackstarDbTransfer.BloomUpdateTransferFollow$$
+CREATE FUNCTION blackstarDbTransfer.`BloomUpdateTransferFollow`() RETURNS int(11)
+BEGIN
+
+  DECLARE counter INTEGER;
+  DECLARE ticketId Int(11);
+  DECLARE ticket Varchar(20);
+  DECLARE createdStr Varchar(100);
+  DECLARE comment Text;
+  DECLARE done BOOLEAN DEFAULT 0;
+ 
+  DECLARE transfer_cursor CURSOR FOR 
+    SELECT * FROM bloomTransferFollow;
+    
+  DECLARE CONTINUE HANDLER FOR SQLSTATE '02000' SET done=1;
+
+  SET counter = 0;
+  OPEN transfer_cursor;
+  loop_lbl: LOOP
+      FETCH transfer_cursor INTO ticket, createdStr, comment;
+      IF done = 1 THEN 
+			   LEAVE loop_lbl;
+		  END IF;  
+      SET ticketId =(SELECT _id from bloomTicket where ticketNumber = ticket);
+      INSERT INTO blackstarDb.followUp(bloomTicketId,followup, created, createdBy, createdByUsr) 
+             VALUES(ticketId, comment, STR_TO_DATE(createdStr, '%y/%m/%d'), 'BloomDataLoader', 'portal-servicios@gposac.com.mx');
+      SET counter = counter + 1;
+  END LOOP loop_lbl;
+
+  CLOSE transfer_cursor;    
+  RETURN counter;
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDbTransfer.BloomUpdateTransferTeam
+-- -----------------------------------------------------------------------------
+DROP FUNCTION IF EXISTS blackstarDbTransfer.BloomUpdateTransferTeam$$
+CREATE FUNCTION blackstarDbTransfer.`BloomUpdateTransferTeam`() RETURNS int(11)
+BEGIN
+
+  DECLARE counter INTEGER;
+  DECLARE ticketId Int(11);
+  DECLARE ticket Varchar(20);
+  DECLARE userName Varchar(100);
+  DECLARE userId Varchar(100);
+  DECLARE done BOOLEAN DEFAULT 0;
+
+  DECLARE transfer_cursor CURSOR FOR 
+    SELECT * FROM bloomTransferTicketTeam;
+    
+  DECLARE CONTINUE HANDLER FOR SQLSTATE '02000' SET done=1;
+
+  SET counter = 0;
+  OPEN transfer_cursor;
+  --INSERT INTO messages VALUES ('INICIO');
+  loop_lbl: LOOP
+      FETCH transfer_cursor INTO ticket, userName;
+      IF done = 1 THEN 
+			   LEAVE loop_lbl;
+		  END IF;
+      --INSERT INTO messages VALUES (CONCAT('TICKET: ', ticket));
+      SET ticketId =(SELECT _id from bloomTicket where ticketNumber = ticket);
+      --INSERT INTO messages VALUES (CONCAT('TICKET_ID: ', ticketId));
+      --INSERT INTO messages VALUES (CONCAT('USER: ', userName));
+      SET userId = IFNULL((SELECT blackStarUserId from blackstaruser where name LIKE CONCAT(userName,'%')), -1);
+      --INSERT INTO messages VALUES (CONCAT('USER_ID: ', userId));
+      INSERT INTO blackstarDb.bloomTicketTeam(ticketId,workerRoleTypeId, blackstarUserId) 
+             VALUES(ticketId,1, userId);
+      SET counter = counter + 1;
+  END LOOP loop_lbl;
+
+  CLOSE transfer_cursor;    
+  RETURN counter;
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDbTransfer.BloomUpdateTransferUsers
+-- -----------------------------------------------------------------------------
+DROP FUNCTION IF EXISTS blackstarDbTransfer.BloomUpdateTransferUsers$$
+CREATE FUNCTION blackstarDbTransfer.`BloomUpdateTransferUsers`() RETURNS int(11)
+BEGIN
+
+  DECLARE done BOOLEAN DEFAULT 0;
+
+  DECLARE bloomCreatedByUsrMail Varchar(100);
+  DECLARE bloomCreatedByUsrName Varchar(100);
+  DECLARE bloomCreatedByUsrLastName Varchar(100);
+  DECLARE iniSplitPos INTEGER;
+  DECLARE endSplitPos INTEGER;
+  DECLARE splitValue VARCHAR(100);
+  DECLARE counter INTEGER;
+    
+  DECLARE user_cursor CURSOR FOR 
+     SELECT DISTINCT createdByUsr FROM bloomTransferTicket
+     WHERE createdByUsr NOT IN (SELECT email FROM blackstaruser);
+
+  DECLARE CONTINUE HANDLER FOR SQLSTATE '02000' SET done=1;
+
+  OPEN user_cursor;
+
+  SET counter = 0;
+  fill_users: LOOP
+      FETCH user_cursor INTO bloomCreatedByUsrMail; 
+      IF done = 1 THEN 
+			   LEAVE fill_users;
+		  END IF;  
+      SET endSplitPos = LOCATE('\@', bloomCreatedByUsrMail, 1);
+      SET splitValue = SUBSTR(bloomCreatedByUsrMail, 1, endSplitPos -1);
+      SET endSplitPos = LOCATE('\.', splitValue, 1);
+      SET bloomCreatedByUsrName = SUBSTR(splitValue, 1, endSplitPos -1);
+      SET bloomCreatedByUsrName = CONCAT(UCASE(LEFT(bloomCreatedByUsrName, 1)), 
+                                         SUBSTRING(bloomCreatedByUsrName, 2));
+      SET bloomCreatedByUsrLastName = SUBSTR(splitValue, endSplitPos +1);
+      SET bloomCreatedByUsrLastName = CONCAT(UCASE(LEFT(bloomCreatedByUsrLastName, 1)), 
+                                              SUBSTRING(bloomCreatedByUsrLastName, 2));                                         
+      INSERT INTO blackstarDb.blackstarUser (email, name) VALUES (bloomCreatedByUsrMail, CONCAT(bloomCreatedByUsrName, ' ', bloomCreatedByUsrLastName));
+      SET counter = counter + 1;
+  END LOOP fill_users;
+  CLOSE user_cursor;
+  RETURN counter;
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDbTransfer.BloomTransfer
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDbTransfer.BloomTransfer$$
+CREATE PROCEDURE blackstarDbTransfer.`BloomTransfer`()
+BEGIN
+
+  DECLARE auxInt INTEGER;
+
+  --DELETE FROM messages;
+  SET auxInt = BloomUpdateTransferUsers();
+  --INSERT INTO messages VALUES (CONCAT('USERS FROM TRANSFER: ', auxInt));
+  SET auxInt = BloomUpdateTickets();
+  --INSERT INTO messages VALUES (CONCAT('TICKETS FROM TRANSFER: ', auxInt));
+  SET auxInt = BloomUpdateTransferTeam();
+  --INSERT INTO messages VALUES (CONCAT('TEAMS FROM TRANSFER: ', auxInt));
+  SET auxInt = BloomUpdateTransferFollow();
+  --INSERT INTO messages VALUES (CONCAT('FOLLOWS FROM TRANSFER: ', auxInt));
+END$$
+
+
 DELIMITER ;
 
 -- -----------------------------------------------------------------------------
@@ -3097,8 +3735,76 @@ DELIMITER ;
 -- --   --------   -------  ------------------------------------
 -- 2    12/11/2013  SAG  	Version 1.1. Se agrega ExecuteTransfer
 -- ---------------------------------------------------------------------------
-use blackstarDb;
 
+
+
+
+-- -----------------------------------------------------------------------------
+-- FIN - SINCRONIZACION DE DATOS
+-- -----------------------------------------------------------------------------
+
+use blackstarDb;
+-- -----------------------------------------------------------------------------
+	-- BLOOM CATALOGS
+-- -----------------------------------------------------------------------------
+INSERT INTO bloomServiceType VALUES (1,'Levantamiento', 'Mesa de Ayuda detona a Ingeniero de Soporte vía coordinador administrativo', 7);
+INSERT INTO bloomServiceType VALUES (2,'Apoyo del Ingeniero de Soporte de acompañar a cita a un Consultor', 'Mesa de Ayuda detona a Ingeniero de Soporte vía coordinador administrativo', 7);
+INSERT INTO bloomServiceType VALUES (3,'Realización de Cedula de Costos', 'Mesa de Ayuda detona la acción y Recaba la Información de Cedula de Costos con el Ingeniero de Soporte así como el unifilar propuesto en borrador (papel), y esta lo pasa a CAD y lo manda al Ing. de Calidad Electrica y Climatización para su validación, una vez que esta se tenga se entregará toda la Información al consultor', 2);
+INSERT INTO bloomServiceType VALUES (4,'Elaboración de Plano e Imagenes 3D del SITE (se deben anexar planos del edificio y dibujos de levantamiento)', 'Mesa de Ayuda realiza el dibujo en 3D en el programa floor planner', 2);
+INSERT INTO bloomServiceType VALUES (5,'Popuesta de Unifilares', 'Mesa de Ayuda solicita el diagrama al Ingeniero de Calidad Electrica y Climatización en borrador y este lo pasa a CAD y PDF', 2);
+INSERT INTO bloomServiceType VALUES (6,'Pregunta Técnica', 'Mesa de ayuda Responde si sabe la respuesta o pide apoyo a Ingeniero de Calidad Eléctrica y Climatización para Responderla', 1);
+INSERT INTO bloomServiceType VALUES (7,'Solicitud de aprobación de proyectos mayores a 50 KUSD', 'La mesa de ayuda turnará el proyecto al Ingeniero de Calidad Eléctrica y Climatización y si es mayor a 100KUSD lo turnará al Gerente de Ingeniería', 2);
+INSERT INTO bloomServiceType VALUES (8,'Solicitud de Precio de Lista de algùn producto que no se encuentre en la lista de precio', 'Mesa de Ayuda corrobora que la informaciòn este completa y retransmite la informaciòn a Compras quien entregarà el precio de lista, mesa de ayuda corrobora de nueva cuenta que la informaciòn sea correcta y se la retransmite al consultor', 2);
+INSERT INTO bloomServiceType VALUES (9,'Solicitud de Costo', 'Mesa de Ayuda corrobora que la informaciòn este completa y retransmite la informaciòn a Compras quien entregarà el costo del material o producto, mesa de ayuda corrobora de nueva cuenta que la informaciòn sea correcta y se la retransmite al Ingeniero de Soporte o Tècnico de servicio', 2);
+INSERT INTO bloomServiceType VALUES (10,'Solicitud de Parte o Refacciòn', 'Mesa de Ayuda corrobora que la informaciòn este completa y retransmite la informaciòn a Compras quien se encargarà de comprar la parte o refacciòn y entregarla en el lugar indicado. mesa de ayuda le darà seguimiento', 42);
+
+INSERT INTO bloomWorkerRoleType VALUES (1,'Responsable', 'Responsable de dar seguimiento al Ticket');
+INSERT INTO bloomWorkerRoleType VALUES (2,'Colaborador', 'Personal de apoyo');
+
+INSERT INTO bloomStatusType VALUES (1,'Abierto', 'Ingreso de solicitud');
+INSERT INTO bloomStatusType VALUES (2,'En proceso', 'Asignado, en proceso de solucion');
+INSERT INTO bloomStatusType VALUES (3,'Suspendido', 'Suspendido');
+INSERT INTO bloomStatusType VALUES (4,'Cancelado', 'Cancelado');
+INSERT INTO bloomStatusType VALUES (5,'Cerrado', 'Cerrado');
+
+INSERT INTO bloomApplicantArea VALUES (1,'Ventas', 'Ventas');
+INSERT INTO bloomApplicantArea VALUES (2,'Gerente de Area', 'Gerente de Area');
+INSERT INTO bloomApplicantArea VALUES (3,'Implementación y Servicio', 'Implementacion y Servicios');
+INSERT INTO bloomApplicantArea VALUES (4,'Gerentes al Area de Compras', 'Gerentes al Area de Compras');
+INSERT INTO bloomApplicantArea VALUES (5,'Otros', 'Otros');
+
+INSERT INTO bloomDeliverableType VALUES (1,'CheckList de levantamiento', 'CheckList de levantamiento');
+INSERT INTO bloomDeliverableType VALUES (2,'Encuesta de Satisfaccion', 'Encuesta de Satisfaccion');
+INSERT INTO bloomDeliverableType VALUES (3,'Cédula de Costos y Validación del proyecto por parte de Ingeniería en caso de ser necesario', 'Cédula de Costos y Validación del proyecto por parte de Ingeniería en caso de ser necesario');
+INSERT INTO bloomDeliverableType VALUES (4,'Unifilar eléctrico y/o Hidráulico a proponer al cliente ya validado en CAD y PDF', 'Unifilar eléctrico y/o Hidráulico a proponer al cliente ya validado en CAD y PDF');
+INSERT INTO bloomDeliverableType VALUES (5,'Imagenes 3D del SITE propuesto', 'Imagenes 3D del SITE propuesto');
+INSERT INTO bloomDeliverableType VALUES (6,'Propuesta de Unifilar en CAD y PDF', 'Propuesta de Unifilar en CAD y PDF');
+INSERT INTO bloomDeliverableType VALUES (7,'Respuesta', 'Respuesta');
+INSERT INTO bloomDeliverableType VALUES (8,'Visto Bueno del proyecto', 'Visto Bueno del proyecto');
+INSERT INTO bloomDeliverableType VALUES (9,'Entrega de Precio de Lista', 'Entrega de Precio de Lista');
+INSERT INTO bloomDeliverableType VALUES (10,'Entrega de Precio de Costo', 'Entrega de Precio de Costo');
+INSERT INTO bloomDeliverableType VALUES (11,'Entrega de Parte o refacciòn', 'Entrega de Parte o refacciòn');
+
+INSERT INTO bloomRequiredDeliverable VALUES (1,1,1);
+INSERT INTO bloomRequiredDeliverable VALUES (2,1,2);
+INSERT INTO bloomRequiredDeliverable VALUES (3,2,2);
+INSERT INTO bloomRequiredDeliverable VALUES (4,3,3);
+INSERT INTO bloomRequiredDeliverable VALUES (5,3,4);
+INSERT INTO bloomRequiredDeliverable VALUES (6,4,5);
+INSERT INTO bloomRequiredDeliverable VALUES (7,5,6);
+INSERT INTO bloomRequiredDeliverable VALUES (8,6,7);
+INSERT INTO bloomRequiredDeliverable VALUES (9,7,8);
+INSERT INTO bloomRequiredDeliverable VALUES (10,8,9);
+INSERT INTO bloomRequiredDeliverable VALUES (11,9,10);
+INSERT INTO bloomRequiredDeliverable VALUES (12,10,11);
+
+-- -----------------------------------------------------------------------------
+	-- UNKNOWN REFERENCES
+-- -----------------------------------------------------------------------------
+INSERT INTO office VALUES('?', 'DESCONOCIDA', null);
+INSERT INTO blackstaruser VALUES (-1, 'unknown@gposac.com.mx', 'Usuario Bloom sin correspondencia');
+INSERT INTO bloomServiceType VALUES (-1,'DESCONOCIDO', 'Tipo de servicio no registrado', 0);
+INSERT INTO bloomApplicantArea VALUES (-1,'DESCONOCIDO', 'Area no registrada');
 
 -- -----------------------------------------------------------------------------
 -- SINCRONIZACION DE DATOS
@@ -3106,10 +3812,7 @@ use blackstarDb;
 use blackstarDbTransfer;
 
 CALL ExecuteTransfer();
--- -----------------------------------------------------------------------------
--- FIN - SINCRONIZACION DE DATOS
--- -----------------------------------------------------------------------------
-
+CALL BloomTransfer();
 
 
 
