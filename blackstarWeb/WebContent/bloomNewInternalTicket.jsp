@@ -47,7 +47,7 @@
 		 
 	</head>
 	<body>
-		<div id="content" class="container_16 clearfix">
+		<div id="contentInternalTicket" class="container_16 clearfix">
 					
 			<div class="grid_16">					
 					<div class="box">
@@ -61,11 +61,11 @@
 							</tr>
 							<tr>
 								<td>Marca temporal:</td>
-								<td><input type="text" id="fldFolio" style="width:95%;" readOnly="true" value="${horaTicket}"/></td>
+								<td><input type="text" id="fldFechaRegsitro" style="width:95%;" readOnly="true" value="${horaTicket}"/></td>
 							</tr>
 							<tr>
 								<td>Usuario</td>
-								<td><input type="text" style="width:95%;" readOnly="true" value="${emailTicket}"/></td>
+								<td><input type="text" id="fldEmail" style="width:95%;" readOnly="true" value="${emailTicket}"/></td>
 							</tr>
 							<tr>
 								<td>Solicitante</td>
@@ -84,12 +84,12 @@
 							</tr>
 							<tr>
 								<td>Fecha Limite</td>
-								<td><input id="myDate" type="text" style="width:95%;" readOnly="true"/></td>
+								<td><input id="fldLimite" type="text" style="width:95%;" readOnly="true"/></td>
 							</tr>
 							<tr>
 								<td>Descripcion de la solicitud</td>
 								<td>										
-									<textarea id="fldSitEnc" style="width:100%;height:100%;" rows="15"></textarea>
+									<textarea id="fldDescripcion" style="width:100%;height:100%;" rows="15"></textarea>
 								</td>
 							</tr>
 							<tr>
@@ -166,10 +166,6 @@
 					<select name="slDocumento" id="slDocumento"></select>
 
 				</div>
-				
-							<!-- Adjuntos -->
-				<c:import url="_attachments.jsp"></c:import>
-				
 				
 				
 				<div id="saveConfirm" title="Cerrar Ticket SAC45">
