@@ -30,6 +30,7 @@ import com.blackstar.model.dto.PlainServiceDTO;
 import com.blackstar.model.dto.PlainServicePolicyDTO;
 import com.blackstar.services.interfaces.DashboardService;
 import com.blackstar.web.AbstractController;
+import com.bloom.common.bean.DeliverableTraceBean;
 import com.bloom.common.bean.InternalTicketBean;
 import com.bloom.common.bean.RespuestaJsonBean;
 import com.bloom.common.exception.ServiceException;
@@ -123,7 +124,7 @@ public class InternalTicketsController extends AbstractController {
 				.generarNumeroTickets("SAC", tiempoActual);
 		String email = userSession.getUser().getUserEmail();
 		String horaTicket = DataTypeUtil
-				.formatearFechaDD_MM_AAAA_HH_MM_SS(tiempoActual);
+				.formatearFecha(tiempoActual,"MM/dd/yyyy HH:mm:ss");
 
 		model.addAttribute("folioTicket", folio);
 		model.addAttribute("emailTicket", email);
@@ -141,42 +142,63 @@ public class InternalTicketsController extends AbstractController {
 	 */
 	@RequestMapping(value = "/guardarTicket.do", method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
-	RespuestaJsonBean guardarAtencion(final HttpServletRequest request,
+	RespuestaJsonBean guardarAtencion(
+			final HttpServletRequest request,
 			@ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession,
-			@RequestParam(value = "fldFolio",required = true) String fldFolio,
-			@RequestParam(value = "fldFechaRegsitro",required = true) String fldFechaRegsitro,
-			@RequestParam(value = "fldEmail",required = true) String fldEmail,
-			@RequestParam(value = "slAreaSolicitante",required = true) Integer slAreaSolicitante,
-			@RequestParam(value = "slTipoServicio",required = true) Integer slTipoServicio,
-			@RequestParam(value = "fldDescripcion",required = true) String fldDescripcion,
-			@RequestParam(value = "fldLimite",required = true) String fldLimite,
-			@RequestParam(value = "slProyecto",required = true) String slProyecto,
-			@RequestParam(value = "slOficina",required = true) String slOficina,
-			@RequestParam(value = "slDocumento",required = true) Integer slDocumento) {
+			@RequestParam(value = "fldFolio", required = true) String fldFolio,
+			@RequestParam(value = "fldFechaRegsitro", required = true) String fldFechaRegsitro,
+			@RequestParam(value = "fldEmail", required = true) String fldEmail,
+			@RequestParam(value = "slAreaSolicitante", required = true) Integer slAreaSolicitante,
+			@RequestParam(value = "slTipoServicio", required = true) Integer slTipoServicio,
+			@RequestParam(value = "fldDescripcion", required = true) String fldDescripcion,
+			@RequestParam(value = "fldLimite", required = true) String fldLimite,
+			@RequestParam(value = "slProyecto", required = true) String slProyecto,
+			@RequestParam(value = "slOficina", required = true) String slOficina,
+			@RequestParam(value = "fldDiasRespuesta", required = true) Integer fldDiasRespuesta,
+			@RequestParam(value = "slDocumento", required = true) Long slDocumento) {
 
 		RespuestaJsonBean respuesta = new RespuestaJsonBean();
 
-//		try {
+		try {
 
-			
-			
-			
+			InternalTicketBean ticket = new InternalTicketBean();
+
+			DeliverableTraceBean deliverableTrace = new DeliverableTraceBean();
+			deliverableTrace.setDeliverableId(slDocumento);
+
+			ticket.setTicketNumber(fldFolio);
+			ticket.setCreatedStr(fldFechaRegsitro);
+			ticket.setApplicantAreaId(slAreaSolicitante);
+			ticket.setServiceTypeId(slTipoServicio);
+			ticket.setDescription(fldDescripcion);
+			ticket.setReponseInTime(fldDiasRespuesta);
+			ticket.setDeadlineStr(fldLimite);
+			ticket.setProject(slProyecto);
+			ticket.setOfficeId(slOficina);
+			ticket.setDeliverableTrace(deliverableTrace);
+			ticket.setCreatedUserId(userSession.getUser().getUserId());
+			ticket.setCreatedUserName(userSession.getUser().getUserName());
+
+			internalTicketsService.registrarNuevoTicket(ticket);
+
 			respuesta.setEstatus("ok");
-			respuesta.setMensaje("La solicitud de ticket se guard&oacute; con &eacute;xito");
+			respuesta
+					.setMensaje("La solicitud de ticket se guard&oacute; con &eacute;xito");
 
-//		} catch (ServiceException se) {
-//			respuesta.setEstatus("error");
-//			respuesta.setMensaje(se.getMessage());
-//		} catch (Exception e) {
-//			respuesta.setEstatus("error");
-//			respuesta.setMensaje("Error al guardar atenci&oacute;n");
-//		}
+		} catch (ServiceException se) {
+			respuesta.setEstatus("error");
+			respuesta.setMensaje(se.getMessage());
+		} catch (Exception e) {
+			respuesta.setEstatus("error");
+			respuesta.setMensaje("Error al guardar atenci&oacute;n");
+		}
 
 		return respuesta;
 
 	}
 
 	// Ordenes de servicio nuevas
+
 	// @RequestMapping(value = "/newServiceOrdersJson.do", method =
 	// RequestMethod.GET)
 	// public @ResponseBody String newServiceOrdersJson(ModelMap model) {

@@ -9,4 +9,6 @@ public interface InternalTicketsService {
 	
 	public List<InternalTicketBean> getPendingTickets(Long userId) throws ServiceException;	
 	
+	public void registrarNuevoTicket(InternalTicketBean ticket) throws ServiceException;
+	
 }

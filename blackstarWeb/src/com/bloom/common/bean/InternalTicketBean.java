@@ -41,7 +41,7 @@ public class InternalTicketBean {
 
 	private String createdUserName;
 
-	private Integer createdUserId;
+	private Long createdUserId;
 
 	private Date modified;
 
@@ -58,6 +58,10 @@ public class InternalTicketBean {
 	private String deadlineStr;
 	
 	private String project;
+	
+	private Integer reponseInTime;
+	
+	private DeliverableTraceBean deliverableTrace;
 
 	
 	/**
@@ -379,14 +383,14 @@ public class InternalTicketBean {
 	/**
 	 * @return the createdUserId
 	 */
-	public Integer getCreatedUserId() {
+	public Long getCreatedUserId() {
 		return createdUserId;
 	}
 
 	/**
 	 * @param createdUserId the createdUserId to set
 	 */
-	public void setCreatedUserId(Integer createdUserId) {
+	public void setCreatedUserId(Long createdUserId) {
 		this.createdUserId = createdUserId;
 	}
 
@@ -418,6 +422,34 @@ public class InternalTicketBean {
 	 */
 	public void setModifiedByUsr(Integer modifiedByUsr) {
 		this.modifiedByUsr = modifiedByUsr;
+	}
+
+	/**
+	 * @return the reponseInTime
+	 */
+	public Integer getReponseInTime() {
+		return reponseInTime;
+	}
+
+	/**
+	 * @param reponseInTime the reponseInTime to set
+	 */
+	public void setReponseInTime(Integer reponseInTime) {
+		this.reponseInTime = reponseInTime;
+	}
+
+	/**
+	 * @return the deliverableTrace
+	 */
+	public DeliverableTraceBean getDeliverableTrace() {
+		return deliverableTrace;
+	}
+
+	/**
+	 * @param deliverableTrace the deliverableTrace to set
+	 */
+	public void setDeliverableTrace(DeliverableTraceBean deliverableTrace) {
+		this.deliverableTrace = deliverableTrace;
 	}
 
 }

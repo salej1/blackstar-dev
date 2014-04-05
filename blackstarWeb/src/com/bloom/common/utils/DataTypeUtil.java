@@ -144,6 +144,28 @@ public class DataTypeUtil {
         }
     }
 
+    
+    /**
+     * Método que obtiene un objeto fecha de una cadena con formato DD/MM/AAAA ó
+     * DD-MM-AAAA
+     *
+     * @param fecha a formatear
+     * @return fecha
+     */
+    public static Date obtenerFecha(String cadena,String patron) {
+        if (cadena == null || cadena.trim().equals("")) {
+            return null;
+        }
+        Date fecha;
+        try {
+            fecha = DateUtils.parseDate(cadena.trim(), patron);
+            return fecha;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+    
+    
     /**
      * Método que obtiene un objeto fecha de una cadena con formato DD/MM/AAAA ó
      * DD-MM-AAAA

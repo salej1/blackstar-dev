@@ -14,4 +14,13 @@ public interface InternalTicketsDao {
 	 * @throws DAOException
 	 */
 	public List<InternalTicketBean> getPendingTickets(Long userId) throws DAOException;
+	
+	
+	/**
+	 * registrar nuevo ticket
+	 * @param ticket
+	 * @return
+	 * @throws DAOException
+	 */
+	public Long registrarNuevoTicket(InternalTicketBean ticket) throws DAOException;
 }

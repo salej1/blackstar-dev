@@ -10,6 +10,9 @@ import java.util.List;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 
 import com.blackstar.db.dao.AbstractDAO;
 import com.blackstar.logging.LogLevel;
@@ -24,7 +27,18 @@ public class InternalTicketsDaoImpl extends AbstractDAO implements InternalTicke
 
 	private static final String QUERY_TICKETS_PENDIENTES = "CALL getBloomPendingTickets(%s)";
 	
-    private static final String ERROR_CONSULTA =
+    
+	private static final String QUERY_INSERT_NEW_TICKET = 
+			"insert into bloomTicket ("
+					+" officeId,serviceTypeId,statusId,applicantAreaId,dueDate,"
+					+" project,ticketNumber,description,reponseInTime,created,"
+					+" createdBy,createdByUsr) "
+					+" values (:officeId,:serviceTypeId,:statusId,:applicantAreaId,"
+					+" :dueDate,:project,:ticketNumber,:description,:reponseInTime,"
+					+" :created,:createdBy,:createdByUsr)";
+
+	
+	private static final String ERROR_CONSULTA =
             "Error al consultar el catálogo";
     
     private static final String EMPTY_CONSULTA =
@@ -84,6 +98,109 @@ public class InternalTicketsDaoImpl extends AbstractDAO implements InternalTicke
         
     }
 	
+    
+    
+    
+    @Override
+    public Long registrarNuevoTicket(InternalTicketBean ticket) throws DAOException {
+
+        //Insertamos el registro en caso de que no exista
+        MapSqlParameterSource bindValues = new MapSqlParameterSource();
+        agregarParametrosTicket(ticket, bindValues);
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        try {
+
+        	getJdbcTemplate().update(QUERY_INSERT_NEW_TICKET, bindValues, keyHolder);
+        	
+        } catch (Exception e) {
+        	Logger.Log(LogLevel.WARNING, EMPTY_CONSULTA, e);
+            throw new DAOException("Error en DAO");
+        }
+
+        return Long.parseLong(keyHolder.getKey().toString());
+    }
+    
+    
+    
+    private void agregarParametrosTicket(
+    		InternalTicketBean ticket, MapSqlParameterSource params) {
+
+        if (ticket.getOfficeId() == null || ticket.getOfficeId().isEmpty()) {        	
+            params.addValue("officeId", null);
+        } else {
+            params.addValue("officeId", ticket.getOfficeId());
+        }
+
+        if (ticket.getServiceTypeId() == null) {
+            params.addValue("serviceTypeId", null);
+        } else {
+            params.addValue("serviceTypeId", ticket.getServiceTypeId());
+        }
+
+        if (ticket.getStatusId() == null) {
+            params.addValue("statusId", null);
+        } else {
+            params.addValue("statusId", ticket.getStatusId());
+        }
+        
+        
+        if (ticket.getApplicantAreaId() == null) {
+            params.addValue("applicantAreaId", null);
+        } else {
+            params.addValue("applicantAreaId", ticket.getApplicantAreaId());
+        }
+
+        if (ticket.getDeadline() == null) {
+            params.addValue("dueDate", null);
+        } else {
+            params.addValue("dueDate", ticket.getDeadline());
+        }
+        
+
+        if (ticket.getProject() == null || ticket.getProject().isEmpty()) {
+            params.addValue("project", null);
+        } else {
+            params.addValue("project", ticket.getProject());
+        }
+
+        if (ticket.getDescription() == null || ticket.getDescription().isEmpty()) {
+            params.addValue("description", null);
+        } else {
+            params.addValue("description", ticket.getDescription());
+        }
+        
+        
+        if (ticket.getReponseInTime() == null) {
+            params.addValue("reponseInTime", null);
+        } else {
+            params.addValue("reponseInTime", ticket.getReponseInTime());
+        }
+        
+        
+        if (ticket.getCreated() == null) {
+            params.addValue("created", null);
+        } else {
+            params.addValue("created", ticket.getCreated());
+        }
+        
+        if (ticket.getCreatedStr() == null || ticket.getCreatedStr().isEmpty()) {
+            params.addValue("createdBy", null);
+        } else {
+            params.addValue("createdBy", ticket.getCreatedStr());
+        }
+        
+        
+        if (ticket.getCreatedUserId() == null) {
+            params.addValue("createdByUsr", null);
+        } else {
+            params.addValue("createdByUsr", ticket.getCreatedUserId());
+        }
+
+        
+
+    }
+    
 	
     
 
