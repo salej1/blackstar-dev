@@ -176,8 +176,10 @@ public class InternalTicketsController extends AbstractController {
 			ticket.setProject(slProyecto);
 			ticket.setOfficeId(slOficina);
 			ticket.setDeliverableTrace(deliverableTrace);
+			ticket.setApplicantUserId(userSession.getUser().getUserId());
 			ticket.setCreatedUserId(userSession.getUser().getUserId());
 			ticket.setCreatedUserName(userSession.getUser().getUserName());
+		
 
 			internalTicketsService.registrarNuevoTicket(ticket);
 

@@ -154,7 +154,8 @@ function guardarAtencion() {
 			slOficina:$('#slOficina').val(),
 			fldFolio:$('#fldFolio').val(),
 			slDocumento:$('#slDocumento').val(),
-			fldDescripcion:$('#fldDescripcion').val()
+			fldDescripcion:$('#fldDescripcion').val(),
+			fldDiasRespuesta:diasLimitesTipoServicio
 		},
 		dataType : "json",
 		beforeSend : function() {

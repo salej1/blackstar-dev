@@ -3,13 +3,19 @@
  */
 package com.bloom.common.bean;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * @author Oscar.Martinez
  * 
  */
-public class InternalTicketBean {
+public class InternalTicketBean implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	private Long id;
 
@@ -17,7 +23,7 @@ public class InternalTicketBean {
 	
 	private String officeName;
 
-	private Integer applicantUserId;
+	private Long applicantUserId;
 
 	private Integer serviceTypeId;
 
@@ -203,7 +209,7 @@ public class InternalTicketBean {
 	/**
 	 * @return the applicantUserId
 	 */
-	public Integer getApplicantUserId() {
+	public Long getApplicantUserId() {
 		return applicantUserId;
 	}
 
@@ -211,7 +217,7 @@ public class InternalTicketBean {
 	 * @param applicantUserId
 	 *            the applicantUserId to set
 	 */
-	public void setApplicantUserId(Integer applicantUserId) {
+	public void setApplicantUserId(Long applicantUserId) {
 		this.applicantUserId = applicantUserId;
 	}
 
