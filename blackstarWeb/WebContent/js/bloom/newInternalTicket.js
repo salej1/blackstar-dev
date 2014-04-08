@@ -37,6 +37,17 @@ $(document)
 						}
 					});
 
+					$( "#saveButtonTicket" ).click(function() {
+						  
+						  mensaje_confirmacion("\u00BF Confirma que desea enviar la requisici\u00f3n general "+$("#fldFolio").val()+"?",
+								  "Alta Ticket Interno","Aceptar","Cancelar",
+								  guardarAtencion,
+								  function(){window.location = '/dashboard/show.do';});
+						  
+					});
+					
+					
+					
 					// Save confirm dialog
 					$("#saveConfirm").dialog({
 						autoOpen : false,
@@ -83,14 +94,8 @@ $(document)
 											"Aceptar" : function() {
 												$(this).dialog("close");
 												attCounter++;
-												$('#img' + attCounter + 'PH')
-														.html(
-																"<img src='img/bigPdf.png'/>");
-												$('#img' + attCounter + 'Desc')
-														.html(
-																$(
-																		"#attachment option:selected")
-																		.val());
+												$('#img' + attCounter + 'PH').html("<img src='img/bigPdf.png'/>");
+												$('#img' + attCounter + 'Desc').html($("#attachment option:selected").val());
 											},
 
 											"Cancelar" : function() {
@@ -102,9 +107,7 @@ $(document)
 					// Seguimiento$("#seguimientoCapture").hide();
 					$("#seguimientoCapture").hide();
 
-					$('#slTipoServicio')
-							.on(
-									'change',
+					$('#slTipoServicio').on('change',
 									function() {
 										// when game select changes, filter the
 										// character list to the selected game
@@ -132,7 +135,7 @@ $(document)
 
 					consultarDatosFormulario();
 
-					attachmentFolderId = $("#fldFolio").val();
+					//attachmentFolderId = $("#fldFolio").val();
 
 				});
 
@@ -140,6 +143,10 @@ $(document)
 function guardarAtencion() {
 	// ocultarMensajes();
 
+	if(diasLimitesTipoServicio===null){
+		diasLimitesTipoServicio=-1;
+	}
+	
 	$.ajax({
 		url : "/bloom/guardarTicket.do",
 		type : "POST",
@@ -152,7 +159,6 @@ function guardarAtencion() {
 			fldLimite:$('#fldLimite').val(),
 			slProyecto:$('#slProyecto').val(),
 			slOficina:$('#slOficina').val(),
-			fldFolio:$('#fldFolio').val(),
 			slDocumento:$('#slDocumento').val(),
 			fldDescripcion:$('#fldDescripcion').val(),
 			fldDiasRespuesta:diasLimitesTipoServicio,
@@ -168,21 +174,23 @@ function guardarAtencion() {
 		success : function(respuestaJson) {
 			// ocultarMensajes();
 			if (respuestaJson.estatus === "ok") {
+				
+				mensaje_alerta(respuestaJson.mensaje,"Alta Ticket Interno", function(){
+					window.location = '/dashboard/show.do';
+				});
+				
 				// limpiarCampos();
-				// mostrarMensajeOK(respuestaJson.mensaje);
 
 			} else {
 				if (respuestaJson.estatus === "preventivo") {
-					// mostrarMensajePreventivo(respuestaJson.mensaje);
+					mensaje_alerta(respuestaJson.mensaje,"Alta Ticket Interno");
 				} else {
-					// mostrarMensajeError(respuestaJson.mensaje);
+					mensaje_alerta(respuestaJson.mensaje,"Alta Ticket Interno");
 				}
 			}
 		},
 		error : function() {
-			// ocultarMensajes();
-			// mostrarMensajeError("Ocurri&oacute; un error al guardar
-			// solicitud");
+			mensaje_alerta("Ocurri&oacute; un error al guardar solicitud","Alta Ticket Interno");
 		}
 	});
 

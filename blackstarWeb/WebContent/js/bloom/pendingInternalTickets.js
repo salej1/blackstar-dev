@@ -37,22 +37,15 @@ function getPendingInternalTickets() {
 										"sPaginationType" : "full_numbers",
 										"aaData" : listaInternalTickets,
 										"sDom" : '<"top"i>rt<"bottom"flp><"clear">',
-										"aoColumns" : [ {
-											"mData" : "ticketNumber"
-										}, {
-											"mData" : "createdStr"
-										}, {
-											"mData" : "petitionerArea"
-										}, {
-											"mData" : "serviceTypeDescr"
-										}, {
-											"mData" : "deadlineStr"
-										}, {
-											"mData" : "project"
-										}, {
-											"mData" : "officeName"
-										}
-
+										"aoColumns" : [ 
+										{"mData" : "ticketNumber"}, 
+										{"mData" : "statusDescr"}, 
+										{"mData" : "createdStr"}, 
+										{"mData" : "petitionerArea"}, 
+										{"mData" : "serviceTypeDescr"}, 
+										{"mData" : "deadlineStr"}, 
+										{"mData" : "project"}, 
+										{"mData" : "officeName"}
 										],
 										"aoColumnDefs" : [ {
 											"mRender" : function(data, type,
@@ -107,8 +100,12 @@ function getInternalsTickets() {
 										"sPaginationType" : "full_numbers",
 										"aaData" : listaInternalTickets,
 										"sDom" : '<"top"i>rt<"bottom"flp><"clear">',
-										"aoColumns" : [ {
+										"aoColumns" : [ 
+										                
+										                {
 											"mData" : "ticketNumber"
+										}, {
+											"mData" : "statusDescr"
 										}, {
 											"mData" : "createdStr"
 										}, {

@@ -29,7 +29,8 @@ public class InternalTicketsDaoImpl extends AbstractDAO implements
 		InternalTicketsDao {
 
 
-	private static final String QUERY_TICKETS_PENDIENTES = "CALL getBloomPendingTickets(%s)";
+	private static final String QUERY_TICKETS_PENDIENTES = "CALL getBloomPendingTickets(%d)";
+	private static final String QUERY_TICKETS = "CALL getBloomTickets(%d)";
 	
 	private static final String QUERY_TICKET_NUMBER = "CALL GetNextInternalTicketNumber()";
 
@@ -63,8 +64,11 @@ public class InternalTicketsDaoImpl extends AbstractDAO implements
 					.getCreated()));
 
 			ticket.setProject(rs.getString("project"));
-			ticket.setOfficeName(rs.getString("officeId"));
+			ticket.setOfficeName(rs.getString("officeName"));
 			ticket.setOfficeId(rs.getString("officeId"));
+			
+			ticket.setStatusId(rs.getInt("statusId"));
+			ticket.setStatusDescr(rs.getString("statusTicket"));
 
 			return ticket;
 		}
@@ -132,7 +136,7 @@ public class InternalTicketsDaoImpl extends AbstractDAO implements
 		try {
 
 			listaRegistros.addAll(getJdbcTemplate().query(
-					String.format(QUERY_TICKETS_PENDIENTES, userId),
+					String.format(QUERY_TICKETS, userId),
 					new InternalTicketMapper()));
 
 			return listaRegistros;

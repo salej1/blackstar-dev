@@ -30,6 +30,8 @@ public class InternalTicketBean implements Serializable {
 	private String serviceTypeDescr;
 
 	private Integer statusId;
+	
+	private String statusDescr;
 
 	private Integer applicantAreaId;
 	
@@ -474,6 +476,20 @@ public class InternalTicketBean implements Serializable {
 	 */
 	public void setCreatedUserEmail(String createdUserEmail) {
 		this.createdUserEmail = createdUserEmail;
+	}
+
+	/**
+	 * @return the statusDescr
+	 */
+	public String getStatusDescr() {
+		return statusDescr;
+	}
+
+	/**
+	 * @param statusDescr the statusDescr to set
+	 */
+	public void setStatusDescr(String statusDescr) {
+		this.statusDescr = statusDescr;
 	}
 
 }

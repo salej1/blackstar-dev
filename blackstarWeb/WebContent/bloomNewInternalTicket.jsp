@@ -19,6 +19,7 @@
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery-ui.min.css">
 	<script src="${pageContext.request.contextPath}/js/dateFormat.js"></script>
 	<script type="text/javascript" src="${pageContext.request.contextPath}/js/bloom/newInternalTicket.js"></script>	
+	<script type="text/javascript" src="${pageContext.request.contextPath}/js/common/popup.js"></script>
 	<script type="text/javascript" charset="utf-8">
 
 	function split( val ) {
@@ -147,7 +148,7 @@
 								<tbody>
 									<tr>
 										<td>
-											<button class="searchButton" onclick="$('#saveConfirm').dialog('open');">Enviar</button>
+											<button id="saveButtonTicket" class="searchButton">Enviar</button>
 										</td>
 									</tr>
 								<tbody>
