@@ -15,4 +15,6 @@ public interface InternalTicketsService {
 	
 	public String generarTicketNumber() throws ServiceException;
 	
+	public void validarNuevoTicket(InternalTicketBean ticket) throws ServiceException;
+	
 }

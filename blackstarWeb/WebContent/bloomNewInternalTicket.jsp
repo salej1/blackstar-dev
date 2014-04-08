@@ -140,7 +140,7 @@
 										<td id="img3Desc"></td>
 									</tr>
 									<tr>
-										<td><button class="searchButton" onclick="consultarDocumentos();">Adjuntar Archivo</button></td>
+										<td><button id="attachButtonTicket" class="searchButton">Adjuntar Archivo</button></td>
 									</tr>
 								</tbody>
 							</table>
@@ -167,14 +167,6 @@
 					<select name="slDocumento" id="slDocumento"></select>
 
 				</div>
-				
-				
-				<div id="saveConfirm" title="Cerrar Ticket SAC45">
-					<p>¿Confirma que desea enviar la requisicion general SAC45?</p>
-				</div>
-						
-			
-			
 		
 		</div>
 	</body>

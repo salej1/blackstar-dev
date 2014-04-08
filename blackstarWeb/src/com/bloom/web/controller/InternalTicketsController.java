@@ -261,7 +261,9 @@ public class InternalTicketsController extends AbstractController {
 			ticket.setServiceTypeDescr(slTipoServicioLabel);
 			ticket.setOfficeName(slOficinaLabel);
 			
-
+			
+			internalTicketsService.validarNuevoTicket(ticket);
+			
 			internalTicketsService.registrarNuevoTicket(ticket);
 
 			respuesta.setEstatus("ok");

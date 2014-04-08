@@ -4,7 +4,8 @@ var listaServicios;
 var listaOficinas;
 
 var idTipoServicio;
-var diasLimitesTipoServicio;
+var diasLimitesTipoServicio=null;
+
 var fechaLimite;
 
 $(document)
@@ -37,37 +38,6 @@ $(document)
 						}
 					});
 
-					$( "#saveButtonTicket" ).click(function() {
-						  
-						  mensaje_confirmacion("\u00BF Confirma que desea enviar la requisici\u00f3n general "+$("#fldFolio").val()+"?",
-								  "Alta Ticket Interno","Aceptar","Cancelar",
-								  guardarAtencion,
-								  function(){window.location = '/dashboard/show.do';});
-						  
-					});
-					
-					
-					
-					// Save confirm dialog
-					$("#saveConfirm").dialog({
-						autoOpen : false,
-						height : 150,
-						width : 380,
-						modal : true,
-						buttons : {
-							"Aceptar" : function() {
-								$(this).dialog("close");
-								
-								guardarAtencion();
-								
-								//window.location = 'dashboard.html';
-							},
-
-							"Cancelar" : function() {
-								$(this).dialog("close");
-							}
-						}
-					});
 
 					// History dialog
 					$("#historyDlg").dialog({
@@ -88,7 +58,7 @@ $(document)
 									{
 										autoOpen : false,
 										height : 340,
-										width : 420,
+										width : 700,
 										modal : true,
 										buttons : {
 											"Aceptar" : function() {
@@ -130,13 +100,31 @@ $(document)
 
 										$("#fldLimite").datepicker("setDate",
 												fechaLimite);
+										
+										consultarDocumentos();
 
 									});
 
+					
+
+					$( "#saveButtonTicket" ).click(function() {
+						  
+						  mensaje_confirmacion("\u00BF Confirma que desea enviar la requisici\u00f3n general "+$("#fldFolio").val()+"?",
+								  "Alta Ticket Interno","Aceptar","Cancelar",
+								  guardarAtencion,
+								  function(){window.location = '/dashboard/show.do';});
+						  
+					});
+					
+
+					$( "#attachButtonTicket" ).click(function() {
+						consultarDocumentos(function(){
+							$('#attachmentImgDlg').dialog('open');
+						});
+					});
+
 					consultarDatosFormulario();
-
-					//attachmentFolderId = $("#fldFolio").val();
-
+					
 				});
 
 
@@ -244,6 +232,7 @@ function consultarDatosFormulario() {
 				listaOficinas = respuestaJson.listaMap2.listaOficinas;
 
 				cargaCombosFormulario();
+				consultarDocumentos();
 
 			} else {
 				if (respuestaJson.estatus === "preventivo") {
@@ -257,7 +246,21 @@ function consultarDatosFormulario() {
 	});
 }
 
-function consultarDocumentos() {
+
+
+function tablaListaDocumentos(listaDocumentos){
+	
+	$("#attItems").find(".itemFile").remove();
+	
+	for (var i = 0; i < listaDocumentos.length; i++) {
+		$('#attItems').append("<li class='itemFile'>"+listaDocumentos[i].descripcion+"</li>");
+	}
+	
+}
+
+function consultarDocumentos(callBackFunction) {
+	
+	idTipoServicio = parseInt($('#slTipoServicio').val());
 
 	$.ajax({
 		url : "/bloomCatalog/getDocumentos.do",
@@ -273,17 +276,21 @@ function consultarDocumentos() {
 
 			if (respuestaJson.estatus === "ok") {
 
-				listaDocuentos = respuestaJson.lista;
+				listaDocumentos = respuestaJson.lista;
 
 				$('#slDocumento').children().remove();
 
-				for (var i = 0; i < listaDocuentos.length; i++) {
+				for (var i = 0; i < listaDocumentos.length; i++) {
 					$("#slDocumento").append(
-							new Option(listaDocuentos[i].descripcion,
-									listaDocuentos[i].id));
+							new Option(listaDocumentos[i].descripcion,
+									listaDocumentos[i].id));
 				}
-
-				$('#attachmentImgDlg').dialog('open');
+				
+				if ((typeof (callBackFunction) === "function") && callBackFunction !== null) {
+					callBackFunction();
+		        }else{
+		        	tablaListaDocumentos(listaDocumentos);
+		        }
 
 			} else {
 				if (respuestaJson.estatus === "preventivo") {

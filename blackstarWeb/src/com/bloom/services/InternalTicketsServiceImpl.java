@@ -71,6 +71,18 @@ public class InternalTicketsServiceImpl extends AbstractService implements
         }
     }
 	
+
+    
+    
+    @Override
+    public void validarNuevoTicket(InternalTicketBean ticket) throws ServiceException {
+    	
+    	 if (ticket.getDescription().isEmpty()) {
+             throw new ServiceException("Describa el motivo del ticket, por favor.");
+         }
+    	
+    }
+
     
 	
     @Override
