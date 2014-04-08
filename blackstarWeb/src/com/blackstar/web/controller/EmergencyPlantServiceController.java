@@ -22,7 +22,6 @@ import com.blackstar.model.Ticket;
 import com.blackstar.model.UserSession;
 import com.blackstar.model.dto.EmergencyPlantServiceDTO;
 import com.blackstar.model.dto.EmergencyPlantServicePolicyDTO;
-import com.blackstar.model.dto.PlainServicePolicyDTO;
 import com.blackstar.services.interfaces.ReportService;
 import com.blackstar.services.interfaces.ServiceOrderService;
 import com.blackstar.web.AbstractController;
@@ -98,6 +97,7 @@ public class EmergencyPlantServiceController extends AbstractController {
 		  		  }
 
 		  		  model.addAttribute("osAttachmentFolder", gdService.getAttachmentFolderId(emergencyPlantServicePolicyDTO.getServiceOrderNumber()));
+		  		  model.addAttribute("accessToken", gdService.getAccessToken());
 	  		  }
 			  else
 			  {

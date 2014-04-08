@@ -24,7 +24,7 @@
 <!--   CONTENT COLUMN   -->		
 
 <!-- Inicia Contenido De Perfiles Syscallcenter Y Syscoordinador-->
-	<c:set var="sysCallCenter" scope="request" value="${user.belongsToGroup['Call Center'] || user.belongsToGroup['Coordinador']}" />
+	<c:set var="sysCallCenter" scope="request" value="${user.belongsToGroup['Call Center']}" />
 	<c:if test="${sysCallCenter == true}">
 
 		<!-- Seleccion de filtro por oficina -->
@@ -55,7 +55,57 @@
 		</script>
 		
 
+		<!-- La inicializacion se hace una vez que se pintaron las tablas -->
+		<script type="text/javascript">
+			$(function(){
+				officeFilter_init();
+			});
+		</script>
+		
+		
+		<!-- Tabla De Tickets internos pendientes - pendingInternalTickets.jsp -->
+		<c:import url="bloomPendingInternalTickets.jsp"></c:import>
+		<script type="text/javascript">
+			$(function(){
+				pendingInternalTicketsInit();
+			});
+		</script>
 
+	</c:if>
+<!-- Fin Contenido De Perfiles Syscallcenter Y Syscoordinator -->
+
+
+
+<!-- Inicia Contenido De Perfiles Syscoordinador-->
+	<c:set var="sysCoordinador" scope="request" value="${user.belongsToGroup['Coordinador']}" />
+	<c:if test="${sysCoordinador == true}">
+
+		<!-- Seleccion de filtro por oficina -->
+		<c:import url="officeFilter.jsp"></c:import>
+
+		<!-- Tabla De Tickets Por Asignar - Unassignedtickets.jsp -->
+		<c:import url="unassignedTickets.jsp"></c:import>
+				<script type="text/javascript">
+			$(function(){
+				unassignedTickets_init();
+			});
+		</script>
+
+		<!-- Tabla De Ordenes De Servicio Por Revisar - Newserviceorders.jsp -->
+		<c:import url="newServiceOrders.jsp"></c:import>
+		<script type="text/javascript">
+			$(function(){
+				newServiceOrders_init();
+			});
+		</script>
+
+		<!-- Tabla De Ordenes De Servicio Con Pendientes - Pendingserviceorders.jsp -->
+		<c:import url="pendingServiceOrders.jsp"></c:import>
+		<script type="text/javascript">
+			$(function(){
+				pendingServiceOrders_init();
+			});
+		</script>
 		
 
 		<!-- La inicializacion se hace una vez que se pintaron las tablas -->
@@ -64,10 +114,20 @@
 				officeFilter_init();
 			});
 		</script>
+		
+		
+		<!-- Tabla De Tickets internos pendientes - pendingInternalTickets.jsp -->
+		<c:import url="bloomInternalTickets.jsp"></c:import>
+		<script type="text/javascript">
+			$(function(){
+				internalTicketsInit();
+			});
+		</script>
+		
 
 	</c:if>
+<!-- Fin Contenido De Perfiles Syscoordinator -->
 
-<!-- Fin Contenido De Perfiles Syscallcenter Y Syscoordinator -->
 
 <!-- Inicia Contenido De Perfil Sysservicio -->
 

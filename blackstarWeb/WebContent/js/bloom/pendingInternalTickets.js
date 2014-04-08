@@ -2,14 +2,21 @@
 function pendingInternalTicketsInit() {
 
 	// Tabla de tickets pendientes
-	getPendingTickets();
+	getPendingInternalTickets();
 }
 
-function getPendingTickets() {
+function internalTicketsInit() {
+
+	// Tabla de tickets pendientes
+	getInternalsTickets();
+}
+
+
+function getPendingInternalTickets() {
 
 	$
 			.ajax({
-				url : "/bloom/getPendingTickets.do",
+				url : "/bloom/getPendingInternalTickets.do",
 				type : "GET",
 				dataType : "json",
 				beforeSend : function() {
@@ -75,59 +82,65 @@ function getPendingTickets() {
 // newSOTable.fnFilter(office, 8);
 // }
 
-function getPendingTickets2() {
+function getInternalsTickets() {
+
 	$
-			.getJSON(
-					"/bloom/getPendingTickets.do",
-					function(data) {
+			.ajax({
+				url : "/bloom/getInternalTickets.do",
+				type : "GET",
+				dataType : "json",
+				beforeSend : function() {
 
-						var listaInternalTickets = data.lista;
+				},
+				success : function(respuestaJson) {
+					var listaInternalTickets = respuestaJson.lista;
+					
+					// Inicializacion de la tabla de nuevas ordenes de servicio
+					$('#dtGridTicketsInternos')
+							.dataTable(
+									{
+										"bProcessing" : true,
+										"bFilter" : true,
+										"bLengthChange" : false,
+										"iDisplayLength" : 10,
+										"bInfo" : false,
+										"sPaginationType" : "full_numbers",
+										"aaData" : listaInternalTickets,
+										"sDom" : '<"top"i>rt<"bottom"flp><"clear">',
+										"aoColumns" : [ {
+											"mData" : "ticketNumber"
+										}, {
+											"mData" : "createdStr"
+										}, {
+											"mData" : "petitionerArea"
+										}, {
+											"mData" : "serviceTypeDescr"
+										}, {
+											"mData" : "deadlineStr"
+										}, {
+											"mData" : "project"
+										}, {
+											"mData" : "officeName"
+										}
 
-						// Inicializacion de la tabla de nuevas ordenes de
-						// servicio
-						$('#dtGridTicketsInternos')
-								.dataTable(
-										{
-											"bProcessing" : true,
-											"bFilter" : true,
-											"bLengthChange" : false,
-											"iDisplayLength" : 10,
-											"bInfo" : false,
-											"sPaginationType" : "full_numbers",
-											"aaData" : listaInternalTickets,
-											"sDom" : '<"top"i>rt<"bottom"flp><"clear">',
-											"aoColumns" : [ {
-												"mData" : "TicketNumber"
-											}, {
-												"mData" : "CreatedStr"
-											}, {
-												"mData" : "petitionerArea"
-											}, {
-												"mData" : "ServiceTypeDescr"
-											}, {
-												"mData" : "DeadlineStr"
-											}, {
-												"mData" : "project"
-											}, {
-												"mData" : "OfficeName"
-											}
+										],
+										"aoColumnDefs" : [ {
+											"mRender" : function(data, type,
+													row) {
+												return "<div align='center' style='width:70px;' ><a href='${pageContext.request.contextPath}/bloom/detailTicket.do?id="
+														+ row.DT_RowId
+														+ "'>"
+														+ data + "</a></div>";
+											},
+											"aTargets" : [ 0 ]
+										}
 
-											],
-											"aoColumnDefs" : [ {
-												"mRender" : function(data,
-														type, row) {
-													return "<div align='center' style='width:70px;' ><a href='${pageContext.request.contextPath}/bloom/detailTicket.do?id="
-															+ row.DT_RowId
-															+ "'>"
-															+ data
-															+ "</a></div>";
-												},
-												"aTargets" : [ 0 ]
-											}
+										]
+									});
 
-											]
-										});
+				},
+				error : function() {
+				}
+			});
 
-						// newServiceOrders_filter(officePref);
-					});
 }

@@ -155,7 +155,10 @@ function guardarAtencion() {
 			fldFolio:$('#fldFolio').val(),
 			slDocumento:$('#slDocumento').val(),
 			fldDescripcion:$('#fldDescripcion').val(),
-			fldDiasRespuesta:diasLimitesTipoServicio
+			fldDiasRespuesta:diasLimitesTipoServicio,
+			slAreaSolicitanteLabel: $('#slAreaSolicitante option:selected').text(),
+			slTipoServicioLabel:$('#slTipoServicio option:selected').text(),
+			slOficinaLabel:$('#slOficina option:selected').text()
 		},
 		dataType : "json",
 		beforeSend : function() {

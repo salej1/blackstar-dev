@@ -9,56 +9,71 @@ package com.bloom.common.bean;
  */
 public class TicketTeamBean {
 	
-	private Integer id;
-	private Integer idTicket;
-	private Integer workerRoleId;
-	private Integer userId;
+	
+	private Long id;
+	private Long idTicket;
+	private Long workerRoleId;
+	private Long userId;
+	
+	/**
+	 * Constructor.
+	 * @param idTicket
+	 * @param workerRoleId
+	 * @param userId
+	 */
+	public TicketTeamBean(Long idTicket, Long workerRoleId, Long userId) {
+		super();
+		this.idTicket = idTicket;
+		this.workerRoleId = workerRoleId;
+		this.userId = userId;
+	}
+	
 	/**
 	 * @return the id
 	 */
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
 	/**
 	 * @param id the id to set
 	 */
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 	/**
 	 * @return the idTicket
 	 */
-	public Integer getIdTicket() {
+	public Long getIdTicket() {
 		return idTicket;
 	}
 	/**
 	 * @param idTicket the idTicket to set
 	 */
-	public void setIdTicket(Integer idTicket) {
+	public void setIdTicket(Long idTicket) {
 		this.idTicket = idTicket;
 	}
 	/**
 	 * @return the workerRoleId
 	 */
-	public Integer getWorkerRoleId() {
+	public Long getWorkerRoleId() {
 		return workerRoleId;
 	}
 	/**
 	 * @param workerRoleId the workerRoleId to set
 	 */
-	public void setWorkerRoleId(Integer workerRoleId) {
+	public void setWorkerRoleId(Long workerRoleId) {
 		this.workerRoleId = workerRoleId;
 	}
 	/**
 	 * @return the userId
 	 */
-	public Integer getUserId() {
+	public Long getUserId() {
 		return userId;
 	}
 	/**
 	 * @param userId the userId to set
 	 */
-	public void setUserId(Integer userId) {
+	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
 	

@@ -32,6 +32,8 @@ public class InternalTicketBean implements Serializable {
 	private Integer statusId;
 
 	private Integer applicantAreaId;
+	
+	
 
 	private String ticketNumber;
 
@@ -68,6 +70,8 @@ public class InternalTicketBean implements Serializable {
 	private Integer reponseInTime;
 	
 	private DeliverableTraceBean deliverableTrace;
+	
+	private String createdUserEmail;
 
 	
 	/**
@@ -456,6 +460,20 @@ public class InternalTicketBean implements Serializable {
 	 */
 	public void setDeliverableTrace(DeliverableTraceBean deliverableTrace) {
 		this.deliverableTrace = deliverableTrace;
+	}
+
+	/**
+	 * @return the createdUserEmail
+	 */
+	public String getCreatedUserEmail() {
+		return createdUserEmail;
+	}
+
+	/**
+	 * @param createdUserEmail the createdUserEmail to set
+	 */
+	public void setCreatedUserEmail(String createdUserEmail) {
+		this.createdUserEmail = createdUserEmail;
 	}
 
 }
