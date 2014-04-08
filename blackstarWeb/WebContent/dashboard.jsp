@@ -64,7 +64,7 @@
 		
 		
 		<!-- Tabla De Tickets internos pendientes - pendingInternalTickets.jsp -->
-		<c:import url="bloomPendingInternalTickets.jsp"></c:import>
+		<c:import url="/bloom/bloomPendingInternalTickets.jsp"></c:import>
 		<script type="text/javascript">
 			$(function(){
 				pendingInternalTicketsInit();
@@ -117,7 +117,7 @@
 		
 		
 		<!-- Tabla De Tickets internos pendientes - pendingInternalTickets.jsp -->
-		<c:import url="bloomInternalTickets.jsp"></c:import>
+		<c:import url="/bloom/bloomInternalTickets.jsp"></c:import>
 		<script type="text/javascript">
 			$(function(){
 				internalTicketsInit();
@@ -171,7 +171,7 @@
 <!-- Fin Tabla De Ordenes De Servicio Con Pendientes -->
 	
 			<!-- Tabla De Tickets internos pendientes - pendingInternalTickets.jsp -->
-		<c:import url="bloomPendingInternalTickets.jsp"></c:import>
+		<c:import url="/bloom/bloomPendingInternalTickets.jsp"></c:import>
 		<script type="text/javascript">
 			$(function(){
 				pendingInternalTicketsInit();
@@ -192,7 +192,7 @@
 	<!-- Fin Contenido De Perfil sysHelpDesk -->
 	
 			<!-- Tabla De Tickets internos pendientes - pendingInternalTickets.jsp -->
-		<c:import url="bloomPendingInternalTickets.jsp"></c:import>
+		<c:import url="/bloom/bloomPendingInternalTickets.jsp"></c:import>
 		<script type="text/javascript">
 			$(function(){
 				pendingInternalTicketsInit();

@@ -202,7 +202,7 @@ public class InternalTicketsController extends AbstractController {
 			Logger.Log(LogLevel.ERROR, e.getMessage(), e);
 		}
 
-		return "bloomNewInternalTicket";
+		return "bloom/bloomNewInternalTicket";
 	}
 
 	/**

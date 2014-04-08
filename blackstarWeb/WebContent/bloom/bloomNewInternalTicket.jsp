@@ -4,7 +4,7 @@
 <%@ page isELIgnored="false"%>
 <!DOCTYPE html>
 <c:set var="pageSection" scope="request" value="ordenesServicio" />
-<c:import url="header.jsp"></c:import>
+<c:import url="../header.jsp"></c:import>
 <html>
 	<head>
 	<title>Ticket Interno</title>
