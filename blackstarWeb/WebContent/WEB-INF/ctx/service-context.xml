@@ -74,6 +74,7 @@
   <!-- Implementacion de BLOOM HELPDESK -->  
   <bean id="internalTicketsService" class="com.bloom.services.InternalTicketsServiceImpl" parent="abstractService">
       <property name="internalTicketsDao" ref="internalTicketsDao" />
+      <property name="catalogInternalTicketsDao" ref="catalogInternalTicketsDao" />
   </bean>
   
 

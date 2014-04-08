@@ -14,7 +14,21 @@ public class DeliverableTraceBean {
 	
 	private Long ticketId;
 	private Long deliverableId;
+	private Integer delivered;
 	private Date deliverableDate;
+	
+	public DeliverableTraceBean() {
+	}
+	
+	
+	public DeliverableTraceBean(Long ticketId, Long deliverableId,
+			Integer delivered, Date deliverableDate) {
+		super();
+		this.ticketId = ticketId;
+		this.deliverableId = deliverableId;
+		this.delivered = delivered;
+		this.deliverableDate = deliverableDate;
+	}
 	/**
 	 * @return the ticketId
 	 */
@@ -50,6 +64,18 @@ public class DeliverableTraceBean {
 	 */
 	public void setDeliverableDate(Date deliverableDate) {
 		this.deliverableDate = deliverableDate;
+	}
+	/**
+	 * @return the delivered
+	 */
+	public Integer getDelivered() {
+		return delivered;
+	}
+	/**
+	 * @param delivered the delivered to set
+	 */
+	public void setDelivered(Integer delivered) {
+		this.delivered = delivered;
 	}
 	
 	

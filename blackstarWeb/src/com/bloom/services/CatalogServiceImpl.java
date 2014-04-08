@@ -103,6 +103,19 @@ public class CatalogServiceImpl implements CatalogService {
     }
 	
 	
+	@Override
+    public List<CatalogoBean<Integer>> empleadosPorGrupo(String grupo)
+            throws ServiceException {
+        try {
+            
+        	return getCatalogInternalTicketsDao().getEmployeesByGroup(grupo);
+            
+        } catch (DAOException e) {
+            
+            throw new ServiceException(ERROR_CONSULTA_CAT, e);
+        }
+    }
+	
 	
     /**
 	 * @return the catalogInternalTicketsDao

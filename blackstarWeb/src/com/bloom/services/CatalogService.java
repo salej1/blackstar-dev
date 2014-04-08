@@ -60,5 +60,17 @@ public interface CatalogService {
      */
     public List<CatalogoBean<Integer>> consultarDocumentosPorServicio(int idTipoServicio)
             throws ServiceException;    
+    
+    
+    
+	/**
+	 * usuarios por grupo
+	 * @param grupo
+	 * @return
+	 * @throws ServiceException
+	 */
+    public List<CatalogoBean<Integer>> empleadosPorGrupo(String grupo)
+            throws ServiceException;
+
 
 }

@@ -2,6 +2,7 @@ package com.bloom.db.dao;
 
 import java.util.List;
 
+import com.bloom.common.bean.DeliverableTraceBean;
 import com.bloom.common.bean.InternalTicketBean;
 import com.bloom.common.bean.TicketTeamBean;
 import com.bloom.common.exception.DAOException;
@@ -53,8 +54,16 @@ public interface InternalTicketsDao {
 	 * @return
 	 * @throws DAOException
 	 */
-	public Long registrarMiembroTicket(TicketTeamBean teamMember)
-	 
-			throws DAOException;
+	public Long registrarMiembroTicket(TicketTeamBean teamMember) throws DAOException;
+	
+	
+	/**
+	 * guardar deliverable  trace
+	 * @param document
+	 * @return
+	 * @throws DAOException
+	 */
+	public Long registrarDocumentTrace(DeliverableTraceBean document) throws DAOException;
+
 
 }

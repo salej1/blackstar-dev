@@ -18,6 +18,7 @@ import com.blackstar.db.dao.AbstractDAO;
 import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
 import com.bloom.common.bean.CatalogoBean;
+import com.bloom.common.bean.DeliverableTraceBean;
 import com.bloom.common.bean.InternalTicketBean;
 import com.bloom.common.bean.TicketTeamBean;
 import com.bloom.common.exception.DAOException;
@@ -185,6 +186,39 @@ public class InternalTicketsDaoImpl extends AbstractDAO implements
 
 		return (long)idTicket;
 	}
+	
+	
+	
+	@Override
+	public Long registrarDocumentTrace(DeliverableTraceBean document)
+			throws DAOException {
+
+		StringBuilder sqlBuilder = new StringBuilder();
+		
+		sqlBuilder.append("CALL AddDeliverableTrace(?,?,?,?)");
+		
+		int idTicket = 0;
+		
+		try {
+		
+		Object[] args = new Object []{
+				document.getTicketId(),
+				document.getDeliverableId(),
+				document.getDelivered(),
+				document.getDeliverableDate()
+			};		
+		
+		idTicket = getJdbcTemplate().queryForInt(sqlBuilder.toString() ,args);
+
+
+		} catch (Exception e) {
+			Logger.Log(LogLevel.WARNING, EMPTY_CONSULTA, e);
+			throw new DAOException("Error en DAO");
+		}
+
+		return (long)idTicket;
+	}
+
 	
 	
 	

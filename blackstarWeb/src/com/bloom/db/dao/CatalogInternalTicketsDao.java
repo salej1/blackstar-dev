@@ -3,8 +3,9 @@ package com.bloom.db.dao;
 import java.util.List;
 
 
-import com.bloom.common.bean.CatalogoBean;
 
+
+import com.bloom.common.bean.CatalogoBean;
 import com.bloom.common.exception.DAOException;
 
 public interface CatalogInternalTicketsDao {
@@ -48,7 +49,11 @@ public interface CatalogInternalTicketsDao {
 	public List<CatalogoBean<Integer>> consultarDocumentosPorServicio(int tipoServicio) throws DAOException;
 		
 	
-	
-	
+	/**
+	 * Obtiene usuarios por grupo para bloom
+	 * @return
+	 * @throws DAOException
+	 */
+	public List<CatalogoBean<Integer>> getEmployeesByGroup(String group) throws DAOException;
 	
 }

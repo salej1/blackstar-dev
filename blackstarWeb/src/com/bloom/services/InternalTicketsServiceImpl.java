@@ -1,6 +1,7 @@
 package com.bloom.services;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.blackstar.db.dao.interfaces.UserDomainDAO;
@@ -8,19 +9,22 @@ import com.blackstar.interfaces.IEmailService;
 import com.blackstar.model.dto.EmployeeDTO;
 import com.blackstar.services.AbstractService;
 import com.blackstar.services.EmailServiceFactory;
+import com.bloom.common.bean.CatalogoBean;
+import com.bloom.common.bean.DeliverableTraceBean;
 import com.bloom.common.bean.InternalTicketBean;
 import com.bloom.common.bean.TicketTeamBean;
 import com.bloom.common.exception.DAOException;
 import com.bloom.common.exception.ServiceException;
 import com.bloom.common.utils.DataTypeUtil;
+import com.bloom.db.dao.CatalogInternalTicketsDao;
 import com.bloom.db.dao.InternalTicketsDao;
 
 public class InternalTicketsServiceImpl extends AbstractService implements
 	InternalTicketsService {
 
 	private InternalTicketsDao internalTicketsDao;
-	
-	private UserDomainDAO userDomainDAO;
+
+	 private CatalogInternalTicketsDao catalogInternalTicketsDao;
 	
 	
     @Override
@@ -76,7 +80,8 @@ public class InternalTicketsServiceImpl extends AbstractService implements
     	ticket.setCreated(DataTypeUtil.obtenerFecha(ticket.getCreatedStr(), "MM/dd/yyyy HH:mm:ss"));
     	ticket.setStatusId(1);//ticket nuevo.
     	
-    	List<EmployeeDTO> miebrosDtos;
+    	List<CatalogoBean<Integer>> miebrosDtos;
+    	List<CatalogoBean<Integer>> doctos;
     	
     	List<TicketTeamBean> miembros= new ArrayList<TicketTeamBean>();
     	
@@ -88,15 +93,15 @@ public class InternalTicketsServiceImpl extends AbstractService implements
             if (idTicket > 0) {
                 
             	//El creador del ticket entra con rol colaborador (2)
-            	miembros.add(new TicketTeamBean(ticket.getId(), 2L, ticket.getCreatedUserId()));
+            	miembros.add(new TicketTeamBean(idTicket, 2L, ticket.getCreatedUserId()));
             	
             	//obtener coordinadores
-            	miebrosDtos=userDomainDAO.getStaff("sysCoordinador");
+            	miebrosDtos=catalogInternalTicketsDao.getEmployeesByGroup("sysCoordinador");
             	
             	
-            	for(EmployeeDTO coordinador:miebrosDtos){
+            	for(CatalogoBean<Integer> coordinador:miebrosDtos){
             		//los cordinadores entran con rol de colaborador.
-            		miembros.add(new TicketTeamBean(ticket.getId(), 2L, (long)coordinador.getUserId()));
+            		miembros.add(new TicketTeamBean(idTicket, 2L, (long)coordinador.getId()));
             		
             		//enviar correos a los coordinadores involucrados.
             		sendAssignationEmail(ticket,coordinador);
@@ -109,6 +114,14 @@ public class InternalTicketsServiceImpl extends AbstractService implements
             	}
             	
             	//registrar bloomDeliverableTrace. Documentos
+            	doctos=catalogInternalTicketsDao.consultarDocumentosPorServicio(ticket.getServiceTypeId());
+            	DeliverableTraceBean document;
+            	for(CatalogoBean<Integer> doc:doctos){
+            		
+            		document = new DeliverableTraceBean(idTicket,(long)doc.getId(),0,new Date());
+            		
+            		getInternalTicketsDao().registrarDocumentTrace(document);
+            	}
             	
             }
         	
@@ -120,11 +133,11 @@ public class InternalTicketsServiceImpl extends AbstractService implements
     }
     
     
-    private void sendAssignationEmail(InternalTicketBean ticket,EmployeeDTO member){
+    private void sendAssignationEmail(InternalTicketBean ticket,CatalogoBean<Integer> member){
     	
 		// Enviar el email
 		IEmailService mail = EmailServiceFactory.getEmailService();
-		String to = member.getName() + ", " + member.getEmail();
+		String to = member.getDescripcion() + ", " + member.getExtra();
 		
 		String subject = String.format("Ticket %s  Nuevo", ticket.getTicketNumber());
 		
@@ -165,24 +178,19 @@ public class InternalTicketsServiceImpl extends AbstractService implements
 
 
 	/**
-	 * @return the userDomainDAO
+	 * @return the catalogInternalTicketsDao
 	 */
-	public UserDomainDAO getUserDomainDAO() {
-		return userDomainDAO;
+	public CatalogInternalTicketsDao getCatalogInternalTicketsDao() {
+		return catalogInternalTicketsDao;
 	}
 
 
 	/**
-	 * @param userDomainDAO the userDomainDAO to set
+	 * @param catalogInternalTicketsDao the catalogInternalTicketsDao to set
 	 */
-	public void setUserDomainDAO(UserDomainDAO userDomainDAO) {
-		this.userDomainDAO = userDomainDAO;
+	public void setCatalogInternalTicketsDao(
+			CatalogInternalTicketsDao catalogInternalTicketsDao) {
+		this.catalogInternalTicketsDao = catalogInternalTicketsDao;
 	}
-
-
-
-
-	
-	
 
 }
