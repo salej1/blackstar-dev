@@ -80,6 +80,14 @@ public class InternalTicketsServiceImpl extends AbstractService implements
     	 if (ticket.getDescription().isEmpty()) {
              throw new ServiceException("Describa el motivo del ticket, por favor.");
          }
+    	 
+    	 ticket.setDeadline(DataTypeUtil.obtenerFecha(ticket.getDeadlineStr(), "MM/dd/yyyy"));
+    	 Date fechaActual = new Date();
+    	 
+    	 
+    	 if(ticket.getDeadline().getTime()<fechaActual.getTime()){
+    		 throw new ServiceException("La fecha limite debe ser mayor a la fecha actual.");
+    	 }
     	
     }
 
@@ -105,7 +113,8 @@ public class InternalTicketsServiceImpl extends AbstractService implements
             if (idTicket > 0) {
                 
             	//El creador del ticket entra con rol colaborador (2)
-            	miembros.add(new TicketTeamBean(idTicket, 2L, ticket.getCreatedUserId()));
+            	miembros.add(
+            			new TicketTeamBean(idTicket, 2L, ticket.getCreatedUserId(),ticket.getCreatedUserEmail(),ticket.getCreatedUserName()));
             	
             	//obtener coordinadores
             	miebrosDtos=catalogInternalTicketsDao.getEmployeesByGroup("sysCoordinador");
@@ -113,10 +122,14 @@ public class InternalTicketsServiceImpl extends AbstractService implements
             	
             	for(CatalogoBean<Integer> coordinador:miebrosDtos){
             		//los cordinadores entran con rol de colaborador.
-            		miembros.add(new TicketTeamBean(idTicket, 2L, (long)coordinador.getId()));
+            		//coordinador.getId() --idUser
+            		//coordinador.getExtra()--email
+            		//coordinador.getDescripcion() --UserName
+            		miembros.add(new TicketTeamBean(idTicket, 2L, 
+            				(long)coordinador.getId(),
+            				coordinador.getExtra(),
+            				coordinador.getDescripcion()));
             		
-            		//enviar correos a los coordinadores involucrados.
-            		sendAssignationEmail(ticket,coordinador);
             	}
             	
             	
@@ -135,6 +148,15 @@ public class InternalTicketsServiceImpl extends AbstractService implements
             		getInternalTicketsDao().registrarDocumentTrace(document);
             	}
             	
+            	
+            	//Funcionalidad para el envio de correo a los incolucrados:
+            	//Creador del ticket y usuarios coordiandores.
+            	for(TicketTeamBean miembro:miembros){
+            		//enviar correos a los coordinadores involucrados.
+            		sendAssignationEmail(ticket,miembro);
+            	}
+            	
+            	
             }
         	
 
@@ -145,17 +167,17 @@ public class InternalTicketsServiceImpl extends AbstractService implements
     }
     
     
-    private void sendAssignationEmail(InternalTicketBean ticket,CatalogoBean<Integer> member){
+    private void sendAssignationEmail(InternalTicketBean ticket,TicketTeamBean member){
     	
 		// Enviar el email
 		IEmailService mail = EmailServiceFactory.getEmailService();
-		String to = member.getDescripcion() + ", " + member.getExtra();
+		String to = member.getUserName() + ", " + member.getEmail();
 		
 		String subject = String.format("Ticket %s  Nuevo", ticket.getTicketNumber());
 		
 		StringBuilder bodySb = new StringBuilder();
 
-		bodySb.append(String.format("El ticket interno %s le ha sido asignada para dar seguimiento.",ticket.getTicketNumber()));
+		bodySb.append(String.format("El ticket interno %s ha creado.",ticket.getTicketNumber()));
 		
 		bodySb.append("\r\n Información adicional:");
 		
