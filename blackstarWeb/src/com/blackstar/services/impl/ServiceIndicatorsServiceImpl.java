@@ -225,24 +225,6 @@ implements ServiceIndicatorsService {
 
 	public List<GetStatisticsKPI> getStatisticsKPI(String project, Date startDate, Date endDate){
 		List<GetStatisticsKPI> statics = dao.getStatisticsKPI(project, startDate, endDate);
-		GetStatisticsKPI obj = null;
-		int counter = 0;
-		String of ;
-		if(statics.size() > 0){
-			of = statics.get(0).getOfficeName();
-			for(int i = 0; i< statics.size(); i++){
-				obj = statics.get(i);
-				if (! of.equals(obj.getOfficeName())){
-					of = obj.getOfficeName();
-					statics.get(i-1).setoReports(counter);
-					counter = 0;
-				} 
-				if (i == statics.size() -1){
-					statics.get(i).setoReports(counter);
-				}
-				counter += obj.getnReports();
-			}
-		}
 		return statics;
 	}
 

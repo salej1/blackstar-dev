@@ -6,9 +6,9 @@ public class GetStatisticsKPI {
 	private String project;
 	private String customer;
 	private Integer pNumber;
-	private Integer tPolicies;
+	private Double tPolicies;
 	private Integer nReports;
-	private Integer tReports;
+	private Double tReports;
 	private Integer oReports;
 	
 	public String getOfficeName() {
@@ -35,10 +35,10 @@ public class GetStatisticsKPI {
 	public void setpNumber(Integer pNumber) {
 		this.pNumber = pNumber;
 	}
-	public Integer gettPolicies() {
+	public Double gettPolicies() {
 		return tPolicies;
 	}
-	public void settPolicies(Integer tPolicies) {
+	public void settPolicies(Double tPolicies) {
 		this.tPolicies = tPolicies;
 	}
 	public Integer getnReports() {
@@ -47,10 +47,10 @@ public class GetStatisticsKPI {
 	public void setnReports(Integer nReports) {
 		this.nReports = nReports;
 	}
-	public Integer gettReports() {
+	public Double gettReports() {
 		return tReports;
 	}
-	public void settReports(Integer tReports) {
+	public void settReports(Double tReports) {
 		this.tReports = tReports;
 	}
 	public Integer getoReports() {

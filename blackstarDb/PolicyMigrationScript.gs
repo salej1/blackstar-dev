@@ -13,6 +13,8 @@
 ** 1    17/09/2013  SAG  	Version inicial: Exporta el archivo de polizas a BD blackstarDbTransfer
 ** --   --------   -------  ------------------------------------
 ** 2    13/03/2014  SAG  	Se Integra equipmentUser
+** --   --------   -------  ------------------------------------
+** 3	09/04/2014	SAG 	Se implementa sincronizacion selectiva
 *****************************************************************************/
 
 function policyMain() {
@@ -82,44 +84,17 @@ String.prototype.trim = function() {
 
 function sendPolicyToDatabase(policy, conn, eqTypes, sqlLog){
 	// sql string initialization
-	var sql = "	INSERT INTO `blackstarDbTransfer`.`policy`	\
-	(	\
-	`office`,	\
-	`policyType`,	\
-	`customerContract`,	\
-	`customer`,	\
-	`finalUser`,	\
-	`project`,	\
-	`cst`,	\
-	`equipmentTypeId`,	\
-	`brand`,	\
-	`model`,	\
-	`serialNumber`,	\
-	`capacity`,	\
-	`equipmentAddress`,	\
-	`equipmentLocation`,	\
-	`contact`,	\
-	`contactEmail`,	\
-	`contactPhone`,	\
-	`startDate`,	\
-	`endDate`,	\
-	`visitsPerYear`,	\
-	`responseTimeHr`,	\
-	`solutionTimeHr`,	\
-	`penalty`,	\
-	`service`,	\
-	`includesParts`,	\
-	`exceptionParts`,	\
-	`serviceCenter`,	\
-	`observations`,	\
-	`equipmentUser`,	\
-	`created`,	\
-	`createdBy`,	\
-	`createdByUsr`)	\
-	VALUES(";
+	var sql = "INSERT INTO blackstarDbTransfer.policy( \
+						office,policyType,customerContract,customer,finalUser,project,cst,equipmentTypeId,brand,model,serialNumber,capacity,equipmentAddress,equipmentLocation,contact,contactEmail,contactPhone,startDate,endDate,visitsPerYear,responseTimeHr,solutionTimeHr,penalty,service,includesParts,exceptionParts,serviceCenter,observations,equipmentUser,created,createdBy,createdByUsr) \
+				SELECT	a.office,a.policyType,a.customerContract,a.customer,a.finalUser,a.project,a.cst,a.equipmentTypeId,a.brand,a.model,a.serialNumber,a.capacity,a.equipmentAddress,a.equipmentLocation,a.contact,a.contactEmail,a.contactPhone,a.startDate,a.endDate,a.visitsPerYear,a.responseTimeHr,a.solutionTimeHr,a.penalty,a.service,a.includesParts,a.exceptionParts,a.serviceCenter,a.observations,a.equipmentUser,a.created,a.createdBy,a.createdByUsr  \
+				FROM ( \
+					SELECT VALUES_PLACEHOLDER \
+				) a \
+				LEFT OUTER JOIN blackstarDbTransfer.policy p on p.serialNumber = a.serialNumber AND p.project = a.project \
+				WHERE p.policyId IS NULL;";
 	
 	// reading the values
-	var ix = 0;
+	var ix = 1;
 	var office = policy[ix]; ix++;
 	var policyType = policy[ix]; ix++;
 	var customerContract = policy[ix]; ix++;
@@ -179,44 +154,48 @@ function sendPolicyToDatabase(policy, conn, eqTypes, sqlLog){
 		visitsPerYear = null;
 	}
 	// appending the values to the sql string
-	sql = sql + Utilities.formatString("'%s',",office);
-	sql = sql + Utilities.formatString("'%s',",policyType);
-	sql = sql + Utilities.formatString("'%s',",customerContract);
-	sql = sql + Utilities.formatString("'%s',",customer);
-	sql = sql + Utilities.formatString("'%s',",finalUser);
-	sql = sql + Utilities.formatString("'%s',",project);
-	sql = sql + Utilities.formatString("'%s',",cst);
-	sql = sql + Utilities.formatString("'%s',",equipmentTypeId);
-	sql = sql + Utilities.formatString("'%s',",brand);
-	sql = sql + Utilities.formatString("'%s',",model);
-	sql = sql + Utilities.formatString("'%s',",serialNumber);
-	sql = sql + Utilities.formatString("'%s',",capacity);
-	sql = sql + Utilities.formatString("'%s',",equipmentAddress);
-	sql = sql + Utilities.formatString("'%s',",equipmentLocation);
-	sql = sql + Utilities.formatString("'%s',",contact);
-	sql = sql + Utilities.formatString("'%s',",contactEmail);
-	sql = sql + Utilities.formatString("'%s',",contactPhone);
-	sql = sql + Utilities.formatString("'%s',",Utilities.formatDate(startDate, "CST", "yyyy-MM-dd HH:mm:ss"));
-	sql = sql + Utilities.formatString("'%s',",Utilities.formatDate(endDate, "CST", "yyyy-MM-dd HH:mm:ss"));
+
+	var values = "";
+	values = values + Utilities.formatString("'%s' COLLATE utf8mb4_general_ci  AS office,",office);
+	values = values + Utilities.formatString("'%s' COLLATE utf8mb4_general_ci  AS policyType,",policyType);
+	values = values + Utilities.formatString("'%s' COLLATE utf8mb4_general_ci  AS customerContract,",customerContract);
+	values = values + Utilities.formatString("'%s' COLLATE utf8mb4_general_ci  AS customer,",customer);
+	values = values + Utilities.formatString("'%s' COLLATE utf8mb4_general_ci  AS finalUser,",finalUser);
+	values = values + Utilities.formatString("'%s' COLLATE utf8mb4_general_ci  AS project,",project);
+	values = values + Utilities.formatString("'%s' COLLATE utf8mb4_general_ci  AS cst,",cst);
+	values = values + Utilities.formatString("'%s' COLLATE utf8mb4_general_ci  AS equipmentTypeId,",equipmentTypeId);
+	values = values + Utilities.formatString("'%s' COLLATE utf8mb4_general_ci  AS brand,",brand);
+	values = values + Utilities.formatString("'%s' COLLATE utf8mb4_general_ci  AS model,",model);
+	values = values + Utilities.formatString("'%s' COLLATE utf8mb4_general_ci  AS serialNumber,",serialNumber);
+	values = values + Utilities.formatString("'%s' COLLATE utf8mb4_general_ci  AS capacity,",capacity);
+	values = values + Utilities.formatString("'%s' COLLATE utf8mb4_general_ci  AS equipmentAddress,",equipmentAddress);
+	values = values + Utilities.formatString("'%s' COLLATE utf8mb4_general_ci  AS equipmentLocation,",equipmentLocation);
+	values = values + Utilities.formatString("'%s' COLLATE utf8mb4_general_ci  AS contact,",contact);
+	values = values + Utilities.formatString("'%s' COLLATE utf8mb4_general_ci  AS contactEmail,",contactEmail);
+	values = values + Utilities.formatString("'%s' COLLATE utf8mb4_general_ci  AS contactPhone,",contactPhone);
+	values = values + Utilities.formatString("'%s' AS startDate,",Utilities.formatDate(startDate, "CST", "yyyy-MM-dd HH:mm:ss"));
+	values = values + Utilities.formatString("'%s' AS endDate,",Utilities.formatDate(endDate, "CST", "yyyy-MM-dd HH:mm:ss"));
 	if(parseInt(visitsPerYear, 10) > 0) {
-		sql = sql + Utilities.formatString("'%s',",visitsPerYear);
+		values = values + Utilities.formatString("'%s' COLLATE utf8mb4_general_ci  AS visitsPerYear,",visitsPerYear);
 	}
 	else{
-		sql = sql + Utilities.formatString("NULL,");
+		values = values + Utilities.formatString("NULL AS visitsPerYear,");
 	}
-	sql = sql + Utilities.formatString("'%s',",responseTimeHr);
-	sql = sql + Utilities.formatString("'%s',",solutionTimeHr);
-	sql = sql + Utilities.formatString("'%s',",penalty);
-	sql = sql + Utilities.formatString("'%s',",service);
-	sql = sql + Utilities.formatString("'%s',",includesPartsBool);
-	sql = sql + Utilities.formatString("'%s',",exceptionParts);
-	sql = sql + Utilities.formatString("'%s',",serviceCenter);
-	sql = sql + Utilities.formatString("'%s',",observations);
-	sql = sql + Utilities.formatString("'%s',",equipmentUser);
-	sql = sql + Utilities.formatString("'%s',",Utilities.formatDate(created, "CST", "yyyy-MM-dd HH:mm:ss"));
-	sql = sql + Utilities.formatString("'%s',",createdBy);
-	sql = sql + Utilities.formatString("'%s');",createdByUsr);
+	values = values + Utilities.formatString("'%s' AS responseTimeHr,",responseTimeHr);
+	values = values + Utilities.formatString("'%s' AS solutionTimeHr,",solutionTimeHr);
+	values = values + Utilities.formatString("'%s' COLLATE utf8mb4_general_ci  AS penalty,",penalty);
+	values = values + Utilities.formatString("'%s' COLLATE utf8mb4_general_ci  AS service,",service);
+	values = values + Utilities.formatString("'%s' includesParts,",includesPartsBool);
+	values = values + Utilities.formatString("'%s' COLLATE utf8mb4_general_ci  AS exceptionParts,",exceptionParts);
+	values = values + Utilities.formatString("'%s' COLLATE utf8mb4_general_ci  AS serviceCenter,",serviceCenter);
+	values = values + Utilities.formatString("'%s' COLLATE utf8mb4_general_ci  AS observations,",observations);
+	values = values + Utilities.formatString("'%s' COLLATE utf8mb4_general_ci  AS equipmentUser,",equipmentUser);
+	values = values + Utilities.formatString("'%s' AS created,",Utilities.formatDate(created, "CST", "yyyy-MM-dd HH:mm:ss"));
+	values = values + Utilities.formatString("'%s' COLLATE utf8mb4_general_ci  AS createdBy,",createdBy);
+	values = values + Utilities.formatString("'%s' COLLATE utf8mb4_general_ci  AS createdByUsr",createdByUsr);
 	
+	sql = sql.replace("VALUES_PLACEHOLDER", values);
+
 	Logger.log(Utilities.formatString("Inserting Policy %s", serialNumber));
 	
 	sqlLog = saveSql(sqlLog, sql);
@@ -226,7 +205,6 @@ function sendPolicyToDatabase(policy, conn, eqTypes, sqlLog){
 	
 	return sqlLog;
 }
-
 
 function loadEquipmentTypes(conn){
 	var stmt = conn.createStatement();
@@ -299,20 +277,19 @@ function startPolicySyncJob(conn, sqlLog){
 	// Load the equipment type Ids
 	var eqTypes = loadEquipmentTypes(conn);
 	
-	// how many records do we have?
-	var policyCount = getPolicyCount(conn);
-	
 	// start point at the spreadsheet
-	const offset = 4;
-	var startRec = policyCount + offset;
+	const offset = 656; // Ajustar de acuerdo al numero de polizas cargadas en el sistema
+	var startRec = offset;
 	
 	// iterate looking for new policies
 	var range = "A" + startRec.toString() + ":AE" + startRec.toString();
-	var data = SpreadsheetApp.getActiveSpreadsheet().getRange(range).getValues();
+	var ss = SpreadsheetApp.getActiveSpreadsheet();
+	var sheet = ss.getSheets()[4];
+	var data = sheet.getRange(range).getValues();
 	var currPolicy = data[0];
 	
 	while(currPolicy != null && currPolicy[0] != null && currPolicy[0].toString() != ""){
-		sqlLog = sendToDatabase(currPolicy, conn, eqTypes, sqlLog);
+		sqlLog = sendPolicyToDatabase(currPolicy, conn, eqTypes, sqlLog);
 		startRec++;
 		range = "A" + startRec.toString() + ":AE" + startRec.toString();
 		data = SpreadsheetApp.getActiveSpreadsheet().getRange(range).getValues();
@@ -320,20 +297,3 @@ function startPolicySyncJob(conn, sqlLog){
 	}	
 }
 
-
-function getPolicyCount(conn){
-
-	var stmt = conn.createStatement();
-	var rs = stmt.execute("use blackstarDbTransfer;");
-	var policyCount = 0;
-	
-	rs = stmt.executeQuery("select count(*) from blackstarDbTransfer.policy;");
-	while(rs.next()){
-		policyCount = rs.getInt(1);
-	}
-	
-	rs.close();
-	stmt.close();
-	
-	return policyCount;
-}

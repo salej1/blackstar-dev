@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.sql.ResultSet;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -33,7 +34,7 @@ import com.blackstar.model.dto.EmployeeDTO;
 import com.blackstar.model.dto.FollowUpDTO;
 import com.blackstar.model.dto.OrderserviceDTO;
 import com.blackstar.services.UserServiceFactory;
-
+import com.google.appengine.api.datastore.RawValue;
 
 public class TicketDetail extends HttpServlet{
 
@@ -135,19 +136,30 @@ public class TicketDetail extends HttpServlet{
 		String ticketId = request.getParameter("closeTicketId");
 		User thisUser = (User)request.getSession().getAttribute("user");
 		String userId = null;
+		SimpleDateFormat sdf;
+		String sender = request.getParameter("sender");
 		
 		if(action.equals("closeTicket")){
 			String closureOs = request.getParameter("osId");
+			String employee = request.getParameter("attendingEmployee");
+			String rawClosed = request.getParameter("closeDatetime");
+			Date closed;
 
 			if(thisUser != null){
 				userId = thisUser.getUserEmail();
 			}
 			
-			String sql = "CALL CloseTicket(%s, %s, '%s')";
-			sql = String.format(sql, ticketId, closureOs, userId);
-			
-			BlackstarDataAccess da = new BlackstarDataAccess();
 			try {
+				sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+				closed = sdf.parse(rawClosed);
+				
+				sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				
+				String sql = "CALL CloseTicket(%s, '%s', '%s', '%s', '%s')";
+				sql = String.format(sql, ticketId, closureOs, sdf.format(closed), userId, employee);
+				
+				BlackstarDataAccess da = new BlackstarDataAccess();
+		
 				da.executeQuery(sql);
 			} catch (Exception e) {
 				Logger.Log(LogLevel.FATAL, e.getStackTrace()[0].toString(), e);
@@ -170,8 +182,44 @@ public class TicketDetail extends HttpServlet{
 				Logger.Log(LogLevel.FATAL, e.getStackTrace()[0].toString(), e);
 			}
 		}
+		else if(action.equals("updateArrival")){
+			String rawArrival = request.getParameter("arrival");
+			Date arrival;
+			ticketId = request.getParameter("ticketId");
+			
+			if(thisUser != null){
+				userId = thisUser.getUserEmail();
+			}
+			
+			try{
+				sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+				
+				arrival = sdf.parse(rawArrival);
+
+				String sql = "CALL UpdateTicketArrival(%s, '%s', '%s', '%s')";
+				
+				sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				
+				sql = String.format(sql, ticketId, sdf.format(arrival), "TicketDetail", userId);
+				
+				BlackstarDataAccess da = new BlackstarDataAccess();
+				
+				da.executeQuery(sql);
+			}
+			catch(Throwable t){
+				t.printStackTrace();
+				Logger.Log(LogLevel.FATAL, t.getStackTrace()[0].toString(), t);
+				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+		        response.flushBuffer();
+				return;
+			}
+		}
 		
-		response.sendRedirect("/ticketDetail?ticketId="+ticketId);
+		if(sender == null){
+			sender = "/ticketDetail?ticketId="+ticketId;
+		}
+		
+		response.sendRedirect(sender);
 				
 	}
 

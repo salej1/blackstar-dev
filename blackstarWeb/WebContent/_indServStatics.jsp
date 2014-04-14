@@ -39,7 +39,7 @@
 			    	  color="#CECAEB";
 			      }
 			      $('td:eq(0)', nRow).css('background', color);
-			      counter+= parseInt($('td:eq(5)', nRow).html());
+			      // counter+= parseInt($('td:eq(5)', nRow).html());
 			    }		
           });
 	 } );
@@ -80,13 +80,13 @@
                                   <td></td>
                              </c:otherwise>
                            </c:choose>
-                           
+                           	
 				            <td><c:out value="${row.project}" /></td>
 				            <td><c:out value="${row.customer}" /></td>
 				            <td><c:out value="${row.pNumber}" /></td>
-				            <td><fmt:formatNumber value="${(row.pNumber * 100) / row.tPolicies}" maxFractionDigits="2"/> %</td>
+				            <td><c:out value="${row.tPolicies}" /><c:if test="${row.tPolicies > 0}"> %</c:if></td>
 				            <td><c:out value="${row.nReports}" /></td>
-				            <td><fmt:formatNumber value="${(row.nReports * 100) / row.tReports}" maxFractionDigits="2"/> %</td>
+				            <td><c:out value="${row.tReports}" /><c:if test="${row.tPolicies > 0}"> %</c:if></td>
 				            <c:choose>
                              <c:when test="${row.oReports > 0}">
                                   <td><c:out value="${row.oReports}" /></td>

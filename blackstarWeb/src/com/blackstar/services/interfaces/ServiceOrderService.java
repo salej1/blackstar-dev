@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.json.JSONArray;
 
+import com.blackstar.model.Equipmenttype;
 import com.blackstar.model.Policy;
 import com.blackstar.model.Serviceorder;
 import com.blackstar.model.dto.FollowUpDTO;
@@ -62,5 +63,8 @@ public interface ServiceOrderService {
 	
 	// Recuperacion del seguimiento asociado
 	public List<FollowUpDTO> getServiceFollowUps(Integer serviceOrderId);
+	
+	// Recuperacion de tipos de equipos
+	public List<Equipmenttype> getEquipmentTypeList();
 
 }

@@ -222,11 +222,49 @@
 -- 36	02/04/2014	SAG 	Se agrega:
 -- 								blackstarDb.GetAvailabilityKPI
 -- -----------------------------------------------------------------------------
+-- 37	08/04/2014	SAG 	Se agrega:
+--								blackstarDb.GetEquipmentTypeList
+--								blackstarDb.UpdateTicketArrival
+--							Se  modifica:
+--								blackstarDb.CloseTicket
+-- -----------------------------------------------------------------------------
 
 use blackstarDb;
 
 DELIMITER $$
 
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.UpdateTicketArrival
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.UpdateTicketArrival$$
+CREATE PROCEDURE blackstarDb.UpdateTicketArrival(pTicketId INT, pArrival DATETIME, pModifiedBy VARCHAR(100), pUser VARCHAR(100))
+BEGIN
+
+	UPDATE ticket t 
+		INNER JOIN policy p ON t.policyId = p.policyId SET
+		t.arrival = pArrival,
+		t.realResponseTime = TIMESTAMPDIFF(HOUR, t.created, pArrival),
+		t.responseTimeDeviationHr = CASE WHEN(TIMESTAMPDIFF(HOUR, t.created, pArrival) < responseTimeHR) THEN 0 ELSE (TIMESTAMPDIFF(HOUR, t.created, pArrival) - responseTimeHR) END,
+		t.modified = NOW(),
+		t.modifiedBy = pModifiedBy,
+		t.modifiedByUsr = pUser
+	WHERE ticketId = pTicketId;
+
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetEquipmentTypeList
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetEquipmentTypeList$$
+CREATE PROCEDURE blackstarDb.GetEquipmentTypeList()
+BEGIN
+
+	SELECT * 
+	FROM equipmentType
+	ORDER BY equipmentType;
+
+END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetAvailabilityKPI
@@ -242,6 +280,8 @@ BEGIN
 	DECLARE availability DECIMAL(5,2); 
 	DECLARE averageSolutionTime INT;
 	DECLARE totalTickets INT;
+	DECLARE totalClosedTickets INT;
+	DECLARE totalAttendedTickets INT;
 	DECLARE onTimeResolvedTickets	DECIMAL(5,2);
 	DECLARE onTimeAttendedTickets DECIMAL(5,2);
 
@@ -249,32 +289,37 @@ BEGIN
 	CREATE TEMPORARY TABLE IF NOT EXISTS selectedEquipment(
 		policyId INT,
 		solutionTimeHR INT,
-		responseTimeHR INT
+		responseTimeHR INT,
+		timeAlive	INT
 	) ENGINE = MEMORY;
 
 	IF customer = '' THEN 
 		IF pProject = 'All' THEN
-			INSERT INTO selectedEquipment(policyId, solutionTimeHR, responseTimeHR) 
-			SELECT policyId, solutionTimeHR, responseTimeHR
+			INSERT INTO selectedEquipment(policyId, solutionTimeHR, responseTimeHR, timeAlive) 
+			SELECT policyId, solutionTimeHR, responseTimeHR,
+				(DATEDIFF(CASE WHEN (endDate < pEndDate) THEN endDate ELSE pEndDate END, CASE WHEN (pStartDate > startDate) THEN pStartDate ELSE startDate END) * 24)
 			FROM policy 
 			WHERE NOT (endDate < pStartDate OR startDate > pEndDate);
 		ELSE
-			INSERT INTO selectedEquipment(policyId, solutionTimeHR, responseTimeHR) 
-			SELECT policyId, solutionTimeHR, responseTimeHR
+			INSERT INTO selectedEquipment(policyId, solutionTimeHR, responseTimeHR, timeAlive) 
+			SELECT policyId, solutionTimeHR, responseTimeHR,
+				(DATEDIFF(CASE WHEN (endDate < pEndDate) THEN endDate ELSE pEndDate END, CASE WHEN (pStartDate > startDate) THEN pStartDate ELSE startDate END) * 24)
 			FROM policy 
 			WHERE NOT (endDate < pStartDate OR startDate > pEndDate)
 				AND project = pProject;
 		END IF;
 	ELSE
 		IF pProject = 'All' THEN
-			INSERT INTO selectedEquipment(policyId, solutionTimeHR, responseTimeHR) 
-			SELECT policyId, solutionTimeHR, responseTimeHR
+			INSERT INTO selectedEquipment(policyId, solutionTimeHR, responseTimeHR, timeAlive) 
+			SELECT policyId, solutionTimeHR, responseTimeHR,
+				(DATEDIFF(CASE WHEN (endDate < pEndDate) THEN endDate ELSE pEndDate END, CASE WHEN (pStartDate > startDate) THEN pStartDate ELSE startDate END) * 24)
 			FROM policy 
 			WHERE equipmentUser = customer 
 				AND NOT (endDate < pStartDate OR startDate > pEndDate);
 		ELSE
-			INSERT INTO selectedEquipment(policyId, solutionTimeHR, responseTimeHR) 
-			SELECT policyId, solutionTimeHR, responseTimeHR
+			INSERT INTO selectedEquipment(policyId, solutionTimeHR, responseTimeHR, timeAlive) 
+			SELECT policyId, solutionTimeHR, responseTimeHR,
+				(DATEDIFF(CASE WHEN (endDate < pEndDate) THEN endDate ELSE pEndDate END, CASE WHEN (pStartDate > startDate) THEN pStartDate ELSE startDate END) * 24)
 			FROM policy 
 			WHERE equipmentUser = customer 
 				AND NOT (endDate < pStartDate OR startDate > pEndDate)
@@ -285,13 +330,7 @@ BEGIN
 	-- CALCULOS DISPONIBILIDAD
 
 	-- tiempo transcurrido en horas
-	SELECT (DATEDIFF(pEndDate, pStartDate) * 24) INTO elapsedHr;
-
-	-- numero de equipos
-	SELECT count(*) INTO equipmentNum FROM selectedEquipment;
-
-	-- horas-equipo
-	SELECT elapsedHr * equipmentNum INTO equipmentHr;
+	SELECT sum(timeAlive) FROM selectedEquipment INTO equipmentHr;
 
 	-- sumatoria de horas-equipo fuera
 	SELECT sum(solutionTime) INTO downTimeSum
@@ -301,7 +340,7 @@ BEGIN
 			AND t.created < pEndDate;
 
 	-- porcentaje de disponibilidad
-	SELECT ((equipmentHr - downTimeSum) / equipmentHr) * 100 INTO availability;
+	SELECT ((equipmentHr - ifnull(downTimeSum, 0)) / equipmentHr) * 100 INTO availability;
 
 	-- tiempo promedio de solucion
 	SELECT avg(solutionTime) INTO averageSolutionTime
@@ -312,14 +351,30 @@ BEGIN
 
 	-- TICKETS SOLUCIONADOS EN TIEMPO
 
-	-- numero de tickets en scope
+	-- numero total de tickets
 	SELECT count(*) INTO totalTickets
 		FROM ticket t
 			INNER JOIN selectedEquipment e ON t.policyId = e.policyId
 		WHERE t.created > pStartDate
 			AND t.created < pEndDate;
 
-	SELECT (count(*) / totalTickets) * 100 INTO onTimeResolvedTickets
+	-- numero de tickets cerrados en scope 
+	SELECT count(*) INTO totalClosedTickets
+		FROM ticket t
+			INNER JOIN selectedEquipment e ON t.policyId = e.policyId
+		WHERE t.created > pStartDate
+			AND t.created < pEndDate
+			AND t.solutionTime IS NOT NULL;
+
+	-- numero de tickets atendidos en scope
+	SELECT count(*) INTO totalAttendedTickets
+		FROM ticket t
+			INNER JOIN selectedEquipment e ON t.policyId = e.policyId
+		WHERE t.created > pStartDate
+			AND t.created < pEndDate
+			AND t.realResponseTime IS NOT NULL;
+
+	SELECT (count(*) / totalClosedTickets) * 100 INTO onTimeResolvedTickets
 		FROM ticket t
 			INNER JOIN selectedEquipment e ON t.policyId = e.policyId
 		WHERE t.created > pStartDate
@@ -327,7 +382,7 @@ BEGIN
 			AND t.solutionTime <= e.solutionTimeHR;
 
 	-- tickets atendidos a tiempo
-	SELECT (count(*) / totalTickets) * 100 INTO onTimeAttendedTickets
+	SELECT (count(*) / totalAttendedTickets) * 100 INTO onTimeAttendedTickets
 		FROM ticket t
 			INNER JOIN selectedEquipment e ON t.policyId = e.policyId
 		WHERE t.created > pStartDate
@@ -341,7 +396,8 @@ BEGIN
 	SELECT 	availability AS availability,
 			averageSolutionTime AS solutionAverageTime,
 			onTimeResolvedTickets AS onTimeResolvedTickets,
-			onTimeAttendedTickets AS onTimeAttendedTickets;
+			onTimeAttendedTickets AS onTimeAttendedTickets,
+			totalTickets AS totalTickets;
 END$$
 
 -- -----------------------------------------------------------------------------
@@ -549,71 +605,80 @@ END$$
 DROP PROCEDURE IF EXISTS blackstarDb.GetStatisticsKPI$$
 CREATE PROCEDURE blackstarDb.GetStatisticsKPI(pProject varchar(100), pStartDate DATETIME, pEndDate DATETIME)
 BEGIN
+
+DECLARE totalTickets INT;
+DECLARE totalPolicies INT;
+
 IF pProject = 'All' THEN
-	SELECT officeName, project, customer, count(*) as pNumber,  nPolicies.number as tPolicies
-	                                 , SUM(rNumber) as nReports, nReports.number as tReports
+	SELECT count(DISTINCT serialNumber) FROM policy WHERE NOT (endDate < pStartDate OR startDate > pEndDate) INTO totalPolicies;
+	SELECT count(*) FROM ticket WHERE (created >= pStartDate AND created <= pEndDate) INTO totalTickets;
+
+	-- RECUPERACION DE DATOS POR PARTES:
+	-- A: polizas por proyecto y su contribucion al total
+	-- B: tickets por proyecto y su contribucion al total
+	-- C: tickets por oficina
+
+	-- SI NO HAY FILTRO POR PROYECTO
+	SELECT officeName, 0 AS isTotal, A.project, customer, policyCount AS pNumber, cast(policyContribution AS decimal(5,2)) AS tPolicies, ifnull(ticketCount, 0) AS nReports, ifnull(cast(ticketContribution AS decimal(5,2)), 0) AS tReports, NULL AS oReports
 	FROM(
-	SELECT of.officeName, py.project, py.customer, tk.rNumber
-	       FROM policy py
-	       INNER JOIN office of ON of.officeId = py.officeId    
-	       INNER JOIN (SELECT policyId, count(*) rNumber FROM ticket 
-	                   WHERE ticket.created >= pStartDate AND ticket.created < pEndDate
-	                   GROUP BY policyId) tk on tk.policyId = py.policyId
-	       AND py.endDate >= NOW()
-	UNION ALL      
-	SELECT of.officeName, py.project, py.customer, 0 as rNumber
-	FROM policy py
-	INNER JOIN office of ON of.officeId = py.officeId   
-	WHERE py.policyId NOT IN (SELECT py.policyId
-	                          FROM policy py
-	                          INNER JOIN (SELECT policyId, count(*) rNumber 
-	                                      FROM ticket 
-	                                      WHERE ticket.created >= pStartDate AND ticket.created < pEndDate
-	                                      GROUP BY policyId) tk on tk.policyId = py.policyId
-	                          AND py.endDate >= NOW())
-	AND py.endDate >= NOW()
-	) data
-	INNER JOIN (SELECT COUNT(*) as number FROM policy py WHERE py.endDate >= NOW()) nPolicies
-	INNER JOIN (SELECT count(*) as number
-	            FROM ticket tk
-	            INNER JOIN policy py on py.policyId = tk.policyId
-	            WHERE tk.created >= pStartDate AND tk.created < pEndDate
-	                  AND py.endDate > NOW()) nReports
-	GROUP BY  officeName, project, customer
-	ORDER BY officeName, project, customer;
+		SELECT p.officeId, officeName, project, customer, count(DISTINCT serialNumber) AS policyCount, (count(DISTINCT serialNumber)/totalPolicies) * 100 AS policyContribution
+		FROM policy p
+			INNER JOIN office o ON o.officeId = p.officeId
+		WHERE NOT (endDate < pStartDate OR startDate > pEndDate)
+		GROUP BY project
+	) A
+	LEFT OUTER JOIN (
+		SELECT project, count(*) AS ticketCount, (count(*) / totalTickets) * 100 AS ticketContribution
+		FROM ticket t
+			INNER JOIN policy p ON t.policyId = p.policyId
+		WHERE NOT (endDate < pStartDate OR startDate > pEndDate)
+			AND (t.created >= pStartDate AND t.created <= pEndDate)
+		GROUP BY project
+	) B ON A.project = B.project
+	UNION SELECT officeName, 1 AS isTotal, NULL, NULL, NULL, NULL, NULL, NULL, officeReports AS oReports FROM  (
+		SELECT officeName, count(*) AS officeReports
+		FROM ticket t
+			INNER JOIN policy p ON t.policyId = p.policyId
+			INNER JOIN office o ON o.officeId = p.officeId
+		WHERE NOT (endDate < pStartDate OR startDate > pEndDate)
+			AND (t.created >= pStartDate AND t.created <= pEndDate)
+		GROUP BY officeName
+	) C
+	ORDER BY officeName, isTotal, project;
 ELSE
-	SELECT officeName, project, customer, count(*) as pNumber,  nPolicies.number as tPolicies
-	                                 , SUM(rNumber) as nReports, nReports.number as tReports
+	-- SI EXISTE FILTRO POR PROYECTO
+	SELECT count(DISTINCT serialNumber) FROM policy WHERE NOT (endDate < pStartDate OR startDate > pEndDate) INTO totalPolicies;
+	SELECT count(*) FROM ticket WHERE (created >= pStartDate AND created <= pEndDate) INTO totalTickets;
+
+	SELECT officeName, 0 AS isTotal, A.project, customer, policyCount AS pNumber, cast(policyContribution AS decimal(5,2)) AS tPolicies, ifnull(ticketCount, 0) AS nReports, ifnull(cast(ticketContribution AS decimal(5,2)), 0) AS tReports, NULL AS oReports
 	FROM(
-	SELECT of.officeName, py.project, py.customer, tk.rNumber
-	       FROM policy py
-	       INNER JOIN office of ON of.officeId = py.officeId    
-	       INNER JOIN (SELECT policyId, count(*) rNumber FROM ticket 
-	                   WHERE ticket.created >= pStartDate AND ticket.created < pEndDate
-	                   GROUP BY policyId) tk on tk.policyId = py.policyId
-	       AND py.endDate >= NOW()
-	UNION ALL      
-	SELECT of.officeName, py.project, py.customer, 0 as rNumber
-	FROM policy py
-	INNER JOIN office of ON of.officeId = py.officeId   
-	WHERE py.policyId NOT IN (SELECT py.policyId
-	                          FROM policy py
-	                          INNER JOIN (SELECT policyId, count(*) rNumber 
-	                                      FROM ticket 
-	                                      WHERE ticket.created >= pStartDate AND ticket.created < pEndDate
-	                                      GROUP BY policyId) tk on tk.policyId = py.policyId
-	                          AND py.endDate >= NOW())
-	AND py.endDate >= NOW()
-	) data
-	INNER JOIN (SELECT COUNT(*) as number FROM policy py WHERE py.endDate >= NOW()) nPolicies
-	INNER JOIN (SELECT count(*) as number
-	            FROM ticket tk
-	            INNER JOIN policy py on py.policyId = tk.policyId
-	            WHERE tk.created >= pStartDate AND tk.created < pEndDate
-	                  AND py.endDate > NOW()) nReports
-	WHERE project = pProject
-	GROUP BY  officeName, project, customer
-	ORDER BY officeName, project, customer;
+		SELECT p.officeId, officeName, project, customer, count(DISTINCT serialNumber) AS policyCount, (count(DISTINCT serialNumber)/totalPolicies) * 100 AS policyContribution
+		FROM policy p
+			INNER JOIN office o ON o.officeId = p.officeId
+		WHERE NOT (endDate < pStartDate OR startDate > pEndDate)
+			AND project = pProject 
+		GROUP BY project
+	) A
+	LEFT OUTER JOIN (
+		SELECT project, count(*) AS ticketCount, (count(*) / totalTickets) * 100 AS ticketContribution
+		FROM ticket t
+			INNER JOIN policy p ON t.policyId = p.policyId
+		WHERE NOT (endDate < pStartDate OR startDate > pEndDate)
+			AND (t.created >= pStartDate AND t.created <= pEndDate)
+			AND project = pProject
+		GROUP BY project
+	) B ON A.project = B.project
+	UNION SELECT officeName, 1 AS isTotal, NULL, NULL, NULL, NULL, NULL, NULL, officeReports AS oReports FROM  (
+		SELECT officeName, count(*) AS officeReports
+		FROM ticket t
+			INNER JOIN policy p ON t.policyId = p.policyId
+			INNER JOIN office o ON o.officeId = p.officeId
+		WHERE NOT (endDate < pStartDate OR startDate > pEndDate)
+			AND (t.created >= pStartDate AND t.created <= pEndDate)
+			AND project = pProject 
+		GROUP BY officeName
+	) C 
+	ORDER BY officeName, isTotal, project;
 END IF;
 END$$
 
@@ -850,7 +915,8 @@ IF pProject = 'All' THEN
 			INNER JOIN ticketStatus ts ON tk.ticketStatusId = ts.ticketStatusId
 		WHERE tk.created >= startDate AND tk.created <= endDate
 			AND sc.serviceCenterId LIKE pType
-		GROUP BY tk.ticketStatusId;
+		GROUP BY tk.ticketStatusId
+		ORDER BY ticketStatus;
 	ELSE
 		SELECT ts.ticketStatus as name, count(*) as value
 		FROM ticket tk
@@ -860,7 +926,8 @@ IF pProject = 'All' THEN
 		WHERE tk.created >= startDate AND tk.created <= endDate
 			AND sc.serviceCenterId LIKE pType
 			AND py.equipmentUser = pUser
-		GROUP BY tk.ticketStatusId;
+		GROUP BY tk.ticketStatusId
+		ORDER BY ticketStatus;
 	END IF;
 ELSE
 	IF pUser = '' THEN
@@ -872,7 +939,8 @@ ELSE
 		WHERE tk.created >= startDate AND tk.created <= endDate
 			AND sc.serviceCenterId LIKE pType
 			AND py.project = pProject
-		GROUP BY tk.ticketStatusId;
+		GROUP BY tk.ticketStatusId
+		ORDER BY ticketStatus;
 	ELSE
 		SELECT ts.ticketStatus as name, count(*) as value
 		FROM ticket tk
@@ -883,7 +951,8 @@ ELSE
 			AND sc.serviceCenterId LIKE pType
 			AND py.project = pProject
 			AND py.equipmentUser = pUser
-		GROUP BY tk.ticketStatusId;
+		GROUP BY tk.ticketStatusId
+		ORDER BY ticketStatus;
 	END IF;
 END IF;
 END$$
@@ -1274,25 +1343,32 @@ END$$
 DROP PROCEDURE IF EXISTS blackstarDb.GetEquipmentByType$$
 CREATE PROCEDURE blackstarDb.GetEquipmentByType(pEquipmentTypeId CHAR(1))
 BEGIN
-	
-	IF(pEquipmentTypeId = 'X') THEN
+	IF(pEquipmentTypeId = 'T') THEN
 		SELECT 
 			concat_ws(' - ', brand, model, serialNumber) AS label,
 			serialNumber AS value
 		FROM policy p
-		WHERE equipmentTypeId NOT IN('A', 'B', 'P', 'U')
-		AND p.startDate < CURDATE() AND p.endDate > CURDATE()
+		WHERE p.startDate < CURDATE() AND p.endDate > CURDATE()
 		ORDER BY brand, model, serialNumber;
 	ELSE
-		SELECT 
-			concat_ws(' - ', brand, model, serialNumber) AS label,
-			serialNumber AS value
-		FROM policy p
-		WHERE equipmentTypeId = pEquipmentTypeId
-		AND p.startDate < CURDATE() AND p.endDate > CURDATE()
-		ORDER BY brand, model, serialNumber;
+		IF(pEquipmentTypeId = 'X') THEN
+			SELECT 
+				concat_ws(' - ', brand, model, serialNumber) AS label,
+				serialNumber AS value
+			FROM policy p
+			WHERE equipmentTypeId NOT IN('A', 'B', 'P', 'U')
+			AND p.startDate < CURDATE() AND p.endDate > CURDATE()
+			ORDER BY brand, model, serialNumber;
+		ELSE
+			SELECT 
+				concat_ws(' - ', brand, model, serialNumber) AS label,
+				serialNumber AS value
+			FROM policy p
+			WHERE equipmentTypeId = pEquipmentTypeId
+			AND p.startDate < CURDATE() AND p.endDate > CURDATE()
+			ORDER BY brand, model, serialNumber;
+		END IF;
 	END IF;
-
 END$$
 
 -- -----------------------------------------------------------------------------
@@ -1794,15 +1870,21 @@ END$$
 	-- blackstarDb.CloseTicket
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.CloseTicket$$
-CREATE PROCEDURE blackstarDb.CloseTicket(pTicketId INTEGER, pOsId INTEGER, pModifiedBy VARCHAR(100))
+CREATE PROCEDURE blackstarDb.CloseTicket(pTicketId INTEGER, pOsId VARCHAR(100), pClosed DATETIME, pModifiedBy VARCHAR(100), pEmployee VARCHAR(200))
 BEGIN
 	
 	-- ACTUALIZAR EL ESTATUS DEL TICKET Y NUMERO DE ORDEN DE SERVICIO
 	UPDATE ticket t 
 		INNER JOIN ticket t2 on t.ticketId = t2.ticketId
+		INNER JOIN blackstarDb.policy p on p.policyId = t.policyId
 	SET 
 		t.ticketStatusId = IF(t2.ticketStatusId = 'R', 'F', 'C'),
-		t.serviceOrderId = pOsId,
+		-- t.serviceOrderId = pOsId,
+		t.serviceOrderNumber = pOsId,
+		t.closed = pClosed,
+		t.solutionTime = TIMESTAMPDIFF(HOUR, t.created, pClosed),
+		t.solutionTimeDeviationHr = CASE WHEN(TIMESTAMPDIFF(HOUR, t.created, pClosed) < solutionTimeHR) THEN 0 ELSE (TIMESTAMPDIFF(HOUR, t.created, pClosed) - solutionTimeHR) END,
+		t.employee = pEmployee,
 		t.modified = NOW(),
 		t.modifiedBy = 'CloseTicket',
 		t.modifiedByUsr = pModifiedBy
@@ -1985,7 +2067,7 @@ BEGIN
 		INNER JOIN serviceCenter sc ON sc.serviceCenterId = p.serviceCenterId
 		INNER JOIN equipmentType et ON et.equipmentTypeId = p.equipmentTypeId
 		LEFT OUTER JOIN serviceOrder so ON so.serviceOrderId = t.serviceOrderId
-	ORDER BY created;
+	ORDER BY created DESC;
 	
 END$$
 
@@ -2079,8 +2161,11 @@ DROP PROCEDURE IF EXISTS blackstarDb.GetDomainEmployees$$
 CREATE PROCEDURE blackstarDb.GetDomainEmployees()
 BEGIN
 
-	SELECT DISTINCT email AS email, name AS name
-	FROM blackstarUser
+	SELECT DISTINCT u.email AS email, u.name AS name
+	FROM blackstarUser u 	
+		LEFT OUTER JOIN blackstarUser_userGroup ug ON u.blackstarUserId = ug.blackstarUserId
+		LEFT OUTER JOIN userGroup g ON g.userGroupId = ug.userGroupId
+	WHERE g.name != 'Cliente'
 	ORDER BY name;
 	
 END$$

@@ -66,7 +66,7 @@ BEGIN
 	SELECT o.officeId, p.policyType, p.customerContract, p.customer, p.finalUser, p.project, p.cst, p.equipmentTypeId, p.brand, p.model,
 		p.serialNumber, p.capacity, p.equipmentAddress, p.equipmentLocation, p.contact, p.contactPhone, p.contactEmail, p.startDate, p.endDate, p.visitsPerYear,
 		p.responseTimeHR, p.solutionTimeHR, p.penalty, p.service, p.includesParts, p.exceptionParts, s.serviceCenterId, p.observations, p.equipmentUser,
-		CURRENT_DATE(), 'PolicyTransfer', 'sergio.aga'
+		CURRENT_DATE(), 'PolicyTransfer', 'portal-servicios'
 	FROM blackstarDbTransfer.policy p
 		INNER JOIN blackstarDb.office o ON p.office = o.officeName
 		INNER JOIN blackstarDb.serviceCenter s ON s.serviceCenter = p.serviceCenter
@@ -90,7 +90,7 @@ BEGIN
 		createdBy,
 		createdByUsr
 	)
-	SELECT p.policyId, tt.ticketNumber, 'TicketTransfer', 'sergio.aga'
+	SELECT p.policyId, tt.ticketNumber, 'TicketTransfer', 'portal-servicios'
 	FROM blackstarDbTransfer.ticket tt
 		INNER JOIN blackstarDbTransfer.policy pt ON tt.policyId = pt.policyId	
 		INNER JOIN blackstarDb.policy p ON p.serialNumber = pt.serialNumber AND pt.serialNumber != 'NA' AND p.project = pt.project
@@ -128,7 +128,8 @@ BEGIN
 
 	-- ACTUALIZAR TIEMPOS DE RESPUESTA
 	UPDATE blackstarDb.ticket SET 
-		realResponseTime =  TIMESTAMPDIFF(HOUR, created, IFNULL(arrival, CURRENT_DATE()));
+		realResponseTime =  TIMESTAMPDIFF(HOUR, created, arrival)
+	WHERE arrival IS NOT NULL;
 		
 	-- ACTUALIZAR DESVIACIONES DE TIEMPO DE RESPUESTA
 	UPDATE blackstarDb.ticket t 
@@ -156,7 +157,7 @@ BEGIN
 		createdBy,
 		createdByUsr
 	)
-	SELECT bt.ticketId, 'marlem.samano@gposac.com.mx', tt.followUp, 1, NOW(), 'TicketTransfer', 'sergio.aga'
+	SELECT bt.ticketId, 'marlem.samano@gposac.com.mx', tt.followUp, 1, NOW(), 'TicketTransfer', 'portal-servicios'
 	FROM blackstarDbTransfer.ticket tt 
 		INNER JOIN blackstarDb.ticket bt ON tt.ticketNumber = bt.ticketNumber
 		LEFT OUTER JOIN blackstarDb.followUp f ON bt.ticketId = f.ticketId
@@ -194,7 +195,7 @@ BEGIN
 		createdByUsr
 	)
 	SELECT ot.serviceNumber, ot.serviceTypeId, t.ticketId, p.policyId, ot.serviceUnit, ot.serviceDate, ot.responsible, ot.receivedBy, 
-		ot.serviceComments, ot.closed, ot.consultant, CURRENT_DATE(), 'ServiceOrderTransfer', 'sergio.aga'
+		ot.serviceComments, ot.closed, ot.consultant, CURRENT_DATE(), 'ServiceOrderTransfer', 'portal-servicios'
 	FROM blackstarDbTransfer.serviceTx ot
 		LEFT OUTER JOIN blackstarDb.ticket t ON t.ticketNumber = ot.ticketNumber
 		LEFT OUTER JOIN blackstarDb.policy p ON p.serialNumber = ot.serialNumber AND ot.serialNumber != 'NA'
@@ -214,7 +215,7 @@ BEGIN
 		createdBy,
 		createdByUsr
 	)
-	SELECT o.serviceOrderId, 'angeles.avila@gposac.com.mx', st.followUp, 1, NOW(), 'TicketTransfer', 'sergio.aga'
+	SELECT o.serviceOrderId, 'angeles.avila@gposac.com.mx', st.followUp, 1, NOW(), 'TicketTransfer', 'portal-servicios'
 	FROM blackstarDbTransfer.serviceTx st 
 		INNER JOIN blackstarDb.serviceOrder o ON st.serviceNumber = o.serviceOrderNumber
 		LEFT OUTER JOIN blackstarDb.followUp f ON o.serviceOrderId = f.serviceOrderId

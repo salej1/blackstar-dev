@@ -1,23 +1,38 @@
-<!-- Seccion de links que permiten crear nueva orden de servicio -->
-<div>
+<!-- Seccion de links que permiten crear nueva orden de servicio : INGENIEROS DE SERVICIO -->
+<c:set var="sysServicio" scope="request" value="${user.belongsToGroup['Implementacion y Servicio']}" />
+<c:if test="${sysServicio == true}">
 	<div>
-		<img src="/img/navigate-right.png"/><a href="" onclick="showEquipmentSelect('X'); return false;">Crear Orden de Servicio</a>
+		<div>
+			<img src="/img/navigate-right.png"/><a href="" onclick="showEquipmentSelect('X'); return false;">Crear Orden de Servicio</a>
+		</div>
+		<div>
+			<img src="/img/navigate-right.png"/><a href="" onclick="showEquipmentSelect('A'); return false;">Crear Reporte de Aire Acondicionado</a>
+		</div>
+		<div>
+			<img src="/img/navigate-right.png"/><a href="" onclick="showEquipmentSelect('B'); return false;">Crear Reporte de Baterias</a>
+		</div>
+		<div>
+			<img src="/img/navigate-right.png"/><a href="" onclick="showEquipmentSelect('P'); return false;">Crear Reporte de Planta de emergencia</a>
+		</div>
+		<div>
+			<img src="/img/navigate-right.png"/><a href="" onclick="showEquipmentSelect('U'); return false;">Crear Reporte de UPS</a>
+		</div>
+		<p><small>&nbsp;</small></p>
 	</div>
+</c:if>
+<!-- FIN - Seccion de links que permiten crear nueva orden de servicio : INGENIEROS DE SERVICIO -->
+
+<!-- Seccion de links que permiten crear nueva orden de servicio : COORDINADOR -->
+<c:set var="sysCoordinador" scope="request" value="${user.belongsToGroup['Coordinador']}" />
+<c:if test="${sysCoordinador == true}">
 	<div>
-		<img src="/img/navigate-right.png"/><a href="" onclick="showEquipmentSelect('A'); return false;">Crear Reporte de Aire Acondicionado</a>
+		<div>
+			<img src="/img/navigate-right.png"/><a href="" onclick="showEquipmentSelect('T'); return false;">Crear Orden de Servicio</a>
+		</div>
+		<p><small>&nbsp;</small></p>
 	</div>
-	<div>
-		<img src="/img/navigate-right.png"/><a href="" onclick="showEquipmentSelect('B'); return false;">Crear Reporte de Baterias</a>
-	</div>
-	<div>
-		<img src="/img/navigate-right.png"/><a href="" onclick="showEquipmentSelect('P'); return false;">Crear Reporte de Planta de emergencia</a>
-	</div>
-	<div>
-		<img src="/img/navigate-right.png"/><a href="" onclick="showEquipmentSelect('U'); return false;">Crear Reporte de UPS</a>
-	</div>
-	<p><small>&nbsp;</small></p>
-</div>
-<!-- FIN - Seccion de links que permiten crear nueva orden de servicio -->
+</c:if>
+<!-- FIN - Seccion de links que permiten crear nueva orden de servicio : COORDINADOR -->
 
 <!-- Seccion de dialgo que se muestra para seleccionar el equipo -->
 <script>
@@ -28,7 +43,7 @@
 		//Inicializacion del cuadro de dialogo para seleccionar el equipo
 		$("#selectSNDialog").dialog({
 			autoOpen: false,
-			height: 200,
+			height: 250,
 			width: 360,
 			modal: true,
 			buttons: {
@@ -53,13 +68,20 @@
 	function moveToCaptureScreen(captureType, equipmentType){
 		var urlTemplate = "";
 		if(captureType == "policy"){
-			urlTemplate = "PAGE/show.do?operation=3&idObject=SN";
+			urlTemplate = "PAGE/show.do?operation=3&idObject=SN&soNumber=SON";
 			var eq = $("#eqSearch").val();
 			urlTemplate = urlTemplate.replace("SN", eq);
 		}
 		 else{
-			urlTemplate = "PAGE/show.do?operation=4&idObject=Open";
+			urlTemplate = "PAGE/show.do?operation=4&idObject=Open&soNumber=SON";
 		}
+
+		var soNum = $("#soNumber").val();
+		if(soNum == ""){
+			return;
+		}
+
+		urlTemplate = urlTemplate.replace('SON', soNum);
 		
 		switch(equipmentType){
 			case 'A': urlTemplate = urlTemplate.replace("PAGE", "/aircoService");
@@ -79,9 +101,6 @@
 
 	// Funcion de recuperacion de la lista de equipos
 	function showEquipmentSelect(type){
-		$("#eqSearch").attr("disabled", "");
-		$("#eqSearch").val("Cargando equipos...");
-
 		getEquipmentList(type);
 		
 		var dlgTitle = "Orden de servicio para ";
@@ -99,7 +118,6 @@
 		}
 
 		selected = false;
-		$( "#eqSearch" ).val("");
 		$("#selectSNDialog").dialog('option', 'title', dlgTitle);
 		$("#selectSNDialog").dialog('open');
 	}
@@ -127,6 +145,11 @@
 		}
 
 		if(loadedType != type){
+			$("#eqSearch").attr("disabled", "");
+			$("#eqSearch").val("Cargando equipos...");
+			$("#eqSearch").addClass("XX_REFRESH_CLASS");
+			$("#eqSearch").removeClass("XX_REFRESH_CLASS");
+
 			$.getJSON("/serviceOrders/getEquipmentByTypeJson.do?type=" + lookupType, function(data){
 				setEquipmentListSource(data);
 				loadedType = type;
@@ -135,13 +158,19 @@
 		else{
 			$("#eqSearch").removeAttr("disabled");
 			$("#eqSearch").val("");
+			$("#eqSearch").addClass("XX_REFRESH_CLASS");
+			$("#eqSearch").removeClass("XX_REFRESH_CLASS");
 		}
 	}
 
 </script>
 <div id="selectSNDialog">
-	<p>Escriba el numero de serie del equipo</p>
-	<input type="text" id="eqSearch" style="width:95%;">
+	<p>Escriba el numero de serie del equipo
+	<input type="text" id="eqSearch" style="width:95%;"></p>
+	<c:if test="${user.belongsToGroup['Coordinador']}">
+		<p>Escriba el numero de folio del reporte
+		<input type="text" id="soNumber" style="width:95%;" required></p>
+	</c:if>
 	<input type="hidden" id="selectedSerialNumber">
 </div>
 <!-- FIN - Seccion de dialgo que se muestra para seleccionar el equipo -->

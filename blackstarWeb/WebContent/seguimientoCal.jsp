@@ -8,8 +8,97 @@
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<link rel="stylesheet" href="css/jquery.ui.theme.css"/>
-		<link rel="stylesheet" href="css/jquery-ui.min.css"/>
+		<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/jquery.datetimepicker.css"/ >
+	</head>
+	<!--   CONTENT   -->
+	<body>
+	<!--   CONTENT COLUMN   -->		
+					
+		<div class="box">
+			<h2>Tickets por revisar</h2>
+		</div>
+		<div style="width:1000px; height: 2000px">
+			<table id = "bigTicketsTable" style="width:3540px;">
+				<thead>
+					<tr>
+						<th style="width:15px;">#</th>
+						<th style="width:80px;">Ticket</th>
+						<th style="width:120px;">Estatus</th>
+						<th style="width:125px;">Marca temporal</th>
+						<th style="width:130px;">Contacto</th>
+						<th style="width:170px;">Número de serie</th>
+						<th style="width:350px;">Observaciones</th>
+						<th style="width:170px;">Cliente</th>
+						<th style="width:40px;">Equipo</th>
+						<th style="width:170px;">Ubicacion</th>
+						<th style="width:120px;">Centro Servicio</th>
+						<th style="width:70px;">Proyecto</th>
+						<th style="width:70px;">Solucion Tel.</th>
+						<th style="width:125px;">F. Llegada</th>
+						<th style="width:700px;">Seguimiento</th>
+						<th style="width:125px;">Cierre</th>
+						<th style="width:80px;">Numero OS</th>
+						<th style="width:180px;">Ingeniero</th>
+						<th style="width:80px;">Desviación</th>
+						<th style="width:100px;">Cerrar Ticket</th>
+						<th style="width:80px;">Ticket</th>
+					</tr>
+				</thead>							
+				<tbody>
+				</tbody>
+			</table>
+		</div>
+		
+					
+	<!--   ~ CONTENT COLUMN   -->
+
+	<!--   CONTENT ADDS  -->
+		<div style="display:none;">
+			<c:import url="followUpControl.jsp"></c:import>
+		</div>
+		
+		
+		<div id="cerrarOSCapture" title="Cerrar Ticket ${ticketF.ticketNumber}">
+			<form id = "closeTicketSend" action="/ticketDetail" method="POST">
+				<p>
+					Folio de la OS que cierra el ticket:
+					<input type="text" id="osId" name="osId" style="width:95%" />
+				</p>
+				<p>
+					Fecha y hora de cierre:
+					<input type="text" id="closeDatetime" name="closeDatetime" style="width:95%" />
+				</p>
+				<p>
+					Ingeniero que atendio:
+					<input type="text" id="attendingEmployee" name="attendingEmployee" style="width:95%" />
+				</p>
+				<input type="hidden" name="action" value = "closeTicket" />
+				<input type="hidden" id="closeTicketId" name="closeTicketId" />
+				<input type="hidden" id="sender" name="sender" value="seguimiento"/>
+			</form>
+		</div>
+
+		
+		<div id="reopenTicketConfirm">
+			<strong id = "reopenTicketConfirmText"></strong>
+			<form id = "reopenTicketSend" action="/seguimiento" method="POST">
+				<input type="hidden" name="action" value = "reopenTicket"/>
+				<input type="hidden" id="reopenTicketId" name="reopenTicketId"/>
+			</form>
+		</div>
+	<!--   ~ CONTENT ADDS  -->
+
+	<!--   ~ CONTENT   -->
+				
+	<!--   FOOTER   -->			
+			<div id="foot">
+				<a href="#">Soporte</a>
+			</div>
+	<!--   ~ FOOTER   -->
+	</body>
+		<script src="DataTables-1.9.4/media/js/jquery.dataTables.js"></script>
+		<script src="${pageContext.request.contextPath}/js/dateFormat.js"></script>
+		<script src="${pageContext.request.contextPath}/js/jquery.datetimepicker.js"></script>
 		<style type="text/css" title="currentStyle">
 			@import "DataTables-1.9.4/media/css/header.css";
 			.FixedHeader_Cloned th {
@@ -39,10 +128,6 @@
 				padding: 20px;
 			}
 		</style>
-		<script src="js/jquery-1.10.1.min.js"></script>
-		<script src="js/jquery-ui.js"></script>
-		<script src="DataTables-1.9.4/media/js/jquery.dataTables.js"></script>
-		<script type="text/javascript" charset="utf-8" src="js/FixedHeader.js"></script>
 		<script type="text/javascript">
 		
 			glow.ready(function(){
@@ -63,13 +148,14 @@
 				// mostrar el dialogo de seleccion de OS
 				$("#cerrarOSCapture").dialog({ title: "Cerrar Ticket " + ticketNumber });
 				$("#cerrarOSCapture").dialog("open");
-				$("#ticketId").val(id);
+				$("#closeTicketId").val(id);
 			}
 			
 			function applyCloseTicket(){
-				var osId = $("#closureOs option:selected").val();
+				// TODO: Reactivas seleccion de OS para prduccion
+				// var osId = $("#closureOs option:selected").val();
 				
-				$("#osId").val(osId);
+				// $("#osId").val(osId);
 				
 				$("#closeTicketSend").submit();
 			}
@@ -110,8 +196,11 @@
 					"bProcessing": true,
 					"aaData": data,
 					"sDom": '<"top"if>rt<"bottom"lp><"clear">',
+					"aaSorting": [],
 					"aoColumns": [
 								  { "mData": "num" },
+								  { "mData": "ticketNumber" },
+								  { "mData": "ticketStatus" },
 								  { "mData": "created" },
 								  { "mData": "contactName" },
 								  { "mData": "serialNumber" },
@@ -121,7 +210,6 @@
 								  { "mData": "equipmentLocation" },
 								  { "mData": "serviceCenter" },
 								  { "mData": "project" },
-								  { "mData": "ticketNumber" },
 								  { "mData": "phoneResolved" },
 								  { "mData": "arrival" },
 								  { "mData": "followUps" },
@@ -129,12 +217,14 @@
 								  { "mData": "serviceOrderNumber" },
 								  { "mData": "employee" },
 								  { "mData": "solutionTimeDeviationHr" },
-								  { "mData": "ticketStatus" },
 								  { "mData": "Cerrar" },
-								  { "mData": "num" }
+								  { "mData": "ticketNumber" }
 
 							  ],
-					"aoColumnDefs" : [{"mRender" : function(data, type, row){ticketNumberMap[row.DT_RowId] = data; return data;}, "aTargets" : [10]},	
+					"aoColumnDefs" : [{"mRender" : function(data, type, row){
+														ticketNumberMap[row.DT_RowId] = data; 
+														return "<b><a href='ticketDetail?ticketId=" + row.DT_RowId  + "'>" + data + "</a></b>";
+													}, "aTargets" : [1]},	
 									  {"mRender" : function(rawData, type, row){
 														if(rawData != null){
 															var outerTemplate = '<div onclick="addSeguimiento('+ row.DT_RowId + ', \'' + ticketNumberMap[row.DT_RowId] + '\');" style="width:700px;">INNER_TEMPLATE</div>';
@@ -149,7 +239,7 @@
 															
 																for(var i = 0; i < rawData[0].length; i++){		
 																	var obj = rawData[0][i];
-																	d = new Date(obj.created);
+																	d = new Date(obj.timeStamp);
 																	content = template.replace('TIMESTAMP', d.format('dd/MM/yyyy h:mm:ss'));
 																	if(obj.createdBy != null){
 																		content = content.replace('FROM', obj.createdBy);
@@ -176,9 +266,22 @@
 														else{
 															return '';
 														}
-													}, "aTargets" : [13]},
-									  {"mRender" : function(data, type, row){return "<a href='osDetail?osNum=" + data  + "'>" + data + "</a>";}, "aTargets" : [15]},	    		    	       
-									  {"mRender" : function(data, type, row){ticketStatusMap[row.DT_RowId] = data; return data;}, "aTargets" : [18]},	    		    	       
+													}, "aTargets" : [14]},
+									  {"mRender" : function(data, type, row){return "<a href='osDetail?osNum=" + data  + "'>" + data + "</a>";}, "aTargets" : [16]},
+									  {"mRender" : function(data, type, row){
+									  					ticketStatusMap[row.DT_RowId] = data;
+									  					var template = "<div style='text-align:center;display:table-cell;vertical-align:middle;height:50px;width:100px;background-color:#COLOR;'>" + data + "</div>";
+									  					var color = "";
+									  					switch(data){
+									  						case "ABIERTO": color = "FFFF00"; break;
+									  						case "RETRASADO": color = "FF0000"; break;
+									  						case "CERRADO":  color = "00FF00"; break;
+									  						case "CERRADO FT":  color = "FF9900"; break;
+									  					}
+
+									  					template = template.replace("COLOR", color);
+									  					return template;
+									  				}, "aTargets" : [2]},
 									  {"mRender" : function(data, type, row){
 														if(ticketStatusMap[row.DT_RowId] == "CERRADO" || ticketStatusMap[row.DT_RowId] == "CERRADO FT"){
 															return "<a href='#' class='edit' onclick='javascript: reopenTicket(" + row.DT_RowId + ", \"" + data + "\"); return false;'>Reabrir ticlet</a>";
@@ -186,69 +289,21 @@
 														else{
 															return "<a href='#' class='edit' onclick='javascript: closeTicket(" + row.DT_RowId + ", \"" + data + "\"); return false;'>Cerrar ticket</a>";
 														}
-													}, "aTargets" : [19]}	    		    	       
+													}, "aTargets" : [19]}
 									 ]}
 				);
 				
 				// No se ha podido hacer funcionar FixHeader, por el momento se ignora, ya que causa un error de JS
 				// new FixedHeader( oTable, { "left": true, "right": true, "bottom": true } );
 			}
-		</script>	
-	</head>
-	<!--   CONTENT   -->
-	<body>
-	<!--   CONTENT COLUMN   -->		
-					
-		<div class="box">
-			<h2>Tickets por revisar</h2>
-		</div>
-		<div style="width:2000px; height: 2000px">
-			<table id = "bigTicketsTable" style="width:5800px;">
-				<thead>
-					<tr>
-						<th>#</th>
-						<th style="width:150px;">Marca temporal</th>
-						<th style="width:180px;">Contacto</th>
-						<th>Número de serie</th>
-						<th style="width:700px;">Observaciones</th>
-						<th style="width:180px;">Cliente</th>
-						<th>Equipo</th>
-						<th>Ubicacion</th>
-						<th>Centro Servicio</th>
-						<th>Proyecto</th>
-						<th>Ticket</th>
-						<th>Solucion Tel.</th>
-						<th style="width:150px;">F. Llegada</th>
-						<th style="width:700px;">Seguimiento</th>
-						<th style="width:150px;">Cierre</th>
-						<th>Numero Reporte</th>
-						<th style="width:180px;">Ingeniero</th>
-						<th>Desviación</th>
-						<th style="width:120px;">Estatus</th>
-						<th>Cerrar Ticket</th>
-						<th></th>
-					</tr>
-				</thead>							
-				<tbody>
-				</tbody>
-			</table>
-		</div>
-		
-					
-	<!--   ~ CONTENT COLUMN   -->
 
-	<!--   CONTENT ADDS  -->
-		<div style="display:none;">
-			<c:import url="followUpControl.jsp"></c:import>
-		</div>
-		<script type="text/javascript">
 			$(function() {
 				
 				// dialogo para confirmar cierre de ticket con Orden de Servicio
 				$("#cerrarOSCapture").dialog({
 					autoOpen: false,
-					height: 240,
-					width: 300,
+					height: 300,
+					width: 360,
 					modal: true,
 					buttons: {
 						"Aceptar": function() {
@@ -283,39 +338,9 @@
 				
 				// inicializando el llenado de la tabla
 				showBigTable();
+
+				// inicializando selectores de fecha/hora
+				$('#closeDatetime').datetimepicker({format:'d/m/Y H:i', lang:'es'});
 			});
 		</script>
-		
-		<div id="cerrarOSCapture" title="Cerrar Ticket ">
-			<p>Por favor seleccione la OS que cierra el ticket:</p>
-			<select id = "closureOs" style="width:90%">
-				<c:forEach var="os" items="${potentialOs}">
-					<option value = "${os.serviceOrderId}">${os.serviceOrderNo}</option>
-				</c:forEach>
-			</select>
-			<form id = "closeTicketSend" action="/seguimiento" method="POST">
-				<input type="hidden" name="action" value = "closeTicket"/>
-				<input type="hidden" id="ticketId" name="ticketId"></input>
-				<input type="hidden" id="osId" name="osId"></input>
-			</form>
-			<p>&nbsp;</p>
-		</div>
-		
-		<div id="reopenTicketConfirm">
-			<strong id = "reopenTicketConfirmText"></strong>
-			<form id = "reopenTicketSend" action="/seguimiento" method="POST">
-				<input type="hidden" name="action" value = "reopenTicket"/>
-				<input type="hidden" id="reopenTicketId" name="reopenTicketId"/>
-			</form>
-		</div>
-	<!--   ~ CONTENT ADDS  -->
-
-	<!--   ~ CONTENT   -->
-				
-	<!--   FOOTER   -->			
-			<div id="foot">
-				<a href="#">Soporte</a>
-			</div>
-	<!--   ~ FOOTER   -->
-	</body>
 </html>

@@ -5,8 +5,10 @@ import java.util.List;
 
 import org.json.JSONObject;
 
+import com.blackstar.db.dao.interfaces.EquipmentTypeDAO;
 import com.blackstar.db.dao.interfaces.ServiceOrderDAO;
 import com.blackstar.db.dao.interfaces.ServiceTypeDAO;
+import com.blackstar.model.Equipmenttype;
 import com.blackstar.model.Policy;
 import com.blackstar.model.Serviceorder;
 import com.blackstar.model.dto.AirCoServiceDTO;
@@ -34,6 +36,12 @@ public class ServiceOrderServiceImpl extends AbstractService
 
   public void setTypeDao(ServiceTypeDAO typeDao) {
 	this.typeDao = typeDao;
+  }
+  
+  private EquipmentTypeDAO equipmentDao = null;
+
+  public void setEquipmentDao(EquipmentTypeDAO equipmentDao) {
+	  this.equipmentDao = equipmentDao;
   }
 
 public OrderserviceDTO getServiceOrderByIdOrNumber(Integer serviceOrderId, String orderNumber){
@@ -173,6 +181,11 @@ public List<FollowUpDTO> getServiceFollowUps(Integer serviceOrderId) {
 @Override
 public String getNewServiceNumber() {
 	return dao.getNewServiceNumber();
+}
+
+@Override
+public List<Equipmenttype> getEquipmentTypeList() {
+	return equipmentDao.selectAllEquipmentType();
 }
   
   

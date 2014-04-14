@@ -24,6 +24,8 @@
 ** 7    19/03/2014  SAG  	Se agrega Project a inserciones
 ** --   --------   -------  ------------------------------------
 ** 8    01/04/2014  SAG  	Se agrega modelo STTP
+** --   --------   -------  ------------------------------------
+** 9	09/04/2014	SAG 	Se corrige asignacion de sync seed
 *****************************************************************************/
 
 function ticketMain() {
@@ -86,7 +88,7 @@ function startLoadJob(conn, sqlLog) {
 }
 
 // Transfer
-function sendToDatabase(ticket, conn, policies, sqlLog){
+function sendToDatabase(ticket, conn, policies, sqlLog, range){
 	// sql string initialization
 	var sql = Utilities.formatString("DELETE FROM blackstarDbTransfer.ticket WHERE ticketNumber = '%s';", ticket[22]);
 	sqlLog = saveSql(sqlLog, sql);
@@ -193,6 +195,9 @@ function sendToDatabase(ticket, conn, policies, sqlLog){
 	sqlLog = saveSql(sqlLog, sql);
 	stmt = conn.createStatement();
 	stmt.execute(sql);
+
+	// remove seed
+	range.setValue(2); // sent
 	
 	return sqlLog;
 }
@@ -203,7 +208,7 @@ function loadPolicies(conn){
 	var rs = stmt.execute("use blackstarDbTransfer;");
 	var policies = { };
 	
-	rs = stmt.executeQuery("select policyId, serialNumber from policy where NOW() > startDate AND NOW() < endDate;");
+	rs = stmt.executeQuery("select policyId, serialNumber from policy where NOW() > startDate AND NOW() < DATE_ADD(endDate, interval 3 MONTH);");
 	while(rs.next()){
 		policies[rs.getString(2)] = rs.getInt(1);
 	}
@@ -303,10 +308,7 @@ function startSyncJob(sqlLog){
 					policiesLoaded = true;
 				}
 
-				sqlLog = sendToDatabase(currTicket, conn, policies, sqlLog);
-
-				// remove seed
-				sheet.getRange("AS" + startRec.toString()).setValue(2); // sent
+				sqlLog = sendToDatabase(currTicket, conn, policies, sqlLog, sheet.getRange("AS" + startRec.toString()));
 			}
 		}
 		
@@ -346,9 +348,23 @@ function executeTransfer(conn, sqlLog){
 }
 
 // Seed
-function setSeed(ticketLine){
-	var ticketNumber = ticketLine[22];
-	if(ticketNumber != null && ticketNumber != ""){		
-		ticketLine[44] = 1;
+function onEdit(event)
+{
+	try{
+		var s = SpreadsheetApp.getActiveSheet();
+		if( s.getName() == "Seguimiento" ) { 
+		    var actSht = event.source.getActiveSheet();
+		    var actRng = event.source.getActiveRange();
+
+		    var index = actRng.getRowIndex();
+		    var seedCell = actSht.getRange(index,44);
+		    var ticketNumber = actSht.getRange(index,22).getValue();
+		    if(ticketNumber != ""){
+			    lastCell.setValue(1);
+		    }
+		}
+	}
+	catch(err){
+		Logger.log(err);
 	}
 }

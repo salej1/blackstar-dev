@@ -35,8 +35,9 @@
     		   options = {legend: {position: 'right', alignment: 'center'},
   		       		      chartArea:{left:50,top:10,width:"100%", height:"100%"},
   		       		      is3D: $('#is3d_' + i).val(),
-  		        		  pieHole: 0.4,};
-    	  } 
+    		        		  pieHole: 0.4};
+    	  }
+
     	  chart.draw(data, options);
         }
       } 	
@@ -51,7 +52,29 @@
     	console.log(input.replace(/'/g, '"'));
     	return output;
       }
+
+      // aplicacion de codigos de colores
+      $(".colorCoded").each(function(){
+        updateItemColorDisplay(this);
+      });
    });
+
+  function updateItemColorDisplay(item){
+    var numberStr= $(item).text();
+    var value = parseFloat(numberStr);
+    var green = "#109618";
+    var orange = "#ff9900";
+
+    // disponibilidad
+    $(item).css("color", "#FFFFFF");
+
+    if(value < 90){
+      $(item).css("background-color", orange);
+    }
+    else{
+      $(item).css("background-color", green);
+    }
+  }
  </script>
 
 
@@ -59,30 +82,28 @@
     <div class="box">
       <h2>DISPONIBILIDAD</h2>
       <p/>
-      <table style="width:350px" cellpadding="0" cellspacing="0">
-        <tr>
-          <td style="width:250px"><h3>Disponiblidad</h3> </td>
-          <td style="width:50px"><h3> ${availabilityKpi.availability}</h3></td>
-          <td style="width:20px"><h3>%</h3></td>
-        </tr>
-        <tr>
-          <td><h3>Tiempo promedio de solucion</h3></td>
-          <td><h3>${availabilityKpi.solutionAverageTime}</h3></td>
-          <td><h3>Hr</h3></td>
-        </tr>
-        <tr>
-          <td><h3>Tickets solucionados en tiempo</h3></td>
-          <td><h3>${availabilityKpi.onTimeResolvedTickets}</h3></td>
-          <td><h3>%</h3></td>
-        </tr>
-        <tr>
-          <td><h3>Tickets atendidos en tiempo</h3></td>
-          <td><h3>${availabilityKpi.onTimeAttendedTickets}</h3></td>
-          <td><h3>%</h3></td>
-        </tr>
-      </table>
-      </div>
-	    <c:forEach var="chart" items="${charts}" varStatus="counter">
+        <div class="kpiDisplay">
+          <span class="kpiWhat">% Disponiblidad: </span>
+          <span class="kpiVal colorCoded">${availabilityKpi.availability}</span>
+        </div>
+       <div class="kpiDisplay">
+          <span class="kpiWhat">% Tickets solucionados en tiempo: </span>
+          <span><span class="kpiVal colorCoded">${availabilityKpi.onTimeResolvedTickets}</span></span>
+        </div>
+        <div class="kpiDisplay">
+          <span class="kpiWhat">% Tickets atendidos en tiempo: </span>
+          <span><span class="kpiVal colorCoded">${availabilityKpi.onTimeAttendedTickets}</span></span>
+        </div>
+         <div class="kpiDisplay">
+          <span class="kpiWhat">Tiempo promedio de solucion (hrs): </span>
+          <span class="kpiVal">${availabilityKpi.solutionAverageTime}</span>
+        </div>
+        <div class="kpiDisplay">
+          <span class="kpiWhat">Numero de tickets recibidos: </span>
+          <span class="kpiVal">${availabilityKpi.totalTickets}</span>
+        </div>
+        </div>
+	      <c:forEach var="chart" items="${charts}" varStatus="counter">
 	      <div class="grid_16">
 			  <div class="box">
 							<h2>${chart.title}</h2>

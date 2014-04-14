@@ -31,6 +31,10 @@
 -- ---------------------------------------------------------------------------
 -- 10 	03/04/2014	SAG 	Se agregan campos de contacto para ticket
 -- ---------------------------------------------------------------------------
+-- 11	10/04/2014	SAG 	Se aumenta capacidad de campo numero de serie
+--							Se aumenta capacidad de campo finalUser
+--							Se agrega serviceOrderNumber a ticket - provisional
+-- ---------------------------------------------------------------------------
 
 use blackstarDb;
 
@@ -43,6 +47,15 @@ BEGIN
 -- -----------------------------------------------------------------------------
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
+
+--	AGREGANDO serviceOrdernNumber a ticket
+	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'ticket' AND COLUMN_NAME = 'serviceOrderNumber') = 0  THEN
+		ALTER TABLE blackstarDb.ticket ADD serviceOrderNumber VARCHAR(50) NULL DEFAULT NULL;
+	END IF;
+
+-- AUMENTANDO CAPACIDAD DE CAMPOS EN policy
+	ALTER TABLE policy MODIFY serialNumber VARCHAR(200);
+	ALTER TABLE policy MODIFY finalUser VARCHAR(200);
 
 -- AUMENTANDO CAPACIDAD DE CAMPOS DE CONTACTO
 	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'ticket' AND COLUMN_NAME = 'contact') = 0  THEN

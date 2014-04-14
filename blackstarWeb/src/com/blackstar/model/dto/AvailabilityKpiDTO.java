@@ -10,6 +10,7 @@ public class AvailabilityKpiDTO implements Serializable{
 	Double solutionAverageTime;
 	Double onTimeResolvedTickets;
 	Double onTimeAttendedTickets;
+	Integer totalTickets;
 	
 	public Double getAvailability() {
 		return availability;
@@ -34,5 +35,11 @@ public class AvailabilityKpiDTO implements Serializable{
 	}
 	public void setOnTimeAttendedTickets(Double onTimeAttendedTickets) {
 		this.onTimeAttendedTickets = onTimeAttendedTickets;
+	}
+	public Integer getTotalTickets() {
+		return totalTickets;
+	}
+	public void setTotalTickets(Integer totalTickets) {
+		this.totalTickets = totalTickets;
 	}
 }

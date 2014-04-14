@@ -19,7 +19,9 @@
 -- ---------------------------------------------------------------------------
 -- 5 	03/04/2014	SAG 	Se incrementa tamaño de campos de contacto
 -- ---------------------------------------------------------------------------
-
+-- 6 	10/04/2014	SAG 	Se incrementa tamaño de numero de serie
+--							Se incremente tamaño de finalUser
+-- ---------------------------------------------------------------------------
 USE blackstarDbTransfer;
 
 
@@ -32,6 +34,10 @@ BEGIN
 -- -----------------------------------------------------------------------------
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
+
+	-- Aumentando capacidad de campos de policy
+	ALTER TABLE policy MODIFY serialNumber VARCHAR(200);
+	ALTER TABLE policy MODIFY finalUser VARCHAR(200);
 
 	-- Aumentando capacidad de campos de contacto
 	ALTER TABLE ticket MODIFY contact VARCHAR(200);

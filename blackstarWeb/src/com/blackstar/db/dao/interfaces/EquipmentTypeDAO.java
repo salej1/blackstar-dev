@@ -11,4 +11,5 @@ public interface EquipmentTypeDAO {
 	public Equipmenttype getEquipmentTypeById(char id);
 	public int insertEquipmentType();
 	public boolean updateEquipmentType();
+
 }
