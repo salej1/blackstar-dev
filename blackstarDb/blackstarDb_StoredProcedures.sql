@@ -2333,6 +2333,71 @@ SET statusId = 5, reponseInTime = inTime, desviation = desv, modified = today
 WHERE _ID = pTicketId;
 	
 END$$
+
+DROP PROCEDURE IF EXISTS blackstardb.GetBloomTicketByUserKPI$$
+CREATE PROCEDURE blackstardb.`GetBloomTicketByUserKPI`()
+BEGIN
+
+SELECT bu.name name, bu.email email, aa.name applicantArea, count(*) counter
+FROM bloomTicket bt, blackstarUser bu, bloomApplicantArea aa
+WHERE bt.applicantUserId = bu.blackstarUserId
+      AND bt.applicantAreaId = aa._id
+GROUP BY bt.applicantUserId
+ORDER BY counter desc;
+
+END$$
+
+
+DROP PROCEDURE IF EXISTS blackstardb.GetBloomTicketByOfficeKPI$$
+CREATE PROCEDURE blackstardb.`GetBloomTicketByOfficeKPI`()
+BEGIN
+
+SELECT of.officeName name, count(*) counter
+FROM bloomTicket bt, office of
+WHERE bt.officeId = of.officeId
+GROUP BY bt.officeId
+ORDER BY counter desc;
+
+END$$
+
+DROP PROCEDURE IF EXISTS blackstardb.GetBloomTicketByAreaKPI$$
+CREATE PROCEDURE blackstardb.`GetBloomTicketByAreaKPI`()
+BEGIN
+SELECT aa.name applicantArea, count(*) counter
+FROM bloomTicket bt, bloomApplicantArea aa
+WHERE  bt.applicantAreaId = aa._id
+GROUP BY bt.applicantAreaId
+ORDER BY counter desc;
+END$$
+
+
+DROP PROCEDURE IF EXISTS blackstardb.GetBloomTicketByDayKPI;
+CREATE PROCEDURE blackstardb.`GetBloomTicketByDayKPI`()
+BEGIN
+SELECT DATE_FORMAT(created,'%d/%m/%Y') created, count(*) counter
+FROM bloomTicket
+GROUP BY DATE_FORMAT(created,'%d/%m/%Y');
+END;
+
+DROP PROCEDURE IF EXISTS blackstardb.GetBloomTicketByProjectKPI$$
+CREATE PROCEDURE blackstardb.`GetBloomTicketByProjectKPI`()
+BEGIN
+SELECT bt.project project, count(*) counter
+FROM bloomTicket bt
+GROUP BY bt.project
+ORDER BY counter DESC
+LIMIT 5;
+END$$
+
+DROP PROCEDURE IF EXISTS blackstardb.GetBloomTicketByServiceAreaKPI;
+CREATE PROCEDURE blackstardb.`GetBloomTicketByServiceAreaKPI`()
+BEGIN
+SELECT aa.name applicantArea, st.name serviceType , count(*) counter
+FROM bloomTicket bt, bloomapplicantarea aa, bloomServiceType st
+WHERE bt.serviceTypeId = st._id
+      AND bt.applicantAreaId = aa._id
+GROUP BY bt.applicantAreaId, bt.serviceTypeId;
+END;
 -- -----------------------------------------------------------------------------
 	-- FIN DE LOS STORED PROCEDURES
 -- -----------------------------------------------------------------------------
