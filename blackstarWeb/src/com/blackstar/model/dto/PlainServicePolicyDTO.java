@@ -15,13 +15,13 @@ public class PlainServicePolicyDTO {
 		this.serviceDate = new Date();
 	}
 	
-	public PlainServicePolicyDTO(OpenCustomer customer, String equipmentType)
+
+	public PlainServicePolicyDTO(OpenCustomer customer)
 	{
 		this.customer = customer.getCustomerName();
 		this.finalUser = customer.getContactEmail();
 		this.project = "";
-		this.equipmentTypeId = equipmentType.charAt(0);
-		this.equipmentType = equipmentType;
+		this.equipmentTypeId = customer.getEquipmentTypeId().charAt(0);
 		this.brand = customer.getBrand();
 		this.model = customer.getModel();
 		this.serialNumber = customer.getSerialNumber();
@@ -32,6 +32,55 @@ public class PlainServicePolicyDTO {
 		
 		this.closed = new Date();
 		this.serviceDate = new Date();
+		
+	}
+	
+	public PlainServicePolicyDTO(OpenCustomer customer, Serviceorder serviceOrder, PlainServiceDTO plainServiceDTO)
+	{
+		this.customer = customer.getCustomerName();
+		this.finalUser = customer.getContactEmail();
+		this.project = "";
+		this.equipmentTypeId = customer.getEquipmentTypeId().charAt(0);
+		this.brand = customer.getBrand();
+		this.model = customer.getModel();
+		this.serialNumber = customer.getSerialNumber();
+		this.capacity = customer.getCapacity();
+		this.equipmentAddress = customer.getAddress();
+		this.contactName = customer.getContactName();
+		this.contactPhone = customer.getPhone();
+		
+		this.closed = new Date();
+		this.serviceDate = new Date();
+		
+		this.serviceOrderId = serviceOrder.getServiceOrderId();
+		this.ticketId = serviceOrder.getTicketId();
+		this.serviceDate = serviceOrder.getServiceDate();
+		this.responsible = serviceOrder.getResponsible();
+		this.receivedBy = serviceOrder.getReceivedBy();
+		this.serviceStatusId = serviceOrder.getStatusId();
+		this.closed = serviceOrder.getClosed();
+		this.consultant = serviceOrder.getConsultant();
+		this.coordinator = serviceOrder.getCoordinator();
+		this.asignee = serviceOrder.getAsignee();
+		this.signCreated = serviceOrder.getSignCreated();
+		this.signReceivedBy = serviceOrder.getsignReceivedBy();
+		this.receivedByPosition = serviceOrder.getReceivedByPosition();
+		this.serviceOrderNumber = serviceOrder.getServiceOrderNumber();	
+		this.serviceTypeId = serviceOrder.getServiceTypeId().toString();
+		this.isWrong = serviceOrder.getIsWrong()>0?true:false;
+		this.receivedByEmail = serviceOrder.getReceivedByEmail();
+		this.responsibleName = serviceOrder.getResponsibleName();
+		this.plainServiceId = plainServiceDTO.getPlainServiceId();
+		this.troubleDescription = plainServiceDTO.getTroubleDescription();
+		this.techParam = plainServiceDTO.getTechParam();
+		this.workDone = plainServiceDTO.getWorkDone();
+		this.materialUsed = plainServiceDTO.getMaterialUsed();
+		this.observations = plainServiceDTO.getObservations();
+		if(serviceOrder.getEmployeeList().size() > 0){
+			// Se reescriben responsible y responsibleName para las OS que tengan lista de empleados
+			this.responsible = serviceOrder.getEmployeeListString();
+			this.responsibleName = serviceOrder.getEmployeeNameListString();
+		}
 	}
 	
 	public PlainServicePolicyDTO(Policy policy, String equipmentType)

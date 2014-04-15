@@ -64,7 +64,7 @@ public class Serviceorder implements java.io.Serializable {
 			String asignee, Date created, String createdBy,
 			String createdByUsr, Date modified, String modifiedBy,
 			String modifiedByUsr, String signCreated, String signReceivedBy, String receivedByPosition, String serviceOrderNumber, Integer serviceOrderId,
-			Integer isWrong, String receivedByEmail) {
+			Integer isWrong, String receivedByEmail, Integer openCustomerId) {
 		this.serviceOrderId = serviceOrderId;
 		this.serviceTypeId = serviceTypeId;
 		this.ticketId = ticketId;
@@ -92,6 +92,7 @@ public class Serviceorder implements java.io.Serializable {
 		this.isWrong = isWrong;
 		this.receivedByEmail = receivedByEmail;
 		this.responsibleName = responsible;
+		this.openCustomerId = openCustomerId;
 	}
 
 	@Id

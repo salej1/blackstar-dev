@@ -807,7 +807,7 @@ BEGIN
 	FROM blackstarUser_userGroup ug
 		INNER JOIN blackstarUser u ON u.blackstarUserId = ug.blackstarUserId
 		INNER JOIN userGroup g ON g.userGroupId = ug.userGroupId
-	WHERE g.externalId = pUserGroup
+	WHERE g.name = pUserGroup
 	ORDER BY u.name;
 	
 END$$
@@ -1670,7 +1670,7 @@ BEGIN
 	FROM blackstarUser_userGroup ug
 		INNER JOIN blackstarUser u ON u.blackstarUserId = ug.blackstarUserId
 		INNER JOIN userGroup g ON g.userGroupId = ug.userGroupId
-	WHERE g.externalId = pUserGroup
+	WHERE g.name = pUserGroup
 	ORDER BY u.name;
 	
 END$$
@@ -3063,7 +3063,7 @@ CREATE PROCEDURE blackstarDb.AddserviceOrder (
   createdBy varchar(50) ,
   createdByUsr varchar(50) ,
   receivedByEmail varchar(100),
-  openCustomerId int
+  openCustomerId int(11)
 )
 BEGIN
 insert into serviceOrder

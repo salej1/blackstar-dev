@@ -40,7 +40,7 @@ public class ServiceOrderDAOImpl extends AbstractDAO implements ServiceOrderDAO 
 	         .append("        , SO.signReceivedBy AS 'signReceivedBy', SO.receivedBy AS 'receivedBy'")
 	         .append("        , SO.responsible AS 'responsible', SO.closed AS 'closed' ")
 	         .append("        , SO.receivedByPosition AS 'receivedByPosition', SO.policyId AS 'policyId'")
-	         .append("        , SO.ticketId AS 'ticketId', SO.serviceTypeId AS 'serviceTypeId' ");
+	         .append("        , SO.ticketId AS 'ticketId', SO.serviceTypeId AS 'serviceTypeId', SO.openCustomerId AS 'openCustomerId' ");
 	sqlFrom.append("FROM serviceOrder SO ");
 	sqlWhere.append("WHERE (SO.serviceOrderId = ? OR SO.serviceOrderNumber = ?)" );
 	sqlBuilder.append(sqlSelect).append(sqlFrom).append(sqlWhere);
@@ -135,7 +135,7 @@ public class ServiceOrderDAOImpl extends AbstractDAO implements ServiceOrderDAO 
 									""+orderService.getCoordinator()+ "",
 									""+orderService.getAsignee()+ "",
 									0,
-									0,
+									""+orderService.getIsWrong()+ "",
 									""+orderService.getSignCreated()+ "",
 									""+orderService.getsignReceivedBy()+ "",
 									""+orderService.getReceivedByPosition()+ "",
@@ -143,7 +143,7 @@ public class ServiceOrderDAOImpl extends AbstractDAO implements ServiceOrderDAO 
 									""+orderService.getCreatedBy()+ "",
 									""+orderService.getCreatedByUsr()+ "",
 									""+orderService.getReceivedByEmail()+ "",
-									""+orderService.getOpenCustomerId()+ ""
+									orderService.getOpenCustomerId()
 								};
 	
 	Integer idOS = getJdbcTemplate().queryForInt(sqlBuilder.toString() ,args);

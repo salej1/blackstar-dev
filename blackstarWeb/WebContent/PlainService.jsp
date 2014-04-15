@@ -8,16 +8,16 @@
 <html>
 	<head>
 	<title>Órden de servicio general</title>
-	
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/960.css" type="text/css" media="screen" charset="utf-8" />
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/template.css" type="text/css" media="screen" charset="utf-8" />
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/colour.css" type="text/css" media="screen" charset="utf-8" />
 	<link href="${pageContext.request.contextPath}/js/glow/1.7.0/widgets/widgets.css" type="text/css" rel="stylesheet" />
+	<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/jquery.datetimepicker.css"/ >
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery.ui.theme.css">
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery-ui.min.css">
 	<script src="${pageContext.request.contextPath}/js/dateFormat.js"></script>
+	<script src="${pageContext.request.contextPath}/js/jquery.datetimepicker.js"></script>
 	<script type="text/javascript" charset="utf-8">
 
 	function split( val ) {
@@ -48,8 +48,11 @@
 				$("#serviceDate").val(dateNow());
 			}
 
-			$("#responsibleName").val("${ user.userName }");
-			$("#responsible").val("${ user.userEmail }");
+			if(isEng){
+				$("#responsibleName").val("${ user.userName }");
+				$("#responsible").val("${ user.userEmail }");
+			}
+
 			var strEpmloyees = '${serviceEmployees}';
 			var empData = $.parseJSON(strEpmloyees);
 
@@ -103,7 +106,10 @@
 			}
 
 			// Deshabilitar required para campos ocultos
-			$("body").find(":hidden").not("script").removeAttr("required");			
+			$("body").find(":hidden").not("script").removeAttr("required");		
+
+			// Habilitar datetime picker
+			$("#serviceDate").datetimepicker({format:'d/m/Y H:i:s', lang:'es'});
 		}
 
 		// Binding serviceTypes con campo oculto de tipo de servicio
@@ -139,38 +145,34 @@
 						<h2>ORDEN DE SERVICIO</h2>
 							<table>
 								<tr>
-									<td>Folio:</td>
-									<td><form:input path="serviceOrderNumber" type="text" style="width:95%;" maxlength="5" readOnly="true" required="true"/></td>
-									<td colspan="2">
+									<td style="width:140px">Folio:</td>
+									<td style="width:300px"><form:input path="serviceOrderNumber" type="text" style="width:65%;" maxlength="5" readOnly="true" required="true"/>
 										<c:if test="${serviceOrder.serviceOrderId > 0}">
 											<a href='${pageContext.request.contextPath}/report/show.do?serviceOrderId=${serviceOrder.serviceOrderId}' target="_blank">Ver PDF</a><img src='${pageContext.request.contextPath}/img/pdf.png'/>
 										</c:if>	
 									</td>
+									<td style="width:120px">No. de ticket</td>
+									<td><form:input class="lockOnDetail" path="ticketNumber" type="text" readOnly="true" style="width:95%;"/></td>
 								</tr>
 								<tr>
 									<td>Cliente</td>
-									<td colspan="5"><form:input class="lockOnDetail lockOnPolicy" path="customer" type="text" style="width:95%;" required="true"/></td>
-									<td>No. de ticket</td>
-									<td colspan="3"><form:input class="lockOnDetail" path="ticketNumber" type="text" style="width:95%;"/></td>
+									<td colspan="3"><form:input class="lockOnDetail lockOnPolicy" path="customer" type="text" style="width:95%;" required="true"/></td>
 								</tr>
 								<tr>
 									<td>Domicilio</td>
-									<td colspan="5"><form:textarea class="lockOnDetail lockOnPolicy" path="equipmentAddress" style="width:95%;height:50px;" required="true"></form:textarea></td>
-									<td>Fecha y hora de llegada</td>
-									<td colspan="3"><form:input class="lockOnDetail lockForEng" path="serviceDate" type="text" style="width:95%;" required="true"/></td>
+									<td colspan="3"><form:textarea class="lockOnDetail lockOnPolicy" path="equipmentAddress" style="width:95%;height:50px;" required="true"></form:textarea></td>
 								</tr>
 								<tr>
 									<td>Solicitante</td>
-									<td colspan="5"><form:textarea class="lockOnDetail" path="finalUser" style="width:95%;height:50px;" required="true"></form:textarea></td>
+									<td><form:textarea class="lockOnDetail" path="finalUser" style="width:95%;height:50px;" required="true"></form:textarea></td>
 									<td>Teléfono</td>
 									<td><form:input type="text" class="lockOnDetail" path="contactPhone" style="width:95%;"  required="true"/></td>
 								</tr>
-								
 								<tr>
 									<td>Equipo</td>
-									<td colspan="5">
+									<td>
 										<form:hidden path="equipmentTypeId" />
-										<select class="lockOnDetail" id="equipmentTypeList">
+										<select class="lockOnDetail lockOnPolicy" id="equipmentTypeList">
 											<c:forEach var="etype" items="${equipmentTypeList}">
 										        <option value="${etype.equipmentTypeId}" 
 										        <c:if test="${etype.equipmentTypeId == serviceOrder.equipmentTypeId}">
@@ -180,16 +182,22 @@
 										    </c:forEach>
 										</select>
 									</td>
-									<td style="padding-left:10px;">Marca</td>
+									
+								</tr>
+								<tr>
+									<td>Marca</td>
 									<td><form:input class="lockOnDetail lockOnPolicy" path="brand" type="text" style="width:95%;" required="true"/></td>
 									<td>Modelo</td>
 									<td><form:input class="lockOnDetail lockOnPolicy" path="model" type="text" style="width:95%;" required="true"/></td>
+								<tr>
 									<td>Serie</td>
-									<td><form:input class="lockOnDetail lockOnPolicy" path="serialNumber" type="text" style="width:95%;" required="true"/></td>								
+									<td><form:input class="lockOnDetail lockOnPolicy" path="serialNumber" type="text" style="width:95%;" required="true"/></td>	
+									<td>Contrato / Proyecto</td>
+									<td colspan="3"><form:input class="lockOnDetail lockOnPolicy" path="project" type="text" style="width:95%;" required="true"/></td>							
 								</tr>
 								<tr>
 									<td>Tipo:</td>
-									<td colspan="5">
+									<td>
 										<form:hidden path="serviceTypeId" />
 										<form:hidden path="serviceType" />
 										<select class="lockOnDetail" id="serviceTypes">
@@ -202,12 +210,8 @@
 										    </c:forEach>
 										</select>
 									</td>
-									<td>Contrato / Proyecto</td>
-									<td colspan="3"><form:input class="lockOnDetail lockOnPolicy" path="project" type="text" style="width:95%;" required="true"/></td>
-								</tr>
-								<tr>
 									<td>Estatus:</td>
-									<td colspan="5">
+									<td>
 										<form:hidden path="serviceStatusId" />
 										<select name="" id="serviceStatuses" disabled>
 											<c:forEach var="ss" items="${serviceStatuses}">
@@ -220,6 +224,10 @@
 											<option value=""></option>
 										</select>
 									</td>
+								</tr>
+								<tr>
+									<td>Fecha y hora de llegada</td>
+									<td><form:input class="lockOnDetail lockForEng" path="serviceDate" type="text" style="width:95%;" required="true"/></td>
 								</tr>
 							</table>
 						</div>					
@@ -299,7 +307,7 @@
 									</td>
 								</tr>
 								<tr>
-									<td>Nombre</td>
+									<td style="width:90px">Nombre</td>
 									<td><form:input class="lockOnDetail" path="responsibleName" type="text" style="width:95%;" required="true"/></td>
 									<form:hidden path="responsible" style="width:95%;"/>
 									<td>Nombre</td>
@@ -316,8 +324,7 @@
 									<td><form:input class="lockOnDetail" path="receivedByEmail"  style="width:95%;" /></td>
 								</tr>
 								<tr class="eligible coorOnly">
-									<td>Errores de captura<form:checkbox path="isWrong" /></td>
-									<td></td>
+									<td colspan="2">Errores de captura<form:checkbox path="isWrong" /></td>
 									<td></td>
 									<td></td>
 								</tr>

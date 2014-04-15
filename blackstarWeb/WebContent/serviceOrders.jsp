@@ -73,8 +73,8 @@
 
 <!-- Inicia Contenido De Perfil SysServicio -->
 
-			<c:set var="sysServicio" scope="request" value="${user.belongsToGroup['Implementacion y Servicio']}" />
-			<c:if test="${sysServicio == true}">
+			<c:set var="showHistory" scope="request" value="${user.belongsToGroup['Implementacion y Servicio'] || user.belongsToGroup['Coordinador']}" />
+			<c:if test="${showHistory == true}">
 
 <!-- Inicia Historial De Ordenes De Servicio -->
 				<c:import url="serviceOrdersHistory.jsp"></c:import>

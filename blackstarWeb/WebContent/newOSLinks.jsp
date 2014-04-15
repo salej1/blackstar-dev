@@ -1,3 +1,5 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@page isELIgnored="false"%>
 <!-- Seccion de links que permiten crear nueva orden de servicio : INGENIEROS DE SERVICIO -->
 <c:set var="sysServicio" scope="request" value="${user.belongsToGroup['Implementacion y Servicio']}" />
 <c:if test="${sysServicio == true}">
@@ -77,7 +79,7 @@
 		}
 
 		var soNum = $("#soNumber").val();
-		if(soNum == ""){
+		if(captureType == "policy" && soNum == ""){
 			return;
 		}
 
