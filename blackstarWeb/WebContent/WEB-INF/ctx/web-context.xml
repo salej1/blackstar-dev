@@ -89,6 +89,10 @@
       <property name="internalTicketsService" ref="internalTicketsService" />
    </bean>
    
+   <bean class="com.bloom.web.controller.InternalTicketsKPIController" parent="abstractController">
+      <property name="service" ref="internatTicketsKPIService" />
+   </bean>
+   
    
    
 </beans>
