@@ -15,14 +15,12 @@
     	for(var i = 0; i< chartsNumber; i ++){
     	  json=pase($('#data_' + i).val());
     	  data = new google.visualization.DataTable();
-    	  data.addColumn('number','No. de Tickets');
     	  data.addColumn('string','Area');
-    	  data.addColumn('string','Tipo Servicio');
+    	  data.addColumn('number','No. de Tickets');
     	  for (var j=0;j<json.length;j++) {
     		 row = [];       
-    		 row.push(json[j].counter);
     		 row.push(json[j].applicantArea);
-    		 row.push(json[j].serviceType);
+    		 row.push(json[j].counter);
     		 data.addRow(row);
          }
     	  chart = new google.visualization.AreaChart(document.getElementById('chart_' + i));
