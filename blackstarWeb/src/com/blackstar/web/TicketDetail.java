@@ -150,7 +150,7 @@ public class TicketDetail extends HttpServlet{
 			}
 			
 			try {
-				sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+				sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 				closed = sdf.parse(rawClosed);
 				
 				sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -192,7 +192,7 @@ public class TicketDetail extends HttpServlet{
 			}
 			
 			try{
-				sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+				sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 				
 				arrival = sdf.parse(rawArrival);
 
@@ -204,7 +204,7 @@ public class TicketDetail extends HttpServlet{
 				
 				BlackstarDataAccess da = new BlackstarDataAccess();
 				
-				da.executeQuery(sql);
+				da.executeUpdate(sql);
 			}
 			catch(Throwable t){
 				t.printStackTrace();

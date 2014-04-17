@@ -173,7 +173,7 @@
 				$('#okEdit'+what).show();
 				$('#cancelEdit'+what).show();
 				$('#'+fld).removeAttr("readonly");
-				$('#'+fld).datetimepicker({format:'d/m/Y H:i', lang:'es'});				
+				$('#'+fld).datetimepicker({format:'d/m/Y H:i:s', lang:'es'});				
 				$('#'+fld).datetimepicker('show');		
 			}
 			else{
@@ -280,7 +280,7 @@
 			});
 
 			// inicializando selectores de fecha/hora
-			$('#closeDatetime').datetimepicker({format:'d/m/Y H:i', lang:'es'});
+			$('#closeDatetime').datetimepicker({format:'d/m/Y H:i:s', lang:'es'});
 
 			$('#lbCreated').val(new Date('${ticketF.created}').format('dd/MM/yyyy hh:mm:ss'));
 			$('#lbNombreUsuario').val('${ticketF.user}');
