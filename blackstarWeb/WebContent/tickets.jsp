@@ -10,8 +10,6 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel="stylesheet" href="css/jquery.ui.theme.css"/>
 <link rel="stylesheet" href="css/jquery-ui.min.css"/>
-<script src="js/jquery-1.10.1.min.js"></script>
-<script src="js/jquery-ui.js"></script>
 <script src="DataTables-1.9.4/media/js/jquery.dataTables.js"></script>
 
 <script type="text/javascript" charset="utf-8">

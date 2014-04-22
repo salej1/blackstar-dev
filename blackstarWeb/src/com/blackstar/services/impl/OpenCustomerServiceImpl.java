@@ -14,8 +14,8 @@ public class OpenCustomerServiceImpl extends AbstractService implements OpenCust
 	}
 	
 	@Override
-	public Integer AddOpenCustomer(OpenCustomer customer) {
-		return dao.AddOpenCustomer(customer);
+	public Integer SaveOpenCustomer(OpenCustomer customer) {
+		return dao.SaveOpenCustomer(customer);
 	}
 
 	@Override

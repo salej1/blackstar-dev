@@ -20,6 +20,10 @@ public class OpenCustomer implements java.io.Serializable  {
 	private Date created ;
 	private String createdBy ;
 	private String createdByUsr ;
+	private Date modified ;
+	private String modifiedBy ;
+	private String modifiedByUsr ;
+	private String officeId;
 	
 	public Integer getOpenCustomerId() {
 		return openCustomerId;
@@ -107,5 +111,31 @@ public class OpenCustomer implements java.io.Serializable  {
 	}
 	public void setEquipmentTypeId(String equipmentTypeId) {
 		this.equipmentTypeId = equipmentTypeId;
+	}
+	public Date getModified() {
+		return modified;
+	}
+	public void setModified(Date modified) {
+		this.modified = modified;
+	}
+	public String getModifiedBy() {
+		return modifiedBy;
+	}
+	public void setModifiedBy(String modifiedBy) {
+		this.modifiedBy = modifiedBy;
+	}
+	public String getModifiedByUsr() {
+		return modifiedByUsr;
+	}
+	public void setModifiedByUsr(String modifiedByUsr) {
+		this.modifiedByUsr = modifiedByUsr;
+	}
+	public String getOfficeId() {
+		return officeId;
+	}
+	public void setOfficeId(String officeId) {
+		if(officeId != null && officeId.length() > 0){
+			this.officeId = officeId.substring(0, 1);
+		}
 	}
 }

@@ -44,5 +44,6 @@
        <bean id="surveyServiceDAO" class="com.blackstar.db.dao.impl.SurveyServiceDAOImpl" parent="abstractDAO"/>
        <bean id="openCustomerDAO" class="com.blackstar.db.dao.impl.OpenCustomerDAOImpl" parent="abstractDAO"/>
        <bean id="equipmentTypeDAO" class="com.blackstar.db.dao.impl.EquipmentTypeDAOImpl" parent="abstractDAO"/>
+       <bean id="schedulingDAO" class="com.blackstar.db.dao.impl.SchedulingDAOImpl" parent="abstractDAO"/>
 
 </beans>

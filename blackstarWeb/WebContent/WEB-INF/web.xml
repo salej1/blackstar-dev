@@ -117,16 +117,6 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
   </servlet-mapping>
   <servlet>
     <description></description>
-    <display-name>ScheduleStatus</display-name>
-    <servlet-name>ScheduleStatus</servlet-name>
-    <servlet-class>com.blackstar.web.scheduleStatus</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>ScheduleStatus</servlet-name>
-    <url-pattern>/scheduleStatus</url-pattern>
-  </servlet-mapping>
-  <servlet>
-    <description></description>
     <display-name>Logout</display-name>
     <servlet-name>Logout</servlet-name>
     <servlet-class>com.blackstar.web.Logout</servlet-class>

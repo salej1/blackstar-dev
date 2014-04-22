@@ -2,7 +2,6 @@ package com.blackstar.model.dto;
 
 import java.util.Date;
 
-import com.blackstar.model.Employee;
 import com.blackstar.model.OpenCustomer;
 import com.blackstar.model.Policy;
 import com.blackstar.model.Serviceorder;
@@ -29,6 +28,7 @@ public class PlainServicePolicyDTO {
 		this.equipmentAddress = customer.getAddress();
 		this.contactName = customer.getContactName();
 		this.contactPhone = customer.getPhone();
+		this.officeId = customer.getOfficeId();
 		
 		this.closed = new Date();
 		this.serviceDate = new Date();
@@ -37,6 +37,7 @@ public class PlainServicePolicyDTO {
 	
 	public PlainServicePolicyDTO(OpenCustomer customer, Serviceorder serviceOrder, PlainServiceDTO plainServiceDTO)
 	{
+		this.openCustomerId = customer.getOpenCustomerId();
 		this.customer = customer.getCustomerName();
 		this.finalUser = customer.getContactEmail();
 		this.project = "";
@@ -48,7 +49,7 @@ public class PlainServicePolicyDTO {
 		this.equipmentAddress = customer.getAddress();
 		this.contactName = customer.getContactName();
 		this.contactPhone = customer.getPhone();
-		
+		this.officeId = customer.getOfficeId();
 		this.closed = new Date();
 		this.serviceDate = new Date();
 		
@@ -96,7 +97,7 @@ public class PlainServicePolicyDTO {
 		this.serialNumber = policy.getSerialNumber();
 		this.capacity = policy.getCapacity();
 		this.equipmentAddress = policy.getEquipmentAddress();
-		this.officeId = policy.getOfficeId();
+		this.officeId = String.valueOf(policy.getOfficeId());
 		this.contactName = policy.getContactName();
 		this.contactPhone = policy.getContactPhone();
 		
@@ -118,7 +119,7 @@ public class PlainServicePolicyDTO {
 		this.serialNumber = policy.getSerialNumber();
 		this.capacity = policy.getCapacity();
 		this.equipmentAddress = policy.getEquipmentAddress();
-		this.officeId = policy.getOfficeId();
+		this.officeId = String.valueOf(policy.getOfficeId());
 		this.contactName = policy.getContactName();
 		this.contactPhone = policy.getContactPhone();
 		
@@ -160,7 +161,7 @@ public class PlainServicePolicyDTO {
 		this.serialNumber = policy.getSerialNumber();
 		this.capacity = policy.getCapacity();
 		this.equipmentAddress = policy.getEquipmentAddress();
-		this.officeId = policy.getOfficeId();
+		this.officeId = String.valueOf(policy.getOfficeId());
 		this.contactName = policy.getContactName();
 		this.contactPhone = policy.getContactPhone();
 		
@@ -208,7 +209,7 @@ public class PlainServicePolicyDTO {
 	private String serialNumber;
 	private String capacity;
 	private String equipmentAddress;
-	private char officeId;
+	private String officeId;
 	private String contactName;
 	private String contactPhone;
 
@@ -238,6 +239,8 @@ public class PlainServicePolicyDTO {
 	private String observations;
 	private Boolean isWrong;
 	private String responsibleName;
+	private String loadedOSFileId;
+	private Integer openCustomerId;
 	
 	public Integer getPolicyId() {
 		return policyId;
@@ -327,11 +330,11 @@ public class PlainServicePolicyDTO {
 		this.equipmentAddress = equipmentAddress;
 	}
 
-	public char getOfficeId() {
+	public String getOfficeId() {
 		return officeId;
 	}
 
-	public void setOfficeId(char officeId) {
+	public void setOfficeId(String officeId) {
 		this.officeId = officeId;
 	}
 
@@ -555,5 +558,25 @@ public class PlainServicePolicyDTO {
 
 	public void setResponsibleName(String responsibleName) {
 		this.responsibleName = responsibleName;
+	}
+
+
+	public String getLoadedOSFileId() {
+		return loadedOSFileId;
+	}
+
+
+	public void setLoadedOSFileId(String loadedOSFileId) {
+		this.loadedOSFileId = loadedOSFileId;
+	}
+
+
+	public Integer getOpenCustomerId() {
+		return openCustomerId;
+	}
+
+
+	public void setOpenCustomerId(Integer openCustomerId) {
+		this.openCustomerId = openCustomerId;
 	}
 }

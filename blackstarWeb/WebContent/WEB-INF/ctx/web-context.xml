@@ -98,5 +98,9 @@
    <bean class="com.blackstar.web.controller.ServiceIndicatorsController" parent="abstractController">
        <property name="service" ref="serviceIndicatorsService" />
    </bean>
+   <bean class="com.blackstar.web.controller.ScheduleStatusController" parent="abstractController">
+       <property name="service" ref="scheduleStatusService" />
+       <property name="osService" ref="serviceOrderService" />
+   </bean>
  
 </beans>

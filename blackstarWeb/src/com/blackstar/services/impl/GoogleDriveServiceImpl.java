@@ -14,6 +14,7 @@ import com.google.api.client.json.jackson.JacksonFactory;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.Drive.Files;
 import com.google.api.services.drive.DriveScopes;
+import com.google.api.services.drive.model.About;
 import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.FileList;
 import com.google.api.services.drive.model.ParentReference;
@@ -65,6 +66,13 @@ public class GoogleDriveServiceImpl extends AbstractService
 	 	  setPermissions(folderId);
 	 	 } 
 	 	sysFolderIds.put("OS_REPORTS", folderId);
+	 	
+	 	 About about = drive.about().get().execute(); 
+	 	 folderId = about.getRootFolderId();
+	 	 if(folderId != null){
+	 		 sysFolderIds.put("ROOT", folderId);
+	 	 } 	
+	 	
 	} catch(Exception e){
 		e.printStackTrace();
 		Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
@@ -100,6 +108,10 @@ public class GoogleDriveServiceImpl extends AbstractService
   public String getReportsFolderId(Integer id) throws Exception {
 	return getSysFolderId(String.valueOf(id), sysFolderIds.get("OS_REPORTS"));
   }	
+  
+  public String getRootFolderId() throws Exception{
+	 return sysFolderIds.get("ROOT");
+  }
   
   public String getSysFolderId(String id, String parentId) 
 		                                          throws Exception {
@@ -151,7 +163,7 @@ public class GoogleDriveServiceImpl extends AbstractService
 		                                     throws Exception {
 	return getObjectId(folderName, parentId, FOLDER_FILE_TYPE);
   }
-  
+    
   public String getReportFileId(Integer serviceOrderId, String reportName) 
 		                                               throws Exception {
 	String parentId = getReportsFolderId(serviceOrderId);
@@ -192,4 +204,19 @@ public class GoogleDriveServiceImpl extends AbstractService
     return file.getId();
   }
 	
+  public void LoadOSFile(String osFileId, Integer serviceOrderId) throws Exception{
+	  File osFile = new File();
+	  osFile.setTitle("ServiceOrder.pdf");
+	  osFile.setParents(Arrays.asList(new ParentReference()
+	  		.setId(getReportsFolderId(serviceOrderId))));
+	  osFile.setMimeType( "application/pdf");
+	  
+	  try{
+		  osFile = drive.files().copy(osFileId, osFile).execute();		  
+	  }
+	  catch(Exception e){
+		  Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
+		  throw e;
+	  }
+  }
 }

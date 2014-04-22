@@ -17,6 +17,7 @@
           .setCallback(pickerCallback)
           .enableFeature(google.picker.Feature.MULTISELECT_ENABLED)
           .setOAuthToken('${accessToken}')
+          .setLocale('es')
           .build();
     }
 

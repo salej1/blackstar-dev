@@ -1,8 +1,5 @@
 package com.blackstar.db.dao.impl;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-
 import com.blackstar.db.dao.AbstractDAO;
 import com.blackstar.db.dao.interfaces.OpenCustomerDAO;
 import com.blackstar.model.OpenCustomer;
@@ -10,11 +7,10 @@ import com.blackstar.model.OpenCustomer;
 public class OpenCustomerDAOImpl extends AbstractDAO implements OpenCustomerDAO {
 
 	@Override
-	public Integer AddOpenCustomer(OpenCustomer customer) {
-		String sql = "CALL AddOpenCustomer(?,?,?,?,?,?,?,?,?,?,?,?,?);";
-		DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-		
+	public Integer SaveOpenCustomer(OpenCustomer customer) {
+		String sql = "CALL SaveOpenCustomer(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
 		Integer id = (Integer)getJdbcTemplate().queryForObject(sql, new Object[]{
+				customer.getOpenCustomerId(),
 				customer.getCustomerName(),
 				customer.getAddress(),
 				customer.getPhone(),
@@ -25,9 +21,11 @@ public class OpenCustomerDAOImpl extends AbstractDAO implements OpenCustomerDAO 
 				customer.getSerialNumber(),
 				customer.getContactName(),
 				customer.getContactEmail(),
-				df.format(customer.getCreated()),
+				customer.getOfficeId(),
 				customer.getCreatedBy(),
-				customer.getCreatedByUsr()
+				customer.getCreatedByUsr(),
+				customer.getModifiedBy(),
+				customer.getModifiedByUsr()
 		}, Integer.class);
 		
 		return id;

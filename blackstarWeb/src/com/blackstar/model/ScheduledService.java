@@ -3,13 +3,17 @@ package com.blackstar.model;
 import java.util.Date;
 
 public class ScheduledService {
-	int scheduledServiceId;
-	Date scheduledDate;
-	String equipmentType;
-	String customer;
-	String serialNumber;
-	String asignee;
-	String additionalEmployees;
+	private int scheduledServiceId;
+	private String serviceStatusId;
+	private String description;
+	private Integer openCustomerId;
+	private Date created;
+	private String createdBy;
+	private String createdByUsr;
+	private Date modified;
+	private String modifiedBy;
+	private String modifiedByUsr;
+	private String project;
 	
 	public int getScheduledServiceId() {
 		return scheduledServiceId;
@@ -17,42 +21,64 @@ public class ScheduledService {
 	public void setScheduledServiceId(int scheduledServiceId) {
 		this.scheduledServiceId = scheduledServiceId;
 	}
-	public Date getScheduledDate() {
-		return scheduledDate;
+	public String getServiceStatusId() {
+		return serviceStatusId;
 	}
-	public void setScheduledDate(Date scheduledDate) {
-		this.scheduledDate = scheduledDate;
+	public void setServiceStatusId(String serviceStatusId) {
+		this.serviceStatusId = serviceStatusId;
 	}
-	public String getEquipmentType() {
-		return equipmentType;
+	public Date getCreated() {
+		return created;
 	}
-	public void setEquipmentType(String equipmentType) {
-		this.equipmentType = equipmentType;
+	public void setCreated(Date created) {
+		this.created = created;
 	}
-	public String getCustomer() {
-		return customer;
+	public String getCreatedBy() {
+		return createdBy;
 	}
-	public void setCustomer(String customer) {
-		this.customer = customer;
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
 	}
-	public String getSerialNumber() {
-		return serialNumber;
+	public String getCreatedByUsr() {
+		return createdByUsr;
 	}
-	public void setSerialNumber(String serialNumber) {
-		this.serialNumber = serialNumber;
+	public void setCreatedByUsr(String createdByUsr) {
+		this.createdByUsr = createdByUsr;
 	}
-	public String getAsignee() {
-		return asignee;
+	public Date getModified() {
+		return modified;
 	}
-	public void setAsignee(String asignee) {
-		this.asignee = asignee;
+	public void setModified(Date modified) {
+		this.modified = modified;
 	}
-	public String getAdditionalEmployees() {
-		return additionalEmployees;
+	public String getModifiedBy() {
+		return modifiedBy;
 	}
-	public void setAdditionalEmployees(String additionalEmployees) {
-		this.additionalEmployees = additionalEmployees;
+	public void setModifiedBy(String modifiedBy) {
+		this.modifiedBy = modifiedBy;
 	}
-	
-	
+	public String getModifiedByUsr() {
+		return modifiedByUsr;
+	}
+	public void setModifiedByUsr(String modifiedByUsr) {
+		this.modifiedByUsr = modifiedByUsr;
+	}
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	public Integer getOpenCustomerId() {
+		return openCustomerId;
+	}
+	public void setOpenCustomerId(Integer openCustomerId) {
+		this.openCustomerId = openCustomerId;
+	}
+	public String getProject() {
+		return project;
+	}
+	public void setProject(String project) {
+		this.project = project;
+	}
 }

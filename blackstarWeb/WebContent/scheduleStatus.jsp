@@ -6,126 +6,10 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <c:set var="pageSection" scope="request" value="ordenesServicio" />
 <c:import url="header.jsp"></c:import>
-<script src="DataTables-1.9.4/media/js/jquery.dataTables.js"></script>
-
-<script type="text/javascript">
-	
-	function filterEquipmentByProject(project){
-		var equipments = $("#equipments").dataTable();
-		equipments.fnFilter(project, 3);
-	}
-	
-	function validateData(){
-		var valid = true;
-		// Data Validation
-		var defEmp = $("input[name=isDefaultEmployee]:radio:checked").val();
-		if(defEmp == null){
-			$("#employeesInfo").show();
-			valid = false;
-		}
-		else{
-			$("#employeesInfo").hide();
-		}
-		
-		var policy = $("input[name=policy]:checkbox:checked").val();
-		if(policy == null){
-			$("#equipmentInfo").show();
-			valid = false;
-		}
-		else{
-			$("#equipmentInfo").hide();
-		}
-		
-		var startDate = $("#serviceDateStart").val();	
-		if(startDate == null || startDate == ''){
-			$("#dateInfo").show();
-			valid = false;
-		}
-		else{
-			$("#dateInfo").hide();
-		}
-		return valid;
-	}	
-	
-	function employeeCheckedChange(rowId){
-		var defEmp = $("input[name=isDefaultEmployee]:radio:checked").val();
-
-		if(defEmp == null){
-			$("input[value='"+ rowId +"']:radio").attr('checked', 'checked');
-		}
-	}
-	
+<script src="${pageContext.request.contextPath}/js/dateFormat.js"></script>
+<script src="${pageContext.request.contextPath}/DataTables-1.9.4/media/js/jquery.dataTables.js"></script>
+<script>
 	$(function(){
-		$("#serviceDateStart").datepicker();
-		
-		 $("#createServiceDlg").dialog({
-				autoOpen: false,
-				height: 580,
-				width: 700,
-				modal: true,
-				buttons: {
-					"Aceptar": function() {
-						var valid = validateData();
-						
-						if(valid){
-							$("#sendSchedule").submit();
-							$( this ).dialog( "close" );
-						}						
-					},
-					
-					"Cancelar": function() {
-					$( this ).dialog( "close" );
-				}}
-		});	
-
-		$("#serviceDate").datepicker();	
-		
-		// tabla de empleados
-		var strEpmloyees = '${employees}';
-		var empData = $.parseJSON(strEpmloyees);
-		
-		$('#employees').dataTable({	    		
-			"bProcessing": true,
-			"bFilter": true,
-			"bLengthChange": false,
-			"iDisplayLength": 10,
-			"bInfo": false,
-			"aaData": empData,
-			"sDom": '<"top"i>rt<"bottom"flp><"clear">',
-			"aoColumns": [
-						  { "mData": "DT_RowId" },
-						  { "mData": "employee" },
-						  { "mData": "DT_RowId" }
-					  ],
-			"aoColumnDefs" : [
-						{"mRender" : function(data, type, row){return "<input type='checkbox' name='employee' value='" + row.DT_RowId + "' onchange='employeeCheckedChange($(this).val());'/>";}, "aTargets" : [0]},
-						{"mRender" : function(data, type, row){return "<input class='defaultemployee' type='radio' name='isDefaultEmployee' value='" + row.DT_RowId + "'>";}, "aTargets" : [2]}	    		    	       
-					]}
-		);	
-		
-		// tabla de equipos
-		var strEquimpents = '${equipments}';
-		var eqData = $.parseJSON(strEquimpents);
-
-		$('#equipments').dataTable({	    		
-			"bProcessing": true,
-			"bFilter": true,
-			"bLengthChange": false,
-			"iDisplayLength": 10,
-			"bInfo": false,
-			"aaData": eqData,
-			"sDom": '<"top"i>rt<"bottom"flp><"clear">',
-			"aoColumns": [
-						  { "mData": "DT_RowId" },
-						  { "mData": "equipmentType" },
-						  { "mData": "serialNumber" },
-						  { "mData": "project" }
-					  ],
-			"aoColumnDefs" : [
-						{"mRender" : function(data, type, row){return "<input type='checkbox' name='policy' value='"+ row.DT_RowId +"'/>";}, "aTargets" : [0]}
-					]}
-		);	
-		
 		// tabla de servicios futuros
 		var strServices = '${futureServices}';
 		var servData = $.parseJSON(strServices);
@@ -145,31 +29,30 @@
 						  { "mData": "project" },
 						  { "mData": "officeName" },
 						  { "mData": "brand" },
-						  { "mData": "serialNumber" }
-					  ]}
+						  { "mData": "serialNumber" },
+						  { "mData": "scheduledServiceId" }
+					  ],
+			"aoColumnDefs" : [
+						{"mRender" : function(data, type, row){return new Date(data).format("dd/MM/yyyy");}, "aTargets" : [0]},
+						{"mRender" : function(data, type, row){return "<a href='/scheduleStatus/scheduledServiceDetail.do?serviceId=" + row.scheduledServiceId + "'>Editar</a>";}, "aTargets" : [7]}
+					]}
 		);	
-		$(".info").hide();
 	});
-	
-	
-	
+
 </script>
 <body>
 	<!--   CONTENT   -->
 	<div id="content" class="container_16 clearfix">
 
 		<!--   CONTENT COLUMN   -->
-		<div class="grid_16">
+		<div>
 			<div>
-				<div>
-					<img src="img/navigate-right.png" />
-					<a href="#" onclick='$("#createServiceDlg").dialog("open");'>Agendar servicio preventivo</a>
-				</div>
+				<img src="/img/navigate-right.png"/><a href="/scheduleStatus/scheduledServiceDetail.do?serviceId=0">Agendar servicio preventivo</a>
 			</div>
-			<p>
-				<small>&nbsp;</small>
-			</p>
 		</div>
+		<p>
+			<small>&nbsp;</small>
+		</p>
 		<div class="grid_16">
 			<div class="box">
 				<h2>Programa semanal de servicios preventivos</h2>
@@ -178,7 +61,7 @@
 				<table>
 					<thead>
 						<tr>
-							<th colspan="4">${ today }</th>
+							<th colspan="5">${ today }</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -187,13 +70,14 @@
 							<td>${ service.equipmentType }</td>
 							<td>${ service.customer }</td>
 							<td>${ service.serialNumber }</td>
-							<td>${ service.asignee }</td>
+							<td>${ service.defaultEmployee }</td>
+							<td><a href="/scheduleStatus/scheduledServiceDetail.do?serviceId=${service.scheduledServiceId}">Editar</a></td>
 						</tr>
 					</c:forEach>
 						
 					<thead>
 						<tr>
-							<th colspan="4">${ today1 }</th>
+							<th colspan="5">${ today1 }</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -202,13 +86,14 @@
 							<td>${ service.equipmentType }</td>
 							<td>${ service.customer }</td>
 							<td>${ service.serialNumber }</td>
-							<td>${ service.asignee }</td>
+							<td>${ service.defaultEmployee }</td>
+							<td><a href="/scheduleStatus/scheduledServiceDetail.do?serviceId=${service.scheduledServiceId}">Editar</a></td>
 						</tr>
 					</c:forEach>
 					</tbody>
 					<thead>
 						<tr>
-							<th colspan="4">${ today2 }</th>
+							<th colspan="5">${ today2 }</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -217,13 +102,14 @@
 							<td>${ service.equipmentType }</td>
 							<td>${ service.customer }</td>
 							<td>${ service.serialNumber }</td>
-							<td>${ service.asignee }</td>
+							<td>${ service.defaultEmployee }</td>
+							<td><a href="/scheduleStatus/scheduledServiceDetail.do?serviceId=${service.scheduledServiceId}">Editar</a></td>
 						</tr>
 					</c:forEach>
 					</tbody>
 					<thead>
 						<tr>
-							<th colspan="4">${ today3 }</th>
+							<th colspan="5">${ today3 }</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -232,13 +118,14 @@
 							<td>${ service.equipmentType }</td>
 							<td>${ service.customer }</td>
 							<td>${ service.serialNumber }</td>
-							<td>${ service.asignee }</td>
+							<td>${ service.defaultEmployee }</td>
+							<td><a href="/scheduleStatus/scheduledServiceDetail.do?serviceId=${service.scheduledServiceId}">Editar</a></td>
 						</tr>
 					</c:forEach>
 					</tbody>
 					<thead>
 						<tr>
-							<th colspan="4">${ today4 }</th>
+							<th colspan="5">${ today4 }</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -247,13 +134,14 @@
 							<td>${ service.equipmentType }</td>
 							<td>${ service.customer }</td>
 							<td>${ service.serialNumber }</td>
-							<td>${ service.asignee }</td>
+							<td>${ service.defaultEmployee }</td>
+							<td><a href="/scheduleStatus/scheduledServiceDetail.do?serviceId=${service.scheduledServiceId}">Editar</a></td>
 						</tr>
 					</c:forEach>
 					</tbody>
 					<thead>
 						<tr>
-							<th colspan="4">${ today5 }</th>
+							<th colspan="5">${ today5 }</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -262,13 +150,14 @@
 							<td>${ service.equipmentType }</td>
 							<td>${ service.customer }</td>
 							<td>${ service.serialNumber }</td>
-							<td>${ service.asignee }</td>
+							<td>${ service.defaultEmployee }</td>
+							<td><a href="/scheduleStatus/scheduledServiceDetail.do?serviceId=${service.scheduledServiceId}">Editar</a></td>
 						</tr>
 					</c:forEach>
 					</tbody>
 					<thead>
 						<tr>
-							<th colspan="4">${ today6 }</th>
+							<th colspan="5">${ today6 }</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -277,7 +166,8 @@
 							<td>${ service.equipmentType }</td>
 							<td>${ service.customer }</td>
 							<td>${ service.serialNumber }</td>
-							<td>${ service.asignee }</td>
+							<td>${ service.defaultEmployee }</td>
+							<td><a href="/scheduleStatus/scheduledServiceDetail.do?serviceId=${service.scheduledServiceId}">Editar</a></td>
 						</tr>
 					</c:forEach>
 					</tbody>
@@ -301,6 +191,7 @@
 							<th>Oficina</th>
 							<th>Marca</th>
 							<th>No. Serie</th>
+							<th>Editar</th>
 						</tr>
 					</thead>
 			
@@ -309,78 +200,6 @@
 		</div>
 		<!--   ~ CONTENT COLUMN   -->
 		<!--   ~ CONTENT   -->
-	</div>
-	
-	<div id = "createServiceDlg" title="Agendar Servicio">
-		<div class="grid_12">					
-			<form action="scheduleStatus" id="sendSchedule" method="POST">
-				<div class="box">
-					<h2>Datos del servicio</h2>
-					<div id="dateInfo" class="info">
-						Por favor seleccione una fecha
-					</div>
-					<p></p>
-					<div style="width:630px;">
-						<span>
-							Proyecto: 
-							<select name="" id="optProjects" onchange="filterEquipmentByProject($(this).val());">
-								<option value=""></option>
-								<c:forEach var="project" items="${projects}">
-									<option value = "${project}">${project}</option>
-								</c:forEach>	
-							</select>
-						</span>
-						<!--
-						<span>
-							Ciudad
-							<select name="" id="optCities">
-									
-							</select>
-						</span>
-						-->
-						<span>
-							Fecha: <input id="serviceDateStart" name="serviceDateStart" type="text" readonly="readonly" required />
-						</span>
-						<span>
-							Dias: <input id="serviceDays" name="serviceDays" type="text" style="width:20px;" value="1" required />
-						</span>
-					</div>
-					<p> </p>
-					<h2>Ingenieros de servicio</h2>
-					<div id="employeesInfo" class="info">
-						Por favor seleccione al menos un ingeniero de servicio
-					</div>
-					<div class="employeeBox">
-						<table id="employees">
-							<thead>
-								<tr>
-									<th>Agregar</th>
-									<th>Empleado</th>
-									<th>Responsable</th>
-								</tr>
-							</thead>
-						</table>
-					</div>
-					<p> </p>
-					<h2>Equipos</h2>
-					<div id="equipmentInfo" class="info">
-						Por favor seleccione al menos un equipo
-					</div>
-					<div class="equipmentBox">
-						<table id="equipments">
-							<thead>
-								<tr>
-									<th>Agregar</th>
-									<th>Equipo</th>
-									<th>Num. Serie</th>
-									<th>Proyecto</th>
-								</tr>
-							</thead>
-						</table>
-					</div>
-				</div>	
-			</form>
-		</div>
 	</div>
 </body>
 </html>

@@ -20,6 +20,14 @@ use blackstarDb;
 -- ACTUALIZACION DE DATOS
 -- -----------------------------------------------------------------------------
 
+-- ACTUALIZACION DE PROJECT EN scheduledService
+UPDATE scheduledService s
+	INNER JOIN scheduledServicePolicy sp ON sp.scheduledServiceId = s.scheduledServiceId
+	INNER JOIN policy p ON sp.policyId = p.policyId
+SET
+	s.project = p.project
+WHERE s.project IS NULL;
+
 -- CAMBIAR LOS EQUIPOS QUE SE VAN A ELIMINAR
 UPDATE policy SET equipmentTypeId = 'B' WHERE equipmentTypeId = 'T';
 UPDATE policy SET equipmentTypeId = 'M' WHERE equipmentTypeId = 'R';

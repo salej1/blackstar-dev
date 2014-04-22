@@ -21,7 +21,7 @@
 		<div id="content" class="container_16 clearfix">
 			<div>
 				<div>
-					<img src="/img/navigate-right.png"/><a href="/scheduleStatus">Programa de servicios preventivos</a>
+					<img src="/img/navigate-right.png"/><a href="/scheduleStatus/show.do">Programa de servicios preventivos</a>
 				</div>
 			</div>
 			<p><small>&nbsp;</small></p>

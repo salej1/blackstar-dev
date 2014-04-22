@@ -37,6 +37,7 @@
 		// Bloquear los campos de entrada en modo detalle
 		if(mode == "detail"){
 			$(".lockOnDetail").attr("disabled", "");
+			$("#optOffices option[value*='${serviceOrder.officeId}']").prop("selected", true);
 		}
 
 		if(hasPolicy == "true"){
@@ -46,6 +47,9 @@
 		if(mode == "new"){
 			if(isEng == "true"){
 				$("#serviceDate").val(dateNow());
+			}
+			else{
+				$("#serviceDate").val("");
 			}
 
 			if(isEng){
@@ -130,7 +134,14 @@
 
 		// Cierre de la OS
 		$("#closeBtn").bind("click", function(){
-			$("serviceStatusId").val('C');
+			$("#serviceStatusId").val('C');
+			$("#closed").val(dateNow());
+			$('#serviceOrder').submit();
+		});
+
+		// Binding officeId
+		$("#optOffices").bind('change', function(){
+			$("#officeId").val($(this).val());
 		});
 	});
 
@@ -139,7 +150,7 @@
 	</head>
 	<body>
 		<div id="content" class="container_16 clearfix">
-		<form:form  commandName="serviceOrder" action="save.do" method="POST">			
+		<form:form  commandName="serviceOrder" action="/plainService/save.do" method="POST">			
 			<div class="grid_16">					
 					<div class="box">
 						<h2>ORDEN DE SERVICIO</h2>
@@ -150,23 +161,25 @@
 										<c:if test="${serviceOrder.serviceOrderId > 0}">
 											<a href='${pageContext.request.contextPath}/report/show.do?serviceOrderId=${serviceOrder.serviceOrderId}' target="_blank">Ver PDF</a><img src='${pageContext.request.contextPath}/img/pdf.png'/>
 										</c:if>	
+										<form:input path="serviceOrderId" type="hidden"/>
 									</td>
 									<td style="width:120px">No. de ticket</td>
-									<td><form:input class="lockOnDetail" path="ticketNumber" type="text" readOnly="true" style="width:95%;"/></td>
+									<td><form:input cssClass="lockOnDetail" path="ticketNumber" type="text" readOnly="true" style="width:95%;"/></td>
 								</tr>
 								<tr>
 									<td>Cliente</td>
-									<td colspan="3"><form:input class="lockOnDetail lockOnPolicy" path="customer" type="text" style="width:95%;" required="true"/></td>
+									<td colspan="3"><form:input path="customer" type="text" style="width:95%;" required="true"/></td>
+									<form:input path="openCustomerId" type="hidden"/>
 								</tr>
 								<tr>
 									<td>Domicilio</td>
-									<td colspan="3"><form:textarea class="lockOnDetail lockOnPolicy" path="equipmentAddress" style="width:95%;height:50px;" required="true"></form:textarea></td>
+									<td colspan="3"><form:textarea cssClass="lockOnDetail lockOnPolicy" path="equipmentAddress" style="width:95%;height:50px;" required="true"></form:textarea></td>
 								</tr>
 								<tr>
 									<td>Solicitante</td>
-									<td><form:textarea class="lockOnDetail" path="finalUser" style="width:95%;height:50px;" required="true"></form:textarea></td>
+									<td><form:textarea cssClass="lockOnDetail" path="finalUser" style="width:95%;height:50px;" required="true"></form:textarea></td>
 									<td>Teléfono</td>
-									<td><form:input type="text" class="lockOnDetail" path="contactPhone" style="width:95%;"  required="true"/></td>
+									<td><form:input type="text" cssClass="lockOnDetail" path="contactPhone" style="width:95%;"  required="true"/></td>
 								</tr>
 								<tr>
 									<td>Equipo</td>
@@ -182,18 +195,27 @@
 										    </c:forEach>
 										</select>
 									</td>
-									
+									<td>Oficina</td>
+									<td>
+										<form:input type="hidden" path="officeId" id="officeId"/>
+										<select class="lockOnDetail lockOnPolicy" id="optOffices">
+											<option value="">Todas</option>
+											<c:forEach var="office" items="${offices}">
+												<option value = "${office}">${office}</option>
+											</c:forEach>					
+										</select>
+									</td>
 								</tr>
 								<tr>
 									<td>Marca</td>
-									<td><form:input class="lockOnDetail lockOnPolicy" path="brand" type="text" style="width:95%;" required="true"/></td>
+									<td><form:input cssClass="lockOnDetail lockOnPolicy" path="brand" type="text" style="width:95%;" required="true"/></td>
 									<td>Modelo</td>
-									<td><form:input class="lockOnDetail lockOnPolicy" path="model" type="text" style="width:95%;" required="true"/></td>
+									<td><form:input cssClass="lockOnDetail lockOnPolicy" path="model" type="text" style="width:95%;" required="true"/></td>
 								<tr>
 									<td>Serie</td>
-									<td><form:input class="lockOnDetail lockOnPolicy" path="serialNumber" type="text" style="width:95%;" required="true"/></td>	
+									<td><form:input cssClass="lockOnDetail lockOnPolicy" path="serialNumber" type="text" style="width:95%;" required="true"/></td>	
 									<td>Contrato / Proyecto</td>
-									<td colspan="3"><form:input class="lockOnDetail lockOnPolicy" path="project" type="text" style="width:95%;" required="true"/></td>							
+									<td colspan="3"><form:input cssClass="lockOnDetail lockOnPolicy" path="project" type="text" style="width:95%;" required="true"/></td>							
 								</tr>
 								<tr>
 									<td>Tipo:</td>
@@ -227,7 +249,9 @@
 								</tr>
 								<tr>
 									<td>Fecha y hora de llegada</td>
-									<td><form:input class="lockOnDetail lockForEng" path="serviceDate" type="text" style="width:95%;" required="true"/></td>
+									<td><form:input cssClass="lockOnDetail lockForEng" path="serviceDate" type="text" style="width:95%;" required="true"/></td>
+									<td>Fecha y hora de cierre</td>
+									<td><form:input path="closed" type="text" style="width:95%;" readOnly="true"/></td>
 								</tr>
 							</table>
 						</div>					
@@ -244,10 +268,10 @@
 							</thead>
 							<tr>
 								<td style="height:100px;">
-									<form:textarea class="lockOnDetail" path="troubleDescription"  style="width:100%;height:100%;" required="true"></form:textarea>
+									<form:textarea cssClass="lockOnDetail" path="troubleDescription"  style="width:100%;height:100%;" required="true"></form:textarea>
 								</td>
 								<td rowspan="3" style="height:100px;">
-									<form:textarea class="lockOnDetail" path="workDone"  style="width:100%;height:100%;" required="true"></form:textarea>
+									<form:textarea cssClass="lockOnDetail" path="workDone"  style="width:100%;height:100%;" required="true"></form:textarea>
 								</td>
 							</tr>
 							<thead>
@@ -257,7 +281,7 @@
 							</thead>
 							<tr>
 								<td style="height:100px;">
-									<form:textarea class="lockOnDetail" path="techParam"  style="width:100%;height:100%;" required="true"></form:textarea>
+									<form:textarea cssClass="lockOnDetail" path="techParam"  style="width:100%;height:100%;" required="true"></form:textarea>
 								</td>
 							</tr>
 						</table>
@@ -269,7 +293,7 @@
 							</thead>
 							<tr>
 								<td style="height:140px;">
-									<form:textarea class="lockOnDetail" path="materialUsed"   style="width:100%;height:100%;" required="true"></form:textarea>
+									<form:textarea cssClass="lockOnDetail" path="materialUsed"   style="width:100%;height:100%;" required="true"></form:textarea>
 								</td>
 							</tr>
 						</table>
@@ -281,7 +305,7 @@
 							</thead>
 							<tr>
 								<td style="height:140px;">
-									<form:textarea class="lockOnDetail" path="observations"   style="width:100%;height:100%;" required="true"></form:textarea>
+									<form:textarea cssClass="lockOnDetail" path="observations"   style="width:100%;height:100%;" required="true"></form:textarea>
 								</td>
 							</tr>
 						</table>
@@ -308,20 +332,20 @@
 								</tr>
 								<tr>
 									<td style="width:90px">Nombre</td>
-									<td><form:input class="lockOnDetail" path="responsibleName" type="text" style="width:95%;" required="true"/></td>
+									<td><form:input cssClass="lockOnDetail" path="responsibleName" type="text" style="width:95%;" required="true"/></td>
 									<form:hidden path="responsible" style="width:95%;"/>
 									<td>Nombre</td>
-									<td><form:input class="lockOnDetail" path="receivedBy" type="text" style="width:95%;"/></td>
+									<td><form:input cssClass="lockOnDetail" path="receivedBy" type="text" style="width:95%;"/></td>
 								</tr>
 								<tr>
 									<td colspan="2"></td>
 									<td>Puesto</td>
-									<td><form:input class="lockOnDetail" path="receivedByPosition"  style="width:95%;" /></td>
+									<td><form:input cssClass="lockOnDetail" path="receivedByPosition"  style="width:95%;" /></td>
 								</tr>	
 								<tr>
 									<td colspan="2"></td>
 									<td>Email</td>
-									<td><form:input class="lockOnDetail" path="receivedByEmail"  style="width:95%;" /></td>
+									<td><form:input cssClass="lockOnDetail" path="receivedByEmail"  style="width:95%;" /></td>
 								</tr>
 								<tr class="eligible coorOnly">
 									<td colspan="2">Errores de captura<form:checkbox path="isWrong" /></td>
@@ -334,7 +358,6 @@
 								<tbody>
 									<tr>
 										<td>
-											<input class="searchButton" id="guardarServicio" type="submit" value="Guardar servicio">
 										</td>
 									</tr>
 								<tbody>
@@ -347,6 +370,9 @@
 					<!-- Campos de firma -->
 					<form:hidden path="signCreated"/>
 			        <form:hidden path="signReceivedBy"/>
+
+			        <!-- Arvhivo de OS importado -->
+			        <form:hidden path="loadedOSFileId"/>
 			</form:form>
 
 			<!-- Fragmento de Firma -->
@@ -354,8 +380,20 @@
 				<c:import url="signatureFragment.jsp"></c:import>
 			</c:if>
 			
+			<!-- Importacion del archivo de OS desde GDrive -->
+			<c:if test="${user.belongsToGroup['Coordinador']}">
+				<c:import url="osLoader.jsp"></c:import>
+				<script type="text/javascript" charset="utf-8">
+					$(function(){
+						osLoader_init("loadedOSFileId");
+					});
+				</script>
+			</c:if>
+
 			<!-- Adjuntos -->
-			<c:import url="_attachments.jsp"></c:import>
+			<c:if test="false">
+				<c:import url="_attachments.jsp"></c:import>
+			</c:if>
 
 			<!-- Control de secuencia y captura de seguimiento -->
 			<c:import url="followUpControl.jsp"></c:import>
@@ -364,18 +402,22 @@
 					initFollowUpDlg("os", "/osDetail/show.do?serviceOrderId=${serviceOrder.serviceOrderId}");
 				});
 			</script>
-			<c:if test="${serviceOrder.serviceOrderId > 0}">
-				<table>
+			<table>
 					<tbody>
 						<tr>
 							<td>
+							<c:if test="${serviceOrder.serviceOrderId > 0}">
 								<button class="searchButton" onclick="addSeguimiento(${serviceOrder.serviceOrderId}, '${serviceOrder.serviceOrderNumber}');">Agregar seguimiento</button>
-								<button class="searchButton eligible coorOnly" id="closeBtn">Cerrar</button>
+								<c:if test="${serviceOrder.serviceStatusId != 'C'}">
+									<button class="searchButton eligible coorOnly" id="closeBtn">Cerrar</button>
+								</c:if>	
+							</c:if>	
+								<input class="searchButton" id="guardarServicio" type="submit" value="Guardar servicio" onclick="$('#serviceOrder').submit();">
 							</td>
 						</tr>
 					<tbody>
 				</table>
-			</c:if>	
+				
 		</div>
 	</body>
 </html>

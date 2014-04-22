@@ -80,7 +80,7 @@ public class AddFollowUp extends HttpServlet {
 					Logger.Log(LogLevel.WARNING, e.getStackTrace()[0].toString(), "Error al agrear FollowUp a ticket " + id + ". No se puede convertir ID a entero", "");
 				}
 			}
-			else if(type.equals("serviceOrder")){
+			else if(type.equals("os")){
 				try {
 					int osId = Integer.parseInt(id);
 					ServiceOrderController.AssignServiceOrder(osId, asignee, sender, message);

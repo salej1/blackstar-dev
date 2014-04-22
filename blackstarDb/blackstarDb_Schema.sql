@@ -35,6 +35,13 @@
 --							Se aumenta capacidad de campo finalUser
 --							Se agrega serviceOrderNumber a ticket - provisional
 -- ---------------------------------------------------------------------------
+-- 12	20/04/2014	SAG 	Se aumenta capacidad de campo plainService.observaciones 
+--							Se agrega description a scheduledService
+--							Se agrega openCustomerId a scheduledService
+--							Se agrega project a scheduledService
+--							Se agrega officeId a openCustomer
+--							Se modifica serviceDate en scheduledServiceDate
+-- ---------------------------------------------------------------------------
 
 use blackstarDb;
 
@@ -47,6 +54,44 @@ BEGIN
 -- -----------------------------------------------------------------------------
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
+
+--  MODIFICANDO serviceDate EN scheduledServiceDate
+	ALTER TABLE scheduledServiceDate MODIFY serviceDate DATETIME;
+
+--	AGREGANDO project a openCustomer
+	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'openCustomer' AND COLUMN_NAME = 'officeId') = 0  THEN
+		ALTER TABLE blackstarDb.openCustomer ADD officeId CHAR(1) NULL DEFAULT NULL;
+
+		ALTER TABLE openCustomer ADD CONSTRAINT FK_openCustomer_office
+		 FOREIGN KEY(officeId) REFERENCES office(officeId);
+
+	END IF;
+
+--	AGREGANDO project a scheduledService
+	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'scheduledService' AND COLUMN_NAME = 'project') = 0  THEN
+		ALTER TABLE blackstarDb.scheduledService ADD project VARCHAR(100) NULL DEFAULT NULL;
+	END IF;
+
+--	AGREGANDO openCustomerId a scheduledService
+	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'scheduledService' AND COLUMN_NAME = 'openCustomerId') = 0  THEN
+		ALTER TABLE blackstarDb.scheduledService ADD openCustomerId INT NULL DEFAULT NULL;
+
+		ALTER TABLE scheduledService ADD CONSTRAINT FK_scheduledService_openCustomer
+		 FOREIGN KEY(openCustomerId) REFERENCES openCustomer(openCustomerId);
+
+	END IF;
+	
+--	AGREGANDO description a scheduledService
+	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'scheduledService' AND COLUMN_NAME = 'description') = 0  THEN
+		ALTER TABLE blackstarDb.scheduledService ADD description VARCHAR(1000) NULL DEFAULT NULL;
+	END IF;
+
+--  AUMENTANTO CAPACIDAD DE CAMPOS EN plainService
+	ALTER TABLE plainService MODIFY troubleDescription VARCHAR(1000);
+	ALTER TABLE plainService MODIFY techParam VARCHAR(1000);
+	ALTER TABLE plainService MODIFY workDone VARCHAR(1000);
+	ALTER TABLE plainService MODIFY materialUsed VARCHAR(1000);
+	ALTER TABLE plainService MODIFY observations VARCHAR(1000);
 
 --	AGREGANDO serviceOrdernNumber a ticket
 	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'ticket' AND COLUMN_NAME = 'serviceOrderNumber') = 0  THEN

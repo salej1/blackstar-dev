@@ -168,7 +168,7 @@ public class AirCoServiceController extends AbstractController {
 	    		customer.setCreated(new Date());
 	    		customer.setCreatedBy("AircoServiceController");
 	    		customer.setCreatedByUsr(userSession.getUser().getUserEmail());
-	    		int custId = ocService.AddOpenCustomer(customer);
+	    		int custId = ocService.SaveOpenCustomer(customer);
 	    		
 	    		// Guardando la OS 
 	    		Serviceorder servicioOrderSave = new Serviceorder();
