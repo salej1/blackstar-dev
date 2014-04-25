@@ -6,6 +6,8 @@ import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 @Entity
 @Table(name = "warrantProject",catalog = "blackstarDb")
 public class WarrantProject implements Serializable
@@ -16,6 +18,7 @@ public class WarrantProject implements Serializable
 	 private int customerId;
 	 private String costCenter;
 	 private Double exchangeRate;
+	 @DateTimeFormat(pattern = "yyyy-MM-dd")
 	 private Date updateDate;
 	 private String contactName;
 	 private String ubicationProject;

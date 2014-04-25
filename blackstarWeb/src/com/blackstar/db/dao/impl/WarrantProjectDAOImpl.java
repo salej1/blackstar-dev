@@ -1,5 +1,7 @@
 package com.blackstar.db.dao.impl;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import org.json.JSONObject;
@@ -10,6 +12,7 @@ import com.blackstar.db.dao.mapper.JSONRowMapper;
 import com.blackstar.model.WarrantProject;
 import com.blackstar.model.dto.CustomerListDTO;
 import com.blackstar.model.dto.PaymentTermsDTO;
+import com.blackstar.model.dto.ServiceTypeDTO;
 import com.blackstar.model.dto.WarrantProjectDTO;
 import com.blackstar.model.dto.WarrantProjectListDTO;
 
@@ -21,14 +24,15 @@ public class WarrantProjectDAOImpl extends AbstractDAO implements WarrantProject
 	public int insertWarrantProject(WarrantProject warrantProject) 
 	{
 		StringBuilder sqlBuilder = new StringBuilder();
-		sqlBuilder.append("CALL AddWarrantProject(0,?,4,?,?,?,?,?,?,?,?,?,?,?,1);");
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		sqlBuilder.append("CALL AddWarrantProject(0,?,?,?,?,?,?,?,?,?,?,?,?,?,?);");
 		Object[] args = new Object[]
 		{
 				warrantProject.getStatus() + "",
-				//warrantProject.getCustomerId() + "",
+				warrantProject.getCustomerId() + "",
 				warrantProject.getCostCenter() + "",
 				warrantProject.getExchangeRate() + "",
-				warrantProject.getUpdateDate() + "",
+				dateFormat.format(warrantProject.getUpdateDate()) + "",
 				warrantProject.getContactName() + "",
 				warrantProject.getUbicationProject() + "",
 				warrantProject.getPaymentTermsId() + "",
@@ -36,7 +40,8 @@ public class WarrantProjectDAOImpl extends AbstractDAO implements WarrantProject
 				warrantProject.getIntercom() + "",
 				warrantProject.getTotalProject() + "",
 				warrantProject.getBonds() + "",
-				warrantProject.getTotalProductsServices()
+				warrantProject.getTotalProductsServices() +"",
+				warrantProject.getEntryId()
 				
 		};
 		return getJdbcTemplate().queryForInt(sqlBuilder.toString(),args);
@@ -82,6 +87,14 @@ public class WarrantProjectDAOImpl extends AbstractDAO implements WarrantProject
 		return (List<PaymentTermsDTO>) getJdbcTemplate().query(
 				"CALL GetAllPaymentTerms();",
 				getMapperFor(PaymentTermsDTO.class));
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<ServiceTypeDTO> getServiceTypesList() {
+		return (List<ServiceTypeDTO>) getJdbcTemplate().query(
+				"CALL GetAllServiceTypes();",
+				getMapperFor(ServiceTypeDTO.class));
 	}
 
 }

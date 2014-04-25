@@ -6,6 +6,7 @@ import org.json.JSONObject;
 
 import com.blackstar.model.Entry;
 import com.blackstar.model.dto.EntryDTO;
+import com.blackstar.model.dto.ServiceTypeDTO;
 
 
 public interface EntryDAO {
@@ -16,6 +17,8 @@ public interface EntryDAO {
 	public List<EntryDTO> getEntryList();
 
 	public List<JSONObject> getEntryJSON();
+	
+	public List<ServiceTypeDTO> getServiceTypeList();
 
 
 

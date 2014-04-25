@@ -8,8 +8,8 @@ import com.blackstar.db.dao.AbstractDAO;
 import com.blackstar.db.dao.interfaces.EntryDAO;
 import com.blackstar.db.dao.mapper.JSONRowMapper;
 import com.blackstar.model.Entry;
-
 import com.blackstar.model.dto.EntryDTO;
+import com.blackstar.model.dto.ServiceTypeDTO;
 
 public class EntryDAOImpl extends AbstractDAO implements EntryDAO
 {
@@ -57,6 +57,13 @@ public class EntryDAOImpl extends AbstractDAO implements EntryDAO
 	public List<JSONObject> getEntryJSON() {
 		String sqlQuery = "CALL GetAllEntrys;";
 		return getJdbcTemplate().query(sqlQuery, new JSONRowMapper());
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<ServiceTypeDTO> getServiceTypeList() {
+		return (List<ServiceTypeDTO>) getJdbcTemplate().query("CALL GetAllServiceTypes;",
+				getMapperFor(ServiceTypeDTO.class));
 	} 
 
 }

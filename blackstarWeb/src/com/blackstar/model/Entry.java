@@ -7,6 +7,7 @@ public class Entry implements Serializable
 	private static final long serialVersionUID = 1L;
 	private int entryId;
 	private String type;
+	private String typeProject;
 	private String reference;
 	private String description;
 	private Double amount;
@@ -14,6 +15,7 @@ public class Entry implements Serializable
 	private int discount;
 	private Double total;
 	private String observations;
+	private Short serviceTypeId;
 	
 	public int getEntryId() {
 		return entryId;
@@ -69,6 +71,19 @@ public class Entry implements Serializable
 	public void setObservations(String observations) {
 		this.observations = observations;
 	}
+	public String getTypeProject() {
+		return typeProject;
+	}
+	public void setTypeProject(String typeProject) {
+		this.typeProject = typeProject;
+	}
+	public Short getServiceTypeId() {
+		return serviceTypeId;
+	}
+	public void setServiceTypeId(Short serviceTypeId) {
+		this.serviceTypeId = serviceTypeId;
+	}
+	
 	
 
 }

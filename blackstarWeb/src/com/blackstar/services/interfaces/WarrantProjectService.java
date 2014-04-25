@@ -5,6 +5,7 @@ import java.util.List;
 import com.blackstar.model.WarrantProject;
 import com.blackstar.model.dto.CustomerListDTO;
 import com.blackstar.model.dto.PaymentTermsDTO;
+import com.blackstar.model.dto.ServiceTypeDTO;
 import com.blackstar.model.dto.WarrantProjectDTO;
 import com.blackstar.model.dto.WarrantProjectListDTO;
 
@@ -20,4 +21,6 @@ public interface WarrantProjectService {
 	public String getWarrantProjectJSON();
 
 	public List<PaymentTermsDTO> getPaymentTermsList();
+	
+	public List<ServiceTypeDTO> getServiceTypesList();
 }

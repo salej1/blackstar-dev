@@ -8,6 +8,7 @@ import com.blackstar.db.dao.interfaces.WarrantProjectDAO;
 import com.blackstar.model.WarrantProject;
 import com.blackstar.model.dto.CustomerListDTO;
 import com.blackstar.model.dto.PaymentTermsDTO;
+import com.blackstar.model.dto.ServiceTypeDTO;
 import com.blackstar.model.dto.WarrantProjectDTO;
 import com.blackstar.model.dto.WarrantProjectListDTO;
 import com.blackstar.services.AbstractService;
@@ -52,6 +53,11 @@ WarrantProjectService{
 	@Override
 	public List<PaymentTermsDTO> getPaymentTermsList() {
 		return dao.getPaymentTermsList();
+	}
+
+	@Override
+	public List<ServiceTypeDTO> getServiceTypesList() {
+		return dao.getServiceTypesList();
 	}
 
 }

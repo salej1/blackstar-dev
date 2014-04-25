@@ -40,17 +40,21 @@
 		<c:choose>
 			<c:when test="${pageSection == 'dashboard'}">
 				<li><span class="active" onclick="window.location = '/dashboard/show.do'">Inicio</span></li>
-				<li><a href="${pageContext.request.contextPath}/customers">Clientes</a></li>
+				<li><a href="${pageContext.request.contextPath}/customer/show.do">Clientes</a></li>
 			</c:when>
 			<c:when test="${pageSection == 'customers'}">
 				<li><a href="${pageContext.request.contextPath}/dashboard/show.do">Inicio</a></li>
-				<li><span class="active" onclick="window.location = '/customers'">Clientes</span></li>
+				<li><span class="active" onclick="window.location = '/customer/show.do'">Clientes</span></li>
 			</c:when>
 			<c:otherwise>
 				<li><a href="${pageContext.request.contextPath}/dashboard/show.do">Inicio</a></li>
-				<li><a href="${pageContext.request.contextPath}/customers">Clientes</a></li>
+				<li><a href="${pageContext.request.contextPath}/customer/show.do">Clientes</a></li>
 			</c:otherwise>
 		</c:choose>
+			<li><a href="${pageContext.request.contextPath}/warrantProject/show.do">Cedulas de proyectos</a></li>
+			<li><a href="${pageContext.request.contextPath}/warrantProject/show.do">Cotizaciones</a></li>
+			<li><a href="${pageContext.request.contextPath}/requsition/show.do">Pedidos</a></li>
+			<li><a href="${pageContext.request.contextPath}/customer/show.do">Indicadores</a></li>
 			<li><span style="width:15px;"></span></li>
 			<li><input type="text"/></li>
 			<li><small>&nbsp;</small></li>

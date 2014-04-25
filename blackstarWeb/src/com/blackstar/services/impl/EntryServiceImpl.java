@@ -7,6 +7,7 @@ import org.json.JSONObject;
 import com.blackstar.db.dao.interfaces.EntryDAO;
 import com.blackstar.model.Entry;
 import com.blackstar.model.dto.EntryDTO;
+import com.blackstar.model.dto.ServiceTypeDTO;
 import com.blackstar.services.AbstractService;
 import com.blackstar.services.interfaces.EntryService;
 
@@ -38,5 +39,12 @@ EntryService{
 		List<JSONObject> entrys = dao.getEntryJSON();
 		return entrys.toString();
 	}
+
+	@Override
+	public List<ServiceTypeDTO> getServiceTypeList() {
+		return dao.getServiceTypeList();
+	}
+	
+	
 
 }

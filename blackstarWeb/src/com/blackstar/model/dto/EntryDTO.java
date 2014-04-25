@@ -7,6 +7,7 @@ public class EntryDTO implements Serializable
 	private static final long serialVersionUID = -1540758655087747968L;
 	private Integer entryId;
 	private String type;
+	private String typeProject;
 	private String reference;
 	private String description;
 	private Double amount;
@@ -89,6 +90,14 @@ public class EntryDTO implements Serializable
 
 	public void setObservations(String observations) {
 		this.observations = observations;
+	}
+
+	public String getTypeProject() {
+		return typeProject;
+	}
+
+	public void setTypeProject(String typeProject) {
+		this.typeProject = typeProject;
 	}
 
 	
