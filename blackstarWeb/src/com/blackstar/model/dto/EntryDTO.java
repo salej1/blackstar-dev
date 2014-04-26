@@ -15,6 +15,7 @@ public class EntryDTO implements Serializable
 	private Integer discount;
 	private Double total;
 	private String observations;
+	private Short serviceTypeId;
 
 	public EntryDTO() 
 	{	
@@ -98,6 +99,14 @@ public class EntryDTO implements Serializable
 
 	public void setTypeProject(String typeProject) {
 		this.typeProject = typeProject;
+	}
+
+	public Short getServiceTypeId() {
+		return serviceTypeId;
+	}
+
+	public void setServiceTypeId(Short serviceTypeId) {
+		this.serviceTypeId = serviceTypeId;
 	}
 
 	
