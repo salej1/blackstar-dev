@@ -201,22 +201,27 @@ public class InternalTicketsServiceImpl extends AbstractService implements
 		IEmailService mail = EmailServiceFactory.getEmailService();
 		String to = member.getUserName() + ", " + member.getEmail();
 		
-		String subject = String.format("Ticket %s  Nuevo", ticket.getTicketNumber());
+		String subject = String.format("Requisición General Interna %s ", ticket.getTicketNumber());
 		
 		StringBuilder bodySb = new StringBuilder();
 
-		bodySb.append(String.format("El ticket interno %s ha creado.",ticket.getTicketNumber()));
+		bodySb.append(String.format("El ticket interno %s se ha creado.",ticket.getTicketNumber()));
 		
 		bodySb.append("\r\n Información adicional:");
 		
-		bodySb.append(String.format("\r\n\r\n Solicitante: %s", ticket.getCreatedUserName()));
-		bodySb.append(String.format("\r\n\r\n Area Solicitante: %s", ticket.getPetitionerArea()));
-		bodySb.append(String.format("\r\n\r\n Oficina: %s", ticket.getOfficeName()));
-		bodySb.append(String.format("\r\n\r\n Tipo de Solicitud: %s", ticket.getServiceTypeDescr()));
-		bodySb.append(String.format("\r\n\r\n Fecha de Registro: %s", ticket.getCreatedStr()));
+		bodySb.append(String.format("\r\n\r\n Usuario Solicitante: %s", ticket.getCreatedUserName()));
+		bodySb.append(String.format("\r\n\r\n Numero de ticket interno %s",ticket.getTicketNumber()));
+		bodySb.append(String.format("\r\n\r\n Fecha y Hora de recepcion: %s", ticket.getCreatedStr()));
+		bodySb.append(String.format("\r\n\r\n Departamento Solicitante: %s", ticket.getPetitionerArea()));
+		bodySb.append(String.format("\r\n\r\n Requerimiento: %s", ticket.getDescription()));
+		bodySb.append(String.format("\r\n\r\n Fecha Solicitada: %s", ticket.getDeadlineStr()));
 		bodySb.append(String.format("\r\n\r\n Proyecto: %s", ticket.getProject()));
+		bodySb.append(String.format("\r\n\r\n Oficina: %s", ticket.getOfficeName()));
+		bodySb.append(String.format("\r\n\r\n Nota o liga de Anexos: %s", ""));
+		bodySb.append(String.format("\r\n\r\n Tiempo de respuesta máximo en días: %s %s", ticket.getServiceTypeDescr(),ticket.getReponseInTime()));
 		
-		String who = ticket.getCreatedUserEmail();
+		
+		String who = "mesa-de-ayuda@gposac.com.mx";
 		
 		mail.sendEmail(who, to, subject, bodySb.toString());
     }
