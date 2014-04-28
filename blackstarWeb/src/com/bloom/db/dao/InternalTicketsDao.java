@@ -65,5 +65,16 @@ public interface InternalTicketsDao {
 	 */
 	public Long registrarDocumentTrace(DeliverableTraceBean document) throws DAOException;
 
+	
+	/**
+	 * Historico de tickets para la vista de  "Mesa de Ayuda"
+	 * @param fechaIni
+	 * @param fechaFin
+	 * @param idStatusTicket
+	 * @param idResponsable
+	 * @return
+	 * @throws DAOException
+	 */
+	public List<InternalTicketBean> getHistoricalTickets(String fechaIni, String fechaFin, Integer idStatusTicket, Long idResponsable) throws DAOException;	
 
 }

@@ -175,6 +175,62 @@ public class InternalTicketsController extends AbstractController {
 		return respuesta;
 	}
 	
+
+	/**
+	 * Vista en el dashboard del dominio de tickets de un perfil coordinador. 
+	 * @param model
+	 * @param userSession
+	 * @return
+	 */
+	@RequestMapping(value = "/getHistoricalInternalTickets.do", method = RequestMethod.GET, produces = "application/json")
+	@ResponseBody
+	RespuestaJsonBean getHistoricalInternalTickets(ModelMap model,
+			@ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession,
+			@RequestParam(value = "fechaIni", required = true) String fechaIni,
+			@RequestParam(value = "fechaFin", required = true) String fechaFin,
+			@RequestParam(value = "idEstatusTicket", required = true) Integer idEstatusTicket,
+			@RequestParam(value = "idResposable", required = true) Long idResposable) {
+
+		RespuestaJsonBean respuesta = new RespuestaJsonBean();
+
+		Long userId = userSession.getUser().getUserId();
+
+		try {
+
+			List<InternalTicketBean> registros = internalTicketsService
+					.getHistoricalTickets(fechaIni, fechaFin, idEstatusTicket, idResposable);
+
+			if (registros == null || registros.isEmpty()) {
+				respuesta.setEstatus("preventivo");
+				respuesta.setMensaje("No se encontro Historico de Tickets Pendientes");
+				// log.info("No se encontraron registros de Emisiones Generadas");
+			} else {
+				String resumen = "Se encontraron " + registros.size()
+						+ " del Historico Tickets Pendientes";
+				// log.info("Se encontraron " + registros.size() +
+				// " Emisiones Generadas");
+				respuesta.setEstatus("ok");
+				respuesta.setLista(registros);
+				respuesta.setMensaje(resumen);
+			}
+
+		} catch (ServiceException e) {
+
+			Logger.Log(LogLevel.ERROR, e.getMessage(), e);
+
+			respuesta.setEstatus("error");
+			respuesta.setMensaje(e.getMessage());
+		} catch (Exception e) {
+
+			Logger.Log(LogLevel.ERROR, e.getMessage(), e);
+
+			respuesta.setEstatus("error");
+			respuesta
+					.setMensaje("Error al obtener historico tickets internos pendientes. Por favor intente m\u00e1s tarde.");
+		}
+
+		return respuesta;
+	}
 	
 	
 

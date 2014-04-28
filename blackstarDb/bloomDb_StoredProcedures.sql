@@ -25,7 +25,7 @@
 
 
 --		08/04/2014				bloomDb.GetUserData (MODIFICADO:Sobrescribimos la version anterior)
---------------------------------------------------------------------------------
+-- ------------------------------------------------------------------------------
 
 
 use blackstarDb;
@@ -289,3 +289,15 @@ VALUES
 select LAST_INSERT_ID();
 END$$
 
+
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.getBloomEstatusTickets
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.getBloomEstatusTickets$$
+CREATE PROCEDURE blackstarDb.getBloomEstatusTickets()
+BEGIN
+SELECT _ID as id ,NAME AS label FROM bloomstatustype
+WHERE _ID != -1
+ORDER BY _ID;
+END$$

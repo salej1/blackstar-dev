@@ -29,6 +29,9 @@ public class CatalogInternalTicketsDaoImpl extends AbstractDAO implements Catalo
 	
 	private static final String QUERY_EMPLOYEES_BY_GROUP = "CALL getCatalogEmployeeByGroup('%s')";
 	
+	private static final String QUERY_ESTATUS_TICKETS = "CALL getBloomEstatusTickets()";
+	
+	
     private static final String ERROR_CONSULTA_CAT =
             "Error al consultar el catálogo";
     
@@ -169,7 +172,31 @@ public class CatalogInternalTicketsDaoImpl extends AbstractDAO implements Catalo
         	Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
             throw new DAOException(ERROR_CONSULTA_CAT, e);
         }
-    }    
+    }   
+    
+    
+    
+    @Override
+    public List<CatalogoBean<Integer>> consultarEstatusTicket() throws DAOException {
+
+        List<CatalogoBean<Integer>> listaServicios = new ArrayList<CatalogoBean<Integer>>();
+
+        try {
+        	
+        	listaServicios.addAll(getJdbcTemplate().query(QUERY_ESTATUS_TICKETS,
+                    new CatalogoMapper<Integer>("id", "label")));
+
+            return listaServicios;
+
+        } catch (EmptyResultDataAccessException e) {
+        	Logger.Log(LogLevel.WARNING, EMPTY_CONSULTA_CAT, e);
+            return Collections.emptyList();
+        } catch (DataAccessException e) {
+        	Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
+            throw new DAOException(ERROR_CONSULTA_CAT, e);
+        }
+    }
+    
     
     
 

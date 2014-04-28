@@ -191,13 +191,24 @@
 	<c:if test="${sysHelpDesk == true}">
 	<!-- Fin Contenido De Perfil sysHelpDesk -->
 	
-			<!-- Tabla De Tickets internos pendientes - pendingInternalTickets.jsp -->
+		<!-- Tabla De Tickets internos pendientes - bloomPendingInternalTickets.jsp -->
 		<c:import url="/bloom/bloomPendingInternalTickets.jsp"></c:import>
 		<script type="text/javascript">
 			$(function(){
 				pendingInternalTicketsInit();
 			});
 		</script>
+		
+
+
+		<!-- Tabla De Tickets internos pendientes - bloomPendingInternalTickets.jsp -->
+		<c:import url="/bloom/bloomHistoricalTickets.jsp"></c:import>
+		<script type="text/javascript">
+			$(function(){
+				historicalInternalTicketsInit();
+			});
+		</script>
+		
 	
 	</c:if>
 

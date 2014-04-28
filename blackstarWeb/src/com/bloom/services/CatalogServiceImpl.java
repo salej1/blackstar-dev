@@ -116,6 +116,19 @@ public class CatalogServiceImpl implements CatalogService {
         }
     }
 	
+	@Override
+    public List<CatalogoBean<Integer>> consultarEstatusTicket()
+            throws ServiceException {
+        try {
+            
+        	return getCatalogInternalTicketsDao().consultarEstatusTicket();
+            
+        } catch (DAOException e) {
+            
+            throw new ServiceException(ERROR_CONSULTA_CAT, e);
+        }
+    }	
+	
 	
     /**
 	 * @return the catalogInternalTicketsDao
