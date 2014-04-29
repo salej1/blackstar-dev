@@ -89,6 +89,11 @@
       <property name="internalTicketsService" ref="internalTicketsService" />
    </bean>
    
+   <bean class="com.bloom.web.controller.ReportsInternalTicketsController" parent="abstractController">
+      <property name="internalTicketsService" ref="internalTicketsService" />
+      <property name="catalogService" ref="catalogService" />
+   </bean>
+   
    <bean class="com.bloom.web.controller.CatalogController" parent="abstractController">
       <property name="catalogService" ref="catalogService" />
    </bean>

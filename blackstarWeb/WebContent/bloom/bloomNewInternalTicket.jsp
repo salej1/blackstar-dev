@@ -3,7 +3,6 @@
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ page isELIgnored="false"%>
 <!DOCTYPE html>
-<c:set var="pageSection" scope="request" value="ordenesServicio" />
 <c:import url="../header.jsp"></c:import>
 <html>
 	<head>
