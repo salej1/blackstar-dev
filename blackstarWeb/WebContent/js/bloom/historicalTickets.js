@@ -5,11 +5,12 @@ var listaUsuariosMesaAyuda;
 function historicalInternalTicketsInit() {
 	
 	//inicializamos controles default
+	var dia1= new Date(new Date().getFullYear(), 0, 1);
     var mesAnterior = new Date();
     mesAnterior.setTime(mesAnterior.getTime() - (60 * 1000 * 60 * 24 * 30));
 
 	$("#fldFechaIni").datepicker();
-	$("#fldFechaIni").datepicker("setDate", mesAnterior);
+	$("#fldFechaIni").datepicker("setDate", dia1);
 
 	$("#fldFechaFin").datepicker();
 	$("#fldFechaFin").datepicker("setDate",new Date());
@@ -42,7 +43,7 @@ function getHistoricalInternalTickets() {
 					fechaIni:$('#fldFechaIni').val(),
 					fechaFin:$('#fldFechaFin').val(),
 					idEstatusTicket:$('#slEstatusTicket').val(),
-					idResposable:$('#slResponsable').val()
+					idResposable:-1//$('#slResponsable').val()
 				},
 				beforeSend : function() {
 
@@ -109,7 +110,7 @@ function consultarDatosHistorico() {
 			if (respuestaJson.estatus === "ok") {
 
 				listaEstatusTickets = respuestaJson.listaMap.listaEstatusTickets;
-				listaUsuariosMesaAyuda = respuestaJson.listaMap.listaUsuariosMesaAyuda;
+//				listaUsuariosMesaAyuda = respuestaJson.listaMap.listaUsuariosMesaAyuda;
 
 				cargaCombosFormulario();
 				
@@ -135,16 +136,16 @@ function cargaCombosFormulario() {
 				new Option(listaEstatusTickets[i].descripcion, listaEstatusTickets[i].id));
 	}
 
-	for (var i = 0; i < listaUsuariosMesaAyuda.length; i++) {
-		$("#slResponsable")
-				.append(
-						new Option(listaUsuariosMesaAyuda[i].descripcion,
-								listaUsuariosMesaAyuda[i].id));
-	}
+//	for (var i = 0; i < listaUsuariosMesaAyuda.length; i++) {
+//		$("#slResponsable")
+//				.append(
+//						new Option(listaUsuariosMesaAyuda[i].descripcion,
+//								listaUsuariosMesaAyuda[i].id));
+//	}
 	
 	
 	$('#slEstatusTicket').val(-1);
-	$('#slResponsable').val(-1);
+//	$('#slResponsable').val(-1);
 
 }
 

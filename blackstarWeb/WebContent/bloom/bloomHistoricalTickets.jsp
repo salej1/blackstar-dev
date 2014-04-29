@@ -11,12 +11,12 @@
 		<h2>Historico de Tickets Internos</h2>
 		<div class="utils">
 		
-		<table>
+		<table style="width: 100%;">
 			<tr>
-				<td>Fecha de Registro</td>
-				<td><input id="fldFechaIni" type="text" style="width:50%;" readOnly="true"/></td>
-				<td> a</td>
-				<td><input id="fldFechaFin" type="text" style="width:50%;" readOnly="true"/></td>
+				<td style="width: 100px;">Fecha de Registro</td>
+				<td style="width: 120px;"><input id="fldFechaIni" type="text" readOnly="true" style="width: 140px;"/></td>
+				<td style="width: 60px;"> a</td>
+				<td style="width: 120px;"><input id="fldFechaFin" type="text" readOnly="true" style="width: 140px;"/></td>
 			</tr>
 			
 			<tr>
@@ -27,13 +27,13 @@
 				</td>
 			</tr>
 			
-			<tr>
+			<!-- tr>
 				<td>Responsable</td>
 				<td colspan="3">
 					<select name="slResponsable" id="slResponsable" style="width:200px;">
 					</select>
 				</td>
-			</tr>
+			</tr-->
 			<tr colspan="4">
 				<td>
 					<button id="buscarButtonTicket" class="searchButton">Buscar</button>
