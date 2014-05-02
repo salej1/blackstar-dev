@@ -4,24 +4,14 @@ import com.blackstar.interfaces.IEmailService;
 import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
 
-import java.io.ByteArrayInputStream;
 import java.util.Properties;
 
-import javax.activation.DataHandler;
 import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Multipart;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
-import javax.mail.util.ByteArrayDataSource;
-
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.mail.MailSender;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
@@ -89,10 +79,4 @@ public class GmailService implements IEmailService{
 			//throw new RuntimeException(e);
 		}
 	}
-
-	@Override
-	public void sendEmail(String to, String subject, String body) {
-		sendEmail(defaultFrom, to, subject, body);
-	}
-
 }

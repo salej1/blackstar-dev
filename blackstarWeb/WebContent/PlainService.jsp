@@ -168,7 +168,7 @@
 								</tr>
 								<tr>
 									<td>Cliente</td>
-									<td colspan="3"><form:input path="customer" type="text" style="width:95%;" required="true"/></td>
+									<td colspan="3"><form:input cssClass="lockOnDetail" path="customer" type="text" style="width:95%;" required="true"/></td>
 									<form:input path="openCustomerId" type="hidden"/>
 								</tr>
 								<tr>

@@ -36,7 +36,7 @@
 		$("#id").val(addFollowUpId);
 		$("#type").val(addFollowUpType);
 		$("#sender").val('${ user.userEmail }');
-		$("#timeStamp").val(d.format('yyyy-MM-dd h:mm:ss'));
+		$("#timeStamp").val(d.format('yyyy-MM-dd hh:mm:ss'));
 		$("#asignee").val($("#employeeSelect option:selected").val());
 		$("#message").val($("#seguimientoText").val());
 		$("#redirect").val(referer);
@@ -46,7 +46,7 @@
 	function addSeguimiento(id, number){
 		$("#seguimientoCaptureDlg").dialog('open');	
 		$("#seguimientoCaptureDlg").dialog({ title: "Agregar seguimiento: " + number });
-		$("#seguimientoStamp").html(d.format('dd/MM/yyyy h:mm:ss'));
+		$("#seguimientoStamp").html(d.format('dd/MM/yyyy hh:mm:ss'));
 		$("#seguimientoSender").html(' ${ user.userName }:');
 		$("#seguimientoText").val();
 		addFollowUpId = id;
@@ -113,7 +113,7 @@
 		<p></p>
 		<textarea id="seguimientoText" rows="8" style="width:95%;"></textarea>
 	</div>
-	<form id = "formAddFollowUp" action="/addFollowUp" method="POST">
+	<form id = "formAddFollowUp" action="/addFollowUp/add.do" method="POST">
 		<input id="id" name="id" type="hidden"/>
 		<input id="type" name="type" type="hidden"/>
 		<input id="sender" name="sender" type="hidden"/>

@@ -49,7 +49,7 @@
 
   <bean id="gmService" class="com.blackstar.services.GmailService" parent="abstractService">
     <property name="mailSender" ref="mailSender" />
-	<property name="defaultFrom" value="portal-servicios@gposac.com.mx"/>
+	  <property name="defaultFrom" value="portal-servicios@gposac.com.mx"/>
   </bean>
 
   <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
@@ -87,6 +87,10 @@
      <property name="dao" ref="schedulingDAO" />
      <property name="custDao" ref="openCustomerDAO" />
      <property name="gmService" ref="gmService" />
+  </bean>
+
+  <bean id="issueService" class="com.blackstar.services.impl.IssueServiceImpl" parent="abstractService">
+     <property name="dao" ref="issueDAO" />
   </bean>
 
 </beans>

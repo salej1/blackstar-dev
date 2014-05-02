@@ -42,6 +42,14 @@
 --							Se agrega officeId a openCustomer
 --							Se modifica serviceDate en scheduledServiceDate
 -- ---------------------------------------------------------------------------
+-- 13	24/04/2014	SAG 	Se agrega tabla issue
+--							Se agrega tabla followUpReferenceType
+--							Se agrega tabla issueStatus
+--							Se modifica FollowUp
+--							Se agrega project a openCustomer
+-- ---------------------------------------------------------------------------
+-- 14	28/04/2014	SAG 	Se incrementan campos de texto en plainService
+-- ---------------------------------------------------------------------------
 
 use blackstarDb;
 
@@ -54,6 +62,80 @@ BEGIN
 -- -----------------------------------------------------------------------------
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
+
+--	AGREGANDO project a openCustomer
+	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'openCustomer' AND COLUMN_NAME = 'project') = 0  THEN
+		ALTER TABLE blackstarDb.openCustomer ADD project VARCHAR(100) NULL DEFAULT NULL;
+	END IF;
+
+-- MODIFICANDO plainService
+	ALTER TABLE plainService MODIFY troubleDescription TEXT;
+	ALTER TABLE plainService MODIFY techParam TEXT;
+	ALTER TABLE plainService MODIFY workDone TEXT;
+	ALTER TABLE plainService MODIFY materialUsed TEXT;
+	ALTER TABLE plainService MODIFY observations TEXT;
+
+-- AGREGANDO TABLA followUpReferenceType - REPRESENTA EL TIPO DE OBJETO DE NEGOCIOS PADRE DEL FOLLOWUP
+	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'followUpReferenceType') = 0 THEN
+		 CREATE TABLE blackstarDb.followUpReferenceType(
+			followUpReferenceTypeId CHAR(1) NOT NULL,
+			followUpReferenceType VARCHAR(100) NOT NULL,
+			PRIMARY KEY (followUpReferenceTypeId),
+			UNIQUE UQ_followUpReferenceType_followUpReferenceTypeId(followUpReferenceTypeId)
+		) ENGINE=INNODB;
+	END IF;
+
+-- AGREGANDO TABLA issueStatus - REPRESENTA LOS ESTATUS DE LOS PENDIENTES
+	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'issueStatus') = 0 THEN
+		 CREATE TABLE blackstarDb.issueStatus(
+			issueStatusId CHAR(1) NOT NULL,
+			issueStatus VARCHAR(100) NOT NULL,
+			PRIMARY KEY (issueStatusId),
+			UNIQUE UQ_issueStatus_issueStatusId(issueStatusId)
+		) ENGINE=INNODB;
+	END IF;
+
+-- AGREGANDO TABLA issue - REPRESENTA LOS PENDIENTES AISLADOS
+	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'issue') = 0 THEN
+		 CREATE TABLE blackstarDb.issue(
+			issueId INTEGER NOT NULL AUTO_INCREMENT,
+			issueNumber VARCHAR(100) NOT NULL,
+			issueStatusId CHAR(1) NOT NULL,
+			title VARCHAR(100) NOT NULL,
+			detail TEXT NULL,
+			project VARCHAR(100) NULL,
+			customer VARCHAR(500) NULL,
+			asignee VARCHAR(100) NULL,
+			created DATETIME NULL,
+			createdBy NVARCHAR(50) NULL,
+			createdByUsr NVARCHAR(50) NULL,
+			modified DATETIME NULL,
+			modifiedBy NVARCHAR(50) NULL,
+			modifiedByUsr NVARCHAR(50) NULL,
+			PRIMARY KEY (issueId),
+			KEY(issueStatusId),
+			UNIQUE UQ_issue_issueId(issueId)
+		) ENGINE=INNODB;
+
+		 ALTER TABLE issue ADD CONSTRAINT FK_issue_issueStatus
+		 FOREIGN KEY(issueStatusId) REFERENCES issueStatus(issueStatusId);
+		
+	END IF;
+
+-- MOFIFICANDO FOLLOW UP -> SE AGREGA DEPENDENCIA A issue Y A followUpReferenceType
+	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'followUp' AND COLUMN_NAME = 'issueId') = 0  THEN
+		ALTER TABLE blackstarDb.followUp ADD issueId INT NULL;
+
+		ALTER TABLE followUp ADD CONSTRAINT FK_followUp_issue
+		FOREIGN KEY(issueId) REFERENCES issue(issueId);
+	END IF;
+
+	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'followUp' AND COLUMN_NAME = 'followUpReferenceTypeId') = 0  THEN
+		ALTER TABLE blackstarDb.followUp ADD followUpReferenceTypeId CHAR(1) NULL;
+
+		ALTER TABLE followUp ADD CONSTRAINT FK_followUp_followUpReferenceType
+		FOREIGN KEY(followUpReferenceTypeId) REFERENCES followUpReferenceType(followUpReferenceTypeId);
+	END IF;
 
 --  MODIFICANDO serviceDate EN scheduledServiceDate
 	ALTER TABLE scheduledServiceDate MODIFY serviceDate DATETIME;
@@ -1038,12 +1120,319 @@ DROP PROCEDURE blackstarDb.upgradeSchema;
 --								blackstarDb.GetScheduledServiceEmployees
 --								blackstarDb.GetScheduledServicePolicies
 --								blackstarDb.GetScheduledServiceDates
+--								blackstarDb.GetUserPendingIssues
+--								blackstarDb.GetUserWatchingIssues
+--								blackstarDb.GetIssueById
+--								blackstarDb.GetFollowUpByIssue
+--								blackstarDb.GetFollowUpReferenceTypes
+--								blackstarDb.SaveIssue
+--								blackstarDb.AddFollowUpToIssue
+--								blackstarDb.AssignIssue
+--								blackstarDb.GetNextIssueNumber
+--								blackstarDb.GetIssueStatusList
+--							Se modifican:
+-- 								blackstarDb.AddFollowUpToTicket
+-- 								blackstarDb.AddFollowUpToOS
 -- -----------------------------------------------------------------------------
 
 use blackstarDb;
 
 DELIMITER $$
 
+
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetIssueStatusList
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetIssueStatusList$$
+CREATE PROCEDURE blackstarDb.GetIssueStatusList ()
+BEGIN
+
+	SELECT *
+	FROM issueStatus;
+	
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetNextIssueNumber
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetNextIssueNumber$$
+CREATE PROCEDURE blackstarDb.GetNextIssueNumber()
+BEGIN
+
+	DECLARE nextId INTEGER;
+	DECLARE nextNumber VARCHAR(100);
+	SET @seqNumberTypeId := 'I';
+
+	-- Cargar nuevos numeros
+	CALL blackstarDb.LoadNewSequencePoolItems(@seqNumberTypeId);
+	
+	-- Recuperar el siguiente numero en la secuencia y su ID
+	SELECT min(sequenceNumber) into nextNumber
+	FROM sequenceNumberPool 
+	WHERE sequenceNumberTypeId = @seqNumberTypeId
+		AND sequenceNumberStatus = 'U';
+
+	SELECT sequenceNumberPoolId into nextId
+	FROM sequenceNumberPool 
+	WHERE sequenceNumber = nextNumber 
+		AND sequenceNumberTypeId = @seqNumberTypeId;
+
+	-- Bloquear el numero
+	UPDATE sequenceNumberPool SET sequenceNumberStatus = 'L'
+	WHERE sequenceNumberPoolId = nextId;
+
+	SELECT concat('AS-', nextNumber);
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.AssignIssue
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.AssignIssue$$
+CREATE PROCEDURE blackstarDb.AssignIssue (pIssueId INTEGER, pEmployee VARCHAR(100), usr VARCHAR(100), proc VARCHAR(100))
+BEGIN
+
+	-- Asignacion del empleado responsable
+	UPDATE issue i SET
+		i.asignee = pEmployee,
+		i.modified = NOW(),
+		i.modifiedBy = proc,
+		i.modifiedByUsr = usr
+	WHERE i.issueId = pIssueId;
+	
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.SaveIssue
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.SaveIssue$$
+CREATE PROCEDURE blackstarDb.SaveIssue(issueId INT, issueNumber VARCHAR(100), issueStatusId CHAR(1), title VARCHAR(1000), detail TEXT, project VARCHAR(100),
+	customer VARCHAR(1000), asignee VARCHAR(100), created DATETIME, createdBy VARCHAR(100), createdByUsr VARCHAR(100))
+BEGIN
+
+	IF issueId > 0 THEN
+		UPDATE issue i SET
+			i.issueStatusId = issueStatusId,
+			i.detail = detail,
+			i.project = project,
+			i.customer = customer,
+			i.asignee = asignee,
+			i.modified = created,
+			i.modifiedBy = createdBy,
+			i.modifiedByUsr = createdByUsr
+		WHERE i.issueid = issueid;
+	ELSE
+		INSERT INTO issue
+			(issueId, issueNumber, issueStatusId, title, detail, project, customer, asignee, created, createdBy, createdByUsr)
+		VALUES
+			(issueId, issueNumber, issueStatusId, title, detail, project, customer, asignee, created, createdBy, createdByUsr);
+
+		SET issueId = LAST_INSERT_ID();
+
+		-- Agragar el followUp inicial
+		INSERT INTO blackstarDb.followUp(
+			followUpReferenceTypeId,
+			issueId,
+			asignee,
+			followup,
+			created,
+			createdBy,
+			createdByUsr
+		)
+		SELECT 
+			'I',
+			issueid,
+			asignee,
+			detail,
+			created,
+			createdBy,
+			createdByUsr;
+	END IF;
+
+	SELECT issueId;
+
+END$$
+
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.AddFollowUpToIssue
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.AddFollowUpToIssue$$
+CREATE PROCEDURE blackstarDb.AddFollowUpToIssue(pIssueId INTEGER, pCreated DATETIME, pCreatedBy VARCHAR(100), pAsignee VARCHAR(100), pMessage TEXT)
+BEGIN
+
+	-- INSERTAR EL REGISTRO DE SEGUIMIENTO
+	INSERT INTO blackstarDb.followUp(
+		followUpReferenceTypeId,
+		issueId,
+		asignee,
+		followup,
+		created,
+		createdBy,
+		createdByUsr
+	)
+	SELECT 
+		'I',
+		pIssueId,
+		pAsignee,
+		pMessage,
+		pCreated,
+		'AddFollowUpToIssue',
+		pCreatedBy;
+
+	UPDATE issue SET
+		issueStatusId = 'A',
+		modified = NOW(),
+		modifiedBy = 'AddFollowUpToIssue',
+		modifiedByUsr = pCreatedBy
+	WHERE issueId = pIssueId;
+END$$
+
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetFollowUpReferenceTypes
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetFollowUpReferenceTypes$$
+CREATE PROCEDURE blackstarDb.GetFollowUpReferenceTypes()
+BEGIN
+
+	SELECT 
+		f.*
+	FROM followUpReferenceType f;
+	
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetFollowUpByIssue
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetFollowUpByIssue$$
+CREATE PROCEDURE blackstarDb.GetFollowUpByIssue(pIssueId INT)
+BEGIN
+
+	SELECT 
+		created AS timeStamp,
+		u2.name AS createdBy,
+		u.name AS asignee,
+		followup AS followUp
+	FROM followUp f
+		LEFT OUTER JOIN blackstarUser u ON f.asignee = u.email
+		LEFT OUTER JOIN blackstarUser u2 ON f.createdByUsr = u2.email
+	WHERE issueId = pIssueId
+	ORDER BY created;
+	
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetIssueById
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetIssueById$$
+CREATE PROCEDURE blackstarDb.GetIssueById(pIssueId INT)
+BEGIN
+
+	SELECT 
+		*
+	FROM issue
+	WHERE issueid = pIssueId;
+
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetUserWatchingIssues
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetUserWatchingIssues$$
+CREATE PROCEDURE blackstarDb.GetUserWatchingIssues(pUser VARCHAR(100))
+BEGIN
+
+	SET @prevRefId := 0;
+	SET @rowNumber := 0;
+
+	SELECT 
+		f.followUpReferenceTypeId AS referenceTypeId, 
+		r.followupreferencetype AS referenceType,
+		coalesce(t.ticketId, s.serviceOrderId, i.issueId) AS referenceId, 
+		coalesce(t.ticketNumber, s.serviceOrderNumber, i.issueNumber) AS referenceNumber,
+		coalesce(p.project, c.project, i.project) AS project,
+		coalesce(p.customer, c.customerName, i.customer) AS customer,
+		f.created AS created,
+		CASE 
+			WHEN f.followUpReferenceTypeId = 'T' THEN 'Seguimiento a Ticket'
+			WHEN f.followUpReferenceTypeId = 'O' THEN 'Seguimiento a Orden de Servicio'
+			WHEN f.followUpReferenceTypeId = 'I' THEN 'Asignacion SAC'
+		END AS title,
+		followUp AS detail,
+		coalesce(ts.ticketStatus, ss.serviceStatus, ist.issueStatus) as status
+	FROM (
+		SELECT * FROM (
+			SELECT @rowNumber := IF(coalesce(ticketId, serviceOrderId, issueId) = @prevRefId, @rowNumber + 1, 1) AS RowNum,
+				f.*, 
+				@prevRefId := coalesce(ticketId, serviceOrderId, issueId) AS PrevRef
+			FROM followUp f
+			ORDER BY followUpReferenceTypeId, coalesce(ticketId, serviceOrderId, issueId), created DESC
+		) a WHERE a.RowNum = 1  -- a: todos los followUps asignados por usuario, numerados por id de (ticket, so, issue)
+	) f -- f: el ultimo comentario de cada (ticket, so, issue) y que esta asignado al usuario
+		INNER JOIN followUpReferenceType r ON f.followUpReferenceTypeId = r.followUpReferenceTypeId
+		LEFT OUTER JOIN ticket t ON f.ticketId = t.ticketId
+		LEFT OUTER JOIN serviceOrder s ON s.serviceOrderId = f.serviceOrderId
+		LEFT OUTER JOIN issue i ON i.issueId = f.issueId
+		LEFT OUTER JOIN policy p ON coalesce(t.policyId, s.policyId) = p.policyId
+		LEFT OUTER JOIN openCustomer c ON s.openCustomerId = c.openCustomerId
+		LEFT OUTER JOIN ticketStatus ts ON ts.ticketStatusId = t.ticketStatusId
+		LEFT OUTER JOIN serviceStatus ss ON ss.serviceStatusId = s.serviceStatusId
+		LEFT OUTER JOIN issueStatus ist ON ist.issueStatusId = i.issueStatusId
+	WHERE coalesce(t.createdByUsr, s.createdByUsr, i.createdByUsr) = pUser
+	AND coalesce(t.ticketStatusId, s.serviceStatusId, i.issueStatusId) NOT IN ('C', 'F')
+	ORDER BY f.created;
+	
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetUserPendingIssues
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetUserPendingIssues$$
+CREATE PROCEDURE blackstarDb.GetUserPendingIssues(pUser VARCHAR(100))
+BEGIN
+
+	SET @prevRefId := 0;
+	SET @rowNumber := 0;
+
+	SELECT 
+		f.followUpReferenceTypeId AS referenceTypeId, 
+		r.followupreferencetype AS referenceType,
+		coalesce(t.ticketId, s.serviceOrderId, i.issueId) AS referenceId, 
+		coalesce(t.ticketNumber, s.serviceOrderNumber, i.issueNumber) AS referenceNumber,
+		coalesce(p.project, c.project, i.project) AS project,
+		coalesce(p.customer, c.customerName, i.customer) AS customer,
+		f.created AS created,
+		CASE 
+			WHEN f.followUpReferenceTypeId = 'T' THEN 'Seguimiento a Ticket'
+			WHEN f.followUpReferenceTypeId = 'O' THEN 'Seguimiento a Orden de Servicio'
+			WHEN f.followUpReferenceTypeId = 'I' THEN 'Asignacion SAC'
+		END AS title,
+		followUp AS detail,
+		coalesce(ts.ticketStatus, ss.serviceStatus, ist.issueStatus) as status
+	FROM (
+		SELECT * FROM (
+			SELECT @rowNumber := IF(coalesce(ticketId, serviceOrderId, issueId) = @prevRefId, @rowNumber + 1, 1) AS RowNum,
+				f.*, 
+				@prevRefId := coalesce(ticketId, serviceOrderId, issueId) AS PrevRef
+			FROM followUp f
+			ORDER BY followUpReferenceTypeId, coalesce(ticketId, serviceOrderId, issueId), created DESC
+		) a WHERE a.RowNum = 1 AND asignee = pUser -- a: todos los followUps asignados al usuario, numerados por id de (ticket, so, issue)
+	) f -- f: el ultimo comentario de cada (ticket, so, issue) y que esta asignado al usuario
+		INNER JOIN followUpReferenceType r ON f.followUpReferenceTypeId = r.followUpReferenceTypeId
+		LEFT OUTER JOIN ticket t ON f.ticketId = t.ticketId
+		LEFT OUTER JOIN serviceOrder s ON s.serviceOrderId = f.serviceOrderId
+		LEFT OUTER JOIN issue i ON i.issueId = f.issueId
+		LEFT OUTER JOIN policy p ON coalesce(t.policyId, s.policyId) = p.policyId
+		LEFT OUTER JOIN openCustomer c ON s.openCustomerId = c.openCustomerId
+		LEFT OUTER JOIN ticketStatus ts ON ts.ticketStatusId = t.ticketStatusId
+		LEFT OUTER JOIN serviceStatus ss ON ss.serviceStatusId = s.serviceStatusId
+		LEFT OUTER JOIN issueStatus ist ON ist.issueStatusId = i.issueStatusId
+	WHERE coalesce(t.asignee, s.asignee, i.asignee) = pUser
+	AND coalesce(t.ticketStatusId, s.serviceStatusId, i.issueStatusId) NOT IN ('C', 'F')
+	ORDER BY f.created;
+	
+END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetScheduledServiceDates
@@ -2796,6 +3185,7 @@ BEGIN
 
 	-- INSERTAR EL REGISTRO DE SEGUIMIENTO
 	INSERT INTO blackstarDb.followUp(
+		followUpReferenceTypeId,
 		serviceOrderId,
 		asignee,
 		followup,
@@ -2804,11 +3194,12 @@ BEGIN
 		createdByUsr
 	)
 	SELECT 
+		'O',
 		pOsId,
 		pAsignee,
 		pMessage,
 		pCreated,
-		'AddFollowUpToTicket',
+		'AddFollowUpToOS',
 		pCreatedBy;
 
 	-- ACTUALIZAR LA OS
@@ -2816,7 +3207,7 @@ BEGIN
 		serviceStatusId = 'E',
 		asignee = pAsignee,
 		modified = pCreated,
-		modifiedBy = 'AddFollowUpToTicket',
+		modifiedBy = 'AddFollowUpToOS',
 		modifiedByUsr = pCreatedBy
 	WHERE serviceOrderId = pOsId;
 
@@ -2832,6 +3223,7 @@ BEGIN
 
 	-- INSERTAR EL REGISTRO DE SEGUIMIENTO
 	INSERT INTO blackstarDb.followUp(
+		followUpReferenceTypeId,
 		ticketId,
 		asignee,
 		followup,
@@ -2840,6 +3232,7 @@ BEGIN
 		createdByUsr
 	)
 	SELECT 
+		'T',
 		pTicketId,
 		pAsignee,
 		pMessage,
@@ -4484,7 +4877,7 @@ BEGIN
       	SET @c = @c + 1 ;
     END WHILE ;
 
-    TRUNCATE TABLE equipmentUserSync;
+    TRUNCATE TABLE blackstarDbTransfer.equipmentUserSync;
 -- -----------------------------------------------------------------------------
 END$$
 
@@ -4607,11 +5000,13 @@ WHERE serviceTypeId IN('O', 'M', 'R', 'N', 'V');
 -- Change History
 -- -----------------------------------------------------------------------------
 -- PR   Date    AuthorDescription
--- --   --------   -------  ------------------------------------
+-- --   --------   -------  ----------------------------------------------------
 -- 1    22/10/2013  SAG  	Version inicial. Usuarios basicos de GPO Sac
--- --   --------   -------  ------------------------------------
+-- --   --------   -------  ----------------------------------------------------
 -- 2    12/11/2013  SAG  	Version 1.1. Se agrega ExecuteTransfer
--- ---------------------------------------------------------------------------
+-- -----------------------------------------------------------------------------
+-- 3	24/04/2014	SAG		Se agrega poblacion de datos neceasrios para Issue
+-- -----------------------------------------------------------------------------
 
 use blackstarDb;
 
@@ -4619,13 +5014,41 @@ use blackstarDb;
 -- ACTUALIZACION DE DATOS
 -- -----------------------------------------------------------------------------
 
+-- INSERCION DE NUMEROS DE SECUENCIA PARA issue
+INSERT INTO sequence(sequenceTypeId, sequenceNumber)
+SELECT a, b FROM (
+	SELECT 'I' AS a, 1 AS b
+) c WHERE a NOT IN (SELECT sequenceTypeId FROM sequence);
+
+--	INSERCION DE REGISTROS asociados a followUp
+INSERT INTO followUpReferenceType(followUpReferenceTypeId, followUpReferenceType)
+SELECT a , b  FROM (
+	SELECT 'T' AS a, 'Ticket' AS b union
+	SELECT 'O' AS a, 'Orden de Servicio' AS b union
+	SELECT 'I' AS a, 'Asignacion SAC' AS b
+) c WHERE a NOT IN (SELECT followUpReferenceTypeId FROM followUpReferenceType);
+
+--	INSERCION DE REGISTROS asociados a Issue
+INSERT INTO issueStatus(issueStatusId, issueStatus)
+SELECT a , b  FROM (
+	SELECT 'A' AS a, 'ABIERTO' AS b union
+	SELECT 'R' AS a, 'RESUELTO' AS b union
+	SELECT 'C' AS a, 'CERRADO' AS b 
+) c WHERE a NOT IN (SELECT issueStatusId FROM issueStatus);
+
+-- ACTUALIZACION DE followUpReferenceType EN FOLLOWUPS
+UPDATE followUp SET
+	followUpReferenceTypeId = CASE WHEN ticketId IS NOT NULL THEN 'T' WHEN serviceOrderId IS NOT NULL THEN 'O' WHEN issueId IS NOT NULL THEN 'I' END
+WHERE followUpReferenceTypeId IS NULL;
+
 -- ACTUALIZACION DE PROJECT EN scheduledService
 UPDATE scheduledService s
 	INNER JOIN scheduledServicePolicy sp ON sp.scheduledServiceId = s.scheduledServiceId
 	INNER JOIN policy p ON sp.policyId = p.policyId
 SET
-	s.project = p.project;
-	 
+	s.project = p.project
+WHERE s.project IS NULL;
+
 -- CAMBIAR LOS EQUIPOS QUE SE VAN A ELIMINAR
 UPDATE policy SET equipmentTypeId = 'B' WHERE equipmentTypeId = 'T';
 UPDATE policy SET equipmentTypeId = 'M' WHERE equipmentTypeId = 'R';
@@ -4660,6 +5083,7 @@ DELETE FROM ticket WHERE ticketId = 432;
 
 use blackstarDbTransfer;
 
+SELECT '------------------- EXECUTING TRANSFER -------------------' AS Action;
 CALL ExecuteTransfer();
 
 -- -----------------------------------------------------------------------------

@@ -258,7 +258,6 @@
 						<span>
 							Proyecto: 
 							<form:input type="hidden" id="scheduledServiceId" path="scheduledServiceId"/>
-							<form:input type="hidden" id="project" path="project"/>
 							<select id="optProjects" onchange="filterEquipmentByProject($(this).val());">
 								<option value=""></option>
 								<c:forEach var="project" items="${projects}">
@@ -375,6 +374,10 @@
 											</c:forEach>					
 										</select>
 									</td>
+								</tr>
+								<tr>
+									<td>Proyecto</td>
+									<td><form:input path="project" style="width:95%"/></td>
 								</tr>
 							</table>
 						</div>

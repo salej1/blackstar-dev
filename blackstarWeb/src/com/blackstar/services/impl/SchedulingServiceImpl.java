@@ -9,9 +9,11 @@ import org.json.JSONObject;
 
 import com.blackstar.db.dao.interfaces.OpenCustomerDAO;
 import com.blackstar.db.dao.interfaces.SchedulingDAO;
+import com.blackstar.interfaces.IEmailService;
 import com.blackstar.model.OpenCustomer;
 import com.blackstar.model.ScheduledService;
 import com.blackstar.model.dto.ScheduledServiceDTO;
+import com.blackstar.services.EmailServiceFactory;
 import com.blackstar.services.GmailService;
 import com.blackstar.services.interfaces.SchedulingService;
 
@@ -172,7 +174,8 @@ public class SchedulingServiceImpl implements SchedulingService {
 		.append("Equipos por revisar: " + service.getSerialNumberList());
 		
 		for(String employee : service.getEmployeeList()){
-			gmService.sendEmail(employee, subject, body.toString());
+			IEmailService mail = EmailServiceFactory.getEmailService();
+			mail.sendEmail(service.getCreatedByUsr(), employee, subject, body.toString());
 		}
 	}
 }

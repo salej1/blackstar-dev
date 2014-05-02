@@ -1,5 +1,29 @@
 <script type="text/javascript" charset="utf-8">
 	 var str = '${policies}';
+	Date.isLeapYear = function (year) { 
+	    return (((year % 4 === 0) && (year % 100 !== 0)) || (year % 400 === 0)); 
+	};
+
+	Date.getDaysInMonth = function (year, month) {
+	    return [31, (Date.isLeapYear(year) ? 29 : 28), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][month];
+	};
+
+	Date.prototype.isLeapYear = function () { 
+	    var y = this.getFullYear(); 
+	    return (((y % 4 === 0) && (y % 100 !== 0)) || (y % 400 === 0)); 
+	};
+
+	Date.prototype.getDaysInMonth = function () { 
+	    return Date.getDaysInMonth(this.getFullYear(), this.getMonth());
+	};
+
+	Date.prototype.addMonths = function (value) {
+	    var n = this.getDate();
+	    this.setDate(1);
+	    this.setMonth(this.getMonth() + value);
+	    this.setDate(Math.min(n, this.getDaysInMonth()));
+	    return this;
+	};
 
 	 $(document).ready(function() {
 
@@ -47,12 +71,22 @@
 						  { "mData": "service"},
 						  { "mData": "includesParts"},
 						  { "mData": "exceptionParts"},
-						  { "mData": "serviceCenter"}
+						  { "mData": "serviceCenter"}],
+			"fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull){
+								var ed = new Date(aData.endDate);
+								var edPlus = new Date(aData.endDate).addMonths(2);
+								var today = new Date();
 
-					  ]				  
+								if(edPlus.getTime() < today.getTime()){
+									$(nRow).css('background-color', '#F5A2A4');
+								}
+								else if(ed.getTime() < today.getTime()){
+									$(nRow).css('background-color', '#F2CF83');
+								}
+							}
                 }
 		);
-		
+		$("td", "#policy").css("background-color", "transparent");
 	} );
 
  </script> 
@@ -66,7 +100,7 @@
 							<div class="utils">
 								
 			</div>
-			<table cellpadding="0" cellspacing="0" border="0" class="display" id="policy">
+			<table cellpadding="5" cellspacing="0" border="0" class="display" id="policy">
 				<thead>
 					<tr>
 						<th>OFICINA</th>

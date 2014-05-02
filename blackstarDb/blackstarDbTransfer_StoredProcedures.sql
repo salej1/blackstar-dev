@@ -313,7 +313,7 @@ BEGIN
       	SET @c = @c + 1 ;
     END WHILE ;
 
-    TRUNCATE TABLE equipmentUserSync;
+    TRUNCATE TABLE blackstarDbTransfer.equipmentUserSync;
 -- -----------------------------------------------------------------------------
 END$$
 
