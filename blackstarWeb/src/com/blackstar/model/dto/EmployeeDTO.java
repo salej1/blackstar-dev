@@ -9,6 +9,7 @@ public class EmployeeDTO implements Serializable {
 	private Integer id;
 	private String email;
 	private String name;
+	Long userId;
 	
 	public String getEmail() {
 		return email;
@@ -27,5 +28,11 @@ public class EmployeeDTO implements Serializable {
 	}
 	public void setId(Integer id) {
 		this.id = id;
+	}
+	public Long getUserId() {
+		return userId;
+	}
+	public void setUserId(Long userId) {
+		this.userId = userId;
 	}
 }

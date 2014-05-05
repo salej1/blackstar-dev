@@ -93,6 +93,8 @@
       <property name="service" ref="internatTicketsKPIService" />
    </bean>
    
-   
+   <bean class="com.bloom.web.controller.CatalogController" parent="abstractController">
+      <property name="catalogService" ref="catalogService" />
+   </bean>
    
 </beans>

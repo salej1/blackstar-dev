@@ -64,7 +64,7 @@ BEGIN
 			KEY(serviceOrderId),
 			UNIQUE UQ_serviceOrderEmployee_serviceOrderEmployeeId(serviceOrderEmployeeId)
 		) ENGINE=INNODB;
-		
+
 		ALTER TABLE blackstarDb.serviceOrderEmployee ADD CONSTRAINT FK_serviceOrderEmployee_servideOrderId
 		FOREIGN KEY (serviceOrderId) REFERENCES serviceOrder (serviceOrderId);
 	END IF;
@@ -109,12 +109,12 @@ BEGIN
 	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'serviceOrder' AND COLUMN_NAME = 'isWrong') = 0 THEN
 		ALTER TABLE serviceOrder ADD isWrong TINYINT NOT NULL DEFAULT 0;
 	END IF;
-	
+
 -- AGREGANDO COLUMNA isSource A followUp -- ESTA COLUMN INDICA SI EL FOLLOW UP ES IMPORTADO DE LA HOJA ORIGINAL DE TICKETS
 	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'followUp' AND COLUMN_NAME = 'isSource') =0  THEN
 		ALTER TABLE followUp ADD isSource TINYINT NOT NULL DEFAULT 0;
 	END IF;
-	
+
 -- CREANDO TABLA scheduledService
 	IF (SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'scheduledService') = 0 THEN
 		CREATE TABLE blackstarDb.scheduledService(
@@ -130,7 +130,7 @@ BEGIN
 			UNIQUE UQ_scheduledService_scheduledServiceId(scheduledServiceId),
 			KEY(serviceStatusId)
 		) ENGINE=INNODB;
-		
+
 		ALTER TABLE blackstarDb.scheduledService ADD CONSTRAINT FK_scheduledService_serviceStatus
 		FOREIGN KEY (serviceStatusId) REFERENCES serviceStatus (serviceStatusId);
 	END IF;
@@ -150,14 +150,14 @@ BEGIN
 			KEY(scheduledServiceId),
 			KEY(policyId)
 		) ENGINE=INNODB;
-		
+
 		ALTER TABLE blackstarDb.scheduledServicePolicy ADD CONSTRAINT FK_scheduledServicePolicy_scheduledService
 		FOREIGN KEY (scheduledServiceId) REFERENCES scheduledService (scheduledServiceId);
-		
+
 		ALTER TABLE blackstarDb.scheduledServicePolicy ADD CONSTRAINT FK_scheduledServicePolicy_policy
 		FOREIGN KEY (policyId) REFERENCES policy (policyId);
 	END IF;
-	
+
 
 -- CREANDO TABLA scheduledServiceEmployee
 	IF (SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'scheduledServiceEmployee') = 0 THEN
@@ -173,11 +173,11 @@ BEGIN
 			KEY(scheduledServiceId),
 			UNIQUE UQ_scheduledServiceEmployee_scheduledServiceEmployeeId(scheduledServiceEmployeeId)
 		) ENGINE=INNODB;
-		
+
 		ALTER TABLE blackstarDb.scheduledServiceEmployee ADD CONSTRAINT FK_scheduledServiceEmployee_scheduledService
 		FOREIGN KEY (scheduledServiceId) REFERENCES scheduledService (scheduledServiceId);
 	END IF;
-	
+
 -- CREANDO TABLA scheduledServiceDate
 	IF (SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'scheduledServiceDate') = 0 THEN
 		CREATE TABLE blackstarDb.scheduledServiceDate(
@@ -191,11 +191,11 @@ BEGIN
 			KEY(scheduledServiceId),
 			UNIQUE UQ_scheduledServiceDate_scheduledServiceDateId(scheduledServiceDateId)
 		) ENGINE=INNODB;
-		
+
 		ALTER TABLE blackstarDb.scheduledServiceDate ADD CONSTRAINT FK_scheduledServiceDate_scheduledService
 		FOREIGN KEY (scheduledServiceId) REFERENCES scheduledService (scheduledServiceId);
 	END IF;
-	
+
 -- CREANDO TABLA plainService
 	IF (SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'plainService') = 0 THEN
 	CREATE TABLE plainService (
@@ -647,7 +647,7 @@ END IF;
 			UNIQUE UQ_bloomServiceType(name)
          ) ENGINE=INNODB;
 	END IF;
-	
+
 -- AGREGANDO TABLA bloomWorkerRoleType
 	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'bloomWorkerRoleType') = 0 THEN
 		 CREATE TABLE blackstarDb.bloomWorkerRoleType(
@@ -658,7 +658,7 @@ END IF;
 		   UNIQUE UQ_bloomWorkerRoleType(name)
          )ENGINE=INNODB;
 	END IF;	
-	
+
 -- AGREGANDO TABLA bloomStatusType
 	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'bloomStatusType') = 0 THEN
 		 CREATE TABLE blackstarDb.bloomStatusType(
@@ -680,7 +680,7 @@ END IF;
 		   UNIQUE UQ_bloomApplicantArea(name)
          )ENGINE=INNODB;
 	END IF;	
-	
+
  -- AGREGANDO TABLA bloomDeliverableType
 	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'bloomDeliverableType') = 0 THEN
 		 CREATE TABLE blackstarDb.bloomDeliverableType(
@@ -732,10 +732,10 @@ END IF;
 		   FOREIGN KEY (officeId) REFERENCES office (officeId),
            FOREIGN KEY (serviceTypeId) REFERENCES bloomServiceType (_id),
            FOREIGN KEY (statusId) REFERENCES bloomStatusType (_id),
-           FOREIGN KEY (applicantUserId) REFERENCES blackstaruser (blackstarUserId),
+           FOREIGN KEY (applicantUserId) REFERENCES blackstarUser (blackstarUserId),
            FOREIGN KEY (applicantAreaId) REFERENCES bloomApplicantArea (_id),
-           FOREIGN KEY (createdByUsr) REFERENCES blackstaruser (blackstarUserId),
-           FOREIGN KEY (modifiedByUsr) REFERENCES blackstaruser (blackstarUserId),
+           FOREIGN KEY (createdByUsr) REFERENCES blackstarUser (blackstarUserId),
+           FOREIGN KEY (modifiedByUsr) REFERENCES blackstarUser (blackstarUserId),
 		   UNIQUE UQ_bloomTicket(ticketNumber)
          )ENGINE=INNODB;
 	END IF;	
@@ -751,7 +751,7 @@ END IF;
            PRIMARY KEY (`_id`),
 		   FOREIGN KEY (ticketId) REFERENCES bloomTicket (_id),
            FOREIGN KEY (workerRoleTypeId) REFERENCES bloomWorkerRoleType (_id),
-           FOREIGN KEY (blackstarUserId) REFERENCES blackstaruser (blackstarUserId)
+           FOREIGN KEY (blackstarUserId) REFERENCES blackstarUser (blackstarUserId)
          )ENGINE=INNODB;
 	END IF;
 
@@ -769,8 +769,8 @@ END IF;
            FOREIGN KEY (deliverableTypeId) REFERENCES bloomDeliverableType (_id)
          )ENGINE=INNODB;
 	END IF;		
-	
-	
+
+
 	-- AGREGANDO COLUMNA bloomTicketId A followUp
 	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'followUp' AND COLUMN_NAME = 'bloomTicketId') =0  THEN
 		 ALTER TABLE blackstarDb.followUp ADD bloomTicketId Int(11);
@@ -779,7 +779,7 @@ END IF;
 
 
 
-	
+
 -- -----------------------------------------------------------------------------
 -- FIN SECCION DE CAMBIOS - NO CAMBIAR CODIGO FUERA DE ESTA SECCION
 -- -----------------------------------------------------------------------------

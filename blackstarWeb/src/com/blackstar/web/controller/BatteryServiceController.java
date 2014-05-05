@@ -25,7 +25,6 @@ import com.blackstar.model.Ticket;
 import com.blackstar.model.UserSession;
 import com.blackstar.model.dto.BatteryServiceDTO;
 import com.blackstar.model.dto.BatteryServicePolicyDTO;
-import com.blackstar.model.dto.EmergencyPlantServicePolicyDTO;
 import com.blackstar.services.interfaces.ReportService;
 import com.blackstar.services.interfaces.ServiceOrderService;
 import com.blackstar.web.AbstractController;
@@ -102,6 +101,7 @@ public class BatteryServiceController extends AbstractController {
 		  		  }
 
 		  		  model.addAttribute("osAttachmentFolder", gdService.getAttachmentFolderId(batteryServicePolicyDTO.getServiceOrderNumber()));
+		  		  model.addAttribute("accessToken", gdService.getAccessToken());
 	  		  }
 			  else
 			  {

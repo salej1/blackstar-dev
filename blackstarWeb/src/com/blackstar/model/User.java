@@ -7,6 +7,10 @@ import java.util.List;
 import java.util.Map;
 
 public class User implements java.io.Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	Integer blackstarUserId;
 	String userEmail;
 	String userName;

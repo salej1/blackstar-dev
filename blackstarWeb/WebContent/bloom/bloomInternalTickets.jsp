@@ -15,6 +15,7 @@
 			<thead>
 				<tr>
 					<th style="width=250px;">Folio</th>
+					<th>Estatus</th>
 					<th>Creado</th>
 					<th>Solicitante</th>
 					<th>Tipo</th>

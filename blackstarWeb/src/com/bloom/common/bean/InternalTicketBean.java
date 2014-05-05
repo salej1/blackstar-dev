@@ -3,25 +3,39 @@
  */
 package com.bloom.common.bean;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * @author Oscar.Martinez
  * 
  */
-public class InternalTicketBean {
+public class InternalTicketBean implements Serializable {
 
-	private Integer id;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	private Long id;
 
 	private String officeId;
+	
+	private String officeName;
 
-	private Integer applicantUserId;
+	private Long applicantUserId;
 
 	private Integer serviceTypeId;
 
+	private String serviceTypeDescr;
+
 	private Integer statusId;
+	
+	private String statusDescr;
 
 	private Integer applicantAreaId;
+	
+	
 
 	private String ticketNumber;
 
@@ -33,9 +47,11 @@ public class InternalTicketBean {
 
 	private Date created;
 
-	private String createdBy;
+	private String createdStr;
 
-	private Integer createdByUsr;
+	private String createdUserName;
+
+	private Long createdUserId;
 
 	private Date modified;
 
@@ -43,10 +59,133 @@ public class InternalTicketBean {
 
 	private Integer modifiedByUsr;
 
+	private String petitionerArea;
+	
+	private Integer petitionerAreaId;
+
+	private Date deadline;
+
+	private String deadlineStr;
+	
+	private String project;
+	
+	private Integer reponseInTime;
+	
+	private DeliverableTraceBean deliverableTrace;
+	
+	private String createdUserEmail;
+
+	
+	/**
+	 * @return the project
+	 */
+	public String getProject() {
+		return project;
+	}
+
+	/**
+	 * @param project the project to set
+	 */
+	public void setProject(String project) {
+		this.project = project;
+	}
+
+	/**
+	 * @return the petitionerAreaId
+	 */
+	public Integer getPetitionerAreaId() {
+		return petitionerAreaId;
+	}
+
+	/**
+	 * @param petitionerAreaId the petitionerAreaId to set
+	 */
+	public void setPetitionerAreaId(Integer petitionerAreaId) {
+		this.petitionerAreaId = petitionerAreaId;
+	}
+	
+	
+
+	/**
+	 * @return the createdStr
+	 */
+	public String getCreatedStr() {
+		return createdStr;
+	}
+
+	/**
+	 * @param createdStr
+	 *            the createdStr to set
+	 */
+	public void setCreatedStr(String createdStr) {
+		this.createdStr = createdStr;
+	}
+
+	/**
+	 * @return the deadline
+	 */
+	public Date getDeadline() {
+		return deadline;
+	}
+
+	/**
+	 * @param deadline
+	 *            the deadline to set
+	 */
+	public void setDeadline(Date deadline) {
+		this.deadline = deadline;
+	}
+
+	/**
+	 * @return the deadlineStr
+	 */
+	public String getDeadlineStr() {
+		return deadlineStr;
+	}
+
+	/**
+	 * @param deadlineStr
+	 *            the deadlineStr to set
+	 */
+	public void setDeadlineStr(String deadlineStr) {
+		this.deadlineStr = deadlineStr;
+	}
+
+
+	/**
+	 * @return the serviceTypeDescr
+	 */
+	public String getServiceTypeDescr() {
+		return serviceTypeDescr;
+	}
+
+	/**
+	 * @param serviceTypeDescr
+	 *            the serviceTypeDescr to set
+	 */
+	public void setServiceTypeDescr(String serviceTypeDescr) {
+		this.serviceTypeDescr = serviceTypeDescr;
+	}
+
+	/**
+	 * @return the petitionerArea
+	 */
+	public String getPetitionerArea() {
+		return petitionerArea;
+	}
+
+	/**
+	 * @param petitionerArea
+	 *            the petitionerArea to set
+	 */
+	public void setPetitionerArea(String petitionerArea) {
+		this.petitionerArea = petitionerArea;
+	}
+
 	/**
 	 * @return the id
 	 */
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
 
@@ -54,7 +193,7 @@ public class InternalTicketBean {
 	 * @param id
 	 *            the id to set
 	 */
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -76,7 +215,7 @@ public class InternalTicketBean {
 	/**
 	 * @return the applicantUserId
 	 */
-	public Integer getApplicantUserId() {
+	public Long getApplicantUserId() {
 		return applicantUserId;
 	}
 
@@ -84,7 +223,7 @@ public class InternalTicketBean {
 	 * @param applicantUserId
 	 *            the applicantUserId to set
 	 */
-	public void setApplicantUserId(Integer applicantUserId) {
+	public void setApplicantUserId(Long applicantUserId) {
 		this.applicantUserId = applicantUserId;
 	}
 
@@ -208,35 +347,7 @@ public class InternalTicketBean {
 		this.created = created;
 	}
 
-	/**
-	 * @return the createdBy
-	 */
-	public String getCreatedBy() {
-		return createdBy;
-	}
 
-	/**
-	 * @param createdBy
-	 *            the createdBy to set
-	 */
-	public void setCreatedBy(String createdBy) {
-		this.createdBy = createdBy;
-	}
-
-	/**
-	 * @return the createdByUsr
-	 */
-	public Integer getCreatedByUsr() {
-		return createdByUsr;
-	}
-
-	/**
-	 * @param createdByUsr
-	 *            the createdByUsr to set
-	 */
-	public void setCreatedByUsr(Integer createdByUsr) {
-		this.createdByUsr = createdByUsr;
-	}
 
 	/**
 	 * @return the modified
@@ -251,6 +362,48 @@ public class InternalTicketBean {
 	 */
 	public void setModified(Date modified) {
 		this.modified = modified;
+	}
+
+	/**
+	 * @return the officeName
+	 */
+	public String getOfficeName() {
+		return officeName;
+	}
+
+	/**
+	 * @param officeName the officeName to set
+	 */
+	public void setOfficeName(String officeName) {
+		this.officeName = officeName;
+	}
+
+	/**
+	 * @return the createdUserName
+	 */
+	public String getCreatedUserName() {
+		return createdUserName;
+	}
+
+	/**
+	 * @param createdUserName the createdUserName to set
+	 */
+	public void setCreatedUserName(String createdUserName) {
+		this.createdUserName = createdUserName;
+	}
+
+	/**
+	 * @return the createdUserId
+	 */
+	public Long getCreatedUserId() {
+		return createdUserId;
+	}
+
+	/**
+	 * @param createdUserId the createdUserId to set
+	 */
+	public void setCreatedUserId(Long createdUserId) {
+		this.createdUserId = createdUserId;
 	}
 
 	/**
@@ -281,6 +434,62 @@ public class InternalTicketBean {
 	 */
 	public void setModifiedByUsr(Integer modifiedByUsr) {
 		this.modifiedByUsr = modifiedByUsr;
+	}
+
+	/**
+	 * @return the reponseInTime
+	 */
+	public Integer getReponseInTime() {
+		return reponseInTime;
+	}
+
+	/**
+	 * @param reponseInTime the reponseInTime to set
+	 */
+	public void setReponseInTime(Integer reponseInTime) {
+		this.reponseInTime = reponseInTime;
+	}
+
+	/**
+	 * @return the deliverableTrace
+	 */
+	public DeliverableTraceBean getDeliverableTrace() {
+		return deliverableTrace;
+	}
+
+	/**
+	 * @param deliverableTrace the deliverableTrace to set
+	 */
+	public void setDeliverableTrace(DeliverableTraceBean deliverableTrace) {
+		this.deliverableTrace = deliverableTrace;
+	}
+
+	/**
+	 * @return the createdUserEmail
+	 */
+	public String getCreatedUserEmail() {
+		return createdUserEmail;
+	}
+
+	/**
+	 * @param createdUserEmail the createdUserEmail to set
+	 */
+	public void setCreatedUserEmail(String createdUserEmail) {
+		this.createdUserEmail = createdUserEmail;
+	}
+
+	/**
+	 * @return the statusDescr
+	 */
+	public String getStatusDescr() {
+		return statusDescr;
+	}
+
+	/**
+	 * @param statusDescr the statusDescr to set
+	 */
+	public void setStatusDescr(String statusDescr) {
+		this.statusDescr = statusDescr;
 	}
 
 }

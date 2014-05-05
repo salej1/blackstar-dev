@@ -45,5 +45,7 @@
 	   <!-- Implementacion de BLOOM HELPDESK -->
 	   <bean id="internalTicketsDao" class="com.bloom.db.dao.InternalTicketsDaoImpl" parent="abstractDAO"/>
 	   <bean id="internatTicketsKPIDao" class="com.bloom.db.dao.InternatTicketsKPIDaoImpl" parent="abstractDAO"/>        
+	   <bean id="catalogInternalTicketsDao" class="com.bloom.db.dao.CatalogInternalTicketsDaoImpl" parent="abstractDAO"/>
+		
 
 </beans>
