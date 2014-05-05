@@ -25,6 +25,7 @@
 
 
 --		08/04/2014				bloomDb.GetUserData (MODIFICADO:Sobrescribimos la version anterior)
+--								bloomDb.getBloomEstatusTickets
 -- ------------------------------------------------------------------------------
 
 

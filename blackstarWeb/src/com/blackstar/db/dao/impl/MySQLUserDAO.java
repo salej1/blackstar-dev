@@ -20,14 +20,13 @@ public class MySQLUserDAO implements UserDAO {
 		Connection conn = null;
 		try {
 			
-			String sql = "SELECT u.email AS userEmail, u.blackstarUserId ,u.name AS userName, g.name AS groupName"
-        +" FROM blackstarUser_userGroup ug"
-         +       " INNER JOIN blackstarUser u ON u.blackstarUserId = ug.blackstarUserId"
-         +       " LEFT OUTER JOIN userGroup g ON g.userGroupId = ug.userGroupId"
-        + " WHERE u.email = '"+email+"'";
+//			String sql = "SELECT u.email AS userEmail, u.blackstarUserId ,u.name AS userName, g.name AS groupName"
+//        +" FROM blackstarUser_userGroup ug"
+//         +       " INNER JOIN blackstarUser u ON u.blackstarUserId = ug.blackstarUserId"
+//         +       " LEFT OUTER JOIN userGroup g ON g.userGroupId = ug.userGroupId"
+//        + " WHERE u.email = '"+email+"'";
 			
-			
-			//String.format("CALL GetUserData('%s')", email)
+			String sql = String.format("CALL GetUserData('%s')", email);
 			conn = MySQLDAOFactory.createConnection();
 			ResultSet rs = conn.createStatement().executeQuery(sql);
 			System.out.println("Email => " + email);
