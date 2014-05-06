@@ -14,10 +14,10 @@ import com.blackstar.common.*;
 import com.blackstar.db.BlackstarDataAccess;
 import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
-import com.blackstar.model.TicketController;
 import com.blackstar.model.UserSession;
 import com.blackstar.services.IUserService;
 import com.blackstar.services.UserServiceFactory;
+import com.blackstar.web.controller.AddFollowUpController;
 
 /**
  * Servlet implementation class Tickets
@@ -79,7 +79,7 @@ public class Tickets extends HttpServlet {
 			int ticketId = Integer.parseInt(ticket);
 			String who = "portal-servicios@gposac.com.mx";
 			
-			TicketController.AssignTicket(ticketId, employee, who, null);
+			AddFollowUpController.AssignTicket(ticketId, employee, who, null);
 
 		} catch (NumberFormatException e) {
 			// TODO Auto-generated catch block

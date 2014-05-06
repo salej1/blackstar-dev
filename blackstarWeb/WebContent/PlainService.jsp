@@ -145,6 +145,17 @@
 		});
 	});
 
+	function saveService(){
+		if($('#serviceOrder')[0].checkValidity()){
+			$('input').removeAttr("disabled");
+			$('select').removeAttr("disabled");
+			$('textarea').removeAttr("disabled");
+			$('#serviceOrder').submit();
+		}
+		else{
+			setTimeout(function() { $(event.target).focus();}, 50);
+		}
+	}
 	</script> 
 	
 	</head>
@@ -168,7 +179,7 @@
 								</tr>
 								<tr>
 									<td>Cliente</td>
-									<td colspan="3"><form:input path="customer" type="text" style="width:95%;" required="true"/></td>
+									<td colspan="3"><form:input cssClass="lockOnDetail" path="customer" type="text" style="width:95%;" required="true"/></td>
 									<form:input path="openCustomerId" type="hidden"/>
 								</tr>
 								<tr>
@@ -412,7 +423,8 @@
 									<button class="searchButton eligible coorOnly" id="closeBtn">Cerrar</button>
 								</c:if>	
 							</c:if>	
-								<input class="searchButton" id="guardarServicio" type="submit" value="Guardar servicio" onclick="$('#serviceOrder').submit();">
+							<input class="searchButton" id="guardarServicio" type="submit" value="Guardar servicio" onclick="saveService();">
+							<button class="searchButton" onclick="window.location = '/serviceOrders/show.do'">Cancelar</button>
 							</td>
 						</tr>
 					<tbody>

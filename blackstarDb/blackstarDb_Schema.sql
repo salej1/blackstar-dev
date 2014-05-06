@@ -42,6 +42,16 @@
 --							Se agrega officeId a openCustomer
 --							Se modifica serviceDate en scheduledServiceDate
 -- ---------------------------------------------------------------------------
+-- 13	24/04/2014	SAG 	Se agrega tabla issue
+--							Se agrega tabla followUpReferenceType
+--							Se agrega tabla issueStatus
+--							Se modifica FollowUp
+--							Se agrega project a openCustomer
+-- ---------------------------------------------------------------------------
+-- 14	28/04/2014	SAG 	Se incrementan campos de texto en plainService
+-- ---------------------------------------------------------------------------
+-- 15	05/05/2014	SAG 	Se agregan serviceContact & serviceContactEmail a scheduledService
+-- ---------------------------------------------------------------------------
 
 use blackstarDb;
 
@@ -54,6 +64,89 @@ BEGIN
 -- -----------------------------------------------------------------------------
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
+
+
+--	AGREGANDO serviceContact & serviceContactEmail a scheduledService
+	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'scheduledService' AND COLUMN_NAME = 'serviceContact') = 0  THEN
+		ALTER TABLE blackstarDb.scheduledService ADD serviceContact VARCHAR(100) NULL DEFAULT NULL;
+	END IF;
+	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'scheduledService' AND COLUMN_NAME = 'serviceContactEmail') = 0  THEN
+		ALTER TABLE blackstarDb.scheduledService ADD serviceContactEmail VARCHAR(100) NULL DEFAULT NULL;
+	END IF;
+
+--	AGREGANDO project a openCustomer
+	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'openCustomer' AND COLUMN_NAME = 'project') = 0  THEN
+		ALTER TABLE blackstarDb.openCustomer ADD project VARCHAR(100) NULL DEFAULT NULL;
+	END IF;
+
+-- MODIFICANDO plainService
+	ALTER TABLE plainService MODIFY troubleDescription TEXT;
+	ALTER TABLE plainService MODIFY techParam TEXT;
+	ALTER TABLE plainService MODIFY workDone TEXT;
+	ALTER TABLE plainService MODIFY materialUsed TEXT;
+	ALTER TABLE plainService MODIFY observations TEXT;
+
+-- AGREGANDO TABLA followUpReferenceType - REPRESENTA EL TIPO DE OBJETO DE NEGOCIOS PADRE DEL FOLLOWUP
+	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'followUpReferenceType') = 0 THEN
+		 CREATE TABLE blackstarDb.followUpReferenceType(
+			followUpReferenceTypeId CHAR(1) NOT NULL,
+			followUpReferenceType VARCHAR(100) NOT NULL,
+			PRIMARY KEY (followUpReferenceTypeId),
+			UNIQUE UQ_followUpReferenceType_followUpReferenceTypeId(followUpReferenceTypeId)
+		) ENGINE=INNODB;
+	END IF;
+
+-- AGREGANDO TABLA issueStatus - REPRESENTA LOS ESTATUS DE LOS PENDIENTES
+	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'issueStatus') = 0 THEN
+		 CREATE TABLE blackstarDb.issueStatus(
+			issueStatusId CHAR(1) NOT NULL,
+			issueStatus VARCHAR(100) NOT NULL,
+			PRIMARY KEY (issueStatusId),
+			UNIQUE UQ_issueStatus_issueStatusId(issueStatusId)
+		) ENGINE=INNODB;
+	END IF;
+
+-- AGREGANDO TABLA issue - REPRESENTA LOS PENDIENTES AISLADOS
+	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'issue') = 0 THEN
+		 CREATE TABLE blackstarDb.issue(
+			issueId INTEGER NOT NULL AUTO_INCREMENT,
+			issueNumber VARCHAR(100) NOT NULL,
+			issueStatusId CHAR(1) NOT NULL,
+			title VARCHAR(100) NOT NULL,
+			detail TEXT NULL,
+			project VARCHAR(100) NULL,
+			customer VARCHAR(500) NULL,
+			asignee VARCHAR(100) NULL,
+			created DATETIME NULL,
+			createdBy NVARCHAR(50) NULL,
+			createdByUsr NVARCHAR(50) NULL,
+			modified DATETIME NULL,
+			modifiedBy NVARCHAR(50) NULL,
+			modifiedByUsr NVARCHAR(50) NULL,
+			PRIMARY KEY (issueId),
+			KEY(issueStatusId),
+			UNIQUE UQ_issue_issueId(issueId)
+		) ENGINE=INNODB;
+
+		 ALTER TABLE issue ADD CONSTRAINT FK_issue_issueStatus
+		 FOREIGN KEY(issueStatusId) REFERENCES issueStatus(issueStatusId);
+		
+	END IF;
+
+-- MOFIFICANDO FOLLOW UP -> SE AGREGA DEPENDENCIA A issue Y A followUpReferenceType
+	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'followUp' AND COLUMN_NAME = 'issueId') = 0  THEN
+		ALTER TABLE blackstarDb.followUp ADD issueId INT NULL;
+
+		ALTER TABLE followUp ADD CONSTRAINT FK_followUp_issue
+		FOREIGN KEY(issueId) REFERENCES issue(issueId);
+	END IF;
+
+	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'followUp' AND COLUMN_NAME = 'followUpReferenceTypeId') = 0  THEN
+		ALTER TABLE blackstarDb.followUp ADD followUpReferenceTypeId CHAR(1) NULL;
+
+		ALTER TABLE followUp ADD CONSTRAINT FK_followUp_followUpReferenceType
+		FOREIGN KEY(followUpReferenceTypeId) REFERENCES followUpReferenceType(followUpReferenceTypeId);
+	END IF;
 
 --  MODIFICANDO serviceDate EN scheduledServiceDate
 	ALTER TABLE scheduledServiceDate MODIFY serviceDate DATETIME;

@@ -133,12 +133,12 @@
 						<div>
 							<img src="/img/navigate-right.png"/><a href="#" id="getAverage" onclick="go('getAverage')">Promedios</a>
 						</div>
-						<div>
+						<!-- <div>
 							<img src="/img/navigate-right.png"/><a href="#" id="getReportOS" onclick="go('getReportOS')">Reporte Ordenes de servicio</a>
 						</div>
 						<div>
 							<img src="/img/navigate-right.png"/><a href="#" id="getOSResume" onclick="go('getOSResume')">Resumen Ordenes de servicio</a>
-						</div>
+						</div> -->
 						<div>
 							<img src="/img/navigate-right.png"/><a href="#" id="getPolicies" onclick="go('getPolicies')">Concentrado polizas</a>
 						</div>

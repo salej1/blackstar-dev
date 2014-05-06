@@ -35,7 +35,7 @@ public class MySQLFollowUpDAO implements FollowUpDAO, Serializable {
 			ResultSet rs = ps.executeQuery();
 			
 			while(rs.next()) {
-				followUp = new Followup(rs.getInt("ticketId"), rs.getInt("serviceOrderId"), rs.getString("asignee"),
+				followUp = new Followup(rs.getInt("issueId"), rs.getInt("ticketId"), rs.getInt("serviceOrderId"), rs.getString("asignee"),
 						rs.getString("followup"), rs.getDate("created"), rs.getString("createdBy"),
 						rs.getString("createdByUsr"), rs.getDate("modified"), rs.getString("modifiedBy"),
 						rs.getString("modifiedByUsr"));
@@ -72,7 +72,7 @@ public class MySQLFollowUpDAO implements FollowUpDAO, Serializable {
 			ResultSet rs = ps.executeQuery();
 			
 			while(rs.next()) {
-				followUp = new Followup(rs.getInt("ticketId"), rs.getInt("serviceOrderId"), rs.getString("asignee"),
+				followUp = new Followup(rs.getInt("issueId"), rs.getInt("ticketId"), rs.getInt("serviceOrderId"), rs.getString("asignee"),
 						rs.getString("followup"), rs.getDate("created"), rs.getString("createdBy"),
 						rs.getString("createdByUsr"), rs.getDate("modified"), rs.getString("modifiedBy"),
 						rs.getString("modifiedByUsr"));
@@ -121,7 +121,7 @@ public class MySQLFollowUpDAO implements FollowUpDAO, Serializable {
 			ResultSet rs = ps.executeQuery();
 			
 			while(rs.next()) {
-				followUp = new Followup(rs.getInt("ticketId"), rs.getInt("serviceOrderId"), rs.getString("asignee"),
+				followUp = new Followup(rs.getInt("issueId"), rs.getInt("ticketId"), rs.getInt("serviceOrderId"), rs.getString("asignee"),
 						rs.getString("followup"), rs.getDate("created"), rs.getString("createdBy"),
 						rs.getString("createdByUsr"), rs.getDate("modified"), rs.getString("modifiedBy"),
 						rs.getString("modifiedByUsr"));

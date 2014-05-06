@@ -22,12 +22,10 @@ import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
 import com.blackstar.model.Equipmenttype;
 import com.blackstar.model.OpenCustomer;
-import com.blackstar.model.PlainService;
 import com.blackstar.model.Policy;
 import com.blackstar.model.Serviceorder;
 import com.blackstar.model.Ticket;
 import com.blackstar.model.UserSession;
-import com.blackstar.model.dto.AirCoServicePolicyDTO;
 import com.blackstar.model.dto.EmployeeDTO;
 import com.blackstar.model.dto.PlainServiceDTO;
 import com.blackstar.model.dto.PlainServicePolicyDTO;
@@ -253,6 +251,7 @@ public class PlainServiceController extends AbstractController {
 		    		servicioOrderSave.setIsWrong(serviceOrder.getIsWrong()?1:0);
 		  	        servicioOrderSave.setClosed(new Date());
 					servicioOrderSave.setStatusId("N");
+					servicioOrderSave.setPolicyId(serviceOrder.getPolicyId());
 					idServicio = service.saveServiceOrder(servicioOrderSave, "PlainServiceController", userSession.getUser().getUserName());
 					serviceOrder.setServiceOrderId(idServicio);
 					
@@ -302,7 +301,7 @@ public class PlainServiceController extends AbstractController {
 	    		asignee.append(emp.getEmail() + ";");
 	    	}
 	    	
-	    	com.blackstar.model.ServiceOrderController.AssignServiceOrder(serviceOrder.getServiceOrderId(), Utils.noCommas(asignee.toString()), who, message);
+	    	AddFollowUpController.AssignServiceOrder(serviceOrder.getServiceOrderId(), Utils.noCommas(asignee.toString()), who, message);
 	    }
 	    
 	    private void commit(PlainServicePolicyDTO serviceOrder) throws Exception {

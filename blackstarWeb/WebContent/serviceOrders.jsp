@@ -21,7 +21,7 @@
 		<div id="content" class="container_16 clearfix">
 			<div>
 				<div>
-					<img src="/img/navigate-right.png"/><a href="/scheduleStatus/show.do">Programa de servicios preventivos</a>
+					<img src="/img/navigate-right.png"/><a href="/scheduleStatus/show.do">Programa de servicios</a>
 				</div>
 			</div>
 			<p><small>&nbsp;</small></p>
@@ -73,7 +73,7 @@
 
 <!-- Inicia Contenido De Perfil SysServicio -->
 
-			<c:set var="showHistory" scope="request" value="${user.belongsToGroup['Implementacion y Servicio'] || user.belongsToGroup['Coordinador']}" />
+			<c:set var="showHistory" scope="request" value="${user.belongsToGroup['Implementacion y Servicio'] || user.belongsToGroup['Coordinador'] || user.belongsToGroup['Call Center']}" />
 			<c:if test="${showHistory == true}">
 
 <!-- Inicia Historial De Ordenes De Servicio -->

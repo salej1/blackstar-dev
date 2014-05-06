@@ -77,8 +77,7 @@
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/google-api-services-oauth2-v2-rev51-1.17.0-rc.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/gson-2.2.4.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/PDFjet.jar"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/appengine-endpoints-deps.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/spring-context-support-3.2.4.RELEASE.jar"/>
-	<classpathentry kind="con" path="com.google.appengine.eclipse.core.GAE_CONTAINER/appengine-java-sdk-1.8.8"/>
+	<classpathentry kind="con" path="com.google.appengine.eclipse.core.GAE_CONTAINER"/>
 	<classpathentry kind="output" path="WebContent/WEB-INF/classes"/>
 </classpath>

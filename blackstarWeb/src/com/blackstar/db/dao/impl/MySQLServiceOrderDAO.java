@@ -53,7 +53,7 @@ public class MySQLServiceOrderDAO implements ServiceOrderDAO, Serializable {
 			while (rs.next()) {
 				serviceOrder = new Serviceorder(rs.getString("serviceTypeId")
 						.charAt(0), rs.getInt("ticketId"),
-						rs.getShort("policyId"), rs.getString("serviceUnit"),
+						rs.getInt("policyId"), rs.getString("serviceUnit"),
 						rs.getDate("serviceDate"), rs.getString("responsible"),
 						rs.getString("receivedBy"),
 						rs.getString("serviceComments"),
@@ -104,7 +104,7 @@ public class MySQLServiceOrderDAO implements ServiceOrderDAO, Serializable {
 			while (rs.next()) {
 				serviceOrder = new Serviceorder(rs.getString("serviceTypeId")
 						.charAt(0), rs.getInt("ticketId"),
-						rs.getShort("policyId"), rs.getString("serviceUnit"),
+						rs.getInt("policyId"), rs.getString("serviceUnit"),
 						rs.getDate("serviceDate"), rs.getString("responsible"),
 						rs.getString("receivedBy"),
 						rs.getString("serviceComments"),
@@ -203,7 +203,7 @@ public class MySQLServiceOrderDAO implements ServiceOrderDAO, Serializable {
 			while (rs.next()) {
 				serviceOrder = new Serviceorder(rs.getString("serviceTypeId")
 						.charAt(0), rs.getInt("ticketId"),
-						rs.getShort("policyId"), rs.getString("serviceUnit"),
+						rs.getInt("policyId"), rs.getString("serviceUnit"),
 						rs.getDate("serviceDate"), rs.getString("responsible"),
 						rs.getString("receivedBy"),
 						rs.getString("serviceComments"),

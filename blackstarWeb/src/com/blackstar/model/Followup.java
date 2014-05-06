@@ -19,10 +19,11 @@ import javax.persistence.TemporalType;
 @Table(name = "followup", catalog = "blackstarDb")
 public class Followup implements java.io.Serializable {
 
+	private static final long serialVersionUID = 4309000336336194639L;
 	private Integer followUpId;
 	private Integer ticketId;
 	private Integer serviceOrderId;
-	private String asignee;
+	private Integer issueId;
 	private String followup;
 	private Date created;
 	private String createdBy;
@@ -30,17 +31,15 @@ public class Followup implements java.io.Serializable {
 	private Date modified;
 	private String modifiedBy;
 	private String modifiedByUsr;
+	private String asignee;
 
 	public Followup() {
 	}
 
-	public Followup(Integer ticketId, Integer serviceOrderId, String asignee,
+	public Followup(Integer issueId, Integer ticketId, Integer serviceOrderId, String asignee,
 			String followup, Date created, String createdBy,
 			String createdByUsr, Date modified, String modifiedBy,
 			String modifiedByUsr) {
-		this.ticketId = ticketId;
-		this.serviceOrderId = serviceOrderId;
-		this.asignee = asignee;
 		this.followup = followup;
 		this.created = created;
 		this.createdBy = createdBy;
@@ -59,33 +58,6 @@ public class Followup implements java.io.Serializable {
 
 	public void setFollowUpId(Integer followUpId) {
 		this.followUpId = followUpId;
-	}
-
-	@Column(name = "ticketId")
-	public Integer getTicketId() {
-		return this.ticketId;
-	}
-
-	public void setTicketId(Integer ticketId) {
-		this.ticketId = ticketId;
-	}
-
-	@Column(name = "serviceOrderId")
-	public Integer getServiceOrderId() {
-		return this.serviceOrderId;
-	}
-
-	public void setServiceOrderId(Integer serviceOrderId) {
-		this.serviceOrderId = serviceOrderId;
-	}
-
-	@Column(name = "asignee", length = 50)
-	public String getAsignee() {
-		return this.asignee;
-	}
-
-	public void setAsignee(String asignee) {
-		this.asignee = asignee;
 	}
 
 	@Column(name = "followup", length = 65535)
@@ -151,6 +123,38 @@ public class Followup implements java.io.Serializable {
 
 	public void setModifiedByUsr(String modifiedByUsr) {
 		this.modifiedByUsr = modifiedByUsr;
+	}
+
+	public Integer getIssueId() {
+		return issueId;
+	}
+
+	public void setIssueId(Integer issueId) {
+		this.issueId = issueId;
+	}
+
+	public Integer getTicketId() {
+		return ticketId;
+	}
+
+	public void setTicketId(Integer ticketId) {
+		this.ticketId = ticketId;
+	}
+
+	public Integer getServiceOrderId() {
+		return serviceOrderId;
+	}
+
+	public void setServiceOrderId(Integer serviceOrderId) {
+		this.serviceOrderId = serviceOrderId;
+	}
+
+	public String getAsignee() {
+		return asignee;
+	}
+
+	public void setAsignee(String asignee) {
+		this.asignee = asignee;
 	}
 
 }

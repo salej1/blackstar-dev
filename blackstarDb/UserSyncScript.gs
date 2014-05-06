@@ -10,6 +10,8 @@
 ** PR   Date    	Author	Description
 ** --   --------   -------  ------------------------------------
 ** 1    17/09/2013  SAG  	Version inicial: Carga la lista de usuarios en el cache de BD
+** --   --------   -------  ------------------------------------
+** 2    20/04/2014  SAG  	Se implementa modelo STTP
 *****************************************************************************/
 
 function userSync(){
@@ -61,31 +63,43 @@ function getDbConnection(){
 	return conn;
 }
 
+function closeDbConnection(conn){
+	if(!conn.isClosed()){
+		conn.close();
+	}
+}
+
 function startSyncJob(conn, sqlLog){
 
 	// Get users list
-	var users = UserManager.getAllUsers();
-	
-	// Iterate through each user
-	for (var i in users) {
-		// Write it
-		var userEmail = users[i].getEmail();
-		var userName = users[i].getGivenName() + " " + users[i].getFamilyName();
-		sqlLog = sendUserToDatabase(conn, userEmail, userName, sqlLog);
-		
-		  // Get groups
-		var groups = GroupsManager.getAllGroups(userEmail);
-		
-		// Iterate through users groups
-		for (var j in groups) {
-			// Write group & relationship
-			var groupName =  groups[j].getName();
-			var groupId = groups[j].getId();
-			
-			if(groupName.indexOf("sys") == 0){
-				sqlLog = sendGroupToDatabase(conn, groupName, groupId, userEmail);
+	// iterate looking for new employees
+  	const offset = 2; // Ajustar de acuerdo al numero de polizas cargadas en el sistema
+	var startRec = offset;
+	var range = "A" + startRec.toString() + ":E" + startRec.toString();
+	var ss = SpreadsheetApp.getActiveSpreadsheet();
+	var sheet = ss.getSheets()[0];
+	var data = sheet.getRange(range).getValues();
+	var currUser = data[0];
+
+  	while(currUser != null && currUser[0] != null && currUser[0].toString() != ""){
+        var userEmail = currUser[0];
+        var userName = currUser[1];
+        var syncSeed = currUser[4];
+
+        if(syncSeed == 1){
+        	sqlLog = sendUserToDatabase(conn, userEmail, userName, sqlLog);
+	        
+	        var groupId = currUser[2];
+	        var groupName = currUser[3];
+	        if(groupId.indexOf("sys") == 0){
+					sqlLog = sendGroupToDatabase(conn, groupId, groupName, userEmail, sqlLog, sheet.getRange("E" + startRec.toString()));
 			}
-		}
+        }
+		
+		startRec++;
+		range = "A" + startRec.toString() + ":E" + startRec.toString();
+		data = sheet.getRange(range).getValues();
+		currUser = data[0];
 	}
 }
 
@@ -102,16 +116,19 @@ function sendUserToDatabase(conn, userEmail, userName, sqlLog){
 		return sqlLog; 
 }
 
-function sendGroupToDatabase(conn, groupId, groupName, userEmail, sqlLog){
+function sendGroupToDatabase(conn, groupId, groupName, userEmail, sqlLog, range){
 		var sql = "CALL CreateUserGroup('" + groupId + "', '" + groupName + "', '" + userEmail + "')" ;
 	
-		Logger.log("Inserting Group" + groupName + " for user " + userEmail);
+		Logger.log("Inserting Group " + groupName + " for user " + userEmail);
 		
 		sqlLog = saveSql(sqlLog, sql);
 	
 		var stmt = conn.createStatement();
 		stmt.execute(sql);
 		
+		// mark sent
+		range.setValue(2); 
+
 		return sqlLog; 
 }
 

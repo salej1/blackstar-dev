@@ -190,7 +190,7 @@ public class AirCoServiceController extends AbstractController {
 
 					//Crear orden de servicio
 					Serviceorder servicioOrderSave = new Serviceorder();
-					servicioOrderSave.setPolicyId((Short.parseShort(serviceOrder.getPolicyId().toString())));
+					servicioOrderSave.setPolicyId(serviceOrder.getPolicyId());
 					servicioOrderSave.setReceivedBy(serviceOrder.getReceivedBy());
 					servicioOrderSave.setReceivedByPosition(serviceOrder.getReceivedByPosition());
 					servicioOrderSave.setEmployeeListString(serviceOrder.getResponsible());
@@ -208,7 +208,7 @@ public class AirCoServiceController extends AbstractController {
 					//Actualizar orden de servicio
 					Serviceorder servicioOrderSave = new Serviceorder();
 					servicioOrderSave.setClosed(serviceOrder.getClosed());
-					servicioOrderSave.setPolicyId((Short.parseShort(serviceOrder.getPolicyId().toString())));
+					servicioOrderSave.setPolicyId(serviceOrder.getPolicyId());
 					servicioOrderSave.setReceivedBy(serviceOrder.getReceivedBy());
 					servicioOrderSave.setReceivedByPosition(serviceOrder.getReceivedByPosition());
 					servicioOrderSave.setEmployeeListString(serviceOrder.getResponsible());

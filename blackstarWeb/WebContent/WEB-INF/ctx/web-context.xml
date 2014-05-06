@@ -102,5 +102,11 @@
        <property name="service" ref="scheduleStatusService" />
        <property name="osService" ref="serviceOrderService" />
    </bean>
+   <bean class="com.blackstar.web.controller.IssueController" parent="abstractController">
+       <property name="service" ref="issueService" />
+   </bean>
+   <bean class="com.blackstar.web.controller.AddFollowUpController" parent="abstractController">
+       <property name="iServ" ref="issueService" />
+   </bean>
  
 </beans>

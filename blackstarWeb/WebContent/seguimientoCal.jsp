@@ -334,7 +334,7 @@
 				});
 				
 				// inicializando el dialogo para agregar seguimientos
-				initFollowUpDlg("ticket", "/seguimiento");
+				initFollowUpDlg("ticket", "seguimiento");
 				
 				// inicializando el llenado de la tabla
 				showBigTable();

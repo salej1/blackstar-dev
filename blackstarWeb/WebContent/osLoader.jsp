@@ -16,9 +16,10 @@
       var docsView = new google.picker.DocsView(google.picker.ViewId.PDFS)
         .setOwnedByMe(false)
         .setIncludeFolders(true) ;
-
+      var uploadView = new google.picker.DocsUploadView().setParent(rootFolderId);
       loaderPicker = new google.picker.PickerBuilder()
           .addView(docsView)
+          .addView(uploadView)
           .setCallback(loaderPickerCallback)
           .setOAuthToken('${accessToken}')
           .setLocale('es')

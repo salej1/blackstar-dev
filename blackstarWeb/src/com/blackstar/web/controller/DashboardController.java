@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import com.blackstar.common.Globals;
 import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
-import com.blackstar.model.TicketController;
 import com.blackstar.model.UserSession;
 import com.blackstar.services.interfaces.DashboardService;
 import com.blackstar.web.AbstractController;
@@ -119,7 +118,7 @@ public class DashboardController extends AbstractController {
 		String who = userSession == null ? "portal-servicios@gposac.com.mx"
 				: userSession.getUser().getUserEmail();
 		try {
-			TicketController.AssignTicket(ticketId, employee, who, null);
+			AddFollowUpController.AssignTicket(ticketId, employee, who, null);
 		} catch (Exception e) {
 			Logger.Log(LogLevel.ERROR,
 					e.getStackTrace()[0].toString(), e);

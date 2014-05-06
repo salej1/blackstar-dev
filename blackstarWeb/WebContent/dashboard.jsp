@@ -102,18 +102,23 @@
 			});
 		</script>
 <!-- Fin Tabla De Tickets Asignados -->
-
-<!-- Tabla De Ordenes De Servicio Con Pendientes -->
-		<c:import url="pendingPersonalServiceOrders.jsp"></c:import>
-		<script type="text/javascript">
-			$(function(){
-				pendingPersonalServiceOrders_init();
-			});
-		</script>
-<!-- Fin Tabla De Ordenes De Servicio Con Pendientes -->
 	</c:if>
 
 <!-- Fin Contenido De Perfil Sysservicio -->
+
+<!-- Contenido para todo grupo sac Excepto cientes -->
+	<c:set var="sacNoCustomer" scope="request" value="${user.belongsToGroup['Cliente'] == null || user.belongsToGroup['Cliente'] == false}" />
+	<c:if test="${sacNoCustomer == true}">
+<!-- Tabla De Ordenes De Servicio Con Pendientes -->
+		<c:import url="issueControl.jsp"></c:import>
+		<script type="text/javascript">
+			$(function(){
+				issueControl_init();
+			});
+		</script>
+<!-- Fin Tabla De Ordenes De Servicio Con Pendientes -->
+<!-- Contenido para todo grupo sac Excepto cientes -->
+	</c:if>
 
 <!-- Contenido para clientes -->
 

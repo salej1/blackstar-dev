@@ -9,9 +9,11 @@ import org.json.JSONObject;
 
 import com.blackstar.db.dao.interfaces.OpenCustomerDAO;
 import com.blackstar.db.dao.interfaces.SchedulingDAO;
+import com.blackstar.interfaces.IEmailService;
 import com.blackstar.model.OpenCustomer;
 import com.blackstar.model.ScheduledService;
 import com.blackstar.model.dto.ScheduledServiceDTO;
+import com.blackstar.services.EmailServiceFactory;
 import com.blackstar.services.GmailService;
 import com.blackstar.services.interfaces.SchedulingService;
 
@@ -93,6 +95,8 @@ public class SchedulingServiceImpl implements SchedulingService {
 		saveService.setDescription(service.getDescription());
 		saveService.setOpenCustomerId(service.getOpenCustomerId());
 		saveService.setProject(service.getProject());
+		saveService.setServiceContact(service.getServiceContact());
+		saveService.setServiceContactEmail(service.getServiceContactEmail());
 		if(service.getScheduledServiceId() != null && service.getScheduledServiceId() > 0){
 			saveService.setModifiedBy(who);
 			saveService.setModifiedByUsr(user);
@@ -167,12 +171,15 @@ public class SchedulingServiceImpl implements SchedulingService {
 		.append("Agendado por: " + service.getCreatedByUsr())
 		.append("Fecha y hora: " + sdf.format(service.getServiceStartDate()))
 		.append("Numero de dias: " + service.getNumDays().toString())
+		.append("Persona de contacto :" + service.getServiceContact())
+		.append("Email de contacto: " + service.getServiceContactEmail())
 		.append("Indicaciones: " + service.getDescription())
 		.append("Ingenieros asignados: " + service.getEmployeeNamesString())
 		.append("Equipos por revisar: " + service.getSerialNumberList());
 		
 		for(String employee : service.getEmployeeList()){
-			gmService.sendEmail(employee, subject, body.toString());
+			IEmailService mail = EmailServiceFactory.getEmailService();
+			mail.sendEmail(service.getCreatedByUsr(), employee, subject, body.toString());
 		}
 	}
 }

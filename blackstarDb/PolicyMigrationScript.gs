@@ -278,7 +278,7 @@ function startPolicySyncJob(conn, sqlLog){
 	var eqTypes = loadEquipmentTypes(conn);
 	
 	// start point at the spreadsheet
-	const offset = 656; // Ajustar de acuerdo al numero de polizas cargadas en el sistema
+	const offset = 4; // Ajustar de acuerdo al numero de polizas cargadas en el sistema
 	var startRec = offset;
 	
 	// iterate looking for new policies
@@ -289,7 +289,13 @@ function startPolicySyncJob(conn, sqlLog){
 	var currPolicy = data[0];
 	
 	while(currPolicy != null && currPolicy[0] != null && currPolicy[0].toString() != ""){
-		sqlLog = sendPolicyToDatabase(currPolicy, conn, eqTypes, sqlLog);
+		try{
+			sqlLog = sendPolicyToDatabase(currPolicy, conn, eqTypes, sqlLog);
+		}
+		catch(err){
+			Logger.log("Error al sincronizar poliza # " + startRec);
+			Logger.log(err);
+		}
 		startRec++;
 		range = "A" + startRec.toString() + ":AE" + startRec.toString();
 		data = SpreadsheetApp.getActiveSpreadsheet().getRange(range).getValues();

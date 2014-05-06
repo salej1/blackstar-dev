@@ -297,23 +297,27 @@ BEGIN
 -- -----------------------------------------------------------------------------
 	-- SINCRONIZACION Y ACCESO A USUARIOS DE CLIENTES
 	INSERT INTO blackstarDbTransfer.equipmentUserSync (customerName, equipmentUser)
-	SELECT DISTINCT customer, equipmentUser FROM policy
-	WHERE ifnull(equipmentUser, '') != '';
+	SELECT DISTINCT customer, equipmentUser FROM policy p
+		LEFT OUTER JOIN blackstarDb.blackstarUser u ON p.equipmentUser = u.email
+	WHERE ifnull(equipmentUser, '') != ''
+	AND u.blackstarUserId IS NULL;
 
-    SET @c = 1 ;
-    SET @max = (SELECT count(*) FROM equipmentUserSync) ;   
-    SET @customer = '';
-    SET @access = '';
-    WHILE @c <= @max DO
-    	SET  @customer = (SELECT customerName FROM equipmentUserSync WHERE equipmentUserSyncId = @c);
-    	SET  @access = (SELECT equipmentUser FROM equipmentUserSync WHERE equipmentUserSyncId = @c);
-    	Call blackstarDb.UpsertUser(@access, @customer);
-		Call blackstarDb.CreateUserGroup('sysCliente','Cliente',@access);
+	IF (SELECT count(*) FROM equipmentUserSync) > 1 THEN
+	    SET @c = (SELECT min(equipmentUserSyncId) FROM equipmentUserSync) ;   
+	    SET @max = (SELECT max(equipmentUserSyncId) FROM equipmentUserSync) ;   
+	    SET @customer = '';
+	    SET @access = '';
+	    WHILE @c <= @max DO
+	    	SET  @customer = (SELECT customerName FROM blackstarDbTransfer.equipmentUserSync WHERE equipmentUserSyncId = @c);
+	    	SET  @access = (SELECT equipmentUser FROM blackstarDbTransfer.equipmentUserSync WHERE equipmentUserSyncId = @c);
+	    	Call blackstarDb.UpsertUser(@access, @customer);
+			Call blackstarDb.CreateUserGroup('sysCliente','Cliente',@access);
 
-      	SET @c = @c + 1 ;
-    END WHILE ;
+	      	SET @c = @c + 1 ;
+	    END WHILE ;
 
-    TRUNCATE TABLE equipmentUserSync;
+	    DELETE FROM blackstarDbTransfer.equipmentUserSync;
+    END IF;
 -- -----------------------------------------------------------------------------
 END$$
 

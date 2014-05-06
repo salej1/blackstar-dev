@@ -26,6 +26,8 @@ public class ScheduledServiceDTO implements Serializable {
 		this.modifiedBy = schService.getModifiedBy();
 		this.modifiedByUsr = schService.getModifiedByUsr();
 		this.project = schService.getProject();
+		this.serviceContact = schService.getServiceContact();
+		this.serviceContactEmail = schService.getServiceContactEmail();
 	}
 	
 	public ScheduledServiceDTO(ScheduledService schService, OpenCustomer customer){
@@ -38,6 +40,8 @@ public class ScheduledServiceDTO implements Serializable {
 		this.modifiedBy = schService.getModifiedBy();
 		this.modifiedByUsr = schService.getModifiedByUsr();
 		this.project = schService.getProject();
+		this.serviceContact = schService.getServiceContact();
+		this.serviceContactEmail = schService.getServiceContactEmail();
 		// customer
 		this.openCustomerId = customer.getOpenCustomerId();
 		this.customer = customer.getCustomerName();
@@ -63,6 +67,9 @@ public class ScheduledServiceDTO implements Serializable {
 	private String modifiedBy;
 	private String modifiedByUsr;
 	private String project;
+	private String serviceContact;
+	private String serviceContactEmail;
+	
 	// Policy
 	private List<Integer> policyList;
 	private String equipmentType;
@@ -310,5 +317,21 @@ public class ScheduledServiceDTO implements Serializable {
 
 	public void setDefaultEmployee(String defaultEmployee) {
 		this.defaultEmployee = defaultEmployee;
+	}
+
+	public String getServiceContact() {
+		return serviceContact;
+	}
+
+	public void setServiceContact(String serviceContact) {
+		this.serviceContact = serviceContact;
+	}
+
+	public String getServiceContactEmail() {
+		return serviceContactEmail;
+	}
+
+	public void setServiceContactEmail(String serviceContactEmail) {
+		this.serviceContactEmail = serviceContactEmail;
 	}
 }

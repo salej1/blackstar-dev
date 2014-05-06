@@ -24,10 +24,11 @@ import javax.persistence.TemporalType;
 @Table(name = "serviceorder", catalog = "blackstarDb")
 public class Serviceorder implements java.io.Serializable {
 
+	private static final long serialVersionUID = -2987673896961451645L;
 	private Integer serviceOrderId;
 	private Character serviceTypeId;
 	private Integer ticketId;
-	private Short policyId;
+	private Integer policyId;
 	private String serviceUnit;
 	private Date serviceDate;
 	private String responsible;
@@ -58,7 +59,7 @@ public class Serviceorder implements java.io.Serializable {
 	}
 
 	public Serviceorder(Character serviceTypeId, Integer ticketId,
-			Short policyId, String serviceUnit, Date serviceDate,
+			Integer policyId, String serviceUnit, Date serviceDate,
 			String responsible, String receivedBy, String serviceComments,
 			String statusId, Date closed, String consultant, String coordinator,
 			String asignee, Date created, String createdBy,
@@ -125,11 +126,11 @@ public class Serviceorder implements java.io.Serializable {
 	}
 
 	@Column(name = "policyId")
-	public Short getPolicyId() {
+	public Integer getPolicyId() {
 		return this.policyId;
 	}
 
-	public void setPolicyId(Short policyId) {
+	public void setPolicyId(Integer policyId) {
 		this.policyId = policyId;
 	}
 

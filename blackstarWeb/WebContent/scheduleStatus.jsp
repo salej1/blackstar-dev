@@ -47,7 +47,7 @@
 		<!--   CONTENT COLUMN   -->
 		<div>
 			<div>
-				<img src="/img/navigate-right.png"/><a href="/scheduleStatus/scheduledServiceDetail.do?serviceId=0">Agendar servicio preventivo</a>
+				<img src="/img/navigate-right.png"/><a href="/scheduleStatus/scheduledServiceDetail.do?serviceId=0">Agendar servicio</a>
 			</div>
 		</div>
 		<p>
@@ -55,7 +55,7 @@
 		</p>
 		<div class="grid_16">
 			<div class="box">
-				<h2>Programa semanal de servicios preventivos</h2>
+				<h2>Programa semanal de servicios</h2>
 				<div class="utils"></div>
 				<caption>&nbsp;</caption>
 				<table>

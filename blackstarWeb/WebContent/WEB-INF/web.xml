@@ -107,16 +107,6 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
   </servlet-mapping>
   <servlet>
     <description></description>
-    <display-name>AddFollowUp</display-name>
-    <servlet-name>AddFollowUp</servlet-name>
-    <servlet-class>com.blackstar.web.AddFollowUp</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>AddFollowUp</servlet-name>
-    <url-pattern>/addFollowUp</url-pattern>
-  </servlet-mapping>
-  <servlet>
-    <description></description>
     <display-name>Logout</display-name>
     <servlet-name>Logout</servlet-name>
     <servlet-class>com.blackstar.web.Logout</servlet-class>

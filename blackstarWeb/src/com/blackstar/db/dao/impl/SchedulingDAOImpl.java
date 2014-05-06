@@ -56,12 +56,14 @@ public class SchedulingDAOImpl extends AbstractDAO implements SchedulingDAO {
 
 	@Override
 	public Integer upsertScheduledService(ScheduledService service) {
-		String sql = "CALL UpsertScheduledService(?,?,?,?,?,?)";
+		String sql = "CALL UpsertScheduledService(?,?,?,?,?,?,?,?)";
 		Integer id = getJdbcTemplate().queryForObject(sql, new Object[]{
 				service.getScheduledServiceId(), 
 				service.getDescription(),
 				service.getOpenCustomerId(),
 				service.getProject(),
+				service.getServiceContact(),
+				service.getServiceContactEmail(),
 				service.getModifiedBy() == null? service.getCreatedBy() : service.getModifiedBy(),
 				service.getModifiedByUsr() == null? service.getCreatedByUsr():service.getModifiedByUsr()
 			}, Integer.class);
@@ -107,7 +109,7 @@ public class SchedulingDAOImpl extends AbstractDAO implements SchedulingDAO {
 	@Override
 	public void addScheduledServiceDate(Integer serviceId, Date date,
 			String who, String user) {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		
 		String sql = "CALL AddScheduledServiceDate(?,?,?,?)";
 		getJdbcTemplate().update(sql, new Object[]{serviceId, sdf.format(date), who, user});

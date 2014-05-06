@@ -14,6 +14,8 @@ public class ScheduledService {
 	private String modifiedBy;
 	private String modifiedByUsr;
 	private String project;
+	private String serviceContact;
+	private String serviceContactEmail;
 	
 	public int getScheduledServiceId() {
 		return scheduledServiceId;
@@ -80,5 +82,17 @@ public class ScheduledService {
 	}
 	public void setProject(String project) {
 		this.project = project;
+	}
+	public String getServiceContact() {
+		return serviceContact;
+	}
+	public void setServiceContact(String serviceContact) {
+		this.serviceContact = serviceContact;
+	}
+	public String getServiceContactEmail() {
+		return serviceContactEmail;
+	}
+	public void setServiceContactEmail(String serviceContactEmail) {
+		this.serviceContactEmail = serviceContactEmail;
 	}
 }

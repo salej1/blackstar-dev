@@ -95,8 +95,7 @@ public class OfflineOSServiceImpl extends AbstractService
 	Serviceorder servicioOrderSave = new Serviceorder();
     servicioOrderSave.setAsignee( serviceOrder.getResponsible());
     servicioOrderSave.setClosed(serviceOrder.getClosed());
-    servicioOrderSave.setPolicyId((Short.parseShort(serviceOrder.getPolicyId()
-    		                                                   .toString())));
+    servicioOrderSave.setPolicyId(serviceOrder.getPolicyId());
     servicioOrderSave.setReceivedBy(serviceOrder.getReceivedBy());
     servicioOrderSave.setReceivedByPosition(serviceOrder.getReceivedByPosition());
     servicioOrderSave.setResponsible(serviceOrder.getResponsible());
@@ -122,8 +121,7 @@ public class OfflineOSServiceImpl extends AbstractService
     Serviceorder servicioOrderSave = new Serviceorder();
 	servicioOrderSave.setAsignee( serviceOrder.getResponsible());
 	servicioOrderSave.setClosed(serviceOrder.getClosed());
-	servicioOrderSave.setPolicyId((Short.parseShort(serviceOrder.getPolicyId()
-			                                                   .toString())));
+	servicioOrderSave.setPolicyId(serviceOrder.getPolicyId());
 	servicioOrderSave.setReceivedBy(serviceOrder.getReceivedBy());
 	servicioOrderSave.setReceivedByPosition(serviceOrder.getReceivedByPosition());
 	servicioOrderSave.setResponsible(serviceOrder.getResponsible());
@@ -149,8 +147,7 @@ public class OfflineOSServiceImpl extends AbstractService
     Serviceorder servicioOrderSave = new Serviceorder();
     servicioOrderSave.setAsignee( serviceOrder.getResponsible());
     servicioOrderSave.setClosed(serviceOrder.getClosed());
-    servicioOrderSave.setPolicyId((Short.parseShort(serviceOrder.getPolicyId()
-                                                               .toString())));
+    servicioOrderSave.setPolicyId(serviceOrder.getPolicyId());
     servicioOrderSave.setReceivedBy(serviceOrder.getReceivedBy());
     servicioOrderSave.setReceivedByPosition(serviceOrder.getReceivedByPosition());
     servicioOrderSave.setResponsible(serviceOrder.getResponsible());
@@ -176,8 +173,7 @@ public class OfflineOSServiceImpl extends AbstractService
     Serviceorder servicioOrderSave = new Serviceorder();
     servicioOrderSave.setAsignee( serviceOrder.getResponsible());
     servicioOrderSave.setClosed(serviceOrder.getClosed());
-    servicioOrderSave.setPolicyId((Short.parseShort(serviceOrder.getPolicyId()
-                                                               .toString())));
+    servicioOrderSave.setPolicyId(serviceOrder.getPolicyId());
     servicioOrderSave.setReceivedBy(serviceOrder.getReceivedBy());
     servicioOrderSave.setReceivedByPosition(serviceOrder.getReceivedByPosition());
     servicioOrderSave.setResponsible(serviceOrder.getResponsible());
