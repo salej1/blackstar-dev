@@ -1,7 +1,6 @@
 package com.blackstar.db.dao.impl;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -9,7 +8,6 @@ import java.util.List;
 import com.blackstar.db.dao.interfaces.UserDAO;
 import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
-import com.blackstar.model.Ticket;
 import com.blackstar.model.User;
 
 public class MySQLUserDAO implements UserDAO {

@@ -87,7 +87,7 @@ public class GoogleDriveServiceImpl extends AbstractService
     credential.refreshToken();
     credential.getAccessToken();
     drive = new Drive.Builder(httpTransport, jsonFactory, null)
-            .setHttpRequestInitializer(credential).build();
+                .setHttpRequestInitializer(credential).build();
     } catch(Exception e){
     	e.printStackTrace();
     	Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
@@ -127,8 +127,12 @@ public class GoogleDriveServiceImpl extends AbstractService
   }
   
   public String getAccessToken() throws Exception {
-	credential.refreshToken();
-	return credential.getAccessToken();
+	String accessToken = null;
+	if(credential != null){
+	  credential.refreshToken();
+	  accessToken = credential.getAccessToken();
+	}
+	return accessToken;
   }
   
   private void setPermissions(String fileId) throws Exception{

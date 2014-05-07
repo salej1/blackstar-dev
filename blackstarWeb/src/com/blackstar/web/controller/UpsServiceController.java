@@ -23,8 +23,6 @@ import com.blackstar.model.Policy;
 import com.blackstar.model.Serviceorder;
 import com.blackstar.model.Ticket;
 import com.blackstar.model.UserSession;
-import com.blackstar.model.dto.AirCoServicePolicyDTO;
-import com.blackstar.model.dto.EmergencyPlantServicePolicyDTO;
 import com.blackstar.model.dto.UpsServiceDTO;
 import com.blackstar.model.dto.UpsServicePolicyDTO;
 import com.blackstar.services.interfaces.ReportService;
@@ -103,6 +101,7 @@ public class UpsServiceController extends AbstractController {
 		  		  }
 
 		  		  model.addAttribute("osAttachmentFolder", gdService.getAttachmentFolderId(upsServicePolicyDTO.getServiceOrderNumber()));
+		  		  model.addAttribute("accessToken", gdService.getAccessToken());
 	  		  }
 			  else
 			  {

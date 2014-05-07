@@ -78,5 +78,6 @@
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/PDFjet.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/appengine-endpoints-deps.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/spring-context-support-3.2.4.RELEASE.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/commons-lang3-3.1.jar"/>
 	<classpathentry kind="output" path="WebContent/WEB-INF/classes"/>
 </classpath>

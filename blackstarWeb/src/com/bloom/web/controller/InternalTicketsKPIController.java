@@ -26,21 +26,20 @@ public class InternalTicketsKPIController extends AbstractController {
   @RequestMapping(value = "/indServicios/show.do", method = RequestMethod.GET)
   public String show(ModelMap model) {
 	try {
-		  
 	} catch (Exception e) {
 		Logger.Log(LogLevel.ERROR,e.getStackTrace()[0].toString(), e);
 		e.printStackTrace();
 		model.addAttribute("errorDetails", e.getStackTrace()[0].toString());
 		return "error";
 	}
-	return "/bloom/indicadores";
+	return "bloom/indicadores";
   }
   
   @RequestMapping(value = "/indServicios/getTicketByUser.do", method = RequestMethod.GET)
   public String getTicketByUser(ModelMap model) {
 	try {
 		 model.addAttribute("ticketsByUser", service.getTicketsByUser());
-		 
+
 	} catch (Exception e) {
 		Logger.Log(LogLevel.ERROR,e.getStackTrace()[0].toString(), e);
 		e.printStackTrace();
@@ -107,6 +106,7 @@ public class InternalTicketsKPIController extends AbstractController {
 	try {
 		 model.addAttribute("graphics", service.getTicketByServiceAreaKPI());
 	} catch (Exception e) {
+		System.out.println("Error => " + e);
 		Logger.Log(LogLevel.ERROR,e.getStackTrace()[0].toString(), e);
 		e.printStackTrace();
 		model.addAttribute("errorDetails", e.getStackTrace()[0].toString());
