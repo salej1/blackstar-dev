@@ -8,7 +8,7 @@ public class OpenCustomerDAOImpl extends AbstractDAO implements OpenCustomerDAO 
 
 	@Override
 	public Integer SaveOpenCustomer(OpenCustomer customer) {
-		String sql = "CALL SaveOpenCustomer(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
+		String sql = "CALL SaveOpenCustomer(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
 		Integer id = (Integer)getJdbcTemplate().queryForObject(sql, new Object[]{
 				customer.getOpenCustomerId(),
 				customer.getCustomerName(),
@@ -21,6 +21,7 @@ public class OpenCustomerDAOImpl extends AbstractDAO implements OpenCustomerDAO 
 				customer.getSerialNumber(),
 				customer.getContactName(),
 				customer.getContactEmail(),
+				customer.getProject(),
 				customer.getOfficeId(),
 				customer.getCreatedBy(),
 				customer.getCreatedByUsr(),

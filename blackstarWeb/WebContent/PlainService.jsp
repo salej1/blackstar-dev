@@ -127,11 +127,6 @@
 			$("#equipmentTypeId").val($(this).val());
 		});
 		
-		// inicializando el dialogo para agregar seguimientos
-		if(mode == "new"){
-			initFollowUpDlg("serviceOrder", "osDetail?serviceOrderId=${serviceOrder.serviceOrderId}");			
-		}
-
 		// Cierre de la OS
 		$("#closeBtn").bind("click", function(){
 			$("#serviceStatusId").val('C');
@@ -174,7 +169,7 @@
 										</c:if>	
 										<form:input path="serviceOrderId" type="hidden"/>
 									</td>
-									<td style="width:120px">No. de ticket</td>
+									<td style="width:140px">No. de ticket</td>
 									<td><form:input cssClass="lockOnDetail" path="ticketNumber" type="text" readOnly="true" style="width:95%;"/></td>
 								</tr>
 								<tr>
@@ -190,7 +185,7 @@
 									<td>Solicitante</td>
 									<td><form:textarea cssClass="lockOnDetail" path="finalUser" style="width:95%;height:50px;" required="true"></form:textarea></td>
 									<td>Teléfono</td>
-									<td><form:input type="text" cssClass="lockOnDetail" path="contactPhone" style="width:95%;"  required="true"/></td>
+									<td><form:input type="text" cssClass="lockOnDetail lockOnPolicy" path="contactPhone" style="width:95%;"  required="true"/></td>
 								</tr>
 								<tr>
 									<td>Equipo</td>
@@ -208,13 +203,8 @@
 									</td>
 									<td>Oficina</td>
 									<td>
-										<form:input type="hidden" path="officeId" id="officeId"/>
-										<select class="lockOnDetail lockOnPolicy" id="optOffices">
-											<option value="">Todas</option>
-											<c:forEach var="office" items="${offices}">
-												<option value = "${office}">${office}</option>
-											</c:forEach>					
-										</select>
+										<form:select path="officeId" items="${offices}" cssClass="lockOnDetail lockOnPolicy"/>
+										
 									</td>
 								</tr>
 								<tr>
@@ -423,7 +413,7 @@
 									<button class="searchButton eligible coorOnly" id="closeBtn">Cerrar</button>
 								</c:if>	
 							</c:if>	
-							<input class="searchButton" id="guardarServicio" type="submit" value="Guardar servicio" onclick="saveService();">
+							<input class="searchButton" id="guardarServicio" type="submit" onclick="saveService();" value="Guardar servicio" form="serviceOrder"/>
 							<button class="searchButton" onclick="window.location = '/serviceOrders/show.do'">Cancelar</button>
 							</td>
 						</tr>

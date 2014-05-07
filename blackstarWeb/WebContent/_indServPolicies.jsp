@@ -74,14 +74,17 @@
 						  { "mData": "serviceCenter"}],
 			"fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull){
 								var ed = new Date(aData.endDate);
-								var edPlus = new Date(aData.endDate).addMonths(2);
 								var today = new Date();
+								var criticalDate = new Date(aData.endDate).addMonths(-2);
 
-								if(edPlus.getTime() < today.getTime()){
+								if(ed.getTime() < today.getTime()){
 									$(nRow).css('background-color', '#F5A2A4');
 								}
-								else if(ed.getTime() < today.getTime()){
+								else if(criticalDate.getTime() < today.getTime()){
 									$(nRow).css('background-color', '#F2CF83');
+								}
+								else{
+									$(nRow).css('background-color', '#FFFFFF');
 								}
 							}
                 }

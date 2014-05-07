@@ -8,6 +8,7 @@
 <html>
 <head>
 	<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/jquery.datetimepicker.css"/ >
+	<script src="${pageContext.request.contextPath}/js/dateFormat.js"></script>
 </head>
 <body>
 
@@ -23,6 +24,8 @@
 				<form:hidden path="referenceTypeId"/>
 				<form:hidden path="referenceStatusId"/>
 				<form:hidden path="createdByUsr"/>
+				<form:hidden path="created"/>
+				<form:hidden path="modified"/>
 				<table>
 					<tbody>
 						<tr>
@@ -68,7 +71,7 @@
 			<c:import url="followUpControl.jsp"></c:import>
 			<script type="text/javascript">
 				$(function(){
-					initFollowUpDlg("issue", "issues/show.do?issueId=${issue.referenceId}");
+					initFollowUpDlg("issue", "/issues/show.do?issueId=${issue.referenceId}");
 				});
 			</script>
 		</c:if>
@@ -96,13 +99,13 @@
 	</div>
 	<div id="resolveCommentsDlg" title="Resolver asunto pendiente">
 		<div>
-		<Label id="resolutionTimeStamp" style="display:inline;">stamp</Label><Label id="seguimientoSender" style="display:inline;">: </Label>
-	</div>
-	<div> Asignar a: </div>
-		<form:select path="issue.createdByUsr" items="${employees}" itemValue="userEmail" itemLabel="userName" disabled="true"/>
-		<p style='padding-top=10px;'>
+			<Label id="resolutionTimeStamp" style="display:inline;">stamp</Label><Label id="seguimientoSender" style="display:inline;">: </Label>
+		</div>
+		<div style='padding-top:10px;'> Asignar a: </div>
+			<form:select path="issue.createdByUsr" items="${employees}" itemValue="userEmail" itemLabel="userName" disabled="true"/>
+		<div style='padding-top:10px;'>
 			Resolucion:
-		</p>
+		</div>
 		<textarea name="" id="resolutionText" style="width:95%" rows="5">
 			
 		</textarea>
@@ -114,6 +117,10 @@
 
 		if(mode == "detail"){
 			$(".lockOnDetail").attr("disabled", "");
+			$("#modified").val(dateNow());
+		}
+		else if(mode=="new"){
+			$("#created").val(dateNow());
 		}
 
 		$("#resolveCommentsDlg").dialog({
@@ -133,7 +140,6 @@
 			}}
 		});
 
-		$("#resolutionTimeStamp").html(d.format('dd/MM/yyyy hh:mm:ss'));
 	});
 
 	function closeIssue(){
@@ -150,7 +156,7 @@
 
 	function resolveIssue(){
 		$("#resolveCommentsDlg").dialog('open');	
-		$("#seguimientoStamp").html(d.format('dd/MM/yyyy hh:mm:ss'));
+		$("#resolutionTimeStamp").html(dateNow());
 		$("#seguimientoSender").html(' ${ user.userName }:');
 		$("#resolutionText").val('');
 		addFollowUpId = id;

@@ -208,7 +208,9 @@ public class PlainServiceController extends AbstractController {
 	    			// Actualizar orden de servicio
 		    		Serviceorder servicioOrderSave = new Serviceorder();
 		    		servicioOrderSave.setServiceOrderId(serviceOrder.getServiceOrderId());
-		    		servicioOrderSave.setAsignee( serviceOrder.getResponsible());
+		    		if(serviceOrder.getClosed() != null && serviceOrder.getServiceStatusId().equals("C")){
+		    			servicioOrderSave.setAsignee(null);
+		    		}
 		    		servicioOrderSave.setClosed(serviceOrder.getClosed());
 		    		servicioOrderSave.setIsWrong(serviceOrder.getIsWrong()?1:0);
 		    		servicioOrderSave.setStatusId(serviceOrder.getServiceStatusId());
@@ -230,6 +232,8 @@ public class PlainServiceController extends AbstractController {
 			    		customer.setAddress(serviceOrder.getEquipmentAddress());
 			    		customer.setContactName(serviceOrder.getContactName());
 			    		customer.setPhone(serviceOrder.getContactPhone());
+			    		customer.setProject(serviceOrder.getProject());
+			    		customer.setOfficeId(serviceOrder.getOfficeId().length()>0?serviceOrder.getOfficeId().substring(0,1):null);
 			    		customer.setCreated(new Date());
 			    		customer.setCreatedBy("PlainServiceController");
 			    		customer.setCreatedByUsr(userSession.getUser().getUserEmail());

@@ -24,6 +24,7 @@ public class OpenCustomer implements java.io.Serializable  {
 	private String modifiedBy ;
 	private String modifiedByUsr ;
 	private String officeId;
+	private String project;
 	
 	public Integer getOpenCustomerId() {
 		return openCustomerId;
@@ -137,5 +138,11 @@ public class OpenCustomer implements java.io.Serializable  {
 		if(officeId != null && officeId.length() > 0){
 			this.officeId = officeId.substring(0, 1);
 		}
+	}
+	public String getProject() {
+		return project;
+	}
+	public void setProject(String project) {
+		this.project = project;
 	}
 }

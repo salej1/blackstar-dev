@@ -29,9 +29,7 @@ public class PlainServicePolicyDTO {
 		this.contactName = customer.getContactName();
 		this.contactPhone = customer.getPhone();
 		this.officeId = customer.getOfficeId();
-		
-		this.closed = new Date();
-		this.serviceDate = new Date();
+		this.project = customer.getProject();
 		
 	}
 	
@@ -50,8 +48,7 @@ public class PlainServicePolicyDTO {
 		this.contactName = customer.getContactName();
 		this.contactPhone = customer.getPhone();
 		this.officeId = customer.getOfficeId();
-		this.closed = new Date();
-		this.serviceDate = new Date();
+		this.project = customer.getProject();
 		
 		this.serviceOrderId = serviceOrder.getServiceOrderId();
 		this.ticketId = serviceOrder.getTicketId();
@@ -100,9 +97,7 @@ public class PlainServicePolicyDTO {
 		this.officeId = String.valueOf(policy.getOfficeId());
 		this.contactName = policy.getContactName();
 		this.contactPhone = policy.getContactPhone();
-		
-		this.closed = new Date();
-		this.serviceDate = new Date();
+		this.project = policy.getProject();
 	}
 	
 
@@ -122,6 +117,7 @@ public class PlainServicePolicyDTO {
 		this.officeId = String.valueOf(policy.getOfficeId());
 		this.contactName = policy.getContactName();
 		this.contactPhone = policy.getContactPhone();
+		this.project = policy.getProject();
 		
 		this.serviceOrderId = serviceOrder.getServiceOrderId();
 		this.ticketId = serviceOrder.getTicketId();
@@ -164,6 +160,7 @@ public class PlainServicePolicyDTO {
 		this.officeId = String.valueOf(policy.getOfficeId());
 		this.contactName = policy.getContactName();
 		this.contactPhone = policy.getContactPhone();
+		this.project = policy.getProject();
 		
 		this.serviceOrderId = serviceOrder.getServiceOrderId();
 		this.ticketId = serviceOrder.getTicketId();

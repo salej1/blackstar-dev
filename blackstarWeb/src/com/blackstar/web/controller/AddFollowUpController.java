@@ -110,7 +110,7 @@ public class AddFollowUpController extends AbstractController{
 				}
 			}
 			
-			return "redirect:/" + redirect;
+			return "redirect:" + redirect;
 		} catch (Exception ex) {
 			Logger.Log(LogLevel.ERROR,
 					Thread.currentThread().getStackTrace()[1].toString(), ex);

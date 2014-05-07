@@ -331,7 +331,7 @@
 			$('#lbEstatus').val('${ticketstatusT.ticketStatus}');
 			
 			// inicializando el dialogo para agregar seguimientos
-			initFollowUpDlg("ticket", "ticketDetail?ticketId=${ticketF.ticketId}");
+			initFollowUpDlg("ticket", "/ticketDetail?ticketId=${ticketF.ticketId}");
 		});
 	
 		glow.ready(function(){

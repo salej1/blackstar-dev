@@ -46,14 +46,14 @@ public class IssueServiceImpl implements IssueService {
 			i.setIssueNumber(issue.getReferenceNumber());
 			i.setAsignee(issue.getReferenceAsignee());
 			if(issue.getReferenceId() != null && issue.getReferenceId() > 0){
-				i.setCreated(new Date());
-				i.setCreatedBy(who);
-				i.setCreatedByUsr(user);
-			}
-			else{
-				i.setModified(new Date());
+				i.setModified(issue.getModified());
 				i.setModifiedBy(who);
 				i.setModifiedByUsr(user);
+			}
+			else{
+				i.setCreated(issue.getCreated());
+				i.setCreatedBy(who);
+				i.setCreatedByUsr(user);
 			}
 			i.setProject(issue.getProject());
 			i.setCustomer(issue.getCustomer());

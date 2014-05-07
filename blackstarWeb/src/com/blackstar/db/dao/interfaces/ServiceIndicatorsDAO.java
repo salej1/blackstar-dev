@@ -14,7 +14,7 @@ import com.blackstar.model.sp.GetStatisticsKPI;
 public interface ServiceIndicatorsDAO {
 	
   public List<JSONObject> getTickets();
-  public List<JSONObject> getPolicies();
+  public List<JSONObject> getPolicies(String project, Date startDate, Date endDate);
   public List<GetConcurrentFailuresKPI> getConcurrentFailures();
   public List<JSONObject> getMaxPeportsByUser();
   public List<GetReportOSTableKPI> getReportOSTable();

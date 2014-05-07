@@ -23,9 +23,9 @@ public class ServiceIndicatorsDAOImpl extends AbstractDAO
 	return getJdbcTemplate().query(sqlQuery,  new JSONRowMapper()); 
   }
 	
-  public List<JSONObject> getPolicies(){
-	String sqlQuery = "CALL GetPoliciesKPI()";
-	return getJdbcTemplate().query(sqlQuery,  new JSONRowMapper()); 
+  public List<JSONObject> getPolicies(String project, Date startDate, Date endDate){
+	String sqlQuery = "CALL GetPoliciesKPI(?,?,?)";
+	return getJdbcTemplate().query(sqlQuery, new Object[]{project, startDate, endDate}, new JSONRowMapper()); 
   }
   
   

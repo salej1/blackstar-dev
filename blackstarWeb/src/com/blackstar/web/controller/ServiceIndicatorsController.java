@@ -62,9 +62,12 @@ public class ServiceIndicatorsController extends AbstractController {
   }
   
   @RequestMapping(value= "/getPolicies.do", method = RequestMethod.GET)
-  public String  getPolicies(ModelMap model){
+  public String  getPolicies( @RequestParam(required = true) Date startDate,
+		  @RequestParam(required = true) Date endDate,
+		  @RequestParam(required = true) String project,
+		  ModelMap model){
 	try {
-	     model.addAttribute("policies", service.getPolicies());
+	     model.addAttribute("policies", service.getPolicies(project, startDate, endDate));
 	} catch (Exception e) {
 		Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 		e.printStackTrace();

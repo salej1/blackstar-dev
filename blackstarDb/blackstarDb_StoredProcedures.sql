@@ -958,6 +958,7 @@ CREATE PROCEDURE blackstarDb.SaveOpenCustomer(
 	serialNumber VARCHAR(100),
 	contactName VARCHAR(100),
 	contactEmail VARCHAR(100),
+	project VARCHAR(100),
 	officeId VARCHAR(1),
 	createdBy NVARCHAR(50),
 	createdByUsr NVARCHAR(50),
@@ -977,6 +978,7 @@ BEGIN
 			c.serialNumber = serialNumber,
 			c.contactName = contactName,
 			c.contactEmail = contactEmail,
+			c.project = project,
 			c.officeId = officeId,
 			c.modified = NOW(),
 			c.modifiedBy = modifiedBy,
@@ -985,10 +987,10 @@ BEGIN
 		SELECT openCustomerId;
 	ELSE
 		INSERT INTO blackstarDb.openCustomer(
-			customerName, address, phone, equipmentTypeId, brand, model, capacity, serialNumber, contactName, contactEmail, officeId, created, createdBy, createdByUsr
+			customerName, address, phone, equipmentTypeId, brand, model, capacity, serialNumber, contactName, contactEmail, project, officeId, created, createdBy, createdByUsr
 		)
 		VALUES(
-			customerName, address, phone, equipmentTypeId, brand, model, capacity, serialNumber, contactName, contactEmail, officeId, NOW(), createdBy, createdByUsr
+			customerName, address, phone, equipmentTypeId, brand, model, capacity, serialNumber, contactName, contactEmail, project, officeId, NOW(), createdBy, createdByUsr
 		);
 		SELECT LAST_INSERT_ID();
 	END IF;
@@ -1519,14 +1521,15 @@ END$$
 DROP PROCEDURE IF EXISTS blackstarDb.GetMaxReportsByUserKPI$$
 CREATE PROCEDURE blackstarDb.GetMaxReportsByUserKPI()
 BEGIN
-SELECT tk.employee as employee,
+SELECT ifnull(tk.contactEmail, 'Sin usuario') as employee,
        py.customer as customer,
        tk.created as created,
        count(*) counter
 FROM ticket tk
-INNER JOIN policy py ON tk.policyId = py.policyId
+	INNER JOIN policy py ON tk.policyId = py.policyId
 WHERE tk.employee != ''
-GROUP BY tk.employee, MONTH(tk.created)
+	AND tk.created > STR_TO_DATE(CONCAT('01-01-',YEAR(NOW())),'%d-%m-%Y')
+GROUP BY ifnull(tk.contactEmail, 'Sin usuario'), MONTH(tk.created)
 HAVING counter >= 2
 ORDER BY MONTH(tk.created) ASC;
 END$$
@@ -1562,42 +1565,80 @@ SELECT  tk.employee as employee,
 	-- blackstarDb.GetPoliciesKPI
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetPoliciesKPI$$
-CREATE PROCEDURE blackstarDb.`GetPoliciesKPI`()
+CREATE PROCEDURE blackstarDb.`GetPoliciesKPI`(pProject VARCHAR(100), pStartDate DATETIME, pEndDate DATETIME)
 BEGIN
-SELECT py.policyId as policyId,
-       IFNULL(of.officeName, '') as officeName,
-       IFNULL(py.policyTypeId, '') as  policyTypeId,
-       IFNULL(py.customerContract, '') as customerContract,
-       IFNULL(py.customer, '') as customer,
-       IFNULL(py.finalUser, '') as finalUser,
-       IFNULL(py.project, '') as project,
-       IFNULL(py.cst, '') as cst,
-       IFNULL(eq.equipmentType, '') as equipmentType,
-       IFNULL(py.brand, '') as brand,
-       IFNULL(py.model, '') as model,
-       IFNULL(py.serialNumber, '') as serialNumber,
-       IFNULL(py.capacity, '') as capacity,
-       IFNULL(py.equipmentAddress, '') as equipmentAddress,
-       IFNULL(py.equipmentLocation, '') as equipmentLocation,
-       IFNULL(py.contactName, '') as contactName,
-       IFNULL(py.contactEmail, '') as contactEmail,
-       IFNULL(py.contactPhone, '') as contactPhone,
-       IFNULL(py.startDate, '') as startDate,
-       IFNULL(py.endDate, '') as endDate,
-       IFNULL(py.visitsPerYear, '') as visitsPerYear,
-       IFNULL(py.responseTimeHR, '') as responseTimeHR,
-       IFNULL(py.solutionTimeHR, '') as solutionTimeHR,
-       IFNULL(py.penalty, '') as penalty,
-       IFNULL(py.service, '') as service,
-       IFNULL(py.includesParts, '') as includesParts,
-       IFNULL(py.exceptionParts, '') as exceptionParts,
-       IFNULL(sc.serviceCenter, '') as serviceCenter
-	FROM policy py
-  INNER JOIN office of ON py.officeId = of.officeId
-  INNER JOIN equipmentType eq ON eq.equipmentTypeId = py.equipmentTypeId
-  INNER JOIN serviceCenter sc ON py.serviceCenterId = sc.serviceCenterId
-	WHERE py.endDate >= STR_TO_DATE(CONCAT('01-01-',YEAR(NOW())),'%d-%m-%Y')
-    ORDER BY py.endDate ASC;
+	IF pProject = 'ALL' THEN
+		SELECT py.policyId as policyId,
+		       IFNULL(of.officeName, '') as officeName,
+		       IFNULL(py.policyTypeId, '') as  policyTypeId,
+		       IFNULL(py.customerContract, '') as customerContract,
+		       IFNULL(py.customer, '') as customer,
+		       IFNULL(py.finalUser, '') as finalUser,
+		       IFNULL(py.project, '') as project,
+		       IFNULL(py.cst, '') as cst,
+		       IFNULL(eq.equipmentType, '') as equipmentType,
+		       IFNULL(py.brand, '') as brand,
+		       IFNULL(py.model, '') as model,
+		       IFNULL(py.serialNumber, '') as serialNumber,
+		       IFNULL(py.capacity, '') as capacity,
+		       IFNULL(py.equipmentAddress, '') as equipmentAddress,
+		       IFNULL(py.equipmentLocation, '') as equipmentLocation,
+		       IFNULL(py.contactName, '') as contactName,
+		       IFNULL(py.contactEmail, '') as contactEmail,
+		       IFNULL(py.contactPhone, '') as contactPhone,
+		       IFNULL(py.startDate, '') as startDate,
+		       IFNULL(py.endDate, '') as endDate,
+		       IFNULL(py.visitsPerYear, '') as visitsPerYear,
+		       IFNULL(py.responseTimeHR, '') as responseTimeHR,
+		       IFNULL(py.solutionTimeHR, '') as solutionTimeHR,
+		       IFNULL(py.penalty, '') as penalty,
+		       IFNULL(py.service, '') as service,
+		       IFNULL(py.includesParts, '') as includesParts,
+		       IFNULL(py.exceptionParts, '') as exceptionParts,
+		       IFNULL(sc.serviceCenter, '') as serviceCenter
+		FROM policy py
+		INNER JOIN office of ON py.officeId = of.officeId
+		INNER JOIN equipmentType eq ON eq.equipmentTypeId = py.equipmentTypeId
+		INNER JOIN serviceCenter sc ON py.serviceCenterId = sc.serviceCenterId
+		WHERE py.endDate >= DATE_ADD(pStartDate, INTERVAL -2 MONTH) AND py.startDate < pEndDate
+		ORDER BY py.endDate ASC;
+	ELSE
+		SELECT py.policyId as policyId,
+		       IFNULL(of.officeName, '') as officeName,
+		       IFNULL(py.policyTypeId, '') as  policyTypeId,
+		       IFNULL(py.customerContract, '') as customerContract,
+		       IFNULL(py.customer, '') as customer,
+		       IFNULL(py.finalUser, '') as finalUser,
+		       IFNULL(py.project, '') as project,
+		       IFNULL(py.cst, '') as cst,
+		       IFNULL(eq.equipmentType, '') as equipmentType,
+		       IFNULL(py.brand, '') as brand,
+		       IFNULL(py.model, '') as model,
+		       IFNULL(py.serialNumber, '') as serialNumber,
+		       IFNULL(py.capacity, '') as capacity,
+		       IFNULL(py.equipmentAddress, '') as equipmentAddress,
+		       IFNULL(py.equipmentLocation, '') as equipmentLocation,
+		       IFNULL(py.contactName, '') as contactName,
+		       IFNULL(py.contactEmail, '') as contactEmail,
+		       IFNULL(py.contactPhone, '') as contactPhone,
+		       IFNULL(py.startDate, '') as startDate,
+		       IFNULL(py.endDate, '') as endDate,
+		       IFNULL(py.visitsPerYear, '') as visitsPerYear,
+		       IFNULL(py.responseTimeHR, '') as responseTimeHR,
+		       IFNULL(py.solutionTimeHR, '') as solutionTimeHR,
+		       IFNULL(py.penalty, '') as penalty,
+		       IFNULL(py.service, '') as service,
+		       IFNULL(py.includesParts, '') as includesParts,
+		       IFNULL(py.exceptionParts, '') as exceptionParts,
+		       IFNULL(sc.serviceCenter, '') as serviceCenter
+		FROM policy py
+		INNER JOIN office of ON py.officeId = of.officeId
+		INNER JOIN equipmentType eq ON eq.equipmentTypeId = py.equipmentTypeId
+		INNER JOIN serviceCenter sc ON py.serviceCenterId = sc.serviceCenterId
+		WHERE py.endDate >= DATE_ADD(pStartDate, INTERVAL -2 MONTH) AND py.startDate < pEndDate
+		AND project = pProject
+		ORDER BY py.endDate ASC;
+	END IF;
 END$$
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetTicketsKPI
