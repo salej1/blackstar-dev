@@ -812,7 +812,6 @@ BEGIN
 	FROM sequenceNumberPool 
 	WHERE sequenceNumberTypeId = pSequenceNumberTypeId
 		AND sequenceNumberStatus = 'U';
-
 	SELECT sequenceNumberPoolId into nextId
 	FROM sequenceNumberPool 
 	WHERE sequenceNumber = nextNumber 
@@ -2319,7 +2318,7 @@ DECLARE today DATETIME DEFAULT NOW();
 DELETE FROM messages;
 
 INSERT INTO messages values (pTicketId);
-SET endDate = (SELECT dueDate FROM bloomticket WHERE _id = pTicketId);
+SET endDate = (SELECT dueDate FROM bloomTicket WHERE _id = pTicketId);
 INSERT INTO messages values (endDate);
 SET desv =  TO_DAYS(today) - TO_DAYS(endDate);
 
@@ -2336,6 +2335,7 @@ SET statusId = 5, reponseInTime = inTime, desviation = desv, modified = today
 WHERE _ID = pTicketId;
 
 END$$
+
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetBloomTicketByUserKPI
@@ -2471,8 +2471,8 @@ SELECT
 	o.officeName,
 	ti.statusId,
 	s.name as statusTicket
-FROM bloomticket ti
-INNER JOIN bloomticketteam tm on (ti._id = tm.ticketId)
+FROM bloomTicket ti
+INNER JOIN bloomTicketteam tm on (ti._id = tm.ticketId)
 INNER JOIN bloomApplicantArea ba on (ba._id = ti.applicantAreaId)
 INNER JOIN bloomServiceType st on (st._id = ti.serviceTypeId)
 INNER JOIN office o on (o.officeId = ti.officeId)
@@ -2604,7 +2604,7 @@ END$$
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.getBloomTicketId
 -- -----------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS blackstarDb.getBloomTicketId;
+DROP PROCEDURE IF EXISTS blackstarDb.getBloomTicketId$$
 CREATE PROCEDURE blackstarDb.getBloomTicketId(pTicketNumber VARCHAR(100))
 BEGIN
 
@@ -2612,7 +2612,7 @@ SELECT bt._id
 FROM bloomTicket bt
 WHERE bt.ticketNumber = pTicketNumber;
 
-END;
+END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.AddInternalTicket
@@ -2652,15 +2652,13 @@ END$$
 	-- blackstarDb.AddMemberTicketTeam
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.AddMemberTicketTeam$$
-CREATE PROCEDURE blackstarDb.AddMemberTicketTeam (  
+CREATE PROCEDURE blackstarDb.`AddMemberTicketTeam`(  
   ticketId Int(11),
   workerRoleTypeId Int(11),
   blackstarUserId Int(11))
 BEGIN
-	INSERT INTO bloomTicketTeam
-(ticketId,workerRoleTypeId,blackstarUserId)
-VALUES
-(ticketId,workerRoleTypeId,blackstarUserId);
+	INSERT INTO bloomTicketTeam (ticketId,workerRoleTypeId,blackstarUserId, assignedDate)
+VALUES (ticketId,workerRoleTypeId,blackstarUserId, NOW());
 select LAST_INSERT_ID();
 END$$
 

@@ -68,7 +68,7 @@ public class InternalTicketsServiceImpl extends AbstractService
         	return getInternalTicketsDao().getTickets(userId);
             
         } catch (DAOException e) {
-            
+        	System.out.println("Error => " + e);
         	//LOGGER.error(ERROR_CONSULTA_CAT, e);
             
             throw new ServiceException("Error al obtener tickets", e);

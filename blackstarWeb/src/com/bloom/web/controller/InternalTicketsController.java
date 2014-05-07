@@ -102,16 +102,17 @@ public class InternalTicketsController extends AbstractController {
 				respuesta.setEstatus("ok");
 				respuesta.setLista(registros);
 				respuesta.setMensaje(resumen);
+				System.out.println("Registros => " + registros.size());
 			}
 
 		} catch (ServiceException e) {
-
+			System.out.println("Error => " + e);
 			Logger.Log(LogLevel.ERROR, e.getMessage(), e);
 
 			respuesta.setEstatus("error");
 			respuesta.setMensaje(e.getMessage());
 		} catch (Exception e) {
-
+            System.out.println("Error => " + e);
 			Logger.Log(LogLevel.ERROR, e.getMessage(), e);
 
 			respuesta.setEstatus("error");

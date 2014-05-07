@@ -183,8 +183,10 @@ public class InternalTicketsDaoImpl extends AbstractDAO implements InternalTicke
 
 		} catch (EmptyResultDataAccessException e) {
 			Logger.Log(LogLevel.WARNING, EMPTY_CONSULTA, e);
+			System.out.println("Error => " + e);
 			return Collections.emptyList();
 		} catch (DataAccessException e) {
+			System.out.println("Error => " + e);
 			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 			throw new DAOException(ERROR_CONSULTA, e);
 		}
