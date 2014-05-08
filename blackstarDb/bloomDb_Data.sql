@@ -28,3 +28,4 @@ use blackstarDb;
 	IF(SELECT COUNT(*) FROM blackstarDb.usergroup WHERE externalId='sysHelpDesk') = 0 THEN
 		INSERT INTO blackstarDb.usergroup (externalId,name) values('sysHelpDesk','Mesa de Ayuda');
 	END IF;	
+

@@ -14,7 +14,6 @@ import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 
-import com.blackstar.common.Globals;
 import com.blackstar.services.interfaces.GoogleDriveService;
 import com.blackstar.services.interfaces.SecurityService;
 import com.blackstar.services.interfaces.UserDomainService;

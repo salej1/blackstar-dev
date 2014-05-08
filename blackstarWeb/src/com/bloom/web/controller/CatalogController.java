@@ -43,7 +43,7 @@ public class CatalogController extends AbstractController {
 
 		RespuestaJsonBean respuesta = new RespuestaJsonBean();
 
-		Long userId = userSession.getUser().getUserId();
+		Long userId = (long)userSession.getUser().getBlackstarUserId();
 
 		List<CatalogoBean<String>> listaProyectos;
 

@@ -2,8 +2,19 @@ package com.bloom.db.dao;
 
 import java.util.List;
 
+import com.blackstar.model.Followup;
+import com.blackstar.model.User;
+import com.bloom.common.bean.InternalTicketBean;
+import com.bloom.model.dto.DeliverableTypeDTO;
+import com.bloom.model.dto.TicketDetailDTO;
+import com.bloom.model.dto.TicketTeamDTO;
+import com.blackstar.model.Followup;
+import com.blackstar.model.User;
 import com.bloom.common.bean.DeliverableTraceBean;
 import com.bloom.common.bean.InternalTicketBean;
+import com.bloom.model.dto.DeliverableTypeDTO;
+import com.bloom.model.dto.TicketDetailDTO;
+import com.bloom.model.dto.TicketTeamDTO;
 import com.bloom.common.bean.TicketTeamBean;
 import com.bloom.common.exception.DAOException;
 
@@ -46,7 +57,18 @@ public interface InternalTicketsDao {
 	 */
 	public List<InternalTicketBean> getTickets(Long userId) throws DAOException;
 	
-	
+  public List<InternalTicketBean> getPendingTickets ();
+  public List<TicketDetailDTO> getTicketDetail(Integer ticketId);
+  public List<TicketTeamDTO> getTicketTeam(Integer ticketId);
+  public void addFollow(Integer ticketId, Integer userId, String comment);
+  public void addTicketTeam(Integer ticketId, Integer roleId, Integer userId);
+  public List<Followup> getFollowUps(Integer ticketId);
+  public List<DeliverableTypeDTO> getDeliverableTypes();
+  public void addDeliverableTrace(Integer ticketId, Integer deliverableTypeId);
+  public List<User> getAsigneedUser(Integer ticketId);
+  public List<User> getResponseUser(Integer ticketId);
+  public void closeTicket(Integer ticketId, Integer userId);
+  public Integer getTicketId(String ticketNumber);
 	
 	/**
 	 * Guardar miembro del tickets

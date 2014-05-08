@@ -16,9 +16,9 @@
 
       <bean id="dsBlackStartDev" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">  
              <property name="driverClassName" value="com.mysql.jdbc.Driver"/>  
-             <property name="url" value="jdbc:mysql://localhost:3306/blackstarDb"/>  
+             <property name="url" value="jdbc:mysql://173.194.109.131:3306/blackstarDb"/>  
              <property name="username" value="root"/>  
-             <property name="password" value=""/>  
+             <property name="password" value="admin"/>  
        </bean>
        
        <bean id="dsBlackStartProd" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">  
@@ -37,13 +37,14 @@
        </bean>
    
        <bean id="userDomainDAO" class="com.blackstar.db.dao.impl.UserDomainDAOImpl" parent="abstractDAO"/>
+       <bean id="userDAO" class="com.blackstar.db.dao.impl.UserDaoImpl" parent="abstractDAO"/>
        <bean id="dashboardDAO" class="com.blackstar.db.dao.impl.DashboardDAOImpl" parent="abstractDAO"/>
        <bean id="serviceOrderDAO" class="com.blackstar.db.dao.impl.ServiceOrderDAOImpl" parent="abstractDAO"/>
        <bean id="serviceTypeDAO" class="com.blackstar.db.dao.impl.ServiceTypeDAOImpl" parent="abstractDAO"/>
-	   
+
 	   <!-- Implementacion de BLOOM HELPDESK -->
-	   <bean id="internalTicketsDao" class="com.bloom.db.dao.InternalTicketsDaoImpl" parent="abstractDAO"/>       
-	   
+	   <bean id="internalTicketsDao" class="com.bloom.db.dao.InternalTicketsDaoImpl" parent="abstractDAO"/>
+	   <bean id="internatTicketsKPIDao" class="com.bloom.db.dao.InternatTicketsKPIDaoImpl" parent="abstractDAO"/>        
 	   <bean id="catalogInternalTicketsDao" class="com.bloom.db.dao.CatalogInternalTicketsDaoImpl" parent="abstractDAO"/>
 		
 			   

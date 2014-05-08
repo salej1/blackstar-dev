@@ -1,5 +1,6 @@
 var listaEstatusTickets;
 var listaUsuariosMesaAyuda;
+var listaHistoricos;
 
 // Inicializacion de tabla de tickets y dialogo de asignacion
 function historicalInternalTicketsInit() {
@@ -49,43 +50,28 @@ function getHistoricalInternalTickets() {
 
 				},
 				success : function(respuestaJson) {
-					var listaInternalTickets = respuestaJson.lista;
 					
-					// Inicializacion de la tabla de nuevas ordenes de servicio
-					$('#dtGridHistoricalTicketsInternos')
-							.dataTable(
-									{
-										"bProcessing" : true,
-										"bFilter" : true,
-										"bLengthChange" : false,
-										"iDisplayLength" : 10,
-										"bInfo" : false,
-										"sPaginationType" : "full_numbers",
-										"aaData" : listaInternalTickets,
-										"sDom" : '<"top"i>rt<"bottom"flp><"clear">',
-										"aoColumns" : [ 
-										{"mData" : "ticketNumber"}, 
-										{"mData" : "statusDescr"}, 
-										{"mData" : "createdStr"}, 
-										{"mData" : "petitionerArea"}, 
-										{"mData" : "serviceTypeDescr"}, 
-										{"mData" : "deadlineStr"}, 
-										{"mData" : "project"}, 
-										{"mData" : "officeName"}
-										],
-										"aoColumnDefs" : [ {
-											"mRender" : function(data, type,
-													row) {
-												return "<div align='center' style='width:70px;' ><a href='${pageContext.request.contextPath}/bloom/detailTicket.do?id="
-														+ row.DT_RowId
-														+ "'>"
-														+ data + "</a></div>";
-											},
-											"aTargets" : [ 0 ]
-										}
-
-										]
-									});
+					
+					if (respuestaJson.estatus === "ok") {
+						
+						listaHistoricos = respuestaJson.lista;
+						
+						inicializaGrid();
+						
+						
+					} else if(respuestaJson.estatus === "preventivo") {
+						
+						listaHistoricos = respuestaJson.lista;
+						
+						var oTable = $('#dtGridHistoricalTicketsInternos').dataTable();
+						oTable.fnDestroy();
+						
+						inicializaGrid();
+						
+						alert(respuestaJson.mensaje);
+					} else{
+						alert(respuestaJson.mensaje);
+					}
 
 				},
 				error : function() {
@@ -94,6 +80,47 @@ function getHistoricalInternalTickets() {
 
 }
 
+
+function inicializaGrid(){
+	
+	// Inicializacion de la tabla de nuevas ordenes de servicio
+	$('#dtGridHistoricalTicketsInternos')
+			.dataTable(
+					{
+						"bProcessing" : true,
+						"bFilter" : true,
+						"bLengthChange" : false,
+						"iDisplayLength" : 10,
+						"bInfo" : false,
+						"sPaginationType" : "full_numbers",
+						"aaData" : listaHistoricos,
+						"sDom" : '<"top"i>rt<"bottom"flp><"clear">',
+						"aoColumns" : [ 
+						{"mData" : "ticketNumber"}, 
+						{"mData" : "statusDescr"}, 
+						{"mData" : "createdStr"}, 
+						{"mData" : "petitionerArea"}, 
+						{"mData" : "serviceTypeDescr"}, 
+						{"mData" : "deadlineStr"}, 
+						{"mData" : "project"}, 
+						{"mData" : "officeName"}
+						],
+						"aoColumnDefs" : [ {
+							"mRender" : function(data, type,
+									row) {
+								return "<div align='center' style='width:70px;' ><a href='${pageContext.request.contextPath}/bloom/detailTicket.do?id="
+										+ row.DT_RowId
+										+ "'>"
+										+ data + "</a></div>";
+							},
+							"aTargets" : [ 0 ]
+						}
+
+						]
+					});
+	
+	
+}
 
 function consultarDatosHistorico() {
 

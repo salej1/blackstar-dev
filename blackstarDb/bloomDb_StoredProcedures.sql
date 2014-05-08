@@ -57,8 +57,8 @@ SELECT
 	o.officeName,
 	ti.statusId,
 	s.name as statusTicket
-FROM bloomticket ti
-INNER JOIN bloomticketteam tm on (ti._id = tm.ticketId)
+FROM bloomTicket ti
+INNER JOIN bloomTicketTeam tm on (ti._id = tm.ticketId)
 INNER JOIN bloomApplicantArea ba on (ba._id = ti.applicantAreaId)
 INNER JOIN bloomServiceType st on (st._id = ti.serviceTypeId)
 INNER JOIN office o on (o.officeId = ti.officeId)
@@ -89,8 +89,8 @@ SELECT
 	o.officeName,
 	ti.statusId,
 	s.name as statusTicket
-FROM bloomticket ti
-INNER JOIN bloomticketteam tm on (ti._id = tm.ticketId)
+FROM bloomTicket ti
+INNER JOIN bloomTicketTeam tm on (ti._id = tm.ticketId)
 INNER JOIN bloomApplicantArea ba on (ba._id = ti.applicantAreaId)
 INNER JOIN bloomServiceType st on (st._id = ti.serviceTypeId)
 INNER JOIN office o on (o.officeId = ti.officeId)
@@ -298,7 +298,7 @@ END$$
 DROP PROCEDURE IF EXISTS blackstarDb.getBloomEstatusTickets$$
 CREATE PROCEDURE blackstarDb.getBloomEstatusTickets()
 BEGIN
-SELECT _ID as id ,NAME AS label FROM bloomstatustype
+SELECT _ID as id ,NAME AS label FROM bloomStatusType
 WHERE _ID != -1
 ORDER BY _ID;
 END$$

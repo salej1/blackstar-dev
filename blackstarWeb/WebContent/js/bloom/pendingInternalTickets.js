@@ -50,8 +50,8 @@ function getPendingInternalTickets() {
 										"aoColumnDefs" : [ {
 											"mRender" : function(data, type,
 													row) {
-												return "<div align='center' style='width:70px;' ><a href='${pageContext.request.contextPath}/bloom/detailTicket.do?id="
-														+ row.DT_RowId
+												return "<div align='center' style='width:70px;' ><a href='/bloom/ticketDetail/show.do?ticketNumber="
+														+ data
 														+ "'>"
 														+ data + "</a></div>";
 											},
@@ -124,7 +124,7 @@ function getInternalsTickets() {
 										"aoColumnDefs" : [ {
 											"mRender" : function(data, type,
 													row) {
-												return "<div align='center' style='width:70px;' ><a href='${pageContext.request.contextPath}/bloom/detailTicket.do?id="
+												return "<div align='center' style='width:70px;' ><a href='/bloom/ticketDetail/show.do?ticketNumber="
 														+ row.DT_RowId
 														+ "'>"
 														+ data + "</a></div>";

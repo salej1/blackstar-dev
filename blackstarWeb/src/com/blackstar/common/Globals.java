@@ -19,7 +19,7 @@ public class Globals {
 	  public static final String CONNECTION_STRING_TEMPLATE = "jdbc:google:rdbms://innso-blackstar-dev:innso-blackstar-dev/%s";
 	  
 	  public static final String DEFAULT_DRIVER_CLASS = "com.mysql.jdbc.Driver";
-	  public static final String LOCAL_CONNECTION_STRING_TEMPLATE = "jdbc:mysql://localhost:3306/%s";
+	  public static final String LOCAL_CONNECTION_STRING_TEMPLATE = "jdbc:mysql://173.194.109.131:3306/%s";
 	  /**
 	   * Global instance of the {@link DataStoreFactory}. The best practice is to make it a single
 	   * globally shared instance across your application.

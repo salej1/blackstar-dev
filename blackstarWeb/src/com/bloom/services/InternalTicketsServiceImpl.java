@@ -4,9 +4,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.blackstar.db.dao.interfaces.UserDomainDAO;
+import com.blackstar.db.dao.interfaces.UserDAO;
 import com.blackstar.interfaces.IEmailService;
-import com.blackstar.model.dto.EmployeeDTO;
+import com.blackstar.model.Followup;
+import com.blackstar.model.User;
 import com.blackstar.services.AbstractService;
 import com.blackstar.services.EmailServiceFactory;
 import com.bloom.common.bean.CatalogoBean;
@@ -18,15 +19,33 @@ import com.bloom.common.exception.ServiceException;
 import com.bloom.common.utils.DataTypeUtil;
 import com.bloom.db.dao.CatalogInternalTicketsDao;
 import com.bloom.db.dao.InternalTicketsDao;
+import com.bloom.model.dto.DeliverableTypeDTO;
+import com.bloom.model.dto.TicketDetailDTO;
+import com.bloom.model.dto.TicketTeamDTO;
 
-public class InternalTicketsServiceImpl extends AbstractService implements
-	InternalTicketsService {
+public class InternalTicketsServiceImpl extends AbstractService 
+                                        implements InternalTicketsService {
 
-	private InternalTicketsDao internalTicketsDao;
+  private InternalTicketsDao internalTicketsDao = null;
+  private UserDAO uDAO = null;
+  
+  public void setInternalTicketsDao(InternalTicketsDao internalTicketsDao) {
+	this.internalTicketsDao = internalTicketsDao;
+  }
+  
+  public void setuDAO(UserDAO uDAO) {
+	this.uDAO = uDAO;
+  }
+  
+  @Override
+  public List<InternalTicketBean> getPendingTickets(){
+	List<InternalTicketBean> listaTickets = internalTicketsDao.getPendingTickets();
+	return listaTickets;
+  }
 
 	 private CatalogInternalTicketsDao catalogInternalTicketsDao;
-	
-	
+
+
     @Override
     public List<InternalTicketBean> getPendingTickets(Long userId) throws ServiceException {
     	
@@ -49,7 +68,7 @@ public class InternalTicketsServiceImpl extends AbstractService implements
         	return getInternalTicketsDao().getTickets(userId);
             
         } catch (DAOException e) {
-            
+        	System.out.println("Error => " + e);
         	//LOGGER.error(ERROR_CONSULTA_CAT, e);
             
             throw new ServiceException("Error al obtener tickets", e);
@@ -98,7 +117,7 @@ public class InternalTicketsServiceImpl extends AbstractService implements
             throw new ServiceException("Error al obtener tickets", e);
         }
     }
-	
+
 
     
     
@@ -120,7 +139,7 @@ public class InternalTicketsServiceImpl extends AbstractService implements
     }
 
     
-	
+
     @Override
     public void registrarNuevoTicket(InternalTicketBean ticket) throws ServiceException {
 
@@ -200,15 +219,15 @@ public class InternalTicketsServiceImpl extends AbstractService implements
 		// Enviar el email
 		IEmailService mail = EmailServiceFactory.getEmailService();
 		String to = member.getUserName() + ", " + member.getEmail();
-		
+
 		String subject = String.format("Requisición General Interna %s ", ticket.getTicketNumber());
-		
+
 		StringBuilder bodySb = new StringBuilder();
 
 		bodySb.append(String.format("El ticket interno %s se ha creado.",ticket.getTicketNumber()));
-		
+
 		bodySb.append("\r\n Información adicional:");
-		
+
 		bodySb.append(String.format("\r\n\r\n Usuario Solicitante: %s", ticket.getCreatedUserName()));
 		bodySb.append(String.format("\r\n\r\n Numero de ticket interno %s",ticket.getTicketNumber()));
 		bodySb.append(String.format("\r\n\r\n Fecha y Hora de recepcion: %s", ticket.getCreatedStr()));
@@ -219,30 +238,90 @@ public class InternalTicketsServiceImpl extends AbstractService implements
 		bodySb.append(String.format("\r\n\r\n Oficina: %s", ticket.getOfficeName()));
 		bodySb.append(String.format("\r\n\r\n Nota o liga de Anexos: %s", ""));
 		bodySb.append(String.format("\r\n\r\n Tiempo de respuesta máximo en días: %s %s", ticket.getServiceTypeDescr(),ticket.getReponseInTime()));
-		
-		
+
+
 		String who = "mesa-de-ayuda@gposac.com.mx";
-		
+
 		mail.sendEmail(who, to, subject, bodySb.toString());
     }
-    
-	
-	/**
-	 * @return the internalTicketsDao
-	 */
-	public InternalTicketsDao getInternalTicketsDao() {
+ 
+ public InternalTicketsDao getInternalTicketsDao() {
 		return internalTicketsDao;
 	}
 
+    
 
-
-	/**
-	 * @param internalTicketsDao the internalTicketsDao to set
-	 */
-	public void setInternalTicketsDao(InternalTicketsDao internalTicketsDao) {
-		this.internalTicketsDao = internalTicketsDao;
+  public TicketDetailDTO getTicketDetail(Integer ticketId){
+	List<TicketDetailDTO> details = internalTicketsDao.getTicketDetail(ticketId);
+	if(details.size() > 0){
+		return details.get(0);
 	}
+	return null;
+  }
+  
+  public List<TicketTeamDTO> getTicketTeam(Integer ticketId){
+	return internalTicketsDao.getTicketTeam(ticketId);
+  }
+  
+  public void addFollow(Integer ticketId, Integer userId, String comment){
+	internalTicketsDao.addFollow(ticketId, userId, comment);
+  }
+  
+  public void addTicketTeam(Integer ticketId, Integer roleId, Integer userId){
+	internalTicketsDao.addTicketTeam(ticketId, roleId, userId);
+  }
+  
+  public List<Followup> getFollowUps(Integer ticketId){
+	return internalTicketsDao.getFollowUps(ticketId);
+  }
+  
+  public List<DeliverableTypeDTO> getDeliverableTypes(){
+	 return internalTicketsDao.getDeliverableTypes();
+  }
+  
+  public void addDeliverableTrace(Integer ticketId, Integer deliverableTypeId){
+	internalTicketsDao.addDeliverableTrace(ticketId, deliverableTypeId);
+  }
+  
+  public User getAsigneed(Integer ticketId){
+	List<User> users = internalTicketsDao.getAsigneedUser(ticketId);
+	User asigneed = null;
+	if(users.size() > 0){
+	  asigneed = users.get(0);
+	}
+	return asigneed;
+  }
+  
+  public User getResponseUser(Integer ticketId){
+	List<User> users = internalTicketsDao.getResponseUser(ticketId);
+	User toResponse = null;
+	if(users.size() > 0){
+	  toResponse = users.get(0);
+	}
+	return toResponse;
+  }
+  
+  public void sendNotification(Integer fromUserId, Integer toUserId , Integer ticketId, String detail){
+	StringBuilder message = new StringBuilder();
+	User to = uDAO.getUserById(toUserId);
+	User from = uDAO.getUserById(toUserId);
+	TicketDetailDTO ticket = getTicketDetail(ticketId);
+	IEmailService mail = EmailServiceFactory.getEmailService();
+	message.append(String.format("El ticket %s le ha sido asignada para dar seguimiento. Por favor revise a continuación los detalles: ", ticket.getTicketNumber()));
+	message.append(String.format("\r\n\r\n Solicitante: %s", ticket.getApplicantUserName() + " - " + ticket.getApplicantAreaName()));
+	message.append(String.format("\r\n\r\n Oficina: %s", ticket.getApplicantUserName() + " - " + ticket.getOfficeName()));
+	message.append(String.format("\r\n\r\n Tipo de Servicio: %s", ticket.getServiceTypeName()));
+	message.append(String.format("\r\n\r\n Proyecto: %s", ticket.getProject()));
+	message.append(String.format("\r\n\r\n Descripción: %s", ticket.getDescription()));
+	message.append(String.format("\r\n\r\n"));
+	message.append(String.format("\r\n\r\n Usuario que asignó: %s", from.getUserName()));
+	message.append(String.format("\r\n\r\n Mensaje: %s", detail));
+	mail.sendEmail(from.getUserEmail(), to.getUserEmail(), "Asignación de Ticket Interno " + ticket.getTicketNumber(), message.toString());
+  }
 
+  public void closeTicket(Integer ticketId, Integer userId){
+	 internalTicketsDao.closeTicket(ticketId, userId);
+  }
 
 	/**
 	 * @return the catalogInternalTicketsDao
@@ -258,6 +337,10 @@ public class InternalTicketsServiceImpl extends AbstractService implements
 	public void setCatalogInternalTicketsDao(
 			CatalogInternalTicketsDao catalogInternalTicketsDao) {
 		this.catalogInternalTicketsDao = catalogInternalTicketsDao;
+	}
+
+	public Integer getTicketId(String ticketNumber){
+	  return internalTicketsDao.getTicketId(ticketNumber);
 	}
 
 }

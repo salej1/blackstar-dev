@@ -1,45 +1,24 @@
 package com.bloom.web.controller;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.blackstar.common.Globals;
-import com.blackstar.interfaces.IUserService;
 import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
-import com.blackstar.model.Equipmenttype;
-import com.blackstar.model.Policy;
-import com.blackstar.model.Serviceorder;
-import com.blackstar.model.Ticket;
-import com.blackstar.model.TicketController;
 import com.blackstar.model.UserSession;
-import com.blackstar.model.dto.PlainServiceDTO;
-import com.blackstar.model.dto.PlainServicePolicyDTO;
-import com.blackstar.services.interfaces.DashboardService;
-import com.blackstar.services.interfaces.UserDomainService;
 import com.blackstar.web.AbstractController;
 import com.bloom.common.bean.CatalogoBean;
-import com.bloom.common.bean.DeliverableTraceBean;
-import com.bloom.common.bean.InternalTicketBean;
 import com.bloom.common.bean.RespuestaJsonBean;
 import com.bloom.common.exception.ServiceException;
-import com.bloom.common.utils.DataTypeUtil;
-import com.bloom.common.utils.FolioTicketUtil;
 import com.bloom.services.CatalogService;
 import com.bloom.services.InternalTicketsService;
 

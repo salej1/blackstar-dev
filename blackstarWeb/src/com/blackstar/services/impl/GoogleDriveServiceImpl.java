@@ -84,7 +84,8 @@ public class GoogleDriveServiceImpl extends AbstractService
                     	 .getClassLoader().getResource(P12_KEY_PATH).getPath()))
              .setServiceAccountUser(serviceAccountUser)
              .build();
-    getAccessToken();
+    credential.refreshToken();
+    credential.getAccessToken();
     drive = new Drive.Builder(httpTransport, jsonFactory, null)
                 .setHttpRequestInitializer(credential).build();
     } catch(Exception e){
