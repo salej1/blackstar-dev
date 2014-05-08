@@ -145,6 +145,9 @@
 			$('input').removeAttr("disabled");
 			$('select').removeAttr("disabled");
 			$('textarea').removeAttr("disabled");
+			if($("#responsible").val().indexOf(';') == 0){
+				$("#responsible").val($("#responsible").val().substring(1));
+			}
 			$('#serviceOrder').submit();
 		}
 		else{

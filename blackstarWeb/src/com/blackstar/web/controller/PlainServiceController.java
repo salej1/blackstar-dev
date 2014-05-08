@@ -256,11 +256,12 @@ public class PlainServiceController extends AbstractController {
 		  	        servicioOrderSave.setClosed(new Date());
 					servicioOrderSave.setStatusId("N");
 					servicioOrderSave.setPolicyId(serviceOrder.getPolicyId());
-					idServicio = service.saveServiceOrder(servicioOrderSave, "PlainServiceController", userSession.getUser().getUserName());
+					servicioOrderSave.setResponsible(serviceOrder.getResponsible());
+					idServicio = service.saveServiceOrder(servicioOrderSave, "PlainServiceController", userSession.getUser().getUserEmail());
 					serviceOrder.setServiceOrderId(idServicio);
 					
 	                //Crear orden de servicio Plain
-	                service.savePlainService(new PlainServiceDTO(serviceOrder), "PlainServiceController", userSession.getUser().getUserName());
+	                service.savePlainService(new PlainServiceDTO(serviceOrder), "PlainServiceController", userSession.getUser().getUserEmail());
 	    		}
 	    		
 		    	if(serviceOrder.getPlainServiceId()==null && userSession.getUser().getBelongsToGroup().get(Globals.GROUP_SERVICE) != null)
