@@ -8,6 +8,8 @@
 -- PR   Date    AuthorDescription
 -- --   --------   -------  ------------------------------------
 -- 1    20/03/2014  DCB  	Version inicial. 
+-- 2    08/05/2014  OMA  	ID secuencia tickets internos 
+-- 3    08/05/2014  OMA  	Perfil Mesa de ayuda
 -- ---------------------------------------------------------------------------
 use blackstarDb;
 
@@ -821,3 +823,29 @@ insert into `bloomTransferFollow`(`ticketNumber`,`date`,`comment`) values ('SAC9
 insert into `bloomTransferFollow`(`ticketNumber`,`date`,`comment`) values ('SAC95','07/05/13',' Se le enviaron los datos de la targeta al Ing. Miguel ');
 insert into `bloomTransferFollow`(`ticketNumber`,`date`,`comment`) values ('SAC99','24/04/13',' Se realizo el envio de las partes requisitadas');
 insert into `bloomTransferFollow`(`ticketNumber`,`date`,`comment`) values ('SAC126','07/05/13',' Se envio notifiacacion de visita Claudia Rivera , ademas de preguntar si ya acudieron a la cita');
+
+
+
+-- -----------------------------------------------------------------------------
+	-- SECUENCIA
+-- -----------------------------------------------------------------------------
+--secuencia para tinckets internos
+	IF(SELECT COUNT(*) FROM blackstarDb.sequence WHERE sequenceTypeId='I') = 0 THEN
+		INSERT INTO blackstarDb.sequence (sequenceTypeId,sequenceNumber) values('I',1);	
+	END IF;	
+
+
+-- -----------------------------------------------------------------------------
+	-- PERFIL
+-- -----------------------------------------------------------------------------
+--Pantalla DashBoard MA
+--dara seguimiento a los tickets y los asignara a una area de apoyo..
+	IF(SELECT COUNT(*) FROM blackstarDb.usergroup WHERE externalId='sysHelpDesk') = 0 THEN
+		INSERT INTO blackstarDb.usergroup (externalId,name) values('sysHelpDesk','Mesa de Ayuda');
+	END IF;	
+
+
+
+
+
+

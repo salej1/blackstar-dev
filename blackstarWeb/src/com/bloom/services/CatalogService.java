@@ -71,6 +71,15 @@ public interface CatalogService {
 	 */
     public List<CatalogoBean<Integer>> empleadosPorGrupo(String grupo)
             throws ServiceException;
+    
+    
+    /**
+     * Estatus tickets internos
+     * @return
+     * @throws ServiceException
+     */
+    public List<CatalogoBean<Integer>> consultarEstatusTicket()
+            throws ServiceException;
 
 
 }

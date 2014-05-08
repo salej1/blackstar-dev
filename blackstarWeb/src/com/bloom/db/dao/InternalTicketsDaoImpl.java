@@ -4,17 +4,22 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 
 import com.blackstar.db.dao.AbstractDAO;
 import com.blackstar.model.Followup;
 import com.blackstar.model.User;
 import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
+import com.bloom.common.bean.CatalogoBean;
 import com.bloom.common.bean.DeliverableTraceBean;
 import com.bloom.common.bean.InternalTicketBean;
 import com.bloom.model.dto.DeliverableTypeDTO;
@@ -23,7 +28,7 @@ import com.bloom.model.dto.TicketTeamDTO;
 import com.bloom.common.bean.TicketTeamBean;
 import com.bloom.common.exception.DAOException;
 import com.bloom.common.utils.DataTypeUtil;
-
+import com.bloom.db.dao.mapper.CatalogoMapper;
 
 @SuppressWarnings("unchecked")
 public class InternalTicketsDaoImpl extends AbstractDAO implements InternalTicketsDao {
@@ -31,6 +36,29 @@ public class InternalTicketsDaoImpl extends AbstractDAO implements InternalTicke
 
 	private static final String QUERY_TICKETS_PENDIENTES = "CALL getBloomPendingTickets(%d)";
 	private static final String QUERY_TICKETS = "CALL getBloomTickets(%d)";
+
+	private static final String QUERY_HISTORICAL_TICKETS = "SELECT"
+			+ " ti._id as id,"
+			+ " ti.ticketNumber,"
+			+ " ti.created,"
+			+ " ti.applicantAreaId,"
+			+ " ba.name as areaName,"
+			+ " ti.serviceTypeId,"
+			+ " st.name as serviceName,"
+			+ " st.responseTime,"
+			+ " ti.project,"
+			+ " ti.officeId,"
+			+ " o.officeName,"
+			+ " ti.statusId,"
+			+ " s.name as statusTicket"
+			+ " FROM bloomTicket ti"
+			+ " INNER JOIN bloomApplicantArea ba on (ba._id = ti.applicantAreaId)"
+			+ " INNER JOIN bloomServiceType st on (st._id = ti.serviceTypeId)"
+			+ " INNER JOIN office o on (o.officeId = ti.officeId)"
+			+ " INNER JOIN bloomStatusType s on (s._id = ti.statusId)"
+			+ " WHERE ti.created>= '%fechaIni%' "
+			+ " AND ti.created <= '%fechaFin%'";
+
 
 
   public List<InternalTicketBean> getPendingTickets(){
@@ -146,27 +174,27 @@ public class InternalTicketsDaoImpl extends AbstractDAO implements InternalTicke
 		}
 	}
 
+	@Override
+	public String generarTicketNumber() throws DAOException {
 
-    @Override
-    public String generarTicketNumber() throws DAOException {
+		String ticketNumber = "";
 
-        String ticketNumber="";
+		try {
 
-        try {
-        	
-        	ticketNumber = getJdbcTemplate().queryForObject(QUERY_TICKET_NUMBER, String.class);
+			ticketNumber = getJdbcTemplate().queryForObject(
+					QUERY_TICKET_NUMBER, String.class);
 
-            return ticketNumber;
+			return ticketNumber;
 
-        } catch (DataAccessException e) {
-        	Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
-            throw new DAOException("Error al generar numero de ticket", e);
-        }
-    }	
-    
-    /**
-     * Tickets asignados a un perfil y usuario
-     */
+		} catch (DataAccessException e) {
+			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
+			throw new DAOException("Error al generar numero de ticket", e);
+		}
+	}
+
+	/**
+	 * Tickets asignados a un perfil y usuario
+	 */
 	@Override
 	public List<InternalTicketBean> getPendingTickets(Long userId)
 			throws DAOException {
@@ -224,6 +252,51 @@ public class InternalTicketsDaoImpl extends AbstractDAO implements InternalTicke
 
 	}
 
+	/**
+	 * Vista del reporte de historico del ticket para mesa de ayuda.
+	 * 
+	 * @param userId
+	 * @return
+	 * @throws DAOException
+	 */
+	@Override
+	public List<InternalTicketBean> getHistoricalTickets(String fechaIni,
+			String fechaFin, Integer idStatusTicket, Long idResponsable)
+			throws DAOException {
+
+		List<InternalTicketBean> listaRegistros = new ArrayList<InternalTicketBean>();
+
+		try {
+			
+			StringBuilder sq = new StringBuilder();
+			sq.append(QUERY_HISTORICAL_TICKETS.replace("%fechaIni%",fechaIni).replace("%fechaFin%",fechaFin));
+			
+			if(idStatusTicket!=-1){
+				sq.append(" AND ti.statusId=");
+				sq.append(idStatusTicket);
+			}
+			
+			if(idResponsable!=-1){
+				sq.append(" AND ti._id in (SELECT tm.ticketId FROM bloomticketteam tm WHERE tm.blackstarUserId=");
+				sq.append(idResponsable);
+				sq.append(" AND tm.workerRoleTypeId=1)");
+			}
+			
+			sq.append(" ORDER BY ti.created DESC");
+
+			listaRegistros.addAll(getJdbcTemplate().query(sq.toString(),new InternalTicketMapper()));
+
+			return listaRegistros;
+
+		} catch (EmptyResultDataAccessException e) {
+			Logger.Log(LogLevel.WARNING, EMPTY_CONSULTA, e);
+			return Collections.emptyList();
+		} catch (DataAccessException e) {
+			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
+			throw new DAOException(ERROR_CONSULTA, e);
+		}
+
+	}
 
 	@Override
 	public Long registrarNuevoTicket(InternalTicketBean ticket)
@@ -236,6 +309,7 @@ public class InternalTicketsDaoImpl extends AbstractDAO implements InternalTicke
 		int idTicket = 0;
 
 		try {
+
 
 		Object[] args = new Object []{
 				 ticket.getApplicantUserId(),

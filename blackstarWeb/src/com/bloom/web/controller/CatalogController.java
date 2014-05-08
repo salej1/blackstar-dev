@@ -1,5 +1,6 @@
 package com.bloom.web.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -41,6 +42,8 @@ public class CatalogController extends AbstractController {
 			@ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession) {
 
 		RespuestaJsonBean respuesta = new RespuestaJsonBean();
+
+		Long userId = (long)userSession.getUser().getBlackstarUserId();
 
 		List<CatalogoBean<String>> listaProyectos;
 
@@ -110,6 +113,51 @@ public class CatalogController extends AbstractController {
 
 		return respuesta;
 	}
+	
+	
+	@RequestMapping(value = "/getDataHistorico.do", method = RequestMethod.GET, produces = "application/json")
+	@ResponseBody
+	RespuestaJsonBean getDataHistorical(ModelMap model,
+			@ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession) {
+
+		RespuestaJsonBean respuesta = new RespuestaJsonBean();
+
+		List<CatalogoBean<Integer>> listaEstatusTickets;
+		List<CatalogoBean<Integer>> listaUsuariosMesaAyuda;
+		
+		List<CatalogoBean<Integer>> inilistaEstatusTickets = new ArrayList<CatalogoBean<Integer>>();
+		List<CatalogoBean<Integer>> inilistaUsuariosMesaAyuda = new ArrayList<CatalogoBean<Integer>>();
+
+		
+		CatalogoBean<Integer> todos = new CatalogoBean<Integer>(-1, "Todos");
+		inilistaEstatusTickets.add(todos);
+		inilistaUsuariosMesaAyuda.add(todos);
+		
+		
+		HashMap<String, List<CatalogoBean<Integer>>> listaResponse = new HashMap<String, List<CatalogoBean<Integer>>>();
+
+		try {
+			
+			listaEstatusTickets = catalogService.consultarEstatusTicket();
+			listaUsuariosMesaAyuda=catalogService.empleadosPorGrupo("sysHelpDesk");
+			
+			inilistaEstatusTickets.addAll(listaEstatusTickets);
+			inilistaUsuariosMesaAyuda.addAll(listaUsuariosMesaAyuda);
+
+			listaResponse.put("listaEstatusTickets", inilistaEstatusTickets);
+			listaResponse.put("listaUsuariosMesaAyuda", inilistaUsuariosMesaAyuda);
+
+			respuesta.setListaMap(listaResponse);
+			respuesta.setEstatus("ok");
+
+		} catch (ServiceException se) {
+			Logger.Log(LogLevel.ERROR, se.getMessage(), se);
+			respuesta.setEstatus("error");
+			respuesta.setMensaje(se.getMessage());
+		}
+
+		return respuesta;
+	}	
 	
 
 	/**

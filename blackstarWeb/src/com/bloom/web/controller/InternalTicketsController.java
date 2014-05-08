@@ -2,9 +2,6 @@ package com.bloom.web.controller;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -55,12 +52,7 @@ public class InternalTicketsController extends AbstractController {
 	public InternalTicketsService getInternalTicketsService() {
 		return internalTicketsService;
 	}
-
-  @RequestMapping(value = "/generarUnidadesCliente.htm", method = RequestMethod.POST, produces = "application/json")
-  public @ResponseBody RespuestaJsonBean generarUnidadesCliente(HttpServletRequest request 
-		 , Map<String, Object> model, @RequestParam(value = "idCliente") Long idCliente) {
-		return new RespuestaJsonBean();
-  }
+  
 	/**
 	 * @param internalTicketsService
 	 *            the internalTicketsService to set
@@ -273,6 +265,68 @@ public class InternalTicketsController extends AbstractController {
 	return "dashboard";
   }
 
+
+
+
+	/**
+	 * Vista en el dashboard del dominio de tickets de un perfil coordinador. 
+	 * @param model
+	 * @param userSession
+	 * @return
+	 */
+	@RequestMapping(value = "/getHistoricalInternalTickets.do", method = RequestMethod.GET, produces = "application/json")
+	@ResponseBody
+	RespuestaJsonBean getHistoricalInternalTickets(ModelMap model,
+			@ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession,
+			@RequestParam(value = "fechaIni", required = true) String fechaIni,
+			@RequestParam(value = "fechaFin", required = true) String fechaFin,
+			@RequestParam(value = "idEstatusTicket", required = true) Integer idEstatusTicket,
+			@RequestParam(value = "idResposable", required = true) Long idResposable) {
+
+		RespuestaJsonBean respuesta = new RespuestaJsonBean();
+
+		Long userId = (long)userSession.getUser().getBlackstarUserId();
+
+		try {
+
+			List<InternalTicketBean> registros = internalTicketsService
+					.getHistoricalTickets(fechaIni, fechaFin, idEstatusTicket, idResposable);
+
+			if (registros == null || registros.isEmpty()) {
+				respuesta.setEstatus("preventivo");
+				respuesta.setMensaje("No se encontro Historico de Tickets");
+				respuesta.setLista(registros);
+				// log.info("No se encontraron registros de Emisiones Generadas");
+			} else {
+				String resumen = "Se encontraron " + registros.size()
+						+ " del Historico Tickets";
+				// log.info("Se encontraron " + registros.size() +
+				// " Emisiones Generadas");
+				respuesta.setEstatus("ok");
+				respuesta.setLista(registros);
+				respuesta.setMensaje(resumen);
+			}
+
+		} catch (ServiceException e) {
+
+			Logger.Log(LogLevel.ERROR, e.getMessage(), e);
+
+			respuesta.setEstatus("error");
+			respuesta.setMensaje(e.getMessage());
+		} catch (Exception e) {
+
+			Logger.Log(LogLevel.ERROR, e.getMessage(), e);
+
+			respuesta.setEstatus("error");
+			respuesta
+					.setMensaje("Error al obtener historico tickets internos pendientes. Por favor intente m\u00e1s tarde.");
+		}
+
+		return respuesta;
+	}
+
+
+
 	@RequestMapping(value = "/newInternalTicket.do", method = RequestMethod.GET)
 	public String newInternalTicket(ModelMap model,
 			@ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession) {
@@ -310,7 +364,6 @@ public class InternalTicketsController extends AbstractController {
 	@RequestMapping(value = "/guardarTicket.do", method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
 	RespuestaJsonBean guardarAtencion(
-			final HttpServletRequest request,
 			@ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession,
 			@RequestParam(value = "fldFolio", required = true) String fldFolio,
 			@RequestParam(value = "fldFechaRegsitro", required = true) String fldFechaRegsitro,

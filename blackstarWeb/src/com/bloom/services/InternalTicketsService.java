@@ -35,5 +35,7 @@ public interface InternalTicketsService {
 
 	public void validarNuevoTicket(InternalTicketBean ticket) throws ServiceException;
 	public Integer getTicketId(String ticketNumber);
+	public List<InternalTicketBean> getHistoricalTickets(String fechaIni, String fechaFin, Integer idStatusTicket, Long idResponsable) throws ServiceException;
+	
 
 }
