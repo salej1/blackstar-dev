@@ -52,6 +52,7 @@
 -- ---------------------------------------------------------------------------
 -- 15	05/05/2014	SAG 	Se agregan serviceContact & serviceContactEmail a scheduledService
 -- ---------------------------------------------------------------------------
+-- 16	28/04/2014	SAG 	Se incrementa responsible en serviceOrder
 
 use blackstarDb;
 
@@ -65,6 +66,8 @@ BEGIN
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
 
+--	INCREMENTANDO TAMANO DE responsible EN serviceOrder
+	ALTER TABLE serviceOrder MODIFY responsible VARCHAR(400);
 
 --	AGREGANDO serviceContact & serviceContactEmail a scheduledService
 	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'scheduledService' AND COLUMN_NAME = 'serviceContact') = 0  THEN
