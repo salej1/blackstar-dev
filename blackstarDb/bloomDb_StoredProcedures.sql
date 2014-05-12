@@ -302,3 +302,226 @@ SELECT _ID as id ,NAME AS label FROM bloomStatusType
 WHERE _ID != -1
 ORDER BY _ID;
 END$$
+
+
+
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetBloomReportGetGruposConTickets
+-- -----------------------------------------------------------------------------
+CREATE PROCEDURE blackstarDb.GetBloomReportGetGruposConTickets()
+BEGIN
+SELECT ug.userGroupId,ug.name FROM bloomTicketTeam tt
+INNER JOIN blackstarUser_userGroup bug ON (tt.blackstarUserId=bug.blackstarUserId)
+INNER JOIN userGroup ug ON (ug.userGroupId=bug.userGroupId)
+INNER JOIN bloomTicket bt ON (tt.ticketId=bt._id)
+WHERE ug.userGroupId NOT IN (3,4) -- No se cuenta con el perfil de mesa de ayuda, ni coordinador
+GROUP BY ug.userGroupId;
+
+END$$
+
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetBloomReportTiempoRespuestaGrupo
+-- -----------------------------------------------------------------------------
+CREATE PROCEDURE blackstarDb.GetBloomReportTiempoRespuestaGrupo(userGroupIdParam INT)
+BEGIN
+
+  DECLARE maxTimeRes DECIMAL(5,2) DEFAULT 0;
+  DECLARE minTimeRes DECIMAL(5,2) DEFAULT 0;
+  DECLARE promTimeRes DECIMAL(5,2) DEFAULT 0;
+  DECLARE sumaTotalTimeResp DECIMAL(5,2) DEFAULT 0;
+  DECLARE totalTicket INT DEFAULT 0;
+  DECLARE exit_flag INT DEFAULT 0;
+  DECLARE bloomTicketIdParam INT;
+  -- DECLARE tmpLog Varchar(50000);
+
+  DECLARE listTicketsCursor CURSOR FOR   SELECT f.bloomTicketId FROM followUp f
+								INNER JOIN blackstarUser bu ON (f.asignee=bu.email)
+								INNER JOIN blackstarUser_userGroup bug ON (bu.blackstarUserId=bug.blackstarUserId)
+								INNER JOIN userGroup ug ON (ug.userGroupId=bug.userGroupId)
+								INNER JOIN bloomTicket t ON (t._id=f.bloomTicketId)
+								WHERE f.bloomTicketId IS NOT NULL
+								-- AND t.statusId=5
+								AND ug.userGroupId= userGroupIdParam
+								GROUP BY f.bloomTicketId;
+
+  DECLARE CONTINUE HANDLER FOR SQLSTATE '02000' SET exit_flag = 1;
+
+
+-- SET tmpLog='';
+
+-- SET tmpLog= CONCAT(tmpLog, 'userGroupIdParam:');	
+-- SET tmpLog= CONCAT(tmpLog, userGroupIdParam);	
+
+
+OPEN listTicketsCursor;	
+
+               timeRespLoop:  LOOP
+
+				FETCH listTicketsCursor INTO bloomTicketIdParam;
+
+				IF exit_flag = 1 THEN LEAVE timeRespLoop; END IF;
+				
+				-- SET tmpLog= CONCAT(tmpLog, ' * TicketID:');	
+				-- SET tmpLog= CONCAT(tmpLog, bloomTicketIdParam);	
+
+				 BLOCK2: begin
+
+					DECLARE detailTicketId INT;
+					DECLARE detailEmailUser VARCHAR(100);
+					DECLARE detailCreateDate DATETIME;
+					DECLARE detailUserGroupId INT;
+					
+					DECLARE beforeDetailTicketId INT;
+					DECLARE beforeDetailEmailUser VARCHAR(100);
+					DECLARE beforeDetailCreateDate DATETIME;
+					DECLARE beforeDetailUserGroupId INT;
+
+					DECLARE existRows INT DEFAULT 0;
+					
+					DECLARE sumaDetailFollowTimeResp DECIMAL(5,2) DEFAULT 0;
+					
+					DECLARE difMinutes INT;
+
+					DECLARE exit_flag2 INT DEFAULT 0;
+
+					DECLARE ticketFollowDetailCursor CURSOR FOR  SELECT f.bloomTicketId, f.asignee, f.created, ug.userGroupId FROM followUp f 
+								INNER JOIN blackstarUser bu ON (f.asignee=bu.email)
+								INNER JOIN blackstarUser_userGroup bug ON (bu.blackstarUserId=bug.blackstarUserId)
+								INNER JOIN userGroup ug ON (ug.userGroupId=bug.userGroupId)
+								WHERE f.bloomTicketId=bloomTicketIdParam
+								ORDER BY f.bloomTicketId, f.created; 	
+
+					DECLARE CONTINUE HANDLER FOR SQLSTATE '02000' SET exit_flag2 = 1;
+					
+					 OPEN ticketFollowDetailCursor;	
+
+					 detailFollowLoop: LOOP
+					
+						 
+						FETCH ticketFollowDetailCursor INTO detailTicketId,detailEmailUser,detailCreateDate,detailUserGroupId;
+						IF exit_flag2 = 1 THEN LEAVE detailFollowLoop; END IF;				
+					
+						 -- SET tmpLog= CONCAT(tmpLog, ' *[ BloomID:');
+						 -- SET tmpLog= CONCAT(tmpLog, detailTicketId);	
+						 -- SET tmpLog= CONCAT(tmpLog, ' Email:');	
+						 -- SET tmpLog= CONCAT(tmpLog, detailEmailUser);	
+						 -- SET tmpLog= CONCAT(tmpLog, ' Fecha:');	
+						 -- SET tmpLog= CONCAT(tmpLog, detailCreateDate);	
+						 -- SET tmpLog= CONCAT(tmpLog, ' Grupo:');	
+						 -- SET tmpLog= CONCAT(tmpLog, detailUserGroupId);	
+						 -- SET tmpLog= CONCAT(tmpLog, ' ]');
+
+							
+
+						IF(detailUserGroupId = userGroupIdParam) THEN
+							
+							-- SET tmpLog= CONCAT(tmpLog, '* -F Set Before items');
+
+							SET beforeDetailTicketId = detailTicketId;
+							SET beforeDetailEmailUser = detailEmailUser;
+							SET beforeDetailCreateDate = detailCreateDate;
+							SET beforeDetailUserGroupId = detailUserGroupId;
+
+							SET existRows = existRows +1;
+
+						 -- SET tmpLog= CONCAT(tmpLog, ' * (BB BloomID:');
+						 -- SET tmpLog= CONCAT(tmpLog, beforeDetailTicketId);	
+						 -- SET tmpLog= CONCAT(tmpLog, ' BB Email:');	
+						 -- SET tmpLog= CONCAT(tmpLog, beforeDetailEmailUser);	
+						 -- SET tmpLog= CONCAT(tmpLog, ' BB Fecha:');	
+						 -- SET tmpLog= CONCAT(tmpLog, beforeDetailCreateDate);	
+						 -- SET tmpLog= CONCAT(tmpLog, ' BB Grupo:');	
+						 -- SET tmpLog= CONCAT(tmpLog, beforeDetailUserGroupId);	
+						 -- SET tmpLog= CONCAT(tmpLog, ' )');
+
+
+						ELSE
+							
+
+							IF(existRows > 0) THEN
+							
+							-- sacar la diferencia 
+							SET difMinutes = TIMESTAMPDIFF(MINUTE,beforeDetailCreateDate,detailCreateDate);
+						
+							-- sumarla a sumaDetailFollowTimeResp
+							SET sumaDetailFollowTimeResp = sumaDetailFollowTimeResp + difMinutes;
+
+							 -- SET tmpLog= CONCAT(tmpLog, ' *-F sacar la diferencia y sum ');
+							 -- SET tmpLog= CONCAT(tmpLog, ' *-F ');
+							 -- SET tmpLog= CONCAT(tmpLog, beforeDetailCreateDate);
+							 -- SET tmpLog= CONCAT(tmpLog, ' *-F ');
+							 -- SET tmpLog= CONCAT(tmpLog, detailCreateDate);
+							 -- SET tmpLog= CONCAT(tmpLog, ' *-F difMinutes:');
+							 -- SET tmpLog= CONCAT(tmpLog, difMinutes);
+							 -- SET tmpLog= CONCAT(tmpLog, ' *-F sumaDetailFollowTimeResp:');
+							 -- SET tmpLog= CONCAT(tmpLog, sumaDetailFollowTimeResp);
+
+							END IF;
+
+						END IF;
+
+						 
+
+					 END LOOP detailFollowLoop;
+
+					CLOSE ticketFollowDetailCursor;
+
+					-- Se actualiza maximo
+					IF(sumaDetailFollowTimeResp > maxTimeRes) THEN
+						SET maxTimeRes=sumaDetailFollowTimeResp;
+					END IF;
+					
+					-- Se actualiza minimo
+					IF(sumaDetailFollowTimeResp < minTimeRes) THEN
+						SET minTimeRes=sumaDetailFollowTimeResp;
+					END IF;
+
+					-- si hace falta se corrige el valor minimo
+					IF(minTimeRes = 0) THEN
+						SET minTimeRes=maxTimeRes;
+					END IF;
+
+
+					-- suma para el promedio y contador
+					SET sumaTotalTimeResp = sumaTotalTimeResp + sumaDetailFollowTimeResp;
+					SET totalTicket = totalTicket + 1;
+
+					-- SET tmpLog= CONCAT(tmpLog, ' *-F maxTimeRes:');
+					-- SET tmpLog= CONCAT(tmpLog, maxTimeRes);
+					-- SET tmpLog= CONCAT(tmpLog, ' *-F minTimeRes:');
+					-- SET tmpLog= CONCAT(tmpLog, minTimeRes);
+					-- SET tmpLog= CONCAT(tmpLog, ' *-F sumaTotalTimeResp:');
+					-- SET tmpLog= CONCAT(tmpLog, sumaTotalTimeResp);
+					-- SET tmpLog= CONCAT(tmpLog, ' *-F totalTicket:');
+					-- SET tmpLog= CONCAT(tmpLog, totalTicket);
+					
+				
+				END BLOCK2;
+
+
+ 
+               END LOOP timeRespLoop;  
+
+	 CLOSE listTicketsCursor;	
+
+
+		-- sacamos promedio
+		IF(sumaTotalTimeResp > 0) THEN
+			SET promTimeRes = sumaTotalTimeResp/totalTicket;
+		ELSE
+			SET promTimeRes = 0;
+		END IF;
+
+		-- SET tmpLog= CONCAT(tmpLog, ' *-F promTimeRes:');
+		-- SET tmpLog= CONCAT(tmpLog, promTimeRes);
+
+
+		-- select tmpLog as log;
+		
+		SELECT (maxTimeRes/60) AS maxTime, (minTimeRes/60) minTime,  (promTimeRes/60) promTime;
+
+
+     END$$
+
