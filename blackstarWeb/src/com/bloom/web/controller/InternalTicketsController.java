@@ -378,5 +378,15 @@ public class InternalTicketsController extends AbstractController {
 		return respuesta;
 
 	}
+	
+	@RequestMapping(value = "/sendPendingAppointments.do", method = RequestMethod.GET)
+	public void sendMeetingRequest(ModelMap model,
+			@ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession) {
+	  try {
+		   internalTicketsService.sendPendingAppointments();
+	  } catch (Exception e) {
+			Logger.Log(LogLevel.ERROR, e.getMessage(), e);
+	  }
+	}
 
 }

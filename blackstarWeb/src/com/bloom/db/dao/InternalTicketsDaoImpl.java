@@ -18,6 +18,7 @@ import com.blackstar.logging.Logger;
 import com.bloom.common.bean.DeliverableTraceBean;
 import com.bloom.common.bean.InternalTicketBean;
 import com.bloom.model.dto.DeliverableTypeDTO;
+import com.bloom.model.dto.PendingAppointmentsDTO;
 import com.bloom.model.dto.TicketDetailDTO;
 import com.bloom.model.dto.TicketTeamDTO;
 import com.bloom.common.bean.TicketTeamBean;
@@ -91,6 +92,14 @@ public class InternalTicketsDaoImpl extends AbstractDAO implements InternalTicke
 	return (List<DeliverableTypeDTO>) getJdbcTemplate().query(sqlBuilder.toString()
 			                             , getMapperFor(DeliverableTypeDTO.class));
   }
+  
+  
+  public List<PendingAppointmentsDTO> getPendingAppointments(){
+    StringBuilder sqlBuilder = new StringBuilder("CALL getBloomPendingAppointments();");
+	return (List<PendingAppointmentsDTO>) getJdbcTemplate().query(sqlBuilder.toString()
+				                             , getMapperFor(DeliverableTypeDTO.class));
+  }
+  
   
   public void addDeliverableTrace(Integer ticketId, Integer deliverableTypeId){
 	StringBuilder sqlBuilder = new StringBuilder("CALL AddBloomDelivarable(?, ?);");

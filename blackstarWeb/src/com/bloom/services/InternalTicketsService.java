@@ -35,5 +35,6 @@ public interface InternalTicketsService {
 	
 	public void validarNuevoTicket(InternalTicketBean ticket) throws ServiceException;
 	public Integer getTicketId(String ticketNumber);
+	public void sendPendingAppointments();
 	
 }

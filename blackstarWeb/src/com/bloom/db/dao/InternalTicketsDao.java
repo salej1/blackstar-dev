@@ -7,6 +7,7 @@ import com.blackstar.model.User;
 import com.bloom.common.bean.DeliverableTraceBean;
 import com.bloom.common.bean.InternalTicketBean;
 import com.bloom.model.dto.DeliverableTypeDTO;
+import com.bloom.model.dto.PendingAppointmentsDTO;
 import com.bloom.model.dto.TicketDetailDTO;
 import com.bloom.model.dto.TicketTeamDTO;
 import com.bloom.common.bean.TicketTeamBean;
@@ -63,6 +64,7 @@ public interface InternalTicketsDao {
   public List<User> getResponseUser(Integer ticketId);
   public void closeTicket(Integer ticketId, Integer userId);
   public Integer getTicketId(String ticketNumber);
+  public List<PendingAppointmentsDTO> getPendingAppointments();
 	
 	
 	/**

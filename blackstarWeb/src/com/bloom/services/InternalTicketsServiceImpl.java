@@ -20,6 +20,7 @@ import com.bloom.common.utils.DataTypeUtil;
 import com.bloom.db.dao.CatalogInternalTicketsDao;
 import com.bloom.db.dao.InternalTicketsDao;
 import com.bloom.model.dto.DeliverableTypeDTO;
+import com.bloom.model.dto.PendingAppointmentsDTO;
 import com.bloom.model.dto.TicketDetailDTO;
 import com.bloom.model.dto.TicketTeamDTO;
 
@@ -28,6 +29,7 @@ public class InternalTicketsServiceImpl extends AbstractService
 
   private InternalTicketsDao internalTicketsDao = null;
   private UserDAO uDAO = null;
+  String sysMailer = "mesa-de-ayuda@gposac.com.mx";
   
   public void setInternalTicketsDao(InternalTicketsDao internalTicketsDao) {
 	this.internalTicketsDao = internalTicketsDao;
@@ -292,7 +294,30 @@ public class InternalTicketsServiceImpl extends AbstractService
   }
 
   public void closeTicket(Integer ticketId, Integer userId){
-	 internalTicketsDao.closeTicket(ticketId, userId);
+	List<TicketDetailDTO> ticketDetail = internalTicketsDao.getTicketDetail(ticketId);
+	User to = null;
+	StringBuilder message = null;
+	TicketDetailDTO ticket = null;
+	IEmailService mail = null;
+	if(ticketDetail.size() > 0){
+	  ticket = ticketDetail.get(0);
+	  to = uDAO.getUserById(ticket.getCreatedByUsr());
+	  if(to != null){
+		 mail = EmailServiceFactory.getEmailService();
+		 message = new StringBuilder();
+	     message.append("Segun los registros del sistema su peticion ha sido atendida y resuelta.")
+	            .append("\r\n\r\n")
+	            .append("Ticket Interno : " + ticket.getTicketNumber())
+                .append("\r\n")
+                .append("Fecha de creación: " + ticket.getCreated())
+                .append("\r\n")
+                .append("Descripción: " + ticket.getDescription());
+	     mail.sendEmail(sysMailer, to.getUserEmail(), "Ticket interno por vencer: " 
+                                   + ticket.getTicketNumber(), message.toString());
+	  }
+	  internalTicketsDao.closeTicket(ticketId, userId);
+	  
+	}
   }
 
 	/**
@@ -313,6 +338,26 @@ public class InternalTicketsServiceImpl extends AbstractService
 	
 	public Integer getTicketId(String ticketNumber){
 	  return internalTicketsDao.getTicketId(ticketNumber);
+	}
+	
+	public void sendPendingAppointments(){
+	  List<PendingAppointmentsDTO> pendingAppointments = internalTicketsDao
+				                                 .getPendingAppointments();
+	  IEmailService mail = EmailServiceFactory.getEmailService();
+	  StringBuilder message = new StringBuilder();
+	  for(PendingAppointmentsDTO pendingAppointment : pendingAppointments){
+		message = new StringBuilder();
+		message.append("Ticket Interno : " + pendingAppointment.getTicketNumber())
+	           .append("\r\n")
+	           .append("Fecha de asignación: " + pendingAppointment.getAssignedDate())
+		       .append("\r\n")
+		       .append("Fecha límite: " + pendingAppointment.getDueDate())
+		       .append("\r\n")
+		       .append("Descripción: " + pendingAppointment.getDescription())
+		       .append("\r\n");
+		mail.sendEmail(sysMailer, pendingAppointment.getResponsibleMail(), "Ticket interno por vencer: " 
+		                                   + pendingAppointment.getTicketNumber(), message.toString());
+	  }
 	}
 
 }
