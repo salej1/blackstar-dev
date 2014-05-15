@@ -44,3 +44,8 @@ delete from plainService where serviceOrderId =    7 ;
 delete from serviceOrderEmployee where serviceOrderId =    7 ;
 update ticket set serviceOrderId =  9  where serviceOrderId =  7 ;
 delete from serviceOrder where serviceOrderId =    7 ;
+
+delete from plainService where serviceOrderId =    34 ;
+delete from serviceOrderEmployee where serviceOrderId =    34 ;
+update ticket set serviceOrderId =  41  where serviceOrderId =  34 ;
+delete from serviceOrder where serviceOrderId =    34 ;
