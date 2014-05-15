@@ -52,6 +52,10 @@
 -- ---------------------------------------------------------------------------
 -- 15	05/05/2014	SAG 	Se agregan serviceContact & serviceContactEmail a scheduledService
 -- ---------------------------------------------------------------------------
+-- 16	28/04/2014	SAG 	Se incrementa responsible en serviceOrder
+-- ---------------------------------------------------------------------------
+-- 17	14/05/2014	SAG 	Se agrega unique(serviceOrderNumber) a serviceOrder
+-- ---------------------------------------------------------------------------
 
 use blackstarDb;
 
@@ -65,6 +69,11 @@ BEGIN
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
 
+--	AGREGANDO UNIQUE(serviceOrderNumber) A serviceOrder
+	ALTER TABLE serviceOrder ADD UNIQUE(serviceOrderNumber);
+	
+--	INCREMENTANDO TAMANO DE responsible EN serviceOrder
+	ALTER TABLE serviceOrder MODIFY responsible VARCHAR(400);
 
 --	AGREGANDO serviceContact & serviceContactEmail a scheduledService
 	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'scheduledService' AND COLUMN_NAME = 'serviceContact') = 0  THEN
@@ -2744,8 +2753,8 @@ BEGIN
 			DATE(so.serviceDate) AS serviceDate,
 			oc.customerName AS customer,
 			et.equipmentType AS equipmentType,
-			'' AS project,
-			'' AS officeName,
+			oc.project AS project,
+			o.officeName AS officeName,
 			oc.brand AS brand,
 			oc.serialNumber AS serialNumber,
 			ss.serviceStatus AS serviceStatus
@@ -2754,6 +2763,7 @@ BEGIN
 			INNER JOIN serviceStatus ss ON so.serviceStatusId = ss.serviceStatusId
 			INNER JOIN openCustomer oc ON so.openCustomerId = oc.openCustomerId
 			INNER JOIN equipmentType et ON oc.equipmentTypeId = et.equipmentTypeId
+			INNER JOIN office o ON oc.officeId = o.officeId
 	     LEFT OUTER JOIN ticket t on t.ticketId = so.ticketId
 	) A
 	ORDER BY A.serviceDate DESC;
@@ -3628,14 +3638,15 @@ BEGIN
 		p.responseTimeHR AS responseTimeHR,
 		p.project AS project,
 		ts.ticketStatus AS ticketStatus,
-		IFNULL(bu.name, '') AS asignee,
-		tk.ticketNumber AS asignar
+		IFNULL(bu.name, tk.employee) AS asignee,
+		tk.ticketNumber AS asignar,
+		IFNULL(tk.serviceOrderNumber, '') AS serviceOrderNumber
 	FROM ticket tk 
 		INNER JOIN ticketStatus ts ON tk.ticketStatusId = ts.ticketStatusId
 		INNER JOIN policy p ON tk.policyId = p.policyId
 		INNER JOIN equipmentType et ON p.equipmentTypeId = et.equipmentTypeId
 		INNER JOIN office of on p.officeId = of.officeId
-		LEFT OUTER JOIN blackstarUser bu ON bu.email = tk.asignee
+		LEFT OUTER JOIN blackstarUser bu ON bu.email = tk.employee
 	WHERE tk.created > '01-01' + YEAR(NOW())
     ORDER BY tk.created DESC;
 	
@@ -4438,16 +4449,15 @@ CREATE PROCEDURE blackstarDb.UpdateServiceOrder (
   modifiedByUsr varchar(50) 
 )
 BEGIN
-UPDATE serviceOrder
-SET
-serviceStatusId = serviceStatusId ,
-closed = closed ,
-asignee = asignee ,
-isWrong = isWrong,
-modified = modified ,
-modifiedBy = modifiedBy ,
-modifiedByUsr = modifiedByUsr 
-where serviceOrderId = serviceOrderId;
+	UPDATE serviceOrder s SET
+	s.serviceStatusId = serviceStatusId ,
+	s.closed = closed ,
+	s.asignee = asignee ,
+	s.isWrong = isWrong,
+	s.modified = modified ,
+	s.modifiedBy = modifiedBy ,
+	s.modifiedByUsr = modifiedByUsr 
+	WHERE s.serviceOrderId = serviceOrderId;
 END$$
 
 -- -----------------------------------------------------------------------------

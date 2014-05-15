@@ -45,26 +45,56 @@
 		//Inicializacion del cuadro de dialogo para seleccionar el equipo
 		$("#selectSNDialog").dialog({
 			autoOpen: false,
-			height: 250,
+			height: 290,
 			width: 360,
 			modal: true,
 			buttons: {
 				"Aceptar": function() {
 					if(selected){
-					  moveToCaptureScreen("policy", loadedType);
+					  okChain("policy", loadedType);
 					} else {
 						$( this ).dialog( "close" );
 					}
 				},
 				"Sin Poliza": function(){
-					moveToCaptureScreen("open", loadedType);
+					okChain("open", loadedType);
 				},
 
 				"Cancelar": function() {
-				$( this ).dialog( "close" );
-				}}
-			});	
+					$( this ).dialog( "close" );
+				}
+			}
+		});	
+
+		$(".info").hide();
+	}
+
+	// Funcion que desencadena validacion-redireccion
+	function okChain(captureType, equipmentType){
+		validateSoInput(captureType, equipmentType);
+	}
+
+	// Funcion de validacion de entradas
+	function validateSoInput(captureType, equipmentType){
+		// Invocamos el json que indicara si la OS existe o no
+		var needsSO = "${sysCoordinador}";
+		if(needsSO == "true"){
+			var soNumber = $("#soNumber").val();
+			$.getJSON("/serviceOrders/checkSoExistance.do?soNumber=" + soNumber, function(data){
+				if(data.exists == "true"){
+					$("#invalidSo").show();
+					$("#invalidSo").html("La orden de servicio " + soNumber + " ya existe");
+					return false;
+				}
+				else{
+					moveToCaptureScreen(captureType, equipmentType);
+				}
+			});
 		}
+		else{
+			moveToCaptureScreen(captureType, equipmentType);
+		}
+	}
 
 	// Funcion de redireccion a pagina de captura de OS especifica
 	function moveToCaptureScreen(captureType, equipmentType){
@@ -174,5 +204,9 @@
 		<input type="text" id="soNumber" style="width:95%;" required></p>
 	</c:if>
 	<input type="hidden" id="selectedSerialNumber">
+	<div id="invalidSo" class="info">
+		La orden de servicio ya existe
+	</div>
 </div>
+
 <!-- FIN - Seccion de dialgo que se muestra para seleccionar el equipo -->

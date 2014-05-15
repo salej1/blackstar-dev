@@ -284,9 +284,9 @@
 
 			$('#lbCreated').val(new Date('${ticketF.created}').format('dd/MM/yyyy hh:mm:ss'));
 			$('#lbNombreUsuario').val('${ticketF.user}');
-			$('#lbContacto').val('${policyt.contactName}');
-			$('#lbTelContacto').val('${policyt.contactPhone}');
-			$('#lbMailContacto').val('${policyt.contactEmail}');
+			$('#lbContacto').val('${ticketF.contact}');
+			$('#lbTelContacto').val('${ticketF.contactPhone}');
+			$('#lbMailContacto').val('${ticketF.contactEmail}');
 			$('#lbNoSerie').val('${policyt.serialNumber}');
 			$('#lbObservaciones').html('${ticketF.observations}');
 			$('#lbCliente').val('${policyt.customer}');

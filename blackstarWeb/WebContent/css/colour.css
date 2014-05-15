@@ -64,11 +64,13 @@ a.delete {
 }
 
 #navigation a:hover {
-	background:#0F4DA8
+	background:#0F4DA8;
+	cursor:pointer;
 }
 #navigation .active {
 	color:#ffffff;
-	background:#6A94D4
+	background:#6A94D4;
+	cursor:pointer;
 }
 
 .box,.box > .utils a {

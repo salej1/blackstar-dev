@@ -130,7 +130,7 @@ public class ServiceOrderDAOImpl extends AbstractDAO implements ServiceOrderDAO 
 									""+orderService.getReceivedBy()+ "",
 									""+orderService.getServiceComments()+ "",
 									""+orderService.getStatusId()+ "",
-									""+df.format(orderService.getClosed())+ "",
+									orderService.getClosed()!= null?df.format(orderService.getClosed()): null,
 									""+orderService.getConsultant()+ "",
 									""+orderService.getCoordinator()+ "",
 									""+orderService.getAsignee()+ "",
@@ -175,7 +175,7 @@ public class ServiceOrderDAOImpl extends AbstractDAO implements ServiceOrderDAO 
 		Object[] args = new Object []{
 										orderService.getServiceOrderId(),
 										""+orderService.getStatusId()+ "",
-										""+df.format(orderService.getClosed())+ "",
+										orderService.getClosed() != null? df.format(orderService.getClosed()) : null,
 										""+orderService.getAsignee()+ "",
 										""+orderService.getIsWrong()+ "",
 										""+df.format(orderService.getModified())+ "",

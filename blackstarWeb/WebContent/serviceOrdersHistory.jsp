@@ -27,10 +27,12 @@
 							  { "mData": "serviceType" },
 							  { "mData": "serviceDate" },
 							  { "mData": "customer" },
+							  { "mData": "project" },
 							  { "mData": "equipmentType" },
 							  { "mData": "brand" },
 							  { "mData": "serialNumber" },
-							  { "mData": "serviceStatus" }
+							  { "mData": "serviceStatus" },
+							  { "mData": "officeName" }
 
 							  ],
 					"aoColumnDefs" : [{"mRender" : function(data, type, row){return "<div align='center' style='width:85px;' ><a href='${pageContext.request.contextPath}/osDetail/show.do?serviceOrderId=" + row.DT_RowId + "'>" + data + "</a></div>";}, "aTargets" : [0]},
@@ -55,16 +57,18 @@
 			<table cellpadding="0" cellspacing="0" border="0" class="display" id="dtOrdersHistory">
 				<thead>
 					<tr>
-						<th style="width:90px">Folio</th>
-						<th></th>
-						<th>Ticket</th>
+						<th style="width:50px">Folio</th>
+						<th style="width:10px"></th>
+						<th style="width:70px">Ticket</th>
 						<th>Tipo</th>
 						<th>Fecha</th>
 						<th>Cliente</th>
+						<th>Proyecto</th>
 						<th>Equipo</th>
 						<th>Marca</th>
 						<th>No. Serie</th>
 						<th>Estatus</th>
+						<th>Oficina</th>
 					</tr>
 				</thead>
 				<tbody>

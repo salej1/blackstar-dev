@@ -6,6 +6,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -27,6 +28,7 @@ import com.blackstar.model.Serviceorder;
 import com.blackstar.model.Ticket;
 import com.blackstar.model.UserSession;
 import com.blackstar.model.dto.EmployeeDTO;
+import com.blackstar.model.dto.OrderserviceDTO;
 import com.blackstar.model.dto.PlainServiceDTO;
 import com.blackstar.model.dto.PlainServicePolicyDTO;
 import com.blackstar.services.interfaces.OpenCustomerService;
@@ -130,6 +132,15 @@ public class PlainServiceController extends AbstractController {
 	  				  else
 	  				  {
 	  					if(!soNumber.equals("")){
+	  						try{
+	  							OrderserviceDTO checkSo = service.getServiceOrderByIdOrNumber(0, soNumber);
+	  							if(checkSo != null){
+		  							throw new Exception(String.format("La orden de servicio %s ya existe", soNumber));
+		  						}
+	  						}
+	  						catch(EmptyResultDataAccessException ex){
+	  							// Todo bien, la orden de servicio no existe
+	  						}
 	  						plainServicePolicyDTO.setServiceOrderNumber(soNumber);
 	  					}
 	  					else{
@@ -215,7 +226,7 @@ public class PlainServiceController extends AbstractController {
 		    		servicioOrderSave.setIsWrong(serviceOrder.getIsWrong()?1:0);
 		    		servicioOrderSave.setStatusId(serviceOrder.getServiceStatusId());
 		    		
-		    		service.updateServiceOrder(servicioOrderSave, "PlainServiceController", userSession.getUser().getUserName());
+		    		service.updateServiceOrder(servicioOrderSave, "PlainServiceController", userSession.getUser().getUserEmail());
 		    		idServicio = serviceOrder.getServiceOrderId();
 	    		}
 	    		else{
@@ -253,8 +264,12 @@ public class PlainServiceController extends AbstractController {
 					servicioOrderSave.setServiceTypeId(serviceOrder.getServiceTypeId().toCharArray()[0]);
 					servicioOrderSave.setReceivedByEmail(serviceOrder.getReceivedByEmail());
 		    		servicioOrderSave.setIsWrong(serviceOrder.getIsWrong()?1:0);
-		  	        servicioOrderSave.setClosed(new Date());
-					servicioOrderSave.setStatusId("N");
+		    		if(userSession.getUser().getBelongsToGroup().get(Globals.GROUP_COORDINATOR) != null){
+		    			servicioOrderSave.setStatusId("E");
+		    		}
+		    		else{
+		    			servicioOrderSave.setStatusId("N");	
+		    		}
 					servicioOrderSave.setPolicyId(serviceOrder.getPolicyId());
 					servicioOrderSave.setResponsible(serviceOrder.getResponsible());
 					idServicio = service.saveServiceOrder(servicioOrderSave, "PlainServiceController", userSession.getUser().getUserEmail());

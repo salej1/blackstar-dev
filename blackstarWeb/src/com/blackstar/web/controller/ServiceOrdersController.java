@@ -16,6 +16,7 @@ import com.blackstar.common.Globals;
 import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
 import com.blackstar.model.UserSession;
+import com.blackstar.model.dto.OrderserviceDTO;
 import com.blackstar.services.interfaces.ServiceOrderService;
 import com.blackstar.web.AbstractController;
 
@@ -90,6 +91,24 @@ public class ServiceOrdersController extends AbstractController{
 					e.getStackTrace()[0].toString(), e);
 			e.printStackTrace();
 			return "error";
+		}
+		return retVal;
+	}
+	
+
+	@RequestMapping(value = "/checkSoExistance.do", method = RequestMethod.GET)
+	public @ResponseBody String checkSoExistance(ModelMap model, @ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession, @RequestParam(required = true) String soNumber) {
+		String retVal;
+		try {
+			OrderserviceDTO checkSo = service.getServiceOrderByIdOrNumber(0, soNumber);
+			if(checkSo == null){
+				retVal = "{\"exists\":\"false\"}";
+			}
+			else{
+				retVal = "{\"exists\":\"true\"}";
+			}
+		} catch (Exception e) {
+			retVal = "{\"exists\":\"false\"}";
 		}
 		return retVal;
 	}

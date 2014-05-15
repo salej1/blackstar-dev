@@ -50,6 +50,7 @@
 						  { "mData": "project" }, 	              
 						  { "mData": "ticketStatus" },
 						  { "mData": "asignee" },
+						  { "mData": "serviceOrderNumber" },
 						  { "mData": "asignar" }
 
 					  ],
@@ -61,7 +62,7 @@
 								  	else{
 								  		return "";    		    	       
 								  	}
-							  }, "aTargets" : [8]}	
+							  }, "aTargets" : [9]}	
 							 ]}
 		);
 		
@@ -121,6 +122,7 @@
 						<th>Proyecto</th>
 						<th>Estatus</th>
 						<th>Responsable</th>
+						<th>OS cierre</th>
 						<th>Asignar</th>
 					</tr>
 				</thead>

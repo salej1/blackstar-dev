@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ page isELIgnored="false"%>
 <!DOCTYPE html>
@@ -138,9 +139,18 @@
 		$("#optOffices").bind('change', function(){
 			$("#officeId").val($(this).val());
 		});
+
+		// bloqueando lockOnEngDetail
+		if(isEng == "true" && mode == "detail"){
+			$(".lockOnEngDetail").attr("disabled", "");
+		}
 	});
 
 	function saveService(){
+		if($("#responsible").val() == ""){
+			$("#responsibleName").val("");
+			return false;
+		}
 		if($('#serviceOrder')[0].checkValidity()){
 			$('input').removeAttr("disabled");
 			$('select').removeAttr("disabled");
@@ -206,8 +216,16 @@
 									</td>
 									<td>Oficina</td>
 									<td>
-										<form:select path="officeId" items="${offices}" cssClass="lockOnDetail lockOnPolicy"/>
-										
+										<form:hidden path="officeId"/>
+										<select class="lockOnDetail lockOnPolicy" id="optOffices">
+											<c:forEach var="office" items="${offices}">
+										        <option value="${office}" 
+										        <c:if test="${serviceOrder.officeId == fn:substring(office, 0, 1)}">
+										        	selected="true"
+										    	</c:if>
+										        >${office}</option>
+										    </c:forEach>
+										</select>
 									</td>
 								</tr>
 								<tr>
@@ -352,7 +370,7 @@
 									<td><form:input cssClass="lockOnDetail" path="receivedByEmail"  style="width:95%;" /></td>
 								</tr>
 								<tr class="eligible coorOnly">
-									<td colspan="2">Errores de captura<form:checkbox path="isWrong" /></td>
+									<td colspan="2">Errores de captura<form:checkbox path="isWrong" cssClass="lockOnEngDetail"/></td>
 									<td></td>
 									<td></td>
 								</tr>
@@ -413,10 +431,10 @@
 							<c:if test="${serviceOrder.serviceOrderId > 0}">
 								<button class="searchButton" onclick="addSeguimiento(${serviceOrder.serviceOrderId}, '${serviceOrder.serviceOrderNumber}');">Agregar seguimiento</button>
 								<c:if test="${serviceOrder.serviceStatusId != 'C'}">
-									<button class="searchButton eligible coorOnly" id="closeBtn">Cerrar</button>
+									<button class="searchButton eligible coorOnly lockOnEngDetail" id="closeBtn">Cerrar</button>
 								</c:if>	
 							</c:if>	
-							<input class="searchButton" id="guardarServicio" type="submit" onclick="saveService();" value="Guardar servicio" form="serviceOrder"/>
+							<input class="searchButton lockOnEngDetail" id="guardarServicio" type="submit" onclick="saveService();" value="Guardar servicio" form="serviceOrder"/>
 							<button class="searchButton" onclick="window.location = '/serviceOrders/show.do'">Cancelar</button>
 							</td>
 						</tr>

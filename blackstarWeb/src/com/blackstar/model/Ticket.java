@@ -45,6 +45,9 @@ public class Ticket implements java.io.Serializable {
 	private String ticketNumber;
 	private boolean phoneResolved;
 	private String serviceOrderNumber;
+	private String contact;
+	private String contactPhone;
+	private String contactEmail;
 
 	public Ticket() {
 	}
@@ -56,7 +59,7 @@ public class Ticket implements java.io.Serializable {
 			Short solutionTimeDeviationHr, Date created, String createdBy,
 			String createdByUsr, Date modified, String modifiedBy,
 			String modifiedByUsr, String ticketNumber, boolean phoneResolved,Integer responseTimeDeviationHR,
-			String serviceOrderNumber) {
+			String serviceOrderNumber, String contact, String contactPhone, String contactEmail) {
 		this.ticketId = ticketId;
 		this.policyId = policyId;
 		this.serviceId = serviceId;
@@ -80,6 +83,9 @@ public class Ticket implements java.io.Serializable {
 		this.phoneResolved = phoneResolved;
 		this.responseTimeDeviationHR = responseTimeDeviationHR;
 		this.serviceOrderNumber = serviceOrderNumber;
+		this.contact = contact;
+		this.contactPhone = contactPhone;
+		this.contactEmail = contactEmail;
 		}
 
 	@Id
@@ -290,6 +296,30 @@ public class Ticket implements java.io.Serializable {
 
 	public void setServiceOrderNumber(String serviceOrderNumber) {
 		this.serviceOrderNumber = serviceOrderNumber;
+	}
+
+	public String getContact() {
+		return contact;
+	}
+
+	public void setContact(String contact) {
+		this.contact = contact;
+	}
+
+	public String getContactEmail() {
+		return contactEmail;
+	}
+
+	public void setContactEmail(String contactEmail) {
+		this.contactEmail = contactEmail;
+	}
+
+	public String getContactPhone() {
+		return contactPhone;
+	}
+
+	public void setContactPhone(String contactPhone) {
+		this.contactPhone = contactPhone;
 	}
 
 }

@@ -53,6 +53,9 @@
 -- 15	05/05/2014	SAG 	Se agregan serviceContact & serviceContactEmail a scheduledService
 -- ---------------------------------------------------------------------------
 -- 16	28/04/2014	SAG 	Se incrementa responsible en serviceOrder
+-- ---------------------------------------------------------------------------
+-- 17	14/05/2014	SAG 	Se agrega unique(serviceOrderNumber) a serviceOrder
+-- ---------------------------------------------------------------------------
 
 use blackstarDb;
 
@@ -66,6 +69,9 @@ BEGIN
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
 
+--	AGREGANDO UNIQUE(serviceOrderNumber) A serviceOrder
+	ALTER TABLE serviceOrder ADD UNIQUE(serviceOrderNumber);
+	
 --	INCREMENTANDO TAMANO DE responsible EN serviceOrder
 	ALTER TABLE serviceOrder MODIFY responsible VARCHAR(400);
 

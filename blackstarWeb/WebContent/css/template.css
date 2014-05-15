@@ -363,6 +363,11 @@ input[type="submit"], input[type="reset"] {
 	background:-moz-linear-gradient( center top, #dfdfdf 5%, #ededed 100% );
 	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#dfdfdf', endColorstr='#ededed');
 	background-color:#dfdfdf;
+	cursor:pointer;
+}.searchButton[disabled]:hover {
+	color:#aaaaaa;
+	background-color:#dfdfdf;
+	cursor:not-allowed;
 }.searchButton:active {
 	position:relative;
 	top:1px;

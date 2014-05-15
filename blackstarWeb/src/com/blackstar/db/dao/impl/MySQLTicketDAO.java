@@ -44,7 +44,7 @@ public class MySQLTicketDAO implements TicketDAO, Serializable {
 						rs.getShort("solutionTimeDeviationHr"), rs.getTimestamp("created"), rs.getString("createdBy"),
 						rs.getString("createdByUsr"), rs.getTimestamp("modified"), rs.getString("modifiedBy"),
 						rs.getString("modifiedByUsr"),rs.getString("ticketNumber"), rs.getBoolean("phoneResolved"), rs.getInt("responseTimeDeviationHr"),
-						rs.getString("serviceOrderNumber"));
+						rs.getString("serviceOrderNumber"), rs.getString("contact"), rs.getString("contactPhone"), rs.getString("contactEmail"));
 				lstTickets.add(ticket);
 						
 			}
@@ -95,7 +95,7 @@ public class MySQLTicketDAO implements TicketDAO, Serializable {
 						rs.getShort("solutionTimeDeviationHr"), rs.getTimestamp("created"), rs.getString("createdBy"),
 						rs.getString("createdByUsr"), rs.getTimestamp("modified"), rs.getString("modifiedBy"),
 						rs.getString("modifiedByUsr"), rs.getString("ticketNumber"),rs.getBoolean("phoneResolved"), rs.getInt("responseTimeDeviationHr"),
-						rs.getString("serviceOrderNumber"));
+						rs.getString("serviceOrderNumber"), rs.getString("contact"), rs.getString("contactPhone"), rs.getString("contactEmail"));
 						
 			}
 		} catch (ClassNotFoundException | SQLException e) {
@@ -131,7 +131,7 @@ public class MySQLTicketDAO implements TicketDAO, Serializable {
 						rs.getShort("solutionTimeDeviationHr"), rs.getTimestamp("created"), rs.getString("createdBy"),
 						rs.getString("createdByUsr"), rs.getTimestamp("modified"), rs.getString("modifiedBy"),
 						rs.getString("modifiedByUsr"), rs.getString("ticketNumber"), rs.getBoolean("phoneResolved"), rs.getInt("responseTimeDeviationHr"),
-						rs.getString("serviceOrderNumber"));
+						rs.getString("serviceOrderNumber"), rs.getString("contact"), rs.getString("contactPhone"), rs.getString("contactEmail"));
 						
 			}
 		} catch (ClassNotFoundException | SQLException e) {
