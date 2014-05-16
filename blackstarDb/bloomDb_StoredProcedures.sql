@@ -623,18 +623,43 @@ DROP PROCEDURE IF EXISTS blackstarDb.GetBloomNumberTicketsByArea$$
 CREATE PROCEDURE blackstarDb.GetBloomNumberTicketsByArea()
 BEGIN
 
-SELECT userGroup, COUNT(ticketId) noTickets FROM(
-	SELECT f.bloomTicketId AS ticketId, ug.name AS userGroup FROM followUp f
-					INNER JOIN blackstarUser bu ON (f.asignee=bu.email)
-					INNER JOIN blackstarUser_userGroup bug ON (bu.blackstarUserId=bug.blackstarUserId)
-					INNER JOIN userGroup ug ON (ug.userGroupId=bug.userGroupId)
-					INNER JOIN bloomTicket t ON (t._id=f.bloomTicketId)
-					WHERE f.bloomTicketId IS NOT NULL
-					AND t.statusId=5 -- tickets cerrados
-					AND bu.blackstarUserId <> t.createdByUsr -- que no sea el creador
-					AND ug.userGroupId NOT IN (3,4) -- que no sea de mesa de ayuda ni coordiandor
-					GROUP BY f.bloomTicketId
-) AS ticketsByArea
-GROUP BY userGroup;
+	SELECT userGroup, COUNT(ticketId) noTickets FROM(
+		SELECT f.bloomTicketId AS ticketId, ug.name AS userGroup FROM followUp f
+						INNER JOIN blackstarUser bu ON (f.asignee=bu.email)
+						INNER JOIN blackstarUser_userGroup bug ON (bu.blackstarUserId=bug.blackstarUserId)
+						INNER JOIN userGroup ug ON (ug.userGroupId=bug.userGroupId)
+						INNER JOIN bloomTicket t ON (t._id=f.bloomTicketId)
+						WHERE f.bloomTicketId IS NOT NULL
+						AND t.statusId=5 -- tickets cerrados
+						AND bu.blackstarUserId <> t.createdByUsr -- que no sea el creador
+						AND ug.userGroupId NOT IN (3,4) -- que no sea de mesa de ayuda ni coordiandor
+						GROUP BY f.bloomTicketId
+	) AS ticketsByArea
+	GROUP BY userGroup;
+
+END$$
+
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetBloomUnsatisfactoryTicketsByUserByArea
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetBloomUnsatisfactoryTicketsByUserByArea$$
+CREATE PROCEDURE blackstarDb.GetBloomUnsatisfactoryTicketsByUserByArea(initEvaluationValue INT,userGroupId INT)
+
+BEGIN
+
+	SELECT userName, COUNT(ticketId) FROM( 
+	SELECT f.bloomTicketId AS ticketId, bu.blackstarUserId AS userId, bu.name AS userName FROM followUp f
+									INNER JOIN blackstarUser bu ON (f.asignee=bu.email)
+									INNER JOIN blackstarUser_userGroup bug ON (bu.blackstarUserId=bug.blackstarUserId)
+									INNER JOIN userGroup ug ON (ug.userGroupId=bug.userGroupId)
+									INNER JOIN bloomTicket t ON (t._id=f.bloomTicketId)
+									WHERE f.bloomTicketId IS NOT NULL
+									AND t.evaluation < initEvaluationValue -- limite inicial para evaluacion satisfactoria
+									AND t.statusId=5     -- tickets cerrados
+									AND ug.userGroupId= userGroupId -- ingenieria de servicio(5) o otra area
+									GROUP BY f.bloomTicketId,bu.blackstarUserId,bu.name
+	  ) AS report
+	GROUP BY userName;
 
 END$$
