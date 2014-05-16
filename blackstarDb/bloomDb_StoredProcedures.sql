@@ -307,35 +307,47 @@ END$$
 
 
 -- -----------------------------------------------------------------------------
-	-- blackstarDb.GetBloomReportGetGruposConTickets
+	-- blackstarDb.GetBloomSupportAreasWithTickets
+	-- list of areas with Tickets
 -- -----------------------------------------------------------------------------
-CREATE PROCEDURE blackstarDb.GetBloomReportGetGruposConTickets()
+DROP PROCEDURE IF EXISTS blackstarDb.GetBloomSupportAreasWithTickets$$
+CREATE PROCEDURE blackstarDb.GetBloomSupportAreasWithTickets()
 BEGIN
-SELECT ug.userGroupId,ug.name FROM bloomTicketTeam tt
-INNER JOIN blackstarUser_userGroup bug ON (tt.blackstarUserId=bug.blackstarUserId)
-INNER JOIN userGroup ug ON (ug.userGroupId=bug.userGroupId)
-INNER JOIN bloomTicket bt ON (tt.ticketId=bt._id)
-WHERE ug.userGroupId NOT IN (3,4) -- No se cuenta con el perfil de mesa de ayuda, ni coordinador
-GROUP BY ug.userGroupId;
+	SELECT ug.userGroupId,ug.name FROM followUp f
+					INNER JOIN blackstarUser bu ON (f.asignee=bu.email)
+					INNER JOIN blackstarUser_userGroup bug ON (bu.blackstarUserId=bug.blackstarUserId)
+					INNER JOIN userGroup ug ON (ug.userGroupId=bug.userGroupId)
+					INNER JOIN bloomTicket t ON (t._id=f.bloomTicketId)
+					INNER JOIN bloomTicketTeam tt ON (tt.ticketId = f.bloomTicketId and tt.blackstarUserId=bu.blackstarUserId) -- que el follow exista en bloomTicketTeam
+					WHERE f.bloomTicketId IS NOT NULL
+					AND t.statusId=5
+					AND bu.blackstarUserId <> t.createdByUsr -- que no sea el creador
+					AND ug.userGroupId NOT IN (3,4)  -- No se del perfil de mesa de ayuda, ni coordinador
+					GROUP BY ug.userGroupId;
 
 END$$
 
 
 -- -----------------------------------------------------------------------------
-	-- blackstarDb.GetBloomReportTiempoRespuestaGrupo
+	-- blackstarDb.GetBloomStatisticsByAreaSupport
+	-- Statistics by area support
+	-- average, maximum and minimum from time attention	
 -- -----------------------------------------------------------------------------
-CREATE PROCEDURE blackstarDb.GetBloomReportTiempoRespuestaGrupo(userGroupIdParam INT)
+DROP PROCEDURE IF EXISTS blackstarDb.GetBloomStatisticsByAreaSupport$$
+CREATE PROCEDURE blackstarDb.GetBloomStatisticsByAreaSupport(userGroupIdParam INT)
 BEGIN
 
-  DECLARE maxTimeRes DECIMAL(5,2) DEFAULT 0;
-  DECLARE minTimeRes DECIMAL(5,2) DEFAULT 0;
-  DECLARE promTimeRes DECIMAL(5,2) DEFAULT 0;
-  DECLARE sumaTotalTimeResp DECIMAL(5,2) DEFAULT 0;
+  DECLARE maxTimeRes DECIMAL(12,2) DEFAULT 0;
+  DECLARE minTimeRes DECIMAL(12,2) DEFAULT 0;
+  DECLARE promTimeRes DECIMAL(12,2) DEFAULT 0;
+  DECLARE sumaTotalTimeResp DECIMAL(12,2) DEFAULT 0;
   DECLARE totalTicket INT DEFAULT 0;
   DECLARE exit_flag INT DEFAULT 0;
   DECLARE bloomTicketIdParam INT;
   -- DECLARE tmpLog Varchar(50000);
-
+	
+	
+  -- lista de tickets del followUp de una area de apoyo especifica	
   DECLARE listTicketsCursor CURSOR FOR   SELECT f.bloomTicketId FROM followUp f
 								INNER JOIN blackstarUser bu ON (f.asignee=bu.email)
 								INNER JOIN blackstarUser_userGroup bug ON (bu.blackstarUserId=bug.blackstarUserId)
@@ -380,12 +392,13 @@ OPEN listTicketsCursor;
 
 					DECLARE existRows INT DEFAULT 0;
 					
-					DECLARE sumaDetailFollowTimeResp DECIMAL(5,2) DEFAULT 0;
+					DECLARE sumaDetailFollowTimeResp DECIMAL(12,2) DEFAULT 0;
 					
 					DECLARE difMinutes INT;
 
 					DECLARE exit_flag2 INT DEFAULT 0;
 
+					-- lista de seguimiento de un tickets especifico para sumar tiempos
 					DECLARE ticketFollowDetailCursor CURSOR FOR  SELECT f.bloomTicketId, f.asignee, f.created, ug.userGroupId FROM followUp f 
 								INNER JOIN blackstarUser bu ON (f.asignee=bu.email)
 								INNER JOIN blackstarUser_userGroup bug ON (bu.blackstarUserId=bug.blackstarUserId)
@@ -520,8 +533,108 @@ OPEN listTicketsCursor;
 
 		-- select tmpLog as log;
 		
-		SELECT (maxTimeRes/60) AS maxTime, (minTimeRes/60) minTime,  (promTimeRes/60) promTime;
+		-- resultado por area
+		SELECT (maxTimeRes/60) AS maxTime, (minTimeRes/60) minTime,  (promTimeRes/60) promTime; 
 
 
      END$$
 
+	 
+	 
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetBloomPercentageTimeClosedTickets
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetBloomPercentageTimeClosedTickets$$
+CREATE PROCEDURE blackstarDb.GetBloomPercentageTimeClosedTickets()
+BEGIN
+
+
+	DECLARE satisfactoryPercentage DECIMAL(8,2) DEFAULT 0;
+	DECLARE unsatisfactoryPercentage DECIMAL(8,2) DEFAULT 0;
+	DECLARE noTicketsSatisfactory INT DEFAULT 0;
+	DECLARE noTicketsUnsatisfactory INT DEFAULT 0;
+	DECLARE noTicketsTotal INT DEFAULT 0;
+
+
+
+	SET noTicketsSatisfactory = (select count(id) from (
+		select t._id as id, t.created ,t.dueDate,t.responseDate,date(t.responseDate),t.statusId from bloomTicket t
+		where t.statusId=5 -- tickets cerrados 
+		and date(t.responseDate) <= t.dueDate) as satisfactory);
+
+	SET noTicketsUnsatisfactory = (select count(id) from (
+		select t._id as id, t.created ,t.dueDate,t.responseDate,date(t.responseDate),t.statusId from bloomTicket t
+		where t.statusId=5 -- tickets cerrados 
+		and date(t.responseDate) > t.dueDate) as unatisfactory);
+
+	SET noTicketsTotal=noTicketsSatisfactory+noTicketsUnsatisfactory;
+
+	SET satisfactoryPercentage = (100/noTicketsTotal)*noTicketsSatisfactory;
+	SET unsatisfactoryPercentage = (100/noTicketsTotal)*noTicketsUnsatisfactory;
+
+	select satisfactoryPercentage,unsatisfactoryPercentage;
+
+
+END$$
+	 
+	 
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetBloomPercentageEvaluationTickets
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetBloomPercentageEvaluationTickets$$
+CREATE PROCEDURE blackstarDb.GetBloomPercentageEvaluationTickets(initEvaluationValue INT)
+BEGIN
+
+
+	DECLARE satisfactoryPercentage DECIMAL(8,2) DEFAULT 0;
+	DECLARE unsatisfactoryPercentage DECIMAL(8,2) DEFAULT 0;
+	DECLARE noTicketsEvaluationSatisfactory INT DEFAULT 0;
+	DECLARE noTicketsEvaluationUnsatisfactory INT DEFAULT 0;
+	DECLARE noTicketsTotal INT DEFAULT 0;
+
+
+	SET noTicketsEvaluationSatisfactory = (select count(id) from (
+		select t._id as id, t.evaluation, t.created ,t.dueDate,t.responseDate,date(t.responseDate),t.statusId from bloomTicket t
+		where t.evaluation>=initEvaluationValue
+		AND t.statusId=5 -- tickets cerrados
+		) as evaluation);
+
+	SET noTicketsEvaluationUnsatisfactory = (select count(id) from (
+		select t._id as id, t.evaluation, t.created ,t.dueDate,t.responseDate,date(t.responseDate),t.statusId from bloomTicket t
+		where t.evaluation<initEvaluationValue
+		AND t.statusId=5 -- tickets cerrados
+		) as evaluation);
+
+	SET noTicketsTotal=noTicketsEvaluationSatisfactory+noTicketsEvaluationUnsatisfactory;
+
+	SET satisfactoryPercentage = (100/noTicketsTotal)*noTicketsEvaluationSatisfactory;
+	SET unsatisfactoryPercentage = (100/noTicketsTotal)*noTicketsEvaluationUnsatisfactory;
+
+	select satisfactoryPercentage,unsatisfactoryPercentage;
+
+
+END$$	 
+
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetBloomNumberTicketsByArea
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetBloomNumberTicketsByArea$$
+CREATE PROCEDURE blackstarDb.GetBloomNumberTicketsByArea()
+BEGIN
+
+SELECT userGroup, COUNT(ticketId) noTickets FROM(
+	SELECT f.bloomTicketId AS ticketId, ug.name AS userGroup FROM followUp f
+					INNER JOIN blackstarUser bu ON (f.asignee=bu.email)
+					INNER JOIN blackstarUser_userGroup bug ON (bu.blackstarUserId=bug.blackstarUserId)
+					INNER JOIN userGroup ug ON (ug.userGroupId=bug.userGroupId)
+					INNER JOIN bloomTicket t ON (t._id=f.bloomTicketId)
+					WHERE f.bloomTicketId IS NOT NULL
+					AND t.statusId=5 -- tickets cerrados
+					AND bu.blackstarUserId <> t.createdByUsr -- que no sea el creador
+					AND ug.userGroupId NOT IN (3,4) -- que no sea de mesa de ayuda ni coordiandor
+					GROUP BY f.bloomTicketId
+) AS ticketsByArea
+GROUP BY userGroup;
+
+END$$
