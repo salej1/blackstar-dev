@@ -334,7 +334,7 @@ END$$
 	-- average, maximum and minimum from time attention	
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetBloomStatisticsByAreaSupport$$
-CREATE PROCEDURE blackstarDb.GetBloomStatisticsByAreaSupport(userGroupIdParam INT)
+CREATE PROCEDURE blackstarDb.GetBloomStatisticsByAreaSupport(userGroupIdParam INT, groupName VARCHAR(100))
 BEGIN
 
   DECLARE maxTimeRes DECIMAL(12,2) DEFAULT 0;
@@ -534,7 +534,7 @@ OPEN listTicketsCursor;
 		-- select tmpLog as log;
 		
 		-- resultado por area
-		SELECT (maxTimeRes/60) AS maxTime, (minTimeRes/60) minTime,  (promTimeRes/60) promTime; 
+		SELECT groupName,(maxTimeRes/60) AS maxTime, (minTimeRes/60) minTime,  (promTimeRes/60) promTime; 
 
 
      END$$
@@ -648,7 +648,7 @@ CREATE PROCEDURE blackstarDb.GetBloomUnsatisfactoryTicketsByUserByArea(initEvalu
 
 BEGIN
 
-	SELECT userName, COUNT(ticketId) FROM( 
+	SELECT userName, COUNT(ticketId) as noTickets FROM( 
 	SELECT f.bloomTicketId AS ticketId, bu.blackstarUserId AS userId, bu.name AS userName FROM followUp f
 									INNER JOIN blackstarUser bu ON (f.asignee=bu.email)
 									INNER JOIN blackstarUser_userGroup bug ON (bu.blackstarUserId=bug.blackstarUserId)
