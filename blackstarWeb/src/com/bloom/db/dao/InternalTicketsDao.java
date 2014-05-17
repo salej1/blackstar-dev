@@ -93,10 +93,9 @@ public interface InternalTicketsDao {
 	 * @param fechaIni
 	 * @param fechaFin
 	 * @param idStatusTicket
-	 * @param idResponsable
 	 * @return
 	 * @throws DAOException
 	 */
-	public List<InternalTicketBean> getHistoricalTickets(String fechaIni, String fechaFin, Integer idStatusTicket, Long idResponsable) throws DAOException;	
+	public List<InternalTicketBean> getHistoricalTickets(String startCreationDate, String endCreationDate, Integer idStatusTicket) throws DAOException;	
 
 }

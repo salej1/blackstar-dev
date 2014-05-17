@@ -77,22 +77,13 @@ public class InternalTicketsServiceImpl extends AbstractService
     
     
     @Override
-    public List<InternalTicketBean> getHistoricalTickets(String fechaIni, String fechaFin, Integer idStatusTicket, Long idResponsable) throws ServiceException {
+    public List<InternalTicketBean> getHistoricalTickets(String startCreationDateTicket, String endCreationDateTicket, Integer idStatusTicket) throws ServiceException {
     	
-    	String formatoFechaStrEntrada="MM/dd/yyyy";
-    	String formatoFechaStrSalida="yyyy-MM-dd";
-    	
-    	Date dIni=DataTypeUtil.getFecha(fechaIni, formatoFechaStrEntrada);
-    	Date dFin=DataTypeUtil.getFecha(fechaFin, formatoFechaStrEntrada);
-    	
-    	fechaIni= DataTypeUtil.formatearFecha(dIni, formatoFechaStrSalida);
-    	fechaFin= DataTypeUtil.formatearFecha(dFin, formatoFechaStrSalida);
-    	
-    	fechaIni = fechaIni+DataTypeUtil.MIN_TIME;
-    	fechaFin = fechaFin+DataTypeUtil.MAX_TIME;
+    	startCreationDateTicket = DataTypeUtil.transformDateFormat(startCreationDateTicket,DataTypeUtil.MIN_TIME);
+    	endCreationDateTicket = DataTypeUtil.transformDateFormat(endCreationDateTicket,DataTypeUtil.MAX_TIME);
     	
         try {
-        	return getInternalTicketsDao().getHistoricalTickets(fechaIni,fechaFin,idStatusTicket,idResponsable);
+        	return getInternalTicketsDao().getHistoricalTickets(startCreationDateTicket,endCreationDateTicket,idStatusTicket);
             
         } catch (DAOException e) {
             
@@ -101,6 +92,7 @@ public class InternalTicketsServiceImpl extends AbstractService
             throw new ServiceException("Error al obtener el historico tickets", e);
         }
     }
+
     
 
     

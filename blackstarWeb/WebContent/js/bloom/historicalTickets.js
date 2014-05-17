@@ -41,10 +41,9 @@ function getHistoricalInternalTickets() {
 				type : "GET",
 				dataType : "json",
 				data : {
-					fechaIni:$('#fldFechaIni').val(),
-					fechaFin:$('#fldFechaFin').val(),
-					idEstatusTicket:$('#slEstatusTicket').val(),
-					idResposable:-1//$('#slResponsable').val()
+					startCreationDateTicket:$('#fldFechaIni').val(),
+					endCreationDateTicket:$('#fldFechaFin').val(),
+					idStatusTicket:$('#slEstatusTicket').val()
 				},
 				beforeSend : function() {
 
@@ -68,7 +67,7 @@ function getHistoricalInternalTickets() {
 						
 						inicializaGrid();
 						
-						alert(respuestaJson.mensaje);
+						//alert(respuestaJson.mensaje);
 					} else{
 						alert(respuestaJson.mensaje);
 					}

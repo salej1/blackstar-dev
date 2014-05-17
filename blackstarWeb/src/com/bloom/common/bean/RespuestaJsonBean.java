@@ -8,7 +8,6 @@ import java.util.Map;
  * Bean que representa una respuesta Json.
  *
  * @author Oscar.Martinez
- * @version 1.0.0, 12/03/2014
  */
 public class RespuestaJsonBean {
 

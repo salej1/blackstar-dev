@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
@@ -16,13 +17,16 @@ import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
 import com.blackstar.model.UserSession;
 import com.blackstar.web.AbstractController;
-import com.bloom.common.bean.CatalogoBean;
+import com.bloom.common.bean.ReportTicketBean;
 import com.bloom.common.bean.RespuestaJsonBean;
 import com.bloom.common.exception.ServiceException;
-import com.bloom.services.CatalogService;
-import com.bloom.services.InternalTicketsService;
+import com.bloom.services.ReportsTicketsService;
 
 import org.springframework.web.bind.annotation.RequestMethod;
+
+
+
+
 
 /**
  * Controller principal para el paquete bloom
@@ -34,136 +38,383 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @SessionAttributes({ Globals.SESSION_KEY_PARAM })
 public class ReportsInternalTicketsController extends AbstractController {
 
-	private InternalTicketsService internalTicketsService;
+	private ReportsTicketsService reportsTicketsService;
 	
-	private CatalogService catalogService;
-
 	
-	@RequestMapping(value = "/reporteTiempoRespuestaAreaApoyo.do", method = RequestMethod.GET)
-	public String reporteTiempoRespuestaAreaApoyo(ModelMap model,
+	@RequestMapping(value = "/reportStatisticsByAreaSupport.do", method = RequestMethod.GET)
+	public String reportStatisticsByAreaSupport(ModelMap model,
 			@ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession) {
 
-		return "bloom/bloomReporteTiempoRespAreaApoyo";
+		return "bloom/reportStatisticsByAreaSupport";
 	}	
 	
 
-	@RequestMapping(value = "/reporteTiempoRespuestaMesaAyuda.do", method = RequestMethod.GET)
-	public String reporteTiempoRespuestaMesaAyuda(ModelMap model,
+	@RequestMapping(value = "/reportStatisticsByHelpDesk.do", method = RequestMethod.GET)
+	public String reportStatisticsByHelpDesk(ModelMap model,
 			@ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession) {
 
-		return "bloom/bloomReporteTiempoRespMesaAyuda";
+		return "bloom/reportStatisticsByHelpDesk";
 	}	
 
 	
-	@RequestMapping(value = "/reporteTicketsNoSatisfactorios.do", method = RequestMethod.GET)
-	public String reporteTicketsNoSatisfactorios(ModelMap model,
+	@RequestMapping(value = "/reportPercentageTimeClosedTickets.do", method = RequestMethod.GET)
+	public String reportPercentageTimeClosedTickets(ModelMap model,
 			@ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession) {
 
-		return "bloom/bloomReporteTicketsNoSatisfactorios";
+		return "bloom/reportPercentageTimeClosedTickets";
 	}	
 
 	
-	@RequestMapping(value = "/reporteTicketsEvaluacion.do", method = RequestMethod.GET)
-	public String reporteTicketsEvaluacion(ModelMap model,
+	@RequestMapping(value = "/reportPercentageEvaluationTickets.do", method = RequestMethod.GET)
+	public String reportPercentageEvaluationTickets(ModelMap model,
 			@ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession) {
 
-		return "bloom/bloomReporteTicketsEvaluacion";
+		return "bloom/reportPercentageEvaluationTickets";
 	}	
 	
-	@RequestMapping(value = "/reporteTicketsCerrados.do", method = RequestMethod.GET)
-	public String reporteTicketsCerrados(ModelMap model,
+	@RequestMapping(value = "/reportNumberTicketsByArea.do", method = RequestMethod.GET)
+	public String reportNumberTicketsByArea(ModelMap model,
 			@ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession) {
 
-		return "bloom/bloomReporteTicketsCerrados";
+		return "bloom/reportNumberTicketsByArea";
 	}	
 
-	@RequestMapping(value = "/reporteTicketsAreaApoyo.do", method = RequestMethod.GET)
-	public String reporteTicketsAreaApoyo(ModelMap model,
+	@RequestMapping(value = "/reportUnsatisfactoryTicketsByUserEngineeringService.do", method = RequestMethod.GET)
+	public String reportUnsatisfactoryTicketsByUserEngineeringService(ModelMap model,
 			@ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession) {
 
-		return "bloom/bloomReporteTicketsAreaApoyo";
+		return "bloom/reportUnsatisfactoryTicketsByUserEngineeringService";
+	}
+
+
+	/**
+	 * @return the reportsTicketsService
+	 */
+	public ReportsTicketsService getReportsTicketsService() {
+		return reportsTicketsService;
+	}
+
+
+	/**
+	 * @param reportsTicketsService the reportsTicketsService to set
+	 */
+	public void setReportsTicketsService(ReportsTicketsService reportsTicketsService) {
+		this.reportsTicketsService = reportsTicketsService;
 	}	
 	
 	
 	
-	@RequestMapping(value = "/getDatosReporteAreaApoyo.do", method = RequestMethod.GET, produces = "application/json")
+	/**
+	 * lista de registros del reporte.
+	 * @param startCreationDateTicket
+	 * @param endCreationDateTicket
+	 * @return
+	 */
+	@RequestMapping(value = "/getStatisticsByAreaSupport.do", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	RespuestaJsonBean getDatosReporteAreaApoyo(ModelMap model,
-			@ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession) {
+	RespuestaJsonBean getStatisticsByAreaSupport(
+			@RequestParam(value = "startCreationDateTicket", required = true) String startCreationDateTicket,
+			@RequestParam(value = "endCreationDateTicket", required = true) String endCreationDateTicket) {
 
-		RespuestaJsonBean respuesta = new RespuestaJsonBean();
-
-		List<CatalogoBean<Integer>> listaEstatusTickets;
-		List<CatalogoBean<Integer>> listaAreasApoyo;
-		
-		List<CatalogoBean<Integer>> inilistaEstatusTickets = new ArrayList<CatalogoBean<Integer>>();
-		List<CatalogoBean<Integer>> inilistaAreasApoyo = new ArrayList<CatalogoBean<Integer>>();
-
-		
-		CatalogoBean<Integer> todos = new CatalogoBean<Integer>(-1, "Todos");
-		inilistaEstatusTickets.add(todos);
-		inilistaAreasApoyo.add(todos);
-		
-		
-		HashMap<String, List<CatalogoBean<Integer>>> listaResponse = new HashMap<String, List<CatalogoBean<Integer>>>();
+		RespuestaJsonBean response = new RespuestaJsonBean();
 
 		try {
-			
-			listaEstatusTickets = catalogService.consultarEstatusTicket();
-			listaAreasApoyo=catalogService.consultarAreaSolicitante();
-			
-			inilistaEstatusTickets.addAll(listaEstatusTickets);
-			inilistaAreasApoyo.addAll(listaAreasApoyo);
 
-			listaResponse.put("listaEstatusTickets", inilistaEstatusTickets);
-			listaResponse.put("listaAreasApoyo", inilistaAreasApoyo);
+			List<ReportTicketBean> registros = reportsTicketsService.getStatisticsByAreaSupport(startCreationDateTicket, endCreationDateTicket);
+					
 
-			respuesta.setListaMap(listaResponse);
-			respuesta.setEstatus("ok");
+			if (registros == null || registros.isEmpty()) {
+				response.setEstatus("preventivo");
+				response.setMensaje("No se encontro datos del reporte tiempo de response por area de apoyo");
+				response.setLista(registros);
 
-		} catch (ServiceException se) {
-			Logger.Log(LogLevel.ERROR, se.getMessage(), se);
-			respuesta.setEstatus("error");
-			respuesta.setMensaje(se.getMessage());
+			} else {
+				String resumen = "Se encontraron " + registros.size()
+						+ " del reporte";
+				response.setEstatus("ok");
+				response.setLista(registros);
+				response.setMensaje(resumen);
+			}
+
+		} catch (ServiceException e) {
+
+			Logger.Log(LogLevel.ERROR, e.getMessage(), e);
+
+			response.setEstatus("error");
+			response.setMensaje(e.getMessage());
+		} catch (Exception e) {
+
+			Logger.Log(LogLevel.ERROR, e.getMessage(), e);
+
+			response.setEstatus("error");
+			response
+					.setMensaje("Error al obtener datos del reporte. Por favor intente m\u00e1s tarde.");
 		}
 
-		return respuesta;
-	}	
+		return response;
+	}
 	
+
+	
+	
+	/**
+	 * lista de registros del reporte.
+	 * @param startCreationDateTicket
+	 * @param endCreationDateTicket
+	 * @return
+	 */
+	@RequestMapping(value = "/getStatisticsByHelpDesk.do", method = RequestMethod.GET, produces = "application/json")
+	@ResponseBody
+	RespuestaJsonBean getStatisticsByHelpDesk(
+			@RequestParam(value = "startCreationDateTicket", required = true) String startCreationDateTicket,
+			@RequestParam(value = "endCreationDateTicket", required = true) String endCreationDateTicket) {
+
+		RespuestaJsonBean response = new RespuestaJsonBean();
+
+		try {
+
+			List<ReportTicketBean> registros = reportsTicketsService.getStatisticsByHelpDesk(startCreationDateTicket, endCreationDateTicket);
+					
+
+			if (registros == null || registros.isEmpty()) {
+				response.setEstatus("preventivo");
+				response.setMensaje("No se encontro datos del reporte tiempo de respuesta de mesa de ayuda");
+				response.setLista(registros);
+
+			} else {
+				String resumen = "Se encontraron " + registros.size()
+						+ " del reporte";
+				response.setEstatus("ok");
+				response.setLista(registros);
+				response.setMensaje(resumen);
+			}
+
+		} catch (ServiceException e) {
+
+			Logger.Log(LogLevel.ERROR, e.getMessage(), e);
+
+			response.setEstatus("error");
+			response.setMensaje(e.getMessage());
+		} catch (Exception e) {
+
+			Logger.Log(LogLevel.ERROR, e.getMessage(), e);
+
+			response.setEstatus("error");
+			response
+			.setMensaje("Error al obtener datos del reporte. Por favor intente m\u00e1s tarde.");
+		}
+
+		return response;
+	}
+	
+
+	
+	/**
+	 * lista de registros del reporte.
+	 * @param startCreationDateTicket
+	 * @param endCreationDateTicket
+	 * @return
+	 */
+	@RequestMapping(value = "/getPercentageTimeClosedTickets.do", method = RequestMethod.GET, produces = "application/json")
+	@ResponseBody
+	RespuestaJsonBean getPercentageTimeClosedTickets(
+			@RequestParam(value = "startCreationDateTicket", required = true) String startCreationDateTicket,
+			@RequestParam(value = "endCreationDateTicket", required = true) String endCreationDateTicket) {
+
+		RespuestaJsonBean response = new RespuestaJsonBean();
+
+		try {
+
+			List<ReportTicketBean> registros = reportsTicketsService.getPercentageTimeClosedTickets(startCreationDateTicket, endCreationDateTicket);
+					
+
+			if (registros == null || registros.isEmpty()) {
+				response.setEstatus("preventivo");
+				response.setMensaje("No se encontro datos del reporte tickets cerrados a tiempo");
+				response.setLista(registros);
+
+			} else {
+				String resumen = "Se encontraron " + registros.size()
+						+ " del reporte";
+				response.setEstatus("ok");
+				response.setLista(registros);
+				response.setMensaje(resumen);
+			}
+
+		} catch (ServiceException e) {
+
+			Logger.Log(LogLevel.ERROR, e.getMessage(), e);
+
+			response.setEstatus("error");
+			response.setMensaje(e.getMessage());
+		} catch (Exception e) {
+
+			Logger.Log(LogLevel.ERROR, e.getMessage(), e);
+
+			response.setEstatus("error");
+			response
+			.setMensaje("Error al obtener datos del reporte. Por favor intente m\u00e1s tarde.");
+		}
+
+		return response;
+	}
+	
+
+	
+	/**
+	 * lista de registros del reporte.
+	 * @param startCreationDateTicket
+	 * @param endCreationDateTicket
+	 * @return
+	 */
+	@RequestMapping(value = "/getPercentageEvaluationTickets.do", method = RequestMethod.GET, produces = "application/json")
+	@ResponseBody
+	RespuestaJsonBean getPercentageEvaluationTickets(
+			@RequestParam(value = "startCreationDateTicket", required = true) String startCreationDateTicket,
+			@RequestParam(value = "endCreationDateTicket", required = true) String endCreationDateTicket) {
+
+		RespuestaJsonBean response = new RespuestaJsonBean();
+
+		try {
+
+			List<ReportTicketBean> registros = reportsTicketsService.getPercentageEvaluationTickets(startCreationDateTicket, endCreationDateTicket);
+					
+
+			if (registros == null || registros.isEmpty()) {
+				response.setEstatus("preventivo");
+				response.setMensaje("No se encontro datos del reporte tickets por evaluacion");
+				response.setLista(registros);
+
+			} else {
+				String resumen = "Se encontraron " + registros.size()
+						+ " del reporte";
+				response.setEstatus("ok");
+				response.setLista(registros);
+				response.setMensaje(resumen);
+			}
+
+		} catch (ServiceException e) {
+
+			Logger.Log(LogLevel.ERROR, e.getMessage(), e);
+
+			response.setEstatus("error");
+			response.setMensaje(e.getMessage());
+		} catch (Exception e) {
+
+			Logger.Log(LogLevel.ERROR, e.getMessage(), e);
+
+			response.setEstatus("error");
+			response
+			.setMensaje("Error al obtener datos del reporte. Por favor intente m\u00e1s tarde.");
+		}
+
+		return response;
+	}
 	
 	
 	
 	/**
-	 * @return the internalTicketsService
+	 * lista de registros del reporte.
+	 * @param startCreationDateTicket
+	 * @param endCreationDateTicket
+	 * @return
 	 */
-	public InternalTicketsService getInternalTicketsService() {
-		return internalTicketsService;
-	}
+	@RequestMapping(value = "/getNumberTicketsByArea.do", method = RequestMethod.GET, produces = "application/json")
+	@ResponseBody
+	RespuestaJsonBean getNumberTicketsByArea(
+			@RequestParam(value = "startCreationDateTicket", required = true) String startCreationDateTicket,
+			@RequestParam(value = "endCreationDateTicket", required = true) String endCreationDateTicket) {
 
+		RespuestaJsonBean response = new RespuestaJsonBean();
+
+		try {
+
+			List<ReportTicketBean> registros = reportsTicketsService.getNumberTicketsByArea(startCreationDateTicket, endCreationDateTicket);
+					
+
+			if (registros == null || registros.isEmpty()) {
+				response.setEstatus("preventivo");
+				response.setMensaje("No se encontro datos del reporte numero de tickets por area de apoyo");
+				response.setLista(registros);
+
+			} else {
+				String resumen = "Se encontraron " + registros.size()
+						+ " del reporte";
+				response.setEstatus("ok");
+				response.setLista(registros);
+				response.setMensaje(resumen);
+			}
+
+		} catch (ServiceException e) {
+
+			Logger.Log(LogLevel.ERROR, e.getMessage(), e);
+
+			response.setEstatus("error");
+			response.setMensaje(e.getMessage());
+		} catch (Exception e) {
+
+			Logger.Log(LogLevel.ERROR, e.getMessage(), e);
+
+			response.setEstatus("error");
+			response
+			.setMensaje("Error al obtener datos del reporte. Por favor intente m\u00e1s tarde.");
+		}
+
+		return response;
+	}
+	
+	
+	
 	/**
-	 * @param internalTicketsService
-	 *            the internalTicketsService to set
+	 * lista de registros del reporte.
+	 * @param startCreationDateTicket
+	 * @param endCreationDateTicket
+	 * @return
 	 */
-	public void setInternalTicketsService(
-			InternalTicketsService internalTicketsService) {
-		this.internalTicketsService = internalTicketsService;
+	@RequestMapping(value = "/getUnsatisfactoryTicketsByUserEngineeringService.do", method = RequestMethod.GET, produces = "application/json")
+	@ResponseBody
+	RespuestaJsonBean getUnsatisfactoryTicketsByUserEngineeringService(
+			@RequestParam(value = "startCreationDateTicket", required = true) String startCreationDateTicket,
+			@RequestParam(value = "endCreationDateTicket", required = true) String endCreationDateTicket) {
+
+		RespuestaJsonBean response = new RespuestaJsonBean();
+
+		try {
+
+			List<ReportTicketBean> registros = reportsTicketsService.getUnsatisfactoryTicketsByUserEngineeringService(startCreationDateTicket, endCreationDateTicket);
+					
+
+			if (registros == null || registros.isEmpty()) {
+				response.setEstatus("preventivo");
+				response.setMensaje("No se encontro datos del reporte tickets no satisfactorios por Ing. de Servicio");
+				response.setLista(registros);
+
+			} else {
+				String resumen = "Se encontraron " + registros.size()
+						+ " del reporte";
+				response.setEstatus("ok");
+				response.setLista(registros);
+				response.setMensaje(resumen);
+			}
+
+		} catch (ServiceException e) {
+
+			Logger.Log(LogLevel.ERROR, e.getMessage(), e);
+
+			response.setEstatus("error");
+			response.setMensaje(e.getMessage());
+		} catch (Exception e) {
+
+			Logger.Log(LogLevel.ERROR, e.getMessage(), e);
+
+			response.setEstatus("error");
+			response
+			.setMensaje("Error al obtener datos del reporte. Por favor intente m\u00e1s tarde.");
+		}
+
+		return response;
 	}
-
-
-	/**
-	 * @return the catalogService
-	 */
-	public CatalogService getCatalogService() {
-		return catalogService;
-	}
-
-
-	/**
-	 * @param catalogService the catalogService to set
-	 */
-	public void setCatalogService(CatalogService catalogService) {
-		this.catalogService = catalogService;
-	}
-
-
+	
+	
+	
 }

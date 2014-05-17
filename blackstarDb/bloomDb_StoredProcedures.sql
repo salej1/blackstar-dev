@@ -311,7 +311,7 @@ END$$
 	-- list of areas with Tickets
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetBloomSupportAreasWithTickets$$
-CREATE PROCEDURE blackstarDb.GetBloomSupportAreasWithTickets()
+CREATE PROCEDURE blackstarDb.GetBloomSupportAreasWithTickets(startCreationDate Datetime,endCreationDate Datetime)
 BEGIN
 	SELECT ug.userGroupId,ug.name FROM followUp f
 					INNER JOIN blackstarUser bu ON (f.asignee=bu.email)
@@ -323,6 +323,8 @@ BEGIN
 					AND t.statusId=5
 					AND bu.blackstarUserId <> t.createdByUsr -- que no sea el creador
 					AND ug.userGroupId NOT IN (3,4)  -- No se del perfil de mesa de ayuda, ni coordinador
+					AND t.created>= startCreationDate
+					AND t.created <= endCreationDate
 					GROUP BY ug.userGroupId;
 
 END$$
@@ -334,7 +336,7 @@ END$$
 	-- average, maximum and minimum from time attention	
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetBloomStatisticsByAreaSupport$$
-CREATE PROCEDURE blackstarDb.GetBloomStatisticsByAreaSupport(userGroupIdParam INT, groupName VARCHAR(100))
+CREATE PROCEDURE blackstarDb.GetBloomStatisticsByAreaSupport(userGroupIdParam INT, groupName VARCHAR(100),startCreationDate Datetime,endCreationDate Datetime)
 BEGIN
 
   DECLARE maxTimeRes DECIMAL(12,2) DEFAULT 0;
@@ -354,8 +356,10 @@ BEGIN
 								INNER JOIN userGroup ug ON (ug.userGroupId=bug.userGroupId)
 								INNER JOIN bloomTicket t ON (t._id=f.bloomTicketId)
 								WHERE f.bloomTicketId IS NOT NULL
-								-- AND t.statusId=5
-								AND ug.userGroupId= userGroupIdParam
+								AND t.statusId=5 --ticktes cerrados
+								AND ug.userGroupId= userGroupIdParam --id perfil groupId
+								AND t.created>= startCreationDate
+								AND t.created <= endCreationDate
 								GROUP BY f.bloomTicketId;
 
   DECLARE CONTINUE HANDLER FOR SQLSTATE '02000' SET exit_flag = 1;
@@ -545,7 +549,7 @@ OPEN listTicketsCursor;
 	-- blackstarDb.GetBloomPercentageTimeClosedTickets
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetBloomPercentageTimeClosedTickets$$
-CREATE PROCEDURE blackstarDb.GetBloomPercentageTimeClosedTickets()
+CREATE PROCEDURE blackstarDb.GetBloomPercentageTimeClosedTickets(startCreationDate Datetime,endCreationDate Datetime)
 BEGIN
 
 
@@ -559,12 +563,16 @@ BEGIN
 
 	SET noTicketsSatisfactory = (select count(id) from (
 		select t._id as id, t.created ,t.dueDate,t.responseDate,date(t.responseDate),t.statusId from bloomTicket t
-		where t.statusId=5 -- tickets cerrados 
+		where t.statusId=5 -- tickets cerrados
+		AND t.created>= startCreationDate
+		AND t.created <= endCreationDate
 		and date(t.responseDate) <= t.dueDate) as satisfactory);
 
 	SET noTicketsUnsatisfactory = (select count(id) from (
 		select t._id as id, t.created ,t.dueDate,t.responseDate,date(t.responseDate),t.statusId from bloomTicket t
 		where t.statusId=5 -- tickets cerrados 
+		AND t.created>= startCreationDate
+		AND t.created <= endCreationDate
 		and date(t.responseDate) > t.dueDate) as unatisfactory);
 
 	SET noTicketsTotal=noTicketsSatisfactory+noTicketsUnsatisfactory;
@@ -582,7 +590,7 @@ END$$
 	-- blackstarDb.GetBloomPercentageEvaluationTickets
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetBloomPercentageEvaluationTickets$$
-CREATE PROCEDURE blackstarDb.GetBloomPercentageEvaluationTickets(initEvaluationValue INT)
+CREATE PROCEDURE blackstarDb.GetBloomPercentageEvaluationTickets(initEvaluationValue INT,startCreationDate Datetime,endCreationDate Datetime)
 BEGIN
 
 
@@ -597,12 +605,16 @@ BEGIN
 		select t._id as id, t.evaluation, t.created ,t.dueDate,t.responseDate,date(t.responseDate),t.statusId from bloomTicket t
 		where t.evaluation>=initEvaluationValue
 		AND t.statusId=5 -- tickets cerrados
+		AND t.created>= startCreationDate
+		AND t.created <= endCreationDate
 		) as evaluation);
 
 	SET noTicketsEvaluationUnsatisfactory = (select count(id) from (
 		select t._id as id, t.evaluation, t.created ,t.dueDate,t.responseDate,date(t.responseDate),t.statusId from bloomTicket t
 		where t.evaluation<initEvaluationValue
 		AND t.statusId=5 -- tickets cerrados
+		AND t.created>= startCreationDate
+		AND t.created <= endCreationDate
 		) as evaluation);
 
 	SET noTicketsTotal=noTicketsEvaluationSatisfactory+noTicketsEvaluationUnsatisfactory;
@@ -620,7 +632,7 @@ END$$
 	-- blackstarDb.GetBloomNumberTicketsByArea
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetBloomNumberTicketsByArea$$
-CREATE PROCEDURE blackstarDb.GetBloomNumberTicketsByArea()
+CREATE PROCEDURE blackstarDb.GetBloomNumberTicketsByArea(startCreationDate Datetime,endCreationDate Datetime)
 BEGIN
 
 	SELECT userGroup, COUNT(ticketId) noTickets FROM(
@@ -631,6 +643,8 @@ BEGIN
 						INNER JOIN bloomTicket t ON (t._id=f.bloomTicketId)
 						WHERE f.bloomTicketId IS NOT NULL
 						AND t.statusId=5 -- tickets cerrados
+						AND t.created>= startCreationDate
+						AND t.created <= endCreationDate
 						AND bu.blackstarUserId <> t.createdByUsr -- que no sea el creador
 						AND ug.userGroupId NOT IN (3,4) -- que no sea de mesa de ayuda ni coordiandor
 						GROUP BY f.bloomTicketId
@@ -644,7 +658,7 @@ END$$
 	-- blackstarDb.GetBloomUnsatisfactoryTicketsByUserByArea
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetBloomUnsatisfactoryTicketsByUserByArea$$
-CREATE PROCEDURE blackstarDb.GetBloomUnsatisfactoryTicketsByUserByArea(initEvaluationValue INT,userGroupId INT)
+CREATE PROCEDURE blackstarDb.GetBloomUnsatisfactoryTicketsByUserByArea(initEvaluationValue INT,userGroupId INT,startCreationDate Datetime,endCreationDate Datetime)
 
 BEGIN
 
@@ -657,9 +671,46 @@ BEGIN
 									WHERE f.bloomTicketId IS NOT NULL
 									AND t.evaluation < initEvaluationValue -- limite inicial para evaluacion satisfactoria
 									AND t.statusId=5     -- tickets cerrados
+									AND t.created>= startCreationDate
+									AND t.created <= endCreationDate
 									AND ug.userGroupId= userGroupId -- ingenieria de servicio(5) o otra area
 									GROUP BY f.bloomTicketId,bu.blackstarUserId,bu.name
 	  ) AS report
 	GROUP BY userName;
+
+END$$
+
+
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetBloomHistoricalTickets
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetBloomHistoricalTickets$$
+CREATE PROCEDURE blackstarDb.GetBloomHistoricalTickets(statusTicket INT,startCreationDate VARCHAR(50),endCreationDate VARCHAR(50))
+BEGIN
+
+DECLARE tmp1 VARCHAR(800);
+DECLARE tmp2 VARCHAR(50);
+DECLARE tmp3 VARCHAR(50);
+DECLARE tmp4 VARCHAR(50);
+DECLARE tmp5 VARCHAR(1500);
+
+SET tmp1 = 'SELECT ti._id as id, ti.ticketNumber, ti.created, ti.applicantAreaId, ba.name as areaName, ti.serviceTypeId, st.name as serviceName, st.responseTime, ti.project, ti.officeId, o.officeName,ti.statusId, s.name as statusTicket FROM bloomTicket ti INNER JOIN bloomApplicantArea ba on (ba._id = ti.applicantAreaId) INNER JOIN bloomServiceType st on (st._id = ti.serviceTypeId) INNER JOIN office o on (o.officeId = ti.officeId) INNER JOIN bloomStatusType s on (s._id = ti.statusId) WHERE ti.created>=\'';
+SET tmp2 = '\' AND ti.created <= \'';
+
+IF statusTicket <> -1 THEN 
+	SET tmp3 = CONCAT('\' AND ti.statusId= ', statusTicket);	
+ELSE
+	SET tmp3 = '\'';
+END IF;				
+
+SET tmp4 = ' ORDER BY ti.created DESC ';
+
+SET @sqlv=CONCAT(tmp1,startCreationDate,tmp2,endCreationDate,tmp3,tmp4);
+
+ PREPARE stmt FROM @sqlv;
+
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
 
 END$$
