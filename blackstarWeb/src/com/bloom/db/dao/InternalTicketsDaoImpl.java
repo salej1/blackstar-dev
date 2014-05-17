@@ -31,35 +31,19 @@ import com.bloom.common.utils.DataTypeUtil;
 import com.bloom.db.dao.mapper.CatalogoMapper;
 
 @SuppressWarnings("unchecked")
-public class InternalTicketsDaoImpl extends AbstractDAO implements InternalTicketsDao {
-
+public class InternalTicketsDaoImpl extends AbstractDAO implements
+		InternalTicketsDao {
 
 	private static final String QUERY_TICKETS_PENDIENTES = "CALL getBloomPendingTickets(%d)";
 	private static final String QUERY_TICKETS = "CALL getBloomTickets(%d)";
 
-	private static final String QUERY_HISTORICAL_TICKETS = "SELECT"
-			+ " ti._id as id,"
-			+ " ti.ticketNumber,"
-			+ " ti.created,"
-			+ " ti.applicantAreaId,"
-			+ " ba.name as areaName,"
-			+ " ti.serviceTypeId,"
-			+ " st.name as serviceName,"
-			+ " st.responseTime,"
-			+ " ti.project,"
-			+ " ti.officeId,"
-			+ " o.officeName,"
-			+ " ti.statusId,"
-			+ " s.name as statusTicket"
-			+ " FROM bloomTicket ti"
-			+ " INNER JOIN bloomApplicantArea ba on (ba._id = ti.applicantAreaId)"
-			+ " INNER JOIN bloomServiceType st on (st._id = ti.serviceTypeId)"
-			+ " INNER JOIN office o on (o.officeId = ti.officeId)"
-			+ " INNER JOIN bloomStatusType s on (s._id = ti.statusId)"
-			+ " WHERE ti.created>= '%fechaIni%' "
-			+ " AND ti.created <= '%fechaFin%'";
+	private static final String QUERY_HISTORICAL_TICKETS = "CALL GetBloomHistoricalTickets(%d,'%s','%s')";
 
+	private static final String QUERY_TICKET_NUMBER = "CALL GetNextInternalTicketNumber()";
 
+	private static final String ERROR_CONSULTA = "Error al consultar el catálogo";
+
+	private static final String EMPTY_CONSULTA = "No se encontraron registros";
 
   public List<InternalTicketBean> getPendingTickets(){
 	String sqlQuery = "CALL getPendingTickets();";	
@@ -131,12 +115,6 @@ public class InternalTicketsDaoImpl extends AbstractDAO implements InternalTicke
 	getJdbcTemplate().update(sqlBuilder.toString(), new Object[]{ticketId
 				                                              , userId});
   } 
-
-	private static final String QUERY_TICKET_NUMBER = "CALL GetNextInternalTicketNumber()";
-
-	private static final String ERROR_CONSULTA = "Error al consultar el catálogo";
-
-	private static final String EMPTY_CONSULTA = "No se encontraron registros";
 
 	private static final class InternalTicketMapper implements
 			RowMapper<InternalTicketBean> {
@@ -211,8 +189,8 @@ public class InternalTicketsDaoImpl extends AbstractDAO implements InternalTicke
 
 		} catch (EmptyResultDataAccessException e) {
 			Logger.Log(LogLevel.WARNING, EMPTY_CONSULTA, e);
-			System.out.println("Error => " + e);
-			return Collections.emptyList();
+			listaRegistros = new ArrayList<InternalTicketBean>();
+			return listaRegistros;
 		} catch (DataAccessException e) {
 			System.out.println("Error => " + e);
 			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
@@ -221,16 +199,15 @@ public class InternalTicketsDaoImpl extends AbstractDAO implements InternalTicke
 
 	}
 
-
 	/**
 	 * Vista para el coordinador
+	 * 
 	 * @param userId
 	 * @return
 	 * @throws DAOException
 	 */
 	@Override
-	public List<InternalTicketBean> getTickets(Long userId)
-			throws DAOException {
+	public List<InternalTicketBean> getTickets(Long userId) throws DAOException {
 
 		List<InternalTicketBean> listaRegistros = new ArrayList<InternalTicketBean>();
 
@@ -244,7 +221,9 @@ public class InternalTicketsDaoImpl extends AbstractDAO implements InternalTicke
 
 		} catch (EmptyResultDataAccessException e) {
 			Logger.Log(LogLevel.WARNING, EMPTY_CONSULTA, e);
-			return Collections.emptyList();
+			listaRegistros = new ArrayList<InternalTicketBean>();
+			return listaRegistros;
+
 		} catch (DataAccessException e) {
 			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 			throw new DAOException(ERROR_CONSULTA, e);
@@ -254,43 +233,28 @@ public class InternalTicketsDaoImpl extends AbstractDAO implements InternalTicke
 
 	/**
 	 * Vista del reporte de historico del ticket para mesa de ayuda.
-	 * 
-	 * @param userId
-	 * @return
-	 * @throws DAOException
 	 */
 	@Override
-	public List<InternalTicketBean> getHistoricalTickets(String fechaIni,
-			String fechaFin, Integer idStatusTicket, Long idResponsable)
-			throws DAOException {
+	public List<InternalTicketBean> getHistoricalTickets(
+			String createDateStart, String createDateEnd,
+			Integer idStatusTicket) throws DAOException {
 
 		List<InternalTicketBean> listaRegistros = new ArrayList<InternalTicketBean>();
 
 		try {
-			
-			StringBuilder sq = new StringBuilder();
-			sq.append(QUERY_HISTORICAL_TICKETS.replace("%fechaIni%",fechaIni).replace("%fechaFin%",fechaFin));
-			
-			if(idStatusTicket!=-1){
-				sq.append(" AND ti.statusId=");
-				sq.append(idStatusTicket);
-			}
-			
-			if(idResponsable!=-1){
-				sq.append(" AND ti._id in (SELECT tm.ticketId FROM bloomticketteam tm WHERE tm.blackstarUserId=");
-				sq.append(idResponsable);
-				sq.append(" AND tm.workerRoleTypeId=1)");
-			}
-			
-			sq.append(" ORDER BY ti.created DESC");
 
-			listaRegistros.addAll(getJdbcTemplate().query(sq.toString(),new InternalTicketMapper()));
-
+			listaRegistros.addAll(getJdbcTemplate().query(
+					String.format(QUERY_HISTORICAL_TICKETS, idStatusTicket,
+							createDateStart, createDateEnd),
+					new InternalTicketMapper()));
+			// listaRegistros.addAll(getJdbcTemplate().query(sq.toString(),new
+			// InternalTicketMapper()));
 			return listaRegistros;
 
 		} catch (EmptyResultDataAccessException e) {
 			Logger.Log(LogLevel.WARNING, EMPTY_CONSULTA, e);
-			return Collections.emptyList();
+			listaRegistros = new ArrayList<InternalTicketBean>();
+			return listaRegistros;
 		} catch (DataAccessException e) {
 			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 			throw new DAOException(ERROR_CONSULTA, e);
@@ -310,35 +274,24 @@ public class InternalTicketsDaoImpl extends AbstractDAO implements InternalTicke
 
 		try {
 
+			Object[] args = new Object[] { ticket.getApplicantUserId(),
+					ticket.getOfficeId(), ticket.getServiceTypeId(),
+					ticket.getStatusId(), ticket.getApplicantAreaId(),
+					ticket.getDeadline(), ticket.getProject(),
+					ticket.getTicketNumber(), ticket.getDescription(),
+					ticket.getCreated(), ticket.getCreatedUserName(),
+					ticket.getCreatedUserId(), ticket.getReponseInTime() };
 
-		Object[] args = new Object []{
-				 ticket.getApplicantUserId(),
-				 ticket.getOfficeId(),
-				 ticket.getServiceTypeId(),
-				 ticket.getStatusId(),
-				 ticket.getApplicantAreaId(),
-				 ticket.getDeadline(),
-				 ticket.getProject(),
-				 ticket.getTicketNumber(),
-				 ticket.getDescription(),
-				 ticket.getCreated(),
-				 ticket.getCreatedUserName(),
-				 ticket.getCreatedUserId(),
-				 ticket.getReponseInTime()
-			};		
-
-		idTicket = getJdbcTemplate().queryForInt(sqlBuilder.toString() ,args);
-
+			idTicket = getJdbcTemplate().queryForInt(sqlBuilder.toString(),
+					args);
 
 		} catch (Exception e) {
 			Logger.Log(LogLevel.WARNING, EMPTY_CONSULTA, e);
 			throw new DAOException("Error en DAO");
 		}
 
-		return (long)idTicket;
+		return (long) idTicket;
 	}
-
-
 
 	@Override
 	public Long registrarDocumentTrace(DeliverableTraceBean document)
@@ -352,26 +305,20 @@ public class InternalTicketsDaoImpl extends AbstractDAO implements InternalTicke
 
 		try {
 
-		Object[] args = new Object []{
-				document.getTicketId(),
-				document.getDeliverableId(),
-				document.getDelivered(),
-				document.getDeliverableDate()
-			};		
+			Object[] args = new Object[] { document.getTicketId(),
+					document.getDeliverableId(), document.getDelivered(),
+					document.getDeliverableDate() };
 
-		idTicket = getJdbcTemplate().queryForInt(sqlBuilder.toString() ,args);
-
+			idTicket = getJdbcTemplate().queryForInt(sqlBuilder.toString(),
+					args);
 
 		} catch (Exception e) {
 			Logger.Log(LogLevel.WARNING, EMPTY_CONSULTA, e);
 			throw new DAOException("Error en DAO");
 		}
 
-		return (long)idTicket;
+		return (long) idTicket;
 	}
-
-
-
 
 	@Override
 	public Long registrarMiembroTicket(TicketTeamBean teamMember)
@@ -385,21 +332,18 @@ public class InternalTicketsDaoImpl extends AbstractDAO implements InternalTicke
 
 		try {
 
-		Object[] args = new Object []{
-				teamMember.getIdTicket(),
-				teamMember.getWorkerRoleId(),
-				teamMember.getUserId()
-			};		
+			Object[] args = new Object[] { teamMember.getIdTicket(),
+					teamMember.getWorkerRoleId(), teamMember.getUserId() };
 
-		idTeamMemberTicket = getJdbcTemplate().queryForInt(sqlBuilder.toString() ,args);
-
+			idTeamMemberTicket = getJdbcTemplate().queryForInt(
+					sqlBuilder.toString(), args);
 
 		} catch (Exception e) {
 			Logger.Log(LogLevel.WARNING, EMPTY_CONSULTA, e);
 			throw new DAOException("Error en DAO");
 		}
 
-		return (long)idTeamMemberTicket;
+		return (long) idTeamMemberTicket;
 	}
 
 }

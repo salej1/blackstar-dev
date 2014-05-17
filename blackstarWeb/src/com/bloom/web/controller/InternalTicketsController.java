@@ -40,6 +40,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class InternalTicketsController extends AbstractController {
 
   private InternalTicketsService internalTicketsService;
+  
+  
   private UserDomainService udService = null;
 
   public void setUdService(UserDomainService udService) {
@@ -73,7 +75,7 @@ public class InternalTicketsController extends AbstractController {
 	RespuestaJsonBean getPendingInternalTickets(ModelMap model,
 			@ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession) {
 
-		RespuestaJsonBean respuesta = new RespuestaJsonBean();
+		RespuestaJsonBean response = new RespuestaJsonBean();
 
 		Long userId = Long.valueOf(userSession.getUser().getBlackstarUserId());
 
@@ -83,17 +85,14 @@ public class InternalTicketsController extends AbstractController {
 					.getPendingTickets(userId);
 
 			if (registros == null || registros.isEmpty()) {
-				respuesta.setEstatus("preventivo");
-				respuesta.setMensaje("No se encontraron Tickets Pendientes");
-				// log.info("No se encontraron registros de Emisiones Generadas");
+				response.setEstatus("preventivo");
+				response.setMensaje("No se encontraron Tickets Pendientes");
 			} else {
 				String resumen = "Se encontraron " + registros.size()
 						+ " Tickets Pendientes";
-				// log.info("Se encontraron " + registros.size() +
-				// " Emisiones Generadas");
-				respuesta.setEstatus("ok");
-				respuesta.setLista(registros);
-				respuesta.setMensaje(resumen);
+				response.setEstatus("ok");
+				response.setLista(registros);
+				response.setMensaje(resumen);
 				System.out.println("Registros => " + registros.size());
 			}
 
@@ -101,18 +100,18 @@ public class InternalTicketsController extends AbstractController {
 			System.out.println("Error => " + e);
 			Logger.Log(LogLevel.ERROR, e.getMessage(), e);
 
-			respuesta.setEstatus("error");
-			respuesta.setMensaje(e.getMessage());
+			response.setEstatus("error");
+			response.setMensaje(e.getMessage());
 		} catch (Exception e) {
             System.out.println("Error => " + e);
 			Logger.Log(LogLevel.ERROR, e.getMessage(), e);
 
-			respuesta.setEstatus("error");
-			respuesta
+			response.setEstatus("error");
+			response
 					.setMensaje("Error al obtener tickets internos pendientes. Por favor intente m\u00e1s tarde.");
 		}
 
-		return respuesta;
+		return response;
 	}
 
 
@@ -128,7 +127,7 @@ public class InternalTicketsController extends AbstractController {
 	RespuestaJsonBean getInternalTickets(ModelMap model,
 			@ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession) {
 
-		RespuestaJsonBean respuesta = new RespuestaJsonBean();
+		RespuestaJsonBean response = new RespuestaJsonBean();
 
 		Long userId = Long.valueOf(userSession.getUser().getBlackstarUserId());
 
@@ -138,35 +137,32 @@ public class InternalTicketsController extends AbstractController {
 					.getTickets(userId);
 
 			if (registros == null || registros.isEmpty()) {
-				respuesta.setEstatus("preventivo");
-				respuesta.setMensaje("No se encontraron Tickets Pendientes");
-				// log.info("No se encontraron registros de Emisiones Generadas");
+				response.setEstatus("preventivo");
+				response.setMensaje("No se encontraron Tickets Pendientes");
 			} else {
 				String resumen = "Se encontraron " + registros.size()
 						+ " Tickets Pendientes";
-				// log.info("Se encontraron " + registros.size() +
-				// " Emisiones Generadas");
-				respuesta.setEstatus("ok");
-				respuesta.setLista(registros);
-				respuesta.setMensaje(resumen);
+				response.setEstatus("ok");
+				response.setLista(registros);
+				response.setMensaje(resumen);
 			}
 
 		} catch (ServiceException e) {
 
 			Logger.Log(LogLevel.ERROR, e.getMessage(), e);
 
-			respuesta.setEstatus("error");
-			respuesta.setMensaje(e.getMessage());
+			response.setEstatus("error");
+			response.setMensaje(e.getMessage());
 		} catch (Exception e) {
 
 			Logger.Log(LogLevel.ERROR, e.getMessage(), e);
 
-			respuesta.setEstatus("error");
-			respuesta
+			response.setEstatus("error");
+			response
 					.setMensaje("Error al obtener tickets internos pendientes. Por favor intente m\u00e1s tarde.");
 		}
 
-		return respuesta;
+		return response;
 	}
 
   @RequestMapping(value = "/ticketDetail/show.do", method = RequestMethod.GET)
@@ -278,51 +274,47 @@ public class InternalTicketsController extends AbstractController {
 	@ResponseBody
 	RespuestaJsonBean getHistoricalInternalTickets(ModelMap model,
 			@ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession,
-			@RequestParam(value = "fechaIni", required = true) String fechaIni,
-			@RequestParam(value = "fechaFin", required = true) String fechaFin,
-			@RequestParam(value = "idEstatusTicket", required = true) Integer idEstatusTicket,
-			@RequestParam(value = "idResposable", required = true) Long idResposable) {
+			@RequestParam(value = "startCreationDateTicket", required = true) String startCreationDateTicket,
+			@RequestParam(value = "endCreationDateTicket", required = true) String endCreationDateTicket,
+			@RequestParam(value = "idStatusTicket", required = true) Integer idStatusTicket) {
 
-		RespuestaJsonBean respuesta = new RespuestaJsonBean();
+		RespuestaJsonBean response = new RespuestaJsonBean();
 
 		Long userId = (long)userSession.getUser().getBlackstarUserId();
 
 		try {
 
 			List<InternalTicketBean> registros = internalTicketsService
-					.getHistoricalTickets(fechaIni, fechaFin, idEstatusTicket, idResposable);
+					.getHistoricalTickets(startCreationDateTicket, endCreationDateTicket, idStatusTicket);
 
 			if (registros == null || registros.isEmpty()) {
-				respuesta.setEstatus("preventivo");
-				respuesta.setMensaje("No se encontro Historico de Tickets");
-				respuesta.setLista(registros);
-				// log.info("No se encontraron registros de Emisiones Generadas");
+				response.setEstatus("preventivo");
+				response.setMensaje("No se encontro Historico de Tickets");
+				response.setLista(registros);
 			} else {
 				String resumen = "Se encontraron " + registros.size()
 						+ " del Historico Tickets";
-				// log.info("Se encontraron " + registros.size() +
-				// " Emisiones Generadas");
-				respuesta.setEstatus("ok");
-				respuesta.setLista(registros);
-				respuesta.setMensaje(resumen);
+				response.setEstatus("ok");
+				response.setLista(registros);
+				response.setMensaje(resumen);
 			}
 
 		} catch (ServiceException e) {
 
 			Logger.Log(LogLevel.ERROR, e.getMessage(), e);
 
-			respuesta.setEstatus("error");
-			respuesta.setMensaje(e.getMessage());
+			response.setEstatus("error");
+			response.setMensaje(e.getMessage());
 		} catch (Exception e) {
 
 			Logger.Log(LogLevel.ERROR, e.getMessage(), e);
 
-			respuesta.setEstatus("error");
-			respuesta
+			response.setEstatus("error");
+			response
 					.setMensaje("Error al obtener historico tickets internos pendientes. Por favor intente m\u00e1s tarde.");
 		}
 
-		return respuesta;
+		return response;
 	}
 
 
@@ -381,7 +373,7 @@ public class InternalTicketsController extends AbstractController {
 			@RequestParam(value = "slOficinaLabel", required = true) String slOficinaLabel) {
 
 
-		RespuestaJsonBean respuesta = new RespuestaJsonBean();
+		RespuestaJsonBean response = new RespuestaJsonBean();
 
 		try {
 
@@ -414,21 +406,21 @@ public class InternalTicketsController extends AbstractController {
 
 			internalTicketsService.registrarNuevoTicket(ticket);
 
-			respuesta.setEstatus("ok");
-			respuesta
+			response.setEstatus("ok");
+			response
 					.setMensaje("La solicitud de ticket se guard&oacute; con &eacute;xito");
 
 		} catch (ServiceException se) {
-			respuesta.setEstatus("error");
-			respuesta.setMensaje(se.getMessage());
+			response.setEstatus("error");
+			response.setMensaje(se.getMessage());
 			Logger.Log(LogLevel.ERROR, se.getMessage(), se);
 		} catch (Exception e) {
-			respuesta.setEstatus("error");
-			respuesta.setMensaje("Error al guardar atenci&oacute;n");
+			response.setEstatus("error");
+			response.setMensaje("Error al guardar atenci&oacute;n");
 			Logger.Log(LogLevel.ERROR, e.getMessage(), e);
 		}
 
-		return respuesta;
+		return response;
 
 	}
 

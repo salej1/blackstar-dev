@@ -46,6 +46,8 @@
 	   <bean id="internalTicketsDao" class="com.bloom.db.dao.InternalTicketsDaoImpl" parent="abstractDAO"/>
 	   <bean id="internatTicketsKPIDao" class="com.bloom.db.dao.InternatTicketsKPIDaoImpl" parent="abstractDAO"/>        
 	   <bean id="catalogInternalTicketsDao" class="com.bloom.db.dao.CatalogInternalTicketsDaoImpl" parent="abstractDAO"/>
-
+	   <bean id="reportsTicketsDao" class="com.bloom.db.dao.ReportsTicketsDaoImpl" parent="abstractDAO"/>
+		
+			   
 
 </beans>

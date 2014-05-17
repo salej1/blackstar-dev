@@ -7,7 +7,7 @@
 <c:import url="../header.jsp"></c:import>
 <html>
 <head>
-<title>Tiempo de Respuesta de Area de Apoyo - Tickets Interno</title>
+<title>Tiempo de Respuesta de Mesa de Ayuda - Tickets Interno</title>
 
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
@@ -29,9 +29,10 @@
 	href="${pageContext.request.contextPath}/css/jquery-ui.min.css">
 <script src="${pageContext.request.contextPath}/js/dateFormat.js"></script>
 <script type="text/javascript"
-	src="${pageContext.request.contextPath}/js/bloom/reporteTiempoRespAreaApoyo.js"></script>
+	src="${pageContext.request.contextPath}/js/bloom/reportStatisticsByHelpDesk.js"></script>
 <script type="text/javascript"
 	src="${pageContext.request.contextPath}/js/common/popup.js"></script>
+<script src="${pageContext.request.contextPath}/DataTables-1.9.4/media/js/jquery.dataTables.js"></script>	
 <script type="text/javascript" charset="utf-8">
 
 	function split( val ) {
@@ -61,39 +62,35 @@
 		<div class="grid_16">
 
 			<div class="box">
-				<h2>Reporte - Tiempo de respuesta de &Aacute;rea de Apoyo</h2>
+				<h2>Reporte - Tiempo de respuesta de Mesa de Ayuda</h2>
 				<div class="utils">
-		<table>
-			<tr>
-				<td>Fecha de Registro</td>
-				<td><input id="fldFechaIni" type="text" style="width:50%;" readOnly="true"/></td>
-				<td> a</td>
-				<td><input id="fldFechaFin" type="text" style="width:50%;" readOnly="true"/></td>
-			</tr>
-			
-			<tr colspan="4">
-				<td>
-					<button id="buscarButtonTicket" class="searchButton">Buscar</button>
-				</td>
-			</tr>
-			
-		</table>
 
+					<table>
+						<tr>
+							<td style="width: 100px;">Fecha de Registro</td>
+							<td style="width: 120px;"><input id="startCreationDate"
+								type="text" readOnly="true" style="width: 140px;" /></td>
+							<td style="width: 60px;">a</td>
+							<td style="width: 120px;"><input id="endCreationDate"
+								type="text" readOnly="true" style="width: 140px;" /></td>
+						</tr>
 
+						<tr colspan="4">
+							<td>
+								<button id="searchButtonTicket" class="searchButton">Buscar</button>
+							</td>
+						</tr>
+
+					</table>
 
 				</div>
-				<table cellpadding="0" cellspacing="0" border="0" class="display"
-					id="dtGridTicketsInternos">
+				<table cellpadding="0" cellspacing="0" border="0" class="display" id="dtGridReport">
 					<thead>
 						<tr>
-							<th style="">Folio</th>
-							<th>Estatus</th>
-							<th>Creado</th>
-							<th>Solicitante</th>
-							<th>Tipo</th>
-							<th>Fecha Limite</th>
-							<th>Proyecto</th>
-							<th>Oficina</th>
+							<th>Area de Apoyo</th>
+							<th>TR Minimo (hrs)</th>
+							<th>TR Promedio(hrs)</th>
+							<th>TR Maximo (hrs)</th>
 						</tr>
 					</thead>
 					<tbody>

@@ -40,8 +40,15 @@
 -- 18    08/05/2014  OMA	bloomDb.GetUserData (MODIFICADO:Sobrescribimos la version anterior)
 -- 19    08/05/2014  OMA	bloomDb.getBloomEstatusTickets
 
---------------------------------------------------------------------------------
+-- 19    16/05/2014  OMA	bloomDb.GetBloomSupportAreasWithTickets
+-- 20    16/05/2014  OMA	bloomDb.GetBloomStatisticsByAreaSupport
+-- 21    16/05/2014  OMA	bloomDb.GetBloomPercentageTimeClosedTickets
+-- 22    16/05/2014  OMA	bloomDb.GetBloomPercentageEvaluationTickets
+-- 23    16/05/2014  OMA	bloomDb.GetBloomNumberTicketsByArea
+-- 24    16/05/2014  OMA	bloomDb.GetBloomUnsatisfactoryTicketsByUserByArea
+-- 25    16/05/2014  OMA	bloomDb.GetBloomHistoricalTickets
 
+--------------------------------------------------------------------------------
 
 use blackstarDb;
 
@@ -784,8 +791,416 @@ SET statusId = 5, reponseInTime = inTime, desviation = desv, modified = today
   , responseDate = today, modifiedBy = "CloseBloomTicket", modifiedByUsr = pUserId
 WHERE _ID = pTicketId;
 	
+END$$
+
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetBloomSupportAreasWithTickets
+	-- list of areas with Tickets
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetBloomSupportAreasWithTickets$$
+CREATE PROCEDURE blackstarDb.GetBloomSupportAreasWithTickets(startCreationDate Datetime,endCreationDate Datetime)
+BEGIN
+	SELECT ug.userGroupId,ug.name FROM followUp f
+					INNER JOIN blackstarUser bu ON (f.asignee=bu.email)
+					INNER JOIN blackstarUser_userGroup bug ON (bu.blackstarUserId=bug.blackstarUserId)
+					INNER JOIN userGroup ug ON (ug.userGroupId=bug.userGroupId)
+					INNER JOIN bloomTicket t ON (t._id=f.bloomTicketId)
+					INNER JOIN bloomTicketTeam tt ON (tt.ticketId = f.bloomTicketId and tt.blackstarUserId=bu.blackstarUserId) -- que el follow exista en bloomTicketTeam
+					WHERE f.bloomTicketId IS NOT NULL
+					AND t.statusId=5
+					AND bu.blackstarUserId <> t.createdByUsr -- que no sea el creador
+					AND ug.userGroupId NOT IN (3,4)  -- No se del perfil de mesa de ayuda, ni coordinador
+					AND t.created>= startCreationDate
+					AND t.created <= endCreationDate
+					GROUP BY ug.userGroupId;
+
+END$$
+
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetBloomStatisticsByAreaSupport
+	-- Statistics by area support
+	-- average, maximum and minimum from time attention	
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetBloomStatisticsByAreaSupport$$
+CREATE PROCEDURE blackstarDb.GetBloomStatisticsByAreaSupport(userGroupIdParam INT, groupName VARCHAR(100),startCreationDate Datetime,endCreationDate Datetime)
+BEGIN
+
+  DECLARE maxTimeRes DECIMAL(12,2) DEFAULT 0;
+  DECLARE minTimeRes DECIMAL(12,2) DEFAULT 0;
+  DECLARE promTimeRes DECIMAL(12,2) DEFAULT 0;
+  DECLARE sumaTotalTimeResp DECIMAL(12,2) DEFAULT 0;
+  DECLARE totalTicket INT DEFAULT 0;
+  DECLARE exit_flag INT DEFAULT 0;
+  DECLARE bloomTicketIdParam INT;
+  -- DECLARE tmpLog Varchar(50000);
+	
+	
+  -- lista de tickets del followUp de una area de apoyo especifica	
+  DECLARE listTicketsCursor CURSOR FOR   SELECT f.bloomTicketId FROM followUp f
+								INNER JOIN blackstarUser bu ON (f.asignee=bu.email)
+								INNER JOIN blackstarUser_userGroup bug ON (bu.blackstarUserId=bug.blackstarUserId)
+								INNER JOIN userGroup ug ON (ug.userGroupId=bug.userGroupId)
+								INNER JOIN bloomTicket t ON (t._id=f.bloomTicketId)
+								WHERE f.bloomTicketId IS NOT NULL
+								AND t.statusId=5 --ticktes cerrados
+								AND ug.userGroupId= userGroupIdParam --id perfil groupId
+								AND t.created>= startCreationDate
+								AND t.created <= endCreationDate
+								GROUP BY f.bloomTicketId;
+
+  DECLARE CONTINUE HANDLER FOR SQLSTATE '02000' SET exit_flag = 1;
+
+
+-- SET tmpLog='';
+
+-- SET tmpLog= CONCAT(tmpLog, 'userGroupIdParam:');	
+-- SET tmpLog= CONCAT(tmpLog, userGroupIdParam);	
+
+
+OPEN listTicketsCursor;	
+
+               timeRespLoop:  LOOP
+
+				FETCH listTicketsCursor INTO bloomTicketIdParam;
+
+				IF exit_flag = 1 THEN LEAVE timeRespLoop; END IF;
+				
+				-- SET tmpLog= CONCAT(tmpLog, ' * TicketID:');	
+				-- SET tmpLog= CONCAT(tmpLog, bloomTicketIdParam);	
+
+				 BLOCK2: begin
+
+					DECLARE detailTicketId INT;
+					DECLARE detailEmailUser VARCHAR(100);
+					DECLARE detailCreateDate DATETIME;
+					DECLARE detailUserGroupId INT;
+					
+					DECLARE beforeDetailTicketId INT;
+					DECLARE beforeDetailEmailUser VARCHAR(100);
+					DECLARE beforeDetailCreateDate DATETIME;
+					DECLARE beforeDetailUserGroupId INT;
+
+					DECLARE existRows INT DEFAULT 0;
+					
+					DECLARE sumaDetailFollowTimeResp DECIMAL(12,2) DEFAULT 0;
+					
+					DECLARE difMinutes INT;
+
+					DECLARE exit_flag2 INT DEFAULT 0;
+
+					-- lista de seguimiento de un tickets especifico para sumar tiempos
+					DECLARE ticketFollowDetailCursor CURSOR FOR  SELECT f.bloomTicketId, f.asignee, f.created, ug.userGroupId FROM followUp f 
+								INNER JOIN blackstarUser bu ON (f.asignee=bu.email)
+								INNER JOIN blackstarUser_userGroup bug ON (bu.blackstarUserId=bug.blackstarUserId)
+								INNER JOIN userGroup ug ON (ug.userGroupId=bug.userGroupId)
+								WHERE f.bloomTicketId=bloomTicketIdParam
+								ORDER BY f.bloomTicketId, f.created; 	
+
+					DECLARE CONTINUE HANDLER FOR SQLSTATE '02000' SET exit_flag2 = 1;
+					
+					 OPEN ticketFollowDetailCursor;	
+
+					 detailFollowLoop: LOOP
+					
+						 
+						FETCH ticketFollowDetailCursor INTO detailTicketId,detailEmailUser,detailCreateDate,detailUserGroupId;
+						IF exit_flag2 = 1 THEN LEAVE detailFollowLoop; END IF;				
+					
+						 -- SET tmpLog= CONCAT(tmpLog, ' *[ BloomID:');
+						 -- SET tmpLog= CONCAT(tmpLog, detailTicketId);	
+						 -- SET tmpLog= CONCAT(tmpLog, ' Email:');	
+						 -- SET tmpLog= CONCAT(tmpLog, detailEmailUser);	
+						 -- SET tmpLog= CONCAT(tmpLog, ' Fecha:');	
+						 -- SET tmpLog= CONCAT(tmpLog, detailCreateDate);	
+						 -- SET tmpLog= CONCAT(tmpLog, ' Grupo:');	
+						 -- SET tmpLog= CONCAT(tmpLog, detailUserGroupId);	
+						 -- SET tmpLog= CONCAT(tmpLog, ' ]');
+
+							
+
+						IF(detailUserGroupId = userGroupIdParam) THEN
+							
+							-- SET tmpLog= CONCAT(tmpLog, '* -F Set Before items');
+
+							SET beforeDetailTicketId = detailTicketId;
+							SET beforeDetailEmailUser = detailEmailUser;
+							SET beforeDetailCreateDate = detailCreateDate;
+							SET beforeDetailUserGroupId = detailUserGroupId;
+
+							SET existRows = existRows +1;
+
+						 -- SET tmpLog= CONCAT(tmpLog, ' * (BB BloomID:');
+						 -- SET tmpLog= CONCAT(tmpLog, beforeDetailTicketId);	
+						 -- SET tmpLog= CONCAT(tmpLog, ' BB Email:');	
+						 -- SET tmpLog= CONCAT(tmpLog, beforeDetailEmailUser);	
+						 -- SET tmpLog= CONCAT(tmpLog, ' BB Fecha:');	
+						 -- SET tmpLog= CONCAT(tmpLog, beforeDetailCreateDate);	
+						 -- SET tmpLog= CONCAT(tmpLog, ' BB Grupo:');	
+						 -- SET tmpLog= CONCAT(tmpLog, beforeDetailUserGroupId);	
+						 -- SET tmpLog= CONCAT(tmpLog, ' )');
+
+
+						ELSE
+							
+
+							IF(existRows > 0) THEN
+							
+							-- sacar la diferencia 
+							SET difMinutes = TIMESTAMPDIFF(MINUTE,beforeDetailCreateDate,detailCreateDate);
+						
+							-- sumarla a sumaDetailFollowTimeResp
+							SET sumaDetailFollowTimeResp = sumaDetailFollowTimeResp + difMinutes;
+
+							 -- SET tmpLog= CONCAT(tmpLog, ' *-F sacar la diferencia y sum ');
+							 -- SET tmpLog= CONCAT(tmpLog, ' *-F ');
+							 -- SET tmpLog= CONCAT(tmpLog, beforeDetailCreateDate);
+							 -- SET tmpLog= CONCAT(tmpLog, ' *-F ');
+							 -- SET tmpLog= CONCAT(tmpLog, detailCreateDate);
+							 -- SET tmpLog= CONCAT(tmpLog, ' *-F difMinutes:');
+							 -- SET tmpLog= CONCAT(tmpLog, difMinutes);
+							 -- SET tmpLog= CONCAT(tmpLog, ' *-F sumaDetailFollowTimeResp:');
+							 -- SET tmpLog= CONCAT(tmpLog, sumaDetailFollowTimeResp);
+
+							END IF;
+
+						END IF;
+
+						 
+
+					 END LOOP detailFollowLoop;
+
+					CLOSE ticketFollowDetailCursor;
+
+					-- Se actualiza maximo
+					IF(sumaDetailFollowTimeResp > maxTimeRes) THEN
+						SET maxTimeRes=sumaDetailFollowTimeResp;
+					END IF;
+					
+					-- Se actualiza minimo
+					IF(sumaDetailFollowTimeResp < minTimeRes) THEN
+						SET minTimeRes=sumaDetailFollowTimeResp;
+					END IF;
+
+					-- si hace falta se corrige el valor minimo
+					IF(minTimeRes = 0) THEN
+						SET minTimeRes=maxTimeRes;
+					END IF;
+
+
+					-- suma para el promedio y contador
+					SET sumaTotalTimeResp = sumaTotalTimeResp + sumaDetailFollowTimeResp;
+					SET totalTicket = totalTicket + 1;
+
+					-- SET tmpLog= CONCAT(tmpLog, ' *-F maxTimeRes:');
+					-- SET tmpLog= CONCAT(tmpLog, maxTimeRes);
+					-- SET tmpLog= CONCAT(tmpLog, ' *-F minTimeRes:');
+					-- SET tmpLog= CONCAT(tmpLog, minTimeRes);
+					-- SET tmpLog= CONCAT(tmpLog, ' *-F sumaTotalTimeResp:');
+					-- SET tmpLog= CONCAT(tmpLog, sumaTotalTimeResp);
+					-- SET tmpLog= CONCAT(tmpLog, ' *-F totalTicket:');
+					-- SET tmpLog= CONCAT(tmpLog, totalTicket);
+					
+				
+				END BLOCK2;
+
+
+ 
+               END LOOP timeRespLoop;  
+
+	 CLOSE listTicketsCursor;	
+
+
+		-- sacamos promedio
+		IF(sumaTotalTimeResp > 0) THEN
+			SET promTimeRes = sumaTotalTimeResp/totalTicket;
+		ELSE
+			SET promTimeRes = 0;
+		END IF;
+
+		-- SET tmpLog= CONCAT(tmpLog, ' *-F promTimeRes:');
+		-- SET tmpLog= CONCAT(tmpLog, promTimeRes);
+
+
+		-- select tmpLog as log;
+		
+		-- resultado por area
+		SELECT groupName,(maxTimeRes/60) AS maxTime, (minTimeRes/60) minTime,  (promTimeRes/60) promTime; 
+
+
+     END$$
+
+	 
+	 
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetBloomPercentageTimeClosedTickets
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetBloomPercentageTimeClosedTickets$$
+CREATE PROCEDURE blackstarDb.GetBloomPercentageTimeClosedTickets(startCreationDate Datetime,endCreationDate Datetime)
+BEGIN
+
+
+	DECLARE satisfactoryPercentage DECIMAL(8,2) DEFAULT 0;
+	DECLARE unsatisfactoryPercentage DECIMAL(8,2) DEFAULT 0;
+	DECLARE noTicketsSatisfactory INT DEFAULT 0;
+	DECLARE noTicketsUnsatisfactory INT DEFAULT 0;
+	DECLARE noTicketsTotal INT DEFAULT 0;
+
+
+
+	SET noTicketsSatisfactory = (select count(id) from (
+		select t._id as id, t.created ,t.dueDate,t.responseDate,date(t.responseDate),t.statusId from bloomTicket t
+		where t.statusId=5 -- tickets cerrados
+		AND t.created>= startCreationDate
+		AND t.created <= endCreationDate
+		and date(t.responseDate) <= t.dueDate) as satisfactory);
+
+	SET noTicketsUnsatisfactory = (select count(id) from (
+		select t._id as id, t.created ,t.dueDate,t.responseDate,date(t.responseDate),t.statusId from bloomTicket t
+		where t.statusId=5 -- tickets cerrados 
+		AND t.created>= startCreationDate
+		AND t.created <= endCreationDate
+		and date(t.responseDate) > t.dueDate) as unatisfactory);
+
+	SET noTicketsTotal=noTicketsSatisfactory+noTicketsUnsatisfactory;
+
+	SET satisfactoryPercentage = (100/noTicketsTotal)*noTicketsSatisfactory;
+	SET unsatisfactoryPercentage = (100/noTicketsTotal)*noTicketsUnsatisfactory;
+
+	select satisfactoryPercentage,unsatisfactoryPercentage;
+
+
+END$$
+	 
+	 
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetBloomPercentageEvaluationTickets
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetBloomPercentageEvaluationTickets$$
+CREATE PROCEDURE blackstarDb.GetBloomPercentageEvaluationTickets(initEvaluationValue INT,startCreationDate Datetime,endCreationDate Datetime)
+BEGIN
+
+
+	DECLARE satisfactoryPercentage DECIMAL(8,2) DEFAULT 0;
+	DECLARE unsatisfactoryPercentage DECIMAL(8,2) DEFAULT 0;
+	DECLARE noTicketsEvaluationSatisfactory INT DEFAULT 0;
+	DECLARE noTicketsEvaluationUnsatisfactory INT DEFAULT 0;
+	DECLARE noTicketsTotal INT DEFAULT 0;
+
+
+	SET noTicketsEvaluationSatisfactory = (select count(id) from (
+		select t._id as id, t.evaluation, t.created ,t.dueDate,t.responseDate,date(t.responseDate),t.statusId from bloomTicket t
+		where t.evaluation>=initEvaluationValue
+		AND t.statusId=5 -- tickets cerrados
+		AND t.created>= startCreationDate
+		AND t.created <= endCreationDate
+		) as evaluation);
+
+	SET noTicketsEvaluationUnsatisfactory = (select count(id) from (
+		select t._id as id, t.evaluation, t.created ,t.dueDate,t.responseDate,date(t.responseDate),t.statusId from bloomTicket t
+		where t.evaluation<initEvaluationValue
+		AND t.statusId=5 -- tickets cerrados
+		AND t.created>= startCreationDate
+		AND t.created <= endCreationDate
+		) as evaluation);
+
+	SET noTicketsTotal=noTicketsEvaluationSatisfactory+noTicketsEvaluationUnsatisfactory;
+
+	SET satisfactoryPercentage = (100/noTicketsTotal)*noTicketsEvaluationSatisfactory;
+	SET unsatisfactoryPercentage = (100/noTicketsTotal)*noTicketsEvaluationUnsatisfactory;
+
+	select satisfactoryPercentage,unsatisfactoryPercentage;
+
+
+END$$	 
+
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetBloomNumberTicketsByArea
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetBloomNumberTicketsByArea$$
+CREATE PROCEDURE blackstarDb.GetBloomNumberTicketsByArea(startCreationDate Datetime,endCreationDate Datetime)
+BEGIN
+
+	SELECT userGroup, COUNT(ticketId) noTickets FROM(
+		SELECT f.bloomTicketId AS ticketId, ug.name AS userGroup FROM followUp f
+						INNER JOIN blackstarUser bu ON (f.asignee=bu.email)
+						INNER JOIN blackstarUser_userGroup bug ON (bu.blackstarUserId=bug.blackstarUserId)
+						INNER JOIN userGroup ug ON (ug.userGroupId=bug.userGroupId)
+						INNER JOIN bloomTicket t ON (t._id=f.bloomTicketId)
+						WHERE f.bloomTicketId IS NOT NULL
+						AND t.statusId=5 -- tickets cerrados
+						AND t.created>= startCreationDate
+						AND t.created <= endCreationDate
+						AND bu.blackstarUserId <> t.createdByUsr -- que no sea el creador
+						AND ug.userGroupId NOT IN (3,4) -- que no sea de mesa de ayuda ni coordiandor
+						GROUP BY f.bloomTicketId
+	) AS ticketsByArea
+	GROUP BY userGroup;
+
+END$$
+
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetBloomUnsatisfactoryTicketsByUserByArea
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetBloomUnsatisfactoryTicketsByUserByArea$$
+CREATE PROCEDURE blackstarDb.GetBloomUnsatisfactoryTicketsByUserByArea(initEvaluationValue INT,userGroupId INT,startCreationDate Datetime,endCreationDate Datetime)
+
+BEGIN
+
+	SELECT userName, COUNT(ticketId) as noTickets FROM( 
+	SELECT f.bloomTicketId AS ticketId, bu.blackstarUserId AS userId, bu.name AS userName FROM followUp f
+									INNER JOIN blackstarUser bu ON (f.asignee=bu.email)
+									INNER JOIN blackstarUser_userGroup bug ON (bu.blackstarUserId=bug.blackstarUserId)
+									INNER JOIN userGroup ug ON (ug.userGroupId=bug.userGroupId)
+									INNER JOIN bloomTicket t ON (t._id=f.bloomTicketId)
+									WHERE f.bloomTicketId IS NOT NULL
+									AND t.evaluation < initEvaluationValue -- limite inicial para evaluacion satisfactoria
+									AND t.statusId=5     -- tickets cerrados
+									AND t.created>= startCreationDate
+									AND t.created <= endCreationDate
+									AND ug.userGroupId= userGroupId -- ingenieria de servicio(5) o otra area
+									GROUP BY f.bloomTicketId,bu.blackstarUserId,bu.name
+	  ) AS report
+	GROUP BY userName;
+
+END$$
+
+
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetBloomHistoricalTickets
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetBloomHistoricalTickets$$
+CREATE PROCEDURE blackstarDb.GetBloomHistoricalTickets(statusTicket INT,startCreationDate VARCHAR(50),endCreationDate VARCHAR(50))
+BEGIN
+
+DECLARE tmp1 VARCHAR(800);
+DECLARE tmp2 VARCHAR(50);
+DECLARE tmp3 VARCHAR(50);
+DECLARE tmp4 VARCHAR(50);
+DECLARE tmp5 VARCHAR(1500);
+
+SET tmp1 = 'SELECT ti._id as id, ti.ticketNumber, ti.created, ti.applicantAreaId, ba.name as areaName, ti.serviceTypeId, st.name as serviceName, st.responseTime, ti.project, ti.officeId, o.officeName,ti.statusId, s.name as statusTicket FROM bloomTicket ti INNER JOIN bloomApplicantArea ba on (ba._id = ti.applicantAreaId) INNER JOIN bloomServiceType st on (st._id = ti.serviceTypeId) INNER JOIN office o on (o.officeId = ti.officeId) INNER JOIN bloomStatusType s on (s._id = ti.statusId) WHERE ti.created>=\'';
+SET tmp2 = '\' AND ti.created <= \'';
+
+IF statusTicket <> -1 THEN 
+	SET tmp3 = CONCAT('\' AND ti.statusId= ', statusTicket);	
+ELSE
+	SET tmp3 = '\'';
+END IF;				
+
+SET tmp4 = ' ORDER BY ti.created DESC ';
+
+SET @sqlv=CONCAT(tmp1,startCreationDate,tmp2,endCreationDate,tmp3,tmp4);
+
+ PREPARE stmt FROM @sqlv;
+
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
+
 END;
-
-
 
 DELIMITER ;
