@@ -273,8 +273,8 @@ END$$
 -- -----------------------------------------------------------------------------
 	-- blackstarDbTransfer.BloomUpdateTickets
 -- -----------------------------------------------------------------------------
-DROP FUNCTION IF EXISTS blackstarDbTransfer.BloomUpdateTickets$$
-CREATE FUNCTION blackstarDbTransfer.`BloomUpdateTickets`() RETURNS int(11)
+DROP PROCEDURE IF EXISTS blackstarDbTransfer.BloomUpdateTickets$$
+CREATE PROCEDURE blackstarDbTransfer.`BloomUpdateTickets`() RETURNS int(11)
 BEGIN
 
   DECLARE counter INTEGER;
@@ -373,8 +373,8 @@ END$$
 -- -----------------------------------------------------------------------------
 	-- blackstarDbTransfer.BloomUpdateTransferFollow
 -- -----------------------------------------------------------------------------
-DROP FUNCTION IF EXISTS blackstarDbTransfer.BloomUpdateTransferFollow$$
-CREATE FUNCTION blackstarDbTransfer.`BloomUpdateTransferFollow`() RETURNS int(11)
+DROP PROCEDURE IF EXISTS blackstarDbTransfer.BloomUpdateTransferFollow$$
+CREATE PROCEDURE blackstarDbTransfer.`BloomUpdateTransferFollow`() RETURNS int(11)
 BEGIN
 
   DECLARE counter INTEGER;
@@ -409,8 +409,8 @@ END$$
 -- -----------------------------------------------------------------------------
 	-- blackstarDbTransfer.BloomUpdateTransferTeam
 -- -----------------------------------------------------------------------------
-DROP FUNCTION IF EXISTS blackstarDbTransfer.BloomUpdateTransferTeam$$
-CREATE FUNCTION blackstarDbTransfer.`BloomUpdateTransferTeam`() RETURNS int(11)
+DROP PROCEDURE IF EXISTS blackstarDbTransfer.BloomUpdateTransferTeam$$
+CREATE PROCEDURE blackstarDbTransfer.`BloomUpdateTransferTeam`() RETURNS int(11)
 BEGIN
 
   DECLARE counter INTEGER;
@@ -446,8 +446,8 @@ END$$
 -- -----------------------------------------------------------------------------
 	-- blackstarDbTransfer.BloomUpdateTransferUsers
 -- -----------------------------------------------------------------------------
-DROP FUNCTION IF EXISTS blackstarDbTransfer.BloomUpdateTransferUsers$$
-CREATE FUNCTION blackstarDbTransfer.`BloomUpdateTransferUsers`() RETURNS int(11)
+DROP PROCEDURE IF EXISTS blackstarDbTransfer.BloomUpdateTransferUsers$$
+CREATE PROCEDURE blackstarDbTransfer.`BloomUpdateTransferUsers`() RETURNS int(11)
 BEGIN
 
   DECLARE done BOOLEAN DEFAULT 0;
