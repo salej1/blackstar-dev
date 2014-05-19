@@ -186,8 +186,11 @@
 -- -----------------------------------------------------------------------------
 -- 35    03/04/2014  DCB     Se integra blackstarDb.CloseBloomTicket
 -- -----------------------------------------------------------------------------
--- 36	 08/04/2014				bloomDb.GetUserData (MODIFICADO:Sobrescribimos la version anterior)
+-- 36	 08/04/2014			 Se integra	
+--                              bloomDb.GetUserData (MODIFICADO:Sobrescribimos la version anterior)
 --								bloomDb.getBloomEstatusTickets
+-- 37    15/05/2014  DCB     Se integra 
+--                              blackstarDb.getBloomPendingAppointments
 -- -----------------------------------------------------------------------------
 
 
@@ -2691,6 +2694,23 @@ BEGIN
 SELECT _ID as id ,NAME AS label FROM bloomstatustype
 WHERE _ID != -1
 ORDER BY _ID;
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.getBloomPendingAppointments
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.getBloomPendingAppointments$$
+CREATE PROCEDURE blackstarDb.getBloomPendingAppointments()
+BEGIN
+SELECT bt._id ticketId, bt.ticketNumber ticketNumber, bt.dueDate dueDate, bt.description description
+      , btt.assignedDate assignedDate, bwrt.name responsibleName, bu.email responsibleMail
+      , bu.name responsibleType
+FROM bloomTicket bt, bloomTicketTeam btt, bloomWorkerRoleType bwrt
+     , blackstarUser bu
+WHERE  bt._id = btt.ticketId
+       AND btt.workerRoleTypeId = bwrt._id
+       AND btt.blackstarUserId = bu.blackstarUserId
+       AND bt.dueDate < DATE_ADD(NOW(), INTERVAL 1 DAY);
 END$$
 -- -----------------------------------------------------------------------------
 	-- FIN DE LOS STORED PROCEDURES
