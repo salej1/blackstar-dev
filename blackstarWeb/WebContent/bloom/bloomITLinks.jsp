@@ -18,8 +18,6 @@
 	<div>
 		<img src="/img/navigate-right.png"/><a href="" onclick="reportNumberTicketsByArea(); return false;">Reporte - Tickets por &aacute;rea de apoyo</a>
 	</div>
-	
-	<p><small>&nbsp;</small></p>
 </div>
 <!-- FIN - Seccion de links resportes de tickets internos -->
 

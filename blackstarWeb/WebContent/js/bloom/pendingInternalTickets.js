@@ -125,7 +125,7 @@ function getInternalsTickets() {
 											"mRender" : function(data, type,
 													row) {
 												return "<div align='center' style='width:70px;' ><a href='/bloom/ticketDetail/show.do?ticketNumber="
-														+ row.DT_RowId
+														+ data
 														+ "'>"
 														+ data + "</a></div>";
 											},

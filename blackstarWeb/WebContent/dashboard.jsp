@@ -17,17 +17,34 @@
 <script src="${pageContext.request.contextPath}/js/common/utils.js"></script>
 
 <title>Portal de Servicios</title>
+
+<script>
+function getNewInternalTickets(){
+    var url = '/bloom/newInternalTicket.do';
+    var data = new Array();
+    redirect(url, data, "GET");
+	
+}
+
+</script>
 </head>
 <body>
 <div id="content" class="container_16 clearfix">
 
 <!--   CONTENT COLUMN   -->		
+    <c:set var="sysServicio" scope="request" value="${user.belongsToGroup['Implementacion y Servicio']}" />
 
+	<div>
+		<img src="/img/navigate-right.png"/><a href="" onclick="getNewInternalTickets(); return false;">Crear Ticket Interno</a>
+	</div>
+	
+	
 <!-- Inicia Contenido De Perfiles Syscallcenter Y Syscoordinador-->
 	<c:set var="sysCallCenter" scope="request" value="${user.belongsToGroup['Call Center']}" />
 	<c:if test="${sysCallCenter == true}">
 
-		<!-- Seleccion de filtro por oficina -->
+       <p><small>&nbsp;</small></p>
+   		<!-- Seleccion de filtro por oficina -->
 		<c:import url="officeFilter.jsp"></c:import>
 
 		<!-- Tabla De Tickets Por Asignar - Unassignedtickets.jsp -->
@@ -80,6 +97,7 @@
 	<c:set var="sysCoordinador" scope="request" value="${user.belongsToGroup['Coordinador']}" />
 	<c:if test="${sysCoordinador == true}">
 
+        <p><small>&nbsp;</small></p>
 		<!-- Seleccion de filtro por oficina -->
 		<c:import url="officeFilter.jsp"></c:import>
 
@@ -131,11 +149,11 @@
 
 <!-- Inicia Contenido De Perfil Sysservicio -->
 
-	<c:set var="sysServicio" scope="request" value="${user.belongsToGroup['Implementacion y Servicio']}" />
 	<c:if test="${sysServicio == true}">
 
 <!-- Links Para Crear Ordenes De Servicio -->
 		<c:import url="newOSLinks.jsp"></c:import>
+		<p><small>&nbsp;</small></p>
 		<script type="text/javascript">
 			$(function(){
 				newOSLinks_init();
@@ -191,9 +209,9 @@
 	<c:if test="${sysHelpDesk == true}">
 	<!-- Fin Contenido De Perfil sysHelpDesk -->
 	
-	
 	<!-- Links Para ver los reportes de Mesa de Ayuda -->
 		<c:import url="bloom/bloomITLinks.jsp"></c:import>
+		 <p><small>&nbsp;</small></p>
 		<script type="text/javascript">
 			$(function(){
 				bloomITLinks_init();

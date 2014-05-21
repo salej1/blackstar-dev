@@ -2307,24 +2307,29 @@ END$$
 DROP PROCEDURE IF EXISTS blackstardb.CloseBloomTicket$$
 CREATE PROCEDURE blackstardb.`CloseBloomTicket`(pTicketId INTEGER, pUserId INTEGER)
 BEGIN
-	
+
 DECLARE inTime TINYINT DEFAULT 1;
-DECLARE desv FLOAT (30,20);
-DECLARE endDate DATETIME;
+DECLARE elapsed FLOAT (30,20);
+DECLARE createdDate DATETIME;
 DECLARE today DATETIME DEFAULT NOW();
+DECLARE required INT;
 
-SET endDate = (SELECT dueDate FROM bloomticket WHERE _id = pTicketId);
-SET desv =  TO_DAYS(today) - TO_DAYS(endDate);
+SET createdDate = (SELECT created FROM bloomticket WHERE _id = pTicketId);
+SET elapsed =  TO_DAYS(today) - TO_DAYS(createdDate);
+SET required = (SELECT bst.responseTime 
+                FROM bloomTicket bt, bloomServiceType bst
+                WHERE bt.serviceTypeId = bst._id 
+                       AND bt._id = pTicketId);
 
-IF(desv > 0) THEN
+IF(elapsed > required) THEN
    SET inTime = 0;
 END IF;
 
 UPDATE bloomTicket 
-SET statusId = 5, reponseInTime = inTime, desviation = desv, modified = today
+SET statusId = 5, reponseInTime = inTime, desviation = (elapsed - required), modified = today
   , responseDate = today, modifiedBy = "CloseBloomTicket", modifiedByUsr = pUserId
 WHERE _ID = pTicketId;
-	
+
 END$$
 
 DROP PROCEDURE IF EXISTS blackstardb.GetBloomTicketByUserKPI$$

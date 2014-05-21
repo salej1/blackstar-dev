@@ -152,8 +152,9 @@ public class InternalTicketsServiceImpl extends AbstractService
             if (idTicket > 0) {
                 
             	//El creador del ticket entra con rol colaborador (2)
-            	miembros.add(
-            			new TicketTeamBean(idTicket, 2L, ticket.getCreatedUserId(),ticket.getCreatedUserEmail(),ticket.getCreatedUserName()));
+            	miembros.add(new TicketTeamBean(idTicket, 1L, ticket
+            			 .getCreatedUserId(),ticket.getCreatedUserEmail(),ticket
+            			                                .getCreatedUserName()));
             	
             	//obtener coordinadores
             	miebrosDtos=catalogInternalTicketsDao.getEmployeesByGroup("sysCoordinador");
