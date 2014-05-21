@@ -772,15 +772,8 @@ DECLARE desv FLOAT (30,20);
 DECLARE endDate DATETIME;
 DECLARE today DATETIME DEFAULT NOW();
 
-DELETE FROM messages;
-
-INSERT INTO messages values (pTicketId);
 SET endDate = (SELECT dueDate FROM bloomticket WHERE _id = pTicketId);
-INSERT INTO messages values (endDate);
 SET desv =  TO_DAYS(today) - TO_DAYS(endDate);
-
-
-INSERT INTO messages values (TO_DAYS(today));
 
 IF(desv > 0) THEN
    SET inTime = 0;

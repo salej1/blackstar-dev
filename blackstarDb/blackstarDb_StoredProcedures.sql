@@ -2313,15 +2313,8 @@ DECLARE desv FLOAT (30,20);
 DECLARE endDate DATETIME;
 DECLARE today DATETIME DEFAULT NOW();
 
-DELETE FROM messages;
-
-INSERT INTO messages values (pTicketId);
 SET endDate = (SELECT dueDate FROM bloomticket WHERE _id = pTicketId);
-INSERT INTO messages values (endDate);
 SET desv =  TO_DAYS(today) - TO_DAYS(endDate);
-
-
-INSERT INTO messages values (TO_DAYS(today));
 
 IF(desv > 0) THEN
    SET inTime = 0;
@@ -2398,6 +2391,33 @@ WHERE bt.serviceTypeId = st._id
       AND bt.applicantAreaId = aa._id
 GROUP BY bt.applicantAreaId, bt.serviceTypeId;
 END;
+
+DROP PROCEDURE IF EXISTS blackstardb.getBloomPendingTickets$$
+CREATE PROCEDURE blackstardb.`getBloomPendingTickets`(UserId INTEGER)
+BEGIN
+  SELECT 
+	  ti._id as id,
+	  ti.ticketNumber,
+	  ti.created,
+	  ti.applicantAreaId, 
+	  ba.name as areaName,
+	  ti.serviceTypeId,
+	  st.name as serviceName,
+	  st.responseTime,
+	  ti.project,
+	  ti.officeId, 
+	  o.officeName,
+	  ti.statusId,
+	  s.name as statusTicket
+  FROM bloomTicket ti
+       INNER JOIN bloomTicketTeam tm on (ti._id = tm.ticketId)
+       INNER JOIN bloomApplicantArea ba on (ba._id = ti.applicantAreaId)
+       INNER JOIN bloomServiceType st on (st._id = ti.serviceTypeId)
+       INNER JOIN office o on (o.officeId = ti.officeId)
+       INNER JOIN bloomStatusType s on (s._id = ti.statusId)
+  WHERE tm.workerRoleTypeId=1 and tm.blackstarUserId=UserId
+        AND ti.statusId NOT IN (4,5);
+END$$
 -- -----------------------------------------------------------------------------
 	-- FIN DE LOS STORED PROCEDURES
 -- -----------------------------------------------------------------------------
