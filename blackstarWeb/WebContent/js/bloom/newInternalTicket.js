@@ -198,6 +198,7 @@ function cargaCombosFormulario() {
 								listaServicios[i].id));
 	}
 
+	$("#slProyecto").append(new Option('N/A',-1));
 	for (var i = 0; i < listaProyectos.length; i++) {
 		$("#slProyecto")
 				.append(
