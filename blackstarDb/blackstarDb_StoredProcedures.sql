@@ -2128,9 +2128,9 @@ FROM ((SELECT _id id, applicantUserId applicantUserId, officeId officeId, servic
              , description description, reponseInTime reponseInTime, evaluation evaluation
              , desviation desviation, responseDate responseDate, created created, createdBy createdBy
              , createdByUsr createdByUsr, modified modified, modifiedBy modifiedBy, modifiedByUsr modifiedByUsr
-       FROM bloomticket WHERE _ID = ticketId) AS ticketDetail
+       FROM bloomTicket WHERE _ID = ticketId) AS ticketDetail
        LEFT JOIN (SELECT bu.blackstarUserId refId, bu.name applicantUserName
-           FROM blackstaruser bu) AS j1
+           FROM blackstarUser bu) AS j1
            ON ticketDetail.applicantUserId = j1.refId
        LEFT JOIN (SELECT of.officeId refId, of.officeName as officeName 
            FROM office of) AS j2
@@ -2145,10 +2145,10 @@ FROM ((SELECT _id id, applicantUserId applicantUserId, officeId officeId, servic
            FROM bloomApplicantArea aa) AS j5
            ON ticketDetail.applicantAreaId = j5.refId            
        LEFT JOIN (SELECT bu.blackstarUserId refId, bu.name createdByUsrName
-           FROM blackstaruser bu) AS j6
+           FROM blackstarUser bu) AS j6
            ON ticketDetail.createdByUsr = j6.refId
        LEFT JOIN (SELECT bu.blackstarUserId refId, bu.name modifiedByUsrName
-           FROM blackstaruser bu) AS j7
+           FROM blackstarUser bu) AS j7
            ON ticketDetail.modifiedByUsr = j7.refId);
 END$$
 
@@ -2163,8 +2163,8 @@ SELECT *
 FROM ((SELECT _id id, ticketId ticketId, workerRoleTypeId workerRoleTypeId, blackstarUserId blackstarUserId, assignedDate assignedDate
        FROM bloomTicketTeam WHERE ticketId = ticket) AS ticketTeam
        LEFT JOIN (SELECT bu.blackstarUserId refId, bu.name blackstarUserName
-           FROM blackstaruser bu) AS j1
-           ON ticketTeam.applicantUserId = j1.refId
+           FROM blackstarUser bu) AS j1
+           ON ticketTeam.blackstarUserId = j1.refId
        LEFT JOIN (SELECT wrt._id refId, wrt.name as workerRoleTypeName 
            FROM bloomWorkerRoleType wrt) AS j2
            ON ticketTeam.workerRoleTypeId = j2.refId);
@@ -2178,7 +2178,7 @@ CREATE PROCEDURE blackstarDb.`AddFollowUpToBloomTicket`(pTicketId INTEGER, pCrea
 BEGIN
   DECLARE pCreatedByUsrMail VARCHAR(100);
   
-  SET pCreatedByUsrMail = (SELECT email FROM blackstaruser WHERE blackstarUserId = pCreatedByUsrId);
+  SET pCreatedByUsrMail = (SELECT email FROM blackstarUser WHERE blackstarUserId = pCreatedByUsrId);
 	INSERT INTO blackstarDb.followUp(bloomTicketId, followup, created, createdBy, createdByUsr)
 	VALUES(pTicketId, pMessage, NOW(), 'AddFollowUpToBloomTicket', pCreatedByUsrMail);
 END$$
@@ -2263,7 +2263,7 @@ SET responsableId = (SELECT blackstarUserId
                            AND workerRoleTypeId = 1
                      LIMIT 1);
 SELECT * 
-FROM blackstaruser
+FROM blackstarUser
 WHERE blackstarUserId = responsableId;
 
 END$$
@@ -2284,7 +2284,7 @@ SET responseUserId = (SELECT blackstarUserId
                      ORDER BY assignedDate DESC
                      LIMIT 1);
 SELECT * 
-FROM blackstaruser
+FROM blackstarUser
 WHERE blackstarUserId = responseUserId;
 
 END$$
@@ -2430,8 +2430,8 @@ BEGIN
         AND ti.statusId NOT IN (4,5);
 END$$
 
-DROP PROCEDURE IF EXISTS blackstardb.GetBloomTicketDeliverable$$
-CREATE PROCEDURE blackstardb.`GetBloomTicketDeliverable`(pTicketId INTEGER)
+DROP PROCEDURE IF EXISTS blackstarDb.GetBloomTicketDeliverable$$
+CREATE PROCEDURE blackstarDb.`GetBloomTicketDeliverable`(pTicketId INTEGER)
 BEGIN
 SELECT bdt._id id, bdt.name name, bd.delivered delivered
 FROM bloomTicket bt, bloomDeliverableType bdt, bloomDeliverableTrace bd

@@ -1,5 +1,7 @@
 package com.bloom.web.controller;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -328,18 +330,18 @@ public class InternalTicketsController extends AbstractController {
 	public String newInternalTicket(ModelMap model,
 			@ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession) {
 
-		Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("Mexico/General"));
+		 
+		TimeZone tz =TimeZone.getTimeZone("America/Mexico_City");
+		Calendar calendar = Calendar.getInstance(tz);
+		SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+	    
 		try {
-
+			df.setTimeZone(tz);
 			String folio = internalTicketsService.generarTicketNumber();
-
 			String email = userSession.getUser().getUserEmail();
-			String horaTicket = DataTypeUtil.formatearFecha(calendar.getTime(),
-					                                    "MM/dd/yyyy HH:mm:ss");
-
 			model.addAttribute("folioTicket", folio);
 			model.addAttribute("emailTicket", email);
-			model.addAttribute("horaTicket", horaTicket);
+			model.addAttribute("horaTicket", df.format(calendar.getTime()));
 
 		} catch (ServiceException se) {
 			Logger.Log(LogLevel.ERROR, se.getMessage(), se);
