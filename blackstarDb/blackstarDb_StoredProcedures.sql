@@ -2116,8 +2116,8 @@ END$$
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetBloomTicketDetail
 -- -----------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS blackstardb.GetBloomTicketDetail$$
-CREATE PROCEDURE blackstardb.`GetBloomTicketDetail`(ticketId INTEGER)
+DROP PROCEDURE IF EXISTS blackstarDb.GetBloomTicketDetail$$
+CREATE PROCEDURE blackstarDb.`GetBloomTicketDetail`(ticketId INTEGER)
 BEGIN
 
 SELECT *
@@ -2153,8 +2153,8 @@ END$$
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetBloomTicketTeam
 -- -----------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS blackstardb.GetBloomTicketTeam$$
-CREATE PROCEDURE blackstardb.`GetBloomTicketTeam`(ticket INTEGER)
+DROP PROCEDURE IF EXISTS blackstarDb.GetBloomTicketTeam$$
+CREATE PROCEDURE blackstarDb.`GetBloomTicketTeam`(ticket INTEGER)
 BEGIN
 
 SELECT *
@@ -2171,8 +2171,8 @@ END$$
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.AddFollowUpToBloomTicket
 -- -----------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS blackstardb.AddFollowUpToBloomTicket$$
-CREATE PROCEDURE blackstardb.`AddFollowUpToBloomTicket`(pTicketId INTEGER, pCreatedByUsrId INTEGER, pMessage TEXT)
+DROP PROCEDURE IF EXISTS blackstarDb.AddFollowUpToBloomTicket$$
+CREATE PROCEDURE blackstarDb.`AddFollowUpToBloomTicket`(pTicketId INTEGER, pCreatedByUsrId INTEGER, pMessage TEXT)
 BEGIN
   DECLARE pCreatedByUsrMail VARCHAR(100);
   
@@ -2184,8 +2184,8 @@ END$$
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.UpsertBloomTicketTeam
 -- -----------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS blackstardb.UpsertBloomTicketTeam$$
-CREATE PROCEDURE blackstardb.`UpsertBloomTicketTeam`(pTicketId INTEGER, pWorkerRoleTypeId INTEGER, pBlackstarUserId INTEGER)
+DROP PROCEDURE IF EXISTS blackstarDb.UpsertBloomTicketTeam$$
+CREATE PROCEDURE blackstarDb.`UpsertBloomTicketTeam`(pTicketId INTEGER, pWorkerRoleTypeId INTEGER, pBlackstarUserId INTEGER)
 BEGIN
 
 IF NOT EXISTS (SELECT * FROM bloomTicketTeam 
@@ -2207,8 +2207,8 @@ END$$
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetBloomFollowUpByTicket
 -- -----------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS blackstardb.GetBloomFollowUpByTicket$$
-CREATE PROCEDURE blackstardb.`GetBloomFollowUpByTicket`(pTicketId INTEGER)
+DROP PROCEDURE IF EXISTS blackstarDb.GetBloomFollowUpByTicket$$
+CREATE PROCEDURE blackstarDb.`GetBloomFollowUpByTicket`(pTicketId INTEGER)
 BEGIN
 	SELECT created AS created, u2.name AS createdByUsr, u.name AS asignee, followup AS followup
 	FROM followUp f
@@ -2221,8 +2221,8 @@ END$$
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetBloomDeliverableType
 -- -----------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS blackstardb.GetBloomDeliverableType$$
-CREATE PROCEDURE blackstardb.`GetBloomDeliverableType`()
+DROP PROCEDURE IF EXISTS blackstarDb.GetBloomDeliverableType$$
+CREATE PROCEDURE blackstarDb.`GetBloomDeliverableType`()
 BEGIN
 	SELECT _id id, name name, description description FROM bloomDeliverableType;
 END$$
@@ -2230,8 +2230,8 @@ END$$
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.AddBloomDelivarable
 -- -----------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS blackstardb.AddBloomDelivarable$$
-CREATE PROCEDURE blackstardb.`AddBloomDelivarable`(pTicketId INTEGER, pDeliverableTypeId INTEGER)
+DROP PROCEDURE IF EXISTS blackstarDb.AddBloomDelivarable$$
+CREATE PROCEDURE blackstarDb.`AddBloomDelivarable`(pTicketId INTEGER, pDeliverableTypeId INTEGER)
 BEGIN
 DECLARE counter INTEGER;
 
@@ -2249,8 +2249,8 @@ END$$
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetBloomTicketResponsible
 -- -----------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS blackstardb.GetBloomTicketResponsible$$
-CREATE PROCEDURE blackstardb.`GetBloomTicketResponsible`(pTicketId INTEGER)
+DROP PROCEDURE IF EXISTS blackstarDb.GetBloomTicketResponsible$$
+CREATE PROCEDURE blackstarDb.`GetBloomTicketResponsible`(pTicketId INTEGER)
 BEGIN
 
 DECLARE responsableId INTEGER;
@@ -2269,8 +2269,8 @@ END$$
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetBloomTicketResponsible
 -- -----------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS blackstardb.GetBloomTicketUserForResponse$$
-CREATE PROCEDURE blackstardb.`GetBloomTicketUserForResponse`(pTicketId INTEGER)
+DROP PROCEDURE IF EXISTS blackstarDb.GetBloomTicketUserForResponse$$
+CREATE PROCEDURE blackstarDb.`GetBloomTicketUserForResponse`(pTicketId INTEGER)
 BEGIN
 
 DECLARE responseUserId INTEGER;
@@ -2291,8 +2291,8 @@ END$$
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetBloomTicketResponsible
 -- -----------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS blackstardb.GetUserById$$
-CREATE PROCEDURE blackstardb.`GetUserById`(pId INTEGER)
+DROP PROCEDURE IF EXISTS blackstarDb.GetUserById$$
+CREATE PROCEDURE blackstarDb.`GetUserById`(pId INTEGER)
 BEGIN
 
         SELECT u.blackstarUserId blackstarUserId, u.email userEmail, u.name userName
@@ -2304,8 +2304,8 @@ END$$
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.CloseBloomTicket
 -- -----------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS blackstardb.CloseBloomTicket$$
-CREATE PROCEDURE blackstardb.`CloseBloomTicket`(pTicketId INTEGER, pUserId INTEGER)
+DROP PROCEDURE IF EXISTS blackstarDb.CloseBloomTicket$$
+CREATE PROCEDURE blackstarDb.`CloseBloomTicket`(pTicketId INTEGER, pUserId INTEGER)
 BEGIN
 
 DECLARE inTime TINYINT DEFAULT 1;
@@ -2314,7 +2314,7 @@ DECLARE createdDate DATETIME;
 DECLARE today DATETIME DEFAULT NOW();
 DECLARE required INT;
 
-SET createdDate = (SELECT created FROM bloomticket WHERE _id = pTicketId);
+SET createdDate = (SELECT created FROM bloomTicket WHERE _id = pTicketId);
 SET elapsed =  TO_DAYS(today) - TO_DAYS(createdDate);
 SET required = (SELECT bst.responseTime 
                 FROM bloomTicket bt, bloomServiceType bst
@@ -2332,8 +2332,8 @@ WHERE _ID = pTicketId;
 
 END$$
 
-DROP PROCEDURE IF EXISTS blackstardb.GetBloomTicketByUserKPI$$
-CREATE PROCEDURE blackstardb.`GetBloomTicketByUserKPI`()
+DROP PROCEDURE IF EXISTS blackstarDb.GetBloomTicketByUserKPI$$
+CREATE PROCEDURE blackstarDb.`GetBloomTicketByUserKPI`()
 BEGIN
 
 SELECT bu.name name, bu.email email, aa.name applicantArea, count(*) counter
@@ -2346,8 +2346,8 @@ ORDER BY counter desc;
 END$$
 
 
-DROP PROCEDURE IF EXISTS blackstardb.GetBloomTicketByOfficeKPI$$
-CREATE PROCEDURE blackstardb.`GetBloomTicketByOfficeKPI`()
+DROP PROCEDURE IF EXISTS blackstarDb.GetBloomTicketByOfficeKPI$$
+CREATE PROCEDURE blackstarDb.`GetBloomTicketByOfficeKPI`()
 BEGIN
 
 SELECT of.officeName name, count(*) counter
@@ -2358,8 +2358,8 @@ ORDER BY counter desc;
 
 END$$
 
-DROP PROCEDURE IF EXISTS blackstardb.GetBloomTicketByAreaKPI$$
-CREATE PROCEDURE blackstardb.`GetBloomTicketByAreaKPI`()
+DROP PROCEDURE IF EXISTS blackstarDb.GetBloomTicketByAreaKPI$$
+CREATE PROCEDURE blackstarDb.`GetBloomTicketByAreaKPI`()
 BEGIN
 SELECT aa.name applicantArea, count(*) counter
 FROM bloomTicket bt, bloomApplicantArea aa
@@ -2369,16 +2369,16 @@ ORDER BY counter desc;
 END$$
 
 
-DROP PROCEDURE IF EXISTS blackstardb.GetBloomTicketByDayKPI;
-CREATE PROCEDURE blackstardb.`GetBloomTicketByDayKPI`()
+DROP PROCEDURE IF EXISTS blackstarDb.GetBloomTicketByDayKPI;
+CREATE PROCEDURE blackstarDb.`GetBloomTicketByDayKPI`()
 BEGIN
 SELECT DATE_FORMAT(created,'%d/%m/%Y') created, count(*) counter
 FROM bloomTicket
 GROUP BY DATE_FORMAT(created,'%d/%m/%Y');
 END;
 
-DROP PROCEDURE IF EXISTS blackstardb.GetBloomTicketByProjectKPI$$
-CREATE PROCEDURE blackstardb.`GetBloomTicketByProjectKPI`()
+DROP PROCEDURE IF EXISTS blackstarDb.GetBloomTicketByProjectKPI$$
+CREATE PROCEDURE blackstarDb.`GetBloomTicketByProjectKPI`()
 BEGIN
 SELECT bt.project project, count(*) counter
 FROM bloomTicket bt
@@ -2387,8 +2387,8 @@ ORDER BY counter DESC
 LIMIT 5;
 END$$
 
-DROP PROCEDURE IF EXISTS blackstardb.GetBloomTicketByServiceAreaKPI;
-CREATE PROCEDURE blackstardb.`GetBloomTicketByServiceAreaKPI`()
+DROP PROCEDURE IF EXISTS blackstarDb.GetBloomTicketByServiceAreaKPI;
+CREATE PROCEDURE blackstarDb.`GetBloomTicketByServiceAreaKPI`()
 BEGIN
 SELECT aa.name applicantArea, st.name serviceType , count(*) counter
 FROM bloomTicket bt, bloomapplicantarea aa, bloomServiceType st
@@ -2397,8 +2397,8 @@ WHERE bt.serviceTypeId = st._id
 GROUP BY bt.applicantAreaId, bt.serviceTypeId;
 END;
 
-DROP PROCEDURE IF EXISTS blackstardb.getBloomPendingTickets$$
-CREATE PROCEDURE blackstardb.`getBloomPendingTickets`(UserId INTEGER)
+DROP PROCEDURE IF EXISTS blackstarDb.getBloomPendingTickets$$
+CREATE PROCEDURE blackstarDb.`getBloomPendingTickets`(UserId INTEGER)
 BEGIN
   SELECT 
 	  ti._id as id,

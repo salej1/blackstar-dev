@@ -1,7 +1,10 @@
 package com.bloom.web.controller;
 
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.TimeZone;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -323,15 +326,14 @@ public class InternalTicketsController extends AbstractController {
 	public String newInternalTicket(ModelMap model,
 			@ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession) {
 
-		Date tiempoActual = new Date();
-
+		Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("Mexico/General"));
 		try {
 
 			String folio = internalTicketsService.generarTicketNumber();
 
 			String email = userSession.getUser().getUserEmail();
-			String horaTicket = DataTypeUtil.formatearFecha(tiempoActual,
-					"MM/dd/yyyy HH:mm:ss");
+			String horaTicket = DataTypeUtil.formatearFecha(calendar.getTime(),
+					                                    "MM/dd/yyyy HH:mm:ss");
 
 			model.addAttribute("folioTicket", folio);
 			model.addAttribute("emailTicket", email);
