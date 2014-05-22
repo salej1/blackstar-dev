@@ -3,32 +3,25 @@ package com.bloom.db.dao;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
-
 import com.blackstar.db.dao.AbstractDAO;
 import com.blackstar.model.Followup;
 import com.blackstar.model.User;
 import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
-import com.bloom.common.bean.CatalogoBean;
 import com.bloom.common.bean.DeliverableTraceBean;
 import com.bloom.common.bean.InternalTicketBean;
+import com.bloom.model.dto.DeliverableFileDTO;
 import com.bloom.model.dto.DeliverableTypeDTO;
 import com.bloom.model.dto.TicketDetailDTO;
 import com.bloom.model.dto.TicketTeamDTO;
 import com.bloom.common.bean.TicketTeamBean;
 import com.bloom.common.exception.DAOException;
 import com.bloom.common.utils.DataTypeUtil;
-import com.bloom.db.dao.mapper.CatalogoMapper;
 
 @SuppressWarnings("unchecked")
 public class InternalTicketsDaoImpl extends AbstractDAO implements
@@ -115,6 +108,12 @@ public class InternalTicketsDaoImpl extends AbstractDAO implements
 	getJdbcTemplate().update(sqlBuilder.toString(), new Object[]{ticketId
 				                                              , userId});
   } 
+
+  public List<DeliverableFileDTO> getTicketDeliverable(Integer ticketId){
+	StringBuilder sqlBuilder = new StringBuilder("CALL GetBloomTicketDeliverable(?);");
+	return (List<DeliverableFileDTO>) getJdbcTemplate().query(sqlBuilder.toString()
+				 , new Object[]{ticketId}, getMapperFor(DeliverableFileDTO.class));
+  }
 
 	private static final class InternalTicketMapper implements
 			RowMapper<InternalTicketBean> {

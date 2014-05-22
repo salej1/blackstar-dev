@@ -188,6 +188,8 @@ public class InternalTicketsController extends AbstractController {
 				                        .getFollowUps(ticketId));
 		   model.addAttribute("deliverableTypes", internalTicketsService
 				                                .getDeliverableTypes());
+		   model.addAttribute("deliverables", internalTicketsService
+                                   .getTicketDeliverable(ticketId));
 		 }
 	} catch (Exception e) {
 		System.out.println("Error => " + e);

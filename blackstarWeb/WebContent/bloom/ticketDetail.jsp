@@ -280,6 +280,31 @@ function cancelAddSeguimiento(){
 								<tbody>
 							</table>
 							<!-- Adjuntos -->
+							<table id="fileTraceTable">
+								<thead>
+									<th colspan="2">Archivos Requeridos</th>
+								</thead>
+								    <c:forEach var="current" items="${deliverables}" >
+									  <tr>
+									    <td  style="width:5%;">
+		                                  <c:choose>
+											<c:when test="${current.delivered}">
+												<img src='${pageContext.request.contextPath}/img/delivered.png'/>
+											</c:when>
+											<c:otherwise>
+												<img src='${pageContext.request.contextPath}/img/notDelivered.png'/>
+											</c:otherwise>
+										  </c:choose>
+												    
+										  
+										</td>
+										<td align="left">
+										  ${current.name}
+										</td>
+									  </tr>
+									  </c:forEach>
+							</table>
+							
 							<c:import url="/_attachments.jsp"></c:import>
 							<table>
 								<tbody>

@@ -5,6 +5,7 @@ import java.util.List;
 import com.blackstar.model.Followup;
 import com.blackstar.model.User;
 import com.bloom.common.bean.InternalTicketBean;
+import com.bloom.model.dto.DeliverableFileDTO;
 import com.bloom.model.dto.DeliverableTypeDTO;
 import com.bloom.model.dto.TicketDetailDTO;
 import com.bloom.model.dto.TicketTeamDTO;
@@ -26,6 +27,7 @@ public interface InternalTicketsService {
 	public void sendNotification(Integer fromUserId, Integer toUserId , Integer ticketId, String detail);
 	public void closeTicket(Integer ticketId, Integer userId);
 	public List<InternalTicketBean> getPendingTickets(Long userId) throws ServiceException;	
+	public List<DeliverableFileDTO> getTicketDeliverable(Integer ticketId);
 
 	public List<InternalTicketBean> getTickets(Long userId) throws ServiceException;
 

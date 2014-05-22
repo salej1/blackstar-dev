@@ -186,6 +186,8 @@
 -- -----------------------------------------------------------------------------
 -- 35    03/04/2014  DCB     Se integra blackstarDb.CloseBloomTicket
 -- -----------------------------------------------------------------------------
+-- 36    22/05/2014  DCB     Se integra blackstarDb.GetBloomTicketRequiredDeliverable
+-- -----------------------------------------------------------------------------
 
 
 use blackstarDb;
@@ -2382,6 +2384,10 @@ CREATE PROCEDURE blackstarDb.`GetBloomTicketByProjectKPI`()
 BEGIN
 SELECT bt.project project, count(*) counter
 FROM bloomTicket bt
+WHERE bt.project IS NOT NULL
+      AND bt.project <> ''
+      AND bt.project <> 'NA'
+      AND bt.project <> 'N/A'
 GROUP BY bt.project
 ORDER BY counter DESC
 LIMIT 5;
@@ -2423,6 +2429,16 @@ BEGIN
   WHERE tm.workerRoleTypeId=1 and tm.blackstarUserId=UserId
         AND ti.statusId NOT IN (4,5);
 END$$
+
+DROP PROCEDURE IF EXISTS blackstardb.GetBloomTicketDeliverable$$
+CREATE PROCEDURE blackstardb.`GetBloomTicketDeliverable`(pTicketId INTEGER)
+BEGIN
+SELECT bdt._id id, bdt.name name, bd.delivered delivered
+FROM bloomTicket bt, bloomDeliverableType bdt, bloomDeliverableTrace bd
+WHERE bt._id = pTicketId
+      AND bt._id = bd.bloomTicketId
+      AND bd.deliverableTypeId = bdt._id;
+END$$ 
 -- -----------------------------------------------------------------------------
 	-- FIN DE LOS STORED PROCEDURES
 -- -----------------------------------------------------------------------------

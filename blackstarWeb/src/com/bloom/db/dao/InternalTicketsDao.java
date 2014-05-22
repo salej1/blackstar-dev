@@ -5,6 +5,7 @@ import java.util.List;
 import com.blackstar.model.Followup;
 import com.blackstar.model.User;
 import com.bloom.common.bean.InternalTicketBean;
+import com.bloom.model.dto.DeliverableFileDTO;
 import com.bloom.model.dto.DeliverableTypeDTO;
 import com.bloom.model.dto.TicketDetailDTO;
 import com.bloom.model.dto.TicketTeamDTO;
@@ -69,6 +70,7 @@ public interface InternalTicketsDao {
   public List<User> getResponseUser(Integer ticketId);
   public void closeTicket(Integer ticketId, Integer userId);
   public Integer getTicketId(String ticketNumber);
+  public List<DeliverableFileDTO> getTicketDeliverable(Integer ticketId);
 	
 	/**
 	 * Guardar miembro del tickets

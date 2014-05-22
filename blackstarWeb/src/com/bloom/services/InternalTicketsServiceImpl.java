@@ -19,6 +19,7 @@ import com.bloom.common.exception.ServiceException;
 import com.bloom.common.utils.DataTypeUtil;
 import com.bloom.db.dao.CatalogInternalTicketsDao;
 import com.bloom.db.dao.InternalTicketsDao;
+import com.bloom.model.dto.DeliverableFileDTO;
 import com.bloom.model.dto.DeliverableTypeDTO;
 import com.bloom.model.dto.TicketDetailDTO;
 import com.bloom.model.dto.TicketTeamDTO;
@@ -334,6 +335,10 @@ public class InternalTicketsServiceImpl extends AbstractService
 
 	public Integer getTicketId(String ticketNumber){
 	  return internalTicketsDao.getTicketId(ticketNumber);
+	}
+	
+	public List<DeliverableFileDTO> getTicketDeliverable(Integer ticketId){
+		return internalTicketsDao.getTicketDeliverable(ticketId);
 	}
 
 }
