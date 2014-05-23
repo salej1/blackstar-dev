@@ -288,6 +288,9 @@ BEGIN
 		
 	UPDATE blackstarDb.ticket SET	
 		observations = REPLACE( observations,'\n','');
+	
+	UPDATE blackstarDb.ticket SET	
+		employee = REPLACE( employee,'\n','');
 
 	UPDATE blackstarDb.followUp SET	
 		followUp = REPLACE( followUp,'\n','');

@@ -50,6 +50,7 @@ public class Globals {
 	  public static final String GROUP_SERVICE = "Implementacion y Servicio";
 	  public static final String GROUP_CALL_CENTER = "Call Center";
 	  public static final String GROUP_COORDINATOR = "Coordinador";
+	  public static final String GROUP_CUSTOMER = "Cliente";
 	  
 	  // time format
 	  public static final String DEFAULT_TIME_ZONE = "America/Mexico_City";

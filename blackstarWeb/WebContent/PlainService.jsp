@@ -158,16 +158,21 @@
 			$("#responsibleName").val("");
 			return false;
 		}
-		var startTimestamp = new Date($("#serviceDate"));
+		var startTimestamp = new Date($("#serviceDate").val());
 		if(startTimestamp == undefined || startTimestamp == null){
-			startTimestamp.val("");
+			$("#serviceDate").val("");
 		}
-		var endTimestamp = new Date($("#serviceEndDate"));
-		if(endTimestamp == undefined || endTimestamp == null){
-			endTimestamp.val("");
+		if(isCoord == "true"){
+			var endTimestamp = new Date($("#serviceEndDate").val());
+			if(endTimestamp == undefined || endTimestamp == null){
+				$("#serviceEndDate").val("");
+			}
+			if(endTimestamp < startTimestamp){
+				$("#serviceEndDate").val("");
+			}
 		}
-		if(endTimestamp < startTimestamp){
-			endTimestamp.val("");
+		if(isEng == "true"){
+			$("#serviceEndDate").val(dateNow());
 		}
 		if($('#serviceOrder')[0].checkValidity()){
 			$('input').removeAttr("disabled");
@@ -203,7 +208,7 @@
 									<td style="width:140px">No. de ticket</td>
 									<td>
 										<form:hidden path="ticketId" />
-										<select class="lockOnDetail" id="ticketList">
+										<select class="lockOnDetail lockForEng" id="ticketList">
 											<option value="">NA</option>
 											<c:forEach var="ticket" items="${ticketList}">
 										        <option value="${ticket.ticketId}" 
@@ -400,11 +405,13 @@
 									<td>Email</td>
 									<td><form:input cssClass="lockOnDetail" path="receivedByEmail"  style="width:95%;" /></td>
 								</tr>
-								<tr class="eligible coorOnly">
-									<td colspan="2">Errores de captura<form:checkbox path="isWrong" cssClass="lockOnEngDetail"/></td>
-									<td></td>
-									<td></td>
-								</tr>
+								<c:if test="${!user.belongsToGroup['Cliente']}">
+									<tr class="eligible coorOnly">
+										<td colspan="2">Errores de captura<form:checkbox path="isWrong" cssClass="lockOnEngDetail"/></td>
+										<td></td>
+										<td></td>
+									</tr>
+								</c:if>
 							</table>
 
 							<table>
@@ -455,7 +462,8 @@
 					initFollowUpDlg("os", "/osDetail/show.do?serviceOrderId=${serviceOrder.serviceOrderId}");
 				});
 			</script>
-			<table>
+			<c:if test="${!user.belongsToGroup['Cliente']}">
+				<table>
 					<tbody>
 						<tr>
 							<td>
@@ -469,9 +477,9 @@
 							<button class="searchButton" onclick="window.location = '/serviceOrders/show.do'">Cancelar</button>
 							</td>
 						</tr>
-					<tbody>
+					</tbody>
 				</table>
-				
+			</c:if>
 		</div>
 	</body>
 </html>

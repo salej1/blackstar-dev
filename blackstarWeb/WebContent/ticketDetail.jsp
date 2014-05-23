@@ -24,7 +24,11 @@
 								<tr>
 									<td style="width:200px;">Asignado a:</td>
 									<td>
-										<select id="selectAsignee"  style="width:78%;">
+										<select id="selectAsignee"  style="width:78%;"
+										<c:if test="${!user.belongsToGroup['Call Center'] && !user.belongsToGroup['Coordinador']}">
+											disabled
+										</c:if>
+										>
 											<option value="0"></option>
 											<c:forEach var="employee" items="${employees}">
 												<option value="${employee.userEmail}"
@@ -34,7 +38,9 @@
 												>${ employee.userName }</option>
 											</c:forEach>
 										</select>
-										<button class="searchButton" onclick="javascript:assignNow(); return false;">Asignar ahora</button>
+										<c:if test="${user.belongsToGroup['Call Center'] || user.belongsToGroup['Coordinador']}">
+											<button class="searchButton" onclick="javascript:assignNow(); return false;">Asignar ahora</button>
+										</c:if>
 									</td>
 								</tr>
 								<tr><td>Estatus</td><td><input id="lbEstatus" type="text" style="width:95%;" readonly="true"/>
@@ -51,10 +57,13 @@
 								<tr><td>Modelo</td><td><input type="text" id="lbModelo" readonly="true"  style="width:95%;" /></td></tr>
 								<tr><td>Capacidad</td><td><input type="text" id="lbCAP" readonly="true"  style="width:95%;" /></td></tr>
 								<tr><td>Se pudo resolver via telefónica</td><td><input type="text" id="lbResolvioTel" readonly="true"  style="width:95%;" /></td></tr>
-								<tr><td>Fecha y Hora de llegada</td><td><input type="text" id="lbHoraLLegada" readonly="true"  style="width:20%;" />
+								<tr><td>Fecha y Hora de llegada</td><td><input type="text" id="lbHoraLLegada" readonly="true"  style="width:20%;"/>
+								<c:if test="${user.belongsToGroup['Call Center']}">
 									<img src="/img/edit.png" id="editArrival" class="clickable" alt="" style="vertical-align:middle;padding-left:5px;" onclick="edit('Arrival', 'lbHoraLLegada');"/>
 									<img src="/img/okEdit.png" id="okEditArrival" class="clickable" alt="" style="vertical-align:middle;padding-left:5px;" onclick="okEdit('Arrival', 'lbHoraLLegada');"/>
-									<img src="/img/cancelEdit.png" id="cancelEditArrival" class="clickable" alt="" style="vertical-align:middle;padding-left:5px;" onclick="cancelEdit('Arrival', 'lbHoraLLegada', '${ticketF.arrival}');"/></td></tr>
+									<img src="/img/cancelEdit.png" id="cancelEditArrival" class="clickable" alt="" style="vertical-align:middle;padding-left:5px;" onclick="cancelEdit('Arrival', 'lbHoraLLegada', '${ticketF.arrival}');"/>
+								</c:if>
+								</td></tr>
 								<tr><td>Tiempo Respuesta</td><td><input type="text" readonly="true" id="lbRespuesta"  style="width:5%;" /> Hr</td></tr>
 								<tr><td>Tiempo Respuesta Compromiso</td><td><input id="lbTiempoRespuesta" type="text" readonly="true"  style="width:5%;" /> Hr</td></tr>
 								<tr><td>Desviación T. Respuesta</td><td><input type="text" readonly="true"  id="lbDesviacion" style="width:5%;" /> Hr</td></tr>
@@ -78,25 +87,28 @@
 						
 						<!-- Control de secuencia y captura de seguimiento -->
 						<c:import url="followUpControl.jsp"></c:import>
-
-						<table>
-							<tbody>
-								<tr>
-									<td>
-										<p></p>
-										<button class="searchButton" onclick="addSeguimiento(${ticketF.ticketId}, '${ticketF.ticketNumber}');">Agregar seguimiento</button>
-										<c:choose>
-											<c:when test="${ticketstatusT.ticketStatus == 'CERRADO' || ticketstatusT.ticketStatus == 'CERRADO FT'}">
-												<button class="searchButton" onclick="reopenTicket(${ticketF.ticketId}, '${ticketF.ticketNumber}');">Reabrir ticket</button>
-											</c:when>
-											<c:otherwise>
-												<button class="searchButton" onclick="closeTicket(${ticketF.ticketId}, '${ticketF.ticketNumber}');">Cerrar Ticket</button>
-											</c:otherwise>
-										</c:choose>
-									</td>
-								</tr>
-							<tbody>
-						</table>
+						<c:if test="${!user.belongsToGroup['Cliente']}">
+							<table>
+								<tbody>
+									<tr>
+										<td>
+											<p></p>
+											<button class="searchButton" onclick="addSeguimiento(${ticketF.ticketId}, '${ticketF.ticketNumber}');">Agregar seguimiento</button>
+											<c:if test="${user.belongsToGroup['Call Center']}">
+												<c:choose>
+													<c:when test="${ticketstatusT.ticketStatus == 'CERRADO' || ticketstatusT.ticketStatus == 'CERRADO FT'}">
+														<button class="searchButton" onclick="reopenTicket(${ticketF.ticketId}, '${ticketF.ticketNumber}');">Reabrir ticket</button>
+													</c:when>
+													<c:otherwise>
+														<button class="searchButton" onclick="closeTicket(${ticketF.ticketId}, '${ticketF.ticketNumber}');">Cerrar Ticket</button>
+													</c:otherwise>
+												</c:choose>
+											</c:if>
+										</td>
+									</tr>
+								<tbody>
+							</table>
+						</c:if>
 					</div>					
 				</div>
 				

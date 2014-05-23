@@ -46,9 +46,11 @@
 
 		<!--   CONTENT COLUMN   -->
 		<div>
-			<div>
-				<img src="/img/navigate-right.png"/><a href="/scheduleStatus/scheduledServiceDetail.do?serviceId=0">Agendar servicio</a>
-			</div>
+			<c:if test="${user.belongsToGroup['Coordinador']}">
+				<div>
+					<img src="/img/navigate-right.png"/><a href="/scheduleStatus/scheduledServiceDetail.do?serviceId=0">Agendar servicio</a>
+				</div>
+			</c:if>
 		</div>
 		<p>
 			<small>&nbsp;</small>

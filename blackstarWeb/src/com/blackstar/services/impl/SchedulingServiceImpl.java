@@ -43,8 +43,18 @@ public class SchedulingServiceImpl implements SchedulingService {
 	}
 
 	@Override
+	public List<JSONObject> getLimitedFutureServices(String user) {
+		return dao.getLimitedFutureServices(user);
+	}
+
+	@Override
 	public List<ScheduledServiceDTO> getScheduledServices(Date date) {
 		return dao.getScheduledServices(date);
+	}
+
+	@Override
+	public List<ScheduledServiceDTO> getLimitedScheduledServices(String user, Date date) {
+		return dao.getLimitedScheduledServices(user, date);
 	}
 
 	@Override

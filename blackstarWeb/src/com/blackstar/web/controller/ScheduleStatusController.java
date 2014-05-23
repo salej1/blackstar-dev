@@ -43,12 +43,25 @@ public class ScheduleStatusController extends AbstractController{
 			Calendar cal = Calendar.getInstance();
 			printDates(model);
 			
+			boolean isLimited = (userSession.getUser().getBelongsToGroup().get(Globals.GROUP_CUSTOMER) != null);
+			
 			for(Integer i = 0; i < 7; i++){
-				model.addAttribute("servicesToday" + i.toString(), service.getScheduledServices(cal.getTime()));
+				if(isLimited){
+					model.addAttribute("servicesToday" + i.toString(), service.getLimitedScheduledServices(userSession.getUser().getUserEmail(), cal.getTime()));	
+				}
+				else{
+					model.addAttribute("servicesToday" + i.toString(), service.getScheduledServices(cal.getTime()));	
+				}
 				cal.add(Calendar.DATE, 1);
 			}
 			
-			model.addAttribute("futureServices", service.getFutureServices());
+			if(isLimited){
+				model.addAttribute("futureServices", service.getLimitedFutureServices(userSession.getUser().getUserEmail()));
+			}
+			else{
+				model.addAttribute("futureServices", service.getFutureServices());				
+			}
+
 			
 			// Redireccionando el request
 			return "scheduleStatus";

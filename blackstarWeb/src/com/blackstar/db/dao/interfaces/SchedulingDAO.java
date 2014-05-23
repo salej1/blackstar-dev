@@ -11,6 +11,8 @@ import com.blackstar.model.dto.ScheduledServiceDTO;
 public interface SchedulingDAO {
 	public List<JSONObject> getFutureServices();
 	public List<ScheduledServiceDTO> getScheduledServices(Date date);
+	public List<JSONObject> getLimitedFutureServices(String user);
+	public List<ScheduledServiceDTO> getLimitedScheduledServices(String user, Date date);
 	public List<String> getProjectList();
 	public ScheduledService getScheduledService(Integer serviceId);
 	public List<Integer> getScheduledServicePolicies(Integer serviceId);

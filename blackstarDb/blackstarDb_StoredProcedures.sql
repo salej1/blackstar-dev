@@ -255,12 +255,84 @@
 -- -----------------------------------------------------------------------------
 -- 40 	19/05/2014	SAG 	Se actualiza:
 --								blackstarDb.AddserviceOrder
+-- -----------------------------------------------------------------------------
+-- 41 	20/05/2014	SAG 	Se actualiza:
+--								blackstarDb.GetLimitedTicketList
+--							Se agrega:
+--								blackstarDb.GetLimitedServicesSchedule	
+--								blackstarDb.GetLimitedFutureServicesSchedule
+-- -----------------------------------------------------------------------------
 
 use blackstarDb;
 
 DELIMITER $$
 
 
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetLimitedFutureServicesSchedule
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetLimitedFutureServicesSchedule$$
+CREATE PROCEDURE blackstarDb.GetLimitedFutureServicesSchedule (user VARCHAR(100), pServiceDate DATETIME)
+BEGIN
+
+	SELECT DISTINCT
+		s.scheduledServiceId AS scheduledServiceId,
+		serviceDate AS scheduledDate,
+		equipmentType AS equipmentType,
+		ifnull(p.customer, oc.customerName) AS customer,
+		s.project AS project,
+		ifnull(p.serialNumber, oc.serialNumber) AS serialNumber,
+		officeName AS officeName,
+		ifnull(p.brand, oc.brand) AS brand,
+		us.name AS employee
+	FROM blackstarDb.scheduledService s
+		LEFT OUTER JOIN blackstarDb.scheduledServicePolicy sp ON sp.scheduledServiceId = s.scheduledServiceId
+		LEFT OUTER JOIN blackstarDb.openCustomer oc ON oc.openCustomerId = s.openCustomerId
+		LEFT OUTER  JOIN blackstarDb.scheduledServiceDate sd ON sd.scheduledServiceId = s.scheduledServiceId
+		LEFT OUTER  JOIN blackstarDb.policy p ON sp.policyId = p.policyId
+		LEFT OUTER  JOIN blackstarDb.serviceStatus ss ON ss.serviceStatusId = s.serviceStatusId
+		LEFT OUTER  JOIN blackstarDb.equipmentType et ON et.equipmentTypeId = ifnull(p.equipmentTypeId, oc.equipmentTypeId)
+		LEFT OUTER  JOIN blackstarDb.scheduledServiceEmployee em ON em.scheduledServiceId = s.scheduledServiceId AND em.isDefault = 1
+		LEFT OUTER  JOIN blackstarDb.blackstarUser us ON us.email = em.employeeId
+		LEFT OUTER  JOIN blackstarDb.office o ON o.officeId = ifnull(p.officeId, oc.officeId)
+	WHERE s.serviceStatusId = 'P'
+		AND serviceDate >= pServiceDate
+		AND p.equipmentUser = user
+	ORDER BY equipmentType;
+	
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetLimitedScheduledServices
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetLimitedServicesSchedule$$
+CREATE PROCEDURE blackstarDb.GetLimitedServicesSchedule (user VARCHAR(100), pServiceDate DATETIME)
+BEGIN
+
+	SELECT DISTINCT
+		s.scheduledServiceId AS scheduledServiceId,
+		serviceDate AS scheduledDate,
+		equipmentType AS equipmentType,
+		ifnull(p.customer, oc.customerName) AS customer,
+		s.project AS project,
+		ifnull(p.serialNumber, oc.serialNumber) AS serialNumber,
+		us.name AS defaultEmployee
+	FROM blackstarDb.scheduledService s
+		LEFT OUTER JOIN blackstarDb.scheduledServicePolicy sp ON sp.scheduledServiceId = s.scheduledServiceId
+		LEFT OUTER JOIN blackstarDb.openCustomer oc ON oc.openCustomerId = s.openCustomerId
+		LEFT OUTER JOIN blackstarDb.scheduledServiceDate sd ON sd.scheduledServiceId = s.scheduledServiceId
+		LEFT OUTER JOIN blackstarDb.policy p ON sp.policyId = p.policyId
+		LEFT OUTER JOIN blackstarDb.serviceStatus ss ON ss.serviceStatusId = s.serviceStatusId
+		LEFT OUTER JOIN blackstarDb.equipmentType et ON et.equipmentTypeId = ifnull(p.equipmentTypeId, oc.equipmentTypeId)
+		LEFT OUTER JOIN blackstarDb.scheduledServiceEmployee em ON em.scheduledServiceId = s.scheduledServiceId AND em.isDefault = 1
+		LEFT OUTER JOIN blackstarDb.blackstarUser us ON us.email = em.employeeId
+	WHERE s.serviceStatusId = 'P'
+		AND serviceDate > pServiceDate AND serviceDate < DATE_ADD(pServiceDate, INTERVAL 1 DAY)
+		AND p.equipmentUser = user
+	ORDER BY equipmentType;
+
+END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetIssueStatusList
@@ -900,8 +972,9 @@ BEGIN
 		p.responseTimeHR AS responseTimeHR,
 		p.project AS project,
 		ts.ticketStatus AS ticketStatus,
-		IFNULL(bu.name, '') AS asignee,
-		'' AS asignar
+		IFNULL(bu.name, t.employee) AS asignee,
+		'' AS asignar,
+		IFNULL(t.serviceOrderNumber, '') AS serviceOrderNumber
 	FROM ticket t
 		INNER JOIN policy p ON p.policyId = t.policyId
 		INNER JOIN equipmentType e ON e.equipmentTypeId = p.equipmentTypeId

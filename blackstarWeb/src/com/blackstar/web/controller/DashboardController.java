@@ -171,7 +171,7 @@ public class DashboardController extends AbstractController {
 	public @ResponseBody String pendingPersonalServiceOrders(ModelMap model, @ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession) {
 		String retVal;
 		try {
-			retVal = service.getOpenLimitedTicketsJson(userSession.getUser().getUserEmail());
+			retVal = service.getPersonalServiceOrders(userSession.getUser().getUserEmail());
 		} catch (Exception e) {
 			Logger.Log(LogLevel.ERROR,
 					e.getStackTrace()[0].toString(), e);
@@ -194,7 +194,7 @@ public class DashboardController extends AbstractController {
 	public @ResponseBody String openLimitedTicketsJson(ModelMap model, @ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession) {
 		String retVal;
 		try {
-			retVal = service.getPersonalServiceOrders(userSession.getUser().getUserEmail());
+			retVal = service.getOpenLimitedTicketsJson(userSession.getUser().getUserEmail());
 		} catch (Exception e) {
 			Logger.Log(LogLevel.ERROR,
 					e.getStackTrace()[0].toString(), e);

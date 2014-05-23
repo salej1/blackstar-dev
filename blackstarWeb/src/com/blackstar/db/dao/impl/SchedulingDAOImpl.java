@@ -29,12 +29,36 @@ public class SchedulingDAOImpl extends AbstractDAO implements SchedulingDAO {
 	}
 
 	@Override
+	public List<JSONObject> getLimitedFutureServices(String user) {
+
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DATE, 7);
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		String sql = "CALL GetLimitedFutureServicesSchedule(?,?)";
+		List<JSONObject> list = getJdbcTemplate().query(sql, new Object[]{user, sdf.format(cal.getTime())}, new JSONRowMapper());
+		
+		return list;
+	}
+
+	@Override
 	public List<ScheduledServiceDTO> getScheduledServices(Date date) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		String sql = "CALL GetServicesSchedule(?)";
 		
 		@SuppressWarnings("unchecked")
 		List<ScheduledServiceDTO> list = (List<ScheduledServiceDTO>)getJdbcTemplate().query(sql, new Object[]{sdf.format(date)}, getMapperFor(ScheduledServiceDTO.class));
+		
+		return list;
+	}
+	
+	@Override
+	public List<ScheduledServiceDTO> getLimitedScheduledServices(String user, Date date) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		String sql = "CALL GetLimitedServicesSchedule(?,?)";
+		
+		@SuppressWarnings("unchecked")
+		List<ScheduledServiceDTO> list = (List<ScheduledServiceDTO>)getJdbcTemplate().query(sql, new Object[]{user, sdf.format(date)}, getMapperFor(ScheduledServiceDTO.class));
 		
 		return list;
 	}

@@ -90,6 +90,7 @@ public class PlainServiceController extends AbstractController {
 	  				  plainServicePolicyDTO.setServiceStatusId("N");
 	  				  plainServicePolicyDTO.setServiceTypeId("C");
 	  				  plainServicePolicyDTO.setTicketNumber(ticket.getTicketNumber());
+	  				  plainServicePolicyDTO.setTicketId(idTicket);
 	  				  model.addAttribute("serviceOrder", plainServicePolicyDTO);
 	  				  model.addAttribute("serviceEmployees", udService.getStaffByGroupJson(Globals.GROUP_SERVICE));
 	  				  model.addAttribute("mode", "new");
@@ -120,7 +121,6 @@ public class PlainServiceController extends AbstractController {
 	  				  model.addAttribute("serviceOrder", plainServicePolicyDTO);
 	  				  model.addAttribute("followUps", service.getFollows(idOrderService));
 	  				  model.addAttribute("mode", "detail");
-	  				  model.addAttribute("equipmentTypeList", service.getEquipmentTypeList());
 		  		  }
 		  		  else if(operation==3)
 		  		  {
@@ -155,7 +155,6 @@ public class PlainServiceController extends AbstractController {
 	  				  model.addAttribute("serviceEmployees", udService.getStaffByGroupJson(Globals.GROUP_SERVICE));
 	  				  model.addAttribute("mode", "new");
 	  				  model.addAttribute("hasPolicy", true);
-	  				  model.addAttribute("equipmentTypeList", service.getEquipmentTypeList());
 		  		  }
 		  		  else if(operation == 4){
 		  			  OpenCustomer cust = new OpenCustomer();
@@ -180,7 +179,6 @@ public class PlainServiceController extends AbstractController {
 	  				  model.addAttribute("serviceEmployees", udService.getStaffByGroupJson(Globals.GROUP_SERVICE));
 	  				  model.addAttribute("mode", "new");
 	  				  model.addAttribute("hasPolicy", false);
-	  				  model.addAttribute("equipmentTypeList", service.getEquipmentTypeList());
 		  		  }
 		  		  
 		  		  model.addAttribute("serviceTypes", service.getServiceTypeList());
@@ -188,6 +186,7 @@ public class PlainServiceController extends AbstractController {
 				  model.addAttribute("osAttachmentFolder", gdService.getAttachmentFolderId(plainServicePolicyDTO.getServiceOrderNumber()));
 				  model.addAttribute("rootFolder", gdService.getRootFolderId());
 				  model.addAttribute("accessToken", gdService.getAccessToken());
+				  model.addAttribute("equipmentTypeList", service.getEquipmentTypeList());
 				  List<Ticket> tickets = daoFactory.getTicketDAO().selectAllTicket();
   				  model.addAttribute("ticketList", tickets);
 	  		  }
