@@ -29,15 +29,15 @@ public class ServiceIndicatorsDAOImpl extends AbstractDAO
   }
   
   
-  public List<GetConcurrentFailuresKPI> getConcurrentFailures(){
-	String sqlQuery = "CALL GetConcurrentFailuresKPI()";
-	return (List<GetConcurrentFailuresKPI> )getJdbcTemplate().query(sqlQuery
+  public List<GetConcurrentFailuresKPI> getConcurrentFailures(String project, Date startDate, Date endDate){
+	String sqlQuery = "CALL GetConcurrentFailuresKPI(?,?,?)";
+	return (List<GetConcurrentFailuresKPI> )getJdbcTemplate().query(sqlQuery, new Object[]{project, startDate, endDate}
 			,  getMapperFor(GetConcurrentFailuresKPI.class)); 
   }
   
-  public List<JSONObject> getMaxPeportsByUser(){
-	String sqlQuery = "CALL GetMaxReportsByUserKPI()";
-	return getJdbcTemplate().query(sqlQuery,  new JSONRowMapper()); 
+  public List<JSONObject> getMaxPeportsByUser(String project, Date startDate, Date endDate){
+	String sqlQuery = "CALL GetMaxReportsByUserKPI(?,?,?)";
+	return getJdbcTemplate().query(sqlQuery,  new Object[]{project, startDate, endDate}, new JSONRowMapper()); 
   }
   
   public List<GetReportOSTableKPI> getReportOSTable() {

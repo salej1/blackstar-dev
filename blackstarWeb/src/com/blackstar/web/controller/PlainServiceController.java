@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.blackstar.common.Globals;
+import com.blackstar.common.TicketListConverter;
 import com.blackstar.common.Utils;
 import com.blackstar.db.DAOFactory;
 import com.blackstar.interfaces.IEmailService;
@@ -187,6 +188,8 @@ public class PlainServiceController extends AbstractController {
 				  model.addAttribute("osAttachmentFolder", gdService.getAttachmentFolderId(plainServicePolicyDTO.getServiceOrderNumber()));
 				  model.addAttribute("rootFolder", gdService.getRootFolderId());
 				  model.addAttribute("accessToken", gdService.getAccessToken());
+				  List<Ticket> tickets = daoFactory.getTicketDAO().selectAllTicket();
+  				  model.addAttribute("ticketList", tickets);
 	  		  }
 			  else
 			  {
@@ -260,6 +263,7 @@ public class PlainServiceController extends AbstractController {
 					servicioOrderSave.setReceivedByPosition(serviceOrder.getReceivedByPosition());
 					servicioOrderSave.setEmployeeListString(serviceOrder.getResponsible());
 					servicioOrderSave.setServiceDate(serviceOrder.getServiceDate());
+					servicioOrderSave.setServiceEndDate(serviceOrder.getServiceEndDate());
 					servicioOrderSave.setServiceOrderNumber(serviceOrder.getServiceOrderNumber());
 					servicioOrderSave.setServiceTypeId(serviceOrder.getServiceTypeId().toCharArray()[0]);
 					servicioOrderSave.setReceivedByEmail(serviceOrder.getReceivedByEmail());
@@ -272,6 +276,7 @@ public class PlainServiceController extends AbstractController {
 		    		}
 					servicioOrderSave.setPolicyId(serviceOrder.getPolicyId());
 					servicioOrderSave.setResponsible(serviceOrder.getResponsible());
+					servicioOrderSave.setTicketId(serviceOrder.getTicketId());
 					idServicio = service.saveServiceOrder(servicioOrderSave, "PlainServiceController", userSession.getUser().getUserEmail());
 					serviceOrder.setServiceOrderId(idServicio);
 					

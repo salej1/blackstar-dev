@@ -81,8 +81,8 @@ implements ServiceIndicatorsService {
 		return jsonData != null ? jsonData.toString() : "";
 	}
 
-	public List<GetConcurrentFailuresKPI> getConcurrentFailures() throws Exception{
-		List<GetConcurrentFailuresKPI> data = dao.getConcurrentFailures();
+	public List<GetConcurrentFailuresKPI> getConcurrentFailures(String project, Date startDate, Date endDate) throws Exception{
+		List<GetConcurrentFailuresKPI> data = dao.getConcurrentFailures(project, startDate, endDate);
 		String month = "";
 		String lastMonth = "";
 		for(int i = 0; i < data.size();i++){
@@ -95,8 +95,8 @@ implements ServiceIndicatorsService {
 		return data;
 	}
 
-	public String getMaxPeportsByUser() throws Exception {
-		List<JSONObject> jsonData = dao.getMaxPeportsByUser();
+	public String getMaxPeportsByUser(String project, Date startDate, Date endDate) throws Exception {
+		List<JSONObject> jsonData = dao.getMaxPeportsByUser(project, startDate, endDate);
 		String month = "";
 		String lastMonth = "";
 		Map <String, String> map = new HashMap<String , String>() {{
@@ -104,6 +104,7 @@ implements ServiceIndicatorsService {
 			put("customer", "");
 			put("created", "");
 			put("counter", "");
+			put("ticketList", "");
 		}};
 		for(int i = 0; i < jsonData.size();i++){
 			month = jsonData.get(i).get("created").toString().substring(5,7);

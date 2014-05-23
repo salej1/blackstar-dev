@@ -31,6 +31,7 @@ public class Serviceorder implements java.io.Serializable {
 	private Integer policyId;
 	private String serviceUnit;
 	private Date serviceDate;
+	private Date serviceEndDate;
 	private String responsible;
 	private String receivedBy;
 	private String serviceComments;
@@ -65,7 +66,7 @@ public class Serviceorder implements java.io.Serializable {
 			String asignee, Date created, String createdBy,
 			String createdByUsr, Date modified, String modifiedBy,
 			String modifiedByUsr, String signCreated, String signReceivedBy, String receivedByPosition, String serviceOrderNumber, Integer serviceOrderId,
-			Integer isWrong, String receivedByEmail, Integer openCustomerId) {
+			Integer isWrong, String receivedByEmail, Integer openCustomerId, Date serviceEndDate) {
 		this.serviceOrderId = serviceOrderId;
 		this.serviceTypeId = serviceTypeId;
 		this.ticketId = ticketId;
@@ -94,6 +95,7 @@ public class Serviceorder implements java.io.Serializable {
 		this.receivedByEmail = receivedByEmail;
 		this.responsibleName = responsible;
 		this.openCustomerId = openCustomerId;
+		this.serviceEndDate = serviceEndDate;
 	}
 
 	@Id
@@ -410,5 +412,13 @@ public class Serviceorder implements java.io.Serializable {
 
 	public void setOpenCustomerId(Integer openCustomerId) {
 		this.openCustomerId = openCustomerId;
+	}
+
+	public Date getServiceEndDate() {
+		return serviceEndDate;
+	}
+
+	public void setServiceEndDate(Date serviceEndDate) {
+		this.serviceEndDate = serviceEndDate;
 	}
 }

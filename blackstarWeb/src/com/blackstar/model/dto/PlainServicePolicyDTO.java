@@ -10,8 +10,7 @@ public class PlainServicePolicyDTO {
 	
 	public PlainServicePolicyDTO()
 	{
-		this.closed = new Date();
-		this.serviceDate = new Date();
+		
 	}
 	
 
@@ -53,6 +52,7 @@ public class PlainServicePolicyDTO {
 		this.serviceOrderId = serviceOrder.getServiceOrderId();
 		this.ticketId = serviceOrder.getTicketId();
 		this.serviceDate = serviceOrder.getServiceDate();
+		this.serviceEndDate = serviceOrder.getServiceEndDate();
 		this.responsible = serviceOrder.getResponsible();
 		this.receivedBy = serviceOrder.getReceivedBy();
 		this.serviceStatusId = serviceOrder.getStatusId();
@@ -122,6 +122,7 @@ public class PlainServicePolicyDTO {
 		this.serviceOrderId = serviceOrder.getServiceOrderId();
 		this.ticketId = serviceOrder.getTicketId();
 		this.serviceDate = serviceOrder.getServiceDate();
+		this.serviceEndDate = serviceOrder.getServiceEndDate();
 		this.responsible = serviceOrder.getResponsible();
 		this.receivedBy = serviceOrder.getReceivedBy();
 		this.serviceStatusId = serviceOrder.getStatusId();
@@ -165,6 +166,7 @@ public class PlainServicePolicyDTO {
 		this.serviceOrderId = serviceOrder.getServiceOrderId();
 		this.ticketId = serviceOrder.getTicketId();
 		this.serviceDate = serviceOrder.getServiceDate();
+		this.serviceEndDate = serviceOrder.getServiceEndDate();
 		this.responsible = serviceOrder.getResponsible();
 		this.receivedBy = serviceOrder.getReceivedBy();
 		this.serviceStatusId = serviceOrder.getStatusId();
@@ -214,6 +216,7 @@ public class PlainServicePolicyDTO {
 	private Integer ticketId;
 	private String ticketNumber;
 	private Date serviceDate;
+	private Date serviceEndDate;
 	private String responsible;
 	private String receivedBy;
 	private String serviceStatusId;
@@ -575,5 +578,15 @@ public class PlainServicePolicyDTO {
 
 	public void setOpenCustomerId(Integer openCustomerId) {
 		this.openCustomerId = openCustomerId;
+	}
+
+
+	public Date getServiceEndDate() {
+		return serviceEndDate;
+	}
+
+
+	public void setServiceEndDate(Date serviceEndDate) {
+		this.serviceEndDate = serviceEndDate;
 	}
 }

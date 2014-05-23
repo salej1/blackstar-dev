@@ -56,6 +56,8 @@
 -- ---------------------------------------------------------------------------
 -- 17	14/05/2014	SAG 	Se agrega unique(serviceOrderNumber) a serviceOrder
 -- ---------------------------------------------------------------------------
+-- 18	19/05/2014	SAG 	Se agrega serviceDateEnd a serviceOrder
+-- ---------------------------------------------------------------------------
 
 use blackstarDb;
 
@@ -68,6 +70,11 @@ BEGIN
 -- -----------------------------------------------------------------------------
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
+
+-- 	AGREGANDO serviceDateEnd A serviceOrder
+	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'serviceOrder' AND COLUMN_NAME = 'serviceEndDate') = 0  THEN
+		ALTER TABLE serviceOrder ADD serviceEndDate DATETIME NULL;
+	END If;
 
 --	AGREGANDO UNIQUE(serviceOrderNumber) A serviceOrder
 	ALTER TABLE serviceOrder ADD UNIQUE(serviceOrderNumber);

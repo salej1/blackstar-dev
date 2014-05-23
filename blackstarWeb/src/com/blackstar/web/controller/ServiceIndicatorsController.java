@@ -78,9 +78,12 @@ public class ServiceIndicatorsController extends AbstractController {
   }
   
   @RequestMapping(value= "/getConcurrentFailures.do", method = RequestMethod.GET)
-  public String  getConcurrenFailures(ModelMap model){
+  public String  getConcurrenFailures( @RequestParam(required = true) Date startDate,
+		  @RequestParam(required = true) Date endDate,
+		  @RequestParam(required = true) String project,
+		  ModelMap model){
 	try {
-	     model.addAttribute("concurrenFailures", service.getConcurrentFailures());
+	     model.addAttribute("concurrenFailures", service.getConcurrentFailures(project, startDate, endDate));
 	} catch (Exception e) {
 		Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 		e.printStackTrace();
@@ -92,9 +95,12 @@ public class ServiceIndicatorsController extends AbstractController {
   
   
   @RequestMapping(value= "/getMaxReportsByUser.do", method = RequestMethod.GET)
-  public String  getMaxReportsByUser(ModelMap model){
+  public String  getMaxReportsByUser( @RequestParam(required = true) Date startDate,
+		  @RequestParam(required = true) Date endDate,
+		  @RequestParam(required = true) String project,
+		  ModelMap model){
 	try {
-	     model.addAttribute("maxReportsByUser", service.getMaxPeportsByUser());
+	     model.addAttribute("maxReportsByUser", service.getMaxPeportsByUser(project, startDate, endDate));
 	} catch (Exception e) {
 		Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 		e.printStackTrace();

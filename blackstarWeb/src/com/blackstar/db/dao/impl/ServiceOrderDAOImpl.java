@@ -114,7 +114,7 @@ public class ServiceOrderDAOImpl extends AbstractDAO implements ServiceOrderDAO 
   public int insertServiceOrder(Serviceorder orderService) {
 	  
 	StringBuilder sqlBuilder = new StringBuilder();
-	sqlBuilder.append("CALL AddserviceOrder(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+	sqlBuilder.append("CALL AddserviceOrder(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 	
 	DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 	
@@ -143,7 +143,8 @@ public class ServiceOrderDAOImpl extends AbstractDAO implements ServiceOrderDAO 
 									""+orderService.getCreatedBy()+ "",
 									""+orderService.getCreatedByUsr()+ "",
 									""+orderService.getReceivedByEmail()+ "",
-									orderService.getOpenCustomerId()
+									orderService.getOpenCustomerId(),
+									orderService.getServiceEndDate()!=null?df.format(orderService.getServiceEndDate()):null
 								};
 	
 	Integer idOS = getJdbcTemplate().queryForInt(sqlBuilder.toString() ,args);

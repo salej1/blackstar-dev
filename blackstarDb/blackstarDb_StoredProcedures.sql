@@ -249,6 +249,12 @@
 -- 								blackstarDb.AddFollowUpToTicket
 -- 								blackstarDb.AddFollowUpToOS
 -- -----------------------------------------------------------------------------
+-- 39	16/05/2014 	SAG 	Se corrige:
+--								blackstarDb.GetMaxReportsByUserKPI
+--								blackstarDb.GetConcurrentFailuresKPI
+-- -----------------------------------------------------------------------------
+-- 40 	19/05/2014	SAG 	Se actualiza:
+--								blackstarDb.AddserviceOrder
 
 use blackstarDb;
 
@@ -1519,47 +1525,65 @@ END$$
 	-- blackstarDb.GetMaxReportsByUserKPI
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetMaxReportsByUserKPI$$
-CREATE PROCEDURE blackstarDb.GetMaxReportsByUserKPI()
+CREATE PROCEDURE blackstarDb.GetMaxReportsByUserKPI(project varchar(200), startDate datetime, endDate datetime)
 BEGIN
-SELECT ifnull(tk.contactEmail, 'Sin usuario') as employee,
-       py.customer as customer,
-       tk.created as created,
-       count(*) counter
-FROM ticket tk
-	INNER JOIN policy py ON tk.policyId = py.policyId
-WHERE tk.employee != ''
-	AND tk.created > STR_TO_DATE(CONCAT('01-01-',YEAR(NOW())),'%d-%m-%Y')
-GROUP BY ifnull(tk.contactEmail, 'Sin usuario'), MONTH(tk.created)
-HAVING counter >= 2
-ORDER BY MONTH(tk.created) ASC;
+IF(project = 'All') THEN
+	SELECT ifnull(tk.contactEmail, 'Sin usuario') as employee,
+	       py.customer as customer,
+	       tk.created as created,
+	       count(*) counter,
+	       group_concat(tk.ticketNumber separator ', ') as ticketList
+	FROM ticket tk
+		INNER JOIN policy py ON tk.policyId = py.policyId
+	WHERE tk.employee != ''
+		AND tk.created >= startDate AND tk.created <= endDate
+	GROUP BY ifnull(tk.contactEmail, 'Sin usuario'), MONTH(tk.created)
+	HAVING counter >= 2
+	ORDER BY MONTH(tk.created) ASC, counter DESC;
+ELSE
+	SELECT ifnull(tk.contactEmail, 'Sin usuario') as employee,
+	       py.customer as customer,
+	       tk.created as created,
+	       count(*) counter,
+	       group_concat(tk.ticketNumber separator ', ') as ticketList
+	FROM ticket tk
+		INNER JOIN policy py ON tk.policyId = py.policyId
+	WHERE tk.employee != ''
+		AND tk.created >= startDate AND tk.created <= endDate
+		AND py.project = project
+	GROUP BY ifnull(tk.contactEmail, 'Sin usuario'), MONTH(tk.created)
+	HAVING counter >= 2
+	ORDER BY MONTH(tk.created) ASC, counter DESC;
+END IF;
+
 END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetConcurrentFailuresKPI
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetConcurrentFailuresKPI$$
-CREATE PROCEDURE blackstarDb.`GetConcurrentFailuresKPI`()
+CREATE PROCEDURE blackstarDb.`GetConcurrentFailuresKPI`(project varchar(200), startDate datetime, endDate datetime)
 BEGIN
-SELECT  tk.employee as employee, 
-          py.customer as customer,
-          py.equipmentTypeId as equipmentTypeId,
-          py.brand as brand,
-          py.serialNumber as serialNumber,
-          tk.observations as observations,
-          IFNULL(bu.name, '') AS asignee,
-          tk.ticketNumber as ticketNumber,
-          tk.created as created
-  FROM ticket tk
-  INNER JOIN policy py on tk.policyId = py.policyId
-  LEFT OUTER JOIN blackstarUser bu ON bu.email = tk.asignee
-  WHERE py.policyId in (
-        SELECT tk.policyId
-        FROM ticket tk
-        WHERE tk.created >= STR_TO_DATE(CONCAT('01-01-',YEAR(NOW())),'%d-%m-%Y')
-        GROUP BY tk.policyId
-        HAVING count(1) > 1)
-  ORDER BY tk.created, tk.policyId ASC;
-  END$$
+	SELECT  tk.employee as employee, 
+	          py.customer as customer,
+	          py.equipmentTypeId as equipmentTypeId,
+	          py.brand as brand,
+	          py.serialNumber as serialNumber,
+	          tk.observations as observations,
+	          IFNULL(bu.name, tk.employee) AS asignee,
+	          tk.ticketNumber as ticketNumber,
+	          tk.created as created
+	FROM ticket tk
+	INNER JOIN policy py on tk.policyId = py.policyId
+	LEFT OUTER JOIN blackstarUser bu ON bu.email = tk.employee
+	WHERE py.policyId in (
+	        SELECT tk.policyId
+	        FROM ticket tk
+	        WHERE tk.created >= startDate and tk.created <= endDate
+	        GROUP BY tk.policyId
+	        HAVING count(1) > 1)
+	ORDER BY tk.created, tk.policyId ASC;
+END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetPoliciesKPI
@@ -2879,6 +2903,7 @@ BEGIN
 		
 	-- Asignacion del empleado responsable
 	UPDATE ticket SET
+		employee = pEmployee,
 		asignee = pEmployee,
 		modified = NOW(),
 		modifiedBy = proc,
@@ -3520,14 +3545,16 @@ CREATE PROCEDURE blackstarDb.AddserviceOrder (
   createdBy varchar(50) ,
   createdByUsr varchar(50) ,
   receivedByEmail varchar(100),
-  openCustomerId int(11)
+  openCustomerId int(11),
+  serviceEndDate datetime
 )
 BEGIN
 insert into serviceOrder
-(serviceOrderNumber,serviceTypeId,ticketId,policyId,serviceUnit,serviceDate,responsible,additionalEmployees,receivedBy,serviceComments,serviceStatusId,closed,consultant,coordinator,asignee,hasErrors,isWrong,signCreated,signReceivedBy,receivedByPosition,created,createdBy,createdByUsr,receivedByEmail,openCustomerId)
+(serviceOrderNumber,serviceTypeId,ticketId,policyId,serviceUnit,serviceDate,responsible,additionalEmployees,receivedBy,serviceComments,serviceStatusId,closed,consultant,coordinator,asignee,hasErrors,isWrong,signCreated,signReceivedBy,receivedByPosition,created,createdBy,createdByUsr,receivedByEmail,openCustomerId,serviceEndDate)
 values
-(serviceOrderNumber,serviceTypeId,ticketId,policyId,serviceUnit,serviceDate,responsible,additionalEmployees,receivedBy,serviceComments,serviceStatusId,closed,consultant,coordinator,asignee,hasErrors,isWrong,signCreated,signReceivedBy,receivedByPosition,created,createdBy,createdByUsr,receivedByEmail,openCustomerId);
+(serviceOrderNumber,serviceTypeId,ticketId,policyId,serviceUnit,serviceDate,responsible,additionalEmployees,receivedBy,serviceComments,serviceStatusId,closed,consultant,coordinator,asignee,hasErrors,isWrong,signCreated,signReceivedBy,receivedByPosition,created,createdBy,createdByUsr,receivedByEmail,openCustomerId,serviceEndDate);
 select LAST_INSERT_ID();
+
 END$$
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.UpdateServiceOrder

@@ -24,7 +24,8 @@
 			"aoColumns": [
 						  { "mData": "employee" },
 						  { "mData": "customer" },
-						  { "mData": "counter" }
+						  { "mData": "counter" },
+						  { "mData": "ticketList" }
 					  ],
 					  "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
 					      if( aData["employee"].indexOf("lbl-") == 0){
@@ -52,9 +53,10 @@
 			<table cellpadding="0" cellspacing="0" border="0" class="display" id="tickets">
 				<thead>
 					<tr>
-						<th style="width:33%">Usuarios que mas reportan</th>
-						<th style="width:33%">Empresa</th>
-						<th style="width:33%">Tickets</th>
+						<th style="width:20%">Usuarios que mas reportan</th>
+						<th style="width:30%">Empresa</th>
+						<th style="width:20%"># Tickets</th>
+						<th style="width:30%">Tickets</th>
 					</tr>
 				</thead>
 				<tbody>

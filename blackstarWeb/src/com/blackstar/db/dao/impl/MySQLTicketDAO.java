@@ -33,7 +33,7 @@ public class MySQLTicketDAO implements TicketDAO, Serializable {
 		Connection conn = null;
 		try {
 			conn = MySQLDAOFactory.createConnection();
-			PreparedStatement ps = conn.prepareStatement("Select * from ticket");
+			PreparedStatement ps = conn.prepareStatement("Select * from ticket tk order by tk.created desc");
 			ResultSet rs = ps.executeQuery();
 			
 			while(rs.next()) {

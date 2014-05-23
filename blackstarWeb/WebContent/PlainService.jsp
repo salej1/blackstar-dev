@@ -115,6 +115,12 @@
 
 			// Habilitar datetime picker
 			$("#serviceDate").datetimepicker({format:'d/m/Y H:i:s', lang:'es'});
+			$("#serviceEndDate").datetimepicker({format:'d/m/Y H:i:s', lang:'es'});
+
+			// Binding ticketId
+			$("#ticketList").bind("change", function(){
+				$("#ticketId").val($(this).val());
+			});
 		}
 
 		// Binding serviceTypes con campo oculto de tipo de servicio
@@ -144,12 +150,24 @@
 		if(isEng == "true" && mode == "detail"){
 			$(".lockOnEngDetail").attr("disabled", "");
 		}
+
 	});
 
 	function saveService(){
 		if($("#responsible").val() == ""){
 			$("#responsibleName").val("");
 			return false;
+		}
+		var startTimestamp = new Date($("#serviceDate"));
+		if(startTimestamp == undefined || startTimestamp == null){
+			startTimestamp.val("");
+		}
+		var endTimestamp = new Date($("#serviceEndDate"));
+		if(endTimestamp == undefined || endTimestamp == null){
+			endTimestamp.val("");
+		}
+		if(endTimestamp < startTimestamp){
+			endTimestamp.val("");
 		}
 		if($('#serviceOrder')[0].checkValidity()){
 			$('input').removeAttr("disabled");
@@ -183,7 +201,19 @@
 										<form:input path="serviceOrderId" type="hidden"/>
 									</td>
 									<td style="width:140px">No. de ticket</td>
-									<td><form:input cssClass="lockOnDetail" path="ticketNumber" type="text" readOnly="true" style="width:95%;"/></td>
+									<td>
+										<form:hidden path="ticketId" />
+										<select class="lockOnDetail" id="ticketList">
+											<option value="">NA</option>
+											<c:forEach var="ticket" items="${ticketList}">
+										        <option value="${ticket.ticketId}" 
+										        <c:if test="${serviceOrder.ticketId == ticket.ticketId}">
+										        	selected="true"
+										    	</c:if>
+										        >${ticket.ticketNumber}</option>
+										    </c:forEach>
+										</select>
+									</td>
 								</tr>
 								<tr>
 									<td>Cliente</td>
@@ -334,7 +364,7 @@
 							<table>
 								<thead>
 									<tr>
-										<th colspan="2">Realizado Por</th>
+										<th colspan="2" style="width:410px">Realizado Por</th>
 										<th colspan="2">Servicio y/o equipo recibido a mi entera satisfaccion</th>
 									</tr>
 								</thead>
@@ -353,14 +383,15 @@
 									</td>
 								</tr>
 								<tr>
-									<td style="width:90px">Nombre</td>
+									<td>Nombre</td>
 									<td><form:input cssClass="lockOnDetail" path="responsibleName" type="text" style="width:95%;" required="true"/></td>
 									<form:hidden path="responsible" style="width:95%;"/>
 									<td>Nombre</td>
 									<td><form:input cssClass="lockOnDetail" path="receivedBy" type="text" style="width:95%;"/></td>
 								</tr>
 								<tr>
-									<td colspan="2"></td>
+									<td>Fecha y hora de salida</td>
+									<td><form:input cssClass="lockOnDetail lockForEng" path="serviceEndDate" type="text" style="width:95%;" required="true"/></td>
 									<td>Puesto</td>
 									<td><form:input cssClass="lockOnDetail" path="receivedByPosition"  style="width:95%;" /></td>
 								</tr>	

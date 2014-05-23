@@ -70,7 +70,7 @@ public class MySQLServiceOrderDAO implements ServiceOrderDAO, Serializable {
 						rs.getString("serviceOrderNumber"),
 						rs.getInt("serviceOrderId"), rs.getInt("isWrong"),
 						rs.getString("receivedByEmail"),
-						rs.getInt("openCustomerId"));
+						rs.getInt("openCustomerId"), rs.getTimestamp("serviceEndDate"));
 				lstServiceOrder.add(serviceOrder);
 
 			}
@@ -121,7 +121,7 @@ public class MySQLServiceOrderDAO implements ServiceOrderDAO, Serializable {
 						rs.getString("serviceOrderNumber"),
 						rs.getInt("serviceOrderId"), rs.getInt("isWrong"),
 						rs.getString("receivedByEmail"),
-						rs.getInt("openCustomerId"));
+						rs.getInt("openCustomerId"), rs.getTimestamp("serviceEndDate"));
 
 			}
 			
@@ -220,7 +220,7 @@ public class MySQLServiceOrderDAO implements ServiceOrderDAO, Serializable {
 						rs.getString("serviceOrderNumber"),
 						rs.getInt("serviceOrderId"), rs.getInt("IsWrong"),
 						rs.getString("receivedByEmail"),
-						rs.getInt("openCustomerId"));
+						rs.getInt("openCustomerId"), rs.getTimestamp("serviceEndDate"));
 
 			}
 			
