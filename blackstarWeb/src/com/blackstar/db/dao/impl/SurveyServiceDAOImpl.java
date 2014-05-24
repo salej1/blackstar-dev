@@ -126,7 +126,7 @@ public class SurveyServiceDAOImpl extends AbstractDAO implements SurveyServiceDA
 		
 		String sql = "CALL AddSurveyToServiceOrder(?,?,?,?)";
 		
-		getJdbcTemplate().update(sql, new Object[]{order, surveyServiceId.toString(), modifiedBy, user});
+		getJdbcTemplate().update(sql, new Object[]{order.trim(), surveyServiceId.toString(), modifiedBy, user});
 		
 	}
 

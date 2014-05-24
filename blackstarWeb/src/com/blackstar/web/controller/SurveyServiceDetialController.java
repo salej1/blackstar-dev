@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.blackstar.common.Globals;
@@ -22,6 +23,7 @@ import com.blackstar.logging.Logger;
 import com.blackstar.model.SurveyService;
 import com.blackstar.model.UserSession;
 import com.blackstar.model.dto.SurveyServiceDTO;
+import com.blackstar.services.interfaces.ServiceOrderService;
 import com.blackstar.services.interfaces.SurveyServiceService;
 import com.blackstar.web.AbstractController;
 
@@ -31,9 +33,14 @@ import com.blackstar.web.AbstractController;
 public class SurveyServiceDetialController extends AbstractController{
 
 	private SurveyServiceService service;
+	private ServiceOrderService osService;
 
 	public void setService(SurveyServiceService surveyServiceService) {
 		this.service = surveyServiceService;
+	}
+
+	public void setOsService(ServiceOrderService osService) {
+		this.osService = osService;
 	}
 
 	@RequestMapping(value= "/show.do", method = RequestMethod.GET)
@@ -104,6 +111,28 @@ public class SurveyServiceDetialController extends AbstractController{
 		return "redirect:/surveyServices/show.do";
 		 
 	 }
+	
+	// Recuperacion de datos de la OS para encuesta
+	@RequestMapping(value = "/getOsDetailsJson.do", method = RequestMethod.GET)
+	public @ResponseBody String getOsDetailsJson(@RequestParam(required = true) String osList, ModelMap model) {
+		String retVal;
+		try {
+			// Solo obtenemos los datos dela primer OS
+			String[] oss = osList.split(",");
+			if(oss.length > 0){
+				retVal = osService.getServiceOrderDetails(oss[0]);
+			}
+			else{
+				retVal = "error";
+			}
+		} catch (Exception ex) {
+			Logger.Log(LogLevel.ERROR,
+					Thread.currentThread().getStackTrace()[1].toString(), ex);
+			ex.printStackTrace();
+			retVal = "error";
+		}
+		return retVal;
+	}
 	
 	private Map<Integer, String> getQualificationsList(){
 		Map<Integer, String> qMap = new LinkedHashMap<Integer, String>();

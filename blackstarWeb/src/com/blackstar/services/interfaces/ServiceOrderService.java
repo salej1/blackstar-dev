@@ -3,6 +3,7 @@ package com.blackstar.services.interfaces;
 import java.util.List;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import com.blackstar.model.Equipmenttype;
 import com.blackstar.model.Policy;
@@ -66,5 +67,8 @@ public interface ServiceOrderService {
 	
 	// Recuperacion de tipos de equipos
 	public List<Equipmenttype> getEquipmentTypeList();
+	
+	// Detalles de una orden por numero
+	public String getServiceOrderDetails(String orderNumber);
 
 }

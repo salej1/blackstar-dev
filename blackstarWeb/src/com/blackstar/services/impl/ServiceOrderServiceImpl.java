@@ -187,6 +187,17 @@ public String getNewServiceNumber() {
 public List<Equipmenttype> getEquipmentTypeList() {
 	return equipmentDao.selectAllEquipmentType();
 }
+
+@Override
+public String getServiceOrderDetails(String orderNumber) {
+	List<JSONObject> list = dao.getServiceOrderDetails(orderNumber);
+	if(list.size() > 0){
+		return list.get(0).toString();
+	}
+	else{
+		return "{\"error\":\"sin datos\"}";
+	}
+}
   
   
 }

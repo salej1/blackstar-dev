@@ -90,6 +90,7 @@
    </bean>
     <bean class="com.blackstar.web.controller.SurveyServiceDetialController" parent="abstractController">
       <property name="service" ref="surveyServiceService" />
+      <property name="osService" ref="serviceOrderService" />
    </bean>
    <bean class="com.blackstar.web.controller.ReportController" parent="abstractController">
        <property name="urlPreffix" value="https://docs.google.com/a/gposac.com.mx/file/d/"/>

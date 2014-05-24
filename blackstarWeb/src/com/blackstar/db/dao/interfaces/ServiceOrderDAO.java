@@ -54,4 +54,6 @@ public interface ServiceOrderDAO {
 	public List<ServiceStatusDTO> getServiceStatusList();
 	
 	public List<FollowUpDTO> getServiceFollowUps(Integer serviceOrderId);
+	
+	public List<JSONObject> getServiceOrderDetails(String orderNumber);
 }

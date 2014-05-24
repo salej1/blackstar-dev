@@ -720,4 +720,11 @@ public class ServiceOrderDAOImpl extends AbstractDAO implements ServiceOrderDAO 
 		String query = "CALL GetNextServiceNumberForTicket()";
 		return (String) getJdbcTemplate().queryForObject(query,  String.class);
 	}
+
+
+	@Override
+	public List<JSONObject> getServiceOrderDetails(String orderNumber) {
+		String query = "CALL GetServiceOrderDetails(?)";
+		return (List<JSONObject>) getJdbcTemplate().query(query, new Object[]{orderNumber}, new JSONRowMapper());
+	}
 }

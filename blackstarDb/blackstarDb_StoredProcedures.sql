@@ -258,9 +258,11 @@
 -- -----------------------------------------------------------------------------
 -- 41 	20/05/2014	SAG 	Se actualiza:
 --								blackstarDb.GetLimitedTicketList
+--								blackstarDb.GetAllSurveyServiceList
 --							Se agrega:
 --								blackstarDb.GetLimitedServicesSchedule	
 --								blackstarDb.GetLimitedFutureServicesSchedule
+--								blackstarDb.GetServiceOrderDetails
 -- -----------------------------------------------------------------------------
 
 use blackstarDb;
@@ -268,6 +270,26 @@ use blackstarDb;
 DELIMITER $$
 
 
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetServiceOrderDetails
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetServiceOrderDetails$$
+CREATE PROCEDURE blackstarDb.GetServiceOrderDetails (serviceOrderNumber VARCHAR(100))
+BEGIN
+
+	SELECT 
+		so.serviceOrderNumber,
+		IFNULL(p.customer, c.customerName) AS company,
+		so.receivedBy AS name,
+		so.receivedByEmail AS email,
+		IFNULL(p.contactPhone, c.phone) AS phone
+	FROM serviceOrder so 
+		LEFT OUTER JOIN policy p ON p.policyId = so.policyId
+		LEFT OUTER JOIN openCustomer c ON c.openCustomerId = so.openCustomerId
+	WHERE so.serviceOrderNumber = serviceOrderNumber;
+	
+END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetLimitedFutureServicesSchedule
@@ -1237,13 +1259,14 @@ BEGIN
 	SELECT DISTINCT
 		s.surveyServiceId AS DT_RowId,
 		s.surveyServiceId AS surveyServiceNumber,
-		p.customer AS customer,
-		p.project AS project,
+		COALESCE(p.customer, c.customerName, '') AS customer,
+		COALESCE(p.project, c.project, '') AS project,
 		s.surveyDate AS surveyDate,
 		s.score AS score
 	FROM surveyService s
 		INNER JOIN serviceOrder o ON o.surveyServiceId = s.surveyServiceId
-		INNER JOIN policy p ON o.policyId = p.policyId
+		LEFT OUTER JOIN policy p ON o.policyId = p.policyId
+		LEFT OUTER JOIN openCustomer c ON c.openCustomerId = o.openCustomerId
 	ORDER BY surveyDate DESC;
 
 END$$

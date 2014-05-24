@@ -389,4 +389,10 @@ public class MySQLServiceOrderDAO implements ServiceOrderDAO, Serializable {
 		return null;
 	}
 
+	@Override
+	public List<JSONObject> getServiceOrderDetails(String orderNumber) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

@@ -15,6 +15,9 @@
 
 <script type="text/javascript">
     $(function(){
+       // ocultando el mensaje de error
+       $(".info").hide();
+
        // Sincronizando los campos de firma
         $("#surveyService").submit(function(){
           $("#sign").val($("#signReceivedByCapture").val())
@@ -25,24 +28,24 @@
         var mode = "${mode}";
         if(mode == "new"){
           $("#date").val(dateNow());
+          $("#serviceOrderList").bind("change", function(){
+            var custData = $.getJSON("/surveyServiceDetail/getOsDetailsJson.do?osList=" + $(this).val(), function(data){
+                if(data.error != null) {
+                  $(".info").show();
+                  $("#serviceOrderList").select();
+                }
+                else{
+                  $(".info").hide();
+                  $("#company").val(data.company);
+                  $("#name").val(data.name);
+                  $("#phone").val(data.phone);
+                  $("#email").val(data.email);
+                }
+            });
+          });
         }
         else{
-          $("#company").attr("disabled", "");
-          $("#name").attr("disabled", "");
-          $("#phone").attr("disabled", "");
-          $("#email").attr("disabled", "");
-          $("#date").attr("disabled", "");
-          $("#questionTreatment").attr("disabled", "");
-          $("#reasonTreatment").attr("disabled", "");
-          $("#questionIdentificationPersonal").attr("disabled", "");
-          $("#questionIdealEquipment").attr("disabled", "");
-          $("#reasonIdealEquipment").attr("disabled", "");
-          $("#questionTime").attr("disabled", "");
-          $("#reasonTime").attr("disabled", "");
-          $("#questionUniform").attr("disabled", "");
-          $("#reasonUniform").attr("disabled", "");
-          $("#score").attr("disabled", "");
-          $("#serviceOrderList").attr("disabled", "");
+          $(".lockOnDetail").attr("disabled", "");
         }
 
         // Signature drawing box # 2 
@@ -51,7 +54,6 @@
         if(rightSignString != null && rightSignString != ''){
           rightSign.regenerate(rightSignString);
         }
-
     });
 </script>
 <title>Encuesta de servicio</title>
@@ -64,25 +66,26 @@
 				  <p>Llenar por persona responsable del departamento</p>
           <div>
              Ordenes de servicio:
-             <form:input path="serviceOrderList" type="text"/>
+             <form:input path="serviceOrderList" type="text" style="width:50%;" cssClass="lockOnDetail"/>
+             <div class="info" style="width:200px;margin-left:116px;">Por favor verifique la Orden de servicio</div>
           </div>
 
 				  <table>
                 <tr>
-                  <td>Empresa</td>
-                  <td><form:input path="company" type="text" style="width:100%;"/></td>
+                  <td style="width:90px">Empresa</td>
+                  <td><form:input path="company" type="text" style="width:95%;" cssClass="lockOnDetail" readOnly="true"/></td>
 		            </tr>
                 <tr>
                   <td>Nombre</td>
-                  <td><form:input path="name" type="text" style="width:50%;"/></td>
+                  <td><form:input path="name" type="text" style="width:95%;" cssClass="lockOnDetail" readOnly="true"/></td>
 			            <td>Telefono</td>
-                  <td><form:input path="phone" type="text" style="width:50%;"/></td>
+                  <td><form:input path="phone" type="text" style="width:95%;" cssClass="lockOnDetail" readOnly="true"/></td>
                 </tr>
                 <tr>
                   <td>Correo electronico </td>
-                  <td><form:input path="email" type="text" style="width:50%;"/></td>
+                  <td><form:input path="email" type="text" style="width:95%;" cssClass="lockOnDetail" readOnly="true"/></td>
                   <td>Fecha </td>
-                  <td><form:input path="date" type="text" style="width:50%;"/>
+                  <td><form:input path="date" type="text" style="width:95%;" cssClass="lockOnDetail"/>
 			            </td>
                 </tr>
               </table>
@@ -101,48 +104,48 @@
                       <td colspan="3">¿Como valora el trato recibido por parte de nuestros ?</td>
                   </tr>
                   <tr>
-                    <td>Bueno<form:radiobutton path="questionTreatment" value="1"/></td>
-                    <td>Malo<form:radiobutton path="questionTreatment" value="0"/></td></td>
-                    <td>Por que? <form:input path="reasonTreatment" type="text" style="width:80%;"/></td>
+                    <td>Bueno<form:radiobutton path="questionTreatment" value="1" cssClass="lockOnDetail"/></td>
+                    <td>Malo<form:radiobutton path="questionTreatment" value="0" cssClass="lockOnDetail"/></td></td>
+                    <td>Por que? <form:input path="reasonTreatment" type="text" style="width:80%;" cssClass="lockOnDetail"/></td>
                     <td> 
                   </tr> 
                   <tr>
                       <td colspan="3">¿Nuestro personal se identifico como colaborador de nuestra empresa? </td>
                   </tr>
                   <tr>
-                      <td>Si<form:radiobutton path="questionIdentificationPersonal" value="1"/></td>
-                      <td>No<form:radiobutton path="questionIdentificationPersonal" value="0"/></td>
+                      <td>Si<form:radiobutton path="questionIdentificationPersonal" value="1" cssClass="lockOnDetail"/></td>
+                      <td>No<form:radiobutton path="questionIdentificationPersonal" value="0" cssClass="lockOnDetail"/></td>
                       <td></td>
                   </tr>
                   <tr>
                       <td colspan="3">¿Considera que nos presentamos con el equipo adecuado de protección y la herramienta necesaria para la realizacion de nuestro trabajo? </td>
                   </tr>
                   <tr>
-                      <td>Si<form:radiobutton path="questionIdealEquipment" value="1"/></td>
-                      <td>No<form:radiobutton path="questionIdealEquipment" value="0"/></td>
-                      <td>Por que?<form:input path="reasonIdealEquipment" type="text"  style="width:80%;"/></td>
+                      <td>Si<form:radiobutton path="questionIdealEquipment" value="1" cssClass="lockOnDetail"/></td>
+                      <td>No<form:radiobutton path="questionIdealEquipment" value="0" cssClass="lockOnDetail"/></td>
+                      <td>Por que?<form:input path="reasonIdealEquipment" type="text"  style="width:80%;" cssClass="lockOnDetail"/></td>
                   </tr>
                   <tr>
                       <td colspan="3">Nuestro personal se presento a su cita de acuerdo al tiempo previamente acordado?</td>
                   </tr>
                   <tr>
-                      <td>Si<form:radiobutton path="questionTime" value="1"/></td>
-                      <td>No<form:radiobutton path="questionTime" value="0"/></td>
-                      <td>Por que?<form:input path="reasonTime" type="text" style="width:80%;"/></td>
+                      <td>Si<form:radiobutton path="questionTime" value="1" cssClass="lockOnDetail"/></td>
+                      <td>No<form:radiobutton path="questionTime" value="0" cssClass="lockOnDetail"/></td>
+                      <td>Por que?<form:input path="reasonTime" type="text" style="width:80%;" cssClass="lockOnDetail"/></td>
                   </tr>
                   <tr>
                       <td colspan="3">¿Nuestro personal se presento con el uniforme de la empresa?</td>
                   </tr>
                   <tr>
-                      <td>Si<form:radiobutton path="questionUniform" value="1"/></td>
-                      <td>No<form:radiobutton path="questionUniform" value="0"/></td>
-                      <td> Por que?<form:input path="reasonUniform" type="text"  style="width:80%;"/></td>
+                      <td>Si<form:radiobutton path="questionUniform" value="1" cssClass="lockOnDetail"/></td>
+                      <td>No<form:radiobutton path="questionUniform" value="0" cssClass="lockOnDetail"/></td>
+                      <td> Por que?<form:input path="reasonUniform" type="text"  style="width:80%;" cssClass="lockOnDetail"/></td>
                   </tr>
                   <tr>
                       <td colspan="3">¿Cual es su nivel de satisfacción respecto a la atencion brindada por nuestro personal en general?</td>
                   </tr>
                   <tr>
-                      <td><form:select path="score" items="${surveyQualificationList}" /></td>
+                      <td><form:select path="score" items="${surveyQualificationList}" cssClass="lockOnDetail"/></td>
                   </tr>
               </tbody>
           </table>
@@ -154,9 +157,9 @@
 				  				  
 				  <p>Sugerencias y comentarios</p>
 				  <p>
-              <form:textarea path="suggestion" cols="150" rows="8"></form:textarea>
+              <form:textarea path="suggestion" cols="150" rows="8" cssClass="lockOnDetail"></form:textarea>
 
-				 <div align="right"><input  class="searchButton" type="submit" value="Guardar" id="guardar"/></div>
+				 <div align="left"><input class="searchButton lockOnDetail" type="submit" value="Guardar Encuesta" id="guardar"/></div>
 	  		</div>
         <!-- Campos de firma -->
           <form:hidden path="sign"/>

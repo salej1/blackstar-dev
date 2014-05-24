@@ -19,6 +19,7 @@
 				"sPaginationType": "full_numbers",
 				"aaData": data,
 				"sDom": '<"top"i>rt<"bottom"flp><"clear">',
+				"aaSorting": [],
 				"aoColumns": [
 							  { "mData": "surveyServiceNumber" },
 							  { "mData": "customer" },
