@@ -250,13 +250,13 @@ implements ServiceIndicatorsService {
 		return charts;
 	}
 
-	public String getUserAverage(){
-		List<JSONObject> jsonData = dao.getUserAverage();
+	public String getUserAverage(String project, Date startDate, Date endDate){
+		List<JSONObject> jsonData = dao.getUserAverage(project, startDate, endDate);
 		return jsonData != null ? jsonData.toString() : "";
 	}
 
-	public String getGeneralAverage(){
-		List<JSONObject> jsonData = dao.getGeneralAverage();
+	public String getGeneralAverage(String project, Date startDate, Date endDate){
+		List<JSONObject> jsonData = dao.getGeneralAverage(project, startDate, endDate);
 		return jsonData != null ? jsonData.toString() : "";
 	}
 

@@ -21,6 +21,7 @@
 			"aaSorting": [],
 			"aoColumns": [
 						  { "mData": "office"},
+						  { "mData": "services"},
 						  { "mData": "average"}
 					  ]			  
      });
@@ -34,9 +35,11 @@
 			"sDom": '<"top"i>rt<"bottom"><"clear">',
 			"aaSorting": [],
 			"aoColumns": [
-						  { "mData": "responsable"},
+						  { "mData": "name"},
 						  { "mData": "average"},
-						  { "mData": "wrongOs"}
+						  { "mData": "services"},
+						  { "mData": "wrongOs"},
+						  { "mData": "badComments"}
 					  ]			  
        });
 	 
@@ -56,6 +59,7 @@
 				<thead>
 					<tr>
 						<th>Oficina</th>
+						<th>Servicios</th>
 						<th>Promedio</th>
 					</tr>
 				</thead>
@@ -69,7 +73,9 @@
 					<tr>
 						<th>Nombre</th>
 						<th>Promedio</th>
-						<th>Llenado de O/S fallas</th>
+						<th>Servicios</th>
+						<th>OS con errores</th>
+						<th>Malos comentarios</th>
 					</tr>
 				</thead>
 				<tbody>

@@ -46,7 +46,9 @@
 				<c:if test="${sysCallCenter == true}">
 				  <li><a href="${pageContext.request.contextPath}/seguimiento">Seguimiento</a></li>
 				</c:if>
-				<li><a href="${pageContext.request.contextPath}/surveyServices/show.do">Encuestas de servicio</a></li>
+				<c:if test="${!user.belongsToGroup['Cliente']}">
+					<li><a href="${pageContext.request.contextPath}/surveyServices/show.do">Encuestas de servicio</a></li>
+				</c:if>
 				<li><a href="${pageContext.request.contextPath}/indServicios/show.do">Indicadores Serv.</a></li>
 			</c:when>
 			<c:when test="${pageSection == 'tickets'}">
@@ -56,7 +58,9 @@
 				<c:if test="${sysCallCenter == true}">
 					<li><a href="${pageContext.request.contextPath}/seguimiento">Seguimiento</a></li>
 				</c:if>
-				<li><a href="${pageContext.request.contextPath}/surveyServices/show.do">Encuestas de servicio</a></li>
+				<c:if test="${!user.belongsToGroup['Cliente']}">
+					<li><a href="${pageContext.request.contextPath}/surveyServices/show.do">Encuestas de servicio</a></li>
+				</c:if>
 				<li><a href="${pageContext.request.contextPath}/indServicios/show.do">Indicadores Serv.</a></li>
 			</c:when>
 			<c:when test="${pageSection == 'ordenesServicio'}">  
@@ -66,7 +70,9 @@
 				<c:if test="${sysCallCenter == true}">
 				  <li><a href="${pageContext.request.contextPath}/seguimiento">Seguimiento</a></li>
 				</c:if>
-				<li><a href="${pageContext.request.contextPath}/surveyServices/show.do">Encuestas de servicio</a></li>
+				<c:if test="${!user.belongsToGroup['Cliente']}">
+					<li><a href="${pageContext.request.contextPath}/surveyServices/show.do">Encuestas de servicio</a></li>
+				</c:if>
 				<li><a href="${pageContext.request.contextPath}/indServicios/show.do">Indicadores Serv.</a></li>
 			</c:when>
 			<c:when test="${pageSection == 'seguimiento'}">
@@ -76,7 +82,9 @@
 				<c:if test="${sysCallCenter == true}">
 				  <li><span class="active" onclick="window.location = '/seguimiento'">Seguimiento</span></li>
 				</c:if>
-				<li><a href="${pageContext.request.contextPath}/surveyServices/show.do">Encuestas de servicio</a></li>
+				<c:if test="${!user.belongsToGroup['Cliente']}">
+					<li><a href="${pageContext.request.contextPath}/surveyServices/show.do">Encuestas de servicio</a></li>
+				</c:if>
 				<li><a href="${pageContext.request.contextPath}/indServicios/show.do">Indicadores Serv.</a></li>
 			</c:when>			
 			<c:when test="${pageSection == 'encuestas'}">
@@ -86,7 +94,9 @@
 				<c:if test="${sysCallCenter == true}">
 				  <li><a href="${pageContext.request.contextPath}/seguimiento">Seguimiento</a></li>
 				</c:if>
-				<li><span class="active" onclick="window.location = '/surveyServices/show.do'">Encuestas de servicio</span></li>
+				<c:if test="${!user.belongsToGroup['Cliente']}">
+					<li><span class="active" onclick="window.location = '/surveyServices/show.do'">Encuestas de servicio</span></li>
+				</c:if>
 				<li><a href="${pageContext.request.contextPath}/indServicios/show.do">Indicadores Serv.</a></li>
 			</c:when>			
 			<c:when test="${pageSection == 'indicadores'}">
@@ -96,8 +106,10 @@
 				<c:if test="${sysCallCenter == true}">
 				  <li><a href="${pageContext.request.contextPath}/seguimiento">Seguimiento</a></li>
 				</c:if>
+				<c:if test="${!user.belongsToGroup['Cliente']}">
 				<li><a href="${pageContext.request.contextPath}/surveyServices/show.do">Encuestas de servicio</a></li>
-				<li><span class="active" onclick="window.location = '/indServicios/show.do'">Indicadores Serv.</span></li>
+					<li><span class="active" onclick="window.location = '/indServicios/show.do'">Indicadores Serv.</span></li>
+				</c:if>
 			</c:when>		
 			<c:otherwise>
 				<li><a href="${pageContext.request.contextPath}/dashboard/show.do">Inicio</a></li>
@@ -106,7 +118,9 @@
 				<c:if test="${sysCallCenter == true}">
 				  <li><a href="${pageContext.request.contextPath}/seguimiento">Seguimiento</a></li>
 				</c:if>
-				<li><a href="${pageContext.request.contextPath}/surveyServices/show.do">Encuestas de servicio</a></li>
+				<c:if test="${!user.belongsToGroup['Cliente']}">
+					<li><a href="${pageContext.request.contextPath}/surveyServices/show.do">Encuestas de servicio</a></li>
+				</c:if>
 				<li><a href="${pageContext.request.contextPath}/indServicios/show.do">Indicadores Serv.</a></li>
 			</c:otherwise>
 		</c:choose>

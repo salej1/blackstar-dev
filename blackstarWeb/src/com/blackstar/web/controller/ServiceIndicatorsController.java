@@ -191,10 +191,14 @@ public class ServiceIndicatorsController extends AbstractController {
   }
   
   @RequestMapping(value= "/getAverage.do", method = RequestMethod.GET)
-  public String  getAverage(ModelMap model){
+  public String  getAverage(
+		  @RequestParam(required = true) Date startDate,
+		  @RequestParam(required = true) Date endDate,
+		  @RequestParam(required = true) String project,
+		  ModelMap model){
 	try {
-		 model.addAttribute("generalAverage", service.getGeneralAverage());
-		 model.addAttribute("userAverage", service.getUserAverage());
+		 model.addAttribute("generalAverage", service.getGeneralAverage(project, startDate, endDate));
+		 model.addAttribute("userAverage", service.getUserAverage(project, startDate, endDate));
 	} catch (Exception e) {
 		Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 		e.printStackTrace();

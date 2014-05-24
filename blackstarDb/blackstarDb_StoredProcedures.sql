@@ -259,6 +259,8 @@
 -- 41 	20/05/2014	SAG 	Se actualiza:
 --								blackstarDb.GetLimitedTicketList
 --								blackstarDb.GetAllSurveyServiceList
+--								blackstarDb.GetGeneralAverageKPI
+--								blackstarDb.GetUserAverageKPI
 --							Se agrega:
 --								blackstarDb.GetLimitedServicesSchedule	
 --								blackstarDb.GetLimitedFutureServicesSchedule
@@ -1186,32 +1188,101 @@ END$$
 	-- blackstarDb.GetGeneralAverageKPI
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetGeneralAverageKPI$$
-CREATE PROCEDURE blackstarDb.`GetGeneralAverageKPI`()
+CREATE PROCEDURE blackstarDb.`GetGeneralAverageKPI`(pProject varchar(100), pStartDate DATETIME, pEndDate DATETIME)
 BEGIN
-SELECT so.serviceUnit as office, IFNULL(AVG(ss.qualification),0) as average
-FROM serviceOrder so
-INNER JOIN surveyService ss ON so.serviceOrderId = ss.serviceOrderId
-WHERE so.created >= STR_TO_DATE(CONCAT('01-01-',YEAR(NOW())),'%d-%m-%Y')
-GROUP BY so.serviceUnit
-UNION
-SELECT 'GENERAL', IFNULL(AVG(ss.qualification),0)
-FROM serviceOrder so
-INNER JOIN surveyService ss ON so.serviceOrderId = ss.serviceOrderId
-WHERE so.created >= STR_TO_DATE(CONCAT('01-01-',YEAR(NOW())),'%d-%m-%Y');
+	IF pProject = 'All' THEN
+		SELECT * FROM (
+			SELECT 
+				sc.serviceCenter as office, 
+				count(*) as services,
+				IFNULL(AVG(ss.score),0) as average
+			FROM serviceOrder so
+				INNER JOIN surveyService ss ON so.surveyServiceId = ss.surveyServiceId
+				INNER JOIN policy p ON p.policyId = so.policyId
+				INNER JOIN serviceCenter sc ON sc.serviceCenterId = p.serviceCenterId
+			WHERE so.created >= pStartDate and so.created <= pEndDate
+			GROUP BY sc.serviceCenter
+			ORDER BY sc.serviceCenter
+		) A 
+		UNION
+		SELECT 
+			'GENERAL' as office,
+			count(*) as services,
+			IFNULL(AVG(ss.score),0) as average
+		FROM serviceOrder so
+			INNER JOIN surveyService ss ON so.surveyServiceId = ss.surveyServiceId
+			INNER JOIN policy p ON p.policyId = so.policyId
+			INNER JOIN serviceCenter sc ON sc.serviceCenterId = p.serviceCenterId
+		WHERE so.created >= pStartDate and so.created <= pEndDate;
+	ELSE
+		SELECT * FROM (
+			SELECT 
+				sc.serviceCenter as office, 
+				count(*) as services,
+				IFNULL(AVG(ss.score),0) as average
+			FROM serviceOrder so
+				INNER JOIN surveyService ss ON so.surveyServiceId = ss.surveyServiceId
+				INNER JOIN policy p ON p.policyId = so.policyId
+				INNER JOIN serviceCenter sc ON sc.serviceCenterId = p.serviceCenterId
+			WHERE so.created >= pStartDate and so.created <= pEndDate
+				AND p.project = pProject
+			GROUP BY sc.serviceCenter
+			ORDER BY sc.serviceCenter
+		) A 
+		UNION
+		SELECT 
+			'GENERAL' as office,
+			count(*) as services,
+			IFNULL(AVG(ss.score),0) as average
+		FROM serviceOrder so
+			INNER JOIN surveyService ss ON so.surveyServiceId = ss.surveyServiceId
+			INNER JOIN policy p ON p.policyId = so.policyId
+			INNER JOIN serviceCenter sc ON sc.serviceCenterId = p.serviceCenterId
+		WHERE so.created >= pStartDate and so.created <= pEndDate
+			AND p.project = pProject;
+	END IF;
+
 END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetUserAverageKPI
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetUserAverageKPI$$
-CREATE PROCEDURE blackstarDb.`GetUserAverageKPI`()
+CREATE PROCEDURE blackstarDb.`GetUserAverageKPI`(pProject varchar(100), pStartDate DATETIME, pEndDate DATETIME)
 BEGIN
-SELECT so.responsible as responsable, AVG(ss.qualification) as average
-      , (select count(*) from serviceOrder so1 where so1.isWrong > 0 and so1.responsible = so.responsible) as wrongOs
-FROM serviceOrder so
-INNER JOIN surveyService ss ON so.serviceOrderId = ss.serviceOrderId
-WHERE so.created >= STR_TO_DATE(CONCAT('01-01-',YEAR(NOW())),'%d-%m-%Y')
-GROUP BY so.responsible;
+	IF pProject = 'All' THEN
+		SELECT 
+			se.employeeId as employeeId, 
+			bu.name as name,
+			AVG(ss.score) as average, 
+			SUM(so.isWrong) as wrongOs,
+			COUNT(*) as services,
+			((COUNT(*) * 5) - SUM(ss.questionTreatment) - SUM(ss.questionIdentificationPersonal) - SUM(questionIdealEquipment) - SUM(questionTime) - SUM(questionUniform)) AS badComments
+		FROM serviceOrder so 
+			INNER JOIN serviceOrderEmployee se on so.serviceOrderId = se.serviceOrderId
+			INNER JOIN surveyService ss ON so.surveyServiceId = ss.surveyServiceId
+			INNER JOIN blackstarUser bu ON bu.email = se.employeeId
+			WHERE so.created >= pStartDate and so.created <= pEndDate
+		GROUP BY se.employeeId;
+	ELSE
+		SELECT 
+			se.employeeId as employeeId, 
+			bu.name as name,
+			AVG(ss.score) as average, 
+			SUM(so.isWrong) as wrongOs,
+			COUNT(*) as services,
+			((COUNT(*) * 5) - SUM(ss.questionTreatment) - SUM(ss.questionIdentificationPersonal) - SUM(questionIdealEquipment) - SUM(questionTime) - SUM(questionUniform)) AS badComments
+		FROM serviceOrder so 
+			INNER JOIN serviceOrderEmployee se on so.serviceOrderId = se.serviceOrderId
+			INNER JOIN surveyService ss ON so.surveyServiceId = ss.surveyServiceId
+			INNER JOIN blackstarUser bu ON bu.email = se.employeeId
+			LEFT OUTER JOIN policy p ON p.policyId = so.policyId
+			LEFT OUTER JOIN openCustomer c ON c.openCustomerId = so.openCustomerId
+			WHERE so.created >= pStartDate and so.created <= pEndDate
+				AND IFNULL(p.project, c.project) = pProject
+		GROUP BY se.employeeId;
+	END IF;
+	
 END$$
 
 

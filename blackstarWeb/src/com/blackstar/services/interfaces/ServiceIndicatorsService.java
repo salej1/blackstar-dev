@@ -20,8 +20,8 @@ public interface ServiceIndicatorsService {
 	public String getOSResume() throws Exception;
 	public List<Chart> getCharts(String project, Date startDate, Date endDate, String user) throws Exception;
 	public List<Chart> getDisplayCharts(String project, Date startDate, Date endDate, String user) throws Exception;
-	public String getUserAverage();
-	public String getGeneralAverage();
+	public String getUserAverage(String project, Date startDate, Date endDate);
+	public String getGeneralAverage(String project, Date startDate, Date endDate);
 	public List<GetStatisticsKPI> getStatisticsKPI(String project, Date startDate, Date endDate);
 	public List<String> getProjectList();
 	public List<String> getLimitedProjectList(String user);

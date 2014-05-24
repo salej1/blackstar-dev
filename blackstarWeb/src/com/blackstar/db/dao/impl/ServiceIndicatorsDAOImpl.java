@@ -78,14 +78,14 @@ public class ServiceIndicatorsDAOImpl extends AbstractDAO
 			,  getMapperFor(Servicecenter.class)); 
   }
   
-  public List<JSONObject> getUserAverage(){
-	String sqlQuery = "CALL GetUserAverageKPI()";
-	return getJdbcTemplate().query(sqlQuery,  new JSONRowMapper()); 
+  public List<JSONObject> getUserAverage(String project, Date startDate, Date endDate){
+	String sqlQuery = "CALL GetUserAverageKPI(?,?,?)";
+	return getJdbcTemplate().query(sqlQuery,  new Object[]{project, startDate, endDate}, new JSONRowMapper()); 
   }
   
-  public List<JSONObject> getGeneralAverage(){
-	String sqlQuery = "CALL GetGeneralAverageKPI()";
-	return getJdbcTemplate().query(sqlQuery,  new JSONRowMapper()); 
+  public List<JSONObject> getGeneralAverage(String project, Date startDate, Date endDate){
+	String sqlQuery = "CALL GetGeneralAverageKPI(?,?,?)";
+	return getJdbcTemplate().query(sqlQuery, new Object[]{project, startDate, endDate}, new JSONRowMapper()); 
   }
   
   public List<GetStatisticsKPI> getStatisticsKPI(String project, Date startDate, Date endDate) {
