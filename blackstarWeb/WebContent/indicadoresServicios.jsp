@@ -127,6 +127,9 @@
 						<div>
 							<img src="/img/navigate-right.png"/><a href="#" id="getCharts" onclick="go('getCharts')">Graficas generales</a>
 						</div>
+						<div>
+							<img src="/img/navigate-right.png"/><a href="#" id="getConcurrentFailures" onclick="go('getConcurrentFailures')">Fallas recurrentes</a>
+						</div>
 					</c:when>
 					<c:otherwise>
 						<!-- Seccion links para empleados GPO SAC -->

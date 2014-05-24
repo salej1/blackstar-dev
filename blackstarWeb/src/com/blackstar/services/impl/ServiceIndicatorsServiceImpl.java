@@ -81,17 +81,9 @@ implements ServiceIndicatorsService {
 		return jsonData != null ? jsonData.toString() : "";
 	}
 
-	public List<GetConcurrentFailuresKPI> getConcurrentFailures(String project, Date startDate, Date endDate) throws Exception{
-		List<GetConcurrentFailuresKPI> data = dao.getConcurrentFailures(project, startDate, endDate);
-		String month = "";
-		String lastMonth = "";
-		for(int i = 0; i < data.size();i++){
-			month = data.get(i).getCreated().toString().substring(5,7);
-			if(! month.equals(lastMonth)){
-				lastMonth = month;
-				data.add(i, new  GetConcurrentFailuresKPI(MONTHS.get(month)));
-			}
-		}
+	public List<GetConcurrentFailuresKPI> getConcurrentFailures(String project, Date startDate, Date endDate, String user) throws Exception{
+		List<GetConcurrentFailuresKPI> data = dao.getConcurrentFailures(project, startDate, endDate, user);
+		
 		return data;
 	}
 

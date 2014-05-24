@@ -13,19 +13,7 @@
 			"bInfo": false,
 			"sPaginationType": "full_numbers",
 			"sDom": '<"top"i>rt<"bottom"><"clear">',
-			"aaSorting": [],
-			"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-			      $('td:eq(6)', nRow).css('background', "#86A2CE")
-                  .css('font-weight', 'bold')
-                  .css('text-align','center');
-			      
-			      if( $('td:eq(0)', nRow).html().indexOf("lbl-") == 0){
-			    	  $('td:eq(0)', nRow).html($('td:eq(0)', nRow).html()
-			    	       .substring(4, $('td:eq(0)', nRow).html().length));
-			    	  $('td', nRow).css({'background':'#C0E1F3'}).css('font-weight', 'bold');
-			      }
-			      
-			    }	
+			"aaSorting": []	
           });
 	 } );
 	 
@@ -46,55 +34,29 @@
 			<table cellpadding="0" cellspacing="0" border="0" class="display" id="tickets">
 				<thead>
 					<tr bgcolor="#FF0000">
-						<th>Usuario</th>
+						<th style="width:'130px'">Fecha</th>
+						<th>Ticket</th>
 						<th>Empresa</th>
 						<th>Equipo</th>
 						<th>Marca</th>
 						<th>Serie</th>
 						<th>Falla</th>
-						<th>Cantidad</th>
+						<th>Ticket anterior</th>
 						<th>Ingeniero que atendió</th>
-						<th>Ticket</th>
-						<th>Fecha</th>
 					</tr>
 				</thead>
 				<tbody>
 				   <c:forEach var="row" items="${concurrenFailures}" varStatus="status">
 				       <tr>
-				          <c:choose>
-                             <c:when test="${lastSerial != row.serialNumber}">
-                                 <c:set var="lastSerial" value="${row.serialNumber}" scope="request"/>
-                                  <td><c:out value="${row.employee}" /></td>
-				                  <td><c:out value="${row.customer}" /></td>
-				                  <td><c:out value="${row.equipmentTypeId}" /></td>
-				                  <td><c:out value="${row.brand}" /></td>
-				                  <td><c:out value="${row.serialNumber}" /></td>
-                             </c:when>
-                             <c:otherwise>
-                                 <c:set var="counter" value="${counter + 1}" scope="request"/>
-                                  <td></td>
-				                  <td></td>
-				                  <td></td>
-				                  <td></td>
-				                  <td></td>
-                             </c:otherwise>
-                           </c:choose>
-                           
-				         
-				          
-				          <td><c:out value="${row.observations}" /></td>	          
-				          <c:choose>
-                             <c:when test="${not status.last and (not empty row.serialNumber) and (concurrenFailures[status.index + 1].serialNumber != row.serialNumber)}">
-				                <td ><c:out value="${counter}" /></td>
-				                <c:set var="counter" value="${0}" scope="request"/>
-                             </c:when>
-                             <c:otherwise>
-                                       <td></td>
-                             </c:otherwise>
-                          </c:choose>
-                          <td><c:out value="${row.asignee}" /></td>
-				          <td><c:out value="${row.ticketNumber}" /></td>
-				          <td><c:out value="${row.created}" /></td>
+                       		<td><c:out value="${row.created}" /></td>
+                       		<td><c:out value="${row.ticketNumber}" /></td>
+                       		<td><c:out value="${row.customer}" /></td>
+                       		<td><c:out value="${row.equipmentTypeId}" /></td>
+                       		<td><c:out value="${row.brand}" /></td>
+                       		<td><c:out value="${row.serialNumber}" /></td>
+                       		<td><c:out value="${row.observations}" /></td>
+                       		<td><c:out value="${row.lastTicketNumber}" /></td>
+                       		<td><c:out value="${row.employee}" /></td>
 				       </tr>
 				   </c:forEach>
 				</tbody>

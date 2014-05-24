@@ -82,9 +82,14 @@ public class ServiceIndicatorsController extends AbstractController {
   public String  getConcurrenFailures( @RequestParam(required = true) Date startDate,
 		  @RequestParam(required = true) Date endDate,
 		  @RequestParam(required = true) String project,
-		  ModelMap model){
+		  ModelMap model,  @ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession){
 	try {
-	     model.addAttribute("concurrenFailures", service.getConcurrentFailures(project, startDate, endDate));
+		if(userSession.getUser().getBelongsToGroup().get(Globals.GROUP_CUSTOMER) != null && userSession.getUser().getBelongsToGroup().get(Globals.GROUP_CUSTOMER) == true){
+			model.addAttribute("concurrenFailures", service.getConcurrentFailures(project, startDate, endDate, userSession.getUser().getUserEmail()));
+		}
+		else{
+			model.addAttribute("concurrenFailures", service.getConcurrentFailures(project, startDate, endDate, ""));
+		}
 	} catch (Exception e) {
 		Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 		e.printStackTrace();

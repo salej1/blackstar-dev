@@ -13,7 +13,7 @@ public interface ServiceIndicatorsService {
 
 	public String getTickets() throws Exception;
 	public String getPolicies(String search, String project, Date startDate, Date endDate) throws Exception;
-	public List<GetConcurrentFailuresKPI> getConcurrentFailures(String project, Date startDate, Date endDate) throws Exception;
+	public List<GetConcurrentFailuresKPI> getConcurrentFailures(String project, Date startDate, Date endDate, String user) throws Exception;
 	public String getMaxPeportsByUser(String project, Date startDate, Date endDate) throws Exception;
 	public String getReportOSResumeKPI() throws Exception;
 	public List<GetReportOSTableKPI> getReportOSTable() throws Exception;

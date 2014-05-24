@@ -13,6 +13,8 @@ public class GetConcurrentFailuresKPI {
 	private String asignee;
 	private String ticketNumber;
 	private Date created;
+	private String lastTicketNumber;
+	private String lastTicketClosed;
 	
 	public GetConcurrentFailuresKPI(){
 		
@@ -76,5 +78,19 @@ public class GetConcurrentFailuresKPI {
 	public void setCreated(Date created) {
 		this.created = created;
 	}
+	public String getLastTicketNumber() {
+		return lastTicketNumber;
+	}
 
+	public void setLastTicketNumber(String lastTicketNumber) {
+		this.lastTicketNumber = lastTicketNumber;
+	}
+
+	public String getLastTicketClosed() {
+		return lastTicketClosed;
+	}
+
+	public void setLastTicketClosed(String lastTicketClosed) {
+		this.lastTicketClosed = lastTicketClosed;
+	}
 }

@@ -15,7 +15,7 @@ public interface ServiceIndicatorsDAO {
 	
   public List<JSONObject> getTickets();
   public List<JSONObject> getPolicies(String search, String project, Date startDate, Date endDate);
-  public List<GetConcurrentFailuresKPI> getConcurrentFailures(String project, Date startDate, Date endDate);
+  public List<GetConcurrentFailuresKPI> getConcurrentFailures(String project, Date startDate, Date endDate, String user);
   public List<JSONObject> getMaxPeportsByUser(String project, Date startDate, Date endDate);
   public List<GetReportOSTableKPI> getReportOSTable();
   public List<JSONObject> getReportOSResume();

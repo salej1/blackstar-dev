@@ -1729,27 +1729,116 @@ END$$
 	-- blackstarDb.GetConcurrentFailuresKPI
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetConcurrentFailuresKPI$$
-CREATE PROCEDURE blackstarDb.`GetConcurrentFailuresKPI`(project varchar(200), startDate datetime, endDate datetime)
+CREATE PROCEDURE blackstarDb.`GetConcurrentFailuresKPI`(project varchar(200), startDate datetime, endDate datetime, user VARCHAR(100))
 BEGIN
-	SELECT  tk.employee as employee, 
-	          py.customer as customer,
-	          py.equipmentTypeId as equipmentTypeId,
-	          py.brand as brand,
-	          py.serialNumber as serialNumber,
-	          tk.observations as observations,
-	          IFNULL(bu.name, tk.employee) AS asignee,
-	          tk.ticketNumber as ticketNumber,
-	          tk.created as created
-	FROM ticket tk
-	INNER JOIN policy py on tk.policyId = py.policyId
-	LEFT OUTER JOIN blackstarUser bu ON bu.email = tk.employee
-	WHERE py.policyId in (
-	        SELECT tk.policyId
-	        FROM ticket tk
-	        WHERE tk.created >= startDate and tk.created <= endDate
-	        GROUP BY tk.policyId
-	        HAVING count(1) > 1)
-	ORDER BY tk.created, tk.policyId ASC;
+	IF project = 'All' THEN
+		IF user = '' THEN
+			SELECT 
+				t1.ticketId, 
+				t1.created as created,
+				t1.ticketNumber as ticketNumber, 
+				p1.customer as customer,
+				et.equipmentType as equipmentTypeId,
+				p1.brand as brand,
+				p1.serialNumber as serialNumber,
+				t1.observations as observations,
+				t2.ticketNumber as lastTicketNumber,
+				t2.closed as lastTicketClosed,
+				t2.employee as employee
+			FROM ticket t1
+			INNER JOIN policy p1 on t1.policyId = p1.policyId
+			INNER JOIN equipmentType et ON p1.equipmentTypeId = et.equipmentTypeId
+			INNER JOIN policy p2 on p1.equipmentTypeId = p2.equipmentTypeId 
+				AND p1.brand = p2.brand 
+				AND p1.serialNumber = p2.serialNumber
+			INNER JOIN ticket t2  on t2.policyId = p2.policyId 
+				AND t2.ticketId = (SELECT t3.ticketId FROM ticket t3 WHERE t3.policyId = p2.policyId AND t3.ticketId < t1.ticketId ORDER BY created DESC LIMIT 1)
+				AND DATEDIFF(t1.created, t2.created) <= 15
+			WHERE t1.created >= startDate and t1.created <= endDate
+			ORDER BY t1.created DESC;
+		ELSE
+			SELECT
+				t1.ticketId, 
+				t1.created as created,
+				t1.ticketNumber as ticketNumber, 
+				p1.customer as customer,
+				et.equipmentType as equipmentTypeId,
+				p1.brand as brand,
+				p1.serialNumber as serialNumber,
+				t1.observations as observations,
+				t2.ticketNumber as lastTicketNumber,
+				t2.closed as lastTicketClosed,
+				t2.employee as employee
+			FROM ticket t1
+			INNER JOIN policy p1 on t1.policyId = p1.policyId
+			INNER JOIN equipmentType et ON p1.equipmentTypeId = et.equipmentTypeId
+			INNER JOIN policy p2 on p1.equipmentTypeId = p2.equipmentTypeId 
+				AND p1.brand = p2.brand 
+				AND p1.serialNumber = p2.serialNumber
+			INNER JOIN ticket t2  on t2.policyId = p2.policyId 
+				AND t2.ticketId = (SELECT t3.ticketId FROM ticket t3 WHERE t3.policyId = p2.policyId AND t3.ticketId < t1.ticketId ORDER BY created DESC LIMIT 1)
+				AND DATEDIFF(t1.created, t2.created) <= 15
+			WHERE t1.created >= startDate and t1.created <= endDate
+				AND p1.equipmentUser = user
+			ORDER BY t1.created DESC;
+		END IF;
+	ELSE
+		IF user = '' THEN
+			SELECT 
+				t1.ticketId, 
+				t1.created as created,
+				t1.ticketNumber as ticketNumber, 
+				p1.customer as customer,
+				et.equipmentType as equipmentTypeId,
+				p1.brand as brand,
+				p1.serialNumber as serialNumber,
+				t1.observations as observations,
+				t2.ticketNumber as lastTicketNumber,
+				t2.closed as lastTicketClosed,
+				t2.employee as employee
+			FROM ticket t1
+			INNER JOIN policy p1 on t1.policyId = p1.policyId
+			INNER JOIN equipmentType et ON p1.equipmentTypeId = et.equipmentTypeId
+			INNER JOIN policy p2 on p1.equipmentTypeId = p2.equipmentTypeId 
+				AND p1.brand = p2.brand 
+				AND p1.serialNumber = p2.serialNumber
+			INNER JOIN ticket t2  on t2.policyId = p2.policyId 
+				AND t2.ticketId = (SELECT t3.ticketId FROM ticket t3 WHERE t3.policyId = p2.policyId AND t3.ticketId < t1.ticketId ORDER BY created DESC LIMIT 1)
+				AND DATEDIFF(t1.created, t2.created) <= 15
+			WHERE t1.created >= startDate and t1.created <= endDate
+			AND p1.project = project
+			ORDER BY t1.created DESC;
+		ELSE
+			SELECT 
+				t1.ticketId, 
+				t1.created as created,
+				t1.ticketNumber as ticketNumber, 
+				p1.customer as customer,
+				et.equipmentType as equipmentTypeId,
+				p1.brand as brand,
+				p1.serialNumber as serialNumber,
+				t1.observations as observations,
+				t2.ticketNumber as lastTicketNumber,
+				t2.closed as lastTicketClosed,
+				t2.employee as employee
+			FROM ticket t1
+			INNER JOIN policy p1 on t1.policyId = p1.policyId
+			INNER JOIN equipmentType et ON p1.equipmentTypeId = et.equipmentTypeId
+			INNER JOIN policy p2 on p1.equipmentTypeId = p2.equipmentTypeId 
+				AND p1.brand = p2.brand 
+				AND p1.serialNumber = p2.serialNumber
+			INNER JOIN ticket t2  on t2.policyId = p2.policyId 
+				AND t2.ticketId = (SELECT t3.ticketId FROM ticket t3 WHERE t3.policyId = p2.policyId AND t3.ticketId < t1.ticketId ORDER BY created DESC LIMIT 1)
+				AND DATEDIFF(t1.created, t2.created) <= 15
+			WHERE t1.created >= startDate and t1.created <= endDate
+			AND p1.project = project
+			AND p1.equipmentUser = user 
+			ORDER BY t1.created DESC;
+		END IF;
+		
+	END IF;
+	
+
 END$$
 
 -- -----------------------------------------------------------------------------
@@ -1836,6 +1925,15 @@ BEGIN
 		INNER JOIN equipmentType eq ON eq.equipmentTypeId = py.equipmentTypeId
 		INNER JOIN serviceCenter sc ON py.serviceCenterId = sc.serviceCenterId
 		WHERE py.endDate >= DATE_ADD(pStartDate, INTERVAL -2 MONTH) AND py.startDate < pEndDate
+		AND (of.officeName LIKE CONCAT('%', search, '%') OR
+			py.customerContract LIKE CONCAT('%', search, '%') OR
+			py.customer LIKE CONCAT('%', search, '%') OR
+			py.project LIKE CONCAT('%', search, '%') OR
+			py.cst LIKE CONCAT('%', search, '%') OR
+			py.brand LIKE CONCAT('%', search, '%') OR
+			py.model LIKE CONCAT('%', search, '%') OR
+			py.serialNumber LIKE CONCAT('%', search, '%') OR
+			py.contactName LIKE CONCAT('%', search, '%')) 
 		AND project = pProject
 		ORDER BY py.endDate ASC;
 	END IF;

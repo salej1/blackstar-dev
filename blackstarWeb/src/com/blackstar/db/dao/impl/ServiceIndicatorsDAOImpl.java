@@ -29,9 +29,9 @@ public class ServiceIndicatorsDAOImpl extends AbstractDAO
   }
   
   
-  public List<GetConcurrentFailuresKPI> getConcurrentFailures(String project, Date startDate, Date endDate){
-	String sqlQuery = "CALL GetConcurrentFailuresKPI(?,?,?)";
-	return (List<GetConcurrentFailuresKPI> )getJdbcTemplate().query(sqlQuery, new Object[]{project, startDate, endDate}
+  public List<GetConcurrentFailuresKPI> getConcurrentFailures(String project, Date startDate, Date endDate, String user){
+	String sqlQuery = "CALL GetConcurrentFailuresKPI(?,?,?,?)";
+	return (List<GetConcurrentFailuresKPI> )getJdbcTemplate().query(sqlQuery, new Object[]{project, startDate, endDate, user}
 			,  getMapperFor(GetConcurrentFailuresKPI.class)); 
   }
   
