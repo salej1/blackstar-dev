@@ -65,9 +65,10 @@ public class ServiceIndicatorsController extends AbstractController {
   public String  getPolicies( @RequestParam(required = true) Date startDate,
 		  @RequestParam(required = true) Date endDate,
 		  @RequestParam(required = true) String project,
+		  @RequestParam(required = true) String policySearch,
 		  ModelMap model){
 	try {
-	     model.addAttribute("policies", service.getPolicies(project, startDate, endDate));
+	     model.addAttribute("policies", service.getPolicies(policySearch, project, startDate, endDate));
 	} catch (Exception e) {
 		Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 		e.printStackTrace();

@@ -76,8 +76,8 @@ implements ServiceIndicatorsService {
 		return jsonData != null ? jsonData.toString() : "";
 	}
 
-	public String getPolicies(String project, Date startDate, Date endDate) throws Exception{
-		List<JSONObject> jsonData = dao.getPolicies(project, startDate, endDate);
+	public String getPolicies(String search, String project, Date startDate, Date endDate) throws Exception{
+		List<JSONObject> jsonData = dao.getPolicies(search, project, startDate, endDate);
 		return jsonData != null ? jsonData.toString() : "";
 	}
 

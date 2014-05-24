@@ -1756,7 +1756,7 @@ END$$
 	-- blackstarDb.GetPoliciesKPI
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetPoliciesKPI$$
-CREATE PROCEDURE blackstarDb.`GetPoliciesKPI`(pProject VARCHAR(100), pStartDate DATETIME, pEndDate DATETIME)
+CREATE PROCEDURE blackstarDb.`GetPoliciesKPI`(search VARCHAR(100), pProject VARCHAR(100), pStartDate DATETIME, pEndDate DATETIME)
 BEGIN
 	IF pProject = 'ALL' THEN
 		SELECT py.policyId as policyId,
@@ -1792,6 +1792,15 @@ BEGIN
 		INNER JOIN equipmentType eq ON eq.equipmentTypeId = py.equipmentTypeId
 		INNER JOIN serviceCenter sc ON py.serviceCenterId = sc.serviceCenterId
 		WHERE py.endDate >= DATE_ADD(pStartDate, INTERVAL -2 MONTH) AND py.startDate < pEndDate
+			AND (of.officeName LIKE CONCAT('%', search, '%') OR
+			py.customerContract LIKE CONCAT('%', search, '%') OR
+			py.customer LIKE CONCAT('%', search, '%') OR
+			py.project LIKE CONCAT('%', search, '%') OR
+			py.cst LIKE CONCAT('%', search, '%') OR
+			py.brand LIKE CONCAT('%', search, '%') OR
+			py.model LIKE CONCAT('%', search, '%') OR
+			py.serialNumber LIKE CONCAT('%', search, '%') OR
+			py.contactName LIKE CONCAT('%', search, '%')) 
 		ORDER BY py.endDate ASC;
 	ELSE
 		SELECT py.policyId as policyId,

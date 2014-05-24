@@ -25,8 +25,15 @@
 			var monthStart = new Date(year,month,1);
 			var startDateStr = yearStart.format("dd/MM/yyyy") + " 00:00:00";
 			var endDateStr = dateNow() + " 00:00:00";;
+			var policySearch = "";
 
 			$(function(){
+				$("#searchBox").hide();
+				$("#policySearch").bind("click", function(){
+					policySearch = $("#policySearchBox").val();
+					go('getPolicies');
+				});
+
 				$("#optProjects").bind("change", function(){
 					project = $(this).val();
 				});
@@ -62,10 +69,13 @@
 			 	}
 			 	else{
 			 		 $("a[href*=#]").css({ "color": "#888", "text-decoration":"underline"});
-		    		 $("#indicatorDetail").load("${pageContext.request.contextPath}/indServicios/" + indAction + ".do?project=" + project + "&startDate=" + encodeURIComponent(startDateStr) + "&endDate=" + encodeURIComponent(endDateStr), function() {
+		    		 $("#indicatorDetail").load("${pageContext.request.contextPath}/indServicios/" + indAction + ".do?policySearch=" + policySearch + "&project=" + project + "&startDate=" + encodeURIComponent(startDateStr) + "&endDate=" + encodeURIComponent(endDateStr), function() {
 		    		  $("#" + indAction).css({ "color": "#800080", "text-decoration":"none"});
 		    	  });
 			 	}
+		     }
+		     function showPolicySearch(){
+		     	$("#searchBox").show();
 		     }
 		</script>
 	</head>
@@ -145,7 +155,11 @@
 							<img src="/img/navigate-right.png"/><a href="#" id="getOSResume" onclick="go('getOSResume')">Resumen Ordenes de servicio</a>
 						</div> -->
 						<div>
-							<img src="/img/navigate-right.png"/><a href="#" id="getPolicies" onclick="go('getPolicies')">Concentrado polizas</a>
+							<img src="/img/navigate-right.png"/><a href="#" id="getPolicies" onclick="showPolicySearch();">Concentrado polizas</a>
+						</div>
+						<div id="searchBox" >
+							<input type="text" id="policySearchBox" name="policySearch" style="width:250px;"/>
+							<input id="policySearch" type="submit" class="searchButton" value="Buscar" />
 						</div>
 						<c:if test="${user.belongsToGroup['Call Center']}">
 							<div>
@@ -158,4 +172,4 @@
 		</div>
 		<div id="indicatorDetail"></div>
 	</body>
-</html>
+</html>>
