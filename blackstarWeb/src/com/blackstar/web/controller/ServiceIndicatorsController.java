@@ -165,6 +165,31 @@ public class ServiceIndicatorsController extends AbstractController {
 	return "_indServGraphics";
   }
   
+  @RequestMapping(value= "/getDisplayCharts.do", method = RequestMethod.GET)
+  public String  getDisplayCharts(
+		  @RequestParam(required = true) Date startDate,
+		  @RequestParam(required = true) Date endDate,
+		  @RequestParam(required = true) String project,
+		  ModelMap model,  
+		  @ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession){
+	try {
+		 if(userSession.getUser().getBelongsToGroup().get(Globals.GROUP_CALL_CENTER) != null && userSession.getUser().getBelongsToGroup().get(Globals.GROUP_CALL_CENTER) == true){
+			 model.addAttribute("charts", service.getDisplayCharts(project, startDate, endDate, ""));
+			 model.addAttribute("availabilityKpi", service.getAvailability(project, startDate, endDate, ""));
+		 }
+		
+	} catch (Exception e) {
+		for(StackTraceElement t : e.getStackTrace()){
+			System.out.println(t.toString());
+		}
+		Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
+		e.printStackTrace();
+		model.addAttribute("errorDetails", e.getStackTrace()[0].toString());
+		return "error";
+	}
+	return "_indServGraphicsDisplay";
+  }
+  
   @RequestMapping(value= "/getAverage.do", method = RequestMethod.GET)
   public String  getAverage(ModelMap model){
 	try {

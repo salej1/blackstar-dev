@@ -56,11 +56,16 @@
 		    	 	}
 		    	 });
 			});
-		     function go(indAction){
-		    	 $("a[href*=#]").css({ "color": "#888", "text-decoration":"underline"});
-		    	 $("#indicatorDetail").load("${pageContext.request.contextPath}/indServicios/" + indAction + ".do?project=" + project + "&startDate=" + encodeURIComponent(startDateStr) + "&endDate=" + encodeURIComponent(endDateStr), function() {
+			 function go(indAction, mode){
+			 	if(typeof(mode) != undefined && mode == 'display'){
+			 		window.open("${pageContext.request.contextPath}/indServicios/" + indAction + ".do?project=" + project + "&startDate=" + encodeURIComponent(startDateStr) + "&endDate=" + encodeURIComponent(endDateStr));
+			 	}
+			 	else{
+			 		 $("a[href*=#]").css({ "color": "#888", "text-decoration":"underline"});
+		    		 $("#indicatorDetail").load("${pageContext.request.contextPath}/indServicios/" + indAction + ".do?project=" + project + "&startDate=" + encodeURIComponent(startDateStr) + "&endDate=" + encodeURIComponent(endDateStr), function() {
 		    		  $("#" + indAction).css({ "color": "#800080", "text-decoration":"none"});
 		    	  });
+			 	}
 		     }
 		</script>
 	</head>
@@ -142,6 +147,11 @@
 						<div>
 							<img src="/img/navigate-right.png"/><a href="#" id="getPolicies" onclick="go('getPolicies')">Concentrado polizas</a>
 						</div>
+						<c:if test="${user.belongsToGroup['Call Center']}">
+							<div>
+								<img src="/img/navigate-right.png"/><a href="#" id="getCharts" onclick="go('getDisplayCharts', 'display')">Display de graficas generales</a>
+							</div>
+						</c:if>
 					</c:otherwise>
 				</c:choose>
 			</div>	

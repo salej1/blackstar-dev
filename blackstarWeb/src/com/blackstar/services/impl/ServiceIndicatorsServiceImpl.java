@@ -213,6 +213,42 @@ implements ServiceIndicatorsService {
 
 		return charts;
 	}
+	
+	public List<Chart> getDisplayCharts(String project, Date startDate, Date endDate, String customer){
+		List<Chart> charts = new ArrayList<Chart>();
+		List<Servicecenter> serviceCenters = null;
+		Chart chart = new Chart();
+		chart.setTitle("TIPO DE EQUIPOS REPORTADOS");
+		chart.setIs3d(true);
+		chart.setType("pie");
+		chart.setData(dao.getReportByEquipmentType(project, startDate, endDate, customer).toString().replaceAll("\"", "'"));
+		charts.add(chart);
+
+		serviceCenters = new ArrayList<Servicecenter>();
+		serviceCenters.add(0, new Servicecenter('%', "ESTATUS GENERAL", null));
+		for(Servicecenter serviceCenter : serviceCenters){
+			chart = new Chart();
+			chart.setTitle(serviceCenter.getServiceCenter());
+			chart.setIs3d(false);
+			if(serviceCenter.getServiceCenterId() == '%'){
+				chart.setType("donut");
+			} else {
+				chart.setType("pie");
+			}
+			chart.setData(dao.getStatus(String.valueOf(serviceCenter.getServiceCenterId()), project, startDate, endDate, customer)
+					.toString().replaceAll("\"", "'"));
+			charts.add(chart);
+		}
+	
+		chart = new Chart();
+		chart.setTitle("TICKETS POR CENTRO DE SERVICIO");
+		chart.setIs3d(false);
+		chart.setType("bar");
+		chart.setData(dao.getTicketsByServiceCenter(project, startDate, endDate, customer).toString().replaceAll("\"", "'"));
+		charts.add(chart);
+
+		return charts;
+	}
 
 	public String getUserAverage(){
 		List<JSONObject> jsonData = dao.getUserAverage();
