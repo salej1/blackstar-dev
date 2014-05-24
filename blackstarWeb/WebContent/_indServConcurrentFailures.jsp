@@ -34,7 +34,7 @@
 			<table cellpadding="0" cellspacing="0" border="0" class="display" id="tickets">
 				<thead>
 					<tr bgcolor="#FF0000">
-						<th style="width:'130px'">Fecha</th>
+						<th style="width:130px">Fecha</th>
 						<th>Ticket</th>
 						<th>Empresa</th>
 						<th>Equipo</th>
