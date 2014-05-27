@@ -11,7 +11,15 @@
 <script src="${pageContext.request.contextPath}/DataTables-1.9.4/media/js/jquery.dataTables.js"></script>
 
 <script type="text/javascript" charset="utf-8">
-
+     
+     
+     function validate(){
+    	 if( ! $('#evaluationOk').is(':checked') && ! $('#evaluationKO').is(':checked')){
+    		 alert("Favor de contestar la evaluacion");
+    	 } else {
+    		 $('#mainform').submit();
+    	 }
+     }
  </script> 
 
  <title>Evaluación Interna</title>
@@ -25,7 +33,7 @@
 						<h2>Ticket ${ticketNumber}</h2>
 						<div class="utils">
 						</div>
-						<form action="/bloom/survey/save.do">
+						<form action="/bloom/survey/save.do" id="mainform">
 				          <input type="hidden" name="ticketNumber" id="ticketNumber" value="${ticketNumber}"/>
 			
 						<table>
@@ -36,7 +44,7 @@
 								</tr>
 								<tr>
 								   <td>La resolución fue satisfactoria ?</td>
-								   <td>Sí <input name="evaluation" type="radio" value="1"/> No <input name="evaluation" type="radio" value="0"/></td>
+								   <td>Sí <input name="evaluation" id="evaluationOk" type="radio" value="1"/> No <input name="evaluation" id="evaluationKO" type="radio" value="0"/></td>
 								</tr>
 								<tr>
 								    <td>Observaciones</td>
@@ -45,17 +53,18 @@
 							</tbody>
 						</table>
 						
+						</form>
+						
 						<table>
 							<tbody>
 								<tr>
 									<td>
 										<p></p>
-										<button type="submit" class="searchButton">Guardar</button>
+										<button class="searchButton" onClick="validate()">Guardar</button>
 									</td>
 								</tr>
 							<tbody>
-						</table>
-						</form>	
+						</table>	
 					</div>					
 				</div>
 </div>

@@ -37,7 +37,8 @@
 						  { "mData": "created" },
 						  { "mData": "evaluation" }
 					  ],
-			"aoColumnDefs" : [{"mRender" : function(data, type, row){return "<div align=center style='width:60px;'><a href=/ticketDetail?ticketId=" + row.DT_RowId + ">" + data + "</a></div>";}, "aTargets" : [0]}    		    	       
+			"aoColumnDefs" : [{"mRender" : function(data, type, row){return "<div align=center style='width:60px;'><a href=/ticketDetail?ticketId=" + row.DT_RowId + ">" + data + "</a></div>";}, "aTargets" : [0]},
+			                  {"mRender" : function(data, type, row){if(row.evaluation == 1){return "Satisfactoria"} else return "No Satisfactoria";}, "aTargets" : [5]}
 							 ]}
 		);
 	 
