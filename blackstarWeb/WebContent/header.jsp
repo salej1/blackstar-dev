@@ -46,7 +46,7 @@
 				<c:if test="${sysCallCenter == true}">
 				  <li><a href="${pageContext.request.contextPath}/seguimiento">Seguimiento</a></li>
 				</c:if>
-				<li><a href="${pageContext.request.contextPath}/encuestas">Encuestas de servicio</a></li>
+				<li><a href="${pageContext.request.contextPath}/bloom/survey/show.do">Encuestas de servicio</a></li>
 				<li><a href="${pageContext.request.contextPath}/bloom/indServicios/show.do">Indicadores Serv.</a></li>
 			</c:when>
 			<c:when test="${pageSection == 'tickets'}">
@@ -54,7 +54,7 @@
 				<li><span class="active" onclick="window.location = '/tickets'">Tickets</span></li>
 				<li><a href="${pageContext.request.contextPath}/serviceOrders/show.do">Ordenes de servicio</a></li>
 				<li><a href="${pageContext.request.contextPath}/seguimiento">Seguimiento</a></li>
-				<li><a href="${pageContext.request.contextPath}/encuestas">Encuestas de servicio</a></li>
+				<li><a href="${pageContext.request.contextPath}/bloom/survey/show.do">Encuestas de servicio</a></li>
 				<li><a href="${pageContext.request.contextPath}/bloom/indServicios/show.do">Indicadores Serv.</a></li>
 			</c:when>
 			<c:when test="${pageSection == 'ordenesServicio'}">  

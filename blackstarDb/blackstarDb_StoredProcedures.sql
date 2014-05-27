@@ -2439,6 +2439,41 @@ WHERE bt._id = pTicketId
       AND bt._id = bd.bloomTicketId
       AND bd.deliverableTypeId = bdt._id;
 END$$ 
+
+DROP PROCEDURE IF EXISTS blackstarDb.GetBloomSurveyTable$$
+CREATE PROCEDURE blackstarDb.`GetBloomSurveyTable`(pTicketId INTEGER)
+BEGIN
+SELECT bs._id id, bt.ticketNumber ticketNumber, baa.name applicantArea
+       , bt.project project, bs.created created, bs.evaluation evaluation
+FROM bloomTicket bt , bloomSurvey bs, bloomApplicantArea baa
+WHERE bt._id = bs.bloomTicketId
+      AND baa._id = bt.applicantAreaId
+      AND bt.createdByUsr = pTicketId;
+END$$
+
+DROP PROCEDURE IF EXISTS blackstarDb.GetBloomPendingSurveyTable$$
+CREATE PROCEDURE blackstarDb.`GetBloomPendingSurveyTable`(pTicketId INTEGER)
+BEGIN
+SELECT distinct bt.ticketNumber ticketNumber, baa.name applicantArea, bt.project project,
+       bu.name risponsableName
+FROM bloomTicket bt, bloomApplicantArea baa, blackstarUser bu, bloomTicketTeam btt
+WHERE createdByUsr = pTicketId
+      AND bt.applicantAreaId = baa._id
+      AND btt.ticketId = bt._id
+      AND btt.workerRoleTypeId = 1
+      AND btt.blackstarUserId = bu.blackstarUserId
+      AND NOT EXISTS (SELECT * 
+                      FROM bloomSurvey bs 
+                      WHERE bt._id = bs.bloomTicketId);
+END$$
+
+DROP PROCEDURE IF EXISTS blackstarDb.InsertBloomSurvey$$
+CREATE PROCEDURE blackstarDb.`InsertBloomSurvey`(pTicketId INTEGER, pEvaluation INTEGER, pComments TEXT, pCreated DATE)
+BEGIN
+  INSERT INTO bloomSurvey (bloomTicketId, evaluation, comments, created ) 
+  VALUES(pTicketId, pEvaluation, pComments, pCreated);
+END$$
+
 -- -----------------------------------------------------------------------------
 	-- FIN DE LOS STORED PROCEDURES
 -- -----------------------------------------------------------------------------

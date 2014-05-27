@@ -771,6 +771,19 @@ END IF;
 	END IF;		
 	
 	
+	-- AGREGANDO TABLA bloomDeliverableTrace
+	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'bloomSurvey') = 0 THEN
+		 CREATE TABLE blackstarDb.bloomSurvey(
+           _id Int(11) NOT NULL AUTO_INCREMENT,
+           bloomTicketId Int(11) NOT NULL,
+           evaluation Tinyint NOT NULL,
+           comments Text NOT NULL,
+           created Date NOT NULL,
+		   PRIMARY KEY (_id),
+		   FOREIGN KEY (bloomTicketId) REFERENCES bloomTicket (_id)
+         )ENGINE=INNODB;
+	END IF;		
+	
 	-- AGREGANDO COLUMNA bloomTicketId A followUp
 	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'followUp' AND COLUMN_NAME = 'bloomTicketId') =0  THEN
 		 ALTER TABLE blackstarDb.followUp ADD bloomTicketId Int(11);

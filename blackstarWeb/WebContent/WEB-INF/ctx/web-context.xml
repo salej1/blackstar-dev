@@ -100,6 +100,11 @@
    <bean class="com.bloom.web.controller.ReportsInternalTicketsController" parent="abstractController">
       <property name="reportsTicketsService" ref="reportsTicketsService" />
    </bean>
+   
+   <bean class="com.bloom.web.controller.InternalTicketSurveyController" parent="abstractController">
+      <property name="service" ref="internalTicketSurveyService" />
+      <property name="internalTicketsService" ref="internalTicketsService" />
+   </bean>
 
    
 </beans>
