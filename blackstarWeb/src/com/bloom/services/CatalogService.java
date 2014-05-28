@@ -23,8 +23,8 @@ public interface CatalogService {
 	 */
 	public List<CatalogoBean<String>> consultarProyectos()
             throws ServiceException;
-	
-	
+
+
 	/**
 	 * Consulta oficinas
 	 * @return
@@ -71,8 +71,7 @@ public interface CatalogService {
 	 */
     public List<CatalogoBean<Integer>> empleadosPorGrupo(String grupo)
             throws ServiceException;
-    
-    
+
     /**
      * Estatus tickets internos
      * @return
@@ -80,6 +79,5 @@ public interface CatalogService {
      */
     public List<CatalogoBean<Integer>> consultarEstatusTicket()
             throws ServiceException;
-
 
 }

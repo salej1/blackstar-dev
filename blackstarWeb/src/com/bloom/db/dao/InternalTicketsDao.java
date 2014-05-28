@@ -4,16 +4,11 @@ import java.util.List;
 
 import com.blackstar.model.Followup;
 import com.blackstar.model.User;
+import com.bloom.common.bean.DeliverableTraceBean;
 import com.bloom.common.bean.InternalTicketBean;
 import com.bloom.model.dto.DeliverableFileDTO;
 import com.bloom.model.dto.DeliverableTypeDTO;
-import com.bloom.model.dto.TicketDetailDTO;
-import com.bloom.model.dto.TicketTeamDTO;
-import com.blackstar.model.Followup;
-import com.blackstar.model.User;
-import com.bloom.common.bean.DeliverableTraceBean;
-import com.bloom.common.bean.InternalTicketBean;
-import com.bloom.model.dto.DeliverableTypeDTO;
+import com.bloom.model.dto.PendingAppointmentsDTO;
 import com.bloom.model.dto.TicketDetailDTO;
 import com.bloom.model.dto.TicketTeamDTO;
 import com.bloom.common.bean.TicketTeamBean;
@@ -57,7 +52,7 @@ public interface InternalTicketsDao {
 	 * @throws DAOException
 	 */
 	public List<InternalTicketBean> getTickets(Long userId) throws DAOException;
-	
+
   public List<InternalTicketBean> getPendingTickets ();
   public List<TicketDetailDTO> getTicketDetail(Integer ticketId);
   public List<TicketTeamDTO> getTicketTeam(Integer ticketId);
@@ -71,7 +66,9 @@ public interface InternalTicketsDao {
   public void closeTicket(Integer ticketId, Integer userId);
   public Integer getTicketId(String ticketNumber);
   public List<DeliverableFileDTO> getTicketDeliverable(Integer ticketId);
-	
+  public List<PendingAppointmentsDTO> getPendingAppointments();
+
+
 	/**
 	 * Guardar miembro del tickets
 	 * @param teamMember
@@ -79,8 +76,8 @@ public interface InternalTicketsDao {
 	 * @throws DAOException
 	 */
 	public Long registrarMiembroTicket(TicketTeamBean teamMember) throws DAOException;
-	
-	
+
+
 	/**
 	 * guardar deliverable  trace
 	 * @param document
@@ -89,7 +86,6 @@ public interface InternalTicketsDao {
 	 */
 	public Long registrarDocumentTrace(DeliverableTraceBean document) throws DAOException;
 
-	
 	/**
 	 * Historico de tickets para la vista de  "Mesa de Ayuda"
 	 * @param fechaIni
@@ -98,6 +94,6 @@ public interface InternalTicketsDao {
 	 * @return
 	 * @throws DAOException
 	 */
-	public List<InternalTicketBean> getHistoricalTickets(String startCreationDate, String endCreationDate, Integer idStatusTicket) throws DAOException;	
+	public List<InternalTicketBean> getHistoricalTickets(String startCreationDate, String endCreationDate, Integer idStatusTicket) throws DAOException;
 
 }

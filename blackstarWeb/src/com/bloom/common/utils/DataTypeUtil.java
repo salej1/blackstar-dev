@@ -9,7 +9,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 
@@ -18,11 +17,11 @@ import org.apache.commons.lang3.time.DateUtils;
  *
  */
 public class DataTypeUtil {
-	
-	
+
+
     public static String MIN_TIME = " 00:00:00";
     public static String MAX_TIME = " 23:59:59";
-    
+
     
     public static String transformDateFormat(String dateTicket,String extTime){
     	
@@ -37,8 +36,7 @@ public class DataTypeUtil {
     	
     	return dateTicket;
     }
-
-
+    
     /**
      * Método que regresa la fecha dada el parametro
      *
@@ -392,6 +390,6 @@ public class DataTypeUtil {
         String fechaAnterior = Integer.toString(anio) + fecha.substring(4, 10);
         return fechaAnterior;
     }
-	
+
 
 }

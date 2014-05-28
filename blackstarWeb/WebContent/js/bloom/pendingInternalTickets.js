@@ -24,7 +24,7 @@ function getPendingInternalTickets() {
 				},
 				success : function(respuestaJson) {
 					var listaInternalTickets = respuestaJson.lista;
-					
+
 					// Inicializacion de la tabla de nuevas ordenes de servicio
 					$('#dtGridTicketsInternos')
 							.dataTable(
@@ -87,7 +87,7 @@ function getInternalsTickets() {
 				},
 				success : function(respuestaJson) {
 					var listaInternalTickets = respuestaJson.lista;
-					
+
 					// Inicializacion de la tabla de nuevas ordenes de servicio
 					$('#dtGridTicketsInternos')
 							.dataTable(
@@ -101,7 +101,7 @@ function getInternalsTickets() {
 										"aaData" : listaInternalTickets,
 										"sDom" : '<"top"i>rt<"bottom"flp><"clear">',
 										"aoColumns" : [ 
-										                
+
 										                {
 											"mData" : "ticketNumber"
 										}, {

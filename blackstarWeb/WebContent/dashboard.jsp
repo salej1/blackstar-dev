@@ -149,6 +149,7 @@ function getNewInternalTickets(){
 
 <!-- Inicia Contenido De Perfil Sysservicio -->
 
+<c:set var="sysServicio" scope="request" value="${user.belongsToGroup['Implementacion y Servicio']}" />
 	<c:if test="${sysServicio == true}">
 
 <!-- Links Para Crear Ordenes De Servicio -->

@@ -100,22 +100,22 @@ $(document)
 
 										$("#fldLimite").datepicker("setDate",
 												fechaLimite);
-										
+
 										consultarDocumentos();
 
 									});
 
-					
+
 
 					$( "#saveButtonTicket" ).click(function() {
-						  
+
 						  mensaje_confirmacion("\u00BF Confirma que desea enviar la requisici\u00f3n general "+$("#fldFolio").val()+"?",
 								  "Alta Ticket Interno","Aceptar","Cancelar",
 								  guardarAtencion,
 								  function(){window.location = '/dashboard/show.do';});
-						  
+
 					});
-					
+
 
 					$( "#attachButtonTicket" ).click(function() {
 						consultarDocumentos(function(){
@@ -124,7 +124,7 @@ $(document)
 					});
 
 					consultarDatosFormulario();
-					
+
 				});
 
 
@@ -134,7 +134,7 @@ function guardarAtencion() {
 	if(diasLimitesTipoServicio===null){
 		diasLimitesTipoServicio=-1;
 	}
-	
+
 	$.ajax({
 		url : "/bloom/guardarTicket.do",
 		type : "POST",
@@ -162,11 +162,11 @@ function guardarAtencion() {
 		success : function(respuestaJson) {
 			// ocultarMensajes();
 			if (respuestaJson.estatus === "ok") {
-				
+
 				mensaje_alerta(respuestaJson.mensaje,"Alta Ticket Interno", function(){
 					window.location = '/dashboard/show.do';
 				});
-				
+
 				// limpiarCampos();
 
 			} else {
@@ -198,7 +198,7 @@ function cargaCombosFormulario() {
 								listaServicios[i].id));
 	}
 
-	$("#slProyecto").append(new Option('N/A',-1));
+    $("#slProyecto").append(new Option('N/A',-1));
 	for (var i = 0; i < listaProyectos.length; i++) {
 		$("#slProyecto")
 				.append(
@@ -250,17 +250,17 @@ function consultarDatosFormulario() {
 
 
 function tablaListaDocumentos(listaDocumentos){
-	
+
 	$("#attItems").find(".itemFile").remove();
-	
+
 	for (var i = 0; i < listaDocumentos.length; i++) {
 		$('#attItems').append("<li class='itemFile'>"+listaDocumentos[i].descripcion+"</li>");
 	}
-	
+
 }
 
 function consultarDocumentos(callBackFunction) {
-	
+
 	idTipoServicio = parseInt($('#slTipoServicio').val());
 
 	$.ajax({
@@ -286,7 +286,7 @@ function consultarDocumentos(callBackFunction) {
 							new Option(listaDocumentos[i].descripcion,
 									listaDocumentos[i].id));
 				}
-				
+
 				if ((typeof (callBackFunction) === "function") && callBackFunction !== null) {
 					callBackFunction();
 		        }else{

@@ -3,13 +3,14 @@
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ page isELIgnored="false"%>
 <!DOCTYPE html>
+<c:set var="pageSection" scope="request" value="ordenesServicio" />
 <c:import url="../header.jsp"></c:import>
 <html>
 	<head>
 	<title>Ticket Interno</title>
-	
+
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		
+
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/960.css" type="text/css" media="screen" charset="utf-8" />
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/template.css" type="text/css" media="screen" charset="utf-8" />
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/colour.css" type="text/css" media="screen" charset="utf-8" />
@@ -30,8 +31,8 @@
     }
 
 	$(document).ready(function () {
-			
-	
+
+
 	});
 
 	function isNumberKey(evt){
@@ -43,12 +44,12 @@
 	}
 
 	</script> 
-	
-		 
+
+
 	</head>
 	<body>
 		<div id="contentInternalTicket" class="container_16 clearfix">
-					
+
 			<div class="grid_16">					
 					<div class="box">
 						<h2>TICKET INTERNO</h2>
@@ -74,7 +75,7 @@
 									</select>
 								</td>
 							</tr>
-							
+
 							<tr>
 								<td>Tipo</td>
 								<td>
@@ -102,24 +103,24 @@
 							<tr>
 								<td>Oficina</td>
 								<td>
-								
+
 								<select name="slOficina" id="slOficina" style="width:200px;">
 									</select>
-								
+
 								</td>
 								<!-- <td></td> -->
 							</tr>
 							</table>
 					</div>
 			</div>
-			
-			
+
+
 				<div class="grid_15">
 					<div class="box">
 						<h2>Archivos adjuntos</h2>
 							<div id="legend">Por favor proporcione los siguientes archivos:</div>
 							<ol id="attItems">
-							
+
 							</ol>
 							<table id="attachments">
 								<thead>
@@ -154,9 +155,9 @@
 							</table>
 					</div>					
 				</div>		
-				
-				
-				
+
+
+
 			<!-- Attachment Img section -->
 				<div id="attachmentImgDlg" title="Adjuntar archivo">
 					<p></p>
@@ -166,7 +167,7 @@
 					<select name="slDocumento" id="slDocumento"></select>
 
 				</div>
-		
+
 		</div>
 	</body>
 </html>

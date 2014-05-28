@@ -44,7 +44,7 @@ public class CatalogController extends AbstractController {
 		RespuestaJsonBean respuesta = new RespuestaJsonBean();
 
 		Long userId = (long)userSession.getUser().getBlackstarUserId();
-
+		
 		List<CatalogoBean<String>> listaProyectos;
 
 		List<CatalogoBean<Integer>> listaAreas;
@@ -79,10 +79,10 @@ public class CatalogController extends AbstractController {
 
 		return respuesta;
 	}
-	
-	
-	
-	
+
+
+
+
 	@RequestMapping(value = "/getDocumentos.do", method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
 	RespuestaJsonBean getDocumentos(ModelMap model,
@@ -91,18 +91,18 @@ public class CatalogController extends AbstractController {
 
 		RespuestaJsonBean respuesta = new RespuestaJsonBean();
 
-	
+
 		List<CatalogoBean<Integer>> listaDocumentos;
 
 
 
 		try {
 
-		
+
 			listaDocumentos = catalogService.consultarDocumentosPorServicio(idTipoServicio);
 			respuesta.setLista(listaDocumentos);
 
-			
+
 			respuesta.setEstatus("ok");
 
 		} catch (ServiceException se) {
@@ -113,7 +113,6 @@ public class CatalogController extends AbstractController {
 
 		return respuesta;
 	}
-	
 	
 	@RequestMapping(value = "/getDataHistorico.do", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
@@ -157,8 +156,8 @@ public class CatalogController extends AbstractController {
 		}
 
 		return respuesta;
-	}	
-	
+	}
+
 
 	/**
 	 * @return the catalogService

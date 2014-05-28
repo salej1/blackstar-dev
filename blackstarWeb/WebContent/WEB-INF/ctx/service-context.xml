@@ -87,7 +87,7 @@
       <property name="catalogInternalTicketsDao" ref="catalogInternalTicketsDao" />
   </bean>
   
-
+  
   <bean id="reportsTicketsService" class="com.bloom.services.ReportsTicketsServiceImpl" parent="abstractService">
       <property name="reportsTicketsDao" ref="reportsTicketsDao" />
   </bean>
@@ -95,5 +95,5 @@
   <bean id="internalTicketSurveyService" class="com.bloom.services.InternalTicketsSurveyServiceImpl" parent="abstractService">
       <property name="dao" ref="internalTicketsSurveyDao" />
   </bean>
-
+  
 </beans>

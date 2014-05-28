@@ -42,9 +42,9 @@ public class CatalogServiceImpl implements CatalogService {
             throw new ServiceException(ERROR_CONSULTA_CAT, e);
         }
     }
-	
 
-	
+
+
 	@Override
     public List<CatalogoBean<Integer>> consultarOficinas()
             throws ServiceException {
@@ -57,9 +57,9 @@ public class CatalogServiceImpl implements CatalogService {
             throw new ServiceException(ERROR_CONSULTA_CAT, e);
         }
     }
-	
 
-	
+
+
 	@Override
     public List<CatalogoBean<Integer>> consultarAreaSolicitante()
             throws ServiceException {
@@ -73,8 +73,8 @@ public class CatalogServiceImpl implements CatalogService {
         }
     }
 
-	
-	
+
+
 	@Override
     public List<CatalogoBean<Integer>> consultarTipoServicio()
             throws ServiceException {
@@ -101,8 +101,8 @@ public class CatalogServiceImpl implements CatalogService {
             throw new ServiceException(ERROR_CONSULTA_CAT, e);
         }
     }
-	
-	
+
+
 	@Override
     public List<CatalogoBean<Integer>> empleadosPorGrupo(String grupo)
             throws ServiceException {
@@ -115,7 +115,8 @@ public class CatalogServiceImpl implements CatalogService {
             throw new ServiceException(ERROR_CONSULTA_CAT, e);
         }
     }
-	
+
+
 	@Override
     public List<CatalogoBean<Integer>> consultarEstatusTicket()
             throws ServiceException {
@@ -128,7 +129,6 @@ public class CatalogServiceImpl implements CatalogService {
             throw new ServiceException(ERROR_CONSULTA_CAT, e);
         }
     }	
-	
 	
     /**
 	 * @return the catalogInternalTicketsDao

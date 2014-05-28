@@ -16,21 +16,20 @@ import com.bloom.db.dao.mapper.CatalogoMapper;
 
 public class CatalogInternalTicketsDaoImpl extends AbstractDAO implements CatalogInternalTicketsDao {
 
-	
+
 	private static final String QUERY_PROYECTOS = "CALL getBloomProjects()";
-	
+
 	private static final String QUERY_AREAS = "CALL getBloomApplicantArea()";
-	
+
 	private static final String QUERY_SERVICIOS = "CALL getBloomServiceType()";
-	
+
 	private static final String QUERY_OFICINAS = "CALL getBloomOffice()";
-	
+
 	private static final String QUERY_DOCUMENTOS = "CALL getBloomDocumentsByService(%d)";
-	
+
 	private static final String QUERY_EMPLOYEES_BY_GROUP = "CALL getCatalogEmployeeByGroup('%s')";
-	
+
 	private static final String QUERY_ESTATUS_TICKETS = "CALL getBloomEstatusTickets()";
-	
 	
     private static final String ERROR_CONSULTA_CAT =
             "Error al consultar el catálogo";
@@ -38,7 +37,7 @@ public class CatalogInternalTicketsDaoImpl extends AbstractDAO implements Catalo
     private static final String EMPTY_CONSULTA_CAT =
             "No se encontraron registros";
     
-	
+
     @Override
     public List<CatalogoBean<String>> consultarProjectos() throws DAOException {
 
@@ -59,7 +58,7 @@ public class CatalogInternalTicketsDaoImpl extends AbstractDAO implements Catalo
             throw new DAOException(ERROR_CONSULTA_CAT, e);
         }
     }
-	
+
 
     @Override
     public List<CatalogoBean<Integer>> consultarAreaSolicitante() throws DAOException {
@@ -172,9 +171,7 @@ public class CatalogInternalTicketsDaoImpl extends AbstractDAO implements Catalo
         	Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
             throw new DAOException(ERROR_CONSULTA_CAT, e);
         }
-    }   
-    
-    
+    }    
     
     @Override
     public List<CatalogoBean<Integer>> consultarEstatusTicket() throws DAOException {
@@ -196,8 +193,6 @@ public class CatalogInternalTicketsDaoImpl extends AbstractDAO implements Catalo
             throw new DAOException(ERROR_CONSULTA_CAT, e);
         }
     }
-    
-    
     
 
 }

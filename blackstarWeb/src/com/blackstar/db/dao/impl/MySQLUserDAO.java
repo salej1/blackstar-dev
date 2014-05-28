@@ -28,17 +28,17 @@ public class MySQLUserDAO implements UserDAO {
 						rs.getString("userName")
 					);
 				}
-				
+
 				String groupName = rs.getString("groupName");
 				if(groupName != null && groupName.length() > 0){
 					user.addGroup(groupName);
 				}
 			}
-			
+
 			if(user.getUserGroups().size() == 0){
 				Logger.Log(LogLevel.WARNING, Thread.currentThread().getStackTrace()[1].toString(), String.format("Usuario %s no pertenece a ningun grupo", email), "");
 			}
-			
+
 		} catch (ClassNotFoundException | SQLException e) {
 			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 		}
@@ -60,7 +60,7 @@ public class MySQLUserDAO implements UserDAO {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	public User getUserById(Integer id){
 		return null;
 	}
