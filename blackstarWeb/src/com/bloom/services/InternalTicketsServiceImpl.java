@@ -22,6 +22,7 @@ import com.bloom.db.dao.InternalTicketsDao;
 import com.bloom.model.dto.DeliverableFileDTO;
 import com.bloom.model.dto.DeliverableTypeDTO;
 import com.bloom.model.dto.PendingAppointmentsDTO;
+import com.bloom.model.dto.PendingSurveysDTO;
 import com.bloom.model.dto.TicketDetailDTO;
 import com.bloom.model.dto.TicketTeamDTO;
 
@@ -381,5 +382,22 @@ public class InternalTicketsServiceImpl extends AbstractService
 		                                   + pendingAppointment.getTicketNumber(), message.toString());
 	  }
 	}
+	
+	public void sendPendingSurveys(){
+	  List<PendingSurveysDTO> pendingSurveys = internalTicketsDao.getPendingSurveys();
+	  IEmailService mail = EmailServiceFactory.getEmailService();
+	  StringBuilder message = new StringBuilder();
+	  for(PendingSurveysDTO pendingSurvey : pendingSurveys){
+		message = new StringBuilder();
+		message.append("Ticket Interno : " + pendingSurvey.getTicketNumber())
+		       .append("\r\n")
+		       .append("Fecha de cierre: " + pendingSurvey.getResponseDate())
+		       .append("\r\n")
+			   .append("Descripción: " + pendingSurvey.getDescription())
+			   .append("\r\n");
+	    mail.sendEmail(sysMailer, pendingSurvey.getEmail(), "Favor de completar al encuesta de servicio"
+	    		                                          , message.toString());
+    }
+  }
 
 }

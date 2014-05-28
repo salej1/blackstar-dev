@@ -445,5 +445,15 @@ public class InternalTicketsController extends AbstractController {
 			Logger.Log(LogLevel.ERROR, e.getMessage(), e);
 	  }
 	}
+	
+	@RequestMapping(value = "/sendPendingSurveys.do", method = RequestMethod.GET)
+	public void sendSurveyRequest(ModelMap model,
+			@ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession) {
+	  try {
+		   internalTicketsService.sendPendingSurveys();
+	  } catch (Exception e) {
+			Logger.Log(LogLevel.ERROR, e.getMessage(), e);
+	  }
+	}
 
 }

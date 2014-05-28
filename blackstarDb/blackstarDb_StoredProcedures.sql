@@ -2474,6 +2474,18 @@ BEGIN
   VALUES(pTicketId, pEvaluation, pComments, pCreated);
 END$$
 
+DROP PROCEDURE IF EXISTS blackstarDb.GetBloomPendingSurveys$$
+CREATE PROCEDURE blackstarDb.`GetBloomPendingSurveys`()
+BEGIN
+
+SELECT bt._id id, bt.ticketNumber ticketNumber, bt.description description,
+       bt.responseDate responseDate, bu.email email, bu.name name
+FROM bloomTicket bt, blackstarUser bu
+WHERE bt.statusId = 5 
+     AND bt.applicantUserId = bu.blackstarUserId
+     AND bt.responseDate < DATE_ADD(NOW(), INTERVAL -2 DAY);
+END$$ 
+
 -- -----------------------------------------------------------------------------
 	-- FIN DE LOS STORED PROCEDURES
 -- -----------------------------------------------------------------------------

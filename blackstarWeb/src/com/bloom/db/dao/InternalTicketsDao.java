@@ -9,6 +9,7 @@ import com.bloom.common.bean.InternalTicketBean;
 import com.bloom.model.dto.DeliverableFileDTO;
 import com.bloom.model.dto.DeliverableTypeDTO;
 import com.bloom.model.dto.PendingAppointmentsDTO;
+import com.bloom.model.dto.PendingSurveysDTO;
 import com.bloom.model.dto.TicketDetailDTO;
 import com.bloom.model.dto.TicketTeamDTO;
 import com.bloom.common.bean.TicketTeamBean;
@@ -67,6 +68,7 @@ public interface InternalTicketsDao {
   public Integer getTicketId(String ticketNumber);
   public List<DeliverableFileDTO> getTicketDeliverable(Integer ticketId);
   public List<PendingAppointmentsDTO> getPendingAppointments();
+  public List<PendingSurveysDTO> getPendingSurveys();
 
 
 	/**

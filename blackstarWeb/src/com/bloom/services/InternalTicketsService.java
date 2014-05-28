@@ -39,5 +39,6 @@ public interface InternalTicketsService {
 	public Integer getTicketId(String ticketNumber);
 	public void sendPendingAppointments();
 	public List<InternalTicketBean> getHistoricalTickets(String startCreationDateTicket, String endCreationDateTicket, Integer idStatusTicket) throws ServiceException;
+	public void sendPendingSurveys();
 
 }

@@ -20,6 +20,7 @@ import com.bloom.common.bean.InternalTicketBean;
 import com.bloom.model.dto.DeliverableFileDTO;
 import com.bloom.model.dto.DeliverableTypeDTO;
 import com.bloom.model.dto.PendingAppointmentsDTO;
+import com.bloom.model.dto.PendingSurveysDTO;
 import com.bloom.model.dto.TicketDetailDTO;
 import com.bloom.model.dto.TicketTeamDTO;
 import com.bloom.common.bean.TicketTeamBean;
@@ -106,6 +107,12 @@ public class InternalTicketsDaoImpl extends AbstractDAO implements InternalTicke
     StringBuilder sqlBuilder = new StringBuilder("CALL getBloomPendingAppointments();");
 	return (List<PendingAppointmentsDTO>) getJdbcTemplate().query(sqlBuilder.toString()
 				                             , getMapperFor(DeliverableTypeDTO.class));
+  }
+  
+  public List<PendingSurveysDTO> getPendingSurveys(){
+	StringBuilder sqlBuilder = new StringBuilder("CALL GetBloomPendingSurveys();");
+	return (List<PendingSurveysDTO>) getJdbcTemplate().query(sqlBuilder.toString()
+					                    , getMapperFor(DeliverableTypeDTO.class));
   }
   
   
