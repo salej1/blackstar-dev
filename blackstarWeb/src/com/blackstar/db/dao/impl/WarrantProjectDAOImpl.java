@@ -97,4 +97,12 @@ public class WarrantProjectDAOImpl extends AbstractDAO implements WarrantProject
 				getMapperFor(ServiceTypeDTO.class));
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<WarrantProjectDTO> getWarrantProjectListByStatusId(String statusId) {
+		return (List<WarrantProjectDTO>) getJdbcTemplate().query(
+				"CALL GetAllWarrantProjectsByStatus('"+statusId+"');",
+				getMapperFor(WarrantProjectDTO.class));
+	}
+
 }

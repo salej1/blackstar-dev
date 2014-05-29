@@ -22,6 +22,27 @@ public class WarrantProjectDTO implements Serializable
 	 private Double totalProductsServices;
 	 private Integer entryId;
 	 
+	 private String tradeName;
+	 private String projectstatus;
+	 
+	 public String getTradeName() {
+		return tradeName;
+	}
+
+	public void setTradeName(String tradeName) {
+		this.tradeName = tradeName;
+	}
+
+	public String getProjectstatus() {
+		return projectstatus;
+	}
+
+	public void setProjectstatus(String projectstatus) {
+		this.projectstatus = projectstatus;
+	}
+
+	
+	 
 	public WarrantProjectDTO() 
 	{
 	}

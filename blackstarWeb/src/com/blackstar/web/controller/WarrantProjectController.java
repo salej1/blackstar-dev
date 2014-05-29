@@ -1,6 +1,8 @@
 package com.blackstar.web.controller;
 
+import java.awt.List;
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,9 +17,11 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.blackstar.common.Globals;
 import com.blackstar.model.Entry;
+import com.blackstar.model.Item;
 import com.blackstar.model.UserSession;
 import com.blackstar.model.WarrantProject;
 import com.blackstar.model.dto.EntryDTO;
+import com.blackstar.model.dto.ItemDTO;
 import com.blackstar.model.dto.WarrantProjectDTO;
 import com.blackstar.services.interfaces.EntryService;
 import com.blackstar.services.interfaces.WarrantProjectService;
@@ -61,7 +65,12 @@ public class WarrantProjectController extends AbstractController
 	public String save(@ModelAttribute("warrantProjectDTO") WarrantProjectDTO warrantProjectDTO, @ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession, ModelMap model, HttpServletRequest req, HttpServletResponse resp)
 	{
 		WarrantProject warrantProject;
+		Entry entry;
+		Item item;
 		int idWarrantProject;
+		
+		ArrayList<EntryDTO> entrys=new ArrayList();
+		ArrayList<ItemDTO> items=new ArrayList();
 		
 		
 		try
@@ -69,6 +78,7 @@ public class WarrantProjectController extends AbstractController
 			idWarrantProject = 0;
 			if(warrantProjectDTO.getWarrantProjectId() == null)
 			{
+				item=new Item();
 				warrantProject = new WarrantProject();
 				warrantProject.setStatus(warrantProjectDTO.getStatus());
 				warrantProject.setCustomerId(warrantProjectDTO.getCustomerId());

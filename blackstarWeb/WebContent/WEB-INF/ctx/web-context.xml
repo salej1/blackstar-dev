@@ -106,5 +106,11 @@
 		parent="abstractController">
 		<property name="warrantProjectService" ref="warrantProjectService" />
 	</bean>
+	<bean class="com.blackstar.web.controller.RequisitionController" parent="abstractController">
+	    <property name="warrantProjectService" ref="warrantProjectService" />
+	</bean>
+	<bean class="com.blackstar.web.controller.SalesController" parent="abstractController">
+	    <property name="service" ref="salesService" />
+	</bean>
 	<context:annotation-config />
 </beans>

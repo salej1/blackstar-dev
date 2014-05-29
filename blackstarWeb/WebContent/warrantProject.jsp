@@ -92,10 +92,6 @@
 						</tr>
 					</table>
 					<p></p>
-					<div>
-						<button class="searchButton" type="submit">Guardar</button>
-						<button class="searchButton" onclick="window.history.back();">Cancelar</button>
-					</div>
 				</div>
 			</div>
 		</form:form>

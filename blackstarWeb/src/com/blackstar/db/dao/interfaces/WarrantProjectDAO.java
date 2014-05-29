@@ -26,5 +26,7 @@ public interface WarrantProjectDAO
 	public List<PaymentTermsDTO> getPaymentTermsList();
 	
 	public List<ServiceTypeDTO> getServiceTypesList();
+	
+	public List<WarrantProjectDTO> getWarrantProjectListByStatusId(String statusId);
 
 }
