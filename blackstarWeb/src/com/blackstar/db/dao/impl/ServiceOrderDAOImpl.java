@@ -135,7 +135,7 @@ public class ServiceOrderDAOImpl extends AbstractDAO implements ServiceOrderDAO 
 									""+orderService.getCoordinator()+ "",
 									""+orderService.getAsignee()+ "",
 									0,
-									""+orderService.getIsWrong()+ "",
+									orderService.getIsWrong()==null?0:orderService.getIsWrong(),
 									""+orderService.getSignCreated()+ "",
 									""+orderService.getsignReceivedBy()+ "",
 									""+orderService.getReceivedByPosition()+ "",
@@ -663,8 +663,11 @@ public class ServiceOrderDAOImpl extends AbstractDAO implements ServiceOrderDAO 
 
 
 	@Override
-	public String getNewServiceNumber(Integer policyId) {
-		return getJdbcTemplate().queryForObject(String.format("CALL blackstarDb.GetNextServiceNumberForEquipment(%s)", policyId), String.class);
+	public String getNewServiceNumber(String equipmentType) {
+		if(equipmentType != null && equipmentType.length() > 1){
+			equipmentType = equipmentType.substring(0, 1);
+		}
+		return getJdbcTemplate().queryForObject(String.format("CALL blackstarDb.GetNextServiceNumberForType('%s')", equipmentType), String.class);
 	}
 
 

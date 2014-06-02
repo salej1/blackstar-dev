@@ -18,13 +18,13 @@ import com.blackstar.db.DAOFactory;
 import com.blackstar.interfaces.IEmailService;
 import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
-import com.blackstar.model.Equipmenttype;
+import com.blackstar.model.OpenCustomer;
 import com.blackstar.model.Policy;
 import com.blackstar.model.Serviceorder;
-import com.blackstar.model.Ticket;
 import com.blackstar.model.UserSession;
 import com.blackstar.model.dto.BatteryServiceDTO;
 import com.blackstar.model.dto.BatteryServicePolicyDTO;
+import com.blackstar.services.interfaces.OpenCustomerService;
 import com.blackstar.services.interfaces.ReportService;
 import com.blackstar.services.interfaces.ServiceOrderService;
 import com.blackstar.web.AbstractController;
@@ -38,6 +38,7 @@ public class BatteryServiceController extends AbstractController {
 	  private DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.MYSQL);
       private ReportService rpService = null;
       private IEmailService gmService = null;
+      private OpenCustomerService ocService = null; // OpenCustomerService
       
       public void setGmService(IEmailService gmService) {
             this.gmService = gmService;
@@ -48,6 +49,10 @@ public class BatteryServiceController extends AbstractController {
 	  
 	  public void setService(ServiceOrderService service) {
 		this.service = service;
+	  }
+	  
+	  public void setOcService(OpenCustomerService customerService) {
+		this.ocService = customerService;
 	  }
 	  
 	  @RequestMapping(value= "/show.do", method = RequestMethod.GET)
@@ -61,20 +66,10 @@ public class BatteryServiceController extends AbstractController {
 				  //si la operation es 1, el idObject es el id de un ticket
 				  //si la operation es 2, el idObject es el id de un servicio
 				  //si la operation es 3, el idObject es el no de serie del equipo
-				  //si la operation es 4, el idObject es el id del aircoservice
+				  //si la operation es 4, el idObject es irrelevante (sin poliza)
 		  		  if(operation==1)
 		  		  {
-		  			  Integer idTicket = Integer.parseInt(idObject);
-		  			  Ticket ticket = daoFactory.getTicketDAO().getTicketById(idTicket);
-	  				  Policy policy = this.daoFactory.getPolicyDAO().getPolicyById(ticket.getPolicyId());
-	  				  Equipmenttype equipType = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
-	  				  batteryServicePolicyDTO = new BatteryServicePolicyDTO(policy, equipType.getEquipmentType());
-					  batteryServicePolicyDTO.setServiceOrderNumber(service.getNewServiceNumber(policy));
-					  batteryServicePolicyDTO.setServiceStatusId("N");
-					  batteryServicePolicyDTO.setServiceTypeId("P");
-	  				  model.addAttribute("serviceOrder", batteryServicePolicyDTO);
-	  				  model.addAttribute("serviceEmployees", udService.getStaffByGroupJson(Globals.GROUP_SERVICE));
-					  model.addAttribute("mode", "new");
+		  			 return "redirect:/plainService?operation=1&idObject=" + idObject;
 		  		  }
 		  		  else if( operation==2)
 		  		  {
@@ -82,30 +77,55 @@ public class BatteryServiceController extends AbstractController {
 		  			  BatteryServiceDTO batService = service.getBateryService(idOrder);
 		  			  Serviceorder serviceOrder = this.daoFactory.getServiceOrderDAO().getServiceOrderById(idOrder);
 		  			  Policy policy = this.daoFactory.getPolicyDAO().getPolicyById(serviceOrder.getPolicyId());
-	  				  Equipmenttype equipType = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
-	  				  batteryServicePolicyDTO = new BatteryServicePolicyDTO(policy, equipType.getEquipmentType(), serviceOrder, batService );
+	  				  if(policy != null && policy.getPolicyId() > 0){
+	  					  batteryServicePolicyDTO = new BatteryServicePolicyDTO(policy, serviceOrder, batService);
+	  					  model.addAttribute("hasPolicy", true);
+	  				  }
+	  				  else if(serviceOrder.getOpenCustomerId() != null && serviceOrder.getOpenCustomerId() > 0){
+	  					  OpenCustomer oc = ocService.GetOpenCustomerById(serviceOrder.getOpenCustomerId());
+	  					  batteryServicePolicyDTO = new BatteryServicePolicyDTO(oc, serviceOrder, batService );
+	  					  model.addAttribute("hasPolicy", false);
+	  				  }
+	  				  
 	  				  model.addAttribute("serviceOrder", batteryServicePolicyDTO);
+	  				  model.addAttribute("followUps", service.getFollows(idOrder));
 					  model.addAttribute("mode", "detail");
 		  		  }
 		  		  else if(operation==3)
 		  		  {
 		  			  Policy policy  = this.daoFactory.getPolicyDAO().getPolicyBySerialNo(idObject);
-	  				  Equipmenttype equipType = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
-	  				  batteryServicePolicyDTO = new BatteryServicePolicyDTO(policy, equipType.getEquipmentType());
-					  batteryServicePolicyDTO.setServiceOrderNumber(service.getNewServiceNumber(policy));
+	  				  batteryServicePolicyDTO = new BatteryServicePolicyDTO(policy);
+					  batteryServicePolicyDTO.setServiceOrderNumber(service.getNewServiceNumber("B"));
 					  batteryServicePolicyDTO.setServiceStatusId("N");
 					  batteryServicePolicyDTO.setServiceTypeId("P");
 	  				  model.addAttribute("serviceOrder", batteryServicePolicyDTO);
 	  				  model.addAttribute("serviceEmployees", udService.getStaffByGroupJson(Globals.GROUP_SERVICE));
 					  model.addAttribute("mode", "new");
+					  model.addAttribute("hasPolicy", true);
+		  		  }
+		  		  else if(operation == 4){
+		  			  OpenCustomer cust = new OpenCustomer();
+		  			  cust.setEquipmentTypeId("B");
+	  				  batteryServicePolicyDTO = new BatteryServicePolicyDTO(cust);
+					  batteryServicePolicyDTO.setServiceOrderNumber(service.getNewServiceNumber("B"));
+					  batteryServicePolicyDTO.setServiceStatusId("N");
+					  batteryServicePolicyDTO.setServiceTypeId("P");
+	  				  model.addAttribute("serviceOrder", batteryServicePolicyDTO);
+	  				  model.addAttribute("serviceEmployees", udService.getStaffByGroupJson(Globals.GROUP_SERVICE));
+					  model.addAttribute("mode", "new");
+					  model.addAttribute("hasPolicy", false);
 		  		  }
 
-		  		  model.addAttribute("osAttachmentFolder", gdService.getAttachmentFolderId(batteryServicePolicyDTO.getServiceOrderNumber()));
-		  		  model.addAttribute("accessToken", gdService.getAccessToken());
+		  		  model.addAttribute("serviceTypes", service.getServiceTypeList());
+				  model.addAttribute("serviceStatuses", service.getServiceStatusList());
+				  model.addAttribute("osAttachmentFolder", gdService.getAttachmentFolderId(batteryServicePolicyDTO.getServiceOrderNumber()));
+				  model.addAttribute("rootFolder", gdService.getRootFolderId());
+				  model.addAttribute("accessToken", gdService.getAccessToken());
+				  model.addAttribute("equipmentTypeList", service.getEquipmentTypeList());
 	  		  }
 			  else
 			  {
-				  Logger.Log(LogLevel.WARNING, "AirCoServiceController", "Parametros de navegacion nulos." , "" );
+				  Logger.Log(LogLevel.WARNING, "BatteryServiceController", "Parametros de navegacion nulos." , "" );
 			  }
 		  } 
 		  catch (Exception e) 
@@ -124,38 +144,72 @@ public class BatteryServiceController extends AbstractController {
 	    		     @ModelAttribute(Globals.SESSION_KEY_PARAM)  UserSession userSession,
                      ModelMap model, HttpServletRequest req, HttpServletResponse resp) {
     int idServicio = 0;
+    int custId = 0;
 	// Verificar si existe una orden de servicio
     try {
-	     if(serviceOrder.getServiceOrderId()==null) {
-   	       //Crear orden de servicio
-	       Serviceorder servicioOrderSave = new Serviceorder();
-	       servicioOrderSave.setPolicyId(serviceOrder.getPolicyId());
-	       servicioOrderSave.setReceivedBy(serviceOrder.getReceivedBy());
-	       servicioOrderSave.setReceivedByPosition(serviceOrder.getReceivedByPosition());
-	       servicioOrderSave.setEmployeeListString(serviceOrder.getResponsible());
-	       servicioOrderSave.setServiceDate(serviceOrder.getServiceDate());
-	       servicioOrderSave.setServiceOrderNumber(serviceOrder.getServiceOrderNumber());
-	       servicioOrderSave.setServiceTypeId(serviceOrder.getServiceTypeId().toCharArray()[0]);
-	       servicioOrderSave.setSignCreated(serviceOrder.getSignCreated());
-	       servicioOrderSave.setSignReceivedBy(serviceOrder.getSignReceivedBy());
-		   servicioOrderSave.setClosed(new Date());
-		   servicioOrderSave.setStatusId("N");
-	       idServicio = service.saveServiceOrder(servicioOrderSave, "AirCoServiceController", userSession.getUser().getUserName());
-	     } else {
-	    	  //Actualizar orden de servicio
-	    	  Serviceorder servicioOrderSave = new Serviceorder();
-	    	  servicioOrderSave.setClosed(serviceOrder.getClosed());
-	    	  servicioOrderSave.setPolicyId(serviceOrder.getPolicyId());
-	    	  servicioOrderSave.setReceivedBy(serviceOrder.getReceivedBy());
-	    	  servicioOrderSave.setReceivedByPosition(serviceOrder.getReceivedByPosition());
-	    	  servicioOrderSave.setResponsible(serviceOrder.getResponsible());
-	    	  servicioOrderSave.setServiceDate(serviceOrder.getServiceDate());
-	    	  servicioOrderSave.setServiceOrderNumber(serviceOrder.getServiceOrderNumber());
-	    	  servicioOrderSave.setServiceTypeId(serviceOrder.getServiceTypeId().toCharArray()[0]);
-	    	  servicioOrderSave.setSignCreated(serviceOrder.getSignCreated());
-	    	  servicioOrderSave.setSignReceivedBy(serviceOrder.getSignReceivedBy());
-	    	  service.updateServiceOrder(servicioOrderSave, "AirCoServiceController", userSession.getUser().getUserName());
-	     }
+    	if(serviceOrder.getServiceOrderId() != null && serviceOrder.getServiceOrderId() > 0){
+    		// Actualizar orden de servicio
+    		Serviceorder servicioOrderSave = new Serviceorder();
+    		servicioOrderSave.setServiceOrderId(serviceOrder.getServiceOrderId());
+    		if(serviceOrder.getClosed() != null && serviceOrder.getServiceStatusId().equals("C")){
+    			servicioOrderSave.setAsignee(null);
+    		}
+    		servicioOrderSave.setClosed(serviceOrder.getClosed());
+    		servicioOrderSave.setIsWrong(serviceOrder.getIsWrong());
+    		servicioOrderSave.setStatusId(serviceOrder.getServiceStatusId());
+    		
+    		service.updateServiceOrder(servicioOrderSave, "BatteryServiceController", userSession.getUser().getUserEmail());
+    		idServicio = serviceOrder.getServiceOrderId();
+    	}
+    	else{
+    		if(serviceOrder.getPolicyId() == null || serviceOrder.getPolicyId() == 0){
+    			// Guardando el cliente capturado
+	    		OpenCustomer customer = new OpenCustomer();
+	    		customer.setCustomerName(serviceOrder.getCustomer());
+	    		customer.setContactEmail(serviceOrder.getFinalUser());
+	    		customer.setEquipmentTypeId("A");
+	    		customer.setBrand(serviceOrder.getBrand());
+	    		customer.setModel(serviceOrder.getModel());
+	    		customer.setSerialNumber(serviceOrder.getSerialNumber());
+	    		customer.setCapacity(serviceOrder.getCapacity());
+	    		customer.setAddress(serviceOrder.getEquipmentAddress());
+	    		customer.setContactName(serviceOrder.getContactName());
+	    		customer.setPhone(serviceOrder.getContactPhone());
+	    		customer.setProject(serviceOrder.getProject());
+	    		customer.setOfficeId(String.valueOf(serviceOrder.getOfficeId()));	
+	    		customer.setCreated(new Date());
+	    		customer.setCreatedBy("BatteryServiceController");
+	    		customer.setCreatedByUsr(userSession.getUser().getUserEmail());
+	    		custId = ocService.SaveOpenCustomer(customer);
+    		}
+    		// Guardando la OS 
+    		Serviceorder servicioOrderSave = new Serviceorder();
+    		if(custId > 0){
+    			servicioOrderSave.setOpenCustomerId(custId);
+    		}
+			servicioOrderSave.setReceivedBy(serviceOrder.getReceivedBy());
+			servicioOrderSave.setReceivedByPosition(serviceOrder.getReceivedByPosition());
+			servicioOrderSave.setEmployeeListString(serviceOrder.getResponsible());
+			servicioOrderSave.setServiceDate(serviceOrder.getServiceDate());
+			servicioOrderSave.setServiceEndDate(serviceOrder.getServiceEndDate());
+			servicioOrderSave.setServiceOrderNumber(serviceOrder.getServiceOrderNumber());
+			servicioOrderSave.setServiceTypeId(serviceOrder.getServiceTypeId().toCharArray()[0]);
+			servicioOrderSave.setReceivedByEmail(serviceOrder.getReceivedByEmail());
+    		servicioOrderSave.setIsWrong(serviceOrder.getIsWrong());
+    		servicioOrderSave.setSignCreated(serviceOrder.getSignCreated());
+    		servicioOrderSave.setSignReceivedBy(serviceOrder.getSignReceivedBy());
+    		if(userSession.getUser().getBelongsToGroup().get(Globals.GROUP_COORDINATOR) != null){
+    			servicioOrderSave.setStatusId("E");
+    		}
+    		else{
+    			servicioOrderSave.setStatusId("N");	
+    		}
+			servicioOrderSave.setPolicyId(serviceOrder.getPolicyId());
+			servicioOrderSave.setResponsible(serviceOrder.getResponsible());
+			servicioOrderSave.setTicketId(serviceOrder.getTicketId());
+			idServicio = service.saveServiceOrder(servicioOrderSave, "BatteryServiceController", userSession.getUser().getUserEmail());
+			serviceOrder.setServiceOrderId(idServicio);
+    	}
 	     if(serviceOrder.getBbServiceId()==null) {
 	    	serviceOrder.setServiceOrderId(idServicio);
 	    	//Crear orden de servicio de Battery

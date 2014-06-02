@@ -26,6 +26,15 @@
 	};
 
 	 $(document).ready(function() {
+	 	$("#policySearchBox").bind('keypress', function(e){
+		   if ( e.keyCode == 13 ) {
+		    applyPolicyFilter();
+		   }
+		 });
+
+	 	$("#policySearch").bind("click", function(){
+	 		applyPolicyFilter();
+	 	});
 
 	 try{
 	 var data = $.parseJSON(str);
@@ -42,7 +51,7 @@
 			"bInfo": false,
 			"sPaginationType": "full_numbers",
 			"aaData": data,
-			"sDom": '<"top"if>rt<"bottom"><"clear">',
+			"sDom": '<"top"i>rt<"bottom"><"clear">',
 			"aaSorting": [],
 			"aoColumns": [
 						  { "mData": "officeName" },
@@ -92,6 +101,10 @@
 		$("td", "#policy").css("background-color", "transparent");
 	} );
 
+	function applyPolicyFilter(){
+		var dt = $('#policy').dataTable();
+	 		dt.fnFilter($("#policySearchBox").val());
+	}
  </script> 
 
 
@@ -102,6 +115,10 @@
 							<h2>Polizas</h2>
 							<div class="utils">
 								
+			</div>
+			<div id="searchBox" style="margin:10px;">
+				Buscar: <input type="text" id="policySearchBox" name="policySearch" style="width:250px;"/>
+				<input id="policySearch" type="submit" class="searchButton" value="Ok" />
 			</div>
 			<table cellpadding="5" cellspacing="0" border="0" class="display" id="policy">
 				<thead>

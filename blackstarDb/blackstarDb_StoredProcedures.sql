@@ -266,6 +266,10 @@
 --								blackstarDb.GetLimitedFutureServicesSchedule
 --								blackstarDb.GetServiceOrderDetails
 -- -----------------------------------------------------------------------------
+-- 42	26/05/2014	SAG 	Se reemplaza:
+--								blackstarDb.GetNextServiceNumberForEquipment por:
+--								blackstarDb.GetNextServiceNumberForType
+-- -----------------------------------------------------------------------------
 
 use blackstarDb;
 
@@ -2361,18 +2365,15 @@ SELECT
 END$$
 
 -- -----------------------------------------------------------------------------
-	-- blackstarDb.GetNextServiceNumberForEquipment
+	-- blackstarDb.GetNextServiceNumberForType
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetNextServiceNumberForEquipment$$
-CREATE PROCEDURE blackstarDb.GetNextServiceNumberForEquipment(pPolicyId INTEGER)
+DROP PROCEDURE IF EXISTS blackstarDb.GetNextServiceNumberForType$$
+CREATE PROCEDURE blackstarDb.GetNextServiceNumberForType(eqType VARCHAR(10))
 BEGIN
-
-	DECLARE eqType VARCHAR(10);
 	DECLARE prefix VARCHAR(10);
 	DECLARE newNumber INTEGER;
 
-	-- Obteniendo el tipo de equipo
-	SELECT equipmentTypeId into eqType FROM policy WHERE policyId = pPolicyId;
 	-- Cambiando a O por default
 	IF eqType NOT IN('A', 'B', 'P', 'U') THEN
 		SELECT 'O' into eqType;

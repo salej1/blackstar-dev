@@ -129,8 +129,8 @@ public void updateServiceOrder(Serviceorder service, String modifiedBy,
 }
 
 @Override
-public String getNewServiceNumber(Policy policy) {
-	return dao.getNewServiceNumber(policy.getPolicyId());
+public String getNewServiceNumber(String equipmentType) {
+	return dao.getNewServiceNumber(equipmentType);
 }
 
 @Override

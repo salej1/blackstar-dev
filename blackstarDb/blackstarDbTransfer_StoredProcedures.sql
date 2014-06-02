@@ -16,6 +16,9 @@
 -- 3    13/03/2014  SAG  	Soporte para un equipo en mas de una poliza
 -- -----------------------------------------------------------------------------
 -- 4	01/04/2014	SAG		Se implementa modelo STTP para tickets
+-- -----------------------------------------------------------------------------
+-- 5	28/05/2014	SAG		Correcciones de duplicacion en OS
+-- -----------------------------------------------------------------------------
 
 use blackstarDbTransfer;
 
@@ -198,7 +201,12 @@ BEGIN
 		ot.serviceComments, ot.closed, ot.consultant, CURRENT_DATE(), 'ServiceOrderTransfer', 'portal-servicios'
 	FROM blackstarDbTransfer.serviceTx ot
 		LEFT OUTER JOIN blackstarDb.ticket t ON t.ticketNumber = ot.ticketNumber
-		LEFT OUTER JOIN blackstarDb.policy p ON p.serialNumber = ot.serialNumber AND ot.serialNumber != 'NA'
+		LEFT OUTER JOIN blackstarDb.policy p ON p.serialNumber = ot.serialNumber 
+			AND ot.serialNumber != 'NA' 
+			AND ot.serialNumber != 'XXXXXXXX' 
+			AND ot.project = p.project 
+			AND ot.serviceDate >= p.startDate 
+			AND ot.serviceDate <= p.endDate
 	WHERE ot.serviceNumber NOT IN (SELECT serviceOrderNumber FROM blackstarDb.serviceOrder);
 		
 	-- ACTUALIZACION DEL STATUS

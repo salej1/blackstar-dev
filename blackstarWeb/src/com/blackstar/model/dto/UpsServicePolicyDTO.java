@@ -2,6 +2,7 @@ package com.blackstar.model.dto;
 
 import java.util.Date;
 
+import com.blackstar.model.OpenCustomer;
 import com.blackstar.model.Policy;
 import com.blackstar.model.Serviceorder;
 
@@ -13,14 +14,13 @@ public class UpsServicePolicyDTO {
 		this.serviceDate = new Date();
 	}
 	
-	public UpsServicePolicyDTO(Policy policy, String equipmentType)
+	public UpsServicePolicyDTO(Policy policy)
 	{
 		this.policyId = policy.getPolicyId();
 		this.customer = policy.getCustomer();
 		this.finalUser = policy.getFinalUser();
 		this.project = policy.getProject();
 		this.equipmentTypeId = policy.getEquipmentTypeId();
-		this.equipmentType =equipmentType;
 		this.brand = policy.getBrand();
 		this.model =policy.getModel();
 		this.serialNumber = policy.getSerialNumber();
@@ -34,15 +34,31 @@ public class UpsServicePolicyDTO {
 		this.serviceDate = new Date();
 	}
 	
+	public UpsServicePolicyDTO(OpenCustomer customer){
+		this.customer = customer.getCustomerName();
+		this.finalUser = customer.getContactEmail();
+		this.project = "";
+		if(customer.getEquipmentTypeId() != null && customer.getEquipmentTypeId().length() > 0){
+			this.equipmentTypeId = customer.getEquipmentTypeId().charAt(0);
+		}
+		this.brand = customer.getBrand();
+		this.model = customer.getModel();
+		this.serialNumber = customer.getSerialNumber();
+		this.capacity = customer.getCapacity();
+		this.equipmentAddress = customer.getAddress();
+		this.contactName = customer.getContactName();
+		this.contactPhone = customer.getPhone();
+		
+		this.serviceDate = new Date();
+	}
 
-	public UpsServicePolicyDTO(Policy policy, String equipmentType, Serviceorder serviceOrder)
+	public UpsServicePolicyDTO(Policy policy, Serviceorder serviceOrder)
 	{
 		this.policyId = policy.getPolicyId();
 		this.customer = policy.getCustomer();
 		this.finalUser = policy.getFinalUser();
 		this.project = policy.getProject();
 		this.equipmentTypeId = policy.getEquipmentTypeId();
-		this.equipmentType =equipmentType;
 		this.brand = policy.getBrand();
 		this.model =policy.getModel();
 		this.serialNumber = policy.getSerialNumber();
@@ -68,16 +84,17 @@ public class UpsServicePolicyDTO {
 		this.serviceOrderNumber = serviceOrder.getServiceOrderNumber();
 		this.receivedByEmail = serviceOrder.getReceivedByEmail();
 		this.responsibleName = serviceOrder.getEmployeeNameListString();
+		this.isWrong = serviceOrder.getIsWrong();
+		this.serviceEndDate = serviceOrder.getServiceEndDate();
 	}
 	
-	public UpsServicePolicyDTO(Policy policy, String equipmentType, Serviceorder serviceOrder,  UpsServiceDTO upsService)
+	public UpsServicePolicyDTO(Policy policy, Serviceorder serviceOrder,  UpsServiceDTO upsService)
 	{
 		this.policyId = policy.getPolicyId();
 		this.customer = policy.getCustomer();
 		this.finalUser = policy.getFinalUser();
 		this.project = policy.getProject();
 		this.equipmentTypeId = policy.getEquipmentTypeId();
-		this.equipmentType =equipmentType;
 		this.brand = policy.getBrand();
 		this.model =policy.getModel();
 		this.serialNumber = policy.getSerialNumber();
@@ -103,6 +120,84 @@ public class UpsServicePolicyDTO {
 		this.serviceOrderNumber = serviceOrder.getServiceOrderNumber();
 		this.receivedByEmail = serviceOrder.getReceivedByEmail();
 		this.responsibleName = serviceOrder.getEmployeeNameListString();
+		this.isWrong = serviceOrder.getIsWrong();
+		this.serviceEndDate = serviceOrder.getServiceEndDate();
+		
+		this.upsServiceId = upsService.getUpsServiceId();
+		this.estatusEquipment = upsService.getEstatusEquipment();
+		this.cleaned = upsService.getCleaned();
+		this.hooverClean = upsService.getHooverClean();
+		this.verifyConnections = upsService.getVerifyConnections();
+		this.capacitorStatus = upsService.getCapacitorStatus();
+		this.verifyFuzz = upsService.getVerifyFuzz();
+		this.chargerReview = upsService.getChargerReview();
+		this.fanStatus = upsService.getFanStatus();
+		this.observations = upsService.getObservations();
+		
+		this.upsServiceBatteryBankId = upsService.getUpsServiceBatteryBankId();
+		this.checkConnectors = upsService.getCheckConnectors();
+		this.cverifyOutflow = upsService.getCverifyOutflow();
+		this.numberBatteries = upsService.getNumberBatteries();
+		this.manufacturedDateSerial = upsService.getManufacturedDateSerial();
+		this.damageBatteries = upsService.getDamageBatteries();
+		this.other = upsService.getOther();
+		this.temp = upsService.getTemp();
+		this.chargeTest = upsService.getChargeTest();
+		this.brandModel = upsService.getBrandModel();
+		this.batteryVoltage = upsService.getBatteryVoltage();
+		
+		this.upsServiceGeneralTestId = upsService.getUpsServiceGeneralTestId();
+		this.trasferLine = upsService.getTrasferLine();
+		this.transferEmergencyPlant = upsService.getTransferEmergencyPlant();
+		this.backupBatteries = upsService.getBackupBatteries();
+		this.verifyVoltage = upsService.getVerifyVoltage();
+		
+		this.upsServiceParamsId = upsService.getUpsServiceParamsId();
+		this.inputVoltagePhase = upsService.getInputVoltagePhase();
+		this.inputVoltageNeutro = upsService.getInputVoltageNeutro();
+		this.inputVoltageNeutroGround = upsService.getInputVoltageNeutroGround();
+		this.percentCharge = upsService.getPercentCharge();
+		this.outputVoltagePhase = upsService.getOutputVoltagePhase();
+		this.outputVoltageNeutro = upsService.getOutputVoltageNeutro();
+		this.inOutFrecuency = upsService.getInOutFrecuency();
+		this.busVoltage = upsService.getBusVoltage();
+	}
+	
+	public UpsServicePolicyDTO(OpenCustomer customer, Serviceorder serviceOrder,  UpsServiceDTO upsService){
+		this.customer = customer.getCustomerName();
+		this.finalUser = customer.getContactEmail();
+		this.project = "";
+		if(customer.getEquipmentTypeId() != null && customer.getEquipmentTypeId().length() > 0){
+			this.equipmentTypeId = customer.getEquipmentTypeId().charAt(0);
+		}
+		this.brand = customer.getBrand();
+		this.model = customer.getModel();
+		this.serialNumber = customer.getSerialNumber();
+		this.capacity = customer.getCapacity();
+		this.equipmentAddress = customer.getAddress();
+		this.contactName = customer.getContactName();
+		this.contactPhone = customer.getPhone();
+		
+		this.serviceDate = new Date();
+		
+		this.serviceOrderId = serviceOrder.getServiceOrderId();
+		this.ticketId = serviceOrder.getTicketId();
+		this.serviceDate = serviceOrder.getServiceDate();
+		this.responsible = serviceOrder.getResponsible();
+		this.receivedBy = serviceOrder.getReceivedBy();
+		this.serviceStatusId = serviceOrder.getStatusId();
+		this.closed = serviceOrder.getClosed();
+		this.consultant = serviceOrder.getConsultant();
+		this.coordinator = serviceOrder.getCoordinator();
+		this.asignee = serviceOrder.getAsignee();
+		this.signCreated = serviceOrder.getSignCreated();
+		this.signReceivedBy = serviceOrder.getsignReceivedBy();
+		this.receivedByPosition = serviceOrder.getReceivedByPosition();
+		this.serviceOrderNumber = serviceOrder.getServiceOrderNumber();
+		this.receivedByEmail = serviceOrder.getReceivedByEmail();
+		this.responsibleName = serviceOrder.getEmployeeNameListString();
+		this.isWrong = serviceOrder.getIsWrong();
+		this.serviceEndDate = serviceOrder.getServiceEndDate();
 		
 		this.upsServiceId = upsService.getUpsServiceId();
 		this.estatusEquipment = upsService.getEstatusEquipment();
@@ -175,6 +270,9 @@ public class UpsServicePolicyDTO {
 	private String serviceOrderNumber;
 	private String serviceTypeId;
 	private String	responsibleName;
+	private Integer openCustomerId;
+	private Integer isWrong;
+	private Date serviceEndDate;
 	
 	private Integer upsServiceId;	
 	private String estatusEquipment;
@@ -617,5 +715,29 @@ public class UpsServicePolicyDTO {
 
 	public void setResponsibleName(String responsibleName) {
 		this.responsibleName = responsibleName;
+	}
+
+	public Integer getOpenCustomerId() {
+		return openCustomerId;
+	}
+
+	public void setOpenCustomerId(Integer openCustomerId) {
+		this.openCustomerId = openCustomerId;
+	}
+
+	public Integer getIsWrong() {
+		return isWrong;
+	}
+
+	public void setIsWrong(Integer isWrong) {
+		this.isWrong = isWrong;
+	}
+
+	public Date getServiceEndDate() {
+		return serviceEndDate;
+	}
+
+	public void setServiceEndDate(Date serviceEndDate) {
+		this.serviceEndDate = serviceEndDate;
 	}
 }

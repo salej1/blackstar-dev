@@ -15,13 +15,13 @@ import com.blackstar.db.DAOFactory;
 import com.blackstar.interfaces.IEmailService;
 import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
-import com.blackstar.model.Equipmenttype;
+import com.blackstar.model.OpenCustomer;
 import com.blackstar.model.Policy;
 import com.blackstar.model.Serviceorder;
-import com.blackstar.model.Ticket;
 import com.blackstar.model.UserSession;
 import com.blackstar.model.dto.EmergencyPlantServiceDTO;
 import com.blackstar.model.dto.EmergencyPlantServicePolicyDTO;
+import com.blackstar.services.interfaces.OpenCustomerService;
 import com.blackstar.services.interfaces.ReportService;
 import com.blackstar.services.interfaces.ServiceOrderService;
 import com.blackstar.web.AbstractController;
@@ -34,6 +34,7 @@ public class EmergencyPlantServiceController extends AbstractController {
 	  private DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.MYSQL);
       private ReportService rpService = null;
       private IEmailService gmService = null;
+      private OpenCustomerService ocService = null; // OpenCustomerService
       
       public void setGmService(IEmailService gmService) {
             this.gmService = gmService;
@@ -47,6 +48,10 @@ public class EmergencyPlantServiceController extends AbstractController {
 		this.service = service;
 	  }
 	  
+	  public void setOcService(OpenCustomerService customerService) {
+			this.ocService = customerService;
+	  }
+		  
 	  @RequestMapping(value= "/show.do", method = RequestMethod.GET)
 	  public String  emergencyplantservice(@RequestParam(required = true) Integer operation, @RequestParam(required = true) String idObject, ModelMap model)
 	  {
@@ -58,20 +63,10 @@ public class EmergencyPlantServiceController extends AbstractController {
 				  //si la operation es 1, el idObject es el id de un ticket
 				  //si la operation es 2, el idObject es el id de un servicio
 				  //si la operation es 3, el idObject es el no de serie del equipo
-				  //si la operation es 4, el idObject es el id del aircoservice
+				  //si la operation es 4, el idObject es irrelevante (sin poliza)
 		  		  if(operation==1)
 		  		  {
-		  			  Integer idTicket = Integer.parseInt(idObject);
-		  			  Ticket ticket = daoFactory.getTicketDAO().getTicketById(idTicket);
-	  				  Policy policy = this.daoFactory.getPolicyDAO().getPolicyById(ticket.getPolicyId());
-	  				  Equipmenttype equipType = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
-	  				  emergencyPlantServicePolicyDTO = new EmergencyPlantServicePolicyDTO(policy, equipType.getEquipmentType());
-					  emergencyPlantServicePolicyDTO.setServiceOrderNumber(service.getNewServiceNumber(policy));
-					  emergencyPlantServicePolicyDTO.setServiceStatusId("N");
-					  emergencyPlantServicePolicyDTO.setServiceTypeId("P");
-	  				  model.addAttribute("serviceOrder", emergencyPlantServicePolicyDTO);
-	  				  model.addAttribute("serviceEmployees", udService.getStaffByGroupJson(Globals.GROUP_SERVICE));
-	  				  model.addAttribute("mode", "new");
+		  			return "redirect:/plainService?operation=1&idObject=" + idObject;
 		  		  }
 		  		  else if( operation==2)
 		  		  {
@@ -79,25 +74,51 @@ public class EmergencyPlantServiceController extends AbstractController {
 		  			  EmergencyPlantServiceDTO epService = service.getEmergencyPlantService(idOrder);
 		  			  Serviceorder serviceOrder = this.daoFactory.getServiceOrderDAO().getServiceOrderById(idOrder);
 		  			  Policy policy = this.daoFactory.getPolicyDAO().getPolicyById(serviceOrder.getPolicyId());
-	  				  Equipmenttype equipType = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
-	  				  emergencyPlantServicePolicyDTO = new EmergencyPlantServicePolicyDTO(policy, equipType.getEquipmentType(), serviceOrder, epService );
-	  				  model.addAttribute("serviceOrder", emergencyPlantServicePolicyDTO);
+		  			  if(policy != null && policy.getPolicyId() > 0){
+		  				emergencyPlantServicePolicyDTO = new EmergencyPlantServicePolicyDTO(policy, serviceOrder, epService );
+		  				model.addAttribute("hasPolicy", true);
+		  			  }
+		  			  else if(serviceOrder.getOpenCustomerId() != null && serviceOrder.getOpenCustomerId() > 0){
+		  				OpenCustomer oc = ocService.GetOpenCustomerById(serviceOrder.getOpenCustomerId());
+		  				emergencyPlantServicePolicyDTO = new EmergencyPlantServicePolicyDTO(oc, serviceOrder, epService );
+		  				model.addAttribute("hasPolicy", false);
+		  			  }
+	  				  
+		  			  model.addAttribute("serviceOrder", emergencyPlantServicePolicyDTO);
+	  				  model.addAttribute("followUps", service.getFollows(idOrder));
+	  				  model.addAttribute("mode", "detail");
 		  		  }
-		  		  else if(operation==3)
+		  		  else if(operation == 3)
 		  		  {
 		  			  Policy policy  = this.daoFactory.getPolicyDAO().getPolicyBySerialNo(idObject);
-	  				  Equipmenttype equipType = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
-	  				  emergencyPlantServicePolicyDTO = new EmergencyPlantServicePolicyDTO(policy, equipType.getEquipmentType());
-					  emergencyPlantServicePolicyDTO.setServiceOrderNumber(service.getNewServiceNumber(policy));
+	  				  emergencyPlantServicePolicyDTO = new EmergencyPlantServicePolicyDTO(policy);
+					  emergencyPlantServicePolicyDTO.setServiceOrderNumber(service.getNewServiceNumber("P"));
 					  emergencyPlantServicePolicyDTO.setServiceStatusId("N");
 					  emergencyPlantServicePolicyDTO.setServiceTypeId("P");
 	  				  model.addAttribute("serviceOrder", emergencyPlantServicePolicyDTO);
 	  				  model.addAttribute("serviceEmployees", udService.getStaffByGroupJson(Globals.GROUP_SERVICE));
 	  				  model.addAttribute("mode", "new");
+	  				  model.addAttribute("hasPolicy", true);
+		  		  }
+		  		  else if(operation == 4){
+		  			  OpenCustomer oc = new OpenCustomer();
+		  			  oc.setEquipmentTypeId("P");
+	  				  emergencyPlantServicePolicyDTO = new EmergencyPlantServicePolicyDTO(oc);
+					  emergencyPlantServicePolicyDTO.setServiceOrderNumber(service.getNewServiceNumber("P"));
+					  emergencyPlantServicePolicyDTO.setServiceStatusId("N");
+					  emergencyPlantServicePolicyDTO.setServiceTypeId("P");
+	  				  model.addAttribute("serviceOrder", emergencyPlantServicePolicyDTO);
+	  				  model.addAttribute("serviceEmployees", udService.getStaffByGroupJson(Globals.GROUP_SERVICE));
+	  				  model.addAttribute("mode", "new");
+	  				  model.addAttribute("hasPolicy", false);
 		  		  }
 
-		  		  model.addAttribute("osAttachmentFolder", gdService.getAttachmentFolderId(emergencyPlantServicePolicyDTO.getServiceOrderNumber()));
-		  		  model.addAttribute("accessToken", gdService.getAccessToken());
+		  		  model.addAttribute("serviceTypes", service.getServiceTypeList());
+				  model.addAttribute("serviceStatuses", service.getServiceStatusList());
+				  model.addAttribute("osAttachmentFolder", gdService.getAttachmentFolderId(emergencyPlantServicePolicyDTO.getServiceOrderNumber()));
+				  model.addAttribute("rootFolder", gdService.getRootFolderId());
+				  model.addAttribute("accessToken", gdService.getAccessToken());
+				  model.addAttribute("equipmentTypeList", service.getEquipmentTypeList());
 	  		  }
 			  else
 			  {
@@ -122,42 +143,72 @@ public class EmergencyPlantServiceController extends AbstractController {
 			  @ModelAttribute(Globals.SESSION_KEY_PARAM)  UserSession userSession,
               ModelMap model) throws Exception {
 	    	int idServicio = 0;
+	    	int custId = 0;
 			try{
-				// Verificar si existe una orden de servicio
-	    		if(serviceOrder.getServiceOrderId()==null)
-	    		{
-	    			//Crear orden de servicio
-	    			Serviceorder servicioOrderSave = new Serviceorder();
-	    			servicioOrderSave.setPolicyId(serviceOrder.getPolicyId());
-	    			servicioOrderSave.setReceivedBy(serviceOrder.getReceivedBy());
-	    			servicioOrderSave.setReceivedByPosition(serviceOrder.getReceivedByPosition());
-	    			servicioOrderSave.setEmployeeListString(serviceOrder.getResponsible());
-	    			servicioOrderSave.setServiceDate(serviceOrder.getServiceDate());
-	    			servicioOrderSave.setServiceOrderNumber(serviceOrder.getServiceOrderNumber());
-	    			servicioOrderSave.setServiceTypeId(serviceOrder.getServiceTypeId().toCharArray()[0]);
-	    			servicioOrderSave.setSignCreated(serviceOrder.getSignCreated());
-	    			servicioOrderSave.setSignReceivedBy(serviceOrder.getSignReceivedBy());
-	    		    servicioOrderSave.setClosed(new Date());
-	    		    servicioOrderSave.setStatusId("N");
-	    			idServicio = service.saveServiceOrder(servicioOrderSave, "EmergencyPlantServiceController", userSession.getUser().getUserName());
-	    		}
-	    		else
-	    		{
-	    			//Actualizar orden de servicio
-	    			Serviceorder servicioOrderSave = new Serviceorder();
-	    			servicioOrderSave.setClosed(serviceOrder.getClosed());
-	    			servicioOrderSave.setPolicyId(serviceOrder.getPolicyId());
-	    			servicioOrderSave.setReceivedBy(serviceOrder.getReceivedBy());
-	    			servicioOrderSave.setReceivedByPosition(serviceOrder.getReceivedByPosition());
-	    			servicioOrderSave.setResponsible(serviceOrder.getResponsible());
-	    			servicioOrderSave.setServiceDate(serviceOrder.getServiceDate());
-	    			servicioOrderSave.setServiceOrderNumber(serviceOrder.getServiceOrderNumber());
-	    			servicioOrderSave.setServiceTypeId(serviceOrder.getServiceTypeId().toCharArray()[0]);
-	    			servicioOrderSave.setSignCreated(serviceOrder.getSignCreated());
-	    			servicioOrderSave.setSignReceivedBy(serviceOrder.getSignReceivedBy());
-	    			service.updateServiceOrder(servicioOrderSave, "EmergencyPlantServiceController", userSession.getUser().getUserName());
-	    		}
-	    	
+				if(serviceOrder.getServiceOrderId() != null && serviceOrder.getServiceOrderId() > 0){
+		    		// Actualizar orden de servicio
+		    		Serviceorder servicioOrderSave = new Serviceorder();
+		    		servicioOrderSave.setServiceOrderId(serviceOrder.getServiceOrderId());
+		    		if(serviceOrder.getClosed() != null && serviceOrder.getServiceStatusId().equals("C")){
+		    			servicioOrderSave.setAsignee(null);
+		    		}
+		    		servicioOrderSave.setClosed(serviceOrder.getClosed());
+		    		servicioOrderSave.setIsWrong(serviceOrder.getIsWrong());
+		    		servicioOrderSave.setStatusId(serviceOrder.getServiceStatusId());
+		    		
+		    		service.updateServiceOrder(servicioOrderSave, "EmergencyPlantServiceController", userSession.getUser().getUserEmail());
+		    		idServicio = serviceOrder.getServiceOrderId();
+		    	}
+				else{
+					if(serviceOrder.getPolicyId() == null || serviceOrder.getPolicyId() == 0){
+		    			// Guardando el cliente capturado
+			    		OpenCustomer customer = new OpenCustomer();
+			    		customer.setCustomerName(serviceOrder.getCustomer());
+			    		customer.setContactEmail(serviceOrder.getFinalUser());
+			    		customer.setEquipmentTypeId("A");
+			    		customer.setBrand(serviceOrder.getBrand());
+			    		customer.setModel(serviceOrder.getModel());
+			    		customer.setSerialNumber(serviceOrder.getSerialNumber());
+			    		customer.setCapacity(serviceOrder.getCapacity());
+			    		customer.setAddress(serviceOrder.getEquipmentAddress());
+			    		customer.setContactName(serviceOrder.getContactName());
+			    		customer.setPhone(serviceOrder.getContactPhone());
+			    		customer.setProject(serviceOrder.getProject());
+			    		customer.setOfficeId(String.valueOf(serviceOrder.getOfficeId()));	
+			    		customer.setCreated(new Date());
+			    		customer.setCreatedBy("EmergencyPlantServiceController");
+			    		customer.setCreatedByUsr(userSession.getUser().getUserEmail());
+			    		custId = ocService.SaveOpenCustomer(customer);
+		    		}
+		    		// Guardando la OS 
+		    		Serviceorder servicioOrderSave = new Serviceorder();
+		    		if(custId > 0){
+		    			servicioOrderSave.setOpenCustomerId(custId);
+		    		}
+					servicioOrderSave.setReceivedBy(serviceOrder.getReceivedBy());
+					servicioOrderSave.setReceivedByPosition(serviceOrder.getReceivedByPosition());
+					servicioOrderSave.setEmployeeListString(serviceOrder.getResponsible());
+					servicioOrderSave.setServiceDate(serviceOrder.getServiceDate());
+					servicioOrderSave.setServiceEndDate(serviceOrder.getServiceEndDate());
+					servicioOrderSave.setServiceOrderNumber(serviceOrder.getServiceOrderNumber());
+					servicioOrderSave.setServiceTypeId(serviceOrder.getServiceTypeId().toCharArray()[0]);
+					servicioOrderSave.setReceivedByEmail(serviceOrder.getReceivedByEmail());
+		    		servicioOrderSave.setIsWrong(serviceOrder.getIsWrong());
+		    		servicioOrderSave.setSignCreated(serviceOrder.getSignCreated());
+		    		servicioOrderSave.setSignReceivedBy(serviceOrder.getSignReceivedBy());
+		    		if(userSession.getUser().getBelongsToGroup().get(Globals.GROUP_COORDINATOR) != null){
+		    			servicioOrderSave.setStatusId("E");
+		    		}
+		    		else{
+		    			servicioOrderSave.setStatusId("N");	
+		    		}
+					servicioOrderSave.setPolicyId(serviceOrder.getPolicyId());
+					servicioOrderSave.setResponsible(serviceOrder.getResponsible());
+					servicioOrderSave.setTicketId(serviceOrder.getTicketId());
+					idServicio = service.saveServiceOrder(servicioOrderSave, "BatteryServiceController", userSession.getUser().getUserEmail());
+					serviceOrder.setServiceOrderId(idServicio);
+				}
+
 	    		if(serviceOrder.getEpServiceId()==null)
 	    		{
 	    			serviceOrder.setServiceOrderId(idServicio);

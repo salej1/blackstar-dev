@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@page isELIgnored="false"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -14,81 +15,52 @@
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/template.css" type="text/css" media="screen" charset="utf-8" />
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/colour.css" type="text/css" media="screen" charset="utf-8" />
 	<link href="${pageContext.request.contextPath}/js/glow/1.7.0/widgets/widgets.css" type="text/css" rel="stylesheet" />
+	<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/jquery.datetimepicker.css"/ >
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery.ui.theme.css">
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery-ui.min.css">
 	<script src="${pageContext.request.contextPath}/js/dateFormat.js"></script>
-		
+	<script src="${pageContext.request.contextPath}/js/jquery.datetimepicker.js"></script>
+	<script src="${pageContext.request.contextPath}/js/customAutocomplete.js"></script>
+	
 	<script type="text/javascript" charset="utf-8">
 		
-		function split( val ) {
-	      return val.split( /,\s*/ );
-	    }
-
-	    function extractLast( term ) {
-	      return split( term ).pop();
-	    }
-
 		$(document).ready(function () {
-			
-			$( "#serviceDate" ).val(dateNow());
-			
+					
 			// Asignacion de campos iniciales
 			var mode = "${mode}";
+			var hasPolicy =  "${hasPolicy}"
+			
 			if(mode == "detail"){
-				$("#receivedBy").attr("disabled", "");
-				$("#receivedByPosition").attr("disabled", "");
-				$("#receivedByEmail").attr("disabled", "");
-				$("#responsibleName").attr("disabled", "");
-				var isEng = "${ user.belongsToGroup['Implementacion y Servicio']}";
-				if(isEng == "true"){
-					$("#guardarServicio").hide();
-				}
+				$(".lockOnDetail").attr("disabled", "");
 			}
-			else{
+
+			if(mode == "new"){
+				$("#serviceDate").val(dateNow());
 				$("#responsibleName").val("${ user.userName }");
 				$("#responsible").val("${ user.userEmail }");
-				var strEpmloyees = '${serviceEmployees}';
-				var empData = $.parseJSON(strEpmloyees);
 
-				$("#responsibleName").bind( "keydown", function( event ) {
-			        if ( event.keyCode === $.ui.keyCode.TAB &&
-			            $( this ).data( "ui-autocomplete" ).menu.active ) {
-			          event.preventDefault();
-			        }
-			      }).autocomplete({
-					minLength: 0,
-					source: function( request, response ) {
-			          response( $.ui.autocomplete.filter(
-			            empData, extractLast( request.term ) ) );
-			        },
-					focus: function() {
-			          return false;
-			        },select: function( event, ui ) {
-			        	var terms = this.value.split(/,\s*/);
-			            terms.pop();
-			            terms.push( ui.item.label );
-			            terms.push( "" );
-			            this.value = terms.join( ", " );
+				init_autoComplete('${serviceEmployees}', "responsibleName", "responsible");
 
-			            $("#responsible").val($("#responsible").val() + ";" + ui.item.value );
-			            return false;
-					}
+				// Habilitar datetime picker
+				$("#serviceDate").datetimepicker({format:'d/m/Y H:i:s', lang:'es'});
+
+				// Habilitando campos de captura del cliente
+				if(hasPolicy == "true"){
+					$(".lockOnPolicy").attr("disabled", "");
+				}
+
+
+				// Binding officeId
+				$("#optOffices").bind('change', function(){
+					$("#officeId").val($(this).val());
 				});
 
-			    // Sincronizando los campos de firma
-			    $("#serviceOrder").submit(function(){
-					$("#signCreated").val($("#signCreatedCapture").val())
-					$("#signReceivedBy").val($("#signReceivedByCapture").val())
-				});
+				$("#officeId").val("G"); // valor inicial
 			}
 
 			// inicializando el dialogo para agregar seguimientos
 			initFollowUpDlg("serviceOrder", "osDetail?serviceOrderId=${serviceOrder.serviceOrderId}");
 
-			// Cierre de la OS
-			$("#closeBtn").bind("click", function(){
-				$("serviceStatusId").val('C');
-			});
 		});
 
 		function isNumberKey(evt){
@@ -99,9 +71,30 @@
 
 	         return true;
 		}
-	</script> 
-	
-		 
+		
+		function saveService(){
+			var startTimestamp = new Date($("#serviceDate").val());
+			if(startTimestamp == undefined || startTimestamp == null){
+				$("#serviceDate").val("");
+			}
+			
+			if($('#serviceOrder')[0].checkValidity()){
+				$('input').removeAttr("disabled");
+				$('select').removeAttr("disabled");
+				$('textarea').removeAttr("disabled");
+				if($("#responsible").val().indexOf(';') == 0){
+					$("#responsible").val($("#responsible").val().substring(1));
+				}
+				$("#signCreated").val($("#signCreatedCapture").val())
+				$("#signReceivedBy").val($("#signReceivedByCapture").val())
+				$("#serviceEndDate").val(dateNow());
+				$('#serviceOrder').submit();
+			}
+			else{
+				setTimeout(function() { $(event.target).focus();}, 50);
+			}
+		}
+	</script> 		 
 	</head>
 	<body>
 		<div id="content" class="container_16 clearfix">
@@ -120,30 +113,43 @@
 								</tr>
 								<tr>
 									<td>Cliente</td>
-									<td colspan="5"><form:input path="customer" type="text" style="width:95%;" readOnly="true" /></td>
+									<td colspan="5"><form:input path="customer" type="text" style="width:95%;"  cssClass="lockOnDetail lockOnPolicy"/></td>
 									<td>Contrato/Proyecto</td>
-									<td colspan="3"><form:input path="project" type="text" style="width:95%;" readOnly="true" /></td>
+									<td colspan="3"><form:input path="project" type="text" style="width:95%;"  cssClass="lockOnDetail lockOnPolicy"/></td>
 								</tr>
 								<tr>
 									<td>Domicilio</td>
-									<td colspan="5"><form:textarea path="equipmentAddress" style="width:95%;height:50px;" readOnly="true"></form:textarea></td>
+									<td colspan="5"><form:textarea path="equipmentAddress" style="width:95%;height:50px;"  cssClass="lockOnDetail lockOnPolicy"></form:textarea></td>
 									<td>Telefono</td>
-									<td><form:input type="text" path="contactPhone" style="width:95%;" readOnly="true" /></td>
+									<td><form:input type="text" path="contactPhone" style="width:95%;"  cssClass="lockOnDetail lockOnPolicy" /></td>
 								</tr>
 								<tr>
 									<td>Marca</td>
-									<td><form:input path="brand" type="text" style="width:95%;" readOnly="true" /></td>
+									<td><form:input path="brand" type="text" style="width:95%;" cssClass="lockOnDetail lockOnPolicy"/></td>
 									<td>Modelo</td>
-									<td><form:input path="model" type="text" style="width:95%;" readOnly="true" /></td>
+									<td><form:input path="model" type="text" style="width:95%;"  cssClass="lockOnDetail lockOnPolicy"/></td>
 									<td>Capacidad</td>
-									<td><form:input path="capacity" type="text" style="width:95%;" readOnly="true" /></td>
+									<td><form:input path="capacity" type="text" style="width:95%;"  cssClass="lockOnDetail lockOnPolicy"/></td>
 										
 								</tr>
 								<tr>
-									<td>NO. DE SERIE</td>
-									<td><form:input path="serialNumber" type="text" style="width:95%;" readOnly="true" /></td>
+									<td>No. Serie</td>
+									<td><form:input path="serialNumber" type="text" style="width:95%;"  cssClass="lockOnDetail lockOnPolicy"/></td>
+									<td>Oficina</td>
+									<td>
+										<form:hidden path="officeId"/>
+										<select class="lockOnDetail lockOnPolicy" id="optOffices">
+											<c:forEach var="office" items="${offices}">
+										        <option value="${office}" 
+										        <c:if test="${serviceOrder.officeId == fn:substring(office, 0, 1)}">
+										        	selected="true"
+										    	</c:if>
+										        >${office}</option>
+										    </c:forEach>
+										</select>
+									</td>
 									<td>Fecha y hora de llegada</td>
-									<td><form:input path="serviceDate" type="text" style="width:95%;" readOnly="true" /></td>
+									<td><form:input path="serviceDate" type="text" style="width:95%;"  cssClass="lockOnDetail lockOnPolicy"/></td>
 									<form:input path="serviceTypeId" type="hidden" value="P" />
 								</tr>
 							</table>
@@ -226,9 +232,9 @@
 							<td>VOLTAJE CON CARGA</td>
 						</tr>
 						
-						<c:forEach var="i" begin="1" end="22">
+						<c:forEach var="i" begin="0" end="22">
 							<tr>
-								<td><c:out value="${i}"/></td>
+								<td><c:out value="${i+1}"/></td>
 								<td>
 									<form:hidden path="cells[${i}].cellNumber" value="${i}"/>
 									<form:input path="cells[${i}].floatVoltage"  type="text" style="width:95%;" onkeypress='return isNumberKey(event)'/>
@@ -297,7 +303,8 @@
 									<td><form:input path="receivedBy" type="text" style="width:95%;" required="true"/></td>
 								</tr>
 								<tr>
-									<td colspan="2"></td>
+									<td></td>
+									<td><form:hidden cssClass="lockOnDetail" path="serviceEndDate"/></td>
 									<td>Puesto</td>
 									<td><form:input path="receivedByPosition"  style="width:95%;"  /></td>
 								</tr>			
@@ -312,7 +319,9 @@
 								<tbody>
 									<tr>
 										<td>
-											<input class="searchButton" type="submit" value="Guardar servicio">
+											<c:if test="${ (user.belongsToGroup['Implementacion y Servicio'] && mode == 'new') || user.belongsToGroup['Coordinador'] && mode == 'detail' }">
+												<input class="searchButton" type="submit" value="Guardar servicio" onclick="saveService();">
+											</c:if>
 										</td>
 									</tr>
 								<tbody>

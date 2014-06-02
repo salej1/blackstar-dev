@@ -24,7 +24,7 @@ public class BatteryMaintenanceReport extends AbstractReport {
 	printFeatures();
 	printDetails();
 	printGrid();
-	printFooter(data.getSignCreated(), data.getResponsibleName(), data.getClosed()
+	printFooter(data.getSignCreated(), data.getResponsibleName(), data.getServiceEndDate()
                        , data.getSignReceivedBy(), data.getReceivedBy(), data
                                                     .getReceivedByPosition());
   }
@@ -332,8 +332,7 @@ public class BatteryMaintenanceReport extends AbstractReport {
 	}
 	batteryServiceDTO.setCells(cells);
 	
-	BatteryServicePolicyDTO data = new BatteryServicePolicyDTO(policy,"equipmentType"
-			                                , serviceOrder,  batteryServiceDTO);
+	BatteryServicePolicyDTO data = new BatteryServicePolicyDTO(policy, serviceOrder,  batteryServiceDTO);
 	
     //FileOutputStream see = new FileOutputStream("C:/BatteryMaintenanceReport.pdf");
     //see.write(serv.getReport(data));

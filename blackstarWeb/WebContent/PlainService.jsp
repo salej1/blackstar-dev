@@ -22,18 +22,19 @@
 	<script type="text/javascript" charset="utf-8">
 
 	function split( val ) {
-      return val.split( /,\s*/ );
-    }
+	  return val.split( /,\s*/ );
+	}
 
-    function extractLast( term ) {
-      return split( term ).pop();
-    }
+	function extractLast( term ) {
+	  return split( term ).pop();
+	}
+
+	var mode = "${mode}";
+	var isCoord = "${user.belongsToGroup['Coordinador']}" || "false";
+	var isEng = "${user.belongsToGroup['Implementacion y Servicio']}" || "false";
+	var hasPolicy = "${hasPolicy}";
 
 	$(document).ready(function () {
-		var mode = "${mode}";
-		var isCoord = "${user.belongsToGroup['Coordinador']}";
-		var isEng = "${user.belongsToGroup['Implementacion y Servicio']}";
-		var hasPolicy = "${hasPolicy}";
 
 		// Bloquear los campos de entrada en modo detalle
 		if(mode == "detail"){
@@ -146,6 +147,8 @@
 			$("#officeId").val($(this).val());
 		});
 
+		$("#officeId").val("G"); // valor inicial
+
 		// bloqueando lockOnEngDetail
 		if(isEng == "true" && mode == "detail"){
 			$(".lockOnEngDetail").attr("disabled", "");
@@ -162,6 +165,7 @@
 		if(startTimestamp == undefined || startTimestamp == null){
 			$("#serviceDate").val("");
 		}
+
 		if(isCoord == "true"){
 			var endTimestamp = new Date($("#serviceEndDate").val());
 			if(endTimestamp == undefined || endTimestamp == null){

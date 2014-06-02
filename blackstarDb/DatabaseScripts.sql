@@ -1178,6 +1178,10 @@ DROP PROCEDURE blackstarDb.upgradeSchema;
 --								blackstarDb.GetLimitedFutureServicesSchedule
 --								blackstarDb.GetServiceOrderDetails
 -- -----------------------------------------------------------------------------
+-- 42	26/05/2014	SAG 	Se reemplaza:
+--								blackstarDb.GetNextServiceNumberForEquipment por:
+--								blackstarDb.GetNextServiceNumberForType
+-- -----------------------------------------------------------------------------
 
 use blackstarDb;
 
@@ -3273,18 +3277,15 @@ SELECT
 END$$
 
 -- -----------------------------------------------------------------------------
-	-- blackstarDb.GetNextServiceNumberForEquipment
+	-- blackstarDb.GetNextServiceNumberForType
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetNextServiceNumberForEquipment$$
-CREATE PROCEDURE blackstarDb.GetNextServiceNumberForEquipment(pPolicyId INTEGER)
+DROP PROCEDURE IF EXISTS blackstarDb.GetNextServiceNumberForType$$
+CREATE PROCEDURE blackstarDb.GetNextServiceNumberForType(eqType VARCHAR(10))
 BEGIN
-
-	DECLARE eqType VARCHAR(10);
 	DECLARE prefix VARCHAR(10);
 	DECLARE newNumber INTEGER;
 
-	-- Obteniendo el tipo de equipo
-	SELECT equipmentTypeId into eqType FROM policy WHERE policyId = pPolicyId;
 	-- Cambiando a O por default
 	IF eqType NOT IN('A', 'B', 'P', 'U') THEN
 		SELECT 'O' into eqType;
@@ -4873,8 +4874,13 @@ DELIMITER ;
 -- 5 	03/04/2014	SAG 	Se incrementa tamaño de campos de contacto
 -- ---------------------------------------------------------------------------
 -- 6 	10/04/2014	SAG 	Se incrementa tamaño de numero de serie
---							Se incremente tamaño de finalUser
+--							Se incrementa tamaño de finalUser
 -- ---------------------------------------------------------------------------
+-- 7	26/02/2014	SAG 	Se incremeta tamaño de numero de serie (serviceTx)
+-- ---------------------------------------------------------------------------
+-- 8	28/05/2014	SAG 	Se incremeta tamaño de customer (serviceTx)
+-- ---------------------------------------------------------------------------
+
 USE blackstarDbTransfer;
 
 
@@ -4887,6 +4893,12 @@ BEGIN
 -- -----------------------------------------------------------------------------
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
+
+	-- Aumentando capacidad de campos de serviceTx
+	ALTER TABLE serviceTx MODIFY customer VARCHAR(200);
+
+	-- Aumentando capacidad de campos de serviceTx
+	ALTER TABLE serviceTx MODIFY serialNumber VARCHAR(200);
 
 	-- Aumentando capacidad de campos de policy
 	ALTER TABLE policy MODIFY serialNumber VARCHAR(200);
@@ -4954,6 +4966,9 @@ DROP PROCEDURE blackstarDbTransfer.upgradeSchema;
 -- 3    13/03/2014  SAG  	Soporte para un equipo en mas de una poliza
 -- -----------------------------------------------------------------------------
 -- 4	01/04/2014	SAG		Se implementa modelo STTP para tickets
+-- -----------------------------------------------------------------------------
+-- 5	28/05/2014	SAG		Correcciones de duplicacion en OS
+-- -----------------------------------------------------------------------------
 
 use blackstarDbTransfer;
 
@@ -5136,7 +5151,12 @@ BEGIN
 		ot.serviceComments, ot.closed, ot.consultant, CURRENT_DATE(), 'ServiceOrderTransfer', 'portal-servicios'
 	FROM blackstarDbTransfer.serviceTx ot
 		LEFT OUTER JOIN blackstarDb.ticket t ON t.ticketNumber = ot.ticketNumber
-		LEFT OUTER JOIN blackstarDb.policy p ON p.serialNumber = ot.serialNumber AND ot.serialNumber != 'NA'
+		LEFT OUTER JOIN blackstarDb.policy p ON p.serialNumber = ot.serialNumber 
+			AND ot.serialNumber != 'NA' 
+			AND ot.serialNumber != 'XXXXXXXX' 
+			AND ot.project = p.project 
+			AND ot.serviceDate >= p.startDate 
+			AND ot.serviceDate <= p.endDate
 	WHERE ot.serviceNumber NOT IN (SELECT serviceOrderNumber FROM blackstarDb.serviceOrder);
 		
 	-- ACTUALIZACION DEL STATUS

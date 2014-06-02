@@ -544,7 +544,7 @@ public class EmergencyPlantServiceReport extends AbstractReport {
 	emergencyPlantService.setTrasnferTypeProtection("TrasnferTypeProtection");
 	emergencyPlantService.setGeneratorTypeProtection("GeneratorTypeProtection");
     
-	data = new EmergencyPlantServicePolicyDTO(policy, "equipmentType", serviceOrder,  emergencyPlantService);
+	data = new EmergencyPlantServicePolicyDTO(policy, serviceOrder,  emergencyPlantService);
 	
 	//FileOutputStream see = new FileOutputStream("C:/EmergencyPlantServiceReport.pdf");
 	//see.write(serv.getReport(data));

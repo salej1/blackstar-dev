@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.blackstar.model.OpenCustomer;
 import com.blackstar.model.Policy;
 import com.blackstar.model.Serviceorder;
 
@@ -16,14 +17,13 @@ public class BatteryServicePolicyDTO {
 		this.setCells(new ArrayList<BatteryCellServiceDTO>());
 	}
 	
-	public BatteryServicePolicyDTO(Policy policy, String equipmentType)
+	public BatteryServicePolicyDTO(Policy policy)
 	{
 		this.policyId = policy.getPolicyId();
 		this.customer = policy.getCustomer();
 		this.finalUser = policy.getFinalUser();
 		this.project = policy.getProject();
 		this.equipmentTypeId = policy.getEquipmentTypeId();
-		this.equipmentType =equipmentType;
 		this.brand = policy.getBrand();
 		this.model =policy.getModel();
 		this.serialNumber = policy.getSerialNumber();
@@ -39,14 +39,35 @@ public class BatteryServicePolicyDTO {
 		this.setCells(new ArrayList<BatteryCellServiceDTO>());
 	}
 	
-	public BatteryServicePolicyDTO(Policy policy, String equipmentType, Serviceorder serviceOrder)
+	public BatteryServicePolicyDTO(OpenCustomer customer){
+		
+		this.customer = customer.getCustomerName();
+		this.finalUser = customer.getContactEmail();
+		this.project = "";
+		if(customer.getEquipmentTypeId() != null && customer.getEquipmentTypeId().length() > 0){
+			this.equipmentTypeId = customer.getEquipmentTypeId().charAt(0);
+		}
+		this.brand = customer.getBrand();
+		this.model = customer.getModel();
+		this.serialNumber = customer.getSerialNumber();
+		this.capacity = customer.getCapacity();
+		this.equipmentAddress = customer.getAddress();
+		if(customer.getOfficeId() != null && customer.getOfficeId().length() > 0){
+			this.officeId = customer.getOfficeId().charAt(0);
+		}
+		this.contactName = customer.getContactName();
+		this.contactPhone = customer.getPhone();
+		
+		this.serviceDate = new Date();
+	}
+	
+	public BatteryServicePolicyDTO(Policy policy, Serviceorder serviceOrder)
 	{
 		this.policyId = policy.getPolicyId();
 		this.customer = policy.getCustomer();
 		this.finalUser = policy.getFinalUser();
 		this.project = policy.getProject();
 		this.equipmentTypeId = policy.getEquipmentTypeId();
-		this.equipmentType =equipmentType;
 		this.brand = policy.getBrand();
 		this.model =policy.getModel();
 		this.serialNumber = policy.getSerialNumber();
@@ -72,19 +93,20 @@ public class BatteryServicePolicyDTO {
 		this.serviceOrderNumber = serviceOrder.getServiceOrderNumber();
 		this.receivedByEmail = serviceOrder.getReceivedByEmail();
 		this.responsibleName = serviceOrder.getEmployeeNameListString();
+		this.isWrong = serviceOrder.getIsWrong();
+		this.serviceEndDate = serviceOrder.getServiceEndDate();
 		
 		this.setCells(new ArrayList<BatteryCellServiceDTO>());
 		
 	}
 	
-	public BatteryServicePolicyDTO(Policy policy, String equipmentType, Serviceorder serviceOrder,  BatteryServiceDTO batteryServiceDTO)
+	public BatteryServicePolicyDTO(Policy policy, Serviceorder serviceOrder,  BatteryServiceDTO batteryServiceDTO)
 	{
 		this.policyId = policy.getPolicyId();
 		this.customer = policy.getCustomer();
 		this.finalUser = policy.getFinalUser();
 		this.project = policy.getProject();
 		this.equipmentTypeId = policy.getEquipmentTypeId();
-		this.equipmentType =equipmentType;
 		this.brand = policy.getBrand();
 		this.model =policy.getModel();
 		this.serialNumber = policy.getSerialNumber();
@@ -110,6 +132,70 @@ public class BatteryServicePolicyDTO {
 		this.serviceOrderNumber = serviceOrder.getServiceOrderNumber();
 		this.receivedByEmail = serviceOrder.getReceivedByEmail();
 		this.responsibleName = serviceOrder.getEmployeeNameListString();
+		this.isWrong = serviceOrder.getIsWrong();
+		this.serviceEndDate = serviceOrder.getServiceEndDate();
+		
+		this.bbServiceId = batteryServiceDTO.getBbServiceId();
+		this.serviceOrderId = batteryServiceDTO.getServiceOrderId();		
+		this.plugClean = batteryServiceDTO.getPlugClean();
+		this.plugCleanStatus = batteryServiceDTO.getPlugCleanStatus();
+		this.plugCleanComments = batteryServiceDTO.getPlugCleanComments();
+		this.coverClean = batteryServiceDTO.getCoverClean();
+		this.coverCleanStatus = batteryServiceDTO.getCoverCleanStatus();
+		this.coverCleanComments = batteryServiceDTO.getCoverCleanComments();
+		this.capClean = batteryServiceDTO.getCapClean();
+		this.capCleanStatus = batteryServiceDTO.getCapCleanStatus();
+		this.capCleanComments = batteryServiceDTO.getCapCleanComments();
+		this.groundClean = batteryServiceDTO.getGroundClean();
+		this.groundCleanStatus = batteryServiceDTO.getGroundCleanStatus();
+		this.groundCleanComments = batteryServiceDTO.getGroundCleanComments();
+		this.rackClean = batteryServiceDTO.getRackClean();
+		this.rackCleanStatus = batteryServiceDTO.getRackCleanStatus();
+		this.rackCleanComments = batteryServiceDTO.getRackCleanComments();
+		this.serialNoDateManufact = batteryServiceDTO.getSerialNoDateManufact();
+		this.batteryTemperature = batteryServiceDTO.getBatteryTemperature();
+		this.voltageBus = batteryServiceDTO.getVoltageBus();
+		this.temperature = batteryServiceDTO.getTemperature();
+		this.cells = batteryServiceDTO.getCells();
+	}
+	
+	public BatteryServicePolicyDTO(OpenCustomer customer, Serviceorder serviceOrder,  BatteryServiceDTO batteryServiceDTO){
+		this.customer = customer.getCustomerName();
+		this.finalUser = customer.getContactEmail();
+		this.project = "";
+		if(customer.getEquipmentTypeId() != null && customer.getEquipmentTypeId().length() > 0){
+			this.equipmentTypeId = customer.getEquipmentTypeId().charAt(0);
+		}
+		this.brand = customer.getBrand();
+		this.model = customer.getModel();
+		this.serialNumber = customer.getSerialNumber();
+		this.capacity = customer.getCapacity();
+		this.equipmentAddress = customer.getAddress();
+		this.contactName = customer.getContactName();
+		this.contactPhone = customer.getPhone();
+		if(customer.getOfficeId() != null && customer.getOfficeId().length() > 0){
+			this.officeId = customer.getOfficeId().charAt(0);
+		}
+		
+		this.serviceDate = new Date();
+		this.serviceOrderId = serviceOrder.getServiceOrderId();
+		this.ticketId = serviceOrder.getTicketId();
+		this.serviceDate = serviceOrder.getServiceDate();
+		this.responsible = serviceOrder.getResponsible();
+		this.receivedBy = serviceOrder.getReceivedBy();
+		this.serviceStatusId = serviceOrder.getStatusId();
+		this.closed = serviceOrder.getClosed();
+		this.consultant = serviceOrder.getConsultant();
+		this.coordinator = serviceOrder.getCoordinator();
+		this.asignee = serviceOrder.getAsignee();
+		this.signCreated = serviceOrder.getSignCreated();
+		this.signReceivedBy = serviceOrder.getsignReceivedBy();
+		this.receivedByPosition = serviceOrder.getReceivedByPosition();
+		this.serviceOrderNumber = serviceOrder.getServiceOrderNumber();
+		this.receivedByEmail = serviceOrder.getReceivedByEmail();
+		this.responsibleName = serviceOrder.getEmployeeNameListString();
+		this.isWrong = serviceOrder.getIsWrong();
+		this.serviceEndDate = serviceOrder.getServiceEndDate();
 		
 		this.bbServiceId = batteryServiceDTO.getBbServiceId();
 		this.serviceOrderId = batteryServiceDTO.getServiceOrderId();		
@@ -189,6 +275,9 @@ public class BatteryServicePolicyDTO {
 	private String receivedByEmail;
 	private List<BatteryCellServiceDTO> cells;
 	private String responsibleName;
+	private Integer isWrong;
+	private Integer openCustomerId;
+	private Date serviceEndDate;
 	
 	public Integer getPolicyId() {
 		return policyId;
@@ -507,6 +596,30 @@ public class BatteryServicePolicyDTO {
 
 	public void setResponsibleName(String responsibleName) {
 		this.responsibleName = responsibleName;
+	}
+
+	public Integer getIsWrong() {
+		return isWrong;
+	}
+
+	public void setIsWrong(Integer isWrong) {
+		this.isWrong = isWrong;
+	}
+
+	public Integer getOpenCustomerId() {
+		return openCustomerId;
+	}
+
+	public void setOpenCustomerId(Integer openCustomerId) {
+		this.openCustomerId = openCustomerId;
+	}
+
+	public Date getServiceEndDate() {
+		return serviceEndDate;
+	}
+
+	public void setServiceEndDate(Date serviceEndDate) {
+		this.serviceEndDate = serviceEndDate;
 	}
 	
 	

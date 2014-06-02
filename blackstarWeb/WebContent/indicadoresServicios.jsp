@@ -28,12 +28,7 @@
 			var policySearch = "";
 
 			$(function(){
-				$("#searchBox").hide();
-				$("#policySearch").bind("click", function(){
-					policySearch = $("#policySearchBox").val();
-					go('getPolicies');
-				});
-
+				
 				$("#optProjects").bind("change", function(){
 					project = $(this).val();
 				});
@@ -63,19 +58,17 @@
 		    	 	}
 		    	 });
 			});
+
 			 function go(indAction, mode){
 			 	if(typeof(mode) != undefined && mode == 'display'){
 			 		window.open("${pageContext.request.contextPath}/indServicios/" + indAction + ".do?project=" + project + "&startDate=" + encodeURIComponent(startDateStr) + "&endDate=" + encodeURIComponent(endDateStr));
 			 	}
 			 	else{
 			 		 $("a[href*=#]").css({ "color": "#888", "text-decoration":"underline"});
-		    		 $("#indicatorDetail").load("${pageContext.request.contextPath}/indServicios/" + indAction + ".do?policySearch=" + policySearch + "&project=" + project + "&startDate=" + encodeURIComponent(startDateStr) + "&endDate=" + encodeURIComponent(endDateStr), function() {
+		    		 $("#indicatorDetail").load("${pageContext.request.contextPath}/indServicios/" + indAction + ".do?project=" + project + "&startDate=" + encodeURIComponent(startDateStr) + "&endDate=" + encodeURIComponent(endDateStr), function() {
 		    		  $("#" + indAction).css({ "color": "#800080", "text-decoration":"none"});
 		    	  });
 			 	}
-		     }
-		     function showPolicySearch(){
-		     	$("#searchBox").show();
 		     }
 		</script>
 	</head>
@@ -158,11 +151,7 @@
 							<img src="/img/navigate-right.png"/><a href="#" id="getOSResume" onclick="go('getOSResume')">Resumen Ordenes de servicio</a>
 						</div> -->
 						<div>
-							<img src="/img/navigate-right.png"/><a href="#" id="getPolicies" onclick="showPolicySearch();">Concentrado polizas</a>
-						</div>
-						<div id="searchBox" >
-							<input type="text" id="policySearchBox" name="policySearch" style="width:250px;"/>
-							<input id="policySearch" type="submit" class="searchButton" value="Buscar" />
+							<img src="/img/navigate-right.png"/><a href="#" id="getPolicies" onclick="go('getPolicies');">Concentrado polizas</a>
 						</div>
 						<c:if test="${user.belongsToGroup['Call Center']}">
 							<div>

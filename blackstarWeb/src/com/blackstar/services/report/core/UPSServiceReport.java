@@ -395,7 +395,7 @@ public class UPSServiceReport extends AbstractReport {
 	upsService.setOutputVoltageNeutro(6D);
 	upsService.setInOutFrecuency(7D);
 	upsService.setBusVoltage(8D);
-	data = new UpsServicePolicyDTO(policy, "equipmentType", serviceOrder,  upsService);
+	data = new UpsServicePolicyDTO(policy, serviceOrder,  upsService);
 	
 	//FileOutputStream see = new FileOutputStream("C:/UPSServiceReport.pdf");
 	//see.write(serv.getReport(data));

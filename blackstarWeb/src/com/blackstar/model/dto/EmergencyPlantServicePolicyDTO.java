@@ -2,6 +2,7 @@ package com.blackstar.model.dto;
 
 import java.util.Date;
 
+import com.blackstar.model.OpenCustomer;
 import com.blackstar.model.Policy;
 import com.blackstar.model.Serviceorder;
 
@@ -13,14 +14,13 @@ public class EmergencyPlantServicePolicyDTO {
 		this.serviceDate = new Date();
 	}
 	
-	public EmergencyPlantServicePolicyDTO(Policy policy, String equipmentType)
+	public EmergencyPlantServicePolicyDTO(Policy policy)
 	{
 		this.policyId = policy.getPolicyId();
 		this.customer = policy.getCustomer();
 		this.finalUser = policy.getFinalUser();
 		this.project = policy.getProject();
 		this.equipmentTypeId = policy.getEquipmentTypeId();
-		this.equipmentType =equipmentType;
 		this.brand = policy.getBrand();
 		this.model =policy.getModel();
 		this.serialNumber = policy.getSerialNumber();
@@ -34,49 +34,31 @@ public class EmergencyPlantServicePolicyDTO {
 		this.serviceDate = new Date();
 	}
 	
-	public EmergencyPlantServicePolicyDTO(Policy policy, String equipmentType, Serviceorder serviceOrder)
-	{
-		this.policyId = policy.getPolicyId();
-		this.customer = policy.getCustomer();
-		this.finalUser = policy.getFinalUser();
-		this.project = policy.getProject();
-		this.equipmentTypeId = policy.getEquipmentTypeId();
-		this.equipmentType =equipmentType;
-		this.brand = policy.getBrand();
-		this.model =policy.getModel();
-		this.serialNumber = policy.getSerialNumber();
-		this.capacity = policy.getCapacity();
-		this.equipmentAddress = policy.getEquipmentAddress();
-		this.officeId = policy.getOfficeId();
-		this.contactName = policy.getContactName();
-		this.contactPhone = policy.getContactPhone();
+	public EmergencyPlantServicePolicyDTO(OpenCustomer customer){
+		this.customer = customer.getCustomerName();
+		this.finalUser = customer.getContactEmail();
+		this.project = "";
+		if(customer.getEquipmentTypeId() != null && customer.getEquipmentTypeId().length() > 0){
+			this.equipmentTypeId = customer.getEquipmentTypeId().charAt(0);
+		}
+		this.brand = customer.getBrand();
+		this.model = customer.getModel();
+		this.serialNumber = customer.getSerialNumber();
+		this.capacity = customer.getCapacity();
+		this.equipmentAddress = customer.getAddress();
+		this.contactName = customer.getContactName();
+		this.contactPhone = customer.getPhone();
 		
-		this.serviceOrderId = serviceOrder.getServiceOrderId();
-		this.ticketId = serviceOrder.getTicketId();
-		this.serviceDate = serviceOrder.getServiceDate();
-		this.responsible = serviceOrder.getResponsible();
-		this.receivedBy = serviceOrder.getReceivedBy();
-		this.serviceStatusId = serviceOrder.getStatusId();
-		this.closed = serviceOrder.getClosed();
-		this.consultant = serviceOrder.getConsultant();
-		this.coordinator = serviceOrder.getCoordinator();
-		this.asignee = serviceOrder.getAsignee();
-		this.signCreated = serviceOrder.getSignCreated();
-		this.signReceivedBy = serviceOrder.getsignReceivedBy();
-		this.receivedByPosition = serviceOrder.getReceivedByPosition();
-		this.serviceOrderNumber = serviceOrder.getServiceOrderNumber();
-		this.receivedByEmail = serviceOrder.getReceivedByEmail();
-		this.responsibleName = serviceOrder.getEmployeeNameListString();
+		this.serviceDate = new Date();
 	}
 	
-	public EmergencyPlantServicePolicyDTO(Policy policy, String equipmentType, Serviceorder serviceOrder,  EmergencyPlantServiceDTO emergencyPlantService)
+	public EmergencyPlantServicePolicyDTO(Policy policy, Serviceorder serviceOrder)
 	{
 		this.policyId = policy.getPolicyId();
 		this.customer = policy.getCustomer();
 		this.finalUser = policy.getFinalUser();
 		this.project = policy.getProject();
 		this.equipmentTypeId = policy.getEquipmentTypeId();
-		this.equipmentType =equipmentType;
 		this.brand = policy.getBrand();
 		this.model =policy.getModel();
 		this.serialNumber = policy.getSerialNumber();
@@ -102,6 +84,192 @@ public class EmergencyPlantServicePolicyDTO {
 		this.serviceOrderNumber = serviceOrder.getServiceOrderNumber();
 		this.receivedByEmail = serviceOrder.getReceivedByEmail();
 		this.responsibleName = serviceOrder.getEmployeeNameListString();
+		this.isWrong = serviceOrder.getIsWrong();
+		this.serviceEndDate = serviceOrder.getServiceEndDate();
+	}
+	
+	public EmergencyPlantServicePolicyDTO(Policy policy, Serviceorder serviceOrder,  EmergencyPlantServiceDTO emergencyPlantService)
+	{
+		this.policyId = policy.getPolicyId();
+		this.customer = policy.getCustomer();
+		this.finalUser = policy.getFinalUser();
+		this.project = policy.getProject();
+		this.equipmentTypeId = policy.getEquipmentTypeId();
+		this.brand = policy.getBrand();
+		this.model =policy.getModel();
+		this.serialNumber = policy.getSerialNumber();
+		this.capacity = policy.getCapacity();
+		this.equipmentAddress = policy.getEquipmentAddress();
+		this.officeId = policy.getOfficeId();
+		this.contactName = policy.getContactName();
+		this.contactPhone = policy.getContactPhone();
+		
+		this.serviceOrderId = serviceOrder.getServiceOrderId();
+		this.ticketId = serviceOrder.getTicketId();
+		this.serviceDate = serviceOrder.getServiceDate();
+		this.responsible = serviceOrder.getResponsible();
+		this.receivedBy = serviceOrder.getReceivedBy();
+		this.serviceStatusId = serviceOrder.getStatusId();
+		this.closed = serviceOrder.getClosed();
+		this.consultant = serviceOrder.getConsultant();
+		this.coordinator = serviceOrder.getCoordinator();
+		this.asignee = serviceOrder.getAsignee();
+		this.signCreated = serviceOrder.getSignCreated();
+		this.signReceivedBy = serviceOrder.getsignReceivedBy();
+		this.receivedByPosition = serviceOrder.getReceivedByPosition();
+		this.serviceOrderNumber = serviceOrder.getServiceOrderNumber();
+		this.receivedByEmail = serviceOrder.getReceivedByEmail();
+		this.responsibleName = serviceOrder.getEmployeeNameListString();
+		this.isWrong = serviceOrder.getIsWrong();
+		this.serviceEndDate = serviceOrder.getServiceEndDate();
+		
+		this.epServiceId = emergencyPlantService.getEpServiceId();
+		this.brandPE = emergencyPlantService.getBrandPE();
+		this.modelPE  = emergencyPlantService.getModelPE();
+		this.serialPE  = emergencyPlantService.getSerialPE();
+		this.transferType = emergencyPlantService.getTransferType();
+		this.modelTransfer = emergencyPlantService.getModelTransfer();
+		this.modelControl = emergencyPlantService.getModelControl();
+		this.modelRegVoltage = emergencyPlantService.getModelRegVoltage();
+		this.modelRegVelocity = emergencyPlantService.getModelRegVelocity();
+		this.modelCharger = emergencyPlantService.getModelCharger();
+		this.oilChange = emergencyPlantService.getOilChange();
+		this.brandMotor = emergencyPlantService.getBrandMotor();
+		this.modelMotor = emergencyPlantService.getModelMotor();
+		this.serialMotor = emergencyPlantService.getSerialMotor();
+		this.cplMotor = emergencyPlantService.getCplMotor();
+		this.brandGenerator = emergencyPlantService.getBrandGenerator();
+		this.modelGenerator = emergencyPlantService.getModelGenerator();
+		this.serialGenerator = emergencyPlantService.getSerialGenerator();
+		this.powerWattGenerator = emergencyPlantService.getPowerWattGenerator();
+		this.tensionGenerator = emergencyPlantService.getTensionGenerator();
+		this.tuningDate = emergencyPlantService.getTuningDate();
+		this.tankCapacity = emergencyPlantService.getTankCapacity();
+		this.pumpFuelModel = emergencyPlantService.getPumpFuelModel();
+		this.filterFuelFlag = emergencyPlantService.getFilterFuelFlag();
+		this.filterOilFlag = emergencyPlantService.getFilterOilFlag();
+		this.filterWaterFlag = emergencyPlantService.getFilterWaterFlag();
+		this.filterAirFlag = emergencyPlantService.getFilterAirFlag();
+		this.brandGear = emergencyPlantService.getBrandGear();
+		this.brandBattery = emergencyPlantService.getBrandBattery();
+		this.clockLecture = emergencyPlantService.getClockLecture();
+		this.serviceCorrective = emergencyPlantService.getServiceCorrective();
+		this.observations = emergencyPlantService.getObservations();
+		
+		this.epServiceSurveyId = emergencyPlantService.getEpServiceSurveyId();
+		this.levelOilFlag =  emergencyPlantService.getLevelOilFlag();
+		this.levelWaterFlag =  emergencyPlantService.getLevelWaterFlag();
+		this.levelBattery =  emergencyPlantService.getLevelBattery();
+		this.tubeLeak =  emergencyPlantService.getTubeLeak();
+		this.batteryCap =  emergencyPlantService.getBatteryCap();
+		this.batterySulfate =  emergencyPlantService.getBatterySulfate();
+		this.levelOil =  emergencyPlantService.getLevelOil();
+		this.heatEngine =  emergencyPlantService.getHeatEngine();
+		this.hoseOil =  emergencyPlantService.getHoseOil();
+		this.hoseWater =  emergencyPlantService.getHoseWater();
+		this.tubeValve =  emergencyPlantService.getTubeValve();
+		this.stripBlades =  emergencyPlantService.getStripBlades();
+		
+		this.epServiceWorkBasicId = emergencyPlantService.getEpServiceWorkBasicId();
+		this.washEngine = emergencyPlantService.getWashEngine();
+		this.washRadiator = emergencyPlantService.getWashRadiator();
+		this.cleanWorkArea = emergencyPlantService.getCleanWorkArea();
+		this.conectionCheck = emergencyPlantService.getConectionCheck();
+		this.cleanTransfer = emergencyPlantService.getCleanTransfer();
+		this.cleanCardControl = emergencyPlantService.getCleanCardControl();
+		this.checkConectionControl = emergencyPlantService.getCheckConectionControl();
+		this.checkWinding = emergencyPlantService.getCheckWinding();
+		this.batteryTests = emergencyPlantService.getBatteryTests();
+		this.checkCharger = emergencyPlantService.getCheckCharger();
+		this.checkPaint = emergencyPlantService.getCheckPaint();
+		this.cleanGenerator = emergencyPlantService.getCleanGenerator();
+		
+		this.epServiceDynamicTestId = emergencyPlantService.getEpServiceDynamicTestId();
+		this.vacuumFrequency = emergencyPlantService.getVacuumFrequency();
+		this.chargeFrequency = emergencyPlantService.getChargeFrequency();
+		this.bootTryouts = emergencyPlantService.getBootTryouts();
+		this.vacuumVoltage = emergencyPlantService.getVacuumVoltage();
+		this.chargeVoltage = emergencyPlantService.getChargeVoltage();
+		this.qualitySmoke = emergencyPlantService.getQualitySmoke();
+		this.startTime = emergencyPlantService.getStartTime();
+		this.transferTime = emergencyPlantService.getTransferTime();
+		this.stopTime = emergencyPlantService.getStopTime();
+		
+		this.epServiceTestProtectionId = emergencyPlantService.getEpServiceTestProtectionId();
+		this.tempSensor = emergencyPlantService.getTempSensor();
+		this.oilSensor = emergencyPlantService.getOilSensor();
+		this.voltageSensor = emergencyPlantService.getVoltageSensor();
+		this.overSpeedSensor = emergencyPlantService.getOverSpeedSensor();
+		this.oilPreasureSensor = emergencyPlantService.getOilPreasureSensor();
+		this.waterLevelSensor = emergencyPlantService.getWaterLevelSensor();
+		
+		this.epServiceTransferSwitchId = emergencyPlantService.getEpServiceTransferSwitchId();
+		this.mechanicalStatus = emergencyPlantService.getMechanicalStatus();
+		this.boardClean = emergencyPlantService.getBoardClean();
+		this.lampTest = emergencyPlantService.getLampTest();
+		this.screwAdjust = emergencyPlantService.getScrewAdjust();
+		this.conectionAdjust = emergencyPlantService.getConectionAdjust();
+		this.systemMotors = emergencyPlantService.getSystemMotors();
+		this.electricInterlock = emergencyPlantService.getElectricInterlock();
+		this.mechanicalInterlock = emergencyPlantService.getMechanicalInterlock();
+		this.capacityAmp = emergencyPlantService.getCapacityAmp();
+		
+		this.epServiceLecturesId = emergencyPlantService.getEpServiceLecturesId();
+		this.voltageABAN = emergencyPlantService.getVoltageABAN();
+		this.voltageACCN = emergencyPlantService.getVoltageACCN();
+		this.voltageBCBN = emergencyPlantService.getVoltageBCBN();
+		this.voltageNT = emergencyPlantService.getVoltageNT();
+		this.currentA = emergencyPlantService.getCurrentA();
+		this.currentB = emergencyPlantService.getCurrentB();
+		this.currentC = emergencyPlantService.getCurrentC();
+		this.frequency = emergencyPlantService.getFrequency();
+		this.oilPreassure = emergencyPlantService.getOilPreassure();
+		this.temp = emergencyPlantService.getTemp();
+		
+		this.epServiceParamsId = emergencyPlantService.getEpServiceParamsId();
+		this.adjsutmentTherm = emergencyPlantService.getAdjsutmentTherm();
+		this.current = emergencyPlantService.getCurrent();
+		this.batteryCurrent = emergencyPlantService.getBatteryCurrent();
+		this.clockStatus = emergencyPlantService.getClockStatus();
+		this.trasnferTypeProtection = emergencyPlantService.getTrasnferTypeProtection();
+		this.generatorTypeProtection = emergencyPlantService.getGeneratorTypeProtection();
+	}
+	
+	public EmergencyPlantServicePolicyDTO(OpenCustomer customer, Serviceorder serviceOrder,  EmergencyPlantServiceDTO emergencyPlantService){
+		this.customer = customer.getCustomerName();
+		this.finalUser = customer.getContactEmail();
+		this.project = "";
+		if(customer.getEquipmentTypeId() != null && customer.getEquipmentTypeId().length() > 0){
+			this.equipmentTypeId = customer.getEquipmentTypeId().charAt(0);
+		}
+		this.brand = customer.getBrand();
+		this.model = customer.getModel();
+		this.serialNumber = customer.getSerialNumber();
+		this.capacity = customer.getCapacity();
+		this.equipmentAddress = customer.getAddress();
+		this.contactName = customer.getContactName();
+		this.contactPhone = customer.getPhone();
+		
+		this.serviceDate = new Date();
+
+		this.serviceOrderId = serviceOrder.getServiceOrderId();
+		this.ticketId = serviceOrder.getTicketId();
+		this.serviceDate = serviceOrder.getServiceDate();
+		this.responsible = serviceOrder.getResponsible();
+		this.receivedBy = serviceOrder.getReceivedBy();
+		this.serviceStatusId = serviceOrder.getStatusId();
+		this.closed = serviceOrder.getClosed();
+		this.consultant = serviceOrder.getConsultant();
+		this.coordinator = serviceOrder.getCoordinator();
+		this.asignee = serviceOrder.getAsignee();
+		this.signCreated = serviceOrder.getSignCreated();
+		this.signReceivedBy = serviceOrder.getsignReceivedBy();
+		this.receivedByPosition = serviceOrder.getReceivedByPosition();
+		this.serviceOrderNumber = serviceOrder.getServiceOrderNumber();
+		this.receivedByEmail = serviceOrder.getReceivedByEmail();
+		this.responsibleName = serviceOrder.getEmployeeNameListString();
+		this.isWrong = serviceOrder.getIsWrong();
+		this.serviceEndDate = serviceOrder.getServiceEndDate();
 		
 		this.epServiceId = emergencyPlantService.getEpServiceId();
 		this.brandPE = emergencyPlantService.getBrandPE();
@@ -246,6 +414,9 @@ public class EmergencyPlantServicePolicyDTO {
 	private String serviceOrderNumber;
 	private String serviceTypeId;
 	private String responsibleName;
+	private String openCustomerId;
+	private Integer isWrong;
+	private Date serviceEndDate;
 	
 	private Integer epServiceId;
 	private String brandPE;
@@ -1170,6 +1341,30 @@ public class EmergencyPlantServicePolicyDTO {
 
 	public void setResponsibleName(String responsibleName) {
 		this.responsibleName = responsibleName;
+	}
+
+	public String getOpenCustomerId() {
+		return openCustomerId;
+	}
+
+	public void setOpenCustomerId(String openCustomerId) {
+		this.openCustomerId = openCustomerId;
+	}
+
+	public Integer getIsWrong() {
+		return isWrong;
+	}
+
+	public void setIsWrong(Integer isWrong) {
+		this.isWrong = isWrong;
+	}
+
+	public Date getServiceEndDate() {
+		return serviceEndDate;
+	}
+
+	public void setServiceEndDate(Date serviceEndDate) {
+		this.serviceEndDate = serviceEndDate;
 	}
 
 }

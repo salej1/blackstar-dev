@@ -10,6 +10,8 @@
 ** PR   Date    	Author	Description
 ** --   --------   -------  ------------------------------------
 ** 1    17/09/2013  SAG  	Version inicial: Exporta el archivo de OS a BD blackstarDbTransfer
+** --   --------   -------  ------------------------------------
+** 1    26/05/2014  SAG  	Se elimina carga de polizas, se seleccionan las hojas por indice.
 *****************************************************************************/
 
 function main() {
@@ -44,7 +46,7 @@ function main() {
 }
 
 function getDbConnection(){
-	var conn = Jdbc.getCloudSqlConnection("jdbc:google:rdbms://salej1-blackstar-dev:salej1-blackstar-dev/blackstarDbTransfer");
+	var conn = Jdbc.getCloudSqlConnection("jdbc:google:rdbms://gposac-blackstar-pro:gposac-blackstar-pro/blackstarDbTransfer");
 	return conn;
 }
 
@@ -55,33 +57,41 @@ function closeDbConnection(conn){
 }
 
 function startLoadJob(conn, sqlLog) {
-
 	// Load the equipment type Ids
-	var policies = loadPolicies(conn);
 	var serviceTypes = loadServiceTypes(conn);
 
-	var sheets = new Array("osMxo","osGDL","osQRO");
+	var sheets = new Array(3,4,7,8,10,12);
 	
 	for(var ofIx = 0; ofIx < sheets.length; ofIx++){
+		var startRec = 6;
 		var office = sheets[ofIx];
+
+		// ajuste
+		if(office == 3){
+			startRec = startRec + 357;
+		}
 		
 		// Get the selected range in the spreadsheet that stores service order data.
-		var pd = SpreadsheetApp.getActiveSpreadsheet().getRangeByName(office);
+		var pd = SpreadsheetApp.getActiveSpreadsheet().getSheets()[office];
 
 		// For every row of data, generate an object.
-		var data = pd.getValues();
+		var data = pd.getSheetValues(startRec,1,pd.getLastRow(),25);
 
 		for(var i = 0; i < data.length; i++){
 			var currOrder = data[i];
-			sqlLog = sendToDatabase(currOrder, conn, policies, serviceTypes, sqlLog);
+			sqlLog = sendToDatabase(currOrder, conn, serviceTypes, sqlLog);
 		} 
 	}
 }
 
-function sendToDatabase(serviceOrder, conn, policies, serviceTypes, sqlLog){
+function sendToDatabase(serviceOrder, conn, serviceTypes, sqlLog){
 	// sql string initialization
 	
-	var sql = "INSERT INTO blackstarDbTransfer.serviceTx( \
+	var sql = Utilities.formatString("DELETE FROM serviceTx WHERE serviceNumber = '%s';", serviceOrder[ 6 ]);;
+	var stmt = conn.createStatement();
+	stmt.execute(sql);
+
+	sql = "INSERT INTO blackstarDbTransfer.serviceTx( \
 			serviceNumber, \
 			ticketNumber, \
 			serviceUnit, \
@@ -163,7 +173,7 @@ function sendToDatabase(serviceOrder, conn, policies, serviceTypes, sqlLog){
 	sql = sql + Utilities.formatString("'%s',", spares);
 	sql = sql + Utilities.formatString("'%s',", consultant);
 	sql = sql + Utilities.formatString("'%s',", contractorCompany);
-	if(serviceRate != null && serviceRate != "NA" && serviceRate != ""){
+	if(serviceRate != null && serviceRate != "NA" && serviceRate != "N/A" && serviceRate != ""){
 		sql = sql + Utilities.formatString("'%s',", serviceRate);
 	}
 	else{
@@ -177,29 +187,11 @@ function sendToDatabase(serviceOrder, conn, policies, serviceTypes, sqlLog){
 	Logger.log(Utilities.formatString("Inserting ServiceOrder %s", serviceNumber));
 	
 	sqlLog = saveSql(sqlLog, sql);
-	var stmt = conn.createStatement();
+	stmt = conn.createStatement();
 	stmt.execute(sql);
 	
 	return sqlLog;
 }
-
-
-function loadPolicies(conn){
-	var stmt = conn.createStatement();
-	var rs = stmt.execute("use blackstarDbTransfer;");
-	var policies = { };
-	
-	rs = stmt.executeQuery("select policyId, serialNumber from policy");
-	while(rs.next()){
-		policies[rs.getString(2)] = rs.getInt(1);
-	}
-	
-	rs.close();
-	stmt.close();
-	
-	return policies;
-}
-
 
 function loadServiceTypes(conn){
 	var stmt = conn.createStatement();

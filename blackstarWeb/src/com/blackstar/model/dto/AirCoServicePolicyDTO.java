@@ -11,17 +11,17 @@ public class AirCoServicePolicyDTO {
 
 	public AirCoServicePolicyDTO()
 	{
-		this.closed = new Date();
 		this.serviceDate = new Date();
 	}
 	
-	public AirCoServicePolicyDTO(OpenCustomer customer, String equipmentType)
+	public AirCoServicePolicyDTO(OpenCustomer customer)
 	{
 		this.customer = customer.getCustomerName();
 		this.finalUser = customer.getContactEmail();
 		this.project = "";
-		this.equipmentTypeId = equipmentType.charAt(0);
-		this.equipmentType = equipmentType;
+		if(customer.getEquipmentTypeId() != null && customer.getEquipmentTypeId().length() > 0){
+			this.equipmentTypeId = customer.getEquipmentTypeId().charAt(0);
+		}
 		this.brand = customer.getBrand();
 		this.model = customer.getModel();
 		this.serialNumber = customer.getSerialNumber();
@@ -30,18 +30,16 @@ public class AirCoServicePolicyDTO {
 		this.contactName = customer.getContactName();
 		this.contactPhone = customer.getPhone();
 		
-		this.closed = new Date();
 		this.serviceDate = new Date();
 	}
 	
-	public AirCoServicePolicyDTO(Policy policy, String equipmentType)
+	public AirCoServicePolicyDTO(Policy policy)
 	{
 		this.policyId = policy.getPolicyId();
 		this.customer = policy.getCustomer();
 		this.finalUser = policy.getFinalUser();
 		this.project = policy.getProject();
 		this.equipmentTypeId = policy.getEquipmentTypeId();
-		this.equipmentType =equipmentType;
 		this.brand = policy.getBrand();
 		this.model =policy.getModel();
 		this.serialNumber = policy.getSerialNumber();
@@ -51,18 +49,16 @@ public class AirCoServicePolicyDTO {
 		this.contactName = policy.getContactName();
 		this.contactPhone = policy.getContactPhone();
 		
-		this.closed = new Date();
 		this.serviceDate = new Date();
 	}
 	
-	public AirCoServicePolicyDTO(Policy policy, String equipmentType, Serviceorder serviceOrder)
+	public AirCoServicePolicyDTO(Policy policy, Serviceorder serviceOrder)
 	{
 		this.policyId = policy.getPolicyId();
 		this.customer = policy.getCustomer();
 		this.finalUser = policy.getFinalUser();
 		this.project = policy.getProject();
 		this.equipmentTypeId = policy.getEquipmentTypeId();
-		this.equipmentType =equipmentType;
 		this.brand = policy.getBrand();
 		this.model =policy.getModel();
 		this.serialNumber = policy.getSerialNumber();
@@ -88,16 +84,17 @@ public class AirCoServicePolicyDTO {
 		this.receivedByEmail = serviceOrder.getReceivedByEmail();
 		this.serviceOrderNumber = serviceOrder.getServiceOrderNumber();
 		this.responsibleName = serviceOrder.getEmployeeNameListString();
+		this.isWrong = serviceOrder.getIsWrong();
+		this.serviceEndDate = serviceOrder.getServiceEndDate();
 	}
 	
-	public AirCoServicePolicyDTO(Policy policy, String equipmentType, Serviceorder serviceOrder,  AirCoServiceDTO airCo)
+	public AirCoServicePolicyDTO(Policy policy, Serviceorder serviceOrder,  AirCoServiceDTO airCo)
 	{
 		this.policyId = policy.getPolicyId();
 		this.customer = policy.getCustomer();
 		this.finalUser = policy.getFinalUser();
 		this.project = policy.getProject();
 		this.equipmentTypeId = policy.getEquipmentTypeId();
-		this.equipmentType =equipmentType;
 		this.brand = policy.getBrand();
 		this.model =policy.getModel();
 		this.serialNumber = policy.getSerialNumber();
@@ -123,6 +120,9 @@ public class AirCoServicePolicyDTO {
 		this.serviceOrderNumber = serviceOrder.getServiceOrderNumber();
 		this.receivedByEmail = serviceOrder.getReceivedByEmail();
 		this.responsibleName = serviceOrder.getEmployeeNameListString();
+		this.isWrong = serviceOrder.getIsWrong();
+		this.serviceEndDate = serviceOrder.getServiceEndDate();
+
 		
 		this.aaServiceId = airCo.getAaServiceId();
 		this.evaDescription = airCo.getEvaDescription();
@@ -178,13 +178,15 @@ public class AirCoServicePolicyDTO {
 	}
 	
 
-	public AirCoServicePolicyDTO(OpenCustomer customer, String equipmentType, Serviceorder serviceOrder,  AirCoServiceDTO airCo)
+	public AirCoServicePolicyDTO(OpenCustomer customer, Serviceorder serviceOrder,  AirCoServiceDTO airCo)
 	{
 		this.customer = customer.getCustomerName();
 		this.finalUser = customer.getContactEmail();
 		this.project = "";
-		this.equipmentTypeId = equipmentType.charAt(0);
-		this.equipmentType = equipmentType;
+		if(customer.getEquipmentTypeId() != null && customer.getEquipmentTypeId().length() > 0){
+			this.equipmentTypeId = customer.getEquipmentTypeId().charAt(0);
+		}
+		
 		this.brand = customer.getBrand();
 		this.model = customer.getModel();
 		this.serialNumber = customer.getSerialNumber();
@@ -192,6 +194,10 @@ public class AirCoServicePolicyDTO {
 		this.equipmentAddress = customer.getAddress();
 		this.contactName = customer.getContactName();
 		this.contactPhone = customer.getPhone();
+		if(customer.getOfficeId() != null && customer.getOfficeId().length() > 0){
+			this.officeId = customer.getOfficeId().charAt(0);
+		}
+		
 		
 		this.serviceOrderId = serviceOrder.getServiceOrderId();
 		this.ticketId = serviceOrder.getTicketId();
@@ -209,6 +215,8 @@ public class AirCoServicePolicyDTO {
 		this.serviceOrderNumber = serviceOrder.getServiceOrderNumber();
 		this.receivedByEmail = serviceOrder.getReceivedByEmail();
 		this.responsibleName = serviceOrder.getEmployeeNameListString();
+		this.isWrong = serviceOrder.getIsWrong();
+		this.serviceEndDate = serviceOrder.getServiceEndDate();
 		
 		this.aaServiceId = airCo.getAaServiceId();
 		this.evaDescription = airCo.getEvaDescription();
@@ -294,6 +302,8 @@ public class AirCoServicePolicyDTO {
 	private String receivedByPosition;
 	private String serviceOrderNumber;
 	private String serviceTypeId;
+	private Integer isWrong;
+	private Date serviceEndDate;
 	
 	private Integer aaServiceId;
 	private String evaDescription;
@@ -846,5 +856,21 @@ public class AirCoServicePolicyDTO {
 
 	public void setResponsibleName(String responsibleName) {
 		this.responsibleName = responsibleName;
+	}
+
+	public Integer getIsWrong() {
+		return isWrong;
+	}
+
+	public void setIsWrong(Integer isWrong) {
+		this.isWrong = isWrong;
+	}
+
+	public Date getServiceEndDate() {
+		return serviceEndDate;
+	}
+
+	public void setServiceEndDate(Date serviceEndDate) {
+		this.serviceEndDate = serviceEndDate;
 	}
 }

@@ -336,7 +336,7 @@ public class MySQLServiceOrderDAO implements ServiceOrderDAO, Serializable {
 	}
 
 	@Override
-	public String getNewServiceNumber(Integer policyId) {
+	public String getNewServiceNumber(String equipmentType) {
 		// TODO Auto-generated method stub
 		return null;
 	}

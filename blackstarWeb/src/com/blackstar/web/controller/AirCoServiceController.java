@@ -15,11 +15,9 @@ import com.blackstar.db.DAOFactory;
 import com.blackstar.interfaces.IEmailService;
 import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
-import com.blackstar.model.Equipmenttype;
 import com.blackstar.model.OpenCustomer;
 import com.blackstar.model.Policy;
 import com.blackstar.model.Serviceorder;
-import com.blackstar.model.Ticket;
 import com.blackstar.model.UserSession;
 import com.blackstar.model.dto.AirCoServiceDTO;
 import com.blackstar.model.dto.AirCoServicePolicyDTO;
@@ -66,68 +64,67 @@ public class AirCoServiceController extends AbstractController {
 				  //si la operation es 1, el idObject es el id de un ticket
 				  //si la operation es 2, el idObject es el id de un servicio
 				  //si la operation es 3, el idObject es el no de serie del equipo
+				  //si la operation es 4, el idObject es irrelevante (sin poliza)
 		  		  if(operation==1)
 		  		  {
-		  			  Integer idTicket = Integer.parseInt(idObject);
-		  			  Ticket ticket = daoFactory.getTicketDAO().getTicketById(idTicket);
-	  				  Policy policy = this.daoFactory.getPolicyDAO().getPolicyById(ticket.getPolicyId());
-	  				  Equipmenttype equipType = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
-	  				  airCoServicePolicyDTO = new AirCoServicePolicyDTO(policy, equipType.getEquipmentType());
-	  				  airCoServicePolicyDTO.setServiceOrderNumber(service.getNewServiceNumber(policy));
-	  				  airCoServicePolicyDTO.setServiceStatusId("N");
-	  				  airCoServicePolicyDTO.setServiceTypeId("P");
-	  				  model.addAttribute("serviceOrder", airCoServicePolicyDTO);
-	  				  model.addAttribute("serviceEmployees", udService.getStaffByGroupJson(Globals.GROUP_SERVICE));
-	  				  model.addAttribute("mode", "new-policy");
+		  			 return "redirect:/plainService?operation=1&idObject=" + idObject;
 		  		  }
 		  		  else if( operation==2)
 		  		  {
 		  			  Integer idOrder = Integer.parseInt(idObject);
 		  			  AirCoServiceDTO aircoService = service.getAirCoService(idOrder);
 		  			  Serviceorder serviceOrder = this.daoFactory.getServiceOrderDAO().getServiceOrderById(idOrder);
-		  			  Equipmenttype equipType;
 		  			  
 		  			  // Verificar si la OS pertenece a poliza o a cliente abierto
 		  			  if(serviceOrder.getPolicyId() != null && serviceOrder.getPolicyId() > 0){
 		  				Policy policy = this.daoFactory.getPolicyDAO().getPolicyById(serviceOrder.getPolicyId());
-		  				equipType = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
-		  				airCoServicePolicyDTO = new AirCoServicePolicyDTO(policy, equipType.getEquipmentType(), serviceOrder, aircoService );
+		  				airCoServicePolicyDTO = new AirCoServicePolicyDTO(policy, serviceOrder, aircoService );
+		  				model.addAttribute("hasPolicy", true);
 		  			  }
 		  			  else if(serviceOrder.getOpenCustomerId() != null && serviceOrder.getOpenCustomerId() > 0){
 		  				OpenCustomer customer = ocService.GetOpenCustomerById(serviceOrder.getOpenCustomerId());
 		  				if(customer.getEquipmentTypeId() == null || customer.getEquipmentTypeId() == ""){
 		  					throw new Exception("Cliente asociado a la OS no tiene tipo de equipo valido registrado");
 		  				}
-		  				equipType = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(customer.getEquipmentTypeId().charAt(0));
-		  				airCoServicePolicyDTO = new AirCoServicePolicyDTO(customer, equipType.getEquipmentType(), serviceOrder, aircoService );
+		  				airCoServicePolicyDTO = new AirCoServicePolicyDTO(customer, serviceOrder, aircoService);
+		  				model.addAttribute("hasPolicy", false);
 		  			  }
 	  				  
 	  				  model.addAttribute("serviceOrder", airCoServicePolicyDTO);
 	  				  model.addAttribute("mode", "detail");
+	  				  model.addAttribute("followUps", service.getFollows(idOrder));
 		  		  }
 		  		  else if(operation==3)
 		  		  {
 		  			  Policy policy  = this.daoFactory.getPolicyDAO().getPolicyBySerialNo(idObject);
-	  				  Equipmenttype equipType = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
-	  				  airCoServicePolicyDTO = new AirCoServicePolicyDTO(policy, equipType.getEquipmentType());
-	  				  airCoServicePolicyDTO.setServiceOrderNumber(service.getNewServiceNumber(policy));
+	  				  airCoServicePolicyDTO = new AirCoServicePolicyDTO(policy);
+	  				  airCoServicePolicyDTO.setServiceOrderNumber(service.getNewServiceNumber("A"));
 	  				  airCoServicePolicyDTO.setServiceStatusId("N");
 	  				  airCoServicePolicyDTO.setServiceTypeId("P");
 	  				  model.addAttribute("serviceOrder", airCoServicePolicyDTO);
 	  				  model.addAttribute("serviceEmployees", udService.getStaffByGroupJson(Globals.GROUP_SERVICE));
-	  				  model.addAttribute("mode", "new-policy");
+	  				  model.addAttribute("mode", "new");
+	  				  model.addAttribute("hasPolicy", true);
 		  		  }
 		  		  else if(operation==4){
-		  			  Equipmenttype equipType = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById('A');
-		  			  airCoServicePolicyDTO = new AirCoServicePolicyDTO(new OpenCustomer(), equipType.getEquipmentType());
+		  			  OpenCustomer cust = new OpenCustomer();
+		  			  cust.setEquipmentTypeId("A");
+		  			  airCoServicePolicyDTO = new AirCoServicePolicyDTO(new OpenCustomer());
+		  			  airCoServicePolicyDTO.setServiceOrderNumber(service.getNewServiceNumber("A"));
 		  			  airCoServicePolicyDTO.setServiceStatusId("N");
 	  				  airCoServicePolicyDTO.setServiceTypeId("P");
 	  				  model.addAttribute("serviceOrder", airCoServicePolicyDTO);
 	  				  model.addAttribute("serviceEmployees", udService.getStaffByGroupJson(Globals.GROUP_SERVICE));
-	  				  model.addAttribute("mode", "new-open");
+	  				  model.addAttribute("mode", "new");
+	  				  model.addAttribute("hasPolicy", false);
 		  		  }
-		  		model.addAttribute("osAttachmentFolder", gdService.getAttachmentFolderId(airCoServicePolicyDTO.getServiceOrderNumber()));
-		  		model.addAttribute("accessToken", gdService.getAccessToken());
+		  		  
+		  		  model.addAttribute("serviceTypes", service.getServiceTypeList());
+				  model.addAttribute("serviceStatuses", service.getServiceStatusList());
+				  model.addAttribute("osAttachmentFolder", gdService.getAttachmentFolderId(airCoServicePolicyDTO.getServiceOrderNumber()));
+				  model.addAttribute("rootFolder", gdService.getRootFolderId());
+				  model.addAttribute("accessToken", gdService.getAccessToken());
+				  model.addAttribute("equipmentTypeList", service.getEquipmentTypeList());
 	  		  }
 			  else
 			  {
@@ -150,79 +147,76 @@ public class AirCoServiceController extends AbstractController {
                      ModelMap model){
     int idServicio = 0;
     boolean doCommit = false;
+    int custId = 0;
 	try {
-			// Verificar si es un equipo de poliza o una orden abierta
-			if(serviceOrder.getPolicyId() == null || serviceOrder.getPolicyId() == 0){
-				// Guardando el cliente capturado
-	    		OpenCustomer customer = new OpenCustomer();
-	    		customer.setCustomerName(serviceOrder.getCustomer());
-	    		customer.setContactEmail(serviceOrder.getFinalUser());
-	    		customer.setEquipmentTypeId("A");
-	    		customer.setBrand(serviceOrder.getBrand());
-	    		customer.setModel(serviceOrder.getModel());
-	    		customer.setSerialNumber(serviceOrder.getSerialNumber());
-	    		customer.setCapacity(serviceOrder.getCapacity());
-	    		customer.setAddress(serviceOrder.getEquipmentAddress());
-	    		customer.setContactName(serviceOrder.getContactName());
-	    		customer.setPhone(serviceOrder.getContactPhone());
-	    		customer.setCreated(new Date());
-	    		customer.setCreatedBy("AircoServiceController");
-	    		customer.setCreatedByUsr(userSession.getUser().getUserEmail());
-	    		int custId = ocService.SaveOpenCustomer(customer);
-	    		
-	    		// Guardando la OS 
+			// update?
+			if(serviceOrder.getServiceOrderId() != null && serviceOrder.getServiceOrderId() > 0){
+				// Update
+				Serviceorder servicioOrderSave = new Serviceorder();
+				servicioOrderSave.setServiceOrderId(serviceOrder.getServiceOrderId());
+				if(serviceOrder.getClosed() != null && serviceOrder.getServiceStatusId() == "C"){
+					serviceOrder.setAsignee(null);
+				}
+				servicioOrderSave.setClosed(serviceOrder.getClosed());
+				servicioOrderSave.setIsWrong(serviceOrder.getIsWrong());
+				servicioOrderSave.setServiceStatusId(serviceOrder.getServiceStatusId());
+			
+				service.updateServiceOrder(servicioOrderSave, "AirCoServiceController", userSession.getUser().getUserEmail());
+			}
+			else{
+				// Sin poliza
+				if(serviceOrder.getPolicyId() == null  || serviceOrder.getPolicyId() == 0){
+					// Guardando el cliente capturado
+		    		OpenCustomer customer = new OpenCustomer();
+		    		customer.setCustomerName(serviceOrder.getCustomer());
+		    		customer.setContactEmail(serviceOrder.getFinalUser());
+		    		customer.setEquipmentTypeId("A");
+		    		customer.setBrand(serviceOrder.getBrand());
+		    		customer.setModel(serviceOrder.getModel());
+		    		customer.setSerialNumber(serviceOrder.getSerialNumber());
+		    		customer.setCapacity(serviceOrder.getCapacity());
+		    		customer.setAddress(serviceOrder.getEquipmentAddress());
+		    		customer.setContactName(serviceOrder.getContactName());
+		    		customer.setPhone(serviceOrder.getContactPhone());
+		    		customer.setProject(serviceOrder.getProject());
+		    		customer.setOfficeId(String.valueOf(serviceOrder.getOfficeId()));		    		
+		    		customer.setCreated(new Date());
+		    		customer.setCreatedBy("AircoServiceController");
+		    		customer.setCreatedByUsr(userSession.getUser().getUserEmail());
+		    		custId = ocService.SaveOpenCustomer(customer);
+		    		
+				}
+				// Guardando la OS 
 	    		Serviceorder servicioOrderSave = new Serviceorder();
-				servicioOrderSave.setOpenCustomerId(custId);
+	    		if(custId > 0){
+	    			servicioOrderSave.setOpenCustomerId(custId);
+	    		}
 				servicioOrderSave.setReceivedBy(serviceOrder.getReceivedBy());
 				servicioOrderSave.setReceivedByPosition(serviceOrder.getReceivedByPosition());
 				servicioOrderSave.setEmployeeListString(serviceOrder.getResponsible());
 				servicioOrderSave.setServiceDate(serviceOrder.getServiceDate());
+				servicioOrderSave.setServiceEndDate(serviceOrder.getServiceEndDate());
 				servicioOrderSave.setServiceOrderNumber(serviceOrder.getServiceOrderNumber());
 				servicioOrderSave.setServiceTypeId(serviceOrder.getServiceTypeId().toCharArray()[0]);
 				servicioOrderSave.setReceivedByEmail(serviceOrder.getReceivedByEmail());
-				servicioOrderSave.setClosed(new Date());
-				servicioOrderSave.setStatusId("N");
-				idServicio = service.saveServiceOrder(servicioOrderSave, "AirCoServiceController", userSession.getUser().getUserName());
-	    	}
-			else{
-				 // Verificar si existe una orden de servicio
-				if(serviceOrder.getServiceOrderId()==null){
-
-					//Crear orden de servicio
-					Serviceorder servicioOrderSave = new Serviceorder();
-					servicioOrderSave.setPolicyId(serviceOrder.getPolicyId());
-					servicioOrderSave.setReceivedBy(serviceOrder.getReceivedBy());
-					servicioOrderSave.setReceivedByPosition(serviceOrder.getReceivedByPosition());
-					servicioOrderSave.setEmployeeListString(serviceOrder.getResponsible());
-					servicioOrderSave.setServiceDate(serviceOrder.getServiceDate());
-					servicioOrderSave.setServiceOrderNumber(serviceOrder.getServiceOrderNumber());
-					servicioOrderSave.setServiceTypeId(serviceOrder.getServiceTypeId().toCharArray()[0]);
-					servicioOrderSave.setSignCreated(serviceOrder.getSignCreated());
-					servicioOrderSave.setSignReceivedBy(serviceOrder.getSignReceivedBy());
-					servicioOrderSave.setReceivedByEmail(serviceOrder.getReceivedByEmail());
-					servicioOrderSave.setClosed(new Date());
-					servicioOrderSave.setStatusId("N");
-					idServicio = service.saveServiceOrder(servicioOrderSave, "AirCoServiceController", userSession.getUser().getUserName());
-					doCommit = true;
-				} else {
-					//Actualizar orden de servicio
-					Serviceorder servicioOrderSave = new Serviceorder();
-					servicioOrderSave.setClosed(serviceOrder.getClosed());
-					servicioOrderSave.setPolicyId(serviceOrder.getPolicyId());
-					servicioOrderSave.setReceivedBy(serviceOrder.getReceivedBy());
-					servicioOrderSave.setReceivedByPosition(serviceOrder.getReceivedByPosition());
-					servicioOrderSave.setEmployeeListString(serviceOrder.getResponsible());
-					servicioOrderSave.setServiceDate(serviceOrder.getServiceDate());
-					servicioOrderSave.setServiceOrderNumber(serviceOrder.getServiceOrderNumber());
-					servicioOrderSave.setServiceTypeId(serviceOrder.getServiceTypeId().toCharArray()[0]);
-					servicioOrderSave.setSignCreated(serviceOrder.getSignCreated());
-					servicioOrderSave.setSignReceivedBy(serviceOrder.getSignReceivedBy());
-					servicioOrderSave.setStatusId("N");
-					service.updateServiceOrder(servicioOrderSave, "AirCoServiceController", userSession.getUser().getUserName());
-				}
-			}
+	    		servicioOrderSave.setIsWrong(serviceOrder.getIsWrong());
+	    		servicioOrderSave.setSignCreated(serviceOrder.getSignCreated());
+	    		servicioOrderSave.setSignReceivedBy(serviceOrder.getSignReceivedBy());
+	    		if(userSession.getUser().getBelongsToGroup().get(Globals.GROUP_COORDINATOR) != null){
+	    			servicioOrderSave.setStatusId("E");
+	    		}
+	    		else{
+	    			servicioOrderSave.setStatusId("N");	
+	    		}
+				servicioOrderSave.setPolicyId(serviceOrder.getPolicyId());
+				servicioOrderSave.setResponsible(serviceOrder.getResponsible());
+				servicioOrderSave.setTicketId(serviceOrder.getTicketId());
+				
+				idServicio = service.saveServiceOrder(servicioOrderSave, "PlainServiceController", userSession.getUser().getUserEmail());
+				doCommit = true;
+		}
 	   
-	    if(serviceOrder.getAaServiceId()==null && doCommit) {
+	    if(serviceOrder.getAaServiceId() == null && doCommit) {
 	      serviceOrder.setServiceOrderId(idServicio);
 	      //Crear orden de servicio de AirCo
 	      service.saveAirCoService(new AirCoServiceDTO(serviceOrder), "AirCoServiceController", userSession.getUser().getUserName());

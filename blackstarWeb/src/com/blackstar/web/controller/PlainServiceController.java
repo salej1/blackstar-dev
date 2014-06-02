@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.blackstar.common.Globals;
-import com.blackstar.common.TicketListConverter;
 import com.blackstar.common.Utils;
 import com.blackstar.db.DAOFactory;
 import com.blackstar.interfaces.IEmailService;
@@ -115,7 +114,7 @@ public class PlainServiceController extends AbstractController {
 		  			  else if(serviceOrder.getOpenCustomerId() > 0){
 		  				  OpenCustomer oc = ocService.GetOpenCustomerById(serviceOrder.getOpenCustomerId());
 		  				  plainServicePolicyDTO = new PlainServicePolicyDTO(oc, serviceOrder, plainServiceDTO);
-		  				  model.addAttribute("hasPolicy", true);
+		  				  model.addAttribute("hasPolicy", false);
 		  			  }
 	  				  
 	  				  model.addAttribute("serviceOrder", plainServicePolicyDTO);
@@ -128,7 +127,7 @@ public class PlainServiceController extends AbstractController {
 	  				  Equipmenttype equipType = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
 	  				  plainServicePolicyDTO = new PlainServicePolicyDTO(policy, equipType.getEquipmentType());
 	  				  if(userSession.getUser().getBelongsToGroup().get(Globals.GROUP_SERVICE) != null){
-	  					plainServicePolicyDTO.setServiceOrderNumber(service.getNewServiceNumber(policy));
+	  					plainServicePolicyDTO.setServiceOrderNumber(service.getNewServiceNumber("O"));
 	  				  }
 	  				  else
 	  				  {
@@ -267,6 +266,8 @@ public class PlainServiceController extends AbstractController {
 					servicioOrderSave.setServiceTypeId(serviceOrder.getServiceTypeId().toCharArray()[0]);
 					servicioOrderSave.setReceivedByEmail(serviceOrder.getReceivedByEmail());
 		    		servicioOrderSave.setIsWrong(serviceOrder.getIsWrong()?1:0);
+		    		servicioOrderSave.setSignCreated(serviceOrder.getSignCreated());
+		    		servicioOrderSave.setSignReceivedBy(serviceOrder.getSignReceivedBy());
 		    		if(userSession.getUser().getBelongsToGroup().get(Globals.GROUP_COORDINATOR) != null){
 		    			servicioOrderSave.setStatusId("E");
 		    		}

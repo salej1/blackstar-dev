@@ -19,7 +19,7 @@ public class GeneralServiceReport extends AbstractReport {
 	printDetails();
 	printRequerements();
 	printObservations();
-	printFooter(data.getSignCreated(), data.getResponsibleName(), data.getClosed()
+	printFooter(data.getSignCreated(), data.getResponsibleName(), data.getServiceEndDate()
 			              , data.getSignReceivedBy(), data.getReceivedBy(), data
 			                                          .getReceivedByPosition());
   }

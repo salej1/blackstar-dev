@@ -40,7 +40,7 @@ public interface ServiceOrderService {
 	public void saveUpsService (UpsServiceDTO service,String createdBy, String createdByUsr);
 
 	// regresa un numero de OS preventivo, segun tipo de equipo
-	public String getNewServiceNumber(Policy policy);
+	public String getNewServiceNumber(String equipmentType);
 	// regresa un nuevo numero de OS correctivo, siempre OS-
 	public String getNewServiceNumber();
 	
