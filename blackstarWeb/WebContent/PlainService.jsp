@@ -30,8 +30,8 @@
 	}
 
 	var mode = "${mode}";
-	var isCoord = "${user.belongsToGroup['Coordinador']}" || "false";
-	var isEng = "${user.belongsToGroup['Implementacion y Servicio']}" || "false";
+	var isCoord = "${user.belongsToGroup['Coordinador']}";
+	var isEng = "${user.belongsToGroup['Implementacion y Servicio']}";
 	var hasPolicy = "${hasPolicy}";
 
 	$(document).ready(function () {
@@ -54,7 +54,7 @@
 				$("#serviceDate").val("");
 			}
 
-			if(isEng){
+			if(isEng == "true"){
 				$("#responsibleName").val("${ user.userName }");
 				$("#responsible").val("${ user.userEmail }");
 			}
@@ -87,7 +87,7 @@
 				}
 			});
 
-		    if(isEng) {
+		    if(isEng == "true") {
 		    	// Bloqueando campos no editables para Ing en Ordenes nuevas
 		    	$(".lockForEng").attr("disabled", "");
 
