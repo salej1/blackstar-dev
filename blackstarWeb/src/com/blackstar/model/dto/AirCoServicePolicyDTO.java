@@ -84,7 +84,7 @@ public class AirCoServicePolicyDTO {
 		this.receivedByEmail = serviceOrder.getReceivedByEmail();
 		this.serviceOrderNumber = serviceOrder.getServiceOrderNumber();
 		this.responsibleName = serviceOrder.getEmployeeNameListString();
-		this.isWrong = serviceOrder.getIsWrong();
+		this.isWrong = serviceOrder.getIsWrong()>0?true:false;
 		this.serviceEndDate = serviceOrder.getServiceEndDate();
 	}
 	
@@ -120,7 +120,7 @@ public class AirCoServicePolicyDTO {
 		this.serviceOrderNumber = serviceOrder.getServiceOrderNumber();
 		this.receivedByEmail = serviceOrder.getReceivedByEmail();
 		this.responsibleName = serviceOrder.getEmployeeNameListString();
-		this.isWrong = serviceOrder.getIsWrong();
+		this.isWrong = serviceOrder.getIsWrong()>0?true:false;
 		this.serviceEndDate = serviceOrder.getServiceEndDate();
 
 		
@@ -215,7 +215,7 @@ public class AirCoServicePolicyDTO {
 		this.serviceOrderNumber = serviceOrder.getServiceOrderNumber();
 		this.receivedByEmail = serviceOrder.getReceivedByEmail();
 		this.responsibleName = serviceOrder.getEmployeeNameListString();
-		this.isWrong = serviceOrder.getIsWrong();
+		this.isWrong = serviceOrder.getIsWrong()>0?true:false;
 		this.serviceEndDate = serviceOrder.getServiceEndDate();
 		
 		this.aaServiceId = airCo.getAaServiceId();
@@ -302,7 +302,7 @@ public class AirCoServicePolicyDTO {
 	private String receivedByPosition;
 	private String serviceOrderNumber;
 	private String serviceTypeId;
-	private Integer isWrong;
+	private Boolean isWrong;
 	private Date serviceEndDate;
 	
 	private Integer aaServiceId;
@@ -858,11 +858,11 @@ public class AirCoServicePolicyDTO {
 		this.responsibleName = responsibleName;
 	}
 
-	public Integer getIsWrong() {
+	public Boolean getIsWrong() {
 		return isWrong;
 	}
 
-	public void setIsWrong(Integer isWrong) {
+	public void setIsWrong(Boolean isWrong) {
 		this.isWrong = isWrong;
 	}
 

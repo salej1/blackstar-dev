@@ -53,7 +53,7 @@
       <property name="service" ref="serviceOrderService" />
       <property name="rpService" ref="reportService" />
       <property name="gmService" ref="gmService" />
-      <!-- <property name="ocService" ref="openCustomerService" /> -->
+      <property name="ocService" ref="openCustomerService" />
    </bean>
    <bean class="com.blackstar.web.controller.PlainServiceController" parent="abstractController">
       <property name="service" ref="serviceOrderService" />
@@ -65,7 +65,7 @@
       <property name="service" ref="serviceOrderService" />
       <property name="rpService" ref="reportService" />
       <property name="gmService" ref="gmService" />
-      <!-- <property name="ocService" ref="openCustomerService" /> -->
+      <property name="ocService" ref="openCustomerService" />
    </bean>
    <bean class="com.blackstar.web.controller.BatteryServiceController" parent="abstractController">
       <property name="service" ref="serviceOrderService" />

@@ -49,17 +49,21 @@
 					$(".lockOnPolicy").attr("disabled", "");
 				}
 
-
 				// Binding officeId
 				$("#optOffices").bind('change', function(){
 					$("#officeId").val($(this).val());
 				});
 
 				$("#officeId").val("G"); // valor inicial
+
+				// bloqueando lockOnEngDetail
+				if(isEng == "true" && mode == "detail"){
+					$(".lockOnEngDetail").attr("disabled", "");
+				}
 			}
 
 			// inicializando el dialogo para agregar seguimientos
-			initFollowUpDlg("serviceOrder", "osDetail?serviceOrderId=${serviceOrder.serviceOrderId}");
+			initFollowUpDlg("os", "/osDetail/show.do?serviceOrderId=${serviceOrder.serviceOrderId}");
 
 		});
 
@@ -72,6 +76,15 @@
 	         return true;
 		}
 		
+		function closeService(){
+			$("#serviceStatusId").val('C');
+			$("#closed").val(dateNow());
+			$('input').removeAttr("disabled");
+			$('select').removeAttr("disabled");
+			$('textarea').removeAttr("disabled");
+			$('#serviceOrder').submit();
+		}
+
 		function saveService(){
 			var startTimestamp = new Date($("#serviceDate").val());
 			if(startTimestamp == undefined || startTimestamp == null){
@@ -98,7 +111,7 @@
 	</head>
 	<body>
 		<div id="content" class="container_16 clearfix">
-		<form:form  commandName="serviceOrder" action="save.do" method="POST">			
+		<form:form  commandName="serviceOrder" action="/batteryService/save.do" method="POST">			
 							<div class="grid_16">					
 					<div class="box">
 						<h2>BATERIAS</h2>
@@ -106,35 +119,36 @@
 								<tr>
 									<td>Folio:</td>
 									<td><form:input path="serviceOrderNumber" type="text" style="width:95%;" maxlength="5" /></td>
-									<c:if test="${serviceOrder.serviceOrderId > 0}">
-										<td colspan="2"><a href='${pageContext.request.contextPath}/report/show.do?serviceOrderId=${serviceOrder.serviceOrderId}' target="_blank">Ver PDF</a><img src='${pageContext.request.contextPath}/img/pdf.png'/>	
-									</c:if>
+										<c:if test="${serviceOrder.serviceOrderId > 0}">
+											<td colspan="2"><a href='${pageContext.request.contextPath}/report/show.do?serviceOrderId=${serviceOrder.serviceOrderId}' target="_blank">Ver PDF</a><img src='${pageContext.request.contextPath}/img/pdf.png'/>	
+										</c:if>
+										<form:input path="serviceOrderId" type="hidden"/>
 									</td>
 								</tr>
 								<tr>
 									<td>Cliente</td>
-									<td colspan="5"><form:input path="customer" type="text" style="width:95%;"  cssClass="lockOnDetail lockOnPolicy"/></td>
+									<td colspan="5"><form:input path="customer" type="text" style="width:95%;"  cssClass="lockOnDetail lockOnPolicy" required="true"/></td>
 									<td>Contrato/Proyecto</td>
-									<td colspan="3"><form:input path="project" type="text" style="width:95%;"  cssClass="lockOnDetail lockOnPolicy"/></td>
+									<td colspan="3"><form:input path="project" type="text" style="width:95%;"  cssClass="lockOnDetail lockOnPolicy" required="true"/></td>
 								</tr>
 								<tr>
 									<td>Domicilio</td>
-									<td colspan="5"><form:textarea path="equipmentAddress" style="width:95%;height:50px;"  cssClass="lockOnDetail lockOnPolicy"></form:textarea></td>
+									<td colspan="5"><form:textarea path="equipmentAddress" style="width:95%;height:50px;"  cssClass="lockOnDetail lockOnPolicy" required="true"></form:textarea></td>
 									<td>Telefono</td>
-									<td><form:input type="text" path="contactPhone" style="width:95%;"  cssClass="lockOnDetail lockOnPolicy" /></td>
+									<td><form:input type="text" path="contactPhone" style="width:95%;"  cssClass="lockOnDetail lockOnPolicy" required="true"/></td>
 								</tr>
 								<tr>
 									<td>Marca</td>
-									<td><form:input path="brand" type="text" style="width:95%;" cssClass="lockOnDetail lockOnPolicy"/></td>
+									<td><form:input path="brand" type="text" style="width:95%;" cssClass="lockOnDetail lockOnPolicy" required="true"/></td>
 									<td>Modelo</td>
-									<td><form:input path="model" type="text" style="width:95%;"  cssClass="lockOnDetail lockOnPolicy"/></td>
+									<td><form:input path="model" type="text" style="width:95%;"  cssClass="lockOnDetail lockOnPolicy" required="true"/></td>
 									<td>Capacidad</td>
-									<td><form:input path="capacity" type="text" style="width:95%;"  cssClass="lockOnDetail lockOnPolicy"/></td>
+									<td colspan="3"><form:input path="capacity" type="text" style="width:95%;"  cssClass="lockOnDetail lockOnPolicy" required="true"/></td>
 										
 								</tr>
 								<tr>
 									<td>No. Serie</td>
-									<td><form:input path="serialNumber" type="text" style="width:95%;"  cssClass="lockOnDetail lockOnPolicy"/></td>
+									<td><form:input path="serialNumber" type="text" style="width:95%;"  cssClass="lockOnDetail lockOnPolicy" required="true"/></td>
 									<td>Oficina</td>
 									<td>
 										<form:hidden path="officeId"/>
@@ -149,8 +163,26 @@
 										</select>
 									</td>
 									<td>Fecha y hora de llegada</td>
-									<td><form:input path="serviceDate" type="text" style="width:95%;"  cssClass="lockOnDetail lockOnPolicy"/></td>
+									<td colspan="3"><form:input path="serviceDate" type="text" style="width:95%;"  cssClass="lockOnDetail" required="true"/></td>
 									<form:input path="serviceTypeId" type="hidden" value="P" />
+									<form:input path="equipmentTypeId" type="hidden" value="B"/>
+									<form:hidden path="closed" />
+								</tr>
+								<tr>
+									<td>Estatus:</td>
+									<td>
+										<form:hidden path="serviceStatusId" />
+										<select name="" id="serviceStatuses" disabled>
+											<c:forEach var="ss" items="${serviceStatuses}">
+												<option value="ss.serviceStatusId"
+												<c:if test="${ss.serviceStatusId == serviceOrder.serviceStatusId}">
+													selected="true"
+												</c:if>
+												>${ss.serviceStatus}</option>
+											</c:forEach>
+											<option value=""></option>
+										</select>
+									</td>
 								</tr>
 							</table>
 						</div>					
@@ -168,40 +200,40 @@
 						<tr>
 							<td>CONECTORES / TERMINALES</td>
 							<td><form:checkbox path="plugClean"  style="width:95%;" /></td>
-							<td><form:input path="plugCleanStatus" type="text" style="width:95%;" /></td>
-							<td><form:input path="plugCleanComments" type="text" style="width:95%;" /></td>
+							<td><form:input path="plugCleanStatus" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
+							<td><form:input path="plugCleanComments" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
 						</tr>
 						<tr>
 							<td>CUBIERTA</td>
 							<td><form:checkbox path="coverClean"  style="width:95%;" /></td>
-							<td><form:input path="coverCleanStatus" type="text" style="width:95%;" /></td>
-							<td><form:input path="coverCleanComments" type="text" style="width:95%;" /></td>
+							<td><form:input path="coverCleanStatus" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
+							<td><form:input path="coverCleanComments" type="text" style="width:95%;"  cssClass="lockOnDetail" required="true"/></td>
 						</tr>
 						<tr>
 							<td>TAPONES</td>
 							<td><form:checkbox path="capClean"  style="width:95%;" /></td>
-							<td><form:input path="capCleanStatus" type="text" style="width:95%;" /></td>
-							<td><form:input path="capCleanComments" type="text" style="width:95%;" /></td>
+							<td><form:input path="capCleanStatus" type="text" style="width:95%;"  cssClass="lockOnDetail" required="true"/></td>
+							<td><form:input path="capCleanComments" type="text" style="width:95%;" cssClass="lockOnDetail" required="true" /></td>
 						</tr>
 						<tr>
 							<td>TIERRA FÍSICA</td>
 							<td><form:checkbox path="groundClean"  style="width:95%;" /></td>
-							<td><form:input path="groundCleanStatus" type="text" style="width:95%;" /></td>
-							<td><form:input path="groundCleanComments" type="text" style="width:95%;" /></td>
+							<td><form:input path="groundCleanStatus" type="text" style="width:95%;" cssClass="lockOnDetail" required="true" /></td>
+							<td><form:input path="groundCleanComments" type="text" style="width:95%;"  cssClass="lockOnDetail" required="true"/></td>
 						</tr>
 						<tr>
 							<td>ESTANTE/GABINETE/RACK</td>
 							<td><form:checkbox path="rackClean"  style="width:95%;" /></td>
-							<td><form:input path="rackCleanStatus" type="text" style="width:95%;" /></td>
-							<td><form:input path="rackCleanComments" type="text" style="width:95%;" /></td>
+							<td><form:input path="rackCleanStatus" type="text" style="width:95%;"  cssClass="lockOnDetail" required="true"/></td>
+							<td><form:input path="rackCleanComments" type="text" style="width:95%;" cssClass="lockOnDetail" required="true" /></td>
 						</tr>
 						<tr>
 							<td>NO DE SERIE, LOTE, FECHA DE FABRICACIÓN</td>
-							<td colspan="2"><form:input path="serialNoDateManufact" type="text" style="width:98%;" /></td>
+							<td colspan="2"><form:input path="serialNoDateManufact" type="text" style="width:98%;" cssClass="lockOnDetail" required="true" /></td>
 						</tr>
 						<tr>
 							<td>TEMPERATURA PROMEDIO BATERÍAS </td>
-							<td colspan="2"><form:input path="batteryTemperature" type="text" style="width:98%;" /></td>
+							<td colspan="2"><form:input path="batteryTemperature" type="text" style="width:98%;" cssClass="lockOnDetail" required="true" /></td>
 						</tr>
 					</table>
 					<br/>
@@ -209,10 +241,10 @@
 					<table>
 						<tr>
 							<td>VOLTAJE DE FLOTACIÓN DEL BUS:</td>
-							<td><form:input path="voltageBus" type="text" style="width:95%;"  onkeypress='return isNumberKey(event)'/></td>
+							<td><form:input path="voltageBus" type="text" style="width:95%;"  onkeypress='return isNumberKey(event)' cssClass="lockOnDetail" required="true"/></td>
 							<td>V.C.D.</td>
 							<td>TEMPERATURA AMBIENTE::</td>
-							<td><form:input path="temperature" type="text" style="width:95%;" onkeypress='return isNumberKey(event)'/> </td>
+							<td><form:input path="temperature" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail" required="true"/> </td>
 							<td>°C</td>
 						</tr>
 					</table>
@@ -232,42 +264,42 @@
 							<td>VOLTAJE CON CARGA</td>
 						</tr>
 						
-						<c:forEach var="i" begin="0" end="22">
+						<c:forEach var="i" begin="0" end="21">
 							<tr>
 								<td><c:out value="${i+1}"/></td>
 								<td>
 									<form:hidden path="cells[${i}].cellNumber" value="${i}"/>
-									<form:input path="cells[${i}].floatVoltage"  type="text" style="width:95%;" onkeypress='return isNumberKey(event)'/>
+									<form:input path="cells[${i}].floatVoltage"  type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail"/>
 								</td>
 								<td>
-									<form:input path="cells[${i}].chargeVoltage"  type="text" style="width:95%;" onkeypress='return isNumberKey(event)'/>
-								</td>
-								
-								<td><c:out value="${i+22}"/></td>
-								<td>
-									<form:hidden path="cells[${i+22}].cellNumber" value="${i+22}"/>
-									<form:input path="cells[${i+22}].floatVoltage"  type="text" style="width:95%;" onkeypress='return isNumberKey(event)'/>
-								</td>
-								<td>
-									<form:input path="cells[${i+22}].chargeVoltage"  type="text" style="width:95%;" onkeypress='return isNumberKey(event)'/>
+									<form:input path="cells[${i}].chargeVoltage"  type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail"/>
 								</td>
 								
-								<td><c:out value="${i+44}"/></td>
+								<td><c:out value="${i+23}"/></td>
 								<td>
-									<form:hidden path="cells[${i+44}].cellNumber" value="${i+44}"/>
-									<form:input path="cells[${i+44}].floatVoltage"  type="text" style="width:95%;" onkeypress='return isNumberKey(event)'/>
+									<form:hidden path="cells[${i+23}].cellNumber" value="${i+23}"/>
+									<form:input path="cells[${i+23}].floatVoltage"  type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail"/>
 								</td>
 								<td>
-									<form:input path="cells[${i+44}].chargeVoltage"  type="text" style="width:95%;" onkeypress='return isNumberKey(event)'/>
+									<form:input path="cells[${i+23}].chargeVoltage"  type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail"/>
 								</td>
 								
-								<td><c:out value="${i+66}"/></td>
+								<td><c:out value="${i+45}"/></td>
 								<td>
-									<form:hidden path="cells[${i+66}].cellNumber" value="${i+66}"/>
-									<form:input path="cells[${i+66}].floatVoltage"  type="text" style="width:95%;" onkeypress='return isNumberKey(event)'/>
+									<form:hidden path="cells[${i+45}].cellNumber" value="${i+45}"/>
+									<form:input path="cells[${i+45}].floatVoltage"  type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail"/>
 								</td>
 								<td>
-									<form:input path="cells[${i+66}].chargeVoltage"  type="text" style="width:95%;" onkeypress='return isNumberKey(event)'/>
+									<form:input path="cells[${i+45}].chargeVoltage"  type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail"/>
+								</td>
+								
+								<td><c:out value="${i+67}"/></td>
+								<td>
+									<form:hidden path="cells[${i+67}].cellNumber" value="${i+67}"/>
+									<form:input path="cells[${i+67}].floatVoltage"  type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail"/>
+								</td>
+								<td>
+									<form:input path="cells[${i+67}].chargeVoltage"  type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail"/>
 								</td>
 								
 					   		</tr>
@@ -297,31 +329,36 @@
 								</tr>
 								<tr>
 									<td>Nombre</td>
-									<td><form:input path="responsibleName" type="text" style="width:95%;"/></td>
+									<td><form:input path="responsibleName" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
 									<form:hidden path="responsible" style="width:95%;"/>
 									<td>Nombre</td>
-									<td><form:input path="receivedBy" type="text" style="width:95%;" required="true"/></td>
+									<td><form:input path="receivedBy" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
 								</tr>
 								<tr>
 									<td></td>
 									<td><form:hidden cssClass="lockOnDetail" path="serviceEndDate"/></td>
 									<td>Puesto</td>
-									<td><form:input path="receivedByPosition"  style="width:95%;"  /></td>
+									<td><form:input path="receivedByPosition"  style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
 								</tr>			
 								<tr>
 									<td colspan="2"></td>
 									<td>Email</td>
-									<td><form:input path="receivedByEmail"  style="width:95%;" /></td>
-								</tr>			
+									<td><form:input path="receivedByEmail"  style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
+								</tr>		
+								<c:if test="${!user.belongsToGroup['Cliente']}">
+									<tr class="eligible coorOnly">
+										<td colspan="2">Errores de captura<form:checkbox path="isWrong" cssClass="lockOnEngDetail"/></td>
+										<td></td>
+										<td></td>
+									</tr>
+								</c:if>	
 							</table>
 
 							<table>
 								<tbody>
 									<tr>
 										<td>
-											<c:if test="${ (user.belongsToGroup['Implementacion y Servicio'] && mode == 'new') || user.belongsToGroup['Coordinador'] && mode == 'detail' }">
-												<input class="searchButton" type="submit" value="Guardar servicio" onclick="saveService();">
-											</c:if>
+											
 										</td>
 									</tr>
 								<tbody>
@@ -346,20 +383,24 @@
 
 			<!-- Control de secuencia y captura de seguimiento -->
 			<c:import url="followUpControl.jsp"></c:import>
-			<c:if test="${serviceOrder.serviceOrderId > 0}">
+			<c:if test="${!user.belongsToGroup['Cliente']}">
 				<table>
 					<tbody>
 						<tr>
 							<td>
+							<c:if test="${serviceOrder.serviceOrderId > 0}">
 								<button class="searchButton" onclick="addSeguimiento(${serviceOrder.serviceOrderId}, '${serviceOrder.serviceOrderNumber}');">Agregar seguimiento</button>
-								<c:if test="${ user.belongsToGroup['Coordinador']}">
-									<button class="searchButton" id="closeBtn">Cerrar</button>
-								</c:if>
+								<c:if test="${serviceOrder.serviceStatusId != 'C'}">
+									<button class="searchButton eligible coorOnly lockOnEngDetail" id="closeBtn" onclick="closeService();">Cerrar</button>
+								</c:if>	
+							</c:if>	
+							<input class="searchButton lockOnEngDetail" id="guardarServicio" type="submit" onclick="saveService();" value="Guardar servicio" form="serviceOrder"/>
+							<button class="searchButton" onclick="window.location = '/serviceOrders/show.do'">Cancelar</button>
 							</td>
 						</tr>
-					<tbody>
+					</tbody>
 				</table>
-			</c:if>	
+			</c:if>
 		</div>
 	</body>
 </html>

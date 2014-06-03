@@ -51,17 +51,21 @@
 					$(".lockOnPolicy").attr("disabled", "");
 				}
 
-
 				// Binding officeId
 				$("#optOffices").bind('change', function(){
 					$("#officeId").val($(this).val());
 				});
 
 				$("#officeId").val("G"); // valor inicial
+
+				// bloqueando lockOnEngDetail
+				if(isEng == "true" && mode == "detail"){
+					$(".lockOnEngDetail").attr("disabled", "");
+				}
 			}
 
 			// inicializando el dialogo para agregar seguimientos
-			initFollowUpDlg("serviceOrder", "osDetail?serviceOrderId=${serviceOrder.serviceOrderId}");
+			initFollowUpDlg("os",  "/osDetail/show.do?serviceOrderId=${serviceOrder.serviceOrderId}");
 
 		});
 
@@ -74,6 +78,15 @@
 	         return true;
 		}
 		
+		function closeService(){
+			$("#serviceStatusId").val('C');
+			$("#closed").val(dateNow());
+			$('input').removeAttr("disabled");
+			$('select').removeAttr("disabled");
+			$('textarea').removeAttr("disabled");
+			$('#serviceOrder').submit();
+		}
+
 		function saveService(){
 			var startTimestamp = new Date($("#serviceDate").val());
 			if(startTimestamp == undefined || startTimestamp == null){
@@ -101,7 +114,7 @@
 	</head>
 	<body>
 		<div id="content" class="container_16 clearfix">
-			<form:form  commandName="serviceOrder" action="save.do" method="POST">			
+			<form:form  commandName="serviceOrder" action="/aircoService/save.do" method="POST">			
 				<div class="grid_16">					
 					<div class="box">
 						<h2>AIRES ACONDICIONADOS / CHILLER</h2>
@@ -113,40 +126,28 @@
 										<c:if test="${serviceOrder.serviceOrderId > 0}">
 											<a href='${pageContext.request.contextPath}/report/show.do?serviceOrderId=${serviceOrder.serviceOrderId}' target="_blank">Ver PDF</a><img src='${pageContext.request.contextPath}/img/pdf.png'/>	
 										</c:if>
+										<form:input path="serviceOrderId" type="hidden"/>
 									</td>
 								</tr>
 								<tr>
 									<td>Cliente</td>
-									<td colspan="5"><form:input path="customer" type="text" style="width:95%;" cssClass="lockOnDetail lockOnPolicy"/></td>
+									<td colspan="5"><form:input path="customer" type="text" style="width:95%;" cssClass="lockOnDetail lockOnPolicy" required="true"/></td>
 									<td>Contrato/Proyecto</td>
-									<td colspan="3"><form:input path="project" type="text" style="width:95%;" cssClass="lockOnDetail lockOnPolicy"/></td>
+									<td colspan="3"><form:input path="project" type="text" style="width:95%;" cssClass="lockOnDetail lockOnPolicy" required="true"/></td>
 								</tr>
 								<tr>
 									<td>Domicilio</td>
-									<td colspan="5"><form:textarea path="equipmentAddress" style="width:95%;height:50px;" cssClass="lockOnDetail lockOnPolicy"></form:textarea></td>
+									<td colspan="5"><form:textarea path="equipmentAddress" style="width:95%;height:50px;" cssClass="lockOnDetail lockOnPolicy" required="true"></form:textarea></td>
 									<td>Telefono</td>
-									<td><form:input type="text" path="contactPhone" style="width:95%;" cssClass="lockOnDetail lockOnPolicy"/></td>
+									<td><form:input type="text" path="contactPhone" style="width:95%;" cssClass="lockOnDetail lockOnPolicy" required="true"/></td>
 								</tr>
 								<tr>
-									<td>Equipo</td>
-									<td>
-										<form:hidden path="equipmentTypeId" />
-										<select disabled="true" id="equipmentTypeList" style="width:110px;">
-											<c:forEach var="etype" items="${equipmentTypeList}">
-										        <option value="${etype.equipmentTypeId}" 
-										        <c:if test="${etype.equipmentTypeId == serviceOrder.equipmentTypeId}">
-										        	selected="true"
-										    	</c:if>
-										        >${etype.equipmentType}</option>
-										    </c:forEach>
-										</select>
-									</td>
-									<td style="padding-left:10px;">Marca</td>
-									<td><form:input path="brand" type="text" style="width:95%;" cssClass="lockOnDetail lockOnPolicy"/></td>
+									<td>Marca</td>
+									<td><form:input path="brand" type="text" style="width:95%;" cssClass="lockOnDetail lockOnPolicy" required="true"/></td>
 									<td>Modelo</td>
-									<td><form:input path="model" type="text" style="width:95%;" cssClass="lockOnDetail lockOnPolicy"/></td>
+									<td colspan="2"><form:input path="model" type="text" style="width:95%;" cssClass="lockOnDetail lockOnPolicy" required="true"/></td>
 									<td>Serie</td>
-									<td><form:input path="serialNumber" type="text" style="width:95%;" cssClass="lockOnDetail lockOnPolicy"/></td>
+									<td colspan="2"><form:input path="serialNumber" type="text" style="width:95%;" cssClass="lockOnDetail lockOnPolicy" required="true"/></td>
 										
 								</tr>
 								<tr>
@@ -163,13 +164,25 @@
 										    </c:forEach>
 										</select>
 									</td>
-									<td></td>
-									<td></td>
-								</tr>
-								<tr>
 									<td>Fecha y hora de llegada</td>
-									<td><form:input path="serviceDate" type="text" style="width:95%;" /></td>
+									<td colspan="2"><form:input path="serviceDate" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
+									<td>Estatus:</td>
+									<td>
+										<form:hidden path="serviceStatusId" />
+										<select name="" id="serviceStatuses" disabled>
+											<c:forEach var="ss" items="${serviceStatuses}">
+												<option value="ss.serviceStatusId"
+												<c:if test="${ss.serviceStatusId == serviceOrder.serviceStatusId}">
+													selected="true"
+												</c:if>
+												>${ss.serviceStatus}</option>
+											</c:forEach>
+											<option value=""></option>
+										</select>
+									</td>
 									<form:input path="serviceTypeId" type="hidden" value="P" />
+									<form:hidden path="equipmentTypeId" value="A"/>
+									<form:hidden path="closed" />
 								</tr>
 							</table>
 						</div>					
@@ -202,27 +215,27 @@
 								</tr>
 								<tr>
 									<td colspan="5">1.3 SE REALIZÓ COMPARACION Y CALIBRACION T/H MEDIDO</td>
-									<td colspan="4"><form:checkbox path="evaFlagCalibration"  style="width:99%;" cssClass="lockOnDetail" required="true"/></td>
+									<td colspan="4"><form:checkbox path="evaFlagCalibration"  style="width:99%;" cssClass="lockOnDetail" /></td>
 								</tr>
 								<tr>
 									<td colspan="5">1.4 REVISIÓN Y LIMPIEZA DE FILTROS, EVAPORADOR Y EQUIPO EN GRAL.</td>
-									<td colspan="4"><form:checkbox path="evaReviewFilter"  style="width:99%;" cssClass="lockOnDetail" required="true"/></td>
+									<td colspan="4"><form:checkbox path="evaReviewFilter"  style="width:99%;" cssClass="lockOnDetail" /></td>
 								</tr>
 								<tr>
 									<td colspan="5">1.5 REVISIÓN Y AJUSTE DE BANDAS, ALINEACIÓN Y BALANCEO DE TURBINAS</td>
-									<td colspan="4"><form:checkbox path="evaReviewStrip" style="width:99%;" cssClass="lockOnDetail" required="true"/></td>
+									<td colspan="4"><form:checkbox path="evaReviewStrip" style="width:99%;" cssClass="lockOnDetail" /></td>
 								</tr>
 								<tr>
 									<td colspan="5">1.6 INSPECCIÓN Y LIMPIEZADEL SISTEMA ELECTRICO, PROTECCIONES, CABLEADO, TERMINALES Y CONTACTORES (PLATINOS)</td>
-									<td colspan="4"><form:checkbox path="evaCleanElectricSystem" style="width:99%;" cssClass="lockOnDetail" required="true"/></td>
+									<td colspan="4"><form:checkbox path="evaCleanElectricSystem" style="width:99%;" cssClass="lockOnDetail"/></td>
 								</tr>
 								<tr>
 									<td colspan="5">1.7	REVISIÓN Y LIMPIEZA DE TARJETA DE CONTROL Y SENSOR DE TEMP/HUMEDAD</td>
-									<td colspan="4"><form:checkbox path="evaCleanControlCard"  style="width:99%;" cssClass="lockOnDetail" required="true"/></td>
+									<td colspan="4"><form:checkbox path="evaCleanControlCard"  style="width:99%;" cssClass="lockOnDetail" /></td>
 								</tr>
 								<tr>
 									<td colspan="5">1.8	REVISIÓN Y LIMPIEZA DE CHAROLA Y DRENAJE DE CONDENSADOS Y HUMIDIFICADOR</td>
-									<td colspan="4"><form:checkbox path="evaCleanTray" style="width:99%;" cssClass="lockOnDetail"  required="true"/></td>
+									<td colspan="4"><form:checkbox path="evaCleanTray" style="width:99%;" cssClass="lockOnDetail" /></td>
 								</tr>
 								<tr>
 									<td colspan="5">1.9	LECTURA DE PRESIÓN DE COMPRESIÓN EN OPERACIÓN NORMAL</td>
@@ -399,16 +412,21 @@
 									<td colspan="2"></td>
 									<td>Email</td>
 									<td><form:input path="receivedByEmail"  style="width:95%;" /></td>
-								</tr>			
+								</tr>	
+								<c:if test="${!user.belongsToGroup['Cliente']}">
+									<tr class="eligible coorOnly">
+										<td colspan="2">Errores de captura<form:checkbox path="isWrong" cssClass="lockOnEngDetail"/></td>
+										<td></td>
+										<td></td>
+									</tr>
+								</c:if>		
 							</table>
 
 							<table>
 								<tbody>
 									<tr>
 										<td>
-											<c:if test="${ (user.belongsToGroup['Implementacion y Servicio'] && mode == 'new') || user.belongsToGroup['Coordinador'] && mode == 'detail' }">
-												<input class="searchButton" type="submit" value="Guardar servicio" onclick="saveService();">
-											</c:if>
+											
 										</td>
 									</tr>
 								<tbody>
@@ -433,19 +451,23 @@
 			
 			<!-- Control de secuencia y captura de seguimiento -->
 			<c:import url="followUpControl.jsp"></c:import>
-			<c:if test="${serviceOrder.serviceOrderId > 0}">
+			<c:if test="${!user.belongsToGroup['Cliente']}">
 				<table>
 					<tbody>
 						<tr>
 							<td>
+							<c:if test="${serviceOrder.serviceOrderId > 0}">
 								<button class="searchButton" onclick="addSeguimiento(${serviceOrder.serviceOrderId}, '${serviceOrder.serviceOrderNumber}');">Agregar seguimiento</button>
-								<c:if test="${ user.belongsToGroup['Coordinador']}">
-									<button class="searchButton" id="closeBtn">Cerrar</button>
-								</c:if>
+								<c:if test="${serviceOrder.serviceStatusId != 'C'}">
+									<button class="searchButton eligible coorOnly lockOnEngDetail" id="closeBtn" onclick="closeService();">Cerrar</button>
+								</c:if>	
+							</c:if>	
+							<input class="searchButton lockOnEngDetail" id="guardarServicio" type="submit" onclick="saveService();" value="Guardar servicio" form="serviceOrder"/>
+							<button class="searchButton" onclick="window.location = '/serviceOrders/show.do'">Cancelar</button>
 							</td>
 						</tr>
-					<tbody>
-				</table>	
+					</tbody>
+				</table>
 			</c:if>
 		</div>
 	</body>

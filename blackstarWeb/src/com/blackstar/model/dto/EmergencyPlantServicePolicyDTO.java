@@ -84,7 +84,7 @@ public class EmergencyPlantServicePolicyDTO {
 		this.serviceOrderNumber = serviceOrder.getServiceOrderNumber();
 		this.receivedByEmail = serviceOrder.getReceivedByEmail();
 		this.responsibleName = serviceOrder.getEmployeeNameListString();
-		this.isWrong = serviceOrder.getIsWrong();
+		this.isWrong = serviceOrder.getIsWrong()>0?true:false;
 		this.serviceEndDate = serviceOrder.getServiceEndDate();
 	}
 	
@@ -120,7 +120,7 @@ public class EmergencyPlantServicePolicyDTO {
 		this.serviceOrderNumber = serviceOrder.getServiceOrderNumber();
 		this.receivedByEmail = serviceOrder.getReceivedByEmail();
 		this.responsibleName = serviceOrder.getEmployeeNameListString();
-		this.isWrong = serviceOrder.getIsWrong();
+		this.isWrong = serviceOrder.getIsWrong()>0?true:false;
 		this.serviceEndDate = serviceOrder.getServiceEndDate();
 		
 		this.epServiceId = emergencyPlantService.getEpServiceId();
@@ -268,7 +268,7 @@ public class EmergencyPlantServicePolicyDTO {
 		this.serviceOrderNumber = serviceOrder.getServiceOrderNumber();
 		this.receivedByEmail = serviceOrder.getReceivedByEmail();
 		this.responsibleName = serviceOrder.getEmployeeNameListString();
-		this.isWrong = serviceOrder.getIsWrong();
+		this.isWrong = serviceOrder.getIsWrong()>0?true:false;
 		this.serviceEndDate = serviceOrder.getServiceEndDate();
 		
 		this.epServiceId = emergencyPlantService.getEpServiceId();
@@ -415,7 +415,7 @@ public class EmergencyPlantServicePolicyDTO {
 	private String serviceTypeId;
 	private String responsibleName;
 	private String openCustomerId;
-	private Integer isWrong;
+	private Boolean isWrong;
 	private Date serviceEndDate;
 	
 	private Integer epServiceId;
@@ -1351,11 +1351,11 @@ public class EmergencyPlantServicePolicyDTO {
 		this.openCustomerId = openCustomerId;
 	}
 
-	public Integer getIsWrong() {
+	public Boolean getIsWrong() {
 		return isWrong;
 	}
 
-	public void setIsWrong(Integer isWrong) {
+	public void setIsWrong(Boolean isWrong) {
 		this.isWrong = isWrong;
 	}
 

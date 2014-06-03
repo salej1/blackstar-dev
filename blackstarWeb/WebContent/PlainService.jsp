@@ -310,7 +310,7 @@
 								</tr>
 								<tr>
 									<td>Fecha y hora de llegada</td>
-									<td><form:input cssClass="lockOnDetail lockForEng" path="serviceDate" type="text" style="width:95%;" required="true"/></td>
+									<td><form:input cssClass="lockOnDetail" path="serviceDate" type="text" style="width:95%;" required="true"/></td>
 									<td>Fecha y hora de cierre</td>
 									<td><form:input path="closed" type="text" style="width:95%;" readOnly="true"/></td>
 								</tr>

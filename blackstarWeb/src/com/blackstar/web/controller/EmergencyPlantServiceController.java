@@ -142,8 +142,11 @@ public class EmergencyPlantServiceController extends AbstractController {
 			  @ModelAttribute("serviceOrder") EmergencyPlantServicePolicyDTO serviceOrder,
 			  @ModelAttribute(Globals.SESSION_KEY_PARAM)  UserSession userSession,
               ModelMap model) throws Exception {
+		  
 	    	int idServicio = 0;
 	    	int custId = 0;
+	        boolean doCommit = false;
+	        
 			try{
 				if(serviceOrder.getServiceOrderId() != null && serviceOrder.getServiceOrderId() > 0){
 		    		// Actualizar orden de servicio
@@ -153,7 +156,7 @@ public class EmergencyPlantServiceController extends AbstractController {
 		    			servicioOrderSave.setAsignee(null);
 		    		}
 		    		servicioOrderSave.setClosed(serviceOrder.getClosed());
-		    		servicioOrderSave.setIsWrong(serviceOrder.getIsWrong());
+		    		servicioOrderSave.setIsWrong(serviceOrder.getIsWrong()?1:0);
 		    		servicioOrderSave.setStatusId(serviceOrder.getServiceStatusId());
 		    		
 		    		service.updateServiceOrder(servicioOrderSave, "EmergencyPlantServiceController", userSession.getUser().getUserEmail());
@@ -193,7 +196,7 @@ public class EmergencyPlantServiceController extends AbstractController {
 					servicioOrderSave.setServiceOrderNumber(serviceOrder.getServiceOrderNumber());
 					servicioOrderSave.setServiceTypeId(serviceOrder.getServiceTypeId().toCharArray()[0]);
 					servicioOrderSave.setReceivedByEmail(serviceOrder.getReceivedByEmail());
-		    		servicioOrderSave.setIsWrong(serviceOrder.getIsWrong());
+		    		servicioOrderSave.setIsWrong(serviceOrder.getIsWrong()?1:0);
 		    		servicioOrderSave.setSignCreated(serviceOrder.getSignCreated());
 		    		servicioOrderSave.setSignReceivedBy(serviceOrder.getSignReceivedBy());
 		    		if(userSession.getUser().getBelongsToGroup().get(Globals.GROUP_COORDINATOR) != null){
@@ -207,9 +210,10 @@ public class EmergencyPlantServiceController extends AbstractController {
 					servicioOrderSave.setTicketId(serviceOrder.getTicketId());
 					idServicio = service.saveServiceOrder(servicioOrderSave, "BatteryServiceController", userSession.getUser().getUserEmail());
 					serviceOrder.setServiceOrderId(idServicio);
+					doCommit = true;
 				}
 
-	    		if(serviceOrder.getEpServiceId()==null)
+	    		if(serviceOrder.getEpServiceId()==null && doCommit)
 	    		{
 	    			serviceOrder.setServiceOrderId(idServicio);
 	    			//Crear orden de servicio de AirCo

@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import com.blackstar.common.Globals;
 import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
+import com.blackstar.model.Serviceorder;
 import com.blackstar.model.UserSession;
+import com.blackstar.model.dto.OrderserviceDTO;
 import com.blackstar.services.interfaces.ReportService;
 import com.blackstar.services.interfaces.ServiceOrderService;
 import com.blackstar.web.AbstractController;
@@ -39,7 +41,11 @@ public class ServiceOrderController extends AbstractController {
   public String  setup(@RequestParam(required = true) Integer serviceOrderId, HttpServletResponse response) {
 	String url = "error";
 	try {
-		String equipmentType = service.getServiceOrderTypeBySOId(serviceOrderId);
+		OrderserviceDTO so = service.getServiceOrderByIdOrNumber(serviceOrderId, null);
+		if(so == null){
+			throw new Exception("No se encontro la orden de servicio con ID: " + serviceOrderId.toString());
+		}
+		
 		String params = "/show.do?operation=2&idObject=" + serviceOrderId;
 		String aTemplate = "/aircoService";
 		String bTemplate = "/batteryService";
@@ -47,18 +53,24 @@ public class ServiceOrderController extends AbstractController {
 		String uTemplate = "/upsService";
 		String xTemplate = "/plainService";
 		
-		switch(equipmentType){
-			case "A": url = aTemplate + params;
-				break;
-			case "B": url = bTemplate + params;
-				break;
-			case "P": url = pTemplate + params;
-				break;
-			case "U": url = uTemplate + params;
-				break;
-			default: url = xTemplate + params;
-				break;
+		if(so.getServiceOrderNo().indexOf("-e") > 0){
+			switch(so.getServiceOrderNo().substring(0, 2)){
+				case "AA": url = aTemplate + params;
+					break;
+				case "BB": url = bTemplate + params;
+					break;
+				case "PE": url = pTemplate + params;
+					break;
+				case "UP": url = uTemplate + params;
+					break;
+				default: url = xTemplate + params;
+					break;
+			}
 		}
+		else{
+			url = xTemplate + params;
+		}
+		
 	} catch (Exception e) {
 		 Logger.Log(LogLevel.FATAL, e.getStackTrace()[0].toString(), e);
 		 return "error";

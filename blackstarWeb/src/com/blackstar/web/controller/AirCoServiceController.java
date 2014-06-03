@@ -154,11 +154,11 @@ public class AirCoServiceController extends AbstractController {
 				// Update
 				Serviceorder servicioOrderSave = new Serviceorder();
 				servicioOrderSave.setServiceOrderId(serviceOrder.getServiceOrderId());
-				if(serviceOrder.getClosed() != null && serviceOrder.getServiceStatusId() == "C"){
+				if(serviceOrder.getClosed() != null && serviceOrder.getServiceStatusId().equals("C")){
 					serviceOrder.setAsignee(null);
 				}
 				servicioOrderSave.setClosed(serviceOrder.getClosed());
-				servicioOrderSave.setIsWrong(serviceOrder.getIsWrong());
+				servicioOrderSave.setIsWrong(serviceOrder.getIsWrong()?1:0);
 				servicioOrderSave.setServiceStatusId(serviceOrder.getServiceStatusId());
 			
 				service.updateServiceOrder(servicioOrderSave, "AirCoServiceController", userSession.getUser().getUserEmail());
@@ -199,7 +199,7 @@ public class AirCoServiceController extends AbstractController {
 				servicioOrderSave.setServiceOrderNumber(serviceOrder.getServiceOrderNumber());
 				servicioOrderSave.setServiceTypeId(serviceOrder.getServiceTypeId().toCharArray()[0]);
 				servicioOrderSave.setReceivedByEmail(serviceOrder.getReceivedByEmail());
-	    		servicioOrderSave.setIsWrong(serviceOrder.getIsWrong());
+	    		servicioOrderSave.setIsWrong(serviceOrder.getIsWrong()?1:0);
 	    		servicioOrderSave.setSignCreated(serviceOrder.getSignCreated());
 	    		servicioOrderSave.setSignReceivedBy(serviceOrder.getSignReceivedBy());
 	    		if(userSession.getUser().getBelongsToGroup().get(Globals.GROUP_COORDINATOR) != null){

@@ -84,7 +84,7 @@ public class UpsServicePolicyDTO {
 		this.serviceOrderNumber = serviceOrder.getServiceOrderNumber();
 		this.receivedByEmail = serviceOrder.getReceivedByEmail();
 		this.responsibleName = serviceOrder.getEmployeeNameListString();
-		this.isWrong = serviceOrder.getIsWrong();
+		this.isWrong = serviceOrder.getIsWrong()>0?true:false;
 		this.serviceEndDate = serviceOrder.getServiceEndDate();
 	}
 	
@@ -120,7 +120,7 @@ public class UpsServicePolicyDTO {
 		this.serviceOrderNumber = serviceOrder.getServiceOrderNumber();
 		this.receivedByEmail = serviceOrder.getReceivedByEmail();
 		this.responsibleName = serviceOrder.getEmployeeNameListString();
-		this.isWrong = serviceOrder.getIsWrong();
+		this.isWrong = serviceOrder.getIsWrong()>0?true:false;
 		this.serviceEndDate = serviceOrder.getServiceEndDate();
 		
 		this.upsServiceId = upsService.getUpsServiceId();
@@ -196,7 +196,7 @@ public class UpsServicePolicyDTO {
 		this.serviceOrderNumber = serviceOrder.getServiceOrderNumber();
 		this.receivedByEmail = serviceOrder.getReceivedByEmail();
 		this.responsibleName = serviceOrder.getEmployeeNameListString();
-		this.isWrong = serviceOrder.getIsWrong();
+		this.isWrong = serviceOrder.getIsWrong()>0?true:false;
 		this.serviceEndDate = serviceOrder.getServiceEndDate();
 		
 		this.upsServiceId = upsService.getUpsServiceId();
@@ -271,7 +271,7 @@ public class UpsServicePolicyDTO {
 	private String serviceTypeId;
 	private String	responsibleName;
 	private Integer openCustomerId;
-	private Integer isWrong;
+	private Boolean isWrong;
 	private Date serviceEndDate;
 	
 	private Integer upsServiceId;	
@@ -725,11 +725,11 @@ public class UpsServicePolicyDTO {
 		this.openCustomerId = openCustomerId;
 	}
 
-	public Integer getIsWrong() {
+	public Boolean getIsWrong() {
 		return isWrong;
 	}
 
-	public void setIsWrong(Integer isWrong) {
+	public void setIsWrong(Boolean isWrong) {
 		this.isWrong = isWrong;
 	}
 

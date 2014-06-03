@@ -93,7 +93,7 @@ public class BatteryServicePolicyDTO {
 		this.serviceOrderNumber = serviceOrder.getServiceOrderNumber();
 		this.receivedByEmail = serviceOrder.getReceivedByEmail();
 		this.responsibleName = serviceOrder.getEmployeeNameListString();
-		this.isWrong = serviceOrder.getIsWrong();
+		this.isWrong = serviceOrder.getIsWrong()>0?true:false;
 		this.serviceEndDate = serviceOrder.getServiceEndDate();
 		
 		this.setCells(new ArrayList<BatteryCellServiceDTO>());
@@ -132,7 +132,7 @@ public class BatteryServicePolicyDTO {
 		this.serviceOrderNumber = serviceOrder.getServiceOrderNumber();
 		this.receivedByEmail = serviceOrder.getReceivedByEmail();
 		this.responsibleName = serviceOrder.getEmployeeNameListString();
-		this.isWrong = serviceOrder.getIsWrong();
+		this.isWrong = serviceOrder.getIsWrong()>0?true:false;
 		this.serviceEndDate = serviceOrder.getServiceEndDate();
 		
 		this.bbServiceId = batteryServiceDTO.getBbServiceId();
@@ -194,7 +194,7 @@ public class BatteryServicePolicyDTO {
 		this.serviceOrderNumber = serviceOrder.getServiceOrderNumber();
 		this.receivedByEmail = serviceOrder.getReceivedByEmail();
 		this.responsibleName = serviceOrder.getEmployeeNameListString();
-		this.isWrong = serviceOrder.getIsWrong();
+		this.isWrong = serviceOrder.getIsWrong()>0?true:false;
 		this.serviceEndDate = serviceOrder.getServiceEndDate();
 		
 		this.bbServiceId = batteryServiceDTO.getBbServiceId();
@@ -275,7 +275,7 @@ public class BatteryServicePolicyDTO {
 	private String receivedByEmail;
 	private List<BatteryCellServiceDTO> cells;
 	private String responsibleName;
-	private Integer isWrong;
+	private Boolean isWrong;
 	private Integer openCustomerId;
 	private Date serviceEndDate;
 	
@@ -598,11 +598,11 @@ public class BatteryServicePolicyDTO {
 		this.responsibleName = responsibleName;
 	}
 
-	public Integer getIsWrong() {
+	public Boolean getIsWrong() {
 		return isWrong;
 	}
 
-	public void setIsWrong(Integer isWrong) {
+	public void setIsWrong(Boolean isWrong) {
 		this.isWrong = isWrong;
 	}
 
