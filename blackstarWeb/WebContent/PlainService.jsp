@@ -460,7 +460,10 @@
 			</c:if>
 
 			<!-- Control de secuencia y captura de seguimiento -->
-			<c:import url="followUpControl.jsp"></c:import>
+			<c:if test="${!user.belongsToGroup['Cliente']}">
+				<c:import url="followUpControl.jsp"></c:import>
+			</c:if>
+			
 			<script type="text/javascript" charset="utf-8">
 				$(function(){
 					initFollowUpDlg("os", "/osDetail/show.do?serviceOrderId=${serviceOrder.serviceOrderId}");

@@ -1182,6 +1182,9 @@ DROP PROCEDURE blackstarDb.upgradeSchema;
 --								blackstarDb.GetNextServiceNumberForEquipment por:
 --								blackstarDb.GetNextServiceNumberForType
 -- -----------------------------------------------------------------------------
+-- 43	03/03/2014	SAG 	Se modifica:
+--                              blackstarDb.GetPoliciesKPI
+-- -----------------------------------------------------------------------------
 
 use blackstarDb;
 
@@ -2761,10 +2764,11 @@ END$$
 	-- blackstarDb.GetPoliciesKPI
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetPoliciesKPI$$
-CREATE PROCEDURE blackstarDb.`GetPoliciesKPI`(search VARCHAR(100), pProject VARCHAR(100), pStartDate DATETIME, pEndDate DATETIME)
+CREATE PROCEDURE blackstarDb.`GetPoliciesKPI`(search VARCHAR(100), pProject VARCHAR(100), pStartDate DATETIME, pEndDate DATETIME, pUser VARCHAR(100))
 BEGIN
 	IF pProject = 'ALL' THEN
-		SELECT py.policyId as policyId,
+		IF pUser = '' THEN
+			SELECT py.policyId as policyId,
 		       IFNULL(of.officeName, '') as officeName,
 		       IFNULL(py.policyTypeId, '') as  policyTypeId,
 		       IFNULL(py.customerContract, '') as customerContract,
@@ -2792,95 +2796,266 @@ BEGIN
 		       IFNULL(py.includesParts, '') as includesParts,
 		       IFNULL(py.exceptionParts, '') as exceptionParts,
 		       IFNULL(sc.serviceCenter, '') as serviceCenter
-		FROM policy py
-		INNER JOIN office of ON py.officeId = of.officeId
-		INNER JOIN equipmentType eq ON eq.equipmentTypeId = py.equipmentTypeId
-		INNER JOIN serviceCenter sc ON py.serviceCenterId = sc.serviceCenterId
-		WHERE py.endDate >= DATE_ADD(pStartDate, INTERVAL -2 MONTH) AND py.startDate < pEndDate
-			AND (of.officeName LIKE CONCAT('%', search, '%') OR
-			py.customerContract LIKE CONCAT('%', search, '%') OR
-			py.customer LIKE CONCAT('%', search, '%') OR
-			py.project LIKE CONCAT('%', search, '%') OR
-			py.cst LIKE CONCAT('%', search, '%') OR
-			py.brand LIKE CONCAT('%', search, '%') OR
-			py.model LIKE CONCAT('%', search, '%') OR
-			py.serialNumber LIKE CONCAT('%', search, '%') OR
-			py.contactName LIKE CONCAT('%', search, '%')) 
-		ORDER BY py.endDate ASC;
+			FROM policy py
+			INNER JOIN office of ON py.officeId = of.officeId
+			INNER JOIN equipmentType eq ON eq.equipmentTypeId = py.equipmentTypeId
+			INNER JOIN serviceCenter sc ON py.serviceCenterId = sc.serviceCenterId
+			WHERE py.endDate >= DATE_ADD(pStartDate, INTERVAL -2 MONTH) AND py.startDate < pEndDate
+				AND (of.officeName LIKE CONCAT('%', search, '%') OR
+				py.customerContract LIKE CONCAT('%', search, '%') OR
+				py.customer LIKE CONCAT('%', search, '%') OR
+				py.project LIKE CONCAT('%', search, '%') OR
+				py.cst LIKE CONCAT('%', search, '%') OR
+				py.brand LIKE CONCAT('%', search, '%') OR
+				py.model LIKE CONCAT('%', search, '%') OR
+				py.serialNumber LIKE CONCAT('%', search, '%') OR
+				py.contactName LIKE CONCAT('%', search, '%')) 
+			ORDER BY py.endDate ASC;
+		ELSE
+			SELECT py.policyId as policyId,
+		       IFNULL(of.officeName, '') as officeName,
+		       IFNULL(py.policyTypeId, '') as  policyTypeId,
+		       IFNULL(py.customerContract, '') as customerContract,
+		       IFNULL(py.customer, '') as customer,
+		       IFNULL(py.finalUser, '') as finalUser,
+		       IFNULL(py.project, '') as project,
+		       IFNULL(py.cst, '') as cst,
+		       IFNULL(eq.equipmentType, '') as equipmentType,
+		       IFNULL(py.brand, '') as brand,
+		       IFNULL(py.model, '') as model,
+		       IFNULL(py.serialNumber, '') as serialNumber,
+		       IFNULL(py.capacity, '') as capacity,
+		       IFNULL(py.equipmentAddress, '') as equipmentAddress,
+		       IFNULL(py.equipmentLocation, '') as equipmentLocation,
+		       IFNULL(py.contactName, '') as contactName,
+		       IFNULL(py.contactEmail, '') as contactEmail,
+		       IFNULL(py.contactPhone, '') as contactPhone,
+		       IFNULL(py.startDate, '') as startDate,
+		       IFNULL(py.endDate, '') as endDate,
+		       IFNULL(py.visitsPerYear, '') as visitsPerYear,
+		       IFNULL(py.responseTimeHR, '') as responseTimeHR,
+		       IFNULL(py.solutionTimeHR, '') as solutionTimeHR,
+		       IFNULL(py.penalty, '') as penalty,
+		       IFNULL(py.service, '') as service,
+		       IFNULL(py.includesParts, '') as includesParts,
+		       IFNULL(py.exceptionParts, '') as exceptionParts,
+		       IFNULL(sc.serviceCenter, '') as serviceCenter
+			FROM policy py
+			INNER JOIN office of ON py.officeId = of.officeId
+			INNER JOIN equipmentType eq ON eq.equipmentTypeId = py.equipmentTypeId
+			INNER JOIN serviceCenter sc ON py.serviceCenterId = sc.serviceCenterId
+			WHERE py.endDate >= DATE_ADD(pStartDate, INTERVAL -2 MONTH) AND py.startDate < pEndDate
+				AND (of.officeName LIKE CONCAT('%', search, '%') OR
+				py.customerContract LIKE CONCAT('%', search, '%') OR
+				py.customer LIKE CONCAT('%', search, '%') OR
+				py.project LIKE CONCAT('%', search, '%') OR
+				py.cst LIKE CONCAT('%', search, '%') OR
+				py.brand LIKE CONCAT('%', search, '%') OR
+				py.model LIKE CONCAT('%', search, '%') OR
+				py.serialNumber LIKE CONCAT('%', search, '%') OR
+				py.contactName LIKE CONCAT('%', search, '%')) 
+				AND	py.equipmentUser = pUser
+			ORDER BY py.endDate ASC;
+		END IF;
+		
 	ELSE
-		SELECT py.policyId as policyId,
-		       IFNULL(of.officeName, '') as officeName,
-		       IFNULL(py.policyTypeId, '') as  policyTypeId,
-		       IFNULL(py.customerContract, '') as customerContract,
-		       IFNULL(py.customer, '') as customer,
-		       IFNULL(py.finalUser, '') as finalUser,
-		       IFNULL(py.project, '') as project,
-		       IFNULL(py.cst, '') as cst,
-		       IFNULL(eq.equipmentType, '') as equipmentType,
-		       IFNULL(py.brand, '') as brand,
-		       IFNULL(py.model, '') as model,
-		       IFNULL(py.serialNumber, '') as serialNumber,
-		       IFNULL(py.capacity, '') as capacity,
-		       IFNULL(py.equipmentAddress, '') as equipmentAddress,
-		       IFNULL(py.equipmentLocation, '') as equipmentLocation,
-		       IFNULL(py.contactName, '') as contactName,
-		       IFNULL(py.contactEmail, '') as contactEmail,
-		       IFNULL(py.contactPhone, '') as contactPhone,
-		       IFNULL(py.startDate, '') as startDate,
-		       IFNULL(py.endDate, '') as endDate,
-		       IFNULL(py.visitsPerYear, '') as visitsPerYear,
-		       IFNULL(py.responseTimeHR, '') as responseTimeHR,
-		       IFNULL(py.solutionTimeHR, '') as solutionTimeHR,
-		       IFNULL(py.penalty, '') as penalty,
-		       IFNULL(py.service, '') as service,
-		       IFNULL(py.includesParts, '') as includesParts,
-		       IFNULL(py.exceptionParts, '') as exceptionParts,
-		       IFNULL(sc.serviceCenter, '') as serviceCenter
-		FROM policy py
-		INNER JOIN office of ON py.officeId = of.officeId
-		INNER JOIN equipmentType eq ON eq.equipmentTypeId = py.equipmentTypeId
-		INNER JOIN serviceCenter sc ON py.serviceCenterId = sc.serviceCenterId
-		WHERE py.endDate >= DATE_ADD(pStartDate, INTERVAL -2 MONTH) AND py.startDate < pEndDate
-		AND (of.officeName LIKE CONCAT('%', search, '%') OR
-			py.customerContract LIKE CONCAT('%', search, '%') OR
-			py.customer LIKE CONCAT('%', search, '%') OR
-			py.project LIKE CONCAT('%', search, '%') OR
-			py.cst LIKE CONCAT('%', search, '%') OR
-			py.brand LIKE CONCAT('%', search, '%') OR
-			py.model LIKE CONCAT('%', search, '%') OR
-			py.serialNumber LIKE CONCAT('%', search, '%') OR
-			py.contactName LIKE CONCAT('%', search, '%')) 
-		AND project = pProject
-		ORDER BY py.endDate ASC;
+		IF pUser = '' THEN
+			SELECT py.policyId as policyId,
+			       IFNULL(of.officeName, '') as officeName,
+			       IFNULL(py.policyTypeId, '') as  policyTypeId,
+			       IFNULL(py.customerContract, '') as customerContract,
+			       IFNULL(py.customer, '') as customer,
+			       IFNULL(py.finalUser, '') as finalUser,
+			       IFNULL(py.project, '') as project,
+			       IFNULL(py.cst, '') as cst,
+			       IFNULL(eq.equipmentType, '') as equipmentType,
+			       IFNULL(py.brand, '') as brand,
+			       IFNULL(py.model, '') as model,
+			       IFNULL(py.serialNumber, '') as serialNumber,
+			       IFNULL(py.capacity, '') as capacity,
+			       IFNULL(py.equipmentAddress, '') as equipmentAddress,
+			       IFNULL(py.equipmentLocation, '') as equipmentLocation,
+			       IFNULL(py.contactName, '') as contactName,
+			       IFNULL(py.contactEmail, '') as contactEmail,
+			       IFNULL(py.contactPhone, '') as contactPhone,
+			       IFNULL(py.startDate, '') as startDate,
+			       IFNULL(py.endDate, '') as endDate,
+			       IFNULL(py.visitsPerYear, '') as visitsPerYear,
+			       IFNULL(py.responseTimeHR, '') as responseTimeHR,
+			       IFNULL(py.solutionTimeHR, '') as solutionTimeHR,
+			       IFNULL(py.penalty, '') as penalty,
+			       IFNULL(py.service, '') as service,
+			       IFNULL(py.includesParts, '') as includesParts,
+			       IFNULL(py.exceptionParts, '') as exceptionParts,
+			       IFNULL(sc.serviceCenter, '') as serviceCenter
+			FROM policy py
+			INNER JOIN office of ON py.officeId = of.officeId
+			INNER JOIN equipmentType eq ON eq.equipmentTypeId = py.equipmentTypeId
+			INNER JOIN serviceCenter sc ON py.serviceCenterId = sc.serviceCenterId
+			WHERE py.endDate >= DATE_ADD(pStartDate, INTERVAL -2 MONTH) AND py.startDate < pEndDate
+			AND (of.officeName LIKE CONCAT('%', search, '%') OR
+				py.customerContract LIKE CONCAT('%', search, '%') OR
+				py.customer LIKE CONCAT('%', search, '%') OR
+				py.project LIKE CONCAT('%', search, '%') OR
+				py.cst LIKE CONCAT('%', search, '%') OR
+				py.brand LIKE CONCAT('%', search, '%') OR
+				py.model LIKE CONCAT('%', search, '%') OR
+				py.serialNumber LIKE CONCAT('%', search, '%') OR
+				py.contactName LIKE CONCAT('%', search, '%')) 
+			AND project = pProject
+			ORDER BY py.endDate ASC;
+		ELSE
+			SELECT py.policyId as policyId,
+			       IFNULL(of.officeName, '') as officeName,
+			       IFNULL(py.policyTypeId, '') as  policyTypeId,
+			       IFNULL(py.customerContract, '') as customerContract,
+			       IFNULL(py.customer, '') as customer,
+			       IFNULL(py.finalUser, '') as finalUser,
+			       IFNULL(py.project, '') as project,
+			       IFNULL(py.cst, '') as cst,
+			       IFNULL(eq.equipmentType, '') as equipmentType,
+			       IFNULL(py.brand, '') as brand,
+			       IFNULL(py.model, '') as model,
+			       IFNULL(py.serialNumber, '') as serialNumber,
+			       IFNULL(py.capacity, '') as capacity,
+			       IFNULL(py.equipmentAddress, '') as equipmentAddress,
+			       IFNULL(py.equipmentLocation, '') as equipmentLocation,
+			       IFNULL(py.contactName, '') as contactName,
+			       IFNULL(py.contactEmail, '') as contactEmail,
+			       IFNULL(py.contactPhone, '') as contactPhone,
+			       IFNULL(py.startDate, '') as startDate,
+			       IFNULL(py.endDate, '') as endDate,
+			       IFNULL(py.visitsPerYear, '') as visitsPerYear,
+			       IFNULL(py.responseTimeHR, '') as responseTimeHR,
+			       IFNULL(py.solutionTimeHR, '') as solutionTimeHR,
+			       IFNULL(py.penalty, '') as penalty,
+			       IFNULL(py.service, '') as service,
+			       IFNULL(py.includesParts, '') as includesParts,
+			       IFNULL(py.exceptionParts, '') as exceptionParts,
+			       IFNULL(sc.serviceCenter, '') as serviceCenter
+			FROM policy py
+			INNER JOIN office of ON py.officeId = of.officeId
+			INNER JOIN equipmentType eq ON eq.equipmentTypeId = py.equipmentTypeId
+			INNER JOIN serviceCenter sc ON py.serviceCenterId = sc.serviceCenterId
+			WHERE py.endDate >= DATE_ADD(pStartDate, INTERVAL -2 MONTH) AND py.startDate < pEndDate
+			AND (of.officeName LIKE CONCAT('%', search, '%') OR
+				py.customerContract LIKE CONCAT('%', search, '%') OR
+				py.customer LIKE CONCAT('%', search, '%') OR
+				py.project LIKE CONCAT('%', search, '%') OR
+				py.cst LIKE CONCAT('%', search, '%') OR
+				py.brand LIKE CONCAT('%', search, '%') OR
+				py.model LIKE CONCAT('%', search, '%') OR
+				py.serialNumber LIKE CONCAT('%', search, '%') OR
+				py.contactName LIKE CONCAT('%', search, '%'))
+			AND py.equipmentUser = pUser
+			AND project = pProject
+			ORDER BY py.endDate ASC;
+		END IF;
+		
 	END IF;
 END$$
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetTicketsKPI
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetTicketsKPI$$
-CREATE PROCEDURE blackstarDb.GetTicketsKPI()
+CREATE PROCEDURE blackstarDb.GetTicketsKPI(pProject VARCHAR(100), pStartDate DATETIME, pEndDate DATETIME, pUser VARCHAR(100))
 BEGIN
 
-SELECT 
-		tk.ticketId AS DT_RowId,
-		tk.ticketNumber AS ticketNumber,
-		tk.created AS created,
-		p.customer AS customer,
-		et.equipmentType AS equipmentType,
-		ts.ticketStatus AS ticketStatus,
-		IFNULL(bu.name, '') AS asignee,
-    IFNULL(p.equipmentLocation, '') AS equipmentLocation,
-    IFNULL(p.brand, '') AS equipmentBrand,
-    IFNULL(tk.arrival, '') AS arrival,
-    IFNULL(tk.closed, '') AS closed
-	FROM ticket tk 
-		INNER JOIN ticketStatus ts ON tk.ticketStatusId = ts.ticketStatusId
-		INNER JOIN policy p ON tk.policyId = p.policyId
-		INNER JOIN equipmentType et ON p.equipmentTypeId = et.equipmentTypeId
-		INNER JOIN office of on p.officeId = of.officeId
-		LEFT OUTER JOIN blackstarUser bu ON bu.email = tk.asignee
-	WHERE tk.created >= STR_TO_DATE(CONCAT('01-01-',YEAR(NOW())),'%d-%m-%Y')
-    ORDER BY tk.created ASC;
+IF pProject = 'ALL' THEN
+	IF pUser = '' THEN
+		SELECT 
+			tk.ticketId AS DT_RowId,
+			tk.ticketNumber AS ticketNumber,
+			tk.created AS created,
+			p.customer AS customer,
+			et.equipmentType AS equipmentType,
+			ts.ticketStatus AS ticketStatus,
+			IFNULL(bu.name, tk.employee) AS asignee,
+		    IFNULL(p.equipmentLocation, '') AS equipmentLocation,
+		    IFNULL(p.brand, '') AS equipmentBrand,
+		    IFNULL(tk.arrival, '') AS arrival,
+		    IFNULL(tk.closed, '') AS closed
+		FROM ticket tk 
+			INNER JOIN ticketStatus ts ON tk.ticketStatusId = ts.ticketStatusId
+			INNER JOIN policy p ON tk.policyId = p.policyId
+			INNER JOIN equipmentType et ON p.equipmentTypeId = et.equipmentTypeId
+			INNER JOIN office of on p.officeId = of.officeId
+			LEFT OUTER JOIN blackstarUser bu ON bu.email = tk.asignee
+		WHERE tk.created >= pStartDate AND tk.created <= pEndDate
+	    ORDER BY tk.created ASC;
+	ELSE
+		SELECT 
+			tk.ticketId AS DT_RowId,
+			tk.ticketNumber AS ticketNumber,
+			tk.created AS created,
+			p.customer AS customer,
+			et.equipmentType AS equipmentType,
+			ts.ticketStatus AS ticketStatus,
+			IFNULL(bu.name, tk.employee) AS asignee,
+		    IFNULL(p.equipmentLocation, '') AS equipmentLocation,
+		    IFNULL(p.brand, '') AS equipmentBrand,
+		    IFNULL(tk.arrival, '') AS arrival,
+		    IFNULL(tk.closed, '') AS closed
+		FROM ticket tk 
+			INNER JOIN ticketStatus ts ON tk.ticketStatusId = ts.ticketStatusId
+			INNER JOIN policy p ON tk.policyId = p.policyId
+			INNER JOIN equipmentType et ON p.equipmentTypeId = et.equipmentTypeId
+			INNER JOIN office of on p.officeId = of.officeId
+			LEFT OUTER JOIN blackstarUser bu ON bu.email = tk.asignee
+		WHERE tk.created >= pStartDate AND tk.created <= pEndDate
+		AND p.equipmentUser = pUser
+	    ORDER BY tk.created ASC;
+	END IF;
+	
+ELSE
+	IF pUser = '' THEN
+		SELECT 
+			tk.ticketId AS DT_RowId,
+			tk.ticketNumber AS ticketNumber,
+			tk.created AS created,
+			p.customer AS customer,
+			et.equipmentType AS equipmentType,
+			ts.ticketStatus AS ticketStatus,
+			IFNULL(bu.name, tk.employee) AS asignee,
+		    IFNULL(p.equipmentLocation, '') AS equipmentLocation,
+		    IFNULL(p.brand, '') AS equipmentBrand,
+		    IFNULL(tk.arrival, '') AS arrival,
+		    IFNULL(tk.closed, '') AS closed
+		FROM ticket tk 
+			INNER JOIN ticketStatus ts ON tk.ticketStatusId = ts.ticketStatusId
+			INNER JOIN policy p ON tk.policyId = p.policyId
+			INNER JOIN equipmentType et ON p.equipmentTypeId = et.equipmentTypeId
+			INNER JOIN office of on p.officeId = of.officeId
+			LEFT OUTER JOIN blackstarUser bu ON bu.email = tk.asignee
+		WHERE tk.created >= pStartDate AND tk.created <= pEndDate
+		AND p.project = pProject
+	    ORDER BY tk.created ASC;
+	ELSE
+		SELECT 
+			tk.ticketId AS DT_RowId,
+			tk.ticketNumber AS ticketNumber,
+			tk.created AS created,
+			p.customer AS customer,
+			et.equipmentType AS equipmentType,
+			ts.ticketStatus AS ticketStatus,
+			IFNULL(bu.name, tk.employee) AS asignee,
+		    IFNULL(p.equipmentLocation, '') AS equipmentLocation,
+		    IFNULL(p.brand, '') AS equipmentBrand,
+		    IFNULL(tk.arrival, '') AS arrival,
+		    IFNULL(tk.closed, '') AS closed
+		FROM ticket tk 
+			INNER JOIN ticketStatus ts ON tk.ticketStatusId = ts.ticketStatusId
+			INNER JOIN policy p ON tk.policyId = p.policyId
+			INNER JOIN equipmentType et ON p.equipmentTypeId = et.equipmentTypeId
+			INNER JOIN office of on p.officeId = of.officeId
+			LEFT OUTER JOIN blackstarUser bu ON bu.email = tk.asignee
+		WHERE tk.created >= pStartDate AND tk.created <= pEndDate
+		AND p.project = pProject
+		AND p.equipmentUser = pUser
+	    ORDER BY tk.created ASC;
+	END IF;
+END IF;
+	
 END$$
 
 -- -----------------------------------------------------------------------------
@@ -2995,7 +3170,7 @@ END$$
 DROP PROCEDURE IF EXISTS blackstarDb.GetEquipmentByType$$
 CREATE PROCEDURE blackstarDb.GetEquipmentByType(pEquipmentTypeId CHAR(1))
 BEGIN
-	IF(pEquipmentTypeId = 'T') THEN
+	IF(pEquipmentTypeId = 'T' OR pEquipmentTypeId = 'X') THEN
 		SELECT 
 			concat_ws(' - ', brand, model, serialNumber) AS label,
 			serialNumber AS value
@@ -3003,23 +3178,13 @@ BEGIN
 		WHERE p.startDate < CURDATE() AND p.endDate > CURDATE()
 		ORDER BY brand, model, serialNumber;
 	ELSE
-		IF(pEquipmentTypeId = 'X') THEN
-			SELECT 
-				concat_ws(' - ', brand, model, serialNumber) AS label,
-				serialNumber AS value
-			FROM policy p
-			WHERE equipmentTypeId NOT IN('A', 'B', 'P', 'U')
-			AND p.startDate < CURDATE() AND p.endDate > CURDATE()
-			ORDER BY brand, model, serialNumber;
-		ELSE
-			SELECT 
-				concat_ws(' - ', brand, model, serialNumber) AS label,
-				serialNumber AS value
-			FROM policy p
-			WHERE equipmentTypeId = pEquipmentTypeId
-			AND p.startDate < CURDATE() AND p.endDate > CURDATE()
-			ORDER BY brand, model, serialNumber;
-		END IF;
+		SELECT 
+			concat_ws(' - ', brand, model, serialNumber) AS label,
+			serialNumber AS value
+		FROM policy p
+		WHERE equipmentTypeId = pEquipmentTypeId
+		AND p.startDate < CURDATE() AND p.endDate > CURDATE()
+		ORDER BY brand, model, serialNumber;
 	END IF;
 END$$
 

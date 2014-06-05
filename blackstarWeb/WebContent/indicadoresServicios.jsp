@@ -123,6 +123,12 @@
 						<div>
 							<img src="/img/navigate-right.png"/><a href="#" id="getConcurrentFailures" onclick="go('getConcurrentFailures')">Fallas recurrentes</a>
 						</div>
+						<div>
+							<img src="/img/navigate-right.png"/><a href="#" id="getTickets" onclick="go('getTickets')">Tickets</a>
+						</div>
+						<div>
+							<img src="/img/navigate-right.png"/><a href="#" id="getPolicies" onclick="go('getPolicies');">Concentrado polizas</a>
+						</div>
 					</c:when>
 					<c:otherwise>
 						<!-- Seccion links para empleados GPO SAC -->
@@ -158,6 +164,15 @@
 								<img src="/img/navigate-right.png"/><a href="#" id="getCharts" onclick="go('getDisplayCharts', 'display')">Display de graficas generales</a>
 							</div>
 						</c:if>
+						<div>
+							<img src="/img/navigate-right.png"/><a href="#" id="getAverage" onclick="go('getPolicyExport', 'display')">Exportar Polizas</a>
+						</div>
+						<div>
+							<img src="/img/navigate-right.png"/><a href="#" id="getAverage" onclick="go('getTicketsExport', 'display')">Exportar Tickets</a>
+						</div>
+						<div>
+							<img src="/img/navigate-right.png"/><a href="#" id="getAverage" onclick="go('getSOExport', 'display')">Exportar Ordenes de servicio</a>
+						</div>
 					</c:otherwise>
 				</c:choose>
 			</div>	

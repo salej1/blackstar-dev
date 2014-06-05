@@ -11,8 +11,8 @@ import com.blackstar.model.sp.GetStatisticsKPI;
 
 public interface ServiceIndicatorsService {
 
-	public String getTickets() throws Exception;
-	public String getPolicies(String search, String project, Date startDate, Date endDate) throws Exception;
+	public String getTickets(String project, Date startDate, Date endDate, String user) throws Exception;
+	public String getPolicies(String search, String project, Date startDate, Date endDate, String user) throws Exception;
 	public List<GetConcurrentFailuresKPI> getConcurrentFailures(String project, Date startDate, Date endDate, String user) throws Exception;
 	public String getMaxPeportsByUser(String project, Date startDate, Date endDate) throws Exception;
 	public String getReportOSResumeKPI() throws Exception;
@@ -26,4 +26,7 @@ public interface ServiceIndicatorsService {
 	public List<String> getProjectList();
 	public List<String> getLimitedProjectList(String user);
 	public AvailabilityKpiDTO getAvailability(String project, Date startDate, Date endDate, String user) throws Exception;
+	public String getPoliciesExport(String search, String project, Date startDate, Date endDate);
+	public String getTicketsExport(String search, String project, Date startDate, Date endDate);
+	public String getSOExport(String search, String project, Date startDate, Date endDate);
 }

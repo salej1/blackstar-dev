@@ -8,6 +8,7 @@ import org.json.JSONObject;
 import com.blackstar.db.dao.AbstractDAO;
 import com.blackstar.db.dao.interfaces.ServiceIndicatorsDAO;
 import com.blackstar.db.dao.mapper.JSONRowMapper;
+import com.blackstar.db.dao.mapper.PlainTextMapper;
 import com.blackstar.model.Servicecenter;
 import com.blackstar.model.dto.AvailabilityKpiDTO;
 import com.blackstar.model.sp.GetConcurrentFailuresKPI;
@@ -18,14 +19,14 @@ import com.blackstar.model.sp.GetStatisticsKPI;
 public class ServiceIndicatorsDAOImpl extends AbstractDAO 
                                         implements ServiceIndicatorsDAO {
 	
-  public List<JSONObject> getTickets(){
-	String sqlQuery = "CALL GetTicketsKPI()";
-	return getJdbcTemplate().query(sqlQuery,  new JSONRowMapper()); 
+  public List<JSONObject> getTickets(String project, Date startDate, Date endDate, String user){
+	String sqlQuery = "CALL GetTicketsKPI(?,?,?,?)";
+	return getJdbcTemplate().query(sqlQuery, new Object[]{project, startDate, endDate, user}, new JSONRowMapper()); 
   }
 	
-  public List<JSONObject> getPolicies(String search, String project, Date startDate, Date endDate){
-	String sqlQuery = "CALL GetPoliciesKPI(?,?,?,?)";
-	return getJdbcTemplate().query(sqlQuery, new Object[]{search, project, startDate, endDate}, new JSONRowMapper()); 
+  public List<JSONObject> getPolicies(String search, String project, Date startDate, Date endDate, String user){
+	String sqlQuery = "CALL GetPoliciesKPI(?,?,?,?,?)";
+	return getJdbcTemplate().query(sqlQuery, new Object[]{search, project, startDate, endDate, user}, new JSONRowMapper()); 
   }
   
   
@@ -112,5 +113,26 @@ public class ServiceIndicatorsDAOImpl extends AbstractDAO
 		String sqlQuery = "CALL GetAvailabilityKPI(?,?,?,?)";
 		return (AvailabilityKpiDTO)getJdbcTemplate().queryForObject(sqlQuery, new Object[]{project, startDate, endDate, customer}
 				                , getMapperFor(AvailabilityKpiDTO.class)); 
+	}
+
+	@Override
+	public List<String> getPoliciesExport(String search, String project,
+			Date startDate, Date endDate) {
+		String sqlQuery = "CALL GetPoliciesKPI(?,?,?,?)";
+		return getJdbcTemplate().query(sqlQuery, new Object[]{search, project, startDate, endDate}, new PlainTextMapper()); 
+	}
+
+	@Override
+	public List<String> getTicketsExport(String search, String project,
+			Date startDate, Date endDate) {
+		String sqlQuery = "CALL GetAllTickets()";
+		return getJdbcTemplate().query(sqlQuery, new PlainTextMapper()); 
+	}
+
+	@Override
+	public List<String> getSOExport(String search, String project, Date startDate,
+			Date endDate) {
+		String sqlQuery = "CALL GetAllServiceOrders()";
+		return getJdbcTemplate().query(sqlQuery, new PlainTextMapper()); 
 	}
 }

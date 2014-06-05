@@ -2,8 +2,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<%@page isELIgnored="false"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ page isELIgnored="false"%>
+<!DOCTYPE html>
 <c:set var="pageSection" scope="request" value="ordenesServicio" />
 <c:import url="header.jsp"></c:import>
 <html>
@@ -27,6 +27,7 @@
 			// Asignacion de campos iniciales
 			var mode = "${mode}";
 			var hasPolicy =  "${hasPolicy}"
+			var isEng = "${user.belongsToGroup['Implementacion y Servicio']}";
 			
 			if(mode == "detail"){
 				$(".lockOnDetail").attr("disabled", "");
@@ -385,8 +386,8 @@
 			<!-- Adjuntos -->
 			<c:import url="_attachments.jsp"></c:import>
 			<!-- Control de secuencia y captura de seguimiento -->
-			<c:import url="followUpControl.jsp"></c:import>
 			<c:if test="${!user.belongsToGroup['Cliente']}">
+				<c:import url="followUpControl.jsp"></c:import>
 				<table>
 					<tbody>
 						<tr>

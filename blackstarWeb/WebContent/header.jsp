@@ -107,9 +107,9 @@
 				  <li><a href="${pageContext.request.contextPath}/seguimiento">Seguimiento</a></li>
 				</c:if>
 				<c:if test="${!user.belongsToGroup['Cliente']}">
-				<li><a href="${pageContext.request.contextPath}/surveyServices/show.do">Encuestas de servicio</a></li>
-					<li><span class="active" onclick="window.location = '/indServicios/show.do'">Indicadores Serv.</span></li>
+					<li><a href="${pageContext.request.contextPath}/surveyServices/show.do">Encuestas de servicio</a></li>
 				</c:if>
+				<li><span class="active" onclick="window.location = '/indServicios/show.do'">Indicadores Serv.</span></li>
 			</c:when>		
 			<c:otherwise>
 				<li><a href="${pageContext.request.contextPath}/dashboard/show.do">Inicio</a></li>

@@ -2,12 +2,16 @@ package com.blackstar.web.controller;
 
 import java.util.Date;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.blackstar.common.Globals;
@@ -49,9 +53,17 @@ public class ServiceIndicatorsController extends AbstractController {
   }
 	
   @RequestMapping(value= "/getTickets.do", method = RequestMethod.GET)
-  public String  getTickets(ModelMap model){
+  public String  getTickets( @RequestParam(required = true) Date startDate,
+		  @RequestParam(required = true) Date endDate,
+		  @RequestParam(required = true) String project,
+		  ModelMap model, @ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession){
 	try {
-	     model.addAttribute("tickets", service.getTickets());
+		if(userSession.getUser().getBelongsToGroup().get(Globals.GROUP_CUSTOMER) != null && userSession.getUser().getBelongsToGroup().get(Globals.GROUP_CUSTOMER) == true){
+			 model.addAttribute("tickets", service.getTickets(project, startDate, endDate, userSession.getUser().getUserEmail()));
+		}
+		else{
+			model.addAttribute("tickets", service.getTickets(project, startDate, endDate, ""));
+		}	    
 	} catch (Exception e) {
 		Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 		e.printStackTrace();
@@ -65,9 +77,14 @@ public class ServiceIndicatorsController extends AbstractController {
   public String  getPolicies( @RequestParam(required = true) Date startDate,
 		  @RequestParam(required = true) Date endDate,
 		  @RequestParam(required = true) String project,
-		  ModelMap model){
+		  ModelMap model, @ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession){
 	try {
-	     model.addAttribute("policies", service.getPolicies("", project, startDate, endDate));
+		if(userSession.getUser().getBelongsToGroup().get(Globals.GROUP_CUSTOMER) != null && userSession.getUser().getBelongsToGroup().get(Globals.GROUP_CUSTOMER) == true){
+	    	model.addAttribute("policies", service.getPolicies("", project, startDate, endDate, userSession.getUser().getUserEmail()));
+		}
+	     else{
+	    	model.addAttribute("policies", service.getPolicies("", project, startDate, endDate, ""));
+	    }
 	} catch (Exception e) {
 		Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 		e.printStackTrace();
@@ -234,4 +251,79 @@ public class ServiceIndicatorsController extends AbstractController {
   }
   
 
+  @RequestMapping(value= "/getPolicyExport.do", method = RequestMethod.GET)
+   public String  getPolicyExport(
+		  @RequestParam(required = true) Date startDate,
+		  @RequestParam(required = true) Date endDate,
+		  @RequestParam(required = true) String project,
+		  ModelMap model, HttpServletResponse resp){
+	try {
+		String body = service.getPoliciesExport("", project, startDate, endDate);
+		resp.setContentType("text/html; charset=UTF-8");
+		 resp.setHeader("Content-Disposition","attachment;filename=polizas.txt");
+		 resp.getWriter().print(body);
+		 resp.flushBuffer();
+	    
+	} catch (Exception e) {
+		Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
+		e.printStackTrace();
+		model.addAttribute("errorDetails", e.getStackTrace()[0].toString());
+		for(StackTraceElement t : e.getStackTrace()){
+			System.out.println(t.toString());
+		}
+		return "error";
+	}
+	return "exportEnd";
+  }
+  
+
+  @RequestMapping(value= "/getTicketsExport.do", method = RequestMethod.GET)
+   public String  getTicketsExport(
+		  @RequestParam(required = true) Date startDate,
+		  @RequestParam(required = true) Date endDate,
+		  @RequestParam(required = true) String project,
+		  ModelMap model, HttpServletResponse resp){
+	try {
+		String body = service.getTicketsExport("", project, startDate, endDate);
+		resp.setContentType("text/html; charset=UTF-8");
+		 resp.setHeader("Content-Disposition","attachment;filename=tickets.txt");
+		 resp.getWriter().print(body);
+		 resp.flushBuffer();
+	    
+	} catch (Exception e) {
+		Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
+		e.printStackTrace();
+		model.addAttribute("errorDetails", e.getStackTrace()[0].toString());
+		for(StackTraceElement t : e.getStackTrace()){
+			System.out.println(t.toString());
+		}
+		return "error";
+	}
+	return "exportEnd";
+  }
+  
+  @RequestMapping(value= "/getSOExport.do", method = RequestMethod.GET)
+   public String  getSOExport(
+		  @RequestParam(required = true) Date startDate,
+		  @RequestParam(required = true) Date endDate,
+		  @RequestParam(required = true) String project,
+		  ModelMap model, HttpServletResponse resp){
+	try {
+		String body = service.getSOExport("", project, startDate, endDate);
+		resp.setContentType("text/html; charset=UTF-8");
+		 resp.setHeader("Content-Disposition","attachment;filename=ordenesServicio.txt");
+		 resp.getWriter().print(body);
+		 resp.flushBuffer();
+	    
+	} catch (Exception e) {
+		Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
+		e.printStackTrace();
+		model.addAttribute("errorDetails", e.getStackTrace()[0].toString());
+		for(StackTraceElement t : e.getStackTrace()){
+			System.out.println(t.toString());
+		}
+		return "error";
+	}
+	return "exportEnd";
+  }
 }

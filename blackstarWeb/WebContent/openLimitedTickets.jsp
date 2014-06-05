@@ -27,13 +27,11 @@
 							  { "mData": "equipmentType" },
 							  { "mData": "responseTime" },
 							  { "mData": "project" }, 	              
-							  { "mData": "ticketStatus" },
-							  { "mData": "placeHolder" }
+							  { "mData": "ticketStatus" }
 
 						  ],
 				"aoColumnDefs" : [
-									{"mRender" : function(data, type, row){return "<div><a href=${pageContext.request.contextPath}/ticketDetail?ticketId=" + row.DT_RowId + ">" + data + "</a></div>";}, "aTargets" : [0]},
-									{"mRender" : function(data, type, row){return "<div><a href=/plainService/show.do?operation=1&idObject=" + row.DT_RowId +">Crear O.S.</a></div>";}, "aTargets" : [7]}	       
+									{"mRender" : function(data, type, row){return "<div><a href=${pageContext.request.contextPath}/ticketDetail?ticketId=" + row.DT_RowId + ">" + data + "</a></div>";}, "aTargets" : [0]}
 								 ]}
 			);
 		});
@@ -61,7 +59,6 @@
 						<th>Tiem. R</th>
 						<th>Proyecto</th>
 						<th>Estatus</th>
-						<th style="width:100px;">Crear O.S.</th>
 					</tr>
 				</thead>
 				<tbody>  

@@ -48,8 +48,8 @@ implements ServiceIndicatorsService {
 		this.dao = dao;
 	}
 
-	public String getTickets() throws Exception{
-		List<JSONObject> jsonData = dao.getTickets();
+	public String getTickets(String project, Date startDate, Date endDate, String user) throws Exception{
+		List<JSONObject> jsonData = dao.getTickets(project, startDate, endDate, user);
 		String month = "";
 		String lastMonth = "";
 		Map <String, String> map = new HashMap<String , String>() {{
@@ -76,8 +76,8 @@ implements ServiceIndicatorsService {
 		return jsonData != null ? jsonData.toString() : "";
 	}
 
-	public String getPolicies(String search, String project, Date startDate, Date endDate) throws Exception{
-		List<JSONObject> jsonData = dao.getPolicies(search, project, startDate, endDate);
+	public String getPolicies(String search, String project, Date startDate, Date endDate, String user) throws Exception{
+		List<JSONObject> jsonData = dao.getPolicies(search, project, startDate, endDate, user);
 		return jsonData != null ? jsonData.toString() : "";
 	}
 
@@ -273,4 +273,42 @@ implements ServiceIndicatorsService {
 		return dao.getAvailability(project, startDate, endDate, user);
 	}
 
+	@Override
+	public String getPoliciesExport(String search, String project,
+			Date startDate, Date endDate) {
+		List<String> rows = dao.getPoliciesExport(search, project, startDate, endDate);
+		StringBuilder retVal = new StringBuilder();
+		for(String row : rows){
+			retVal.append(row);
+			retVal.append("\r\n");
+		}
+		
+		return retVal.toString();
+	}
+
+	@Override
+	public String getTicketsExport(String search, String project,
+			Date startDate, Date endDate) {
+		List<String> rows = dao.getTicketsExport(search, project, startDate, endDate);
+		StringBuilder retVal = new StringBuilder();
+		for(String row : rows){
+			retVal.append(row);
+			retVal.append("\r\n");
+		}
+		
+		return retVal.toString();
+	}
+	
+	@Override
+	public String getSOExport(String search, String project, Date startDate,
+			Date endDate) {
+		List<String> rows = dao.getSOExport(search, project, startDate, endDate);
+		StringBuilder retVal = new StringBuilder();
+		for(String row : rows){
+			retVal.append(row);
+			retVal.append("\r\n");
+		}
+		
+		return retVal.toString();
+	}
 }

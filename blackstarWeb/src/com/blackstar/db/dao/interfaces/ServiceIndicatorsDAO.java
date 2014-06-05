@@ -13,8 +13,8 @@ import com.blackstar.model.sp.GetStatisticsKPI;
 
 public interface ServiceIndicatorsDAO {
 	
-  public List<JSONObject> getTickets();
-  public List<JSONObject> getPolicies(String search, String project, Date startDate, Date endDate);
+  public List<JSONObject> getTickets(String project, Date startDate, Date endDate, String user);
+  public List<JSONObject> getPolicies(String search, String project, Date startDate, Date endDate, String user);
   public List<GetConcurrentFailuresKPI> getConcurrentFailures(String project, Date startDate, Date endDate, String user);
   public List<JSONObject> getMaxPeportsByUser(String project, Date startDate, Date endDate);
   public List<GetReportOSTableKPI> getReportOSTable();
@@ -30,4 +30,7 @@ public interface ServiceIndicatorsDAO {
   public List<String> getProjectList();
   public List<String> getLimitedProjectList(String user);
   public AvailabilityKpiDTO getAvailability(String project, Date startDate, Date endDate, String customer);
+  public List<String> getPoliciesExport(String search, String project, Date startDate, Date endDate);
+  public List<String> getTicketsExport(String search, String project, Date startDate, Date endDate);
+  public List<String> getSOExport(String search, String project, Date startDate, Date endDate);
 }
