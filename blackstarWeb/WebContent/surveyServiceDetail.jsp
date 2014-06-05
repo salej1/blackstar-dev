@@ -27,7 +27,6 @@
         // bloqueando campos
         var mode = "${mode}";
         if(mode == "new"){
-          $("#date").val(dateNow());
           $("#serviceOrderList").bind("change", function(){
             var custData = $.getJSON("/surveyServiceDetail/getOsDetailsJson.do?osList=" + $(this).val(), function(data){
                 if(data.error != null) {
@@ -40,6 +39,7 @@
                   $("#name").val(data.name);
                   $("#phone").val(data.phone);
                   $("#email").val(data.email);
+                  $("#date").val(new Date(data.serviceDate).format('dd/MM/yyyy hh:mm:ss'));
                 }
             });
           });

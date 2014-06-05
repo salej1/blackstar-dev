@@ -295,7 +295,8 @@ BEGIN
 		IFNULL(p.customer, c.customerName) AS company,
 		so.receivedBy AS name,
 		so.receivedByEmail AS email,
-		IFNULL(p.contactPhone, c.phone) AS phone
+		IFNULL(p.contactPhone, c.phone) AS phone,
+		so.serviceDate AS serviceDate
 	FROM serviceOrder so 
 		LEFT OUTER JOIN policy p ON p.policyId = so.policyId
 		LEFT OUTER JOIN openCustomer c ON c.openCustomerId = so.openCustomerId
