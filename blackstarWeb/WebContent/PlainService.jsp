@@ -204,7 +204,7 @@
 								<tr>
 									<td style="width:140px">Folio:</td>
 									<td style="width:300px"><form:input path="serviceOrderNumber" type="text" style="width:65%;" maxlength="5" readOnly="true" required="true"/>
-										<c:if test="${serviceOrder.serviceOrderId > 0}">
+										<c:if test="${serviceOrder.serviceOrderId > 0 && serviceOrder.hasPdf == 1}">
 											<a href='${pageContext.request.contextPath}/report/show.do?serviceOrderId=${serviceOrder.serviceOrderId}' target="_blank">Ver PDF</a><img src='${pageContext.request.contextPath}/img/pdf.png'/>
 										</c:if>	
 										<form:input path="serviceOrderId" type="hidden"/>

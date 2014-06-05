@@ -68,6 +68,8 @@ public class PlainServicePolicyDTO {
 		this.isWrong = serviceOrder.getIsWrong()>0?true:false;
 		this.receivedByEmail = serviceOrder.getReceivedByEmail();
 		this.responsibleName = serviceOrder.getResponsibleName();
+		this.hasPdf = serviceOrder.getHasPdf();
+		
 		this.plainServiceId = plainServiceDTO.getPlainServiceId();
 		this.troubleDescription = plainServiceDTO.getTroubleDescription();
 		this.techParam = plainServiceDTO.getTechParam();
@@ -148,6 +150,7 @@ public class PlainServicePolicyDTO {
 			this.responsible = serviceOrder.getEmployeeListString();
 			this.responsibleName = serviceOrder.getEmployeeNameListString();
 		}
+		this.hasPdf = serviceOrder.getHasPdf();
 	}
 	
 	public PlainServicePolicyDTO(Policy policy, String equipmentType, Serviceorder serviceOrder,  PlainServiceDTO plainServiceDTO)
@@ -203,6 +206,7 @@ public class PlainServicePolicyDTO {
 			this.responsible = serviceOrder.getEmployeeListString();
 			this.responsibleName = serviceOrder.getEmployeeNameListString();
 		}
+		this.hasPdf = serviceOrder.getHasPdf();
 	}
 	
 	
@@ -251,6 +255,7 @@ public class PlainServicePolicyDTO {
 	private String responsibleName;
 	private String loadedOSFileId;
 	private Integer openCustomerId;
+	private Integer hasPdf;
 	
 	public Integer getPolicyId() {
 		return policyId;
@@ -598,5 +603,15 @@ public class PlainServicePolicyDTO {
 
 	public void setServiceEndDate(Date serviceEndDate) {
 		this.serviceEndDate = serviceEndDate;
+	}
+
+
+	public Integer getHasPdf() {
+		return hasPdf;
+	}
+
+
+	public void setHasPdf(Integer hasPdf) {
+		this.hasPdf = hasPdf;
 	}
 }

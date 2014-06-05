@@ -270,8 +270,11 @@
 --								blackstarDb.GetNextServiceNumberForEquipment por:
 --								blackstarDb.GetNextServiceNumberForType
 -- -----------------------------------------------------------------------------
--- 43	03/03/2014	SAG 	Se modifica:
+-- 43	03/06/2014	SAG 	Se modifica:
 --                              blackstarDb.GetPoliciesKPI
+-- -----------------------------------------------------------------------------
+-- 44	04/06/2014	SAG 	Se modifica:
+--                              blackstarDb.GetAllServiceOrders
 -- -----------------------------------------------------------------------------
 
 use blackstarDb;
@@ -938,7 +941,8 @@ BEGIN
 		of.officeName AS officeName,
 		p.brand AS brand,
 		p.serialNumber AS serialNumber,
-		ss.serviceStatus AS serviceStatus
+		ss.serviceStatus AS serviceStatus,
+		so.hasPdf AS hasPdf
 	FROM serviceOrder so 
 		INNER JOIN serviceType st ON so.servicetypeId = st.servicetypeId
 		INNER JOIN serviceStatus ss ON so.serviceStatusId = ss.serviceStatusId
@@ -972,7 +976,8 @@ BEGIN
 		of.officeName AS officeName,
 		p.brand AS brand,
 		p.serialNumber AS serialNumber,
-		ss.serviceStatus AS serviceStatus
+		ss.serviceStatus AS serviceStatus,
+		so.hasPdf AS hasPdf
 	FROM serviceOrder so 
 		INNER JOIN serviceType st ON so.servicetypeId = st.servicetypeId
 		INNER JOIN serviceStatus ss ON so.serviceStatusId = ss.serviceStatusId
@@ -2297,7 +2302,8 @@ BEGIN
 			of.officeName AS officeName,
 			p.brand AS brand,
 			p.serialNumber AS serialNumber,
-			ss.serviceStatus AS serviceStatus
+			ss.serviceStatus AS serviceStatus,
+			so.hasPdf AS hasPdf
 		FROM serviceOrder so 
 			INNER JOIN serviceType st ON so.servicetypeId = st.servicetypeId
 			INNER JOIN serviceStatus ss ON so.serviceStatusId = ss.serviceStatusId
@@ -2319,7 +2325,8 @@ BEGIN
 			o.officeName AS officeName,
 			oc.brand AS brand,
 			oc.serialNumber AS serialNumber,
-			ss.serviceStatus AS serviceStatus
+			ss.serviceStatus AS serviceStatus,
+			so.hasPdf AS hasPdf
 		FROM serviceOrder so 
 			INNER JOIN serviceType st ON so.servicetypeId = st.servicetypeId
 			INNER JOIN serviceStatus ss ON so.serviceStatusId = ss.serviceStatusId
@@ -2793,6 +2800,11 @@ BEGIN
 		t.modifiedBy = 'CloseTicket',
 		t.modifiedByUsr = pModifiedBy
 	WHERE t.ticketId = pTicketId;
+
+
+	-- Poner la OS como correctivo
+	UPDATE serviceOrder SET serviceTypeId = 'C'
+	WHERE serviceOrderNumber = osId
 	
 END$$
 
@@ -3232,7 +3244,8 @@ BEGIN
 		of.officeName AS officeName,
 		p.brand AS brand,
 		p.serialNumber AS serialNumber,
-		ss.serviceStatus AS serviceStatus
+		ss.serviceStatus AS serviceStatus,
+		SO.hasPdf AS hasPdf
 	FROM serviceOrder so 
 		INNER JOIN serviceType st ON so.servicetypeId = st.servicetypeId
 		INNER JOIN serviceStatus ss ON so.serviceStatusId = ss.serviceStatusId
@@ -3986,13 +3999,14 @@ CREATE PROCEDURE blackstarDb.AddserviceOrder (
   createdByUsr varchar(50) ,
   receivedByEmail varchar(100),
   openCustomerId int(11),
-  serviceEndDate datetime
+  serviceEndDate datetime,
+  hasPdf int
 )
 BEGIN
 insert into serviceOrder
-(serviceOrderNumber,serviceTypeId,ticketId,policyId,serviceUnit,serviceDate,responsible,additionalEmployees,receivedBy,serviceComments,serviceStatusId,closed,consultant,coordinator,asignee,hasErrors,isWrong,signCreated,signReceivedBy,receivedByPosition,created,createdBy,createdByUsr,receivedByEmail,openCustomerId,serviceEndDate)
+(serviceOrderNumber,serviceTypeId,ticketId,policyId,serviceUnit,serviceDate,responsible,additionalEmployees,receivedBy,serviceComments,serviceStatusId,closed,consultant,coordinator,asignee,hasErrors,isWrong,signCreated,signReceivedBy,receivedByPosition,created,createdBy,createdByUsr,receivedByEmail,openCustomerId,serviceEndDate,hasPdf)
 values
-(serviceOrderNumber,serviceTypeId,ticketId,policyId,serviceUnit,serviceDate,responsible,additionalEmployees,receivedBy,serviceComments,serviceStatusId,closed,consultant,coordinator,asignee,hasErrors,isWrong,signCreated,signReceivedBy,receivedByPosition,created,createdBy,createdByUsr,receivedByEmail,openCustomerId,serviceEndDate);
+(serviceOrderNumber,serviceTypeId,ticketId,policyId,serviceUnit,serviceDate,responsible,additionalEmployees,receivedBy,serviceComments,serviceStatusId,closed,consultant,coordinator,asignee,hasErrors,isWrong,signCreated,signReceivedBy,receivedByPosition,created,createdBy,createdByUsr,receivedByEmail,openCustomerId,serviceEndDate,hasPdf);
 select LAST_INSERT_ID();
 
 END$$
@@ -4008,7 +4022,8 @@ CREATE PROCEDURE blackstarDb.UpdateServiceOrder (
   isWrong tinyint(4) ,
   modified datetime ,
   modifiedBy varchar(50) ,
-  modifiedByUsr varchar(50) 
+  modifiedByUsr varchar(50),
+  hasPdf int
 )
 BEGIN
 	UPDATE serviceOrder s SET
@@ -4018,7 +4033,8 @@ BEGIN
 	s.isWrong = isWrong,
 	s.modified = modified ,
 	s.modifiedBy = modifiedBy ,
-	s.modifiedByUsr = modifiedByUsr 
+	s.modifiedByUsr = modifiedByUsr,
+	s.hasPdf = hasPdf
 	WHERE s.serviceOrderId = serviceOrderId;
 END$$
 

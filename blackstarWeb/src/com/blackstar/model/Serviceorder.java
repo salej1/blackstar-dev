@@ -55,6 +55,7 @@ public class Serviceorder implements java.io.Serializable {
 	private String responsibleName;
 	private List<Employee> employeeList;
 	private Integer openCustomerId;
+	private Integer hasPdf;
 	
 	public Serviceorder() {
 	}
@@ -66,7 +67,7 @@ public class Serviceorder implements java.io.Serializable {
 			String asignee, Date created, String createdBy,
 			String createdByUsr, Date modified, String modifiedBy,
 			String modifiedByUsr, String signCreated, String signReceivedBy, String receivedByPosition, String serviceOrderNumber, Integer serviceOrderId,
-			Integer isWrong, String receivedByEmail, Integer openCustomerId, Date serviceEndDate) {
+			Integer isWrong, String receivedByEmail, Integer openCustomerId, Date serviceEndDate, Integer hasPdf) {
 		this.serviceOrderId = serviceOrderId;
 		this.serviceTypeId = serviceTypeId;
 		this.ticketId = ticketId;
@@ -96,6 +97,7 @@ public class Serviceorder implements java.io.Serializable {
 		this.responsibleName = responsible;
 		this.openCustomerId = openCustomerId;
 		this.serviceEndDate = serviceEndDate;
+		this.hasPdf = hasPdf;
 	}
 
 	@Id
@@ -420,5 +422,13 @@ public class Serviceorder implements java.io.Serializable {
 
 	public void setServiceEndDate(Date serviceEndDate) {
 		this.serviceEndDate = serviceEndDate;
+	}
+
+	public Integer getHasPdf() {
+		return hasPdf;
+	}
+
+	public void setHasPdf(Integer hasPdf) {
+		this.hasPdf = hasPdf;
 	}
 }

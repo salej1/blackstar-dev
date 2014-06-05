@@ -114,7 +114,7 @@ public class ServiceOrderDAOImpl extends AbstractDAO implements ServiceOrderDAO 
   public int insertServiceOrder(Serviceorder orderService) {
 	  
 	StringBuilder sqlBuilder = new StringBuilder();
-	sqlBuilder.append("CALL AddserviceOrder(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+	sqlBuilder.append("CALL AddserviceOrder(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 	
 	DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 	
@@ -144,7 +144,8 @@ public class ServiceOrderDAOImpl extends AbstractDAO implements ServiceOrderDAO 
 									""+orderService.getCreatedByUsr()+ "",
 									""+orderService.getReceivedByEmail()+ "",
 									orderService.getOpenCustomerId(),
-									orderService.getServiceEndDate()!=null?df.format(orderService.getServiceEndDate()):null
+									orderService.getServiceEndDate()!=null?df.format(orderService.getServiceEndDate()):null,
+									orderService.getHasPdf()!=null?orderService.getHasPdf():0
 								};
 	
 	Integer idOS = getJdbcTemplate().queryForInt(sqlBuilder.toString() ,args);
@@ -171,7 +172,7 @@ public class ServiceOrderDAOImpl extends AbstractDAO implements ServiceOrderDAO 
   @Override
   public boolean updateServiceOrder(Serviceorder orderService) {
 		StringBuilder sqlBuilder = new StringBuilder();
-		sqlBuilder.append("CALL UpdateServiceOrder(?,?,?,?,?,?,?,?)");
+		sqlBuilder.append("CALL UpdateServiceOrder(?,?,?,?,?,?,?,?,?)");
 		DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		Object[] args = new Object []{
 										orderService.getServiceOrderId(),
@@ -181,7 +182,8 @@ public class ServiceOrderDAOImpl extends AbstractDAO implements ServiceOrderDAO 
 										""+orderService.getIsWrong()+ "",
 										""+df.format(orderService.getModified())+ "",
 										""+orderService.getModifiedBy()+ "",
-										""+orderService.getModifiedByUsr()+ ""
+										""+orderService.getModifiedByUsr()+ "",
+										orderService.getHasPdf()
 									};
 		
 		 getJdbcTemplate().update(sqlBuilder.toString() ,args);
