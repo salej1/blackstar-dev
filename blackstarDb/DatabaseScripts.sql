@@ -3719,6 +3719,10 @@ BEGIN
 		t.modifiedBy = 'CloseTicket',
 		t.modifiedByUsr = pModifiedBy
 	WHERE t.ticketId = pTicketId;
+
+	-- Poner la OS como correctivo
+	UPDATE serviceOrder SET serviceTypeId = 'C'
+	WHERE serviceOrderNumber = pOsId;
 	
 END$$
 
