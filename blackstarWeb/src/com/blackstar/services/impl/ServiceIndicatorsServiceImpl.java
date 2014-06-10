@@ -64,6 +64,9 @@ implements ServiceIndicatorsService {
 			put("equipmentBrand", "");
 			put("arrival", "");
 			put("closed", "");
+			put("contact", "");
+			put("contactEmail", "");
+			put("contactPhone", "");
 		}};
 		for(int i = 0; i < jsonData.size();i++){
 			month = jsonData.get(i).get("created").toString().substring(5,7);
