@@ -2057,112 +2057,111 @@ END$$
 DROP PROCEDURE IF EXISTS blackstarDb.GetTicketsKPI$$
 CREATE PROCEDURE blackstarDb.`GetTicketsKPI`(pProject VARCHAR(100), pStartDate DATETIME, pEndDate DATETIME, pUser VARCHAR(100))
 BEGIN
-IF pProject = 'ALL' THEN
-IF pUser = '' THEN
-SELECT
-tk.ticketId AS DT_RowId,
-tk.ticketNumber AS ticketNumber,
-tk.created AS created,
-p.customer AS customer,
-et.equipmentType AS equipmentType,
-ts.ticketStatus AS ticketStatus,
-IFNULL(bu.name, tk.employee) AS asignee,
-IFNULL(p.equipmentLocation, '') AS equipmentLocation,
-IFNULL(p.brand, '') AS equipmentBrand,
-IFNULL(tk.arrival, '') AS arrival,
-IFNULL(tk.closed, '') AS closed,
-tk.contact AS contact,
-tk.contactEmail AS contactEmail,
-tk.contactPhone as contactPhone
-FROM ticket tk
-INNER JOIN ticketStatus ts ON tk.ticketStatusId = ts.ticketStatusId
-INNER JOIN policy p ON tk.policyId = p.policyId
-INNER JOIN equipmentType et ON p.equipmentTypeId = et.equipmentTypeId
-INNER JOIN office of on p.officeId = of.officeId
-LEFT OUTER JOIN blackstarUser bu ON bu.email = tk.asignee
-WHERE tk.created >= pStartDate AND tk.created <= pEndDate
-ORDER BY tk.created ASC;
-ELSE
-SELECT
-tk.ticketId AS DT_RowId,
-tk.ticketNumber AS ticketNumber,
-tk.created AS created,
-p.customer AS customer,
-et.equipmentType AS equipmentType,
-ts.ticketStatus AS ticketStatus,
-IFNULL(bu.name, tk.employee) AS asignee,
-IFNULL(p.equipmentLocation, '') AS equipmentLocation,
-IFNULL(p.brand, '') AS equipmentBrand,
-IFNULL(tk.arrival, '') AS arrival,
-IFNULL(tk.closed, '') AS closed,
-tk.contact AS contact,
-tk.contactEmail AS contactEmail,
-tk.contactPhone as contactPhone
-FROM ticket tk
-INNER JOIN ticketStatus ts ON tk.ticketStatusId = ts.ticketStatusId
-INNER JOIN policy p ON tk.policyId = p.policyId
-INNER JOIN equipmentType et ON p.equipmentTypeId = et.equipmentTypeId
-INNER JOIN office of on p.officeId = of.officeId
-LEFT OUTER JOIN blackstarUser bu ON bu.email = tk.asignee
-WHERE tk.created >= pStartDate AND tk.created <= pEndDate
-AND p.equipmentUser = pUser
-ORDER BY tk.created ASC;
-END IF;
-
-ELSE
-IF pUser = '' THEN
-SELECT
-tk.ticketId AS DT_RowId,
-tk.ticketNumber AS ticketNumber,
-tk.created AS created,
-p.customer AS customer,
-et.equipmentType AS equipmentType,
-ts.ticketStatus AS ticketStatus,
-IFNULL(bu.name, tk.employee) AS asignee,
-IFNULL(p.equipmentLocation, '') AS equipmentLocation,
-IFNULL(p.brand, '') AS equipmentBrand,
-IFNULL(tk.arrival, '') AS arrival,
-IFNULL(tk.closed, '') AS closed,
-tk.contact AS contact,
-tk.contactEmail AS contactEmail,
-tk.contactPhone as contactPhone
-FROM ticket tk
-INNER JOIN ticketStatus ts ON tk.ticketStatusId = ts.ticketStatusId
-INNER JOIN policy p ON tk.policyId = p.policyId
-INNER JOIN equipmentType et ON p.equipmentTypeId = et.equipmentTypeId
-INNER JOIN office of on p.officeId = of.officeId
-LEFT OUTER JOIN blackstarUser bu ON bu.email = tk.asignee
-WHERE tk.created >= pStartDate AND tk.created <= pEndDate
-AND p.project = pProject
-ORDER BY tk.created ASC;
-ELSE
-SELECT
-tk.ticketId AS DT_RowId,
-tk.ticketNumber AS ticketNumber,
-tk.created AS created,
-p.customer AS customer,
-et.equipmentType AS equipmentType,
-ts.ticketStatus AS ticketStatus,
-IFNULL(bu.name, tk.employee) AS asignee,
-IFNULL(p.equipmentLocation, '') AS equipmentLocation,
-IFNULL(p.brand, '') AS equipmentBrand,
-IFNULL(tk.arrival, '') AS arrival,
-IFNULL(tk.closed, '') AS closed,
-tk.contact AS contact,
-tk.contactEmail AS contactEmail,
-tk.contactPhone as contactPhone
-FROM ticket tk
-INNER JOIN ticketStatus ts ON tk.ticketStatusId = ts.ticketStatusId
-INNER JOIN policy p ON tk.policyId = p.policyId
-INNER JOIN equipmentType et ON p.equipmentTypeId = et.equipmentTypeId
-INNER JOIN office of on p.officeId = of.officeId
-LEFT OUTER JOIN blackstarUser bu ON bu.email = tk.asignee
-WHERE tk.created >= pStartDate AND tk.created <= pEndDate
-AND p.project = pProject
-AND p.equipmentUser = pUser
-ORDER BY tk.created ASC;
-END IF;
-END IF;
+	IF pProject = 'ALL' THEN
+		IF pUser = '' THEN
+			SELECT
+			tk.ticketId AS DT_RowId,
+			tk.ticketNumber AS ticketNumber,
+			tk.created AS created,
+			p.customer AS customer,
+			et.equipmentType AS equipmentType,
+			ts.ticketStatus AS ticketStatus,
+			IFNULL(bu.name, tk.employee) AS asignee,
+			IFNULL(p.equipmentLocation, '') AS equipmentLocation,
+			IFNULL(p.brand, '') AS equipmentBrand,
+			IFNULL(tk.arrival, '') AS arrival,
+			IFNULL(tk.closed, '') AS closed,
+			tk.contact AS contact,
+			tk.contactEmail AS contactEmail,
+			tk.contactPhone as contactPhone
+			FROM ticket tk
+			INNER JOIN ticketStatus ts ON tk.ticketStatusId = ts.ticketStatusId
+			INNER JOIN policy p ON tk.policyId = p.policyId
+			INNER JOIN equipmentType et ON p.equipmentTypeId = et.equipmentTypeId
+			INNER JOIN office of on p.officeId = of.officeId
+			LEFT OUTER JOIN blackstarUser bu ON bu.email = tk.employee
+			WHERE tk.created >= pStartDate AND tk.created <= pEndDate
+			ORDER BY tk.created ASC;
+		ELSE
+			SELECT
+			tk.ticketId AS DT_RowId,
+			tk.ticketNumber AS ticketNumber,
+			tk.created AS created,
+			p.customer AS customer,
+			et.equipmentType AS equipmentType,
+			ts.ticketStatus AS ticketStatus,
+			IFNULL(bu.name, tk.employee) AS asignee,
+			IFNULL(p.equipmentLocation, '') AS equipmentLocation,
+			IFNULL(p.brand, '') AS equipmentBrand,
+			IFNULL(tk.arrival, '') AS arrival,
+			IFNULL(tk.closed, '') AS closed,
+			tk.contact AS contact,
+			tk.contactEmail AS contactEmail,
+			tk.contactPhone as contactPhone
+			FROM ticket tk
+			INNER JOIN ticketStatus ts ON tk.ticketStatusId = ts.ticketStatusId
+			INNER JOIN policy p ON tk.policyId = p.policyId
+			INNER JOIN equipmentType et ON p.equipmentTypeId = et.equipmentTypeId
+			INNER JOIN office of on p.officeId = of.officeId
+			LEFT OUTER JOIN blackstarUser bu ON bu.email = tk.employee
+			WHERE tk.created >= pStartDate AND tk.created <= pEndDate
+			AND p.equipmentUser = pUser
+			ORDER BY tk.created ASC;
+		END IF;
+	ELSE
+		IF pUser = '' THEN
+			SELECT
+			tk.ticketId AS DT_RowId,
+			tk.ticketNumber AS ticketNumber,
+			tk.created AS created,
+			p.customer AS customer,
+			et.equipmentType AS equipmentType,
+			ts.ticketStatus AS ticketStatus,
+			IFNULL(bu.name, tk.employee) AS asignee,
+			IFNULL(p.equipmentLocation, '') AS equipmentLocation,
+			IFNULL(p.brand, '') AS equipmentBrand,
+			IFNULL(tk.arrival, '') AS arrival,
+			IFNULL(tk.closed, '') AS closed,
+			tk.contact AS contact,
+			tk.contactEmail AS contactEmail,
+			tk.contactPhone as contactPhone
+			FROM ticket tk
+			INNER JOIN ticketStatus ts ON tk.ticketStatusId = ts.ticketStatusId
+			INNER JOIN policy p ON tk.policyId = p.policyId
+			INNER JOIN equipmentType et ON p.equipmentTypeId = et.equipmentTypeId
+			INNER JOIN office of on p.officeId = of.officeId
+			LEFT OUTER JOIN blackstarUser bu ON bu.email = tk.employee
+			WHERE tk.created >= pStartDate AND tk.created <= pEndDate
+			AND p.project = pProject
+			ORDER BY tk.created ASC;
+		ELSE
+			SELECT
+			tk.ticketId AS DT_RowId,
+			tk.ticketNumber AS ticketNumber,
+			tk.created AS created,
+			p.customer AS customer,
+			et.equipmentType AS equipmentType,
+			ts.ticketStatus AS ticketStatus,
+			IFNULL(bu.name, tk.employee) AS asignee,
+			IFNULL(p.equipmentLocation, '') AS equipmentLocation,
+			IFNULL(p.brand, '') AS equipmentBrand,
+			IFNULL(tk.arrival, '') AS arrival,
+			IFNULL(tk.closed, '') AS closed,
+			tk.contact AS contact,
+			tk.contactEmail AS contactEmail,
+			tk.contactPhone as contactPhone
+			FROM ticket tk
+			INNER JOIN ticketStatus ts ON tk.ticketStatusId = ts.ticketStatusId
+			INNER JOIN policy p ON tk.policyId = p.policyId
+			INNER JOIN equipmentType et ON p.equipmentTypeId = et.equipmentTypeId
+			INNER JOIN office of on p.officeId = of.officeId
+			LEFT OUTER JOIN blackstarUser bu ON bu.email = tk.employee
+			WHERE tk.created >= pStartDate AND tk.created <= pEndDate
+			AND p.project = pProject
+			AND p.equipmentUser = pUser
+			ORDER BY tk.created ASC;
+		END IF;
+	END IF;
 
 END$$
 

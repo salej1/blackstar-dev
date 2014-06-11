@@ -35,7 +35,8 @@
     		   options = {legend: {position: 'right', alignment: 'center'},
   		       		      chartArea:{left:50,top:10,width:"100%", height:"100%"},
   		       		      is3D: $('#is3d_' + i).val(),
-    		        		  pieHole: 0.4};
+    		        		  pieHole: 0.4,
+                      colors: ['#F2E15C', '#109618', '#ff9900', '#ED4F37']};
     	  }
 
     	  chart.draw(data, options);

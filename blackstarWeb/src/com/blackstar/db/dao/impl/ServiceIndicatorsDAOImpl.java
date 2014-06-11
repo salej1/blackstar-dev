@@ -118,15 +118,15 @@ public class ServiceIndicatorsDAOImpl extends AbstractDAO
 	@Override
 	public List<String> getPoliciesExport(String search, String project,
 			Date startDate, Date endDate) {
-		String sqlQuery = "CALL GetPoliciesKPI(?,?,?,?)";
-		return getJdbcTemplate().query(sqlQuery, new Object[]{search, project, startDate, endDate}, new PlainTextMapper()); 
+		String sqlQuery = "CALL GetPoliciesKPI(?,?,?,?,?)";
+		return getJdbcTemplate().query(sqlQuery, new Object[]{search, project, startDate, endDate, ""}, new PlainTextMapper()); 
 	}
 
 	@Override
 	public List<String> getTicketsExport(String search, String project,
 			Date startDate, Date endDate) {
-		String sqlQuery = "CALL GetAllTickets()";
-		return getJdbcTemplate().query(sqlQuery, new PlainTextMapper()); 
+		String sqlQuery = "CALL GetTicketsKPI(?,?,?,?)";
+		return getJdbcTemplate().query(sqlQuery, new Object[]{project, startDate, endDate, ""}, new PlainTextMapper()); 
 	}
 
 	@Override
