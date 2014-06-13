@@ -1319,10 +1319,12 @@ BEGIN
 		SELECT 
 			se.employeeId as employeeId, 
 			bu.name as name,
+			COUNT(*) as services,
 			AVG(ss.score) as average, 
 			SUM(so.isWrong) as wrongOs,
-			COUNT(*) as services,
-			((COUNT(*) * 5) - SUM(ss.questionTreatment) - SUM(ss.questionIdentificationPersonal) - SUM(questionIdealEquipment) - SUM(questionTime) - SUM(questionUniform)) AS badComments
+			ifnull(group_concat(if(so.isWrong, so.serviceOrderNumber, null) separator ','), '') AS wrongOsList,
+			((COUNT(*) * 5) - SUM(ss.questionTreatment) - SUM(ss.questionIdentificationPersonal) - SUM(ss.questionIdealEquipment) - SUM(ss.questionTime) - SUM(ss.questionUniform)) AS badComments,
+			ifnull(group_concat(if((ss.questionTreatment + ss.questionIdentificationPersonal + ss.questionIdealEquipment + ss.questionTime + ss.questionUniform) < 5, ss.surveyServiceId, null) separator ','), '') AS badCommentsOsList
 		FROM serviceOrder so 
 			INNER JOIN serviceOrderEmployee se on so.serviceOrderId = se.serviceOrderId
 			INNER JOIN surveyService ss ON so.surveyServiceId = ss.surveyServiceId

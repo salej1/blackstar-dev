@@ -38,10 +38,19 @@ public class ServiceOrderController extends AbstractController {
   }
 
   @RequestMapping("/show.do")
-  public String  setup(@RequestParam(required = true) Integer serviceOrderId, HttpServletResponse response) {
+  public String  setup(@RequestParam(required = true) Integer serviceOrderId, @RequestParam(required = false) String serviceOrderNumber, HttpServletResponse response) {
 	String url = "error";
 	try {
-		OrderserviceDTO so = service.getServiceOrderByIdOrNumber(serviceOrderId, null);
+		OrderserviceDTO so = null;
+		if(serviceOrderId > 0){
+			so = service.getServiceOrderByIdOrNumber(serviceOrderId, null);
+		}
+		else if(serviceOrderNumber != null && !serviceOrderNumber.equals("")){
+			so = service.getServiceOrderByIdOrNumber(null, serviceOrderNumber);
+			if(so != null){
+				serviceOrderId = so.getServiceOrderId();
+			}
+		}
 		if(so == null){
 			throw new Exception("No se encontro la orden de servicio con ID: " + serviceOrderId.toString());
 		}
