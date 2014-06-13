@@ -251,6 +251,26 @@ public class ServiceIndicatorsController extends AbstractController {
   }
   
 
+  @RequestMapping(value= "/getProjects.do", method = RequestMethod.GET)
+  public String  getProjects(
+		  @RequestParam(required = true) Date startDate,
+		  @RequestParam(required = true) Date endDate,
+		  @RequestParam(required = true) String project,
+		  ModelMap model){
+	try {
+	     model.addAttribute("projectsKpi", service.getProjects(startDate, endDate));
+	} catch (Exception e) {
+		Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
+		e.printStackTrace();
+		model.addAttribute("errorDetails", e.getStackTrace()[0].toString());
+		for(StackTraceElement t : e.getStackTrace()){
+			System.out.println(t.toString());
+		}
+		return "error";
+	}
+	return "_indProjects";
+  }
+  
   @RequestMapping(value= "/getPolicyExport.do", method = RequestMethod.GET)
    public String  getPolicyExport(
 		  @RequestParam(required = true) Date startDate,

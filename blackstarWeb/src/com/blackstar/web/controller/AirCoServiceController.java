@@ -211,6 +211,7 @@ public class AirCoServiceController extends AbstractController {
 				servicioOrderSave.setPolicyId(serviceOrder.getPolicyId());
 				servicioOrderSave.setResponsible(serviceOrder.getResponsible());
 				servicioOrderSave.setTicketId(serviceOrder.getTicketId());
+				servicioOrderSave.setHasPdf(1);
 				
 				idServicio = service.saveServiceOrder(servicioOrderSave, "PlainServiceController", userSession.getUser().getUserEmail());
 				doCommit = true;

@@ -288,6 +288,9 @@ public class PlainServiceController extends AbstractController {
 					servicioOrderSave.setPolicyId(serviceOrder.getPolicyId());
 					servicioOrderSave.setResponsible(serviceOrder.getResponsible());
 					servicioOrderSave.setTicketId(serviceOrder.getTicketId());
+					if(userSession.getUser().getBelongsToGroup().get(Globals.GROUP_SERVICE) != null){
+						servicioOrderSave.setHasPdf(1);
+					}
 					idServicio = service.saveServiceOrder(servicioOrderSave, "PlainServiceController", userSession.getUser().getUserEmail());
 					serviceOrder.setServiceOrderId(idServicio);
 					

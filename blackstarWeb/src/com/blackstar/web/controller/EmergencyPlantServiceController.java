@@ -208,6 +208,8 @@ public class EmergencyPlantServiceController extends AbstractController {
 					servicioOrderSave.setPolicyId(serviceOrder.getPolicyId());
 					servicioOrderSave.setResponsible(serviceOrder.getResponsible());
 					servicioOrderSave.setTicketId(serviceOrder.getTicketId());
+					servicioOrderSave.setHasPdf(1);
+					
 					idServicio = service.saveServiceOrder(servicioOrderSave, "BatteryServiceController", userSession.getUser().getUserEmail());
 					serviceOrder.setServiceOrderId(idServicio);
 					doCommit = true;
