@@ -29,4 +29,5 @@ public interface ServiceIndicatorsService {
 	public String getPoliciesExport(String search, String project, Date startDate, Date endDate);
 	public String getTicketsExport(String search, String project, Date startDate, Date endDate);
 	public String getSOExport(String search, String project, Date startDate, Date endDate);
+	public String getProjects(String project, Date startDate, Date endDate);
 }

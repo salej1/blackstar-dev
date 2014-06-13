@@ -258,7 +258,7 @@ public class ServiceIndicatorsController extends AbstractController {
 		  @RequestParam(required = true) String project,
 		  ModelMap model){
 	try {
-	     model.addAttribute("projectsKpi", service.getProjects(startDate, endDate));
+	     model.addAttribute("projectsKpi", service.getProjects(project, startDate, endDate));
 	} catch (Exception e) {
 		Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 		e.printStackTrace();

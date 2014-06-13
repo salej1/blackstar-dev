@@ -314,4 +314,9 @@ implements ServiceIndicatorsService {
 		
 		return retVal.toString();
 	}
+
+	@Override
+	public String getProjects(String project, Date startDate, Date endDate) {
+		return dao.getProjects(project, startDate, endDate).toString();
+	}
 }

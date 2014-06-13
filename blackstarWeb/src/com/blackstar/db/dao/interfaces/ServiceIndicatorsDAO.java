@@ -33,4 +33,5 @@ public interface ServiceIndicatorsDAO {
   public List<String> getPoliciesExport(String search, String project, Date startDate, Date endDate);
   public List<String> getTicketsExport(String search, String project, Date startDate, Date endDate);
   public List<String> getSOExport(String search, String project, Date startDate, Date endDate);
+  public List<JSONObject> getProjects(String project, Date startDate, Date endDate);
 }

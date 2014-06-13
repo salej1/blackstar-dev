@@ -165,6 +165,9 @@
 							</div>
 						</c:if>
 						<div>
+							<img src="/img/navigate-right.png"/><a href="#" id="getAverage" onclick="go('getProjects')">Proyectos</a>
+						</div>
+						<div>
 							<img src="/img/navigate-right.png"/><a href="#" id="getAverage" onclick="go('getPolicyExport', 'display')">Exportar Polizas</a>
 						</div>
 						<div>

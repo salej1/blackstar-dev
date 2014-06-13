@@ -135,4 +135,10 @@ public class ServiceIndicatorsDAOImpl extends AbstractDAO
 		String sqlQuery = "CALL GetAllServiceOrders()";
 		return getJdbcTemplate().query(sqlQuery, new PlainTextMapper()); 
 	}
+
+	@Override
+	public List<JSONObject> getProjects(String project, Date startDate, Date endDate) {
+		String sqlQuery = "CALL GetProjectsKPI(?,?,?)";
+		return getJdbcTemplate().query(sqlQuery, new Object[]{project, startDate, endDate}, new JSONRowMapper()); 
+	}
 }

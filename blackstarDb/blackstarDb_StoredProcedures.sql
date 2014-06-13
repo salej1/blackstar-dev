@@ -279,12 +279,61 @@
 -- 45	10/06/2014	DCB 	Se modifica:
 --                              blackstarDb.GetTicketsKPI
 -- -----------------------------------------------------------------------------
-
+-- 46	13/06/2014	DCB 	Se modifica:
+--                              blackstarDb.Se agrega GetProjectsKPI
+-- -----------------------------------------------------------------------------
 use blackstarDb;
 
 DELIMITER $$
 
 
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetProjectsKPI
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetProjectsKPI$$
+CREATE PROCEDURE blackstarDb.GetProjectsKPI (pProject VARCHAR(100), pStartDate DATETIME, pEndDate DATETIME)
+BEGIN
+	IF pProject = 'All' THEN
+		SELECT 
+			p.project AS project,
+			o.officeName AS officeName,
+			pt.policyType AS warranty,
+			ifnull(p.customerContract, '') AS contract,
+			ifnull(p.customer, '') AS customer,
+			ifnull(p.finalUser, '') AS finalUser,
+			ifnull(p.cst, '') AS cst,
+			p.startDate AS startDate,
+			p.endDate AS endDate,
+			ifnull(p.contactName, '') AS  contactName,
+			ifnull(p.contactPhone, '') AS contactPhone
+		FROM policy p 
+			INNER JOIN office o ON p.officeId = o.officeId
+			INNER JOIN policyType pt ON p.policyTypeId = pt.policyTypeId
+		WHERE NOT (p.startDate >= pEndDate OR p.endDate <= pStartDate)
+		GROUP BY project
+		ORDER BY officeName, project;
+	ELSE
+		SELECT 
+			p.project AS project,
+			o.officeName AS officeName,
+			pt.policyType AS warranty,
+			ifnull(p.customerContract, '') AS contract,
+			ifnull(p.customer, '') AS customer,
+			ifnull(p.finalUser, '') AS finalUser,
+			ifnull(p.cst, '') AS cst,
+			p.startDate AS startDate,
+			p.endDate AS endDate,
+			ifnull(p.contactName, '') AS  contactName,
+			ifnull(p.contactPhone, '') AS contactPhone
+		FROM policy p 
+			INNER JOIN office o ON p.officeId = o.officeId
+			INNER JOIN policyType pt ON p.policyTypeId = pt.policyTypeId
+		WHERE NOT (p.startDate >= pEndDate OR p.endDate <= pStartDate)
+			AND p.project = pProject
+		GROUP BY project
+		ORDER BY officeName, project;
+	END IF;
+END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetServiceOrderDetails
