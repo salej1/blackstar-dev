@@ -10,22 +10,31 @@
 -- PR   Date    	Author	Description
 -- --   --------   -------  ----------------------------------------------------
 -- 1    08/04/2014	DCB		Se Integran los SP iniciales:
---								bloomDb.getBloomPendingTickets
---								bloomDb.getBloomTickets
---								bloomDb.getBloomDocumentsByService
--- 								bloomDb.getBloomProjects
--- 								bloomDb.getBloomApplicantArea
--- 								bloomDb.getBloomServiceType
--- 								bloomDb.getBloomOffice
+--							bloomDb.getBloomPendingTickets
+--							bloomDb.getBloomTickets
+--							bloomDb.getBloomDocumentsByService
+-- 							bloomDb.getBloomProjects
+-- 							bloomDb.getBloomApplicantArea
+-- 							bloomDb.getBloomServiceType
+-- 							bloomDb.getBloomOffice
 
--- 								bloomDb.GetNextInternalTicketNumber
--- 								bloomDb.AddInternalTicket
--- 								bloomDb.AddMemberTicketTeam
--- 								bloomDb.AddDeliverableTrace
+-- 							bloomDb.GetNextInternalTicketNumber
+-- 							bloomDb.AddInternalTicket
+-- 							bloomDb.AddMemberTicketTeam
+-- 							bloomDb.AddDeliverableTrace
 
 
---		08/04/2014				bloomDb.GetUserData (MODIFICADO:Sobrescribimos la version anterior)
---								bloomDb.getBloomEstatusTickets
+--		08/04/2014			bloomDb.GetUserData (MODIFICADO:Sobrescribimos la version anterior)
+--							bloomDb.getBloomEstatusTickets
+-- 19    16/05/2014  OMA	bloomDb.GetBloomSupportAreasWithTickets
+-- 20    16/05/2014  OMA	bloomDb.GetBloomStatisticsByAreaSupport
+-- 21    16/05/2014  OMA	bloomDb.GetBloomPercentageTimeClosedTickets
+-- 22    16/05/2014  OMA	bloomDb.GetBloomPercentageEvaluationTickets
+-- 23    16/05/2014  OMA	bloomDb.GetBloomNumberTicketsByArea
+-- 24    16/05/2014  OMA	bloomDb.GetBloomUnsatisfactoryTicketsByUserByArea
+-- 25    16/05/2014  OMA	bloomDb.GetBloomHistoricalTickets
+-- 26    13/06/2014  OMA	bloomDb.getBloomAdvisedUsers
+--
 -- ------------------------------------------------------------------------------
 
 
