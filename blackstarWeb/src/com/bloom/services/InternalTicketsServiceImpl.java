@@ -156,8 +156,10 @@ public class InternalTicketsServiceImpl extends AbstractService
             			new TicketTeamBean(idTicket, 2L, ticket.getCreatedUserId(),ticket.getCreatedUserEmail(),ticket.getCreatedUserName()));
             	
             	//obtener coordinadores
-            	miebrosDtos=catalogInternalTicketsDao.getEmployeesByGroup("sysCoordinador");
+            	//miebrosDtos=catalogInternalTicketsDao.getEmployeesByGroup("sysCoordinador");
             	
+            	//obtenemos la lista de usuarios de enterados para bloomTicketTeam
+            	miebrosDtos=catalogInternalTicketsDao.getAdviceUsers(ticket.getApplicantAreaId(), ticket.getServiceTypeId());
             	
             	for(CatalogoBean<Integer> coordinador:miebrosDtos){
             		//los cordinadores entran con rol de colaborador.

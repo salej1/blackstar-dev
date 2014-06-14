@@ -3,8 +3,11 @@ package com.bloom.db.dao;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
+
+
 
 
 import com.blackstar.db.dao.AbstractDAO;
@@ -21,13 +24,15 @@ public class CatalogInternalTicketsDaoImpl extends AbstractDAO implements Catalo
 	
 	private static final String QUERY_AREAS = "CALL getBloomApplicantArea()";
 	
-	private static final String QUERY_SERVICIOS = "CALL getBloomServiceType()";
+	private static final String QUERY_SERVICIOS = "CALL getBloomServiceType(%d)";
 	
 	private static final String QUERY_OFICINAS = "CALL getBloomOffice()";
 	
 	private static final String QUERY_DOCUMENTOS = "CALL getBloomDocumentsByService(%d)";
 	
 	private static final String QUERY_EMPLOYEES_BY_GROUP = "CALL getCatalogEmployeeByGroup('%s')";
+	
+	private static final String QUERY_ADVICE_USERS_TEAM = "CALL getBloomAdvisedUsers(%d,%d)";
 	
 	private static final String QUERY_ESTATUS_TICKETS = "CALL getBloomEstatusTickets()";
 	
@@ -85,13 +90,14 @@ public class CatalogInternalTicketsDaoImpl extends AbstractDAO implements Catalo
     
     
     @Override
-    public List<CatalogoBean<Integer>> consultarTipoServicio() throws DAOException {
+    public List<CatalogoBean<Integer>> getServiceTypeList(Integer applicantAreaId) throws DAOException {
 
         List<CatalogoBean<Integer>> listaServicios = new ArrayList<CatalogoBean<Integer>>();
 
         try {
         	
-        	listaServicios.addAll(getJdbcTemplate().query(QUERY_SERVICIOS,
+        	listaServicios.addAll(getJdbcTemplate().query(
+        			String.format(QUERY_SERVICIOS, applicantAreaId),
                     new CatalogoMapper<Integer>("id", "label","responseTime")));
 
             return listaServicios;
@@ -158,6 +164,29 @@ public class CatalogInternalTicketsDaoImpl extends AbstractDAO implements Catalo
         List<CatalogoBean<Integer>> listaUsuarios = new ArrayList<CatalogoBean<Integer>>();
         
         String sql=String.format(QUERY_EMPLOYEES_BY_GROUP, group);
+
+        try {
+        	
+        	listaUsuarios.addAll(getJdbcTemplate().query(sql, new CatalogoMapper<Integer>("id", "name","email")));
+
+            return listaUsuarios;
+
+        } catch (EmptyResultDataAccessException e) {
+        	Logger.Log(LogLevel.WARNING, EMPTY_CONSULTA_CAT, e);
+            return Collections.emptyList();
+        } catch (DataAccessException e) {
+        	Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
+            throw new DAOException(ERROR_CONSULTA_CAT, e);
+        }
+    }   
+    
+    
+    @Override
+    public List<CatalogoBean<Integer>> getAdviceUsers(Integer applicantAreaIdParam, Integer serviceTypeIdParam) throws DAOException {
+
+        List<CatalogoBean<Integer>> listaUsuarios = new ArrayList<CatalogoBean<Integer>>();
+        
+        String sql=String.format(QUERY_ADVICE_USERS_TEAM, applicantAreaIdParam,serviceTypeIdParam);
 
         try {
         	

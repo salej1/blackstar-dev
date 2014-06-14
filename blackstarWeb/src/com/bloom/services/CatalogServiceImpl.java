@@ -5,6 +5,7 @@
 package com.bloom.services;
 
 import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.bloom.common.bean.CatalogoBean;
@@ -76,11 +77,11 @@ public class CatalogServiceImpl implements CatalogService {
 	
 	
 	@Override
-    public List<CatalogoBean<Integer>> consultarTipoServicio()
+    public List<CatalogoBean<Integer>> getServiceTypeList(Integer applicantAreaId)
             throws ServiceException {
         try {
             
-        	return getCatalogInternalTicketsDao().consultarTipoServicio();
+        	return getCatalogInternalTicketsDao().getServiceTypeList(applicantAreaId);
             
         } catch (DAOException e) {
             

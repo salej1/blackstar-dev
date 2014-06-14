@@ -126,11 +126,10 @@ DROP PROCEDURE IF EXISTS blackstarDb.getBloomDocumentsByService$$
 CREATE PROCEDURE blackstarDb.getBloomDocumentsByService(paramServiceTypeId INTEGER)
 BEGIN
 
-select a.deliverableTypeId as id, b.name as label from bloomRequiredDeliverable a
-INNER JOIN bloomDeliverableType b on (b._id =a.deliverableTypeId)
+select a._id as id, a.name as label from bloomDeliverableType a
 WHERE a.serviceTypeId =paramServiceTypeId
-AND a.deliverableTypeId != -1
-ORDER BY a.deliverableTypeId;
+AND a._id != -1
+ORDER BY a._id;
 
 END$$
 
@@ -163,13 +162,14 @@ END$$
 
 
 -- -----------------------------------------------------------------------------
-	-- blackstarDb.getBloomServiceType
+	-- blackstarDb.getBloomServiceType       SE MODIFICO PARA LA FASE 2
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.getBloomServiceType$$
-CREATE PROCEDURE blackstarDb.getBloomServiceType()
+CREATE PROCEDURE blackstarDb.getBloomServiceType(applicantAreaIdParam INTEGER)
 BEGIN
 SELECT _ID as id ,NAME AS label, responseTime FROM bloomServiceType
 WHERE _ID != -1
+AND applicantAreaId = applicantAreaIdParam
 ORDER BY _ID;
 
 END$$
@@ -220,10 +220,8 @@ BEGIN
 END$$
 
 
-
-
 -- -----------------------------------------------------------------------------
-	-- blackstarDb.AddInternalTicket
+	-- blackstarDb.AddInternalTicket   SE MODIFICO PARA LA FASE 2
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.AddInternalTicket$$
 CREATE PROCEDURE blackstarDb.AddInternalTicket (  
@@ -240,16 +238,26 @@ CREATE PROCEDURE blackstarDb.AddInternalTicket (
   created Datetime,
   createdBy Varchar(50),
   createdByUsr Int(11),
-  reponseInTime Tinyint)
+  reponseInTime Tinyint,
+  additionalInformation1 Varchar(2500),
+  additionalInformation2 Varchar(2500),
+  additionalInformation3 Varchar(2500),
+  additionalInformation4 Varchar(2500),
+  additionalInformation5 Varchar(2500)
+  )
 BEGIN
 	INSERT INTO bloomTicket
 (applicantUserId,officeId,serviceTypeId,statusId,
 applicantAreaId,dueDate,project,ticketNumber,
-description,created,createdBy,createdByUsr,reponseInTime)
+description,created,createdBy,createdByUsr,reponseInTime,
+additionalInformation1,additionalInformation2,additionalInformation3,
+additionalInformation4,additionalInformation5)
 VALUES
 (applicantUserId,officeId,serviceTypeId,statusId,
 applicantAreaId,dueDate,project,ticketNumber,
-description,created,createdBy,createdByUsr,reponseInTime);
+description,created,createdBy,createdByUsr,reponseInTime,
+additionalInformation1,additionalInformation2,additionalInformation3,
+additionalInformation4,additionalInformation5);
 select LAST_INSERT_ID();
 END$$
 
@@ -266,9 +274,9 @@ CREATE PROCEDURE blackstarDb.AddMemberTicketTeam (
   blackstarUserId Int(11))
 BEGIN
 	INSERT INTO bloomTicketTeam
-(ticketId,workerRoleTypeId,blackstarUserId)
+(ticketId,workerRoleTypeId,blackstarUserId,assignedDate)
 VALUES
-(ticketId,workerRoleTypeId,blackstarUserId);
+(ticketId,workerRoleTypeId,blackstarUserId,CURRENT_TIMESTAMP());
 select LAST_INSERT_ID();
 END$$
 
@@ -356,8 +364,8 @@ BEGIN
 								INNER JOIN userGroup ug ON (ug.userGroupId=bug.userGroupId)
 								INNER JOIN bloomTicket t ON (t._id=f.bloomTicketId)
 								WHERE f.bloomTicketId IS NOT NULL
-								AND t.statusId=5 --ticktes cerrados
-								AND ug.userGroupId= userGroupIdParam --id perfil groupId
+								AND t.statusId=5 -- ticktes cerrados
+								AND ug.userGroupId= userGroupIdParam -- id perfil groupId
 								AND t.created>= startCreationDate
 								AND t.created <= endCreationDate
 								GROUP BY f.bloomTicketId;
@@ -713,4 +721,25 @@ SET @sqlv=CONCAT(tmp1,startCreationDate,tmp2,endCreationDate,tmp3,tmp4);
 EXECUTE stmt;
 DEALLOCATE PREPARE stmt;
 
+END$$
+
+
+
+-- ---------------------------------------------------------------------------------------------------------------------------------------------
+	-- FASE DOS DE TICKETS INTERNOS CAMBIO D ESQUEMA A MANEJO DE 4 CORDIANDORES DONDE SE INCLUYE MESA DE AYUDA.
+-- ---------------------------------------------------------------------------------------------------------------------------------------------
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.getBloomAdvisedUsers
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.getBloomAdvisedUsers$$
+CREATE PROCEDURE blackstarDb.getBloomAdvisedUsers(applicantAreaIdParam INTEGER,serviceTypeIdParam INTEGER)
+BEGIN
+
+select u.blackstarUserId as id,u.name name, u.email email from blackstarUser u
+inner join blackstarUser_userGroup ug on (u.blackstarUserId=ug.blackstarUserId)
+inner join userGroup g on (g.userGroupId=ug.userGroupId)
+inner join bloomAdvisedGroup ag on (ag.userGroupId=ug.userGroupId)
+where ag.applicantAreaId=applicantAreaIdParam
+and ag.serviceTypeId=serviceTypeIdParam;
+	
 END$$

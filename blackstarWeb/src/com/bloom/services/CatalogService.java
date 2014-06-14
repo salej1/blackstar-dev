@@ -39,7 +39,7 @@ public interface CatalogService {
      * @return
      * @throws ServiceException
      */
-    public List<CatalogoBean<Integer>> consultarTipoServicio()
+    public List<CatalogoBean<Integer>> getServiceTypeList(Integer applicantAreaId)
             throws ServiceException;
     
     

@@ -74,6 +74,13 @@ public class InternalTicketBean implements Serializable {
 	private DeliverableTraceBean deliverableTrace;
 	
 	private String createdUserEmail;
+	
+	
+	private String additionalData1;
+	private String additionalData2;
+	private String additionalData3;
+	private String additionalData4;
+	private String additionalData5;
 
 	
 	/**
@@ -490,6 +497,76 @@ public class InternalTicketBean implements Serializable {
 	 */
 	public void setStatusDescr(String statusDescr) {
 		this.statusDescr = statusDescr;
+	}
+
+	/**
+	 * @return the additionalData1
+	 */
+	public String getAdditionalData1() {
+		return additionalData1;
+	}
+
+	/**
+	 * @param additionalData1 the additionalData1 to set
+	 */
+	public void setAdditionalData1(String additionalData1) {
+		this.additionalData1 = additionalData1;
+	}
+
+	/**
+	 * @return the additionalData2
+	 */
+	public String getAdditionalData2() {
+		return additionalData2;
+	}
+
+	/**
+	 * @param additionalData2 the additionalData2 to set
+	 */
+	public void setAdditionalData2(String additionalData2) {
+		this.additionalData2 = additionalData2;
+	}
+
+	/**
+	 * @return the additionalData3
+	 */
+	public String getAdditionalData3() {
+		return additionalData3;
+	}
+
+	/**
+	 * @param additionalData3 the additionalData3 to set
+	 */
+	public void setAdditionalData3(String additionalData3) {
+		this.additionalData3 = additionalData3;
+	}
+
+	/**
+	 * @return the additionalData4
+	 */
+	public String getAdditionalData4() {
+		return additionalData4;
+	}
+
+	/**
+	 * @param additionalData4 the additionalData4 to set
+	 */
+	public void setAdditionalData4(String additionalData4) {
+		this.additionalData4 = additionalData4;
+	}
+
+	/**
+	 * @return the additionalData5
+	 */
+	public String getAdditionalData5() {
+		return additionalData5;
+	}
+
+	/**
+	 * @param additionalData5 the additionalData5 to set
+	 */
+	public void setAdditionalData5(String additionalData5) {
+		this.additionalData5 = additionalData5;
 	}
 
 }

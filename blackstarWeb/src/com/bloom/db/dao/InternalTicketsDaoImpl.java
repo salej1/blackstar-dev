@@ -283,7 +283,7 @@ public class InternalTicketsDaoImpl extends AbstractDAO implements
 
 		StringBuilder sqlBuilder = new StringBuilder();
 
-		sqlBuilder.append("CALL AddInternalTicket(?,?,?,?,?,?,?,?,?,?,?,?,?)");
+		sqlBuilder.append("CALL AddInternalTicket(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
 		int idTicket = 0;
 
@@ -295,7 +295,10 @@ public class InternalTicketsDaoImpl extends AbstractDAO implements
 					ticket.getDeadline(), ticket.getProject(),
 					ticket.getTicketNumber(), ticket.getDescription(),
 					ticket.getCreated(), ticket.getCreatedUserName(),
-					ticket.getCreatedUserId(), ticket.getReponseInTime() };
+					ticket.getCreatedUserId(), ticket.getReponseInTime(),
+					ticket.getAdditionalData1(),ticket.getAdditionalData2(),
+					ticket.getAdditionalData3(),ticket.getAdditionalData4(),
+					ticket.getAdditionalData5()};
 
 			idTicket = getJdbcTemplate().queryForInt(sqlBuilder.toString(),
 					args);

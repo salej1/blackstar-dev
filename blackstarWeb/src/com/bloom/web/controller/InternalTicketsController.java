@@ -370,7 +370,13 @@ public class InternalTicketsController extends AbstractController {
 			@RequestParam(value = "fldDiasRespuesta", required = true) Integer fldDiasRespuesta,
 			@RequestParam(value = "slAreaSolicitanteLabel", required = true) String slAreaSolicitanteLabel,
 			@RequestParam(value = "slTipoServicioLabel", required = true) String slTipoServicioLabel,
-			@RequestParam(value = "slOficinaLabel", required = true) String slOficinaLabel) {
+			@RequestParam(value = "slOficinaLabel", required = true) String slOficinaLabel,
+			@RequestParam(value = "additionalData1", required = true) String additionalData1,
+			@RequestParam(value = "additionalData2", required = true) String additionalData2,
+			@RequestParam(value = "additionalData3", required = true) String additionalData3,
+			@RequestParam(value = "additionalData4", required = true) String additionalData4,
+			@RequestParam(value = "additionalData5", required = true) String additionalData5
+			) {
 
 
 		RespuestaJsonBean response = new RespuestaJsonBean();
@@ -401,6 +407,11 @@ public class InternalTicketsController extends AbstractController {
 			ticket.setServiceTypeDescr(slTipoServicioLabel);
 			ticket.setOfficeName(slOficinaLabel);
 
+			ticket.setAdditionalData1(additionalData1);
+			ticket.setAdditionalData2(additionalData2);
+			ticket.setAdditionalData3(additionalData3);
+			ticket.setAdditionalData4(additionalData4);
+			ticket.setAdditionalData5(additionalData5);
 
 			internalTicketsService.validarNuevoTicket(ticket);
 
