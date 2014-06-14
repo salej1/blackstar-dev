@@ -89,31 +89,8 @@ $(document)
 					
 					$('#slTipoServicio').on('change',
 									function() {
-										// when game select changes, filter the
-										// character list to the selected game
-										serviceTypeId = parseInt($(
-												'#slTipoServicio').val());
-
-										diasLimitesTipoServicio = 0;
-										for (var i = 0; i < listaServicios.length; i++) {
-											if (listaServicios[i].id === serviceTypeId) {
-												diasLimitesTipoServicio = parseInt(listaServicios[i].extra);
-												break;
-											}
-										}
-
-										fechaLimite = new Date();
-
-										fechaLimite.setDate(fechaLimite
-												.getDate()
-												+ diasLimitesTipoServicio);
-
-										$("#fldLimite").datepicker("setDate",
-												fechaLimite);
 										
-										configureAdditionalFields();
-										
-										consultDeliverableType();
+											updateDueDate();
 
 									});
 
@@ -123,7 +100,7 @@ $(document)
 						  
 						  mensaje_confirmacion("\u00BF Confirma que desea enviar la requisici\u00f3n general "+$("#fldFolio").val()+"?",
 								  "Alta Ticket Interno","Aceptar","Cancelar",
-								  guardarAtencion,
+								  saveInternalTicket,
 								  function(){window.location = '/dashboard/show.do';});
 						  
 					});
@@ -138,6 +115,39 @@ $(document)
 					readDataForm();
 					
 				});
+
+
+
+
+function updateDueDate(){
+	
+	
+	serviceTypeId = parseInt($(
+			'#slTipoServicio').val());
+
+	diasLimitesTipoServicio = 0;
+	for (var i = 0; i < listaServicios.length; i++) {
+		if (listaServicios[i].id === serviceTypeId) {
+			diasLimitesTipoServicio = parseInt(listaServicios[i].extra);
+			break;
+		}
+	}
+
+	fechaLimite = new Date();
+
+	fechaLimite.setDate(fechaLimite
+			.getDate()
+			+ diasLimitesTipoServicio);
+
+	$("#fldLimite").datepicker("setDate",
+			fechaLimite);
+	
+	configureAdditionalFields();
+	
+	consultDeliverableType();	
+	
+	
+}
 
 
 
@@ -404,7 +414,7 @@ function iniHideAdditionalFields(){
 }
 
 
-function guardarAtencion() {
+function saveInternalTicket() {
 	// ocultarMensajes();
 
 	if(diasLimitesTipoServicio===null){
@@ -622,6 +632,7 @@ function consultServiceType(callBackFunction) {
 				}
 				
 				configureAdditionalFields();
+				updateDueDate();
 				
 				if ((typeof (callBackFunction) === "function") && callBackFunction !== null) {
 					callBackFunction();

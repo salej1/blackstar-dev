@@ -305,7 +305,7 @@ public class InternalTicketsDaoImpl extends AbstractDAO implements
 
 		} catch (Exception e) {
 			Logger.Log(LogLevel.WARNING, EMPTY_CONSULTA, e);
-			throw new DAOException("Error en DAO");
+			throw new DAOException("Error en DAO:"+e.getMessage());
 		}
 
 		return (long) idTicket;
@@ -332,7 +332,7 @@ public class InternalTicketsDaoImpl extends AbstractDAO implements
 
 		} catch (Exception e) {
 			Logger.Log(LogLevel.WARNING, EMPTY_CONSULTA, e);
-			throw new DAOException("Error en DAO");
+			throw new DAOException("Error en DAO:"+e.getMessage());
 		}
 
 		return (long) idTicket;
@@ -358,7 +358,7 @@ public class InternalTicketsDaoImpl extends AbstractDAO implements
 
 		} catch (Exception e) {
 			Logger.Log(LogLevel.WARNING, EMPTY_CONSULTA, e);
-			throw new DAOException("Error en DAO");
+			throw new DAOException("Error en DAO:"+e.getMessage());
 		}
 
 		return (long) idTeamMemberTicket;
