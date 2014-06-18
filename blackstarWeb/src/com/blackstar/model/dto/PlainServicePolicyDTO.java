@@ -69,6 +69,8 @@ public class PlainServicePolicyDTO {
 		this.receivedByEmail = serviceOrder.getReceivedByEmail();
 		this.responsibleName = serviceOrder.getResponsibleName();
 		this.hasPdf = serviceOrder.getHasPdf();
+		this.surveyScore = serviceOrder.getSurveyScore();
+		this.surveyServiceId = serviceOrder.getSurveyServiceId();
 		
 		this.plainServiceId = plainServiceDTO.getPlainServiceId();
 		this.troubleDescription = plainServiceDTO.getTroubleDescription();
@@ -151,6 +153,8 @@ public class PlainServicePolicyDTO {
 			this.responsibleName = serviceOrder.getEmployeeNameListString();
 		}
 		this.hasPdf = serviceOrder.getHasPdf();
+		this.surveyScore = serviceOrder.getSurveyScore();
+		this.surveyServiceId = serviceOrder.getSurveyServiceId();
 	}
 	
 	public PlainServicePolicyDTO(Policy policy, String equipmentType, Serviceorder serviceOrder,  PlainServiceDTO plainServiceDTO)
@@ -207,6 +211,8 @@ public class PlainServicePolicyDTO {
 			this.responsibleName = serviceOrder.getEmployeeNameListString();
 		}
 		this.hasPdf = serviceOrder.getHasPdf();
+		this.surveyScore = serviceOrder.getSurveyScore();
+		this.surveyServiceId = serviceOrder.getSurveyServiceId();
 	}
 	
 	
@@ -256,6 +262,8 @@ public class PlainServicePolicyDTO {
 	private String loadedOSFileId;
 	private Integer openCustomerId;
 	private Integer hasPdf;
+	private Integer surveyScore;
+	private Integer surveyServiceId;
 	
 	public Integer getPolicyId() {
 		return policyId;
@@ -613,5 +621,25 @@ public class PlainServicePolicyDTO {
 
 	public void setHasPdf(Integer hasPdf) {
 		this.hasPdf = hasPdf;
+	}
+
+
+	public Integer getSurveyScore() {
+		return surveyScore;
+	}
+
+
+	public void setSurveyScore(Integer surveyScore) {
+		this.surveyScore = surveyScore;
+	}
+
+
+	public Integer getSurveyServiceId() {
+		return surveyServiceId;
+	}
+
+
+	public void setSurveyServiceId(Integer surveyServiceId) {
+		this.surveyServiceId = surveyServiceId;
 	}
 }

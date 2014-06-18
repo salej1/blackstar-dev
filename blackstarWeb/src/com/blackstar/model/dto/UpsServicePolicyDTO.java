@@ -26,12 +26,10 @@ public class UpsServicePolicyDTO {
 		this.serialNumber = policy.getSerialNumber();
 		this.capacity = policy.getCapacity();
 		this.equipmentAddress = policy.getEquipmentAddress();
-		this.officeId = policy.getOfficeId();
+		this.officeId = String.valueOf(policy.getOfficeId());
 		this.contactName = policy.getContactName();
 		this.contactPhone = policy.getContactPhone();
-		
-		this.closed = new Date();
-		this.serviceDate = new Date();
+
 	}
 	
 	public UpsServicePolicyDTO(OpenCustomer customer){
@@ -48,8 +46,7 @@ public class UpsServicePolicyDTO {
 		this.equipmentAddress = customer.getAddress();
 		this.contactName = customer.getContactName();
 		this.contactPhone = customer.getPhone();
-		
-		this.serviceDate = new Date();
+		this.officeId = customer.getOfficeId();
 	}
 
 	public UpsServicePolicyDTO(Policy policy, Serviceorder serviceOrder)
@@ -64,7 +61,7 @@ public class UpsServicePolicyDTO {
 		this.serialNumber = policy.getSerialNumber();
 		this.capacity = policy.getCapacity();
 		this.equipmentAddress = policy.getEquipmentAddress();
-		this.officeId = policy.getOfficeId();
+		this.officeId = String.valueOf(policy.getOfficeId());
 		this.contactName = policy.getContactName();
 		this.contactPhone = policy.getContactPhone();
 		
@@ -86,6 +83,8 @@ public class UpsServicePolicyDTO {
 		this.responsibleName = serviceOrder.getEmployeeNameListString();
 		this.isWrong = serviceOrder.getIsWrong()>0?true:false;
 		this.serviceEndDate = serviceOrder.getServiceEndDate();
+		this.surveyScore = serviceOrder.getSurveyScore();
+		this.surveyServiceId = serviceOrder.getSurveyServiceId();
 	}
 	
 	public UpsServicePolicyDTO(Policy policy, Serviceorder serviceOrder,  UpsServiceDTO upsService)
@@ -100,7 +99,7 @@ public class UpsServicePolicyDTO {
 		this.serialNumber = policy.getSerialNumber();
 		this.capacity = policy.getCapacity();
 		this.equipmentAddress = policy.getEquipmentAddress();
-		this.officeId = policy.getOfficeId();
+		this.officeId = String.valueOf(policy.getOfficeId());
 		this.contactName = policy.getContactName();
 		this.contactPhone = policy.getContactPhone();
 		
@@ -122,6 +121,8 @@ public class UpsServicePolicyDTO {
 		this.responsibleName = serviceOrder.getEmployeeNameListString();
 		this.isWrong = serviceOrder.getIsWrong()>0?true:false;
 		this.serviceEndDate = serviceOrder.getServiceEndDate();
+		this.surveyScore = serviceOrder.getSurveyScore();
+		this.surveyServiceId = serviceOrder.getSurveyServiceId();
 		
 		this.upsServiceId = upsService.getUpsServiceId();
 		this.estatusEquipment = upsService.getEstatusEquipment();
@@ -177,6 +178,7 @@ public class UpsServicePolicyDTO {
 		this.equipmentAddress = customer.getAddress();
 		this.contactName = customer.getContactName();
 		this.contactPhone = customer.getPhone();
+		this.officeId = customer.getOfficeId();
 		
 		this.serviceDate = new Date();
 		
@@ -198,6 +200,8 @@ public class UpsServicePolicyDTO {
 		this.responsibleName = serviceOrder.getEmployeeNameListString();
 		this.isWrong = serviceOrder.getIsWrong()>0?true:false;
 		this.serviceEndDate = serviceOrder.getServiceEndDate();
+		this.surveyScore = serviceOrder.getSurveyScore();
+		this.surveyServiceId = serviceOrder.getSurveyServiceId();
 		
 		this.upsServiceId = upsService.getUpsServiceId();
 		this.estatusEquipment = upsService.getEstatusEquipment();
@@ -250,7 +254,7 @@ public class UpsServicePolicyDTO {
 	private String serialNumber;
 	private String capacity;
 	private String equipmentAddress;
-	private char officeId;
+	private String officeId;
 	private String contactName;
 	private String contactPhone;
 
@@ -273,6 +277,8 @@ public class UpsServicePolicyDTO {
 	private Integer openCustomerId;
 	private Boolean isWrong;
 	private Date serviceEndDate;
+	private Integer surveyScore;
+	private Integer surveyServiceId;
 	
 	private Integer upsServiceId;	
 	private String estatusEquipment;
@@ -380,10 +386,10 @@ public class UpsServicePolicyDTO {
 	public void setEquipmentAddress(String equipmentAddress) {
 		this.equipmentAddress = equipmentAddress;
 	}
-	public char getOfficeId() {
+	public String getOfficeId() {
 		return officeId;
 	}
-	public void setOfficeId(char officeId) {
+	public void setOfficeId(String officeId) {
 		this.officeId = officeId;
 	}
 	public String getContactName() {
@@ -739,5 +745,21 @@ public class UpsServicePolicyDTO {
 
 	public void setServiceEndDate(Date serviceEndDate) {
 		this.serviceEndDate = serviceEndDate;
+	}
+
+	public Integer getSurveyScore() {
+		return surveyScore;
+	}
+
+	public void setSurveyScore(Integer surveyScore) {
+		this.surveyScore = surveyScore;
+	}
+
+	public Integer getSurveyServiceId() {
+		return surveyServiceId;
+	}
+
+	public void setSurveyServiceId(Integer surveyServiceId) {
+		this.surveyServiceId = surveyServiceId;
 	}
 }

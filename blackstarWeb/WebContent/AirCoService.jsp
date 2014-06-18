@@ -17,6 +17,7 @@
 	<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/jquery.datetimepicker.css"/ >
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery.ui.theme.css">
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery-ui.min.css">
+	<script src="${pageContext.request.contextPath}/js/date.js"></script>
 	<script src="${pageContext.request.contextPath}/js/dateFormat.js"></script>
 	<script src="${pageContext.request.contextPath}/js/jquery.datetimepicker.js"></script>
 	<script src="${pageContext.request.contextPath}/js/customAutocomplete.js"></script>
@@ -56,10 +57,12 @@
 
 				$("#officeId").val("G"); // valor inicial
 
-				// bloqueando lockOnEngDetail
-				if(isEng == "true" && mode == "detail"){
-					$(".lockOnEngDetail").attr("disabled", "");
-				}
+				$(".hideOnNew").hide();
+			}
+
+			// bloqueando lockOnEngDetail
+			if(isEng == "true" && mode == "detail"){
+				$(".lockOnEngDetail").attr("disabled", "");
 			}
 
 			// inicializando el dialogo para agregar seguimientos
@@ -86,7 +89,7 @@
 		}
 
 		function saveService(){
-			var startTimestamp = new Date($("#serviceDate").val());
+			var startTimestamp = Date.parseExact($("#serviceDate").val(), 'dd/MM/yyyy HH:mm:ss');
 			if(startTimestamp == undefined || startTimestamp == null){
 				$("#serviceDate").val("");
 			}
@@ -98,13 +101,19 @@
 				if($("#responsible").val().indexOf(';') == 0){
 					$("#responsible").val($("#responsible").val().substring(1));
 				}
-				$("#signCreated").val($("#signCreatedCapture").val())
-				$("#signReceivedBy").val($("#signReceivedByCapture").val())
-				$("#serviceEndDate").val(dateNow());
-				$('#serviceOrder').submit();
+				if($("#signCreatedCapture").val().trim().length == 0 || $("#signReceivedByCapture").val().trim().length == 0){
+					return false;
+				}
+				else{
+					$("#signCreated").val($("#signCreatedCapture").val())
+					$("#signReceivedBy").val($("#signReceivedByCapture").val())
+					$("#serviceEndDate").val(dateNow());
+					$('#serviceOrder').submit();
+				}
 			}
 			else{
 				setTimeout(function() { $(event.target).focus();}, 50);
+				return false;
 			}
 		}
 	</script> 
@@ -412,11 +421,29 @@
 									<td><form:input path="receivedByEmail"  style="width:95%;" /></td>
 								</tr>	
 								<c:if test="${!user.belongsToGroup['Cliente']}">
-									<tr class="eligible coorOnly">
+									<tr class="hideOnNew">
 										<td colspan="2">Errores de captura<form:checkbox path="isWrong" cssClass="lockOnEngDetail"/></td>
 										<td></td>
 										<td></td>
 									</tr>
+									<!-- Link a enuesta de servicio -->
+									<c:choose>
+										<c:when test="${serviceOrder.surveyServiceId > 0}">
+											<tr class="hideOnNew">
+												<td colspan="2">Resultado de encuesta: 
+													<form:input path="surveyScore" cssClass="lockOnEngDetail" style="width:20px;" disabled="true"/>
+													<a href="${pageContext.request.contextPath}/surveyServiceDetail/show.do?operation=2&idObject=${serviceOrder.surveyServiceId}">Ir a Encuesta de Servicio</a>
+												</td>
+												<td></td>
+											</tr>
+										</c:when>
+										<c:otherwise>
+											<tr class="hideOnNew">
+												<td colspan="2">Sin encuesta de servicio</td>
+												<td></td>
+											</tr>
+										</c:otherwise>
+									</c:choose>
 								</c:if>		
 							</table>
 
@@ -461,7 +488,7 @@
 									<button class="searchButton eligible coorOnly lockOnEngDetail" id="closeBtn" onclick="closeService();">Cerrar</button>
 								</c:if>	
 							</c:if>	
-							<input class="searchButton lockOnEngDetail" id="guardarServicio" type="submit" onclick="saveService();" value="Guardar servicio" form="serviceOrder"/>
+							<input class="searchButton lockOnEngDetail" id="guardarServicio" type="submit" onclick="return saveService();" value="Guardar servicio" form="serviceOrder"/>
 							<button class="searchButton" onclick="window.location = '/serviceOrders/show.do'">Cancelar</button>
 							</td>
 						</tr>

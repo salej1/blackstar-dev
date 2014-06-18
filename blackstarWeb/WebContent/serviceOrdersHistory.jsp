@@ -69,7 +69,7 @@
 						<th style="width:10px"></th>
 						<th style="width:70px">Ticket</th>
 						<th>Tipo</th>
-						<th>Fecha</th>
+						<th style="width:90px">Fecha</th>
 						<th>Cliente</th>
 						<th>Proyecto</th>
 						<th>Equipo</th>

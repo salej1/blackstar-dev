@@ -13,18 +13,18 @@
 		<script src="${pageContext.request.contextPath}/js/jquery-1.10.1.min.js"></script>
 		<script src="${pageContext.request.contextPath}/js/jquery-ui.js"></script>
 		<script src="${pageContext.request.contextPath}/DataTables-1.9.4/media/js/jquery.dataTables.js"></script>
-		<script src="${pageContext.request.contextPath}/js/dateFormat.js"></script>
+		<script src="${pageContext.request.contextPath}/js/moment.min.js"></script>
 
 		<title>Ordenes de servicio</title>
 		
 		<script type="text/javascript" charset="utf-8">
 			var project = "All";
-			var year = new Date().getYear() + 1900;
-			var yearStart = new Date(year,0,1);
-			var month = new Date().getMonth();
-			var monthStart = new Date(year,month,1);
-			var startDateStr = yearStart.format("dd/MM/yyyy") + " 00:00:00";
-			var endDateStr = dateNow() + " 00:00:00";;
+			var year = moment().year();
+			var yearStart = moment({year: year, month: 0, day: 1});
+			var month = moment().month();
+			var monthStart = moment({year: year, month: month, day: 1});
+			var startDateStr = yearStart.format("DD/MM/YYYY") + " 00:00:00";
+			var endDateStr = moment().format("DD/MM/YYYY") + " 00:00:00";
 			var policySearch = "";
 
 			$(function(){
@@ -34,25 +34,25 @@
 				});
 
 		    	 $("#dateRange").hide();
-		    	 $("#startDate").datepicker({ dateFormat: 'dd/mm/yy', onSelect: function(date, obj){startDateStr = date +" 00:00:00";}});
-		    	 $("#endDate").datepicker({ dateFormat: 'dd/mm/yy', onSelect: function(date, obj){endDateStr = date +" 00:00:00";}});
+		    	 $("#startDate").datepicker({ dateFormat: 'dd/mm/yy', onSelect: function(date, obj){startDateStr = date +" 00:00:00";}, changeMonth: true, changeYear: true});
+		    	 $("#endDate").datepicker({ dateFormat: 'dd/mm/yy', onSelect: function(date, obj){endDateStr = date +" 00:00:00";}, changeMonth: true, changeYear: true});
 		    	 $("#dateSelector").bind("change", function(){
 		    	 	switch($(this).val()){
 		    	 		case "1":
-		    	 			startDateStr = yearStart.format("dd/MM/yyyy") + " 00:00:00";
-		    	 			endDateStr = new Date().format("dd/MM/yyyy") + " 00:00:00";
+		    	 			startDateStr = yearStart.format("DD/MM/YYYY") + " 00:00:00";
+		    	 			endDateStr = moment().format("DD/MM/YYYY") + " 00:00:00";
 		    	 			$("#dateRange").hide();
 		    	 			break;
 	    	 			case "2":
-	    	 				startDateStr = monthStart.format("dd/MM/yyyy") + " 00:00:00";
-		    	 			endDateStr = new Date().format("dd/MM/yyyy") + " 00:00:00";
+	    	 				startDateStr = monthStart.format("DD/MM/YYYY") + " 00:00:00";
+		    	 			endDateStr = moment().format("DD/MM/YYYY") + " 00:00:00";
 		    	 			$("#dateRange").hide();
 		    	 			break;
 		    	 		case "3":
-		    	 			startDateStr = monthStart.format("dd/MM/yyyy") + " 00:00:00";
-		    	 			endDateStr = new Date().format("dd/MM/yyyy") + " 00:00:00";
-		    	 			$("#startDate").val(monthStart.format("dd/MM/yyyy"));
-		    	 			$("#endDate").val(new Date().format("dd/MM/yyyy"));
+		    	 			startDateStr = monthStart.format("DD/MM/YYYY") + " 00:00:00";
+		    	 			endDateStr = moment().format("DD/MM/YYYY") + " 00:00:00";
+		    	 			$("#startDate").val(monthStart.format("DD/MM/YYYY"));
+		    	 			$("#endDate").val(moment().format("DD/MM/YYYY"));
 		    	 			$("#dateRange").show();
 		    	 			break;
 		    	 	}

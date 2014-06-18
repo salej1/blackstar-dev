@@ -60,6 +60,9 @@
 -- ---------------------------------------------------------------------------
 -- 19	04/06/2014	SAG 	Se agrega hasPdf a serviceOrder
 -- ---------------------------------------------------------------------------
+-- 20	15/06/2014	SAG 	Se agrega surveyScore a serviceOrder
+--							Se incrementa capacidad de namePerson, email, phone en surveyService		
+-- ---------------------------------------------------------------------------
 
 use blackstarDb;
 
@@ -73,7 +76,17 @@ BEGIN
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
 
--- 	AGREGANDO hasPdf A serviceOrder
+--	INCREMENTANDO CAPACIDAD DE namePerson, email, phone en surveyService
+	ALTER TABLE surveyService MODIFY namePerson VARCHAR(255);
+	ALTER TABLE surveyService MODIFY email VARCHAR(255);
+	ALTER TABLE surveyService MODIFY phone VARCHAR(255);
+
+-- 	AGREGANDO surveyScore A serviceOrder
+	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'serviceOrder' AND COLUMN_NAME = 'surveyScore') = 0  THEN
+		ALTER TABLE serviceOrder ADD surveyScore INT NULL DEFAULT 0;
+	END If;
+
+	-- 	AGREGANDO hasPdf A serviceOrder
 	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'serviceOrder' AND COLUMN_NAME = 'hasPdf') = 0  THEN
 		ALTER TABLE serviceOrder ADD hasPdf INT NULL DEFAULT 0;
 	END If;
@@ -928,267 +941,6 @@ DROP PROCEDURE blackstarDb.upgradeSchema;
 -- -----------------------------------------------------------------------------
 -- PR   Date    	Author	Description
 -- --   --------   -------  ----------------------------------------------------
--- 1    03/10/2013	SAG		Se Integran los SP iniciales:
---								blackstarDb.GetServicesScheduleStatus
---								blackstarDb.GetServiceOrders
---								blackstarDb.GetTickets
--- 								blackstarDb.UpdateTicketStatus
--- -----------------------------------------------------------------------------
--- 2    04/10/2013	SAG		Se Integra:evaDescription
---								blackstarDb.GetUnassignedTickets
--- -----------------------------------------------------------------------------
--- 3    04/10/2013	SAG		Se Integra:
---								blackstarDb.AssignTicket
--- -----------------------------------------------------------------------------
--- 4    08/10/2013	SAG		Se Integra:
---								blackstarDb.GetAllTickets
---								blackstarDb.UpsertUser
---								blackstarDb.CreateUserGroup
--- 								blackstarDb.GetUserData
--- 								blackstarDb.GetDomainEmployees
--- 								blackstarDb.GetCustomerList
--- 								blackstarDb.GetServicesSchedule sustituye a GetServicesScheduleStatus
--- -----------------------------------------------------------------------------
--- 5    14/10/2013	SAG		Se Integra:
--- 								blackstarDb.GetFollowUpByTicket
--- 								blackstarDb.GetBigTicketTable
--- 								blackstarDb.GetTickets se sustituye por GetTicketsByStatus
--- 								blackstarDb.GetTickets
--- 								blackstarDb.GetFollowUpByServiceOrder
--- 								blackstarDb.UpsertScheduledService
--- -----------------------------------------------------------------------------
--- 6    17/10/2013	SAG		Se Integra:
--- 								blackstarDb.AddFollowUpToTicket
--- 								blackstarDb.AddFollowUpToOS
--- -----------------------------------------------------------------------------
--- 7    18/10/2013	SAG		Se Integra:
--- 								blackstarDb.CloseTicket
--- -----------------------------------------------------------------------------
--- 8   19/10/2013	SAG		Se Integra:
--- 								blackstarDb.ReopenTicket
--- -----------------------------------------------------------------------------
--- 9   24/10/2013	SAG		Se Integra:
--- 								blackstarDb.AssignServiceOrder
--- 								blackstarDb.GetEquipmentByCustomer
--- -----------------------------------------------------------------------------
--- 10   20/11/2013	JAGH	Se Integra:
--- 								blackstarDb.GetAirCoServiceByIdService
--- 								blackstarDb.GetBatteryServiceByIdService
---                              blackstarDb.GetCellBatteryServiceByIdBatteryService
--- 								blackstarDb.GetEmergencyPlantServiceByIdService
--- 								blackstarDb.GetPlainServiceServiceByIdService
--- 								blackstarDb.GetUPSServiceByIdService
--- -----------------------------------------------------------------------------
--- 11   25/11/2013	JAGH	Se Integra:
--- 								blackstarDb.GetPolicyBySerialNo
--- -----------------------------------------------------------------------------
--- 12   13/11/2013	SAG		Se Integra:
--- 								blackstarDb.GetOfficesList
--- -----------------------------------------------------------------------------
--- 13   13/11/2013	SAG		Se Sustituye:
--- 								blackstarDb.GetEquipmentByCustomer por
--- 								blackstarDb.GetEquipmentList
---							Se Integra:
--- 								blackstarDb.GetProjectList
--- 								blackstarDb.GetDomainEmployeesByGroup
---								blackstarDb.AddScheduledServicePolicy
---								blackstarDb.AddScheduledServiceEmployee
---								blackstarDb.AddScheduledServiceDate
--- 								blackstarDb.GetFutureServicesSchedule
---							Se Reescribe:
--- 								blackstarDb.GetServicesSchedule
--- -----------------------------------------------------------------------------
--- 14   21/11/2013	SAG		Se Integra:
--- 								blackstarDb.GetAllServiceOrders
--- 								blackstarDb.CloseOS
--- -----------------------------------------------------------------------------
--- 15   26/11/2013	JAGH	Se Integra:
--- 								blackstarDb.AddAAservice
--- 								blackstarDb.AddBBcellservice
--- 								blackstarDb.AddBBservice
--- 								blackstarDb.AddepService
---                              blackstarDb.AddepServiceSurvey
---                              blackstarDb.AddepServiceWorkBasic
---                              blackstarDb.AddepServiceDynamicTest
--- 								blackstarDb.AddepServiceTestProtection
--- 								blackstarDb.AddepServiceTransferSwitch
--- 								blackstarDb.AddepServiceLectures
--- 								blackstarDb.AddepServiceParams
--- 								blackstarDb.AddplainService
--- 								blackstarDb.AddupsService
--- 								blackstarDb.AddupsServiceBatteryBank
---								blackstarDb.AddupsServiceGeneralTest
--- 								blackstarDb.AddupsServiceParams
--- 								blackstarDb.AddserviceOrder
--- 								blackstarDb.UpdateServiceOrder
--- -----------------------------------------------------------------------------
--- 16   25/11/2013	SAG		Se Integra:
--- 								blackstarDb.GetUserGroups
--- -----------------------------------------------------------------------------
--- 17   12/12/2013	SAG		Se Integra:
--- 								blackstarDb.GetNextServiceOrderNumber 
--- 								blackstarDb.CommitServiceOrderNumber 
--- 								blackstarDb.LoadNewSequencePoolItems 
--- 								blackstarDb.GetAndIncreaseSequence 
--- 								blackstarDb.GetNextServiceNumberForEquipment 
--- -----------------------------------------------------------------------------
--- 18   26/12/2013	SAG		Se Integra:
--- 								blackstarDb.GetScheduledServices 
--- 								blackstarDb.GetAssignedTickets 
--- -----------------------------------------------------------------------------
--- 19   31/12/2013	SAG		Fix:
--- 								blackstarDb.GetUserData 
--- -----------------------------------------------------------------------------
--- 21   02/01/2014	SAG		Se Integra:
--- 								blackstarDb.GetPersonalServiceOrders 
--- -----------------------------------------------------------------------------
--- 22   03/01/2014	SAG		Se Integra:
--- 								blackstarDb.GetAllServiceOrders 
--- 								blackstarDb.GetEquipmentByType 
--- -----------------------------------------------------------------------------
--- 23   05/01/2014	SAG		Se Integra:
--- 								blackstarDb.GetServiceTypeList
--- 								blackstarDb.GetServiceTypeById
--- 								blackstarDb.GetEquipmentTypeBySOId
--- -----------------------------------------------------------------------------
--- 24   07/01/2014	SAG		Se Integra:
--- 								blackstarDb.GetServiceStatusList
---							Se actualiza:
---								blackstarDb.AddFollowUpToOS
--- -----------------------------------------------------------------------------
--- 25   13/01/2014	SAG		Se Integra:
--- 								blackstarDb.GetNextServiceNumberForTicket
---							Se modifica:
---								blackstarDb.AddserviceOrder
--- -----------------------------------------------------------------------------
--- 26   23/01/2014	DCB		Se Integra:
--- 								blackstarDb.GetTicketsKPI
---                              blackstarDb.GetPoliciesKPI
---                              blackstarDb.GetConcurrentFailuresKPI
---                              blackstarDb.GetMaxReportsByUserKPI
---                              blackstarDb.GetReportOSTableKPI
---                              blackstarDb.GetReportOSResumeKPI
---                              blackstarDb.GetResumeOSKPI
---                              blackstarDb.GetReportsByEquipmentTypeKPI
---                              blackstarDb.GetTicketsByServiceCenterKPI
---                              blackstarDb.GetStatusKPI
---                              blackstarDb.GetServiceCenterIdList
---                              blackstarDb.GetUserAverageKPI
---                              blackstarDb.GetGeneralAverageKPI
---                              blackstarDb.GetStatisticsKPI
--- -----------------------------------------------------------------------------
--- 27   26/01/2014	LERV	Se Integra:
--- 								blackstarDb.GetServiceOrderByUser
---								blackstarDb.AddSurveyService
---										
--- -----------------------------------------------------------------------------
--- 28   30/01/2014	SAG		Se Integra:
--- 								blackstarDb.LastError
--- -----------------------------------------------------------------------------
--- 29   09/02/2014	SAG		Se Corrigen:
--- 								blackstarDb.GetServiceOrders
--- 								blackstarDb.GetPersonalServiceOrders
---							Se Integra:
---								blackstarDb.GetServiceOrderById
---								blackstarDb.GetServiceOrderByNumber
---								blackstarDb.GetServiceOrderEmployeeList
---								blackstarDb.AddServiceOrderEmployee
---								blackstarDb.GetAutocompleteEmployeeList
--- -----------------------------------------------------------------------------
--- 30   10/02/2014	SAG		Se Corrigen:
--- 								blackstarDb.GetAirCoServiceByIdService
---								blackstarDb.GetBatteryServiceByIdService
---								blackstarDb.GetEmergencyPlantServiceByIdService
---								blackstarDb.GetUPSServiceByIdService
--- -----------------------------------------------------------------------------
--- 31	11/02/2014	SAG 	Se modifica:
---								blackstarDb.GetPersonalServiceOrders
--- -----------------------------------------------------------------------------
--- 32	12/02/2014	SAG 	Se reemplaza:
---								blackstarDb.GetEquipmentTypeBySOId por
---								blackstarDb.GetServiceOrderTypeBySOId
--- -----------------------------------------------------------------------------
--- 33	20/02/2014	SAG 	Se integra:
---								blackstarDb.GetPersonalSurveyServiceList
---								blackstarDb.GetAllSurveyServiceList
---								blackstarDb.AddSurveyToServiceOrder
---								blackstarDb.GetSurveyServiceLinkedServices
--- -----------------------------------------------------------------------------
--- 34	02/03/2014	SAG 	Se modifican:
---								blackstarDb.GetStatisticsKPI
---								blackstarDb.GetReportsByEquipmentTypeKPI
---								blackstarDb.GetTicketsByServiceCenterKPI
---								blackstarDb.GetStatusKPI
--- -----------------------------------------------------------------------------
--- 35	12/03/2014	SAG 	Se Agregan:
---								blackstarDb.AddOpenCustomer
---								blackstarDb.GetOpenCustomerById
--- -----------------------------------------------------------------------------
--- 36	18/03/2014	SAG 	Se Agregan:
---								blackstarDb.GetOpenLimitedTickets
---								blackstarDb.GetLimitedTicketList
---								blackstarDb.GetLimitedServiceOrders
---								blackstarDb.GetLimitedServiceOrderList
--- -----------------------------------------------------------------------------
--- 35	20/03/2014	SAG 	Se Agregan:
---								blackstarDb.GetLimitedSurveyServiceList
---								blackstarDb.GetLimitedProjectList
---							Se modifican:
---								blackstarDb.GetStatusKPI
---								blackstarDb.GetReportsByEquipmentTypeKPI
---								blackstarDb.GetTicketsByServiceCenterKPI
--- -----------------------------------------------------------------------------
--- 36	02/04/2014	SAG 	Se agrega:
--- 								blackstarDb.GetAvailabilityKPI
--- -----------------------------------------------------------------------------
--- 37	08/04/2014	SAG 	Se agrega:
---								blackstarDb.GetEquipmentTypeList
---								blackstarDb.UpdateTicketArrival
---							Se  modifica:
---								blackstarDb.CloseTicket
--- 37	20/04/2014	SAG 	Se reemplaza:
---								blackstarDb.AddOpenCustomer por SaveOpenCustomer
--- -----------------------------------------------------------------------------
--- 38	21/04/2014	SAG 	Se agrega:
---								blackstarDb.GetScheduledServiceById
---								blackstarDb.GetScheduledServiceEmployees
---								blackstarDb.GetScheduledServicePolicies
---								blackstarDb.GetScheduledServiceDates
---								blackstarDb.GetUserPendingIssues
---								blackstarDb.GetUserWatchingIssues
---								blackstarDb.GetIssueById
---								blackstarDb.GetFollowUpByIssue
---								blackstarDb.GetFollowUpReferenceTypes
---								blackstarDb.SaveIssue
---								blackstarDb.AddFollowUpToIssue
---								blackstarDb.AssignIssue
---								blackstarDb.GetNextIssueNumber
---								blackstarDb.GetIssueStatusList
---							Se modifican:
--- 								blackstarDb.AddFollowUpToTicket
--- 								blackstarDb.AddFollowUpToOS
--- -----------------------------------------------------------------------------
--- 39	16/05/2014 	SAG 	Se corrige:
---								blackstarDb.GetMaxReportsByUserKPI
---								blackstarDb.GetConcurrentFailuresKPI
--- -----------------------------------------------------------------------------
--- 40 	19/05/2014	SAG 	Se actualiza:
---								blackstarDb.AddserviceOrder
--- -----------------------------------------------------------------------------
--- 41 	20/05/2014	SAG 	Se actualiza:
---								blackstarDb.GetLimitedTicketList
---								blackstarDb.GetAllSurveyServiceList
---								blackstarDb.GetGeneralAverageKPI
---								blackstarDb.GetUserAverageKPI
---							Se agrega:
---								blackstarDb.GetLimitedServicesSchedule	
---								blackstarDb.GetLimitedFutureServicesSchedule
---								blackstarDb.GetServiceOrderDetails
--- -----------------------------------------------------------------------------
--- 42	26/05/2014	SAG 	Se reemplaza:
---								blackstarDb.GetNextServiceNumberForEquipment por:
---								blackstarDb.GetNextServiceNumberForType
--- -----------------------------------------------------------------------------
 -- 43	03/06/2014	SAG 	Se modifica:
 --                              blackstarDb.GetPoliciesKPI
 -- -----------------------------------------------------------------------------
@@ -1199,7 +951,11 @@ DROP PROCEDURE blackstarDb.upgradeSchema;
 --                              blackstarDb.GetTicketsKPI
 -- -----------------------------------------------------------------------------
 -- 46	13/06/2014	DCB 	Se modifica:
---                              blackstarDb.Se agrega GetProjectsKPI
+--                              blackstarDb.GetProjectsKPI
+-- -----------------------------------------------------------------------------
+-- 47	15/06/2014	DCB 	Se modifica:
+--                              blackstarDb.GetProjectsKPI
+--								blackstarDb.AddSurveyService
 -- -----------------------------------------------------------------------------
 use blackstarDb;
 
@@ -2295,13 +2051,16 @@ DROP PROCEDURE IF EXISTS blackstarDb.AddSurveyToServiceOrder$$
 CREATE PROCEDURE blackstarDb.AddSurveyToServiceOrder(pServiceOrderNumber VARCHAR(100), pSurveyServiceId INT, pModifiedBy VARCHAR(100), user VARCHAR(100))
 BEGIN
 
-	UPDATE serviceOrder SET
-		surveyServiceId = pSurveyServiceId,
-		modified = NOW(),
-		modifiedBy = pModifiedBy,
-		modifiedByUsr = user
+	UPDATE serviceOrder s 
+	INNER JOIN surveyService u ON s.serviceOrderNumber = pServiceOrderNumber AND u.surveyServiceId = pSurveyServiceId
+	SET
+		s.surveyServiceId = pSurveyServiceId,
+		s.surveyScore = score,
+		s.modified = NOW(),
+		s.modifiedBy = pModifiedBy,
+		s.modifiedByUsr = user
 	WHERE 
-		serviceOrderNumber = pServiceOrderNumber;
+		s.serviceOrderNumber = pServiceOrderNumber;
 	
 END$$
 
@@ -2338,14 +2097,15 @@ BEGIN
 
 	SELECT 
 		s.surveyServiceId AS DT_RowId,
-		s.surveyServiceNumber AS surveyServiceNumber,
-		p.customer AS customer,
-		p.project AS project,
+		s.surveyServiceId AS surveyServiceNumber,
+		ifnull(p.customer, oc.customerName) AS customer,
+		ifnull(p.project, oc.project) AS project,
 		s.surveyDate AS surveyDate,
 		s.score AS score
 	FROM surveyService s
 		INNER JOIN serviceOrder o ON o.surveyServiceId = s.surveyServiceId
-		INNER JOIN policy p ON o.policyId = p.policyId
+		LEFT OUTER JOIN policy p ON o.policyId = p.policyId
+		LEFT OUTER JOIN openCustomer oc ON o.openCustomerId = oc.openCustomerId
 		INNER JOIN serviceOrderEmployee e ON e.serviceOrderId = o.serviceOrderId
 	WHERE
 		e.employeeId = pUser;
@@ -3035,15 +2795,26 @@ BEGIN
 			tk.created AS created,
 			p.customer AS customer,
 			et.equipmentType AS equipmentType,
-			ts.ticketStatus AS ticketStatus,
-			IFNULL(bu.name, tk.employee) AS asignee,
-			IFNULL(p.equipmentLocation, '') AS equipmentLocation,
 			IFNULL(p.brand, '') AS equipmentBrand,
+			p.model AS model,
+			p.capacity AS capacity,
+			p.serialNumber AS serialNumber,
+			IFNULL(p.equipmentLocation, '') AS equipmentLocation,
+			IFNULL(p.equipmentAddress, '') AS equipmentAddress,
+			IF(p.includesParts = 1, 'SI', 'NO') AS includesParts,
+			p.exceptionParts AS exceptionParts,
+			of.officeName AS officeName,
+			p.project AS project,
+			IF(tk.phoneResolved = 1, 'SI', 'NO') AS phoneResolved,
+			tk.serviceOrderNumber AS serviceOrderNumber,
+			ts.ticketStatus AS ticketStatus,
+			tk.observations AS observations,
+			IFNULL(bu.name, tk.employee) AS asignee,
 			IFNULL(tk.arrival, '') AS arrival,
 			IFNULL(tk.closed, '') AS closed,
 			tk.contact AS contact,
 			tk.contactEmail AS contactEmail,
-			tk.contactPhone as contactPhone
+			tk.contactPhone AS contactPhone
 			FROM ticket tk
 			INNER JOIN ticketStatus ts ON tk.ticketStatusId = ts.ticketStatusId
 			INNER JOIN policy p ON tk.policyId = p.policyId
@@ -5045,7 +4816,7 @@ CREATE PROCEDURE blackstarDb.AddSurveyService(
 	company varchar(255),
 	namePerson varchar(255),
 	email varchar(255),
-	phone varchar(45),
+	phone varchar(255),
 	surveyDate datetime,
 	questiontreatment varchar(255),
 	reasontreatment varchar(255),
@@ -5660,12 +5431,19 @@ WHERE serviceTypeId IN('O', 'M', 'R', 'N', 'V');
 -- -----------------------------------------------------------------------------
 -- 3	24/04/2014	SAG		Se agrega poblacion de datos neceasrios para Issue
 -- -----------------------------------------------------------------------------
+-- 4	14/06/2014	SAG		Se agrega poblacion de surveyScore en serviceOrder
+-- -----------------------------------------------------------------------------
 
 use blackstarDb;
 
 -- -----------------------------------------------------------------------------
 -- ACTUALIZACION DE DATOS
 -- -----------------------------------------------------------------------------
+
+-- POBLACION DE surveyScore en serviceOrder
+UPDATE serviceOrder s
+	INNER JOIN surveyService u ON s.surveyServiceId = u.surveyServiceId
+SET s.surveyScore = u.score;
 
 -- HOT FIX PARA USUARIOS QUE SE REGISTRARON CON NULL
 DELETE FROM blackstarUser WHERE email IS NULL;

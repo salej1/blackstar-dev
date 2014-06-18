@@ -20,7 +20,7 @@ public class UPSServiceReport extends AbstractReport {
 	printFeatures();
 	printActivities();
 	printComments();
-	printFooter(data.getSignCreated(), data.getResponsibleName(), data.getClosed()
+	printFooter(data.getSignCreated(), data.getResponsibleName(), data.getServiceEndDate()
                        , data.getSignReceivedBy(), data.getReceivedBy(), data
                                                    .getReceivedByPosition());
   }

@@ -28,7 +28,7 @@ public class EmergencyPlantServiceReport extends AbstractReport {
 	printReading();
 	printOthers();
 	printObservations();
-	printFooter(data.getSignCreated(), data.getResponsibleName(), data.getClosed()
+	printFooter(data.getSignCreated(), data.getResponsibleName(), data.getServiceEndDate()
                        , data.getSignReceivedBy(), data.getReceivedBy(), data
                                                    .getReceivedByPosition());
   }

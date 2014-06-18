@@ -60,6 +60,9 @@
 -- ---------------------------------------------------------------------------
 -- 19	04/06/2014	SAG 	Se agrega hasPdf a serviceOrder
 -- ---------------------------------------------------------------------------
+-- 20	15/06/2014	SAG 	Se agrega surveyScore a serviceOrder
+--							Se incrementa capacidad de namePerson, email, phone en surveyService		
+-- ---------------------------------------------------------------------------
 
 use blackstarDb;
 
@@ -73,7 +76,17 @@ BEGIN
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
 
--- 	AGREGANDO hasPdf A serviceOrder
+--	INCREMENTANDO CAPACIDAD DE namePerson, email, phone en surveyService
+	ALTER TABLE surveyService MODIFY namePerson VARCHAR(255);
+	ALTER TABLE surveyService MODIFY email VARCHAR(255);
+	ALTER TABLE surveyService MODIFY phone VARCHAR(255);
+
+-- 	AGREGANDO surveyScore A serviceOrder
+	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'serviceOrder' AND COLUMN_NAME = 'surveyScore') = 0  THEN
+		ALTER TABLE serviceOrder ADD surveyScore INT NULL DEFAULT 0;
+	END If;
+
+	-- 	AGREGANDO hasPdf A serviceOrder
 	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'serviceOrder' AND COLUMN_NAME = 'hasPdf') = 0  THEN
 		ALTER TABLE serviceOrder ADD hasPdf INT NULL DEFAULT 0;
 	END If;

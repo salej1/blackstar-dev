@@ -26,7 +26,7 @@ public class EmergencyPlantServicePolicyDTO {
 		this.serialNumber = policy.getSerialNumber();
 		this.capacity = policy.getCapacity();
 		this.equipmentAddress = policy.getEquipmentAddress();
-		this.officeId = policy.getOfficeId();
+		this.officeId = String.valueOf(policy.getOfficeId());
 		this.contactName = policy.getContactName();
 		this.contactPhone = policy.getContactPhone();
 		
@@ -48,7 +48,7 @@ public class EmergencyPlantServicePolicyDTO {
 		this.equipmentAddress = customer.getAddress();
 		this.contactName = customer.getContactName();
 		this.contactPhone = customer.getPhone();
-		
+		this.officeId = customer.getOfficeId();
 		this.serviceDate = new Date();
 	}
 	
@@ -64,7 +64,7 @@ public class EmergencyPlantServicePolicyDTO {
 		this.serialNumber = policy.getSerialNumber();
 		this.capacity = policy.getCapacity();
 		this.equipmentAddress = policy.getEquipmentAddress();
-		this.officeId = policy.getOfficeId();
+		this.officeId = String.valueOf(policy.getOfficeId());
 		this.contactName = policy.getContactName();
 		this.contactPhone = policy.getContactPhone();
 		
@@ -86,6 +86,8 @@ public class EmergencyPlantServicePolicyDTO {
 		this.responsibleName = serviceOrder.getEmployeeNameListString();
 		this.isWrong = serviceOrder.getIsWrong()>0?true:false;
 		this.serviceEndDate = serviceOrder.getServiceEndDate();
+		this.surveyScore = serviceOrder.getSurveyScore();
+		this.surveyServiceId = serviceOrder.getSurveyServiceId();
 	}
 	
 	public EmergencyPlantServicePolicyDTO(Policy policy, Serviceorder serviceOrder,  EmergencyPlantServiceDTO emergencyPlantService)
@@ -100,7 +102,7 @@ public class EmergencyPlantServicePolicyDTO {
 		this.serialNumber = policy.getSerialNumber();
 		this.capacity = policy.getCapacity();
 		this.equipmentAddress = policy.getEquipmentAddress();
-		this.officeId = policy.getOfficeId();
+		this.officeId = String.valueOf(policy.getOfficeId());
 		this.contactName = policy.getContactName();
 		this.contactPhone = policy.getContactPhone();
 		
@@ -122,6 +124,8 @@ public class EmergencyPlantServicePolicyDTO {
 		this.responsibleName = serviceOrder.getEmployeeNameListString();
 		this.isWrong = serviceOrder.getIsWrong()>0?true:false;
 		this.serviceEndDate = serviceOrder.getServiceEndDate();
+		this.surveyScore = serviceOrder.getSurveyScore();
+		this.surveyServiceId = serviceOrder.getSurveyServiceId();
 		
 		this.epServiceId = emergencyPlantService.getEpServiceId();
 		this.brandPE = emergencyPlantService.getBrandPE();
@@ -249,7 +253,7 @@ public class EmergencyPlantServicePolicyDTO {
 		this.equipmentAddress = customer.getAddress();
 		this.contactName = customer.getContactName();
 		this.contactPhone = customer.getPhone();
-		
+		this.officeId = customer.getOfficeId();
 		this.serviceDate = new Date();
 
 		this.serviceOrderId = serviceOrder.getServiceOrderId();
@@ -270,6 +274,8 @@ public class EmergencyPlantServicePolicyDTO {
 		this.responsibleName = serviceOrder.getEmployeeNameListString();
 		this.isWrong = serviceOrder.getIsWrong()>0?true:false;
 		this.serviceEndDate = serviceOrder.getServiceEndDate();
+		this.surveyScore = serviceOrder.getSurveyScore();
+		this.surveyServiceId = serviceOrder.getSurveyServiceId();
 		
 		this.epServiceId = emergencyPlantService.getEpServiceId();
 		this.brandPE = emergencyPlantService.getBrandPE();
@@ -394,7 +400,7 @@ public class EmergencyPlantServicePolicyDTO {
 	private String serialNumber;
 	private String capacity;
 	private String equipmentAddress;
-	private char officeId;
+	private String officeId;
 	private String contactName;
 	private String contactPhone;
 
@@ -417,6 +423,8 @@ public class EmergencyPlantServicePolicyDTO {
 	private String openCustomerId;
 	private Boolean isWrong;
 	private Date serviceEndDate;
+	private Integer surveyScore;
+	private Integer surveyServiceId;
 	
 	private Integer epServiceId;
 	private String brandPE;
@@ -596,10 +604,10 @@ public class EmergencyPlantServicePolicyDTO {
 	public void setEquipmentAddress(String equipmentAddress) {
 		this.equipmentAddress = equipmentAddress;
 	}
-	public char getOfficeId() {
+	public String getOfficeId() {
 		return officeId;
 	}
-	public void setOfficeId(char officeId) {
+	public void setOfficeId(String officeId) {
 		this.officeId = officeId;
 	}
 	public String getContactName() {
@@ -1365,6 +1373,22 @@ public class EmergencyPlantServicePolicyDTO {
 
 	public void setServiceEndDate(Date serviceEndDate) {
 		this.serviceEndDate = serviceEndDate;
+	}
+
+	public Integer getSurveyScore() {
+		return surveyScore;
+	}
+
+	public void setSurveyScore(Integer surveyScore) {
+		this.surveyScore = surveyScore;
+	}
+
+	public Integer getSurveyServiceId() {
+		return surveyServiceId;
+	}
+
+	public void setSurveyServiceId(Integer surveyServiceId) {
+		this.surveyServiceId = surveyServiceId;
 	}
 
 }

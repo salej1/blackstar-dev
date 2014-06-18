@@ -15,20 +15,28 @@ public class PlainTextMapper implements RowMapper<String> {
 		String column_name;
 		StringBuilder s = new StringBuilder();
 		
-		for (int i=1; i<numColumns+1; i++) {
-			column_name = rsmd.getColumnLabel(i);
-			String raw = rs.getObject(column_name).toString();
-			raw = raw.replace("\\", " ")
-        		    .replace("\"", " ")
-        		    .replace("\r", ". ")
-        		    .replace("\n", ". ")
-        		    .replace("\u2028", "\\u2028")
-        		    .replace("\u2029", "\\u2029");
-			
-			s.append(raw);
-			s.append("\t");
-	    }
-		
+		if(rs != null){
+			for (int i=1; i<numColumns+1; i++) {
+				column_name = rsmd.getColumnLabel(i);
+				Object raw = rs.getObject(column_name);
+				if(raw == null){
+					s.append("N/A");
+				}
+				else{
+					String rawStr = raw.toString();
+					rawStr = rawStr.replace("\\", " ")
+		        		    .replace("\"", " ")
+		        		    .replace("\r", ". ")
+		        		    .replace("\n", ". ")
+		        		    .replace("\u2028", "\\u2028")
+		        		    .replace("\u2029", "\\u2029");
+					
+					s.append(rawStr);
+					s.append("\t");
+				}
+		    }
+		}
+				
 		return s.toString();
 	}
 }

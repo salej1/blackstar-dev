@@ -17,6 +17,7 @@
 	<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/jquery.datetimepicker.css"/ >
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery.ui.theme.css">
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery-ui.min.css">
+	<script src="${pageContext.request.contextPath}/js/date.js"></script>
 	<script src="${pageContext.request.contextPath}/js/dateFormat.js"></script>
 	<script src="${pageContext.request.contextPath}/js/jquery.datetimepicker.js"></script>
 	<script type="text/javascript" charset="utf-8">
@@ -122,6 +123,8 @@
 			$("#ticketList").bind("change", function(){
 				$("#ticketId").val($(this).val());
 			});
+
+			$('.hideOnNew').hide();
 		}
 
 		// Binding serviceTypes con campo oculto de tipo de servicio
@@ -131,8 +134,9 @@
 		});
 
 		// Binding equipmentTypes con campo oculto de tipo de servicio
-		$("#equipmentTypesList").bind("change", function(){
+		$("#equipmentTypeList").bind("change", function(){
 			$("#equipmentTypeId").val($(this).val());
+			$("#equipmentType").val($("option:selected", this).text());
 		});
 		
 		// Cierre de la OS
@@ -161,13 +165,13 @@
 			$("#responsibleName").val("");
 			return false;
 		}
-		var startTimestamp = new Date($("#serviceDate").val());
+		var startTimestamp = Date.parseExact($("#serviceDate").val(), 'dd/MM/yyyy HH:mm:ss');
 		if(startTimestamp == undefined || startTimestamp == null){
 			$("#serviceDate").val("");
 		}
 
 		if(isCoord == "true"){
-			var endTimestamp = new Date($("#serviceEndDate").val());
+			var endTimestamp = Date.parseExact($("#serviceEndDate").val(), 'dd/MM/yyyy HH:mm:ss');
 			if(endTimestamp == undefined || endTimestamp == null){
 				$("#serviceEndDate").val("");
 			}
@@ -212,6 +216,7 @@
 									<td style="width:140px">No. de ticket</td>
 									<td>
 										<form:hidden path="ticketId" />
+										<form:hidden path="hasPdf" />
 										<select class="lockOnDetail lockForEng" id="ticketList">
 											<option value="">NA</option>
 											<c:forEach var="ticket" items="${ticketList}">
@@ -252,6 +257,7 @@
 										        >${etype.equipmentType}</option>
 										    </c:forEach>
 										</select>
+										<form:hidden path="equipmentType"/>
 									</td>
 									<td>Oficina</td>
 									<td>
@@ -415,6 +421,24 @@
 										<td></td>
 										<td></td>
 									</tr>
+									<!-- Link a enuesta de servicio -->
+									<c:choose>
+										<c:when test="${serviceOrder.surveyServiceId > 0}">
+											<tr class="hideOnNew">
+												<td colspan="2">Resultado de encuesta: 
+													<form:input path="surveyScore" cssClass="lockOnEngDetail" style="width:20px;" disabled="true"/>
+													<a href="${pageContext.request.contextPath}/surveyServiceDetail/show.do?operation=2&idObject=${serviceOrder.surveyServiceId}">Ir a Encuesta de Servicio</a>
+												</td>
+												<td></td>
+											</tr>
+										</c:when>
+										<c:otherwise>
+											<tr class="hideOnNew">
+												<td colspan="2">Sin encuesta de servicio</td>
+												<td></td>
+											</tr>
+										</c:otherwise>
+									</c:choose>
 								</c:if>
 							</table>
 

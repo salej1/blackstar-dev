@@ -176,7 +176,7 @@
 </body>
 <!-- <script src="${pageContext.request.contextPath}/js/jquery.js"></script> -->
 <script src="${pageContext.request.contextPath}/js/jquery.datetimepicker.js"></script>
-<script src="${pageContext.request.contextPath}/js/dateFormat.js"></script>
+<script src="${pageContext.request.contextPath}/js/moment.min.js"></script>
 <script type="text/javascript">
 	
 		function toggleEdit(what, val, fld){
@@ -293,8 +293,7 @@
 
 			// inicializando selectores de fecha/hora
 			$('#closeDatetime').datetimepicker({format:'d/m/Y H:i:s', lang:'es'});
-
-			$('#lbCreated').val(new Date('${ticketF.created}').format('dd/MM/yyyy hh:mm:ss'));
+			$('#lbCreated').val(moment('${ticketF.created}').format('DD/MM/YYYY HH:mm:ss'));
 			$('#lbNombreUsuario').val('${ticketF.user}');
 			$('#lbContacto').val('${ticketF.contact}');
 			$('#lbTelContacto').val('${ticketF.contactPhone}');
@@ -328,11 +327,11 @@
 				$('#lbResolvioTel').val('NO');
 			}
 			if('${ticketF.arrival}' != ''){
-				$('#lbHoraLLegada').val(new Date('${ticketF.arrival}').format('dd/MM/yyyy hh:mm:ss'));
+				$('#lbHoraLLegada').val(moment('${ticketF.arrival}').format('DD/MM/YYYY HH:mm:ss'));
 			}
 			$('#lbDesviacion').val('${ticketF.responseTimeDeviationHR}');
 			if('${ticketF.closed}' != ''){
-				$('#lbHoraCierre').val(new Date('${ticketF.closed}').format('dd/MM/yyyy hh:mm:ss'));
+				$('#lbHoraCierre').val(moment('${ticketF.closed}').format('DD/MM/YYYY HH:mm:ss'));
 			}
 			$('#lbNoReporte').val('${ticketF.serviceOrderNumber}');
 			$('#lbIngeniero').val('${ticketF.employee}');

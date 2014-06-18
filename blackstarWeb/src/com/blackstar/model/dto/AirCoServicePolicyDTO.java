@@ -29,7 +29,7 @@ public class AirCoServicePolicyDTO {
 		this.equipmentAddress = customer.getAddress();
 		this.contactName = customer.getContactName();
 		this.contactPhone = customer.getPhone();
-		
+		this.officeId = customer.getOfficeId();
 		this.serviceDate = new Date();
 	}
 	
@@ -45,7 +45,7 @@ public class AirCoServicePolicyDTO {
 		this.serialNumber = policy.getSerialNumber();
 		this.capacity = policy.getCapacity();
 		this.equipmentAddress = policy.getEquipmentAddress();
-		this.officeId = policy.getOfficeId();
+		this.officeId = String.valueOf(policy.getOfficeId());
 		this.contactName = policy.getContactName();
 		this.contactPhone = policy.getContactPhone();
 		
@@ -64,7 +64,7 @@ public class AirCoServicePolicyDTO {
 		this.serialNumber = policy.getSerialNumber();
 		this.capacity = policy.getCapacity();
 		this.equipmentAddress = policy.getEquipmentAddress();
-		this.officeId = policy.getOfficeId();
+		this.officeId = String.valueOf(policy.getOfficeId());
 		this.contactName = policy.getContactName();
 		this.contactPhone = policy.getContactPhone();
 		
@@ -86,6 +86,8 @@ public class AirCoServicePolicyDTO {
 		this.responsibleName = serviceOrder.getEmployeeNameListString();
 		this.isWrong = serviceOrder.getIsWrong()>0?true:false;
 		this.serviceEndDate = serviceOrder.getServiceEndDate();
+		this.surveyScore = serviceOrder.getSurveyScore();
+		this.surveyServiceId = serviceOrder.getSurveyServiceId();
 	}
 	
 	public AirCoServicePolicyDTO(Policy policy, Serviceorder serviceOrder,  AirCoServiceDTO airCo)
@@ -100,7 +102,7 @@ public class AirCoServicePolicyDTO {
 		this.serialNumber = policy.getSerialNumber();
 		this.capacity = policy.getCapacity();
 		this.equipmentAddress = policy.getEquipmentAddress();
-		this.officeId = policy.getOfficeId();
+		this.officeId = String.valueOf(policy.getOfficeId());
 		this.contactName = policy.getContactName();
 		this.contactPhone = policy.getContactPhone();
 		
@@ -122,7 +124,8 @@ public class AirCoServicePolicyDTO {
 		this.responsibleName = serviceOrder.getEmployeeNameListString();
 		this.isWrong = serviceOrder.getIsWrong()>0?true:false;
 		this.serviceEndDate = serviceOrder.getServiceEndDate();
-
+		this.surveyScore = serviceOrder.getSurveyScore();
+		this.surveyServiceId = serviceOrder.getSurveyServiceId();
 		
 		this.aaServiceId = airCo.getAaServiceId();
 		this.evaDescription = airCo.getEvaDescription();
@@ -194,10 +197,7 @@ public class AirCoServicePolicyDTO {
 		this.equipmentAddress = customer.getAddress();
 		this.contactName = customer.getContactName();
 		this.contactPhone = customer.getPhone();
-		if(customer.getOfficeId() != null && customer.getOfficeId().length() > 0){
-			this.officeId = customer.getOfficeId().charAt(0);
-		}
-		
+		this.officeId = customer.getOfficeId();
 		
 		this.serviceOrderId = serviceOrder.getServiceOrderId();
 		this.ticketId = serviceOrder.getTicketId();
@@ -217,6 +217,8 @@ public class AirCoServicePolicyDTO {
 		this.responsibleName = serviceOrder.getEmployeeNameListString();
 		this.isWrong = serviceOrder.getIsWrong()>0?true:false;
 		this.serviceEndDate = serviceOrder.getServiceEndDate();
+		this.surveyScore = serviceOrder.getSurveyScore();
+		this.surveyServiceId = serviceOrder.getSurveyServiceId();
 		
 		this.aaServiceId = airCo.getAaServiceId();
 		this.evaDescription = airCo.getEvaDescription();
@@ -283,7 +285,7 @@ public class AirCoServicePolicyDTO {
 	private String serialNumber;
 	private String capacity;
 	private String equipmentAddress;
-	private char officeId;
+	private String officeId;
 	private String contactName;
 	private String contactPhone;
 
@@ -304,6 +306,8 @@ public class AirCoServicePolicyDTO {
 	private String serviceTypeId;
 	private Boolean isWrong;
 	private Date serviceEndDate;
+	private Integer surveyScore;
+	private Integer surveyServiceId;
 	
 	private Integer aaServiceId;
 	private String evaDescription;
@@ -425,10 +429,10 @@ public class AirCoServicePolicyDTO {
 	public void setEquipmentAddress(String equipmentAddress) {
 		this.equipmentAddress = equipmentAddress;
 	}
-	public char getOfficeId() {
+	public String getOfficeId() {
 		return officeId;
 	}
-	public void setOfficeId(char officeId) {
+	public void setOfficeId(String officeId) {
 		this.officeId = officeId;
 	}
 	public String getContactName() {
@@ -872,5 +876,21 @@ public class AirCoServicePolicyDTO {
 
 	public void setServiceEndDate(Date serviceEndDate) {
 		this.serviceEndDate = serviceEndDate;
+	}
+
+	public Integer getSurveyScore() {
+		return surveyScore;
+	}
+
+	public void setSurveyScore(Integer surveyScore) {
+		this.surveyScore = surveyScore;
+	}
+
+	public Integer getSurveyServiceId() {
+		return surveyServiceId;
+	}
+
+	public void setSurveyServiceId(Integer surveyServiceId) {
+		this.surveyServiceId = surveyServiceId;
 	}
 }

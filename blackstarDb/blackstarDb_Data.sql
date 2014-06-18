@@ -15,12 +15,19 @@
 -- -----------------------------------------------------------------------------
 -- 3	24/04/2014	SAG		Se agrega poblacion de datos neceasrios para Issue
 -- -----------------------------------------------------------------------------
+-- 4	14/06/2014	SAG		Se agrega poblacion de surveyScore en serviceOrder
+-- -----------------------------------------------------------------------------
 
 use blackstarDb;
 
 -- -----------------------------------------------------------------------------
 -- ACTUALIZACION DE DATOS
 -- -----------------------------------------------------------------------------
+
+-- POBLACION DE surveyScore en serviceOrder
+UPDATE serviceOrder s
+	INNER JOIN surveyService u ON s.surveyServiceId = u.surveyServiceId
+SET s.surveyScore = u.score;
 
 -- HOT FIX PARA USUARIOS QUE SE REGISTRARON CON NULL
 DELETE FROM blackstarUser WHERE email IS NULL;

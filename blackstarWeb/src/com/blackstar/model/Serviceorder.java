@@ -56,6 +56,8 @@ public class Serviceorder implements java.io.Serializable {
 	private List<Employee> employeeList;
 	private Integer openCustomerId;
 	private Integer hasPdf;
+	private Integer surveyScore;
+	private Integer surveyServiceId;
 	
 	public Serviceorder() {
 	}
@@ -67,7 +69,7 @@ public class Serviceorder implements java.io.Serializable {
 			String asignee, Date created, String createdBy,
 			String createdByUsr, Date modified, String modifiedBy,
 			String modifiedByUsr, String signCreated, String signReceivedBy, String receivedByPosition, String serviceOrderNumber, Integer serviceOrderId,
-			Integer isWrong, String receivedByEmail, Integer openCustomerId, Date serviceEndDate, Integer hasPdf) {
+			Integer isWrong, String receivedByEmail, Integer openCustomerId, Date serviceEndDate, Integer hasPdf, Integer surveyServiceId, Integer surveyScore) {
 		this.serviceOrderId = serviceOrderId;
 		this.serviceTypeId = serviceTypeId;
 		this.ticketId = ticketId;
@@ -98,6 +100,8 @@ public class Serviceorder implements java.io.Serializable {
 		this.openCustomerId = openCustomerId;
 		this.serviceEndDate = serviceEndDate;
 		this.hasPdf = hasPdf;
+		this.surveyScore = surveyScore;
+		this.surveyServiceId = surveyServiceId;
 	}
 
 	@Id
@@ -430,5 +434,21 @@ public class Serviceorder implements java.io.Serializable {
 
 	public void setHasPdf(Integer hasPdf) {
 		this.hasPdf = hasPdf;
+	}
+
+	public Integer getSurveyScore() {
+		return surveyScore;
+	}
+
+	public void setSurveyScore(Integer surveyScore) {
+		this.surveyScore = surveyScore;
+	}
+
+	public Integer getSurveyServiceId() {
+		return surveyServiceId;
+	}
+
+	public void setSurveyServiceId(Integer surveyServiceId) {
+		this.surveyServiceId = surveyServiceId;
 	}
 }
