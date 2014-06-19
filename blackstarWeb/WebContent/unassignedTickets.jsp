@@ -47,12 +47,13 @@
 							  { "mData": "equipmentType" },
 							  { "mData": "responseTimeHR" },
 							  { "mData": "project" }, 	              
+							  { "mData": "serialNumber" }, 	              
 							  { "mData": "ticketStatus" },
 							  { "mData": "Asignar" }
 
 						  ],
 				"aoColumnDefs" : [{"mRender" : function(data, type, row){return "<div align=center style='width:60px;'><a href=${pageContext.request.contextPath}/ticketDetail?ticketId=" + row.DT_RowId + ">" + data + "</a></div>";}, "aTargets" : [0]},
-								  {"mRender" : function(data, type, row){return "<a href='#' class='edit' onclick='javascript: assignTicket(" + row.DT_RowId + ", \"" + data + "\"); return false;'>Asignar</a>";}, "aTargets" : [7]}	    		    	       
+								  {"mRender" : function(data, type, row){return "<a href='#' class='edit' onclick='javascript: assignTicket(" + row.DT_RowId + ", \"" + data + "\"); return false;'>Asignar</a>";}, "aTargets" : [8]}	    		    	       
 								 ]}
 			);
 		});
@@ -92,6 +93,7 @@
 						<th>Equipo</th>
 						<th>Tiem. R</th>
 						<th>Proyecto</th>
+						<th>No. Serie</th>
 						<th>Estatus</th>
 						<th>Asignar</th>
 					</tr>

@@ -464,12 +464,12 @@
 			</form:form>
 
 			<!-- Fragmento de Firma -->
-			<c:if test="${user.belongsToGroup['Implementacion y Servicio']}">
+			<c:if test="${user.belongsToGroup['Implementacion y Servicio'] || mode=='detail'}">
 				<c:import url="signatureFragment.jsp"></c:import>
 			</c:if>
 			
 			<!-- Importacion del archivo de OS desde GDrive -->
-			<c:if test="${user.belongsToGroup['Coordinador']}">
+			<c:if test="${user.belongsToGroup['Coordinador']} && serviceOrder.hasPdf == 0">
 				<c:import url="osLoader.jsp"></c:import>
 				<script type="text/javascript" charset="utf-8">
 					$(function(){

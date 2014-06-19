@@ -48,6 +48,7 @@
 						  { "mData": "equipmentType" },
 						  { "mData": "responseTimeHR" },
 						  { "mData": "project" }, 	              
+						  { "mData": "serialNumber" }, 	              
 						  { "mData": "ticketStatus" },
 						  { "mData": "asignee" },
 						  { "mData": "serviceOrderNumber" },
@@ -62,7 +63,7 @@
 								  	else{
 								  		return "";    		    	       
 								  	}
-							  }, "aTargets" : [9]}	
+							  }, "aTargets" : [10]}	
 							 ]}
 		);
 		
@@ -120,6 +121,7 @@
 						<th>Equipo</th>
 						<th>Tiem. R</th>
 						<th>Proyecto</th>
+						<th>No. Serie</th>
 						<th>Estatus</th>
 						<th>Responsable</th>
 						<th>OS cierre</th>

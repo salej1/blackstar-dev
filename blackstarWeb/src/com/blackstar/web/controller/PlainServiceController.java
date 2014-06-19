@@ -226,12 +226,10 @@ public class PlainServiceController extends AbstractController {
 		    		servicioOrderSave.setClosed(serviceOrder.getClosed());
 		    		servicioOrderSave.setIsWrong(serviceOrder.getIsWrong()?1:0);
 		    		servicioOrderSave.setStatusId(serviceOrder.getServiceStatusId());
-		    		if(serviceOrder.getLoadedOSFileId() == null || serviceOrder.getLoadedOSFileId().equals("")){
-		    			servicioOrderSave.setHasPdf(0);
+		    		if(serviceOrder.getLoadedOSFileId() != null && serviceOrder.getLoadedOSFileId().toString().length() > 0){
+		    			serviceOrder.setHasPdf(1);
 		    		}
-		    		else{
-		    			servicioOrderSave.setHasPdf(1);
-		    		}
+		    		servicioOrderSave.setHasPdf(serviceOrder.getHasPdf());
 		    		service.updateServiceOrder(servicioOrderSave, "PlainServiceController", userSession.getUser().getUserEmail());
 		    		idServicio = serviceOrder.getServiceOrderId();
 	    		}

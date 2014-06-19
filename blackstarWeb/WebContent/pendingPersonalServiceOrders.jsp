@@ -29,7 +29,7 @@
 							  { "mData": "customer" },
 							  { "mData": "equipmentType" },
 							  { "mData": "project" },
-							  { "mData": "officeName" },
+							  { "mData": "serviceCenter" },
 							  { "mData": "brand" },
 							  { "mData": "serialNumber" }
 

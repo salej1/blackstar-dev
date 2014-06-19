@@ -27,6 +27,7 @@
 							  { "mData": "equipmentType" },
 							  { "mData": "responseTime" },
 							  { "mData": "project" }, 	              
+							  { "mData": "serialNumber" }, 	              
 							  { "mData": "ticketStatus" }
 
 						  ],
@@ -58,6 +59,7 @@
 						<th>Equipo</th>
 						<th>Tiem. R</th>
 						<th>Proyecto</th>
+						<th>No. Serie</th>
 						<th>Estatus</th>
 					</tr>
 				</thead>

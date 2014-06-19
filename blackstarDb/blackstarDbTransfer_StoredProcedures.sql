@@ -79,8 +79,12 @@ BEGIN
 	-- ACTUALIZAR LOS CORREOS DE ACCESO A CLIENTES
 	UPDATE blackstarDb.policy bp 
 		INNER JOIN blackstarDbTransfer.policy p ON p.serialNumber = bp.serialNumber AND p.project = bp.project
+		INNER JOIN blackstarDb.serviceCenter s ON s.serviceCenter = p.serviceCenter
 	SET
-		bp.equipmentUser = p.equipmentUser;
+		bp.equipmentUser = p.equipmentUser,
+		bp.startDate = p.startDate,
+		bp.endDate = p.endDate,
+		bp.serviceCenterId = s.serviceCenterId;
 
 -- -----------------------------------------------------------------------------
 

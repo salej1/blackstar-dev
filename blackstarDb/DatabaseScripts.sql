@@ -1670,13 +1670,15 @@ BEGIN
 		p.brand AS brand,
 		p.serialNumber AS serialNumber,
 		ss.serviceStatus AS serviceStatus,
-		so.hasPdf AS hasPdf
+		so.hasPdf AS hasPdf,
+		sc.serviceCenter AS serviceCenter
 	FROM serviceOrder so 
 		INNER JOIN serviceType st ON so.servicetypeId = st.servicetypeId
 		INNER JOIN serviceStatus ss ON so.serviceStatusId = ss.serviceStatusId
 		INNER JOIN policy p ON so.policyId = p.policyId
 		INNER JOIN equipmentType et ON p.equipmentTypeId = et.equipmentTypeId
 		INNER JOIN office of on p.officeId = of.officeId
+		INNER JOIN serviceCenter sc ON sc.serviceCenterId = p.serviceCenterId
     LEFT OUTER JOIN ticket t on t.ticketId = so.ticketId
     WHERE p.equipmentUser = pUser
 	ORDER BY so.serviceDate DESC;
@@ -1705,13 +1707,15 @@ BEGIN
 		p.brand AS brand,
 		p.serialNumber AS serialNumber,
 		ss.serviceStatus AS serviceStatus,
-		so.hasPdf AS hasPdf
+		so.hasPdf AS hasPdf,
+		sc.serviceCenter AS serviceCenter
 	FROM serviceOrder so 
 		INNER JOIN serviceType st ON so.servicetypeId = st.servicetypeId
 		INNER JOIN serviceStatus ss ON so.serviceStatusId = ss.serviceStatusId
 		INNER JOIN policy p ON so.policyId = p.policyId
 		INNER JOIN equipmentType et ON p.equipmentTypeId = et.equipmentTypeId
 		INNER JOIN office of on p.officeId = of.officeId
+		INNER JOIN serviceCenter sc ON sc.serviceCenterId = p.serviceCenterId
      LEFT OUTER JOIN ticket t on t.ticketId = so.ticketId
 	WHERE ss.serviceStatus IN(status) 
 	AND p.equipmentUser = pUser
@@ -1762,6 +1766,7 @@ BEGIN
 		e.equipmentType AS equipmentType,
 		p.responseTimeHR AS responseTime,
 		p.project AS project,
+		p.serialNumber AS serialNumber,
 		ts.ticketStatus AS ticketStatus,
 		'' AS placeHolder
 	FROM ticket t
@@ -2830,15 +2835,26 @@ BEGIN
 			tk.created AS created,
 			p.customer AS customer,
 			et.equipmentType AS equipmentType,
-			ts.ticketStatus AS ticketStatus,
-			IFNULL(bu.name, tk.employee) AS asignee,
-			IFNULL(p.equipmentLocation, '') AS equipmentLocation,
 			IFNULL(p.brand, '') AS equipmentBrand,
+			p.model AS model,
+			p.capacity AS capacity,
+			p.serialNumber AS serialNumber,
+			IFNULL(p.equipmentLocation, '') AS equipmentLocation,
+			IFNULL(p.equipmentAddress, '') AS equipmentAddress,
+			IF(p.includesParts = 1, 'SI', 'NO') AS includesParts,
+			p.exceptionParts AS exceptionParts,
+			of.officeName AS officeName,
+			p.project AS project,
+			IF(tk.phoneResolved = 1, 'SI', 'NO') AS phoneResolved,
+			tk.serviceOrderNumber AS serviceOrderNumber,
+			ts.ticketStatus AS ticketStatus,
+			tk.observations AS observations,
+			IFNULL(bu.name, tk.employee) AS asignee,
 			IFNULL(tk.arrival, '') AS arrival,
 			IFNULL(tk.closed, '') AS closed,
 			tk.contact AS contact,
 			tk.contactEmail AS contactEmail,
-			tk.contactPhone as contactPhone
+			tk.contactPhone AS contactPhone
 			FROM ticket tk
 			INNER JOIN ticketStatus ts ON tk.ticketStatusId = ts.ticketStatusId
 			INNER JOIN policy p ON tk.policyId = p.policyId
@@ -2857,15 +2873,26 @@ BEGIN
 			tk.created AS created,
 			p.customer AS customer,
 			et.equipmentType AS equipmentType,
-			ts.ticketStatus AS ticketStatus,
-			IFNULL(bu.name, tk.employee) AS asignee,
-			IFNULL(p.equipmentLocation, '') AS equipmentLocation,
 			IFNULL(p.brand, '') AS equipmentBrand,
+			p.model AS model,
+			p.capacity AS capacity,
+			p.serialNumber AS serialNumber,
+			IFNULL(p.equipmentLocation, '') AS equipmentLocation,
+			IFNULL(p.equipmentAddress, '') AS equipmentAddress,
+			IF(p.includesParts = 1, 'SI', 'NO') AS includesParts,
+			p.exceptionParts AS exceptionParts,
+			of.officeName AS officeName,
+			p.project AS project,
+			IF(tk.phoneResolved = 1, 'SI', 'NO') AS phoneResolved,
+			tk.serviceOrderNumber AS serviceOrderNumber,
+			ts.ticketStatus AS ticketStatus,
+			tk.observations AS observations,
+			IFNULL(bu.name, tk.employee) AS asignee,
 			IFNULL(tk.arrival, '') AS arrival,
 			IFNULL(tk.closed, '') AS closed,
 			tk.contact AS contact,
 			tk.contactEmail AS contactEmail,
-			tk.contactPhone as contactPhone
+			tk.contactPhone AS contactPhone
 			FROM ticket tk
 			INNER JOIN ticketStatus ts ON tk.ticketStatusId = ts.ticketStatusId
 			INNER JOIN policy p ON tk.policyId = p.policyId
@@ -2882,15 +2909,26 @@ BEGIN
 			tk.created AS created,
 			p.customer AS customer,
 			et.equipmentType AS equipmentType,
-			ts.ticketStatus AS ticketStatus,
-			IFNULL(bu.name, tk.employee) AS asignee,
-			IFNULL(p.equipmentLocation, '') AS equipmentLocation,
 			IFNULL(p.brand, '') AS equipmentBrand,
+			p.model AS model,
+			p.capacity AS capacity,
+			p.serialNumber AS serialNumber,
+			IFNULL(p.equipmentLocation, '') AS equipmentLocation,
+			IFNULL(p.equipmentAddress, '') AS equipmentAddress,
+			IF(p.includesParts = 1, 'SI', 'NO') AS includesParts,
+			p.exceptionParts AS exceptionParts,
+			of.officeName AS officeName,
+			p.project AS project,
+			IF(tk.phoneResolved = 1, 'SI', 'NO') AS phoneResolved,
+			tk.serviceOrderNumber AS serviceOrderNumber,
+			ts.ticketStatus AS ticketStatus,
+			tk.observations AS observations,
+			IFNULL(bu.name, tk.employee) AS asignee,
 			IFNULL(tk.arrival, '') AS arrival,
 			IFNULL(tk.closed, '') AS closed,
 			tk.contact AS contact,
 			tk.contactEmail AS contactEmail,
-			tk.contactPhone as contactPhone
+			tk.contactPhone AS contactPhone
 			FROM ticket tk
 			INNER JOIN ticketStatus ts ON tk.ticketStatusId = ts.ticketStatusId
 			INNER JOIN policy p ON tk.policyId = p.policyId
@@ -3058,13 +3096,15 @@ BEGIN
 			p.brand AS brand,
 			p.serialNumber AS serialNumber,
 			ss.serviceStatus AS serviceStatus,
-			so.hasPdf AS hasPdf
+			so.hasPdf AS hasPdf,
+			sc.serviceCenter AS serviceCenter
 		FROM serviceOrder so 
 			INNER JOIN serviceType st ON so.servicetypeId = st.servicetypeId
 			INNER JOIN serviceStatus ss ON so.serviceStatusId = ss.serviceStatusId
 			INNER JOIN policy p ON so.policyId = p.policyId
 			INNER JOIN equipmentType et ON p.equipmentTypeId = et.equipmentTypeId
 			INNER JOIN office of on p.officeId = of.officeId
+			INNER JOIN serviceCenter sc ON sc.serviceCenterId = p.serviceCenterId
 	     LEFT OUTER JOIN ticket t on t.ticketId = so.ticketId
 	     UNION
 	     SELECT 
@@ -3081,7 +3121,8 @@ BEGIN
 			oc.brand AS brand,
 			oc.serialNumber AS serialNumber,
 			ss.serviceStatus AS serviceStatus,
-			so.hasPdf AS hasPdf
+			so.hasPdf AS hasPdf,
+			o.officeName AS serviceCenter
 		FROM serviceOrder so 
 			INNER JOIN serviceType st ON so.servicetypeId = st.servicetypeId
 			INNER JOIN serviceStatus ss ON so.serviceStatusId = ss.serviceStatusId
@@ -3963,7 +4004,7 @@ BEGIN
 		p.responseTimeHR AS responseTimeHR,
 		p.project AS project,
 		ts.ticketStatus AS ticketStatus,
-		IFNULL(bu.name, tk.employee) AS asignee,
+		IFNULL(bu.name, ifnull(tk.employee, '')) AS asignee,
 		tk.ticketNumber AS asignar,
 		IFNULL(tk.serviceOrderNumber, '') AS serviceOrderNumber
 	FROM ticket tk 
@@ -3999,13 +4040,15 @@ BEGIN
 		p.brand AS brand,
 		p.serialNumber AS serialNumber,
 		ss.serviceStatus AS serviceStatus,
-		SO.hasPdf AS hasPdf
+		SO.hasPdf AS hasPdf,
+		sc.serviceCenter AS serviceCenter
 	FROM serviceOrder so 
 		INNER JOIN serviceType st ON so.servicetypeId = st.servicetypeId
 		INNER JOIN serviceStatus ss ON so.serviceStatusId = ss.serviceStatusId
 		INNER JOIN policy p ON so.policyId = p.policyId
 		INNER JOIN equipmentType et ON p.equipmentTypeId = et.equipmentTypeId
 		INNER JOIN office of on p.officeId = of.officeId
+		INNER JOIN serviceCenter sc ON sc.serviceCenterId = p.serviceCenterId
      LEFT OUTER JOIN ticket t on t.ticketId = so.ticketId
 	WHERE ss.serviceStatus IN(status) 
 	ORDER BY serviceDate DESC ;
@@ -5052,8 +5095,12 @@ BEGIN
 	-- ACTUALIZAR LOS CORREOS DE ACCESO A CLIENTES
 	UPDATE blackstarDb.policy bp 
 		INNER JOIN blackstarDbTransfer.policy p ON p.serialNumber = bp.serialNumber AND p.project = bp.project
+		INNER JOIN blackstarDb.serviceCenter s ON s.serviceCenter = p.serviceCenter
 	SET
-		bp.equipmentUser = p.equipmentUser;
+		bp.equipmentUser = p.equipmentUser,
+		bp.startDate = p.startDate,
+		bp.endDate = p.endDate,
+		bp.serviceCenterId = s.serviceCenterId;
 
 -- -----------------------------------------------------------------------------
 

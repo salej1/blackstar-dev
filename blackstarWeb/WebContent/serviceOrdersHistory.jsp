@@ -32,7 +32,7 @@
 							  { "mData": "brand" },
 							  { "mData": "serialNumber" },
 							  { "mData": "serviceStatus" },
-							  { "mData": "officeName" }
+							  { "mData": "serviceCenter" }
 
 							  ],
 					"aoColumnDefs" : [{"mRender" : function(data, type, row){return "<div align='center' style='width:85px;' ><a href='${pageContext.request.contextPath}/osDetail/show.do?serviceOrderId=" + row.DT_RowId + "'>" + data + "</a></div>";}, "aTargets" : [0]},
