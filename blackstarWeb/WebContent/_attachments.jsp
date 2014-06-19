@@ -8,16 +8,20 @@
 
     function createPicker() {
       var attachmentFolderId = '${osAttachmentFolder}';
-      var docsView = new google.picker.View(google.picker.ViewId.DOCS_IMAGES);
+      var docsView = new google.picker.View(google.picker.ViewId.DOCS);
       var uploadView = new google.picker.DocsUploadView().setParent(attachmentFolderId);
       docsView.setParent(attachmentFolderId);
-      picker = new google.picker.PickerBuilder()
+      var pickerBuilder = new google.picker.PickerBuilder()
           .addView(docsView)
           .addView(uploadView)
-          .setCallback(pickerCallback)
           .enableFeature(google.picker.Feature.MULTISELECT_ENABLED)
-          .setOAuthToken('${accessToken}')
-          .build();
+          .setOAuthToken('${accessToken}');
+      if(customPickerCallBack == null){
+    	  pickerBuilder.setCallback(pickerCallback);
+      } else {
+    	  pickerBuilder.setCallback(customPickerCallBack);
+      }
+      picker = pickerBuilder.build();
     }
 
     function showPicker(){

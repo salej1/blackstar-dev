@@ -9,6 +9,7 @@
 		<file name ="blackstarDbTransfer_Schema.sql"/>
 		<file name ="blackstarDbTransfer_StoredProcedures.sql"/>
 		<file name ="blackstarManage_StoredProcedures.sql"/>
+		<file name ="bloomDb_StoredProcedures.sql"/>
 		
 		<file name ="blackstarDb_Data.sql"/>
 	</files>

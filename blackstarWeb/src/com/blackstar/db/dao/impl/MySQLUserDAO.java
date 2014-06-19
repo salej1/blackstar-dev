@@ -19,12 +19,21 @@ public class MySQLUserDAO implements UserDAO {
 		User user = null;
 		Connection conn = null;
 		try {
+			
+			String sql = "SELECT u.email AS userEmail, u.blackstarUserId ,u.name AS userName, g.name AS groupName"
+        +" FROM blackstarUser_userGroup ug"
+         +       " INNER JOIN blackstarUser u ON u.blackstarUserId = ug.blackstarUserId"
+         +       " LEFT OUTER JOIN userGroup g ON g.userGroupId = ug.userGroupId"
+        + " WHERE u.email = '"+email+"'";
+			
+			//String sql = String.format("CALL GetUserData('%s')", email);
 			conn = MySQLDAOFactory.createConnection();
-			ResultSet rs = conn.createStatement().executeQuery(String.format("CALL GetUserData('%s')", email));
+			ResultSet rs = conn.createStatement().executeQuery(sql/*String.format("CALL GetUserData('%s')", email)*/);
 			System.out.println("Email => " + email);
 			while(rs.next()) {
 				if(user == null){
 					user = new User(
+					    rs.getInt("blackstarUserId"),
 						rs.getString("userEmail"),
 						rs.getString("userName")
 					);
@@ -59,6 +68,10 @@ public class MySQLUserDAO implements UserDAO {
 	@Override
 	public List<User> getDomainUserList() {
 		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	public User getUserById(Integer id){
 		return null;
 	}
 

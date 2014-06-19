@@ -16,8 +16,8 @@
   </bean>
   
   <bean id="googleDriveService" class="com.blackstar.services.impl.GoogleDriveServiceImpl" parent="abstractService" init-method="init">
-    <property name="serviceAccountId" value="435070024686-qo4ir0cvgafjrkhvi14hkletlq0f90c8@developer.gserviceaccount.com"/>
-    <property name="serviceAccountUser" value="sergio.gomez@innso.com.mx"/>
+    <property name="serviceAccountId" value="313287673617@developer.gserviceaccount.com"/>
+    <property name="serviceAccountUser" value="portal-servicios@gposac.com.mx"/>
   </bean>
   
   
@@ -69,5 +69,28 @@
     <property name="soService" ref="serviceOrderService" />
     <property name="rpService" ref="reportService" />
   </bean>
+  
+  
+  <!-- Implementacion de BLOOM HELPDESK -->  
+  <bean id="internalTicketsService" class="com.bloom.services.InternalTicketsServiceImpl" parent="abstractService">
+      <property name="internalTicketsDao" ref="internalTicketsDao" />
+      <property name="uDAO" ref="userDAO" />
+      <property name="catalogInternalTicketsDao" ref="catalogInternalTicketsDao" />
+  </bean>
+  
+  <bean id="internatTicketsKPIService" class="com.bloom.services.InternatTicketsKPIServiceImpl" parent="abstractService">
+      <property name="dao" ref="internatTicketsKPIDao" />
+  </bean>
+   
+
+  <bean id="catalogService" class="com.bloom.services.CatalogServiceImpl" parent="abstractService">
+      <property name="catalogInternalTicketsDao" ref="catalogInternalTicketsDao" />
+  </bean>
+  
+
+  <bean id="reportsTicketsService" class="com.bloom.services.ReportsTicketsServiceImpl" parent="abstractService">
+      <property name="reportsTicketsDao" ref="reportsTicketsDao" />
+  </bean>
+  
 
 </beans>

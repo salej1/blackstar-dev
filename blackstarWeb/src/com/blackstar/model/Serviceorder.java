@@ -52,6 +52,7 @@ public class Serviceorder implements java.io.Serializable {
 	private String receivedByEmail;
 	private String responsibleName;
 	private List<Employee> employeeList;
+	private Integer openCustomerId;
 	
 	public Serviceorder() {
 	}
@@ -399,5 +400,13 @@ public class Serviceorder implements java.io.Serializable {
 			emp.setEmail(item);
 			this.employeeList.add(emp);
 		}
+	}
+
+	public Integer getOpenCustomerId() {
+		return openCustomerId;
+	}
+
+	public void setOpenCustomerId(Integer openCustomerId) {
+		this.openCustomerId = openCustomerId;
 	}
 }
