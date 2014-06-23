@@ -3,7 +3,9 @@ var listaAreas;
 var listaServicios;
 var listaOficinas;
 
-var idTipoServicio;
+var serviceTypeId;
+var applicantAreaId;
+
 var diasLimitesTipoServicio=null;
 
 var fechaLimite;
@@ -77,64 +79,348 @@ $(document)
 					// Seguimiento$("#seguimientoCapture").hide();
 					$("#seguimientoCapture").hide();
 
+					
+					$('#slAreaSolicitante').on('change',function(){
+						
+						consultServiceType();
+						
+					});
+					
+					
 					$('#slTipoServicio').on('change',
 									function() {
-										// when game select changes, filter the
-										// character list to the selected game
-										idTipoServicio = parseInt($(
-												'#slTipoServicio').val());
-
-										diasLimitesTipoServicio = 0;
-										for (var i = 0; i < listaServicios.length; i++) {
-											if (listaServicios[i].id === idTipoServicio) {
-												diasLimitesTipoServicio = parseInt(listaServicios[i].extra);
-												break;
-											}
-										}
-
-										fechaLimite = new Date();
-
-										fechaLimite.setDate(fechaLimite
-												.getDate()
-												+ diasLimitesTipoServicio);
-
-										$("#fldLimite").datepicker("setDate",
-												fechaLimite);
-
-										consultarDocumentos();
+										
+											updateDueDate();
 
 									});
 
-
+					
 
 					$( "#saveButtonTicket" ).click(function() {
-
+						  
 						  mensaje_confirmacion("\u00BF Confirma que desea enviar la requisici\u00f3n general "+$("#fldFolio").val()+"?",
 								  "Alta Ticket Interno","Aceptar","Cancelar",
-								  guardarAtencion,
+								  saveInternalTicket,
 								  function(){window.location = '/dashboard/show.do';});
-
+						  
 					});
-
+					
 
 					$( "#attachButtonTicket" ).click(function() {
-						consultarDocumentos(function(){
+						consultDeliverableType(function(){
 							$('#attachmentImgDlg').dialog('open');
 						});
 					});
 
-					consultarDatosFormulario();
-
+					readDataForm();
+					
 				});
 
 
-function guardarAtencion() {
+
+
+function updateDueDate(){
+	
+	
+	serviceTypeId = parseInt($(
+			'#slTipoServicio').val());
+
+	diasLimitesTipoServicio = 0;
+	for (var i = 0; i < listaServicios.length; i++) {
+		if (listaServicios[i].id === serviceTypeId) {
+			diasLimitesTipoServicio = parseInt(listaServicios[i].extra);
+			break;
+		}
+	}
+
+	fechaLimite = new Date();
+
+	fechaLimite.setDate(fechaLimite
+			.getDate()
+			+ diasLimitesTipoServicio);
+
+	$("#fldLimite").datepicker("setDate",
+			fechaLimite);
+	
+	configureAdditionalFields();
+	
+	consultDeliverableType();	
+	
+	
+}
+
+
+
+function configureAdditionalFields(){
+	
+	iniHideAdditionalFields();
+	
+	var serviceTypeId = parseInt($('#slTipoServicio').val());
+	
+	
+	if (serviceTypeId===1  ){
+		
+		$('#additionalDataTR1').show();
+		
+		$('#additionalDataLabel1').text("Objetivo de Visita y Tipo de Equipo que se pretende ofertar o revisar");
+		
+	}
+	if (serviceTypeId===2  ){
+		
+		$('#additionalDataTR1').show();
+		
+		$('#additionalDataLabel1').text("Objetivo de Visita y Tipo de Equipo que se pretende ofertar o revisar");
+		
+	}
+	if (serviceTypeId===3  ){
+		$('#additionalDataTR1').show();
+		$('#additionalDataTR2').show();
+		
+		$('#additionalDataLabel1').text("Diagrama en borrador");
+		$('#additionalDataLabel2').text("Ced\u00fala de Proyectos");
+		
+	}
+	if (serviceTypeId===4  ){
+		
+		$('#additionalDataTR1').show();
+		$('#additionalDataTR2').show();
+		$('#additionalDataTR3').show();
+		
+		$('#additionalDataLabel1').text("Observaciones y/o ligas de fotos");
+		$('#additionalDataLabel2').text("Plano en borrador");
+		$('#additionalDataLabel3').text("Ced\u00fala de Proyectos");
+		
+		
+	}
+	if (serviceTypeId===5  ){
+		
+		$('#additionalDataTR1').show();
+		$('#additionalDataTR2').show();
+		$('#additionalDataTR3').show();
+		
+		$('#additionalDataLabel1').text("Observaciones y/o ligas de fotos");
+		$('#additionalDataLabel2').text("Check-List de Levantamiento o lista de materiales a utilizar");
+		$('#additionalDataLabel3').text("Ced\u00fala de Proyectos");
+		
+	}
+	if (serviceTypeId===6  ){
+		
+		$('#additionalDataTR1').show();
+		
+		$('#additionalDataLabel1').text("Pregunta");
+		
+	}
+	if (serviceTypeId===7  ){
+		
+		$('#additionalDataTR1').show();
+		$('#additionalDataTR2').show();
+		
+		$('#additionalDataLabel1').text("Observaciones y/o ligas de mas anexos");
+		$('#additionalDataLabel2').text("Ced\u00fala de Proyectos");
+		
+	}
+	if (serviceTypeId===8  ){
+		
+		$('#additionalDataTR1').show();
+		
+		$('#additionalDataLabel1').text("Producto a solicitar Precio (Marca, modelo, descripci\u00f3n)");
+		
+	}
+	if (serviceTypeId===9  ){
+		
+		$('#additionalDataTR1').show();
+		$('#additionalDataTR2').show();
+		
+		$('#additionalDataLabel1').text("Observaciones");
+		$('#additionalDataLabel2').text("Diagrama o Plano en borrador");
+		
+	}
+	if (serviceTypeId===10 ){
+		
+		$('#additionalDataTR1').show();
+		$('#additionalDataTR2').show();
+		
+		$('#additionalDataLabel1').text("Observaciones y/o ligas de fotos");
+		$('#additionalDataLabel2').text("Anexar Datos Descargados del Analizador");
+		
+	}
+	if (serviceTypeId===11 ){
+		
+		$('#additionalDataTR1').show();
+		$('#additionalDataTR2').show();
+		
+		$('#additionalDataLabel1').text("Equipo a monitorear (marca, modelo)");
+		$('#additionalDataLabel2').text("Observaciones (incluir interface utilizada) y/o ligas de fotos");
+		
+	}
+	if (serviceTypeId===12 ){
+		
+		$('#additionalDataTR1').show();
+		
+		$('#additionalDataLabel1').text("Pregunta");
+		
+	}
+	if (serviceTypeId===13 ){
+		
+		$('#additionalDataTR1').show();
+		$('#additionalDataTR2').show();
+		$('#additionalDataTR3').show();
+		
+		$('#additionalDataLabel1').text("Ticket");
+		$('#additionalDataLabel2').text("Modelo, Marca y N\u00famero de parte");
+		$('#additionalDataLabel3').text("Observaciones y/o ligas de anexos como fotos");
+		
+		
+	}
+	if (serviceTypeId===14 ){
+		
+		$('#additionalDataTR1').show();
+		
+		$('#additionalDataLabel1').text("Producto a solicitar Precio (Marca, modelo, descripci\u00f3n)");
+		
+		
+	}
+	if (serviceTypeId===15 ){}
+	if (serviceTypeId===16 ){
+		
+		$('#additionalDataTR1').show();
+		$('#additionalDataTR2').show();
+		$('#additionalDataTR3').show();
+		
+		$('#additionalDataLabel1').text("Puesto");
+		$('#additionalDataLabel2').text("Nombre del colaborador");
+		$('#additionalDataLabel3').text("Suledo");
+		
+		$('#descrLabel').text("Justificaci\u00f3n del Req.");		
+		
+	}
+	if (serviceTypeId===17 ){
+		
+		$('#additionalDataTR1').show();
+		$('#additionalDataTR2').show();
+		$('#additionalDataTR3').show();
+		$('#additionalDataTR4').show();
+		$('#additionalDataTR5').show();
+		
+		
+		$('#additionalDataLabel1').text("Puesto");
+		$('#additionalDataLabel2').text("Comentarios o Preferencias");
+		$('#additionalDataLabel3').text("Plan de desarrollo");
+		$('#additionalDataLabel4').text("Objetivos");
+		$('#additionalDataLabel5').text("Suledo");
+		
+		
+	}
+	if (serviceTypeId===18 ){
+		
+		$('#additionalDataTR1').show();
+		$('#additionalDataTR2').show();
+		$('#additionalDataTR3').show();
+		$('#additionalDataTR4').show();
+		
+		$('#additionalDataLabel1').text("Puesto");
+		$('#additionalDataLabel2').text("Plan de desarrollo");
+		$('#additionalDataLabel3').text("Objetivos");
+		$('#additionalDataLabel4').text("Suledo");
+		
+		$('#descrLabel').text("Justificaci\u00f3n del Req.");		
+		
+	}
+	if (serviceTypeId===19 ){
+		
+		$('#additionalDataTR1').show();
+		$('#additionalDataTR2').show();
+		
+		$('#additionalDataLabel1').text("Puesto");
+		$('#additionalDataLabel2').text("Nombre del colaborador");
+		
+		$('#descrLabel').text("Justificaci\u00f3n del Req.");
+		
+	}
+	if (serviceTypeId===20 ){
+		
+		$('#additionalDataTR1').show();
+		$('#additionalDataTR2').show();
+		
+		$('#additionalDataLabel1').text("Puesto");
+		$('#additionalDataLabel2').text("Nombre del colaborador");
+		
+		$('#descrLabel').text("Justificaci\u00f3n del Req.");
+		
+	}
+	if (serviceTypeId===21 ){
+		
+		$('#additionalDataTR1').show();
+		
+		$('#additionalDataLabel1').text("FORMATO DE REQUISICI\u00d3N DE CURSO DE CAPACITACI\u00d3N");
+		
+		
+	}
+	if (serviceTypeId===22 ){
+		
+		$('#additionalDataTR1').show();
+		
+		$('#additionalDataLabel1').text("Liga del documento");
+		
+		$('#descrLabel').text("Justificaci\u00f3n del Requisici\u00f3n");
+		
+	}
+	if (serviceTypeId===23 ){
+
+		$('#additionalDataTR1').show();
+		$('#additionalDataTR2').show();
+		
+		$('#additionalDataLabel1').text("Sugerencia");
+		$('#additionalDataLabel2').text("Código del documento");
+		
+		
+		$('#descrLabel').text("Justificaci\u00f3n del Requisici\u00f3n");
+		
+		
+	}
+	if (serviceTypeId===24 ){
+		
+		$('#descrLabel').text("Descripci\u00f3n del Problema");
+		
+	}
+	
+}
+
+
+
+function iniHideAdditionalFields(){
+	
+	
+	$('#descrLabel').text("Descripci\u00f3n de la solicitud");
+	
+	$('#additionalDataTR1').hide();
+	$('#additionalDataTR2').hide();
+	$('#additionalDataTR3').hide();
+	$('#additionalDataTR4').hide();
+	$('#additionalDataTR5').hide();
+	
+	$('#additionalDataLabel1').text("");
+	$('#additionalDataLabel2').text("");
+	$('#additionalDataLabel3').text("");
+	$('#additionalDataLabel4').text("");
+	$('#additionalDataLabel5').text("");
+	
+	$('#additionalData1').val("");
+	$('#additionalData1').val("");
+	$('#additionalData3').val("");
+	$('#additionalData4').val("");
+	$('#additionalData5').val("");
+	
+}
+
+
+function saveInternalTicket() {
 	// ocultarMensajes();
 
 	if(diasLimitesTipoServicio===null){
 		diasLimitesTipoServicio=-1;
 	}
-
+	
 	$.ajax({
 		url : "/bloom/guardarTicket.do",
 		type : "POST",
@@ -152,7 +438,12 @@ function guardarAtencion() {
 			fldDiasRespuesta:diasLimitesTipoServicio,
 			slAreaSolicitanteLabel: $('#slAreaSolicitante option:selected').text(),
 			slTipoServicioLabel:$('#slTipoServicio option:selected').text(),
-			slOficinaLabel:$('#slOficina option:selected').text()
+			slOficinaLabel:$('#slOficina option:selected').text(),
+			additionalData1:$('#additionalData1').val(),
+			additionalData2:$('#additionalData2').val(),
+			additionalData3:$('#additionalData3').val(),
+			additionalData4:$('#additionalData4').val(),
+			additionalData5:$('#additionalData5').val()
 		},
 		dataType : "json",
 		beforeSend : function() {
@@ -162,11 +453,11 @@ function guardarAtencion() {
 		success : function(respuestaJson) {
 			// ocultarMensajes();
 			if (respuestaJson.estatus === "ok") {
-
+				
 				mensaje_alerta(respuestaJson.mensaje,"Alta Ticket Interno", function(){
 					window.location = '/dashboard/show.do';
 				});
-
+				
 				// limpiarCampos();
 
 			} else {
@@ -184,21 +475,20 @@ function guardarAtencion() {
 
 }
 
-function cargaCombosFormulario() {
+function loadFormsCombos() {
 
 	for (var i = 0; i < listaAreas.length; i++) {
 		$("#slAreaSolicitante").append(
 				new Option(listaAreas[i].descripcion, listaAreas[i].id));
 	}
 
-	for (var i = 0; i < listaServicios.length; i++) {
+	/*for (var i = 0; i < listaServicios.length; i++) {
 		$("#slTipoServicio")
 				.append(
 						new Option(listaServicios[i].descripcion,
 								listaServicios[i].id));
-	}
+	}*/
 
-    $("#slProyecto").append(new Option('N/A',-1));
 	for (var i = 0; i < listaProyectos.length; i++) {
 		$("#slProyecto")
 				.append(
@@ -213,7 +503,7 @@ function cargaCombosFormulario() {
 
 }
 
-function consultarDatosFormulario() {
+function readDataForm() {
 
 	$.ajax({
 		url : "/bloomCatalog/getData.do",
@@ -229,11 +519,15 @@ function consultarDatosFormulario() {
 
 				listaProyectos = respuestaJson.listaMap.listaProyectos;
 				listaAreas = respuestaJson.listaMap2.listaAreas;
-				listaServicios = respuestaJson.listaMap2.listaServicios;
+				//listaServicios = respuestaJson.listaMap2.listaServicios;
 				listaOficinas = respuestaJson.listaMap2.listaOficinas;
 
-				cargaCombosFormulario();
-				consultarDocumentos();
+				loadFormsCombos();
+				
+				consultServiceType(function(){
+					consultDeliverableType();
+				});
+				
 
 			} else {
 				if (respuestaJson.estatus === "preventivo") {
@@ -249,25 +543,25 @@ function consultarDatosFormulario() {
 
 
 
-function tablaListaDocumentos(listaDocumentos){
-
+function tableListDeliverableType(listaDocumentos){
+	
 	$("#attItems").find(".itemFile").remove();
-
+	
 	for (var i = 0; i < listaDocumentos.length; i++) {
 		$('#attItems').append("<li class='itemFile'>"+listaDocumentos[i].descripcion+"</li>");
 	}
-
+	
 }
 
-function consultarDocumentos(callBackFunction) {
-
-	idTipoServicio = parseInt($('#slTipoServicio').val());
+function consultDeliverableType(callBackFunction) {
+	
+	serviceTypeId = parseInt($('#slTipoServicio').val());
 
 	$.ajax({
 		url : "/bloomCatalog/getDocumentos.do",
 		type : "POST",
 		data : {
-			idTipoServicio : idTipoServicio
+			idTipoServicio : serviceTypeId
 		},
 		dataType : "json",
 		beforeSend : function() {
@@ -286,11 +580,11 @@ function consultarDocumentos(callBackFunction) {
 							new Option(listaDocumentos[i].descripcion,
 									listaDocumentos[i].id));
 				}
-
+				
 				if ((typeof (callBackFunction) === "function") && callBackFunction !== null) {
 					callBackFunction();
 		        }else{
-		        	tablaListaDocumentos(listaDocumentos);
+		        	tableListDeliverableType(listaDocumentos);
 		        }
 
 			} else {
@@ -307,6 +601,64 @@ function consultarDocumentos(callBackFunction) {
 		}
 	});
 }
+
+
+function consultServiceType(callBackFunction) {
+	
+	applicantAreaId = parseInt($('#slAreaSolicitante').val());
+
+	$.ajax({
+		url : "/bloomCatalog/getServiceTypeList.do",
+		type : "POST",
+		data : {
+			applicantAreaId : applicantAreaId
+		},
+		dataType : "json",
+		beforeSend : function() {
+			// mostrarMensajeCargando
+		},
+		success : function(respuestaJson) {
+
+			if (respuestaJson.estatus === "ok") {
+
+				listaServicios = respuestaJson.lista;
+
+				$('#slTipoServicio').children().remove();
+
+				for (var i = 0; i < listaServicios.length; i++) {
+					$("#slTipoServicio").append(
+							new Option(listaServicios[i].descripcion,
+									listaServicios[i].id));
+				}
+				
+				configureAdditionalFields();
+				updateDueDate();
+				
+				if ((typeof (callBackFunction) === "function") && callBackFunction !== null) {
+					callBackFunction();
+		        }
+				
+				/*else{
+		        	tableListDeliverableType(listaDocumentos);
+		        }*/
+
+			} else {
+				if (respuestaJson.estatus === "preventivo") {
+					// mostrarMensajePreventivo
+				} else {
+					// mostrarMensajeError
+				}
+			}
+
+		},
+		error : function() {
+			// mostrarMensajeError
+		}
+	});
+}
+
+
+
 
 function updateAttItems() {
 	var tickType = $("#reqType option:selected").val();

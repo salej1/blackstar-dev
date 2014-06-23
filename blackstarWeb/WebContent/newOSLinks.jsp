@@ -42,7 +42,7 @@
 						$( this ).dialog( "close" );
 					}
 				},
-
+				
 				"Cancelar": function() {
 				$( this ).dialog( "close" );
 			}}
@@ -78,7 +78,7 @@
 		$("#eqSearch").val("Cargando equipos...");
 
 		getEquipmentList(type);
-
+		
 		var dlgTitle = "Orden de servicio para ";
 		switch(type){
 			case 'A': dlgTitle = dlgTitle + "Aire acondicionado";
@@ -132,13 +132,13 @@
 			$("#eqSearch").val("");
 		}
 	}
-
-
+	
+	
 	function getNewInternalTickets(){
 	    var url = '/bloom/newInternalTicket.do';
 	    var data = new Array();
 	    redirect(url, data, "GET");
-
+		
 	}
 
 </script>

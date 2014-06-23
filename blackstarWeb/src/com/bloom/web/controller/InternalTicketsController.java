@@ -1,13 +1,7 @@
 package com.bloom.web.controller;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
-import java.util.TimeZone;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +24,7 @@ import com.bloom.common.bean.InternalTicketBean;
 import com.bloom.common.bean.RespuestaJsonBean;
 import com.bloom.model.dto.TicketDetailDTO;
 import com.bloom.common.exception.ServiceException;
+import com.bloom.common.utils.DataTypeUtil;
 import com.bloom.services.InternalTicketsService;
 
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -45,6 +40,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class InternalTicketsController extends AbstractController {
 
   private InternalTicketsService internalTicketsService;
+  
+  
   private UserDomainService udService = null;
 
   public void setUdService(UserDomainService udService) {
@@ -57,12 +54,7 @@ public class InternalTicketsController extends AbstractController {
 	public InternalTicketsService getInternalTicketsService() {
 		return internalTicketsService;
 	}
-
-  @RequestMapping(value = "/generarUnidadesCliente.htm", method = RequestMethod.POST, produces = "application/json")
-  public @ResponseBody RespuestaJsonBean generarUnidadesCliente(HttpServletRequest request 
-		 , Map<String, Object> model, @RequestParam(value = "idCliente") Long idCliente) {
-		return new RespuestaJsonBean();
-  }
+  
 	/**
 	 * @param internalTicketsService
 	 *            the internalTicketsService to set
@@ -83,7 +75,7 @@ public class InternalTicketsController extends AbstractController {
 	RespuestaJsonBean getPendingInternalTickets(ModelMap model,
 			@ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession) {
 
-		RespuestaJsonBean respuesta = new RespuestaJsonBean();
+		RespuestaJsonBean response = new RespuestaJsonBean();
 
 		Long userId = Long.valueOf(userSession.getUser().getBlackstarUserId());
 
@@ -93,17 +85,14 @@ public class InternalTicketsController extends AbstractController {
 					.getPendingTickets(userId);
 
 			if (registros == null || registros.isEmpty()) {
-				respuesta.setEstatus("preventivo");
-				respuesta.setMensaje("No se encontraron Tickets Pendientes");
-				// log.info("No se encontraron registros de Emisiones Generadas");
+				response.setEstatus("preventivo");
+				response.setMensaje("No se encontraron Tickets Pendientes");
 			} else {
 				String resumen = "Se encontraron " + registros.size()
 						+ " Tickets Pendientes";
-				// log.info("Se encontraron " + registros.size() +
-				// " Emisiones Generadas");
-				respuesta.setEstatus("ok");
-				respuesta.setLista(registros);
-				respuesta.setMensaje(resumen);
+				response.setEstatus("ok");
+				response.setLista(registros);
+				response.setMensaje(resumen);
 				System.out.println("Registros => " + registros.size());
 			}
 
@@ -111,18 +100,18 @@ public class InternalTicketsController extends AbstractController {
 			System.out.println("Error => " + e);
 			Logger.Log(LogLevel.ERROR, e.getMessage(), e);
 
-			respuesta.setEstatus("error");
-			respuesta.setMensaje(e.getMessage());
+			response.setEstatus("error");
+			response.setMensaje(e.getMessage());
 		} catch (Exception e) {
             System.out.println("Error => " + e);
 			Logger.Log(LogLevel.ERROR, e.getMessage(), e);
 
-			respuesta.setEstatus("error");
-			respuesta
+			response.setEstatus("error");
+			response
 					.setMensaje("Error al obtener tickets internos pendientes. Por favor intente m\u00e1s tarde.");
 		}
 
-		return respuesta;
+		return response;
 	}
 
 
@@ -138,7 +127,7 @@ public class InternalTicketsController extends AbstractController {
 	RespuestaJsonBean getInternalTickets(ModelMap model,
 			@ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession) {
 
-		RespuestaJsonBean respuesta = new RespuestaJsonBean();
+		RespuestaJsonBean response = new RespuestaJsonBean();
 
 		Long userId = Long.valueOf(userSession.getUser().getBlackstarUserId());
 
@@ -148,35 +137,32 @@ public class InternalTicketsController extends AbstractController {
 					.getTickets(userId);
 
 			if (registros == null || registros.isEmpty()) {
-				respuesta.setEstatus("preventivo");
-				respuesta.setMensaje("No se encontraron Tickets Pendientes");
-				// log.info("No se encontraron registros de Emisiones Generadas");
+				response.setEstatus("preventivo");
+				response.setMensaje("No se encontraron Tickets Pendientes");
 			} else {
 				String resumen = "Se encontraron " + registros.size()
 						+ " Tickets Pendientes";
-				// log.info("Se encontraron " + registros.size() +
-				// " Emisiones Generadas");
-				respuesta.setEstatus("ok");
-				respuesta.setLista(registros);
-				respuesta.setMensaje(resumen);
+				response.setEstatus("ok");
+				response.setLista(registros);
+				response.setMensaje(resumen);
 			}
 
 		} catch (ServiceException e) {
 
 			Logger.Log(LogLevel.ERROR, e.getMessage(), e);
 
-			respuesta.setEstatus("error");
-			respuesta.setMensaje(e.getMessage());
+			response.setEstatus("error");
+			response.setMensaje(e.getMessage());
 		} catch (Exception e) {
 
 			Logger.Log(LogLevel.ERROR, e.getMessage(), e);
 
-			respuesta.setEstatus("error");
-			respuesta
+			response.setEstatus("error");
+			response
 					.setMensaje("Error al obtener tickets internos pendientes. Por favor intente m\u00e1s tarde.");
 		}
 
-		return respuesta;
+		return response;
 	}
 
   @RequestMapping(value = "/ticketDetail/show.do", method = RequestMethod.GET)
@@ -199,8 +185,6 @@ public class InternalTicketsController extends AbstractController {
 				                        .getFollowUps(ticketId));
 		   model.addAttribute("deliverableTypes", internalTicketsService
 				                                .getDeliverableTypes());
-		   model.addAttribute("deliverables", internalTicketsService
-                                   .getTicketDeliverable(ticketId));
 		 }
 	} catch (Exception e) {
 		System.out.println("Error => " + e);
@@ -276,7 +260,10 @@ public class InternalTicketsController extends AbstractController {
 	}
 	return "dashboard";
   }
-  
+
+
+
+
 	/**
 	 * Vista en el dashboard del dominio de tickets de un perfil coordinador. 
 	 * @param model
@@ -329,24 +316,26 @@ public class InternalTicketsController extends AbstractController {
 
 		return response;
 	}
-	
+
+
 
 	@RequestMapping(value = "/newInternalTicket.do", method = RequestMethod.GET)
 	public String newInternalTicket(ModelMap model,
 			@ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession) {
 
-		 
-		TimeZone tz =TimeZone.getTimeZone("America/Mexico_City");
-		Calendar calendar = Calendar.getInstance(tz);
-		SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
-	    
+		Date tiempoActual = new Date();
+
 		try {
-			df.setTimeZone(tz);
+
 			String folio = internalTicketsService.generarTicketNumber();
+
 			String email = userSession.getUser().getUserEmail();
+			String horaTicket = DataTypeUtil.formatearFecha(tiempoActual,
+					"MM/dd/yyyy HH:mm:ss");
+
 			model.addAttribute("folioTicket", folio);
 			model.addAttribute("emailTicket", email);
-			model.addAttribute("horaTicket", df.format(calendar.getTime()));
+			model.addAttribute("horaTicket", horaTicket);
 
 		} catch (ServiceException se) {
 			Logger.Log(LogLevel.ERROR, se.getMessage(), se);
@@ -367,7 +356,6 @@ public class InternalTicketsController extends AbstractController {
 	@RequestMapping(value = "/guardarTicket.do", method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
 	RespuestaJsonBean guardarAtencion(
-			final HttpServletRequest request,
 			@ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession,
 			@RequestParam(value = "fldFolio", required = true) String fldFolio,
 			@RequestParam(value = "fldFechaRegsitro", required = true) String fldFechaRegsitro,
@@ -382,10 +370,16 @@ public class InternalTicketsController extends AbstractController {
 			@RequestParam(value = "fldDiasRespuesta", required = true) Integer fldDiasRespuesta,
 			@RequestParam(value = "slAreaSolicitanteLabel", required = true) String slAreaSolicitanteLabel,
 			@RequestParam(value = "slTipoServicioLabel", required = true) String slTipoServicioLabel,
-			@RequestParam(value = "slOficinaLabel", required = true) String slOficinaLabel) {
+			@RequestParam(value = "slOficinaLabel", required = true) String slOficinaLabel,
+			@RequestParam(value = "additionalData1", required = true) String additionalData1,
+			@RequestParam(value = "additionalData2", required = true) String additionalData2,
+			@RequestParam(value = "additionalData3", required = true) String additionalData3,
+			@RequestParam(value = "additionalData4", required = true) String additionalData4,
+			@RequestParam(value = "additionalData5", required = true) String additionalData5
+			) {
 
 
-		RespuestaJsonBean respuesta = new RespuestaJsonBean();
+		RespuestaJsonBean response = new RespuestaJsonBean();
 
 		try {
 
@@ -413,47 +407,32 @@ public class InternalTicketsController extends AbstractController {
 			ticket.setServiceTypeDescr(slTipoServicioLabel);
 			ticket.setOfficeName(slOficinaLabel);
 
+			ticket.setAdditionalData1(additionalData1);
+			ticket.setAdditionalData2(additionalData2);
+			ticket.setAdditionalData3(additionalData3);
+			ticket.setAdditionalData4(additionalData4);
+			ticket.setAdditionalData5(additionalData5);
 
 			internalTicketsService.validarNuevoTicket(ticket);
 
 			internalTicketsService.registrarNuevoTicket(ticket);
 
-			respuesta.setEstatus("ok");
-			respuesta
+			response.setEstatus("ok");
+			response
 					.setMensaje("La solicitud de ticket se guard&oacute; con &eacute;xito");
 
 		} catch (ServiceException se) {
-			respuesta.setEstatus("error");
-			respuesta.setMensaje(se.getMessage());
+			response.setEstatus("error");
+			response.setMensaje(se.getMessage());
 			Logger.Log(LogLevel.ERROR, se.getMessage(), se);
 		} catch (Exception e) {
-			respuesta.setEstatus("error");
-			respuesta.setMensaje("Error al guardar atenci&oacute;n");
+			response.setEstatus("error");
+			response.setMensaje("Error al guardar atenci&oacute;n");
 			Logger.Log(LogLevel.ERROR, e.getMessage(), e);
 		}
 
-		return respuesta;
+		return response;
 
-	}
-
-	@RequestMapping(value = "/sendPendingAppointments.do", method = RequestMethod.GET)
-	public void sendMeetingRequest(ModelMap model,
-			@ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession) {
-	  try {
-		   internalTicketsService.sendPendingAppointments();
-	  } catch (Exception e) {
-			Logger.Log(LogLevel.ERROR, e.getMessage(), e);
-	  }
-	}
-	
-	@RequestMapping(value = "/sendPendingSurveys.do", method = RequestMethod.GET)
-	public void sendSurveyRequest(ModelMap model,
-			@ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession) {
-	  try {
-		   internalTicketsService.sendPendingSurveys();
-	  } catch (Exception e) {
-			Logger.Log(LogLevel.ERROR, e.getMessage(), e);
-	  }
 	}
 
 }

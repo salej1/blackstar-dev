@@ -49,7 +49,7 @@ Date.prototype.format = function(format) //author: meizz
 };
 
 $(document).ready(function () {
-
+	
 	//Attachment dialog
 	$("#attachmentDlg").dialog({
 		autoOpen: false,
@@ -68,7 +68,7 @@ $(document).ready(function () {
 			    });
 			}}
 	});
-
+	
 	//Save confirm dialog
 	$("#saveConfirm").dialog({
 		autoOpen: false,
@@ -80,12 +80,12 @@ $(document).ready(function () {
 					window.location.href = 'close.do?ticketId=${ticketDetail.id}&userId=${ user.blackstarUserId }';
 				}
 					,
-
+			
 			"Cancelar": function() {
 			$( this ).dialog( "close" );
 		}}
 	});
-
+	
 	//History dialog
 	$("#historyDlg").dialog({
 		autoOpen: false,
@@ -126,7 +126,7 @@ function applySeguimiento(){
 	}else { 
 		who = "-3";
 	}
-
+	
 	$("#followDetail").load("${pageContext.request.contextPath}/bloom/ticketDetail/addFollow.do?ticketId=${ticketDetail.id}&userId=${ user.blackstarUserId }" 
 			                    + "&userToAssign=" + who + "&comment=" + $("#seguimientoText").val().replace(/ /g, '%20'));
 	$("#seguimientoCapture").hide();	
@@ -145,13 +145,13 @@ function cancelAddSeguimiento(){
 </script>
 <!--   CONTENT   -->
 			<div id="content" class="container_16 clearfix">
-
+			
 <!--   CONTENT COLUMN   -->			
 				<div class="grid_15">					
 					<div class="box">
 						<h2>Ticket interno</h2>
 						<div class="utils">
-
+					
 						</div>
 						<table>
 							<tr>
@@ -220,11 +220,11 @@ function cancelAddSeguimiento(){
 						</table>
 					</div>					
 				</div>
-
+				
 <!--   ~ CONTENT COLUMN   -->
 
 <!--   CONTENT COLUMN   -->				
-
+				
 				<div class="grid_15">
 					<div class="box">
 						<h2>Seguimiento</h2>
@@ -318,8 +318,8 @@ function cancelAddSeguimiento(){
 					</div>					
 				</div>				
 <!--   ~ CONTENT COLUMN   -->
-
-
+				
+				
 				<!-- Attachment Img section -->
 				<div id="attachmentDlg" title="Referencia">
 					<p></p>
@@ -333,15 +333,15 @@ function cancelAddSeguimiento(){
 					</select>
 
 				</div>
-
+				
 				<div id="saveConfirm" title="Cerrar Ticket ${ticketDetail.ticketNumber}">
 					<p>¿Confirma que desea cerrar las acciones pendientes en el ticket ${ticketDetail.ticketNumber}?</p>
 					<p>El ticket será asignado al personal de mesa de ayuda para su revision</p>
 				</div>
-
+				
 <!--   ~ CONTENT   -->
 			</div>
-
+			
 <!--   FOOTER   -->			
 		<div id="foot">
 			<a href="#">Soporte</a>

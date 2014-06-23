@@ -5,6 +5,9 @@ import java.util.List;
 
 
 
+
+
+
 import com.bloom.common.bean.CatalogoBean;
 import com.bloom.common.exception.DAOException;
 
@@ -30,8 +33,8 @@ public interface CatalogInternalTicketsDao {
 	 * @return
 	 * @throws DAOException
 	 */
-	public List<CatalogoBean<Integer>> consultarTipoServicio() throws DAOException;
-
+	public List<CatalogoBean<Integer>> getServiceTypeList(Integer applicantAreaId) throws DAOException;
+	
 	/**
 	 * Oficinas
 	 * @return
@@ -55,12 +58,23 @@ public interface CatalogInternalTicketsDao {
 	 * @throws DAOException
 	 */
 	public List<CatalogoBean<Integer>> getEmployeesByGroup(String group) throws DAOException;
-
+	
+	
 	/**
 	 * Estatus de tickets
 	 * @return
 	 * @throws DAOException
 	 */
 	public List<CatalogoBean<Integer>> consultarEstatusTicket() throws DAOException;
+	
+	
+	/**
+	 * Grupo de usuarios enterados.
+	 * @param applicantAreaIdParam
+	 * @param serviceTypeIdParam
+	 * @return
+	 * @throws DAOException
+	 */
+	public List<CatalogoBean<Integer>> getAdviceUsers(Integer applicantAreaIdParam, Integer serviceTypeIdParam) throws DAOException;	
 	
 }

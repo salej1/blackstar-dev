@@ -5,6 +5,7 @@
 package com.bloom.services;
 
 import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.bloom.common.bean.CatalogoBean;
@@ -42,6 +43,7 @@ public class CatalogServiceImpl implements CatalogService {
             throw new ServiceException(ERROR_CONSULTA_CAT, e);
         }
     }
+	
 
 
 
@@ -57,9 +59,9 @@ public class CatalogServiceImpl implements CatalogService {
             throw new ServiceException(ERROR_CONSULTA_CAT, e);
         }
     }
+	
 
-
-
+	
 	@Override
     public List<CatalogoBean<Integer>> consultarAreaSolicitante()
             throws ServiceException {
@@ -73,14 +75,14 @@ public class CatalogServiceImpl implements CatalogService {
         }
     }
 
-
-
+	
+	
 	@Override
-    public List<CatalogoBean<Integer>> consultarTipoServicio()
+    public List<CatalogoBean<Integer>> getServiceTypeList(Integer applicantAreaId)
             throws ServiceException {
         try {
             
-        	return getCatalogInternalTicketsDao().consultarTipoServicio();
+        	return getCatalogInternalTicketsDao().getServiceTypeList(applicantAreaId);
             
         } catch (DAOException e) {
             
@@ -101,8 +103,8 @@ public class CatalogServiceImpl implements CatalogService {
             throw new ServiceException(ERROR_CONSULTA_CAT, e);
         }
     }
-
-
+	
+	
 	@Override
     public List<CatalogoBean<Integer>> empleadosPorGrupo(String grupo)
             throws ServiceException {
@@ -115,8 +117,7 @@ public class CatalogServiceImpl implements CatalogService {
             throw new ServiceException(ERROR_CONSULTA_CAT, e);
         }
     }
-
-
+	
 	@Override
     public List<CatalogoBean<Integer>> consultarEstatusTicket()
             throws ServiceException {
@@ -129,6 +130,7 @@ public class CatalogServiceImpl implements CatalogService {
             throw new ServiceException(ERROR_CONSULTA_CAT, e);
         }
     }	
+	
 	
     /**
 	 * @return the catalogInternalTicketsDao

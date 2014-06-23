@@ -44,11 +44,11 @@ public class CatalogController extends AbstractController {
 		RespuestaJsonBean respuesta = new RespuestaJsonBean();
 
 		Long userId = (long)userSession.getUser().getBlackstarUserId();
-		
+
 		List<CatalogoBean<String>> listaProyectos;
 
 		List<CatalogoBean<Integer>> listaAreas;
-		List<CatalogoBean<Integer>> listaServicios;
+		//List<CatalogoBean<Integer>> listaServicios;
 		List<CatalogoBean<Integer>> listaOficinas;
 
 		HashMap<String, List<CatalogoBean<String>>> listaResponse = new HashMap<String, List<CatalogoBean<String>>>();
@@ -58,13 +58,13 @@ public class CatalogController extends AbstractController {
 
 			listaProyectos = catalogService.consultarProyectos();
 			listaAreas = catalogService.consultarAreaSolicitante();
-			listaServicios = catalogService.consultarTipoServicio();
+			//listaServicios = catalogService.consultarTipoServicio();
 			listaOficinas = catalogService.consultarOficinas();
 
 			listaResponse.put("listaProyectos", listaProyectos);
 
 			listaResponse2.put("listaAreas", listaAreas);
-			listaResponse2.put("listaServicios", listaServicios);
+			//listaResponse2.put("listaServicios", listaServicios);
 			listaResponse2.put("listaOficinas", listaOficinas);
 
 			respuesta.setListaMap(listaResponse);
@@ -113,6 +113,34 @@ public class CatalogController extends AbstractController {
 
 		return respuesta;
 	}
+
+	
+	@RequestMapping(value = "/getServiceTypeList.do", method = RequestMethod.POST, produces = "application/json")
+	@ResponseBody
+	RespuestaJsonBean getServiceTypeList(ModelMap model,
+			@RequestParam(value = "applicantAreaId", required = true) final Integer applicantAreaId) {
+
+		RespuestaJsonBean respuesta = new RespuestaJsonBean();
+
+		List<CatalogoBean<Integer>> listServiceType;
+
+		try {
+		
+			listServiceType = catalogService.getServiceTypeList(applicantAreaId);
+			respuesta.setLista(listServiceType);
+			
+			respuesta.setEstatus("ok");
+
+		} catch (ServiceException se) {
+			Logger.Log(LogLevel.ERROR, se.getMessage(), se);
+			respuesta.setEstatus("error");
+			respuesta.setMensaje(se.getMessage());
+		}
+
+		return respuesta;
+	}
+	
+	
 	
 	@RequestMapping(value = "/getDataHistorico.do", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody

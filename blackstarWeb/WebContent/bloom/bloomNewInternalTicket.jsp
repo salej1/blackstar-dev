@@ -8,9 +8,9 @@
 <html>
 	<head>
 	<title>Ticket Interno</title>
-
+	
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-
+		
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/960.css" type="text/css" media="screen" charset="utf-8" />
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/template.css" type="text/css" media="screen" charset="utf-8" />
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/colour.css" type="text/css" media="screen" charset="utf-8" />
@@ -31,8 +31,8 @@
     }
 
 	$(document).ready(function () {
-
-
+			
+	
 	});
 
 	function isNumberKey(evt){
@@ -44,12 +44,12 @@
 	}
 
 	</script> 
-
-
+	
+		 
 	</head>
 	<body>
 		<div id="contentInternalTicket" class="container_16 clearfix">
-
+					
 			<div class="grid_16">					
 					<div class="box">
 						<h2>TICKET INTERNO</h2>
@@ -75,7 +75,7 @@
 									</select>
 								</td>
 							</tr>
-
+							
 							<tr>
 								<td>Tipo</td>
 								<td>
@@ -88,9 +88,9 @@
 								<td><input id="fldLimite" type="text" style="width:95%;" readOnly="true"/></td>
 							</tr>
 							<tr>
-								<td>Descripcion de la solicitud</td>
+								<td><span id="descrLabel" >Descripci&oacute;n de la solicitud</span></td>
 								<td>										
-									<textarea id="fldDescripcion" style="width:100%;height:100%;" rows="15"></textarea>
+									<textarea id="fldDescripcion" style="width:100%;height:100%;" rows="10"></textarea>
 								</td>
 							</tr>
 							<tr>
@@ -103,24 +103,63 @@
 							<tr>
 								<td>Oficina</td>
 								<td>
-
+								
 								<select name="slOficina" id="slOficina" style="width:200px;">
 									</select>
-
+								
 								</td>
 								<!-- <td></td> -->
 							</tr>
+							
+							<tr id="additionalDataTR1">
+								<td><span id="additionalDataLabel1">Datos Adicionales 1</span></td>
+								<td>										
+									<textarea id="additionalData1" style="width:100%;height:100%;" rows="2"></textarea>
+								</td>
+							</tr>
+
+							<tr id="additionalDataTR2">
+								<td><span id="additionalDataLabel2">Datos Adicionales 1</span></td>
+								<td>										
+									<textarea id="additionalData2" style="width:100%;height:100%;" rows="2"></textarea>
+								</td>
+							</tr>
+
+							<tr id="additionalDataTR3">
+								<td><span id="additionalDataLabel3">Datos Adicionales 1</span></td>
+								<td>										
+									<textarea id="additionalData3" style="width:100%;height:100%;" rows="2"></textarea>
+								</td>
+							</tr>
+
+							<tr id="additionalDataTR4">
+								<td><span id="additionalDataLabel4">Datos Adicionales 1</span></td>
+								<td>										
+									<textarea id="additionalData4" style="width:100%;height:100%;" rows="2"></textarea>
+								</td>
+							</tr>
+
+							<tr id="additionalDataTR5">
+								<td><span id="additionalDataLabel5">Datos Adicionales 1</span></td>
+								<td>										
+									<textarea id="additionalData5" style="width:100%;height:100%;" rows="2"></textarea>
+								</td>
+							</tr>
+							
+							
+							
+							
 							</table>
 					</div>
 			</div>
-
-
+			
+			
 				<div class="grid_15">
 					<div class="box">
 						<h2>Archivos adjuntos</h2>
 							<div id="legend">Por favor proporcione los siguientes archivos:</div>
 							<ol id="attItems">
-
+							
 							</ol>
 							<table id="attachments">
 								<thead>
@@ -155,9 +194,9 @@
 							</table>
 					</div>					
 				</div>		
-
-
-
+				
+				
+				
 			<!-- Attachment Img section -->
 				<div id="attachmentImgDlg" title="Adjuntar archivo">
 					<p></p>
@@ -167,7 +206,7 @@
 					<select name="slDocumento" id="slDocumento"></select>
 
 				</div>
-
+		
 		</div>
 	</body>
 </html>

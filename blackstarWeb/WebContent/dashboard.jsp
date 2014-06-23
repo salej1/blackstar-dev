@@ -149,7 +149,7 @@ function getNewInternalTickets(){
 
 <!-- Inicia Contenido De Perfil Sysservicio -->
 
-<c:set var="sysServicio" scope="request" value="${user.belongsToGroup['Implementacion y Servicio']}" />
+	<c:set var="sysServicio" scope="request" value="${user.belongsToGroup['Implementacion y Servicio']}" />
 	<c:if test="${sysServicio == true}">
 
 <!-- Links Para Crear Ordenes De Servicio -->
@@ -209,6 +209,7 @@ function getNewInternalTickets(){
 	
 	<c:if test="${sysHelpDesk == true}">
 	<!-- Fin Contenido De Perfil sysHelpDesk -->
+	
 	
 	<!-- Links Para ver los reportes de Mesa de Ayuda -->
 		<c:import url="bloom/bloomITLinks.jsp"></c:import>

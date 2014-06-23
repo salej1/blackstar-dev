@@ -24,6 +24,7 @@
        <bean id="dsBlackStartProd" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">  
              <property name="driverClassName" value="com.mysql.jdbc.GoogleDriver"/>  
              <property name="url" value="jdbc:google:rdbms://innso-blackstar-dev:innso-blackstar-dev/blackstarDb"/>  
+             <property name="validationQuery" value="SELECT 1"/>
                                         
        </bean>
        

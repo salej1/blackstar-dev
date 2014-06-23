@@ -4,12 +4,18 @@ import java.util.List;
 
 import com.blackstar.model.Followup;
 import com.blackstar.model.User;
-import com.bloom.common.bean.DeliverableTraceBean;
 import com.bloom.common.bean.InternalTicketBean;
 import com.bloom.model.dto.DeliverableFileDTO;
 import com.bloom.model.dto.DeliverableTypeDTO;
 import com.bloom.model.dto.PendingAppointmentsDTO;
 import com.bloom.model.dto.PendingSurveysDTO;
+import com.bloom.model.dto.TicketDetailDTO;
+import com.bloom.model.dto.TicketTeamDTO;
+import com.blackstar.model.Followup;
+import com.blackstar.model.User;
+import com.bloom.common.bean.DeliverableTraceBean;
+import com.bloom.common.bean.InternalTicketBean;
+import com.bloom.model.dto.DeliverableTypeDTO;
 import com.bloom.model.dto.TicketDetailDTO;
 import com.bloom.model.dto.TicketTeamDTO;
 import com.bloom.common.bean.TicketTeamBean;
@@ -88,6 +94,7 @@ public interface InternalTicketsDao {
 	 */
 	public Long registrarDocumentTrace(DeliverableTraceBean document) throws DAOException;
 
+	
 	/**
 	 * Historico de tickets para la vista de  "Mesa de Ayuda"
 	 * @param fechaIni
@@ -96,6 +103,6 @@ public interface InternalTicketsDao {
 	 * @return
 	 * @throws DAOException
 	 */
-	public List<InternalTicketBean> getHistoricalTickets(String startCreationDate, String endCreationDate, Integer idStatusTicket) throws DAOException;
+	public List<InternalTicketBean> getHistoricalTickets(String startCreationDate, String endCreationDate, Integer idStatusTicket) throws DAOException;	
 
 }

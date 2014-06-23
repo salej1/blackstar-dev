@@ -4,11 +4,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 
 import com.blackstar.db.dao.AbstractDAO;
 import com.blackstar.model.Followup;
@@ -26,7 +30,7 @@ import com.bloom.model.dto.TicketTeamDTO;
 import com.bloom.common.bean.TicketTeamBean;
 import com.bloom.common.exception.DAOException;
 import com.bloom.common.utils.DataTypeUtil;
-
+import com.bloom.db.dao.mapper.CatalogoMapper;
 
 @SuppressWarnings("unchecked")
 public class InternalTicketsDaoImpl extends AbstractDAO implements InternalTicketsDao {
@@ -43,96 +47,91 @@ public class InternalTicketsDaoImpl extends AbstractDAO implements InternalTicke
 
 	private static final String EMPTY_CONSULTA = "No se encontraron registros";
 
-  public List<InternalTicketBean> getPendingTickets(){
-	String sqlQuery = "CALL getPendingTickets();";	
-	List<InternalTicketBean> listaTickets = new ArrayList<InternalTicketBean>();	
-	InternalTicketBean ticket = new InternalTicketBean();	
-	return getJdbcTemplate().query(sqlQuery, new InternalTicketMapper());  
-  }
+	public List<InternalTicketBean> getPendingTickets() {
+		String sqlQuery = "CALL getPendingTickets();";
+		List<InternalTicketBean> listaTickets = new ArrayList<InternalTicketBean>();
+		InternalTicketBean ticket = new InternalTicketBean();
+		return getJdbcTemplate().query(sqlQuery, new InternalTicketMapper());
+	}
 
-  public List<TicketDetailDTO> getTicketDetail(Integer ticketId){
-	StringBuilder sqlBuilder = new StringBuilder("CALL GetBloomTicketDetail(?);");
-	return (List<TicketDetailDTO>) getJdbcTemplate().query(sqlBuilder.toString()
-			     , new Object[]{ticketId}, getMapperFor(TicketDetailDTO.class));
-  }
-  
-  public Integer getTicketId(String ticketNumber){
-	StringBuilder sqlBuilder = new StringBuilder("CALL GetBloomTicketId(?);");
-	return getJdbcTemplate().queryForInt(sqlBuilder.toString()
-				                , new Object[]{ticketNumber});
-  }
-  
-  public List<TicketTeamDTO> getTicketTeam(Integer ticketId){
-	StringBuilder sqlBuilder = new StringBuilder("CALL GetBloomTicketTeam(?);");
-	return (List<TicketTeamDTO>) getJdbcTemplate().query(sqlBuilder.toString()
-			     , new Object[]{ticketId}, getMapperFor(TicketTeamDTO.class));
-  }
-  
-  public List<User> getAsigneedUser(Integer ticketId){
-	StringBuilder sqlBuilder = new StringBuilder("CALL GetBloomTicketResponsible(?);");
-	return (List<User>) getJdbcTemplate().query(sqlBuilder.toString()
-				     , new Object[]{ticketId}, getMapperFor(User.class));
-  }
-  
-  public List<User> getResponseUser(Integer ticketId){
-	StringBuilder sqlBuilder = new StringBuilder("CALL GetBloomTicketUserForResponse(?);");
-	return (List<User>) getJdbcTemplate().query(sqlBuilder.toString()
-			     , new Object[]{ticketId}, getMapperFor(User.class));
-  }
-  
-  public void addFollow(Integer ticketId, Integer userId, String comment){
-	 StringBuilder sqlBuilder = new StringBuilder("CALL AddFollowUpToBloomTicket(?, ?, ?);");
-	 getJdbcTemplate().update(sqlBuilder.toString(), new Object[]{ticketId, userId, comment});
-  }
-  
-  public void addTicketTeam(Integer ticketId, Integer roleId, Integer userId){
-     StringBuilder sqlBuilder = new StringBuilder("CALL UpsertBloomTicketTeam(?, ?, ?);");
-	 getJdbcTemplate().update(sqlBuilder.toString(), new Object[]{ticketId, roleId, userId});
-  }
-  
-  public List<Followup> getFollowUps(Integer ticketId){
-	StringBuilder sqlBuilder = new StringBuilder("CALL GetBloomFollowUpByTicket(?);");
-	return (List<Followup>) getJdbcTemplate().query(sqlBuilder.toString()
-		        , new Object[]{ticketId}, getMapperFor(Followup.class));
-  }
-  
-  public List<DeliverableTypeDTO> getDeliverableTypes(){
-	StringBuilder sqlBuilder = new StringBuilder("CALL GetBloomDeliverableType();");
-	return (List<DeliverableTypeDTO>) getJdbcTemplate().query(sqlBuilder.toString()
-			                             , getMapperFor(DeliverableTypeDTO.class));
-  }
-  
-  
-  public List<PendingAppointmentsDTO> getPendingAppointments(){
-    StringBuilder sqlBuilder = new StringBuilder("CALL getBloomPendingAppointments();");
-	return (List<PendingAppointmentsDTO>) getJdbcTemplate().query(sqlBuilder.toString()
-				                             , getMapperFor(DeliverableTypeDTO.class));
-  }
-  
-  public List<PendingSurveysDTO> getPendingSurveys(){
-	StringBuilder sqlBuilder = new StringBuilder("CALL GetBloomPendingSurveys();");
-	return (List<PendingSurveysDTO>) getJdbcTemplate().query(sqlBuilder.toString()
-					                    , getMapperFor(DeliverableTypeDTO.class));
-  }
-  
-  
-  public void addDeliverableTrace(Integer ticketId, Integer deliverableTypeId){
-	StringBuilder sqlBuilder = new StringBuilder("CALL AddBloomDelivarable(?, ?);");
-	getJdbcTemplate().update(sqlBuilder.toString(), new Object[]{ticketId
-			                                       , deliverableTypeId});
-  }
-  
-  public void closeTicket(Integer ticketId, Integer userId){
-	StringBuilder sqlBuilder = new StringBuilder("CALL CloseBloomTicket(?, ?);");
-	getJdbcTemplate().update(sqlBuilder.toString(), new Object[]{ticketId
-				                                              , userId});
-  } 
+	public List<TicketDetailDTO> getTicketDetail(Integer ticketId) {
+		StringBuilder sqlBuilder = new StringBuilder(
+				"CALL GetBloomTicketDetail(?);");
+		return (List<TicketDetailDTO>) getJdbcTemplate().query(
+				sqlBuilder.toString(), new Object[] { ticketId },
+				getMapperFor(TicketDetailDTO.class));
+	}
 
-  public List<DeliverableFileDTO> getTicketDeliverable(Integer ticketId){
-	StringBuilder sqlBuilder = new StringBuilder("CALL GetBloomTicketDeliverable(?);");
-	return (List<DeliverableFileDTO>) getJdbcTemplate().query(sqlBuilder.toString()
-				 , new Object[]{ticketId}, getMapperFor(DeliverableFileDTO.class));
-  }
+	public Integer getTicketId(String ticketNumber) {
+		StringBuilder sqlBuilder = new StringBuilder(
+				"CALL GetBloomTicketId(?);");
+		return getJdbcTemplate().queryForInt(sqlBuilder.toString(),
+				new Object[] { ticketNumber });
+	}
+
+	public List<TicketTeamDTO> getTicketTeam(Integer ticketId) {
+		StringBuilder sqlBuilder = new StringBuilder(
+				"CALL GetBloomTicketTeam(?);");
+		return (List<TicketTeamDTO>) getJdbcTemplate().query(
+				sqlBuilder.toString(), new Object[] { ticketId },
+				getMapperFor(TicketTeamDTO.class));
+	}
+
+	public List<User> getAsigneedUser(Integer ticketId) {
+		StringBuilder sqlBuilder = new StringBuilder(
+				"CALL GetBloomTicketResponsible(?);");
+		return (List<User>) getJdbcTemplate().query(sqlBuilder.toString(),
+				new Object[] { ticketId }, getMapperFor(User.class));
+	}
+
+	public List<User> getResponseUser(Integer ticketId) {
+		StringBuilder sqlBuilder = new StringBuilder(
+				"CALL GetBloomTicketUserForResponse(?);");
+		return (List<User>) getJdbcTemplate().query(sqlBuilder.toString(),
+				new Object[] { ticketId }, getMapperFor(User.class));
+	}
+
+	public void addFollow(Integer ticketId, Integer userId, String comment) {
+		StringBuilder sqlBuilder = new StringBuilder(
+				"CALL AddFollowUpToBloomTicket(?, ?, ?);");
+		getJdbcTemplate().update(sqlBuilder.toString(),
+				new Object[] { ticketId, userId, comment });
+	}
+
+	public void addTicketTeam(Integer ticketId, Integer roleId, Integer userId) {
+		StringBuilder sqlBuilder = new StringBuilder(
+				"CALL UpsertBloomTicketTeam(?, ?, ?);");
+		getJdbcTemplate().update(sqlBuilder.toString(),
+				new Object[] { ticketId, roleId, userId });
+	}
+
+	public List<Followup> getFollowUps(Integer ticketId) {
+		StringBuilder sqlBuilder = new StringBuilder(
+				"CALL GetBloomFollowUpByTicket(?);");
+		return (List<Followup>) getJdbcTemplate().query(sqlBuilder.toString(),
+				new Object[] { ticketId }, getMapperFor(Followup.class));
+	}
+
+	public List<DeliverableTypeDTO> getDeliverableTypes() {
+		StringBuilder sqlBuilder = new StringBuilder(
+				"CALL GetBloomDeliverableType();");
+		return (List<DeliverableTypeDTO>) getJdbcTemplate().query(
+				sqlBuilder.toString(), getMapperFor(DeliverableTypeDTO.class));
+	}
+
+	public void addDeliverableTrace(Integer ticketId, Integer deliverableTypeId) {
+		StringBuilder sqlBuilder = new StringBuilder(
+				"CALL AddBloomDelivarable(?, ?);");
+		getJdbcTemplate().update(sqlBuilder.toString(),
+				new Object[] { ticketId, deliverableTypeId });
+	}
+
+	public void closeTicket(Integer ticketId, Integer userId) {
+		StringBuilder sqlBuilder = new StringBuilder(
+				"CALL CloseBloomTicket(?, ?);");
+		getJdbcTemplate().update(sqlBuilder.toString(),
+				new Object[] { ticketId, userId });
+	}
 
 	private static final class InternalTicketMapper implements
 			RowMapper<InternalTicketBean> {
@@ -170,27 +169,27 @@ public class InternalTicketsDaoImpl extends AbstractDAO implements InternalTicke
 		}
 	}
 
+	@Override
+	public String generarTicketNumber() throws DAOException {
 
-    @Override
-    public String generarTicketNumber() throws DAOException {
+		String ticketNumber = "";
 
-        String ticketNumber="";
+		try {
 
-        try {
-        	
-        	ticketNumber = getJdbcTemplate().queryForObject(QUERY_TICKET_NUMBER, String.class);
+			ticketNumber = getJdbcTemplate().queryForObject(
+					QUERY_TICKET_NUMBER, String.class);
 
-            return ticketNumber;
+			return ticketNumber;
 
-        } catch (DataAccessException e) {
-        	Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
-            throw new DAOException("Error al generar numero de ticket", e);
-        }
-    }	
-    
-    /**
-     * Tickets asignados a un perfil y usuario
-     */
+		} catch (DataAccessException e) {
+			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
+			throw new DAOException("Error al generar numero de ticket", e);
+		}
+	}
+
+	/**
+	 * Tickets asignados a un perfil y usuario
+	 */
 	@Override
 	public List<InternalTicketBean> getPendingTickets(Long userId)
 			throws DAOException {
@@ -207,8 +206,8 @@ public class InternalTicketsDaoImpl extends AbstractDAO implements InternalTicke
 
 		} catch (EmptyResultDataAccessException e) {
 			Logger.Log(LogLevel.WARNING, EMPTY_CONSULTA, e);
-			System.out.println("Error => " + e);
-			return Collections.emptyList();
+			listaRegistros = new ArrayList<InternalTicketBean>();
+			return listaRegistros;
 		} catch (DataAccessException e) {
 			System.out.println("Error => " + e);
 			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
@@ -217,16 +216,15 @@ public class InternalTicketsDaoImpl extends AbstractDAO implements InternalTicke
 
 	}
 
-
 	/**
 	 * Vista para el coordinador
+	 * 
 	 * @param userId
 	 * @return
 	 * @throws DAOException
 	 */
 	@Override
-	public List<InternalTicketBean> getTickets(Long userId)
-			throws DAOException {
+	public List<InternalTicketBean> getTickets(Long userId) throws DAOException {
 
 		List<InternalTicketBean> listaRegistros = new ArrayList<InternalTicketBean>();
 
@@ -240,7 +238,9 @@ public class InternalTicketsDaoImpl extends AbstractDAO implements InternalTicke
 
 		} catch (EmptyResultDataAccessException e) {
 			Logger.Log(LogLevel.WARNING, EMPTY_CONSULTA, e);
-			return Collections.emptyList();
+			listaRegistros = new ArrayList<InternalTicketBean>();
+			return listaRegistros;
+
 		} catch (DataAccessException e) {
 			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 			throw new DAOException(ERROR_CONSULTA, e);
@@ -307,18 +307,16 @@ public class InternalTicketsDaoImpl extends AbstractDAO implements InternalTicke
 				 ticket.getReponseInTime()
 			};		
 
-		idTicket = getJdbcTemplate().queryForInt(sqlBuilder.toString() ,args);
-
+			idTicket = getJdbcTemplate().queryForInt(sqlBuilder.toString(),
+					args);
 
 		} catch (Exception e) {
 			Logger.Log(LogLevel.WARNING, EMPTY_CONSULTA, e);
-			throw new DAOException("Error en DAO");
+			throw new DAOException("Error en DAO:"+e.getMessage());
 		}
 
-		return (long)idTicket;
+		return (long) idTicket;
 	}
-
-
 
 	@Override
 	public Long registrarDocumentTrace(DeliverableTraceBean document)
@@ -332,26 +330,20 @@ public class InternalTicketsDaoImpl extends AbstractDAO implements InternalTicke
 
 		try {
 
-		Object[] args = new Object []{
-				document.getTicketId(),
-				document.getDeliverableId(),
-				document.getDelivered(),
-				document.getDeliverableDate()
-			};		
+			Object[] args = new Object[] { document.getTicketId(),
+					document.getDeliverableId(), document.getDelivered(),
+					document.getDeliverableDate() };
 
-		idTicket = getJdbcTemplate().queryForInt(sqlBuilder.toString() ,args);
-
+			idTicket = getJdbcTemplate().queryForInt(sqlBuilder.toString(),
+					args);
 
 		} catch (Exception e) {
 			Logger.Log(LogLevel.WARNING, EMPTY_CONSULTA, e);
-			throw new DAOException("Error en DAO");
+			throw new DAOException("Error en DAO:"+e.getMessage());
 		}
 
-		return (long)idTicket;
+		return (long) idTicket;
 	}
-
-
-
 
 	@Override
 	public Long registrarMiembroTicket(TicketTeamBean teamMember)
@@ -365,21 +357,16 @@ public class InternalTicketsDaoImpl extends AbstractDAO implements InternalTicke
 
 		try {
 
-		Object[] args = new Object []{
-				teamMember.getIdTicket(),
-				teamMember.getWorkerRoleId(),
-				teamMember.getUserId()
-			};		
+			Object[] args = new Object[] { teamMember.getIdTicket(),
+					teamMember.getWorkerRoleId(), teamMember.getUserId() };
 
-		idTeamMemberTicket = getJdbcTemplate().queryForInt(sqlBuilder.toString() ,args);
-
+			idTeamMemberTicket = getJdbcTemplate().queryForInt(
+					sqlBuilder.toString(), args);
 
 		} catch (Exception e) {
 			Logger.Log(LogLevel.WARNING, EMPTY_CONSULTA, e);
-			throw new DAOException("Error en DAO");
+			throw new DAOException("Error en DAO:"+e.getMessage());
 		}
 
-		return (long)idTeamMemberTicket;
+		return (long) idTeamMemberTicket;
 	}
-
-}
