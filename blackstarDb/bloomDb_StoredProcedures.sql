@@ -33,7 +33,7 @@
 -- 23    16/05/2014  OMA	bloomDb.GetBloomNumberTicketsByArea
 -- 24    16/05/2014  OMA	bloomDb.GetBloomUnsatisfactoryTicketsByUserByArea
 -- 25    16/05/2014  OMA	bloomDb.GetBloomHistoricalTickets
--- 26    13/06/2014  OMA	bloomDb.getBloomAdvisedUsers
+-- 26    22/06/2014  OMA	bloomDb.getBloomAdvisedUsers
 --
 -- ------------------------------------------------------------------------------
 
@@ -248,11 +248,57 @@ CREATE PROCEDURE blackstarDb.AddInternalTicket (
   createdBy Varchar(50),
   createdByUsr Int(11),
   reponseInTime Tinyint,
-  additionalInformation1 Varchar(2500),
-  additionalInformation2 Varchar(2500),
-  additionalInformation3 Varchar(2500),
-  additionalInformation4 Varchar(2500),
-  additionalInformation5 Varchar(2500)
+	purposeVisitVL Varchar(2500),
+	purposeVisitVISAS Varchar(2500),
+	draftCopyDiagramVED Varchar(2500),
+	formProjectVED Varchar(2500),
+	observationsVEPI Varchar(2500),
+	draftCopyPlanVEPI Varchar(2500),
+	formProjectVEPI Varchar(2500),
+	observationsVRCC Varchar(2500),
+	checkListVRCC Varchar(2500),
+	formProjectVRCC Varchar(2500),
+	questionVPT Varchar(2500),
+	observationsVSA Varchar(2500),
+	formProjectVSA Varchar(2500),
+	productInformationVSP Varchar(2500),
+	observationsISED Varchar(2500),
+	draftCopyPlanISED Varchar(2500),
+	observationsISRC Varchar(2500),
+	attachmentsISRC Varchar(2500),
+	apparatusTraceISSM Varchar(2500),
+	observationsISSM Varchar(2500),
+	questionISSM Varchar(2500),
+	ticketISRPR Varchar(2500),
+	modelPartISRPR Varchar(2500),
+	observationsISRPR Varchar(2500),
+	productInformationISSPC Varchar(2500),
+	positionPGCAS Varchar(2500),
+	collaboratorPGCAS Varchar(2500),
+	justificationPGCAS Varchar(2500),
+	salaryPGCAS Varchar(2500),
+	positionPGCCP Varchar(2500),
+	commentsPGCCP Varchar(2500),
+	developmentPlanPGCCP Varchar(2500),
+	targetPGCCP Varchar(2500),
+	salaryPGCCP Varchar(2500),
+	positionPGCNC Varchar(2500),
+	developmentPlanPGCNC Varchar(2500),
+	targetPGCNC Varchar(2500),
+	salaryPGCNC Varchar(2500),
+	justificationPGCNC Varchar(2500),
+	positionPGCF Varchar(2500),
+	collaboratorPGCF Varchar(2500),
+	justificationPGCF Varchar(2500),
+	positionPGCAA Varchar(2500),
+	collaboratorPGCAA Varchar(2500),
+	justificationPGCAA Varchar(2500),
+	requisitionFormatGRC Varchar(2500),
+	linkDocumentGM Varchar(2500),
+	suggestionGSM Varchar(2500),
+	documentCodeGSM Varchar(2500),
+	justificationGSM Varchar(2500),
+	problemDescriptionGPTR Varchar(2500)
   )
 BEGIN
 	INSERT INTO bloomTicket
@@ -747,7 +793,7 @@ BEGIN
 select u.blackstarUserId as id,u.name name, u.email email from blackstarUser u
 inner join blackstarUser_userGroup ug on (u.blackstarUserId=ug.blackstarUserId)
 inner join userGroup g on (g.userGroupId=ug.userGroupId)
-inner join bloomAdvisedGroup ag on (ag.userGroupId=ug.userGroupId)
+inner join bloomAdvisedGroup ag on (ag.userGroup=g.externalId)
 where ag.applicantAreaId=applicantAreaIdParam
 and ag.serviceTypeId=serviceTypeIdParam;
 	

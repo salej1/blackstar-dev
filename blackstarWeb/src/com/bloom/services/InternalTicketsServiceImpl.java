@@ -144,8 +144,6 @@ public class InternalTicketsServiceImpl extends AbstractService
     	
     	List<TicketTeamBean> miembros= new ArrayList<TicketTeamBean>();
     	
-    	
-    	
         try {
         	Long idTicket= getInternalTicketsDao().registrarNuevoTicket(ticket);
 

@@ -371,11 +371,59 @@ public class InternalTicketsController extends AbstractController {
 			@RequestParam(value = "slAreaSolicitanteLabel", required = true) String slAreaSolicitanteLabel,
 			@RequestParam(value = "slTipoServicioLabel", required = true) String slTipoServicioLabel,
 			@RequestParam(value = "slOficinaLabel", required = true) String slOficinaLabel,
-			@RequestParam(value = "additionalData1", required = true) String additionalData1,
-			@RequestParam(value = "additionalData2", required = true) String additionalData2,
-			@RequestParam(value = "additionalData3", required = true) String additionalData3,
-			@RequestParam(value = "additionalData4", required = true) String additionalData4,
-			@RequestParam(value = "additionalData5", required = true) String additionalData5
+			
+			@RequestParam(value = "purposeVisitVL", required = true) String purposeVisitVL,
+			@RequestParam(value = "purposeVisitVISAS", required = true) String purposeVisitVISAS,
+			@RequestParam(value = "draftCopyDiagramVED", required = true) String draftCopyDiagramVED,
+			@RequestParam(value = "formProjectVED", required = true) String formProjectVED,
+			@RequestParam(value = "observationsVEPI", required = true) String observationsVEPI,
+			@RequestParam(value = "draftCopyPlanVEPI", required = true) String draftCopyPlanVEPI,
+			@RequestParam(value = "formProjectVEPI", required = true) String formProjectVEPI,
+			@RequestParam(value = "observationsVRCC", required = true) String observationsVRCC,
+			@RequestParam(value = "checkListVRCC", required = true) String checkListVRCC,
+			@RequestParam(value = "formProjectVRCC", required = true) String formProjectVRCC,
+			@RequestParam(value = "questionVPT", required = true) String questionVPT,
+			@RequestParam(value = "observationsVSA", required = true) String observationsVSA,
+			@RequestParam(value = "formProjectVSA", required = true) String formProjectVSA,
+			@RequestParam(value = "productInformationVSP", required = true) String productInformationVSP,
+			@RequestParam(value = "observationsISED", required = true) String observationsISED,
+			@RequestParam(value = "draftCopyPlanISED", required = true) String draftCopyPlanISED,
+			@RequestParam(value = "observationsISRC", required = true) String observationsISRC,
+			@RequestParam(value = "attachmentsISRC", required = true) String attachmentsISRC,
+			@RequestParam(value = "apparatusTraceISSM", required = true) String apparatusTraceISSM,
+			@RequestParam(value = "observationsISSM", required = true) String observationsISSM,
+			@RequestParam(value = "questionISSM", required = true) String questionISSM,
+			@RequestParam(value = "ticketISRPR", required = true) String ticketISRPR,
+			@RequestParam(value = "modelPartISRPR", required = true) String modelPartISRPR,
+			@RequestParam(value = "observationsISRPR", required = true) String observationsISRPR,
+			@RequestParam(value = "productInformationISSPC", required = true) String productInformationISSPC,
+			@RequestParam(value = "positionPGCAS", required = true) String positionPGCAS,
+			@RequestParam(value = "collaboratorPGCAS", required = true) String collaboratorPGCAS,
+			@RequestParam(value = "justificationPGCAS", required = true) String justificationPGCAS,
+			@RequestParam(value = "salaryPGCAS", required = true) String salaryPGCAS,
+			@RequestParam(value = "positionPGCCP", required = true) String positionPGCCP,
+			@RequestParam(value = "commentsPGCCP", required = true) String commentsPGCCP,
+			@RequestParam(value = "developmentPlanPGCCP", required = true) String developmentPlanPGCCP,
+			@RequestParam(value = "targetPGCCP", required = true) String targetPGCCP,
+			@RequestParam(value = "salaryPGCCP", required = true) String salaryPGCCP,
+			@RequestParam(value = "positionPGCNC", required = true) String positionPGCNC,
+			@RequestParam(value = "developmentPlanPGCNC", required = true) String developmentPlanPGCNC,
+			@RequestParam(value = "targetPGCNC", required = true) String targetPGCNC,
+			@RequestParam(value = "salaryPGCNC", required = true) String salaryPGCNC,
+			@RequestParam(value = "justificationPGCNC", required = true) String justificationPGCNC,
+			@RequestParam(value = "positionPGCF", required = true) String positionPGCF,
+			@RequestParam(value = "collaboratorPGCF", required = true) String collaboratorPGCF,
+			@RequestParam(value = "justificationPGCF", required = true) String justificationPGCF,
+			@RequestParam(value = "positionPGCAA", required = true) String positionPGCAA,
+			@RequestParam(value = "collaboratorPGCAA", required = true) String collaboratorPGCAA,
+			@RequestParam(value = "justificationPGCAA", required = true) String justificationPGCAA,
+			@RequestParam(value = "requisitionFormatGRC", required = true) String requisitionFormatGRC,
+			@RequestParam(value = "linkDocumentGM", required = true) String linkDocumentGM,
+			@RequestParam(value = "suggestionGSM", required = true) String suggestionGSM,
+			@RequestParam(value = "documentCodeGSM", required = true) String documentCodeGSM,
+			@RequestParam(value = "justificationGSM", required = true) String justificationGSM,
+			@RequestParam(value = "problemDescriptionGPTR", required = true) String problemDescriptionGPTR	
+			
 			) {
 
 
@@ -407,11 +455,57 @@ public class InternalTicketsController extends AbstractController {
 			ticket.setServiceTypeDescr(slTipoServicioLabel);
 			ticket.setOfficeName(slOficinaLabel);
 
-			ticket.setAdditionalData1(additionalData1);
-			ticket.setAdditionalData2(additionalData2);
-			ticket.setAdditionalData3(additionalData3);
-			ticket.setAdditionalData4(additionalData4);
-			ticket.setAdditionalData5(additionalData5);
+			ticket.setPurposeVisitVL(purposeVisitVL);
+			ticket.setPurposeVisitVISAS(purposeVisitVISAS);
+			ticket.setDraftCopyDiagramVED(draftCopyDiagramVED);
+			ticket.setFormProjectVED(formProjectVED);
+			ticket.setObservationsVEPI(observationsVEPI);
+			ticket.setDraftCopyPlanVEPI(draftCopyPlanVEPI);
+			ticket.setFormProjectVEPI(formProjectVEPI);
+			ticket.setObservationsVRCC(observationsVRCC);
+			ticket.setCheckListVRCC(checkListVRCC);
+			ticket.setFormProjectVRCC(formProjectVRCC);
+			ticket.setQuestionVPT(questionVPT);
+			ticket.setObservationsVSA(observationsVSA);
+			ticket.setFormProjectVSA(formProjectVSA);
+			ticket.setProductInformationVSP(productInformationVSP);
+			ticket.setObservationsISED(observationsISED);
+			ticket.setDraftCopyPlanISED(draftCopyPlanISED);
+			ticket.setObservationsISRC(observationsISRC);
+			ticket.setAttachmentsISRC(attachmentsISRC);
+			ticket.setApparatusTraceISSM(apparatusTraceISSM);
+			ticket.setObservationsISSM(observationsISSM);
+			ticket.setQuestionISSM(questionISSM);
+			ticket.setTicketISRPR(ticketISRPR);
+			ticket.setModelPartISRPR(modelPartISRPR);
+			ticket.setObservationsISRPR(observationsISRPR);
+			ticket.setProductInformationISSPC(productInformationISSPC);
+			ticket.setPositionPGCAS(positionPGCAS);
+			ticket.setCollaboratorPGCAS(collaboratorPGCAS);
+			ticket.setJustificationPGCAS(justificationPGCAS);
+			ticket.setSalaryPGCAS(salaryPGCAS);
+			ticket.setPositionPGCCP(positionPGCCP);
+			ticket.setCommentsPGCCP(commentsPGCCP);
+			ticket.setDevelopmentPlanPGCCP(developmentPlanPGCCP);
+			ticket.setTargetPGCCP(targetPGCCP);
+			ticket.setSalaryPGCCP(salaryPGCCP);
+			ticket.setPositionPGCNC(positionPGCNC);
+			ticket.setDevelopmentPlanPGCNC(developmentPlanPGCNC);
+			ticket.setTargetPGCNC(targetPGCNC);
+			ticket.setSalaryPGCNC(salaryPGCNC);
+			ticket.setJustificationPGCNC(justificationPGCNC);
+			ticket.setPositionPGCF(positionPGCF);
+			ticket.setCollaboratorPGCF(collaboratorPGCF);
+			ticket.setJustificationPGCF(justificationPGCF);
+			ticket.setPositionPGCAA(positionPGCAA);
+			ticket.setCollaboratorPGCAA(collaboratorPGCAA);
+			ticket.setJustificationPGCAA(justificationPGCAA);
+			ticket.setRequisitionFormatGRC(requisitionFormatGRC);
+			ticket.setLinkDocumentGM(linkDocumentGM);
+			ticket.setSuggestionGSM(suggestionGSM);
+			ticket.setDocumentCodeGSM(documentCodeGSM);
+			ticket.setJustificationGSM(justificationGSM);
+			ticket.setProblemDescriptionGPTR(problemDescriptionGPTR);
 
 			internalTicketsService.validarNuevoTicket(ticket);
 
