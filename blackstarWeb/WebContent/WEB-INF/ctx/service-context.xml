@@ -82,17 +82,6 @@
       <property name="dao" ref="internatTicketsKPIDao" />
   </bean>
    
-
-  <bean id="catalogService" class="com.bloom.services.CatalogServiceImpl" parent="abstractService">
-      <property name="catalogInternalTicketsDao" ref="catalogInternalTicketsDao" />
-  </bean>
-  
-
-  <bean id="reportsTicketsService" class="com.bloom.services.ReportsTicketsServiceImpl" parent="abstractService">
-      <property name="reportsTicketsDao" ref="reportsTicketsDao" />
-  </bean>
-  
-
   <bean id="catalogService" class="com.bloom.services.CatalogServiceImpl" parent="abstractService">
       <property name="catalogInternalTicketsDao" ref="catalogInternalTicketsDao" />
   </bean>
