@@ -469,7 +469,7 @@
 			</c:if>
 			
 			<!-- Importacion del archivo de OS desde GDrive -->
-			<c:if test="${user.belongsToGroup['Coordinador']} && serviceOrder.hasPdf == 0">
+			<c:if test="${user.belongsToGroup['Coordinador'] && serviceOrder.hasPdf != 1}">
 				<c:import url="osLoader.jsp"></c:import>
 				<script type="text/javascript" charset="utf-8">
 					$(function(){

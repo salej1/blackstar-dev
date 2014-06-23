@@ -93,8 +93,8 @@
       <property name="osService" ref="serviceOrderService" />
    </bean>
    <bean class="com.blackstar.web.controller.ReportController" parent="abstractController">
-       <property name="urlPreffix" value="https://docs.google.com/a/gposac.com.mx/file/d/"/>
-       <property name="urlSufix" value="/edit"/>
+      <!--  <property name="urlPreffix" value="https://docs.google.com/a/gposac.com.mx/viewer?a=v&pid=explorer&srcid="/>
+       <property name="urlSufix" value="/edit"/> -->
    </bean>
    <bean class="com.blackstar.web.controller.ServiceIndicatorsController" parent="abstractController">
        <property name="service" ref="serviceIndicatorsService" />

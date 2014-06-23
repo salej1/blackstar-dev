@@ -55,4 +55,8 @@ public class Globals {
 	  // time format
 	  public static final String DEFAULT_TIME_ZONE = "America/Mexico_City";
 	  public static final String DATE_FORMAT_PATTERN = "dd/MM/yyyy hh:mm:ss a";
+	  
+	  // Google Drive
+	  public static final String GOOGLE_DRIVE_URL_PREFIX = "https://docs.google.com/a/gposac.com.mx/viewer?a=v&pid=explorer&srcid=";
+	  public static final String GOOGLE_DRIVE_URL_SUFIX = ""; //"/edit";
 }

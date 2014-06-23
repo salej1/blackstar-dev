@@ -18,8 +18,8 @@ import com.blackstar.web.AbstractController;
 @SessionAttributes({Globals.SESSION_KEY_PARAM})
 public class ReportController extends AbstractController {
 	
-  private String urlPreffix = null;
-  private String urlSufix = null;
+  private String urlPreffix = Globals.GOOGLE_DRIVE_URL_PREFIX;
+  private String urlSufix = Globals.GOOGLE_DRIVE_URL_SUFIX;
   
   public void setUrlSufix(String urlSufix) {
 	this.urlSufix = urlSufix;

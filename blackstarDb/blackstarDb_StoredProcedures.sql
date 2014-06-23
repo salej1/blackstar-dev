@@ -15,13 +15,13 @@
 -- 44	04/06/2014	SAG 	Se modifica:
 --                              blackstarDb.GetAllServiceOrders
 -- -----------------------------------------------------------------------------
--- 45	10/06/2014	DCB 	Se modifica:
+-- 45	10/06/2014	SAG 	Se modifica:
 --                              blackstarDb.GetTicketsKPI
 -- -----------------------------------------------------------------------------
--- 46	13/06/2014	DCB 	Se modifica:
+-- 46	13/06/2014	SAG 	Se modifica:
 --                              blackstarDb.GetProjectsKPI
 -- -----------------------------------------------------------------------------
--- 47	15/06/2014	DCB 	Se modifica:
+-- 47	15/06/2014	SAG 	Se modifica:
 --                              blackstarDb.GetProjectsKPI
 --								blackstarDb.AddSurveyService
 -- -----------------------------------------------------------------------------
@@ -767,7 +767,7 @@ BEGIN
 		'' AS placeHolder,
 		IFNULL(t.ticketNumber, '') AS ticketNumber,
 		st.serviceType AS serviceType,
-		DATE(so.created) AS created,
+		DATE(so.serviceDate) AS created,
 		p.customer AS customer,
 		et.equipmentType AS equipmentType,
 		p.project AS project,
@@ -3100,7 +3100,7 @@ BEGIN
 		'' AS placeHolder,
 		IFNULL(t.ticketNumber, '') AS ticketNumber,
 		st.serviceType AS serviceType,
-		DATE(so.created) AS created,
+		DATE(so.serviceDate) AS created,
 		p.customer AS customer,
 		et.equipmentType AS equipmentType,
 		p.project AS project,
