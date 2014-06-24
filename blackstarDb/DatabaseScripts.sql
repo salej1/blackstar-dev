@@ -63,6 +63,10 @@
 -- 20	15/06/2014	SAG 	Se agrega surveyScore a serviceOrder
 --							Se incrementa capacidad de namePerson, email, phone en surveyService		
 -- ---------------------------------------------------------------------------
+-- 21 	23/06/2014 	SAG 	Se agrega transferOS a openCustomer - auxiliar para transferencia de OpenCustomer
+--							Se aumenta taman;o de openCustomer.serialNumber
+-- ---------------------------------------------------------------------------
+
 
 use blackstarDb;
 
@@ -75,6 +79,14 @@ BEGIN
 -- -----------------------------------------------------------------------------
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
+
+--  AUMENTANDO CAPACIDAD DE openCustomer.serialNumber
+	ALTER TABLE openCustomer MODIFY serialNumber VARCHAR(255);
+
+--	AGREGANDO transferOS a openCustomer
+	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'openCustomer' AND COLUMN_NAME = 'transferSo') = 0  THEN
+		ALTER TABLE openCustomer ADD transferSo VARCHAR(100);
+	END If;
 
 --	INCREMENTANDO CAPACIDAD DE namePerson, email, phone en surveyService
 	ALTER TABLE surveyService MODIFY namePerson VARCHAR(255);
@@ -4946,6 +4958,9 @@ DELIMITER ;
 -- ---------------------------------------------------------------------------
 -- 8	28/05/2014	SAG 	Se incremeta tamaño de customer (serviceTx)
 -- ---------------------------------------------------------------------------
+-- 9	23/06/2014	SAG		Se agregan campos de detalle del equipo a serviceTx
+-- ---------------------------------------------------------------------------
+
 
 USE blackstarDbTransfer;
 
@@ -4959,6 +4974,23 @@ BEGIN
 -- -----------------------------------------------------------------------------
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
+
+	-- Agregando detalle del equipo a serviceTx
+	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDbTransfer' AND TABLE_NAME = 'serviceTx' AND COLUMN_NAME = 'equipmentTypeId') = 0  THEN
+		ALTER TABLE serviceTx ADD equipmentTypeId CHAR(1);
+	END IF;
+	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDbTransfer' AND TABLE_NAME = 'serviceTx' AND COLUMN_NAME = 'brand') = 0  THEN
+		ALTER TABLE serviceTx ADD brand VARCHAR(100);
+	END IF;
+	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDbTransfer' AND TABLE_NAME = 'serviceTx' AND COLUMN_NAME = 'model') = 0  THEN
+		ALTER TABLE serviceTx ADD model VARCHAR(100);
+	END IF;
+	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDbTransfer' AND TABLE_NAME = 'serviceTx' AND COLUMN_NAME = 'capacity') = 0  THEN
+		ALTER TABLE serviceTx ADD capacity VARCHAR(100);
+	END IF;
+	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDbTransfer' AND TABLE_NAME = 'serviceTx' AND COLUMN_NAME = 'employeeId') = 0  THEN
+		ALTER TABLE serviceTx ADD employeeId VARCHAR(400);
+	END IF;
 
 	-- Aumentando capacidad de campos de serviceTx
 	ALTER TABLE serviceTx MODIFY customer VARCHAR(200);
@@ -5034,6 +5066,8 @@ DROP PROCEDURE blackstarDbTransfer.upgradeSchema;
 -- 4	01/04/2014	SAG		Se implementa modelo STTP para tickets
 -- -----------------------------------------------------------------------------
 -- 5	28/05/2014	SAG		Correcciones de duplicacion en OS
+-- -----------------------------------------------------------------------------
+-- 6	23/06/2014	SAG		Se agrega referencia a open customer para OS importadas
 -- -----------------------------------------------------------------------------
 
 use blackstarDbTransfer;
@@ -5350,11 +5384,28 @@ BEGIN
 	    DELETE FROM blackstarDbTransfer.equipmentUserSync;
     END IF;
 -- -----------------------------------------------------------------------------
-END$$
+
+
+-- -----------------------------------------------------------------------------
+	-- ACTUALIZACION DE OPEN CUSTOMER CON ORDENES DE SERVICIO IMPORTADAS
+	INSERT INTO blackstarDb.openCustomer (customerName, address, equipmentTypeId, brand, model, capacity, serialNumber, contactName, officeId, project, transferSo, created, createdBy, createdByUsr)
+	SELECT customer, address, equipmentTypeId, brand, model, capacity, serialNumber, receivedBy, officeId, project, serviceNumber, now(), 'ServiceOrderMigrationScript', 'sergio.aga'
+	FROM blackstarDbTransfer.serviceTx s
+		INNER JOIN blackstarDb.office o ON o.officeName = s.serviceUnit
+	WHERE serviceNumber IN (
+		SELECT serviceOrderNumber FROM blackstarDb.serviceOrder WHERE policyId is NULL AND openCustomerId is NULL
+		AND createdby = 'ServiceOrderTransfer'
+	);
+
+	UPDATE blackstarDb.serviceOrder so
+		INNER JOIN blackstarDb.openCustomer oc ON oc.transferSo = so.serviceOrderNumber
+	SET so.openCustomerId = oc.openCustomerId
+	WHERE so.policyId IS NULL AND so.openCustomerId IS NULL;
 
 -- -----------------------------------------------------------------------------
 	-- FIN 
 -- -----------------------------------------------------------------------------
+END$$
 DELIMITER ;
 
 -- -----------------------------------------------------------------------------

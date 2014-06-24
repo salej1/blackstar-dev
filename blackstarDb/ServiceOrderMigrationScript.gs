@@ -11,7 +11,9 @@
 ** --   --------   -------  ------------------------------------
 ** 1    17/09/2013  SAG  	Version inicial: Exporta el archivo de OS a BD blackstarDbTransfer
 ** --   --------   -------  ------------------------------------
-** 1    26/05/2014  SAG  	Se elimina carga de polizas, se seleccionan las hojas por indice.
+** 2    26/05/2014  SAG  	Se elimina carga de polizas, se seleccionan las hojas por indice.
+** --   --------   -------  ------------------------------------
+** 3 	23/06/2014	SAG 	Se agregan detalles del equipo
 *****************************************************************************/
 
 function main() {
@@ -57,18 +59,19 @@ function closeDbConnection(conn){
 }
 
 function startLoadJob(conn, sqlLog) {
-	// Load the equipment type Ids
+	// Load the equipment & service type Ids
 	var serviceTypes = loadServiceTypes(conn);
+	var equipmentTypes = loadEquipmentTypes(conn);
 
-	var sheets = new Array(3,4,7,8,10,12);
+	var sheets = new Array(4,8,11);
 	
 	for(var ofIx = 0; ofIx < sheets.length; ofIx++){
 		var startRec = 6;
 		var office = sheets[ofIx];
 
 		// ajuste
-		if(office == 3){
-			startRec = startRec + 357;
+		if(office == 4){
+			startRec = startRec + 0;
 		}
 		
 		// Get the selected range in the spreadsheet that stores service order data.
@@ -79,12 +82,12 @@ function startLoadJob(conn, sqlLog) {
 
 		for(var i = 0; i < data.length; i++){
 			var currOrder = data[i];
-			sqlLog = sendToDatabase(currOrder, conn, serviceTypes, sqlLog);
+			sqlLog = sendToDatabase(currOrder, conn, serviceTypes, equipmentTypes, sqlLog);
 		} 
 	}
 }
 
-function sendToDatabase(serviceOrder, conn, serviceTypes, sqlLog){
+function sendToDatabase(serviceOrder, conn, serviceTypes, equipmentTypes, sqlLog){
 	// sql string initialization
 	
 	var sql = Utilities.formatString("DELETE FROM serviceTx WHERE serviceNumber = '%s';", serviceOrder[ 6 ]);;
@@ -114,7 +117,12 @@ function sendToDatabase(serviceOrder, conn, serviceTypes, sqlLog){
 			customerComments, \
 			created, \
 			createdBy, \
-			createdByUsr) \
+			createdByUsr, \
+			equipmentTypeId, \
+			brand, \
+			model, \
+			capacity, \
+			employeeId) \
 			VALUES(";
 				
 	// reading the values
@@ -130,20 +138,25 @@ function sendToDatabase(serviceOrder, conn, serviceTypes, sqlLog){
 	var serviceDate = serviceOrder[ 8 ];
 	var serialNumber = serviceOrder[ 12 ];
 	var responsible = serviceOrder[ 14 ];
-	var receivedBy = serviceOrder[ 15 ];
-	var serviceComments = serviceOrder[ 16 ];
-	var closed = serviceOrder[ 17 ];
-	var followUp = serviceOrder[ 18 ];
-	var spares = serviceOrder[ 19 ];
-	var consultant = serviceOrder[ 20 ];
-	var contractorCompany = serviceOrder[ 21 ];
-	var serviceRate = serviceOrder[ 22 ];
-	var customerComments = serviceOrder[ 23 ];
+	var employeeId = serviceOrder[ 15 ];
+	var receivedBy = serviceOrder[ 16 ];
+	var serviceComments = serviceOrder[ 17 ];
+	var closed = serviceOrder[ 18 ];
+	var followUp = serviceOrder[ 19 ];
+	var spares = serviceOrder[ 20 ];
+	var consultant = serviceOrder[ 21 ];
+	var contractorCompany = serviceOrder[ 22 ];
+	var serviceRate = serviceOrder[ 23 ];
+	var customerComments = serviceOrder[ 24 ];
 	var created = new Date();
 	var createdBy = "ServiceOrderMigrationScript";
-	var createdByUsr = "sergio.aga";   
+	var createdByUsr = "sergio.aga"; 
+	var rawEquipmentType = serviceOrder[9];
+	var equipmentTypeId = equipmentTypes[rawEquipmentType];
+	var brand = serviceOrder[10];
+	var model = serviceOrder[11];
+	var capacity = serviceOrder[13];
 
-	
 	// appending the values to the sql string
 	sql = sql + Utilities.formatString("'%s',", serviceNumber);
 	if(ticketNumber != "" && ticketNumber != "NA"){
@@ -182,7 +195,12 @@ function sendToDatabase(serviceOrder, conn, serviceTypes, sqlLog){
 	sql = sql + Utilities.formatString("'%s',", customerComments);
 	sql = sql + Utilities.formatString("'%s',", Utilities.formatDate(created, "CST", "yyyy-MM-dd HH:mm:ss"));
 	sql = sql + Utilities.formatString("'%s',", createdBy);
-	sql = sql + Utilities.formatString("'%s');", createdByUsr);	
+	sql = sql + Utilities.formatString("'%s',", createdByUsr);	
+	sql = sql + Utilities.formatString("'%s',", equipmentTypeId);	
+	sql = sql + Utilities.formatString("'%s',", brand);	
+	sql = sql + Utilities.formatString("'%s',", model);	
+	sql = sql + Utilities.formatString("'%s',", capacity);	
+	sql = sql + Utilities.formatString("'%s');", employeeId);	
 	
 	Logger.log(Utilities.formatString("Inserting ServiceOrder %s", serviceNumber));
 	
@@ -207,6 +225,22 @@ function loadServiceTypes(conn){
 	stmt.close();
 	
 	return serviceTypes;
+}
+
+function loadEquipmentTypes(conn){
+	var stmt = conn.createStatement();
+	var rs = stmt.execute("use blackstarDbTransfer;");
+	var equipmentTypes = { };
+	
+	rs = stmt.executeQuery("select equipmentTypeId, equipmentType from equipmentType");
+	while(rs.next()){
+		equipmentTypes[rs.getString(2)] = rs.getString(1);
+	}
+	
+	rs.close();
+	stmt.close();
+	
+	return equipmentTypes;
 }
 
 function saveSql(sqlLog, sql){

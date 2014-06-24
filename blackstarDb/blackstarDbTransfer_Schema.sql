@@ -26,6 +26,9 @@
 -- ---------------------------------------------------------------------------
 -- 8	28/05/2014	SAG 	Se incremeta tamaño de customer (serviceTx)
 -- ---------------------------------------------------------------------------
+-- 9	23/06/2014	SAG		Se agregan campos de detalle del equipo a serviceTx
+-- ---------------------------------------------------------------------------
+
 
 USE blackstarDbTransfer;
 
@@ -39,6 +42,23 @@ BEGIN
 -- -----------------------------------------------------------------------------
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
+
+	-- Agregando detalle del equipo a serviceTx
+	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDbTransfer' AND TABLE_NAME = 'serviceTx' AND COLUMN_NAME = 'equipmentTypeId') = 0  THEN
+		ALTER TABLE serviceTx ADD equipmentTypeId CHAR(1);
+	END IF;
+	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDbTransfer' AND TABLE_NAME = 'serviceTx' AND COLUMN_NAME = 'brand') = 0  THEN
+		ALTER TABLE serviceTx ADD brand VARCHAR(100);
+	END IF;
+	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDbTransfer' AND TABLE_NAME = 'serviceTx' AND COLUMN_NAME = 'model') = 0  THEN
+		ALTER TABLE serviceTx ADD model VARCHAR(100);
+	END IF;
+	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDbTransfer' AND TABLE_NAME = 'serviceTx' AND COLUMN_NAME = 'capacity') = 0  THEN
+		ALTER TABLE serviceTx ADD capacity VARCHAR(100);
+	END IF;
+	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDbTransfer' AND TABLE_NAME = 'serviceTx' AND COLUMN_NAME = 'employeeId') = 0  THEN
+		ALTER TABLE serviceTx ADD employeeId VARCHAR(400);
+	END IF;
 
 	-- Aumentando capacidad de campos de serviceTx
 	ALTER TABLE serviceTx MODIFY customer VARCHAR(200);

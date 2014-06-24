@@ -63,6 +63,10 @@
 -- 20	15/06/2014	SAG 	Se agrega surveyScore a serviceOrder
 --							Se incrementa capacidad de namePerson, email, phone en surveyService		
 -- ---------------------------------------------------------------------------
+-- 21 	23/06/2014 	SAG 	Se agrega transferOS a openCustomer - auxiliar para transferencia de OpenCustomer
+--							Se aumenta taman;o de openCustomer.serialNumber
+-- ---------------------------------------------------------------------------
+
 
 use blackstarDb;
 
@@ -75,6 +79,14 @@ BEGIN
 -- -----------------------------------------------------------------------------
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
+
+--  AUMENTANDO CAPACIDAD DE openCustomer.serialNumber
+	ALTER TABLE openCustomer MODIFY serialNumber VARCHAR(255);
+
+--	AGREGANDO transferOS a openCustomer
+	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'openCustomer' AND COLUMN_NAME = 'transferSo') = 0  THEN
+		ALTER TABLE openCustomer ADD transferSo VARCHAR(100);
+	END If;
 
 --	INCREMENTANDO CAPACIDAD DE namePerson, email, phone en surveyService
 	ALTER TABLE surveyService MODIFY namePerson VARCHAR(255);

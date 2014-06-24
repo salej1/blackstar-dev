@@ -19,6 +19,8 @@
 -- -----------------------------------------------------------------------------
 -- 5	28/05/2014	SAG		Correcciones de duplicacion en OS
 -- -----------------------------------------------------------------------------
+-- 6	23/06/2014	SAG		Se agrega referencia a open customer para OS importadas
+-- -----------------------------------------------------------------------------
 
 use blackstarDbTransfer;
 
@@ -334,9 +336,26 @@ BEGIN
 	    DELETE FROM blackstarDbTransfer.equipmentUserSync;
     END IF;
 -- -----------------------------------------------------------------------------
-END$$
+
+
+-- -----------------------------------------------------------------------------
+	-- ACTUALIZACION DE OPEN CUSTOMER CON ORDENES DE SERVICIO IMPORTADAS
+	INSERT INTO blackstarDb.openCustomer (customerName, address, equipmentTypeId, brand, model, capacity, serialNumber, contactName, officeId, project, transferSo, created, createdBy, createdByUsr)
+	SELECT customer, address, equipmentTypeId, brand, model, capacity, serialNumber, receivedBy, officeId, project, serviceNumber, now(), 'ServiceOrderMigrationScript', 'sergio.aga'
+	FROM blackstarDbTransfer.serviceTx s
+		INNER JOIN blackstarDb.office o ON o.officeName = s.serviceUnit
+	WHERE serviceNumber IN (
+		SELECT serviceOrderNumber FROM blackstarDb.serviceOrder WHERE policyId is NULL AND openCustomerId is NULL
+		AND createdby = 'ServiceOrderTransfer'
+	);
+
+	UPDATE blackstarDb.serviceOrder so
+		INNER JOIN blackstarDb.openCustomer oc ON oc.transferSo = so.serviceOrderNumber
+	SET so.openCustomerId = oc.openCustomerId
+	WHERE so.policyId IS NULL AND so.openCustomerId IS NULL;
 
 -- -----------------------------------------------------------------------------
 	-- FIN 
 -- -----------------------------------------------------------------------------
+END$$
 DELIMITER ;
