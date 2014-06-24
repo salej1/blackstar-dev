@@ -392,7 +392,7 @@ public class InternalTicketsController extends AbstractController {
 			@RequestParam(value = "attachmentsISRC", required = true) String attachmentsISRC,
 			@RequestParam(value = "apparatusTraceISSM", required = true) String apparatusTraceISSM,
 			@RequestParam(value = "observationsISSM", required = true) String observationsISSM,
-			@RequestParam(value = "questionISSM", required = true) String questionISSM,
+			@RequestParam(value = "questionISPT", required = true) String questionISPT,
 			@RequestParam(value = "ticketISRPR", required = true) String ticketISRPR,
 			@RequestParam(value = "modelPartISRPR", required = true) String modelPartISRPR,
 			@RequestParam(value = "observationsISRPR", required = true) String observationsISRPR,
@@ -475,7 +475,7 @@ public class InternalTicketsController extends AbstractController {
 			ticket.setAttachmentsISRC(attachmentsISRC);
 			ticket.setApparatusTraceISSM(apparatusTraceISSM);
 			ticket.setObservationsISSM(observationsISSM);
-			ticket.setQuestionISSM(questionISSM);
+			ticket.setQuestionISPT(questionISPT);
 			ticket.setTicketISRPR(ticketISRPR);
 			ticket.setModelPartISRPR(modelPartISRPR);
 			ticket.setObservationsISRPR(observationsISRPR);

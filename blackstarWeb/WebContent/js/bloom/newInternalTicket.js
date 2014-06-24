@@ -430,7 +430,7 @@ function saveInternalTicket() {
 			attachmentsISRC:$('#txt_attachmentsISRC').val(),
 			apparatusTraceISSM:$('#txt_apparatusTraceISSM').val(),
 			observationsISSM:$('#txt_observationsISSM').val(),
-			questionISSM:$('#txt_questionISSM').val(),
+			questionISPT:$('#txt_questionISPT').val(),
 			ticketISRPR:$('#txt_ticketISRPR').val(),
 			modelPartISRPR:$('#txt_modelPartISRPR').val(),
 			observationsISRPR:$('#txt_observationsISRPR').val(),

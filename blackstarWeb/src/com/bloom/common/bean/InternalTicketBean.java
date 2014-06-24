@@ -98,7 +98,7 @@ public class InternalTicketBean implements Serializable {
 	private String attachmentsISRC;
 	private String apparatusTraceISSM;
 	private String observationsISSM;
-	private String questionISSM;
+	private String questionISPT;
 	private String ticketISRPR;
 	private String modelPartISRPR;
 	private String observationsISRPR;
@@ -293,12 +293,12 @@ public class InternalTicketBean implements Serializable {
 		this.observationsISSM = observationsISSM;
 	}
 
-	public String getQuestionISSM() {
-		return questionISSM;
+	public String getQuestionISPT() {
+		return questionISPT;
 	}
 
-	public void setQuestionISSM(String questionISSM) {
-		this.questionISSM = questionISSM;
+	public void setQuestionISPT(String questionISPT) {
+		this.questionISPT = questionISPT;
 	}
 
 	public String getTicketISRPR() {

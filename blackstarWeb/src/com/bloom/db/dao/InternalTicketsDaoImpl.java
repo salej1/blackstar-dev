@@ -324,7 +324,7 @@ public class InternalTicketsDaoImpl extends AbstractDAO implements
 					ticket.getAttachmentsISRC(),
 					ticket.getApparatusTraceISSM(),
 					ticket.getObservationsISSM(),
-					ticket.getQuestionISSM(),
+					ticket.getQuestionISPT(),
 					ticket.getTicketISRPR(),
 					ticket.getModelPartISRPR(),
 					ticket.getObservationsISRPR(),
