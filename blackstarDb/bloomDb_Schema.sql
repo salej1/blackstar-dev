@@ -111,7 +111,7 @@ BEGIN
 		 CREATE TABLE blackstarDb.bloomTicket(
            _id Int(11) NOT NULL AUTO_INCREMENT,
            applicantUserId Int(11) NOT NULL,
-           officeId Char(1) NOT NULL,
+           officeId char(1) NOT NULL,
            serviceTypeId Int(3) NOT NULL,
            statusId Int(11) NOT NULL,
            applicantAreaId Int(11) NOT NULL,
@@ -182,7 +182,6 @@ BEGIN
 			problemDescriptionGPTR TEXT,		   
 	   
            PRIMARY KEY (`_id`),
-		   FOREIGN KEY (officeId) REFERENCES office (officeId),
            FOREIGN KEY (serviceTypeId) REFERENCES bloomServiceType (_id),
            FOREIGN KEY (statusId) REFERENCES bloomStatusType (_id),
            FOREIGN KEY (applicantUserId) REFERENCES blackstarUser (blackstarUserId),
@@ -191,6 +190,8 @@ BEGIN
            FOREIGN KEY (modifiedByUsr) REFERENCES blackstarUser (blackstarUserId),
 		   UNIQUE UQ_bloomTicket(ticketNumber)
          )ENGINE=INNODB;
+
+		
 	END IF;	
 
  -- AGREGANDO TABLA bloomTicketTeam
