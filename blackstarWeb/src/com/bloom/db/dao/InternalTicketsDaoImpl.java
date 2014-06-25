@@ -285,27 +285,79 @@ public class InternalTicketsDaoImpl extends AbstractDAO implements InternalTicke
 
 		StringBuilder sqlBuilder = new StringBuilder();
 
-		sqlBuilder.append("CALL AddInternalTicket(?,?,?,?,?,?,?,?,?,?,?,?,?)");
+		sqlBuilder.append("CALL AddInternalTicket(?,?,?,?,?,?,?,?,?,?,?,?,?,"
+				+ "?,?,?,?,?,?,?,?,?,?,"
+				+ "?,?,?,?,?,?,?,?,?,?,"
+				+ "?,?,?,?,?,?,?,?,?,?,"
+				+ "?,?,?,?,?,?,?,?,?,?,"
+				+ "?,?,?,?,?,?,?,?,?,?,"
+				+ "?)");
 
 		int idTicket = 0;
 
 		try {
 
-		Object[] args = new Object []{
-				 ticket.getApplicantUserId(),
-				 ticket.getOfficeId(),
-				 ticket.getServiceTypeId(),
-				 ticket.getStatusId(),
-				 ticket.getApplicantAreaId(),
-				 ticket.getDeadline(),
-				 ticket.getProject(),
-				 ticket.getTicketNumber(),
-				 ticket.getDescription(),
-				 ticket.getCreated(),
-				 ticket.getCreatedUserName(),
-				 ticket.getCreatedUserId(),
-				 ticket.getReponseInTime()
-			};		
+			Object[] args = new Object[] { ticket.getApplicantUserId(),
+					ticket.getOfficeId(), ticket.getServiceTypeId(),
+					ticket.getStatusId(), ticket.getApplicantAreaId(),
+					ticket.getDeadline(), ticket.getProject(),
+					ticket.getTicketNumber(), ticket.getDescription(),
+					ticket.getCreated(), ticket.getCreatedUserName(),
+					ticket.getCreatedUserId(), ticket.getReponseInTime(),
+					
+					
+					ticket.getPurposeVisitVL(),
+					ticket.getPurposeVisitVISAS(),
+					ticket.getDraftCopyDiagramVED(),
+					ticket.getFormProjectVED(),
+					ticket.getObservationsVEPI(),
+					ticket.getDraftCopyPlanVEPI(),
+					ticket.getFormProjectVEPI(),
+					ticket.getObservationsVRCC(),
+					ticket.getCheckListVRCC(),
+					ticket.getFormProjectVRCC(),
+					ticket.getQuestionVPT(),
+					ticket.getObservationsVSA(),
+					ticket.getFormProjectVSA(),
+					ticket.getProductInformationVSP(),
+					ticket.getObservationsISED(),
+					ticket.getDraftCopyPlanISED(),
+					ticket.getObservationsISRC(),
+					ticket.getAttachmentsISRC(),
+					ticket.getApparatusTraceISSM(),
+					ticket.getObservationsISSM(),
+					ticket.getQuestionISPT(),
+					ticket.getTicketISRPR(),
+					ticket.getModelPartISRPR(),
+					ticket.getObservationsISRPR(),
+					ticket.getProductInformationISSPC(),
+					ticket.getPositionPGCAS(),
+					ticket.getCollaboratorPGCAS(),
+					ticket.getJustificationPGCAS(),
+					ticket.getSalaryPGCAS(),
+					ticket.getPositionPGCCP(),
+					ticket.getCommentsPGCCP(),
+					ticket.getDevelopmentPlanPGCCP(),
+					ticket.getTargetPGCCP(),
+					ticket.getSalaryPGCCP(),
+					ticket.getPositionPGCNC(),
+					ticket.getDevelopmentPlanPGCNC(),
+					ticket.getTargetPGCNC(),
+					ticket.getSalaryPGCNC(),
+					ticket.getJustificationPGCNC(),
+					ticket.getPositionPGCF(),
+					ticket.getCollaboratorPGCF(),
+					ticket.getJustificationPGCF(),
+					ticket.getPositionPGCAA(),
+					ticket.getCollaboratorPGCAA(),
+					ticket.getJustificationPGCAA(),
+					ticket.getRequisitionFormatGRC(),
+					ticket.getLinkDocumentGM(),
+					ticket.getSuggestionGSM(),
+					ticket.getDocumentCodeGSM(),
+					ticket.getJustificationGSM(),
+					ticket.getProblemDescriptionGPTR()
+};
 
 			idTicket = getJdbcTemplate().queryForInt(sqlBuilder.toString(),
 					args);

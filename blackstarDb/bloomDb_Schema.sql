@@ -17,14 +17,19 @@
 --                              * bloomTicket
 --                              * bloomTicketTeam
 --                              * bloomDeliverableTrace
+-- 1    22/06/2014  OMA  	Cambios adicionales para el nuevo manejo de tickets internos
+--                              * bloomAdvisedGroup Nueva tabla
+--                              * bloomServiceType Actualizacion de campos
+--                              * bloomDeliverableType Actualizacion de campos
+--                              * bloomTicket Actualizacion de campos
 -- ---------------------------------------------------------------------------
 
 use blackstarDb;
 
 DELIMITER $$
 
-DROP PROCEDURE IF EXISTS blackstarDb.upgradeBloomchema$$
-CREATE PROCEDURE blackstarDb.upgradeBloomchema()
+DROP PROCEDURE IF EXISTS blackstarDb.upgradeBloomSchema$$
+CREATE PROCEDURE blackstarDb.upgradeBloomSchema()
 BEGIN
 
 -- -----------------------------------------------------------------------------
@@ -38,8 +43,8 @@ BEGIN
             name Varchar(150) NOT NULL,
             description Varchar(400) NOT NULL,
             responseTime Int(2) NOT NULL,
-			PRIMARY KEY (_id),
-			UNIQUE UQ_bloomServiceType(name)
+			applicantAreaId Int(11) NOT NULL,
+			PRIMARY KEY (_id)
          ) ENGINE=INNODB;
 	END IF;
 
@@ -82,8 +87,9 @@ BEGIN
            _id Int(11) NOT NULL,
            name Varchar(150) NOT NULL,
            description Varchar(400) NOT NULL,
+		   serviceTypeId Int(3) NOT NULL,
 		   PRIMARY KEY (_id),
-		   UNIQUE UQ_bloomDeliverableType(name)
+		   FOREIGN KEY (serviceTypeId) REFERENCES bloomServiceType (_id)
          )ENGINE=INNODB;
 	END IF;	
 
@@ -105,7 +111,7 @@ BEGIN
 		 CREATE TABLE blackstarDb.bloomTicket(
            _id Int(11) NOT NULL AUTO_INCREMENT,
            applicantUserId Int(11) NOT NULL,
-           officeId Char(1) NOT NULL,
+           officeId char(1) NOT NULL,
            serviceTypeId Int(3) NOT NULL,
            statusId Int(11) NOT NULL,
            applicantAreaId Int(11) NOT NULL,
@@ -123,8 +129,59 @@ BEGIN
            modified Datetime,
            modifiedBy Varchar(50),
            modifiedByUsr Int(11),
+			purposeVisitVL TEXT,
+			purposeVisitVISAS TEXT,
+			draftCopyDiagramVED TEXT,
+			formProjectVED TEXT,
+			observationsVEPI TEXT,
+			draftCopyPlanVEPI TEXT,
+			formProjectVEPI TEXT,
+			observationsVRCC TEXT,
+			checkListVRCC TEXT,
+			formProjectVRCC TEXT,
+			questionVPT TEXT,
+			observationsVSA TEXT,
+			formProjectVSA TEXT,
+			productInformationVSP TEXT,
+			observationsISED TEXT,
+			draftCopyPlanISED TEXT,
+			observationsISRC TEXT,
+			attachmentsISRC TEXT,
+			apparatusTraceISSM TEXT,
+			observationsISSM TEXT,
+			questionISSM TEXT,
+			ticketISRPR TEXT,
+			modelPartISRPR TEXT,
+			observationsISRPR TEXT,
+			productInformationISSPC TEXT,
+			positionPGCAS TEXT,
+			collaboratorPGCAS TEXT,
+			justificationPGCAS TEXT,
+			salaryPGCAS TEXT,
+			positionPGCCP TEXT,
+			commentsPGCCP TEXT,
+			developmentPlanPGCCP TEXT,
+			targetPGCCP TEXT,
+			salaryPGCCP TEXT,
+			positionPGCNC TEXT,
+			developmentPlanPGCNC TEXT,
+			targetPGCNC TEXT,
+			salaryPGCNC TEXT,
+			justificationPGCNC TEXT,
+			positionPGCF TEXT,
+			collaboratorPGCF TEXT,
+			justificationPGCF TEXT,
+			positionPGCAA TEXT,
+			collaboratorPGCAA TEXT,
+			justificationPGCAA TEXT,
+			requisitionFormatGRC TEXT,
+			linkDocumentGM TEXT,
+			suggestionGSM TEXT,
+			documentCodeGSM TEXT,
+			justificationGSM TEXT,
+			problemDescriptionGPTR TEXT,		   
+	   
            PRIMARY KEY (`_id`),
-		   FOREIGN KEY (officeId) REFERENCES office (officeId),
            FOREIGN KEY (serviceTypeId) REFERENCES bloomServiceType (_id),
            FOREIGN KEY (statusId) REFERENCES bloomStatusType (_id),
            FOREIGN KEY (applicantUserId) REFERENCES blackstarUser (blackstarUserId),
@@ -133,6 +190,8 @@ BEGIN
            FOREIGN KEY (modifiedByUsr) REFERENCES blackstarUser (blackstarUserId),
 		   UNIQUE UQ_bloomTicket(ticketNumber)
          )ENGINE=INNODB;
+
+		
 	END IF;	
 
  -- AGREGANDO TABLA bloomTicketTeam
@@ -173,8 +232,22 @@ BEGIN
 	END IF;
 
 
+-- AGREGANDO TABLA bloomAdvisedGroup
+	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'bloomAdvisedGroup') = 0 THEN
+			CREATE TABLE blackstarDb.bloomAdvisedGroup
+			(
+			  advicedGroupId Int(11) NOT NULL AUTO_INCREMENT,
+			  applicantAreaId Int(3) NOT NULL,
+			  serviceTypeId Int(3) NOT NULL,
+			  userGroup Varchar(150) NOT NULL,
+			  PRIMARY KEY (advicedGroupId)
+			);
+			ALTER TABLE blackstarDb.bloomAdvisedGroup ADD CONSTRAINT bloomRelationAdvisedGroup UNIQUE(applicantAreaId,serviceTypeId,userGroup);
+
+	END IF;
 
 
+	
 -- -----------------------------------------------------------------------------
 -- FIN SECCION DE CAMBIOS - NO CAMBIAR CODIGO FUERA DE ESTA SECCION
 -- -----------------------------------------------------------------------------
@@ -183,6 +256,6 @@ END$$
 
 DELIMITER ;
 
-CALL blackstarDb.upgradeBloomchema();
+CALL blackstarDb.upgradeBloomSchema();
 
-DROP PROCEDURE blackstarDb.upgradeBloomchema;
+DROP PROCEDURE blackstarDb.upgradeBloomSchema;
