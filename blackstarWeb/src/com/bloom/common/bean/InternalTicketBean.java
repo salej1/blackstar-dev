@@ -76,11 +76,470 @@ public class InternalTicketBean implements Serializable {
 	private String createdUserEmail;
 	
 	
-	private String additionalData1;
-	private String additionalData2;
-	private String additionalData3;
-	private String additionalData4;
-	private String additionalData5;
+	
+
+	private String purposeVisitVL;
+	private String purposeVisitVISAS;
+	private String draftCopyDiagramVED;
+	private String formProjectVED;
+	private String observationsVEPI;
+	private String draftCopyPlanVEPI;
+	private String formProjectVEPI;
+	private String observationsVRCC;
+	private String checkListVRCC;
+	private String formProjectVRCC;
+	private String questionVPT;
+	private String observationsVSA;
+	private String formProjectVSA;
+	private String productInformationVSP;
+	private String observationsISED;
+	private String draftCopyPlanISED;
+	private String observationsISRC;
+	private String attachmentsISRC;
+	private String apparatusTraceISSM;
+	private String observationsISSM;
+	private String questionISPT;
+	private String ticketISRPR;
+	private String modelPartISRPR;
+	private String observationsISRPR;
+	private String productInformationISSPC;
+	private String positionPGCAS;
+	private String collaboratorPGCAS;
+	private String justificationPGCAS;
+	private String salaryPGCAS;
+	private String positionPGCCP;
+	private String commentsPGCCP;
+	private String developmentPlanPGCCP;
+	private String targetPGCCP;
+	private String salaryPGCCP;
+	private String positionPGCNC;
+	private String developmentPlanPGCNC;
+	private String targetPGCNC;
+	private String salaryPGCNC;
+	private String justificationPGCNC;
+	private String positionPGCF;
+	private String collaboratorPGCF;
+	private String justificationPGCF;
+	private String positionPGCAA;
+	private String collaboratorPGCAA;
+	private String justificationPGCAA;
+	private String requisitionFormatGRC;
+	private String linkDocumentGM;
+	private String suggestionGSM;
+	private String documentCodeGSM;
+	private String justificationGSM;
+	private String problemDescriptionGPTR;
+	
+		
+	
+
+	public String getPurposeVisitVL() {
+		return purposeVisitVL;
+	}
+
+	public void setPurposeVisitVL(String purposeVisitVL) {
+		this.purposeVisitVL = purposeVisitVL;
+	}
+
+	public String getPurposeVisitVISAS() {
+		return purposeVisitVISAS;
+	}
+
+	public void setPurposeVisitVISAS(String purposeVisitVISAS) {
+		this.purposeVisitVISAS = purposeVisitVISAS;
+	}
+
+	public String getDraftCopyDiagramVED() {
+		return draftCopyDiagramVED;
+	}
+
+	public void setDraftCopyDiagramVED(String draftCopyDiagramVED) {
+		this.draftCopyDiagramVED = draftCopyDiagramVED;
+	}
+
+	public String getFormProjectVED() {
+		return formProjectVED;
+	}
+
+	public void setFormProjectVED(String formProjectVED) {
+		this.formProjectVED = formProjectVED;
+	}
+
+	public String getObservationsVEPI() {
+		return observationsVEPI;
+	}
+
+	public void setObservationsVEPI(String observationsVEPI) {
+		this.observationsVEPI = observationsVEPI;
+	}
+
+	public String getDraftCopyPlanVEPI() {
+		return draftCopyPlanVEPI;
+	}
+
+	public void setDraftCopyPlanVEPI(String draftCopyPlanVEPI) {
+		this.draftCopyPlanVEPI = draftCopyPlanVEPI;
+	}
+
+	public String getFormProjectVEPI() {
+		return formProjectVEPI;
+	}
+
+	public void setFormProjectVEPI(String formProjectVEPI) {
+		this.formProjectVEPI = formProjectVEPI;
+	}
+
+	public String getObservationsVRCC() {
+		return observationsVRCC;
+	}
+
+	public void setObservationsVRCC(String observationsVRCC) {
+		this.observationsVRCC = observationsVRCC;
+	}
+
+	public String getCheckListVRCC() {
+		return checkListVRCC;
+	}
+
+	public void setCheckListVRCC(String checkListVRCC) {
+		this.checkListVRCC = checkListVRCC;
+	}
+
+	public String getFormProjectVRCC() {
+		return formProjectVRCC;
+	}
+
+	public void setFormProjectVRCC(String formProjectVRCC) {
+		this.formProjectVRCC = formProjectVRCC;
+	}
+
+	public String getQuestionVPT() {
+		return questionVPT;
+	}
+
+	public void setQuestionVPT(String questionVPT) {
+		this.questionVPT = questionVPT;
+	}
+
+	public String getObservationsVSA() {
+		return observationsVSA;
+	}
+
+	public void setObservationsVSA(String observationsVSA) {
+		this.observationsVSA = observationsVSA;
+	}
+
+	public String getFormProjectVSA() {
+		return formProjectVSA;
+	}
+
+	public void setFormProjectVSA(String formProjectVSA) {
+		this.formProjectVSA = formProjectVSA;
+	}
+
+	public String getProductInformationVSP() {
+		return productInformationVSP;
+	}
+
+	public void setProductInformationVSP(String productInformationVSP) {
+		this.productInformationVSP = productInformationVSP;
+	}
+
+	public String getObservationsISED() {
+		return observationsISED;
+	}
+
+	public void setObservationsISED(String observationsISED) {
+		this.observationsISED = observationsISED;
+	}
+
+	public String getDraftCopyPlanISED() {
+		return draftCopyPlanISED;
+	}
+
+	public void setDraftCopyPlanISED(String draftCopyPlanISED) {
+		this.draftCopyPlanISED = draftCopyPlanISED;
+	}
+
+	public String getObservationsISRC() {
+		return observationsISRC;
+	}
+
+	public void setObservationsISRC(String observationsISRC) {
+		this.observationsISRC = observationsISRC;
+	}
+
+	public String getAttachmentsISRC() {
+		return attachmentsISRC;
+	}
+
+	public void setAttachmentsISRC(String attachmentsISRC) {
+		this.attachmentsISRC = attachmentsISRC;
+	}
+
+	public String getApparatusTraceISSM() {
+		return apparatusTraceISSM;
+	}
+
+	public void setApparatusTraceISSM(String apparatusTraceISSM) {
+		this.apparatusTraceISSM = apparatusTraceISSM;
+	}
+
+	public String getObservationsISSM() {
+		return observationsISSM;
+	}
+
+	public void setObservationsISSM(String observationsISSM) {
+		this.observationsISSM = observationsISSM;
+	}
+
+	public String getQuestionISPT() {
+		return questionISPT;
+	}
+
+	public void setQuestionISPT(String questionISPT) {
+		this.questionISPT = questionISPT;
+	}
+
+	public String getTicketISRPR() {
+		return ticketISRPR;
+	}
+
+	public void setTicketISRPR(String ticketISRPR) {
+		this.ticketISRPR = ticketISRPR;
+	}
+
+	public String getModelPartISRPR() {
+		return modelPartISRPR;
+	}
+
+	public void setModelPartISRPR(String modelPartISRPR) {
+		this.modelPartISRPR = modelPartISRPR;
+	}
+
+	public String getObservationsISRPR() {
+		return observationsISRPR;
+	}
+
+	public void setObservationsISRPR(String observationsISRPR) {
+		this.observationsISRPR = observationsISRPR;
+	}
+
+	public String getProductInformationISSPC() {
+		return productInformationISSPC;
+	}
+
+	public void setProductInformationISSPC(String productInformationISSPC) {
+		this.productInformationISSPC = productInformationISSPC;
+	}
+
+	public String getPositionPGCAS() {
+		return positionPGCAS;
+	}
+
+	public void setPositionPGCAS(String positionPGCAS) {
+		this.positionPGCAS = positionPGCAS;
+	}
+
+	public String getCollaboratorPGCAS() {
+		return collaboratorPGCAS;
+	}
+
+	public void setCollaboratorPGCAS(String collaboratorPGCAS) {
+		this.collaboratorPGCAS = collaboratorPGCAS;
+	}
+
+	public String getJustificationPGCAS() {
+		return justificationPGCAS;
+	}
+
+	public void setJustificationPGCAS(String justificationPGCAS) {
+		this.justificationPGCAS = justificationPGCAS;
+	}
+
+	public String getSalaryPGCAS() {
+		return salaryPGCAS;
+	}
+
+	public void setSalaryPGCAS(String salaryPGCAS) {
+		this.salaryPGCAS = salaryPGCAS;
+	}
+
+	public String getPositionPGCCP() {
+		return positionPGCCP;
+	}
+
+	public void setPositionPGCCP(String positionPGCCP) {
+		this.positionPGCCP = positionPGCCP;
+	}
+
+	public String getCommentsPGCCP() {
+		return commentsPGCCP;
+	}
+
+	public void setCommentsPGCCP(String commentsPGCCP) {
+		this.commentsPGCCP = commentsPGCCP;
+	}
+
+	public String getDevelopmentPlanPGCCP() {
+		return developmentPlanPGCCP;
+	}
+
+	public void setDevelopmentPlanPGCCP(String developmentPlanPGCCP) {
+		this.developmentPlanPGCCP = developmentPlanPGCCP;
+	}
+
+	public String getTargetPGCCP() {
+		return targetPGCCP;
+	}
+
+	public void setTargetPGCCP(String targetPGCCP) {
+		this.targetPGCCP = targetPGCCP;
+	}
+
+	public String getSalaryPGCCP() {
+		return salaryPGCCP;
+	}
+
+	public void setSalaryPGCCP(String salaryPGCCP) {
+		this.salaryPGCCP = salaryPGCCP;
+	}
+
+	public String getPositionPGCNC() {
+		return positionPGCNC;
+	}
+
+	public void setPositionPGCNC(String positionPGCNC) {
+		this.positionPGCNC = positionPGCNC;
+	}
+
+	public String getDevelopmentPlanPGCNC() {
+		return developmentPlanPGCNC;
+	}
+
+	public void setDevelopmentPlanPGCNC(String developmentPlanPGCNC) {
+		this.developmentPlanPGCNC = developmentPlanPGCNC;
+	}
+
+	public String getTargetPGCNC() {
+		return targetPGCNC;
+	}
+
+	public void setTargetPGCNC(String targetPGCNC) {
+		this.targetPGCNC = targetPGCNC;
+	}
+
+	public String getSalaryPGCNC() {
+		return salaryPGCNC;
+	}
+
+	public void setSalaryPGCNC(String salaryPGCNC) {
+		this.salaryPGCNC = salaryPGCNC;
+	}
+
+	public String getJustificationPGCNC() {
+		return justificationPGCNC;
+	}
+
+	public void setJustificationPGCNC(String justificationPGCNC) {
+		this.justificationPGCNC = justificationPGCNC;
+	}
+
+	public String getPositionPGCF() {
+		return positionPGCF;
+	}
+
+	public void setPositionPGCF(String positionPGCF) {
+		this.positionPGCF = positionPGCF;
+	}
+
+	public String getCollaboratorPGCF() {
+		return collaboratorPGCF;
+	}
+
+	public void setCollaboratorPGCF(String collaboratorPGCF) {
+		this.collaboratorPGCF = collaboratorPGCF;
+	}
+
+	public String getJustificationPGCF() {
+		return justificationPGCF;
+	}
+
+	public void setJustificationPGCF(String justificationPGCF) {
+		this.justificationPGCF = justificationPGCF;
+	}
+
+	public String getPositionPGCAA() {
+		return positionPGCAA;
+	}
+
+	public void setPositionPGCAA(String positionPGCAA) {
+		this.positionPGCAA = positionPGCAA;
+	}
+
+	public String getCollaboratorPGCAA() {
+		return collaboratorPGCAA;
+	}
+
+	public void setCollaboratorPGCAA(String collaboratorPGCAA) {
+		this.collaboratorPGCAA = collaboratorPGCAA;
+	}
+
+	public String getJustificationPGCAA() {
+		return justificationPGCAA;
+	}
+
+	public void setJustificationPGCAA(String justificationPGCAA) {
+		this.justificationPGCAA = justificationPGCAA;
+	}
+
+	public String getRequisitionFormatGRC() {
+		return requisitionFormatGRC;
+	}
+
+	public void setRequisitionFormatGRC(String requisitionFormatGRC) {
+		this.requisitionFormatGRC = requisitionFormatGRC;
+	}
+
+	public String getLinkDocumentGM() {
+		return linkDocumentGM;
+	}
+
+	public void setLinkDocumentGM(String linkDocumentGM) {
+		this.linkDocumentGM = linkDocumentGM;
+	}
+
+	public String getSuggestionGSM() {
+		return suggestionGSM;
+	}
+
+	public void setSuggestionGSM(String suggestionGSM) {
+		this.suggestionGSM = suggestionGSM;
+	}
+
+	public String getDocumentCodeGSM() {
+		return documentCodeGSM;
+	}
+
+	public void setDocumentCodeGSM(String documentCodeGSM) {
+		this.documentCodeGSM = documentCodeGSM;
+	}
+
+	public String getJustificationGSM() {
+		return justificationGSM;
+	}
+
+	public void setJustificationGSM(String justificationGSM) {
+		this.justificationGSM = justificationGSM;
+	}
+
+	public String getProblemDescriptionGPTR() {
+		return problemDescriptionGPTR;
+	}
+
+	public void setProblemDescriptionGPTR(String problemDescriptionGPTR) {
+		this.problemDescriptionGPTR = problemDescriptionGPTR;
+	}
 
 	
 	/**
@@ -499,74 +958,6 @@ public class InternalTicketBean implements Serializable {
 		this.statusDescr = statusDescr;
 	}
 
-	/**
-	 * @return the additionalData1
-	 */
-	public String getAdditionalData1() {
-		return additionalData1;
-	}
 
-	/**
-	 * @param additionalData1 the additionalData1 to set
-	 */
-	public void setAdditionalData1(String additionalData1) {
-		this.additionalData1 = additionalData1;
-	}
-
-	/**
-	 * @return the additionalData2
-	 */
-	public String getAdditionalData2() {
-		return additionalData2;
-	}
-
-	/**
-	 * @param additionalData2 the additionalData2 to set
-	 */
-	public void setAdditionalData2(String additionalData2) {
-		this.additionalData2 = additionalData2;
-	}
-
-	/**
-	 * @return the additionalData3
-	 */
-	public String getAdditionalData3() {
-		return additionalData3;
-	}
-
-	/**
-	 * @param additionalData3 the additionalData3 to set
-	 */
-	public void setAdditionalData3(String additionalData3) {
-		this.additionalData3 = additionalData3;
-	}
-
-	/**
-	 * @return the additionalData4
-	 */
-	public String getAdditionalData4() {
-		return additionalData4;
-	}
-
-	/**
-	 * @param additionalData4 the additionalData4 to set
-	 */
-	public void setAdditionalData4(String additionalData4) {
-		this.additionalData4 = additionalData4;
-	}
-
-	/**
-	 * @return the additionalData5
-	 */
-	public String getAdditionalData5() {
-		return additionalData5;
-	}
-
-	/**
-	 * @param additionalData5 the additionalData5 to set
-	 */
-	public void setAdditionalData5(String additionalData5) {
-		this.additionalData5 = additionalData5;
-	}
 
 }
