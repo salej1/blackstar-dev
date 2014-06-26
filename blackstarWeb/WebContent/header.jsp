@@ -46,7 +46,7 @@
 				  <li><a href="${pageContext.request.contextPath}/seguimiento">Seguimiento</a></li>
 				</c:if>
 				<li><a href="${pageContext.request.contextPath}/encuestas">Encuestas de servicio</a></li>
-				<li><a href="${pageContext.request.contextPath}/indicadores">Indicadores Serv.</a></li>
+				<li><a href="${pageContext.request.contextPath}/codex/prospect/create.do">Indicadores Serv.</a></li>
 			</c:when>
 			<c:when test="${pageSection == 'tickets'}">
 				<li><a href="${pageContext.request.contextPath}/dashboard/show.do">Inicio</a></li>

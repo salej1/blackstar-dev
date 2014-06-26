@@ -112,5 +112,9 @@
 	<bean class="com.blackstar.web.controller.SalesController" parent="abstractController">
 	    <property name="service" ref="salesService" />
 	</bean>
+	
+	<bean class="com.codex.web.controller.ProspectController" parent="abstractController">
+	    <property name="service" ref="prospectService" />
+	</bean>
 	<context:annotation-config />
 </beans>

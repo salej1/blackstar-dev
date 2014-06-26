@@ -79,5 +79,9 @@
   <bean id="salesService" class="com.blackstar.services.impl.SalesServiceImpl" parent="abstractService">
       <property name="dao" ref="warrantProjectDAO" />
   </bean>
+  
+  <bean id="prospectService" class="com.codex.service.impl.ProspectServiceImpl" parent="abstractService">
+      <property name="dao" ref="prospectDAO" />
+  </bean>
 
 </beans>
