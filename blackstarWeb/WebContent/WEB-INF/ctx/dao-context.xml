@@ -43,6 +43,6 @@
 	<bean id="serviceTypeDAO" class="com.blackstar.db.dao.impl.ServiceTypeDAOImpl" parent="abstractDAO" />
 	<bean id="customerDAO" class="com.blackstar.db.dao.impl.CustomerDAOImpl" parent="abstractDAO" />
 	<bean id="warrantProjectDAO" class="com.blackstar.db.dao.impl.WarrantProjectDAOImpl" parent="abstractDAO" />
-	<bean id="prospectDAO" class="com.codex.db.impl.ProspectDAOImpl" parent="abstractDAO" />
+	<bean id="clientDAO" class="com.codex.db.impl.ClientDAOImpl" parent="abstractDAO" />
 
 </beans>

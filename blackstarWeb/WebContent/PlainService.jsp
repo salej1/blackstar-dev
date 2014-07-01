@@ -123,7 +123,7 @@
 							<table>
 								<tr>
 									<td>Folio:</td>
-									<td><form:input path="serviceOrderNumber" type="text" style="width:95%;" maxlength="5" readOnly="true"/></td>
+									<td><form:input path="serviceOrderNumber" type="text" style="width:95%;" readOnly="true"/></td>
 									<td colspan="2">
 										<c:if test="${serviceOrder.serviceOrderId > 0}">
 											<a href='${pageContext.request.contextPath}/report/show.do?serviceOrderId=${serviceOrder.serviceOrderId}' target="_blank">Ver PDF</a><img src='${pageContext.request.contextPath}/img/pdf.png'/>

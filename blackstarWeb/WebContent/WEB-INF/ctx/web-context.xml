@@ -113,8 +113,8 @@
 	    <property name="service" ref="salesService" />
 	</bean>
 	
-	<bean class="com.codex.web.controller.ProspectController" parent="abstractController">
-	    <property name="service" ref="prospectService" />
+	<bean class="com.codex.web.controller.ClientController" parent="abstractController">
+	    <property name="service" ref="clientService" />
 	</bean>
 	<context:annotation-config />
 </beans>

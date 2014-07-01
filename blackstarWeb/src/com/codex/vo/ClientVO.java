@@ -1,6 +1,6 @@
 package com.codex.vo;
 
-public class ProspectVO {
+public class ClientVO {
 	
 	private Integer id;
 	private Integer clientTypeId;

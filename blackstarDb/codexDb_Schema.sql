@@ -41,10 +41,10 @@ CREATE TABLE IF NOT EXISTS blackstarDb.codexClientOrigin(
 
 CREATE TABLE IF NOT EXISTS blackstarDb.codexClient(
   _id Int(11) NOT NULL AUTO_INCREMENT,
-  clientTypeId Int(2) NOT NULL,
-  clientOriginId Int(2) NOT NULL,
-  sellerId Int(11) NOT NULL,
-  isProspect Tinyint NOT NULL,
+  clientTypeId Int(2),
+  clientOriginId Int(2),
+  sellerId Int(11),
+  isProspect Tinyint,
   rfc Varchar(13),
   corporateName Text,
   tradeName Text,

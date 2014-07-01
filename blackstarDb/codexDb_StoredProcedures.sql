@@ -53,7 +53,9 @@ BEGIN
 	
 END$$
 
-
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetUsersByGroup
+-- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetUsersByGroup$$
 CREATE PROCEDURE blackstarDb.GetUsersByGroup(pUserGroup VARCHAR(100))
 BEGIN
@@ -70,7 +72,9 @@ BEGIN
 
 END$$
 
-
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetLocationsByState
+-- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetLocationsByState;
 CREATE PROCEDURE blackstarDb.GetLocationsByState(pZipCode VARCHAR(5))
 BEGIN
@@ -79,6 +83,52 @@ BEGIN
    FROM location
    WHERE zipCode = pZipCode;
 
+END;
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.CodexInsertClient
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstardb.CodexInsertClient$$
+CREATE PROCEDURE blackstardb.`CodexInsertClient`(pClientTypeId int(2), pClientOriginId int(2), pSellerId int(11)
+                                                 , pIsProspect tinyint(4), pRfc varchar(13), pCorporateName text, pTradeName text, pPhoneArea varchar(3), pPhoneNumber varchar(10)
+                                                 , pPhoneExtension varchar(6), pPhoneAreaAlt varchar(3), pPhoneNumberAlt varchar(10), pPhoneExtensionAlt varchar(6)
+                                                 , pEmail varchar(60), pEmailAlt varchar(60), pStreet text, pIntNumber varchar(5), pExtNumber varchar(5)
+                                                 , pZipCode int(5), pCountry text, pState varchar(20), pMunicipality text, pCity text, pNeighborhood text
+                                                 , pContactName text, pCurp varchar(18), pRetention varchar(20))
+BEGIN
+
+	INSERT INTO codexClient (clientTypeId, clientOriginId, sellerId, isProspect, rfc, corporateName,
+              tradeName, phoneArea, phoneNumber, phoneExtension, phoneAreaAlt, phoneNumberAlt,
+              phoneExtensionAlt, email, emailAlt, street, intNumber, extNumber, zipCode, country,
+              state, municipality, city, neighborhood, contactName, curp, retention)
+              VALUES
+              (pClientTypeId, pClientOriginId, pSellerId, pIsProspect, pRfc, pCorporateName,
+              pTradeName, pPhoneArea, pPhoneNumber, pPhoneExtension, pPhoneAreaAlt, pPhoneNumberAlt,
+              pPhoneExtensionAlt, pEmail, pEmailAlt, pStreet, pIntNumber, pExtNumber, pZipCode, pCountry,
+              pState, pMunicipality, pCity, pNeighborhood, pContactName, pCurp, pRetention);
+	
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.CodexGetNextClientId
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstardb.CodexGetNextClientId$$
+CREATE PROCEDURE blackstardb.`CodexGetNextClientId`()
+BEGIN
+
+  SELECT IFNULL(MAX(_ID)  + 1, 1) FROM codexClient;
+	
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.CodexGetClientList
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstardb.CodexGetClientList;
+CREATE PROCEDURE blackstardb.`CodexGetClientList`(pIsProspect tinyint(4))
+BEGIN
+
+  SELECT * FROM codexClient WHERE isProspect = pIsProspect;
+	
 END;
 
 -- -----------------------------------------------------------------------------

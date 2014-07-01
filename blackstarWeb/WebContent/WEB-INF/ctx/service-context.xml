@@ -80,8 +80,8 @@
       <property name="dao" ref="warrantProjectDAO" />
   </bean>
   
-  <bean id="prospectService" class="com.codex.service.impl.ProspectServiceImpl" parent="abstractService">
-      <property name="dao" ref="prospectDAO" />
+  <bean id="clientService" class="com.codex.service.impl.ClientServiceImpl" parent="abstractService">
+      <property name="dao" ref="clientDAO" />
   </bean>
 
 </beans>
