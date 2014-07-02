@@ -15,9 +15,6 @@
 	<div>
 		<img src="/img/navigate-right.png"/><a href="" onclick="showEquipmentSelect('U'); return false;">Crear Reporte de UPS</a>
 	</div>
-	<div>
-		<img src="/img/navigate-right.png"/><a href="" onclick="getNewInternalTickets(); return false;">Crear Ticket Interno</a>
-	</div>
 	<p><small>&nbsp;</small></p>
 </div>
 <!-- FIN - Seccion de links que permiten crear nueva orden de servicio -->
@@ -131,14 +128,6 @@
 			$("#eqSearch").removeAttr("disabled");
 			$("#eqSearch").val("");
 		}
-	}
-	
-	
-	function getNewInternalTickets(){
-	    var url = '/bloom/newInternalTicket.do';
-	    var data = new Array();
-	    redirect(url, data, "GET");
-		
 	}
 
 </script>

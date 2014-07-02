@@ -203,7 +203,7 @@ public class InternalTicketsServiceImpl extends AbstractService
         	
 
         } catch (DAOException ex) {
-            throw new ServiceException("No se pudo registrar ticket ");
+            throw new ServiceException("No se pudo registrar requisicion ");
         }
 
     }
@@ -213,13 +213,13 @@ public class InternalTicketsServiceImpl extends AbstractService
     	
 		// Enviar el email
 		IEmailService mail = EmailServiceFactory.getEmailService();
-		String to = member.getUserName() + ", " + member.getEmail();
+		String to = member.getEmail();
 
 		String subject = String.format("Requisición General Interna %s ", ticket.getTicketNumber());
 
 		StringBuilder bodySb = new StringBuilder();
 
-		bodySb.append(String.format("El ticket interno %s se ha creado.",ticket.getTicketNumber()));
+		bodySb.append(String.format("Nueva requisicion: %s.",ticket.getTicketNumber()));
 
 		bodySb.append("\r\n Información adicional:");
 
@@ -297,48 +297,53 @@ public class InternalTicketsServiceImpl extends AbstractService
   }
   
   public void sendNotification(Integer fromUserId, Integer toUserId , Integer ticketId, String detail){
-	StringBuilder message = new StringBuilder();
-	User to = uDAO.getUserById(toUserId);
-	User from = uDAO.getUserById(toUserId);
-	TicketDetailDTO ticket = getTicketDetail(ticketId);
-	IEmailService mail = EmailServiceFactory.getEmailService();
-	message.append(String.format("El ticket %s le ha sido asignada para dar seguimiento. Por favor revise a continuación los detalles: ", ticket.getTicketNumber()));
-	message.append(String.format("\r\n\r\n Solicitante: %s", ticket.getApplicantUserName() + " - " + ticket.getApplicantAreaName()));
-	message.append(String.format("\r\n\r\n Oficina: %s", ticket.getApplicantUserName() + " - " + ticket.getOfficeName()));
-	message.append(String.format("\r\n\r\n Tipo de Servicio: %s", ticket.getServiceTypeName()));
-	message.append(String.format("\r\n\r\n Proyecto: %s", ticket.getProject()));
-	message.append(String.format("\r\n\r\n Descripción: %s", ticket.getDescription()));
-	message.append(String.format("\r\n\r\n"));
-	message.append(String.format("\r\n\r\n Usuario que asignó: %s", from.getUserName()));
-	message.append(String.format("\r\n\r\n Mensaje: %s", detail));
-	mail.sendEmail(from.getUserEmail(), to.getUserEmail(), "Asignación de Ticket Interno " + ticket.getTicketNumber(), message.toString());
+	  if(toUserId > 0){
+		StringBuilder message = new StringBuilder();
+		User to = uDAO.getUserById(toUserId);
+		User from = uDAO.getUserById(toUserId);
+		TicketDetailDTO ticket = getTicketDetail(ticketId);
+		IEmailService mail = EmailServiceFactory.getEmailService();
+		message.append(String.format("La requisicion %s le ha sido asignada para dar seguimiento. Por favor revise a continuación los detalles: ", ticket.getTicketNumber()));
+		message.append(String.format("\r\n\r\n Solicitante: %s", ticket.getApplicantUserName() + " - " + ticket.getApplicantAreaName()));
+		message.append(String.format("\r\n\r\n Oficina: %s", ticket.getApplicantUserName() + " - " + ticket.getOfficeName()));
+		message.append(String.format("\r\n\r\n Tipo de Servicio: %s", ticket.getServiceTypeName()));
+		message.append(String.format("\r\n\r\n Proyecto: %s", ticket.getProject()));
+		message.append(String.format("\r\n\r\n Descripción: %s", ticket.getDescription()));
+		message.append(String.format("\r\n\r\n"));
+		message.append(String.format("\r\n\r\n Usuario que asignó: %s", from.getUserName()));
+		message.append(String.format("\r\n\r\n Mensaje: %s", detail));
+		mail.sendEmail(from.getUserEmail(), to.getUserEmail(), "Asignación de Ticket Interno " + ticket.getTicketNumber(), message.toString());
+	  }
   }
 
-  public void closeTicket(Integer ticketId, Integer userId){
-	List<TicketDetailDTO> ticketDetail = internalTicketsDao.getTicketDetail(ticketId);
-	User to = null;
-	StringBuilder message = null;
-	TicketDetailDTO ticket = null;
-	IEmailService mail = null;
-	if(ticketDetail.size() > 0){
-	  ticket = ticketDetail.get(0);
-	  to = uDAO.getUserById(ticket.getCreatedByUsr());
-	  if(to != null){
-		 mail = EmailServiceFactory.getEmailService();
-		 message = new StringBuilder();
-	     message.append("Segun los registros del sistema su peticion ha sido atendida y resuelta.")
-	            .append("\r\n\r\n")
-	            .append("Ticket Interno : " + ticket.getTicketNumber())
-                .append("\r\n")
-                .append("Fecha de creación: " + ticket.getCreated())
-                .append("\r\n")
-                .append("Descripción: " + ticket.getDescription());
-	     mail.sendEmail(sysMailer, to.getUserEmail(), "Ticket interno por vencer: " 
-                                   + ticket.getTicketNumber(), message.toString());
+  public void closeTicket(Integer ticketId, Integer userId, Integer statusId){
+	  if(statusId == 5){
+		List<TicketDetailDTO> ticketDetail = internalTicketsDao.getTicketDetail(ticketId);
+		User to = null;
+		StringBuilder message = null;
+		TicketDetailDTO ticket = null;
+		IEmailService mail = null;
+		if(ticketDetail.size() > 0){
+		  ticket = ticketDetail.get(0);
+		  to = uDAO.getUserById(ticket.getCreatedByUsr());
+		  if(to != null){
+			 mail = EmailServiceFactory.getEmailService();
+			 message = new StringBuilder();
+		     message.append("La requisicion " + ticket.getTicketNumber()  + " ha sido atendida y resuelta.")
+		            .append("\r\n\r\n")
+		            .append("Requisicion : " + ticket.getTicketNumber())
+	                .append("\r\n")
+	                .append("Fecha de creación: " + ticket.getCreated())
+	                .append("\r\n")
+	                .append("Descripción: " + ticket.getDescription());
+		     mail.sendEmail(sysMailer, to.getUserEmail(), "Requisicion atendida: " 
+	                                   + ticket.getTicketNumber(), message.toString());
+		  }
+	
+		}
 	  }
-	  internalTicketsDao.closeTicket(ticketId, userId);
-
-	}
+	  
+	  internalTicketsDao.closeTicket(ticketId, userId, statusId);
   }
 
 	/**

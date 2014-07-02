@@ -13,6 +13,7 @@
 		<script src="${pageContext.request.contextPath}/js/jquery-1.10.1.min.js"></script>
 		<script src="${pageContext.request.contextPath}/js/jquery-ui.js"></script>
 		<script src="${pageContext.request.contextPath}/DataTables-1.9.4/media/js/jquery.dataTables.js"></script>
+		<script src="${pageContext.request.contextPath}/js/common/utils.js"></script>
 
 		<title>Indicadores de Servicio</title>
 
@@ -30,29 +31,40 @@
 <!--   CONTENT COLUMN   -->		
 		<div id="content" class="container_16 clearfix">
 		    <div class="box">
-			  <h2>Indicadores de Servicio</h2>
+			  <h2>Indicadores de Requisiciones</h2>
 		    </div>
 			<div>
 				<div>
-					<img src="/img/navigate-right.png"/><a href="#" id="getTicketByUser" onclick="go('getTicketByUser')">Tickets por usuario</a>
+					<img src="/img/navigate-right.png"/><a href="#" id="getTicketByUser" onclick="go('getTicketByUser')">Requisiciones por usuario</a>
 				</div>
 				<div>
-					<img src="/img/navigate-right.png"/><a href="#" id="getTicketByOffice" onclick="go('getTicketByOffice')">Tickets por oficina</a>
+					<img src="/img/navigate-right.png"/><a href="#" id="getTicketByOffice" onclick="go('getTicketByOffice')">Requisiciones por oficina</a>
 				</div>
 				<div>
-					<img src="/img/navigate-right.png"/><a href="#" id="getTicketByArea" onclick="go('getTicketByArea')">Tickets por Area</a>
+					<img src="/img/navigate-right.png"/><a href="#" id="getTicketByArea" onclick="go('getTicketByArea')">Requisiciones por Area</a>
 				</div>
 				<div>
-					<img src="/img/navigate-right.png"/><a href="#" id="getTicketByDay" onclick="go('getTicketByDay')">Tickets por Dia</a>
+					<img src="/img/navigate-right.png"/><a href="#" id="getTicketByDay" onclick="go('getTicketByDay')">Requisiciones por Dia</a>
 				</div>
 				<div>
-					<img src="/img/navigate-right.png"/><a href="#" id="getTicketByProject" onclick="go('getTicketByProject')">Tickets por Proyecto</a>
+					<img src="/img/navigate-right.png"/><a href="#" id="getTicketByProject" onclick="go('getTicketByProject')">Requisiciones por Proyecto</a>
 				</div>
 				<div>
-					<img src="/img/navigate-right.png"/><a href="#" id="getTicketByServiceAreaKPI" onclick="go('getTicketByServiceAreaKPI')">Solicitudes por tipo de Ticket</a>
+					<img src="/img/navigate-right.png"/><a href="#" id="getTicketByServiceAreaKPI" onclick="go('getTicketByServiceAreaKPI')">Requisiciones por tipo</a>
 				</div>
+							
+				<!-- Links Para ver los reportes de Mesa de Ayuda -->
+				<c:import url="bloomITLinks.jsp"></c:import>
+				 <p><small>&nbsp;</small></p>
+				<script type="text/javascript">
+					$(function(){
+						bloomITLinks_init();
+					});
+				</script>
+	
 			</div>	
 		</div>
 		<div id="indicatorDetail"></div>
+
 	</body>
 </html>

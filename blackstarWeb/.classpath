@@ -18,7 +18,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/repackaged-appengine-jakarta-standard-1.1.2.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/repackaged-appengine-jakarta-jstl-1.1.2.jar"/>
-	<classpathentry kind="con" path="com.google.appengine.eclipse.core.GAE_CONTAINER"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/google_sql.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/activation.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/antlr-2.7.7.jar"/>
@@ -76,8 +75,8 @@
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/google-api-services-oauth2-v2-rev51-1.17.0-rc.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/gson-2.2.4.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/PDFjet.jar"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/appengine-endpoints-deps.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/spring-context-support-3.2.4.RELEASE.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/commons-lang3-3.1.jar"/>
+	<classpathentry kind="con" path="com.google.appengine.eclipse.core.GAE_CONTAINER/appengine-java-sdk-1.8.3"/>
 	<classpathentry kind="output" path="WebContent/WEB-INF/classes"/>
 </classpath>

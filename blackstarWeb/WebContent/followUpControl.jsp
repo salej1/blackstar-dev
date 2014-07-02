@@ -30,6 +30,39 @@
 		referer = sender;
 	}
 
+	function addSeguimiento(){
+		addSeguimiento(1); // Default: Asignar
+	}
+
+	function addSeguimiento(type){
+		var d = new Date(); 
+		$("#seguimientoCaptureDlg").dialog('open');	
+		$("#seguimientoStamp").html(d.format('dd/MM/yyyy h:mm:ss') + ' ${ user.userName }');
+		$("#seguimientoText").val('');
+		$("#who").val("-1");
+		followType = type;
+		if(type == "1"){
+			$("#assignamentArea").show();
+		} else {
+			$("#assignamentArea").hide(); 
+		}
+	}
+
+	function applySeguimiento(){
+		var who;
+		if(followType == "1"){
+			who = $("#who").val();
+		} else if(followType == "2"){
+			who = "-2";
+		}else { 
+			who = "-3";
+		}
+		
+		$("#followDetail").load("${pageContext.request.contextPath}/bloom/ticketDetail/addFollow.do?ticketId=${ticketDetail.id}&userId=${ user.blackstarUserId }" 
+				                    + "&userToAssign=" + who + "&comment=" + $("#seguimientoText").val().replace(/ /g, '%20'));
+		$("#seguimientoCapture").hide();	
+	}
+
 	// Seguimiento
 	function applySeguimiento(){
 		// enviar datos del formulario a servlet que agrega seguimiento
@@ -86,13 +119,33 @@
 	<tbody>
 		<tr>
 			<td id="seguimientoContent">
-				<c:forEach var="followup" items="${followUps}">
-					<div class="comment">
-						<p><strong>${followup.timeStamp}: ${followup.createdBy} a: ${followup.asignee}</strong></p>
-						<p>
-						<small>${followup.followUp}</small></p>
+			</td>
+		</tr>
+		<tr>
+		    <td id="followDetail">
+		       <c:import url="_ticketFollow.jsp"></c:import>
+		    </td>
+		</tr>
+		<tr>
+			<td id="seguimientoCapture" class="comment">
+				<div>
+					<Label id="seguimientoStamp">stamp</Label>
+				</div>
+				<div> 
+				   <div id="assignamentArea">
+				     Asignar a:
+					  <select id="who" style="width:200px;">
+					    <option value="-1">Seleccione</option>
+					    <c:forEach var="current" items="${staff}" >
+					       <option value="${current.id}">${current.name}</option>
+					    </c:forEach>
+					  </select>
+					<p></p>
 					</div>
-				</c:forEach>
+					<textarea id="seguimientoText" rows="5" style="width:65%;"></textarea>
+					<button class="searchButton" onclick="applySeguimiento();">Agregar</button>
+					<button class="searchButton" onclick="cancelAddSeguimiento();">Cancelar</button>
+				</div>
 			</td>
 		</tr>
 	</tbody>

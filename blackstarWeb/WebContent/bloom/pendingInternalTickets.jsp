@@ -7,7 +7,7 @@
 -->
 <div class="grid_16">
 	<div class="box">
-		<h2>Tickets Internos Pendientes</h2>
+		<h2>Requisiciones Pendientes</h2>
 		<div class="utils">
 			
 		</div>

@@ -80,7 +80,7 @@
 		<div class="grid_16">
 
 			<div class="box">
-							<h2>Encuestas de Servicio</h2>
+							<h2>Encuestas de Requisiciones</h2>
 							<div class="utils">
 								
 			</div>
@@ -88,7 +88,7 @@
 				<thead>
 					<tr>
 						<th>No. Encuesta</th>
-						<th>Ticket</th>
+						<th>Requisicion</th>
 						<th>Area Solicitante</th>
 						<th>Proyecto</th>
 						<th>Fecha de creación</th>
@@ -106,14 +106,14 @@
 		<div class="grid_16">
 
 			<div class="box">
-							<h2>Encuestas de Servicio Pendientes</h2>
+							<h2>Requisiciones sin encuesta</h2>
 							<div class="utils">
 								
 			</div>
 			<table cellpadding="0" cellspacing="0" border="0" class="display" id="pendingSurveys">
 				<thead>
 					<tr>
-						<th>Ticket</th>
+						<th>Requisicion</th>
 						<th>Area Solicitante</th>
 						<th>Proyecto</th>
 						<th>Responsable</th>

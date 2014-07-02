@@ -18,14 +18,6 @@
 
 <title>Portal de Servicios</title>
 
-<script>
-function getNewInternalTickets(){
-    var url = '/bloom/newInternalTicket.do';
-    var data = new Array();
-    redirect(url, data, "GET");
-	
-}
-
 </script>
 </head>
 <body>
@@ -33,11 +25,6 @@ function getNewInternalTickets(){
 
 <!--   CONTENT COLUMN   -->		
     <c:set var="sysServicio" scope="request" value="${user.belongsToGroup['Implementacion y Servicio']}" />
-
-	<div>
-		<img src="/img/navigate-right.png"/><a href="" onclick="getNewInternalTickets(); return false;">Crear Ticket Interno</a>
-	</div>
-	
 	
 <!-- Inicia Contenido De Perfiles Syscallcenter Y Syscoordinador-->
 	<c:set var="sysCallCenter" scope="request" value="${user.belongsToGroup['Call Center']}" />
@@ -201,27 +188,12 @@ function getNewInternalTickets(){
 	</c:if>
 	<!-- Fin Contenido De Perfil Sysservicio -->
 	
-	<!-- Inicia Contenido De Perfil sysHelpDesk -->
-	<c:set var="sysHelpDesk" scope="request" value="${user.belongsToGroup['Mesa de Ayuda']}" />
-	
-	
-	
-	
-	<c:if test="${sysHelpDesk == true}">
-	<!-- Fin Contenido De Perfil sysHelpDesk -->
-	
-	
-	<!-- Links Para ver los reportes de Mesa de Ayuda -->
-		<c:import url="bloom/bloomITLinks.jsp"></c:import>
-		 <p><small>&nbsp;</small></p>
-		<script type="text/javascript">
-			$(function(){
-				bloomITLinks_init();
-			});
-		</script>
-	
-	
-	
+
+	<!-- Link para crear nuevo ticket interno - Disponible para todos menos para el cliente -->
+	<c:set var="sysCliente" scope="request" value="${user.belongsToGroup['Cliente']}" />
+	<c:if test="${sysCliente == null || sysCliente == false}">
+		<c:import url="bloom/newInternalTicketLink.jsp"></c:import>
+
 		<!-- Tabla De Tickets internos pendientes - bloomPendingInternalTickets.jsp -->
 		<c:import url="/bloom/bloomPendingInternalTickets.jsp"></c:import>
 		<script type="text/javascript">
@@ -230,8 +202,14 @@ function getNewInternalTickets(){
 			});
 		</script>
 		
+	</c:if>
+	<!-- FIN Link para crear nuevo ticket interno  -->
 
-
+	<!-- Inicia Contenido De Perfil sysHelpDesk -->
+	<c:set var="sysHelpDesk" scope="request" value="${user.belongsToGroup['Mesa de ayuda']}" />
+	<c:if test="${sysHelpDesk == true}">
+	<!-- Fin Contenido De Perfil sysHelpDesk -->
+	
 		<!-- Tabla De Tickets internos pendientes - bloomPendingInternalTickets.jsp -->
 		<c:import url="/bloom/bloomHistoricalTickets.jsp"></c:import>
 		<script type="text/javascript">
@@ -242,7 +220,6 @@ function getNewInternalTickets(){
 		
 	
 	</c:if>
-
 
 
 </div>

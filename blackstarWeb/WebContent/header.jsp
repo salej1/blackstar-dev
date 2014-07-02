@@ -43,9 +43,6 @@
 				<li><span class="active" onclick="window.location = '/dashboard/show.do'">Inicio</span></li>
 				<li><a href="${pageContext.request.contextPath}/tickets">Tickets</a></li>
 				<li><a href="${pageContext.request.contextPath}/serviceOrders/show.do">Ordenes de servicio</a></li>
-				<c:if test="${sysCallCenter == true}">
-				  <li><a href="${pageContext.request.contextPath}/seguimiento">Seguimiento</a></li>
-				</c:if>
 				<li><a href="${pageContext.request.contextPath}/bloom/survey/show.do">Encuestas de servicio</a></li>
 				<li><a href="${pageContext.request.contextPath}/bloom/indServicios/show.do">Indicadores Serv.</a></li>
 			</c:when>
@@ -53,7 +50,6 @@
 				<li><a href="${pageContext.request.contextPath}/dashboard/show.do">Inicio</a></li>
 				<li><span class="active" onclick="window.location = '/tickets'">Tickets</span></li>
 				<li><a href="${pageContext.request.contextPath}/serviceOrders/show.do">Ordenes de servicio</a></li>
-				<li><a href="${pageContext.request.contextPath}/seguimiento">Seguimiento</a></li>
 				<li><a href="${pageContext.request.contextPath}/bloom/survey/show.do">Encuestas de servicio</a></li>
 				<li><a href="${pageContext.request.contextPath}/bloom/indServicios/show.do">Indicadores Serv.</a></li>
 			</c:when>
@@ -61,50 +57,35 @@
 				<li><a href="${pageContext.request.contextPath}/dashboard/show.do">Inicio</a></li>
 				<li><a href="${pageContext.request.contextPath}/tickets">Tickets</a></li>
 				<li><span class="active" onclick="window.location = '/serviceOrders/show.do'">Ordenes de servicio</span></li>
-				<c:if test="${sysCallCenter == true}">
-				  <li><a href="${pageContext.request.contextPath}/seguimiento">Seguimiento</a></li>
-				</c:if>
-				<li><a href="${pageContext.request.contextPath}/encuestas">Encuestas de servicio</a></li>
+				<li><a href="${pageContext.request.contextPath}/bloom/survey/show.do">Encuestas de servicio</a></li>
 				<li><a href="${pageContext.request.contextPath}/bloom/indServicios/show.do">Indicadores Serv.</a></li>
 			</c:when>
 			<c:when test="${pageSection == 'seguimiento'}">
 				<li><a href="${pageContext.request.contextPath}/dashboard/show.do">Inicio</a></li>
 				<li><a href="${pageContext.request.contextPath}/tickets">Tickets</a></li>
 				<li><a href="${pageContext.request.contextPath}/serviceOrders/show.do">Ordenes de servicio</a></li>
-				<c:if test="${sysCallCenter == true}">
-				  <li><span class="active"" onclick="window.location = '/seguimiento'">Seguimiento</span></li>
-				</c:if>
-				<li><a href="${pageContext.request.contextPath}/encuestas">Encuestas de servicio</a></li>
+				<li><a href="${pageContext.request.contextPath}/bloom/survey/show.do">Encuestas de servicio</a></li>
 				<li><a href="${pageContext.request.contextPath}/bloom/indServicios/show.do">Indicadores Serv.</a></li>
 			</c:when>			
 			<c:when test="${pageSection == 'encuestas'}">
 				<li><a href="${pageContext.request.contextPath}/dashboard/show.do">Inicio</a></li>
 				<li><a href="${pageContext.request.contextPath}/tickets">Tickets</a></li>
 				<li><a href="${pageContext.request.contextPath}/serviceOrders/show.do">Ordenes de servicio</a></li>
-				<c:if test="${sysCallCenter == true}">
-				  <li><a href="${pageContext.request.contextPath}/seguimiento">Seguimiento</a></li>
-				</c:if>
-				<li><span class="active" onclick="window.location = '/encuestas'">Encuestas de servicio</span></li>
+				<li><span class="active" onclick="window.location = '/bloom/survey/show.do'">Encuestas de servicio</span></li>
 				<li><a href="${pageContext.request.contextPath}/bloom/indServicios/show.do">Indicadores Serv.</a></li>
 			</c:when>			
 			<c:when test="${pageSection == 'indicadores'}">
 				<li><a href="${pageContext.request.contextPath}/dashboard/show.do">Inicio</a></li>
 				<li><a href="${pageContext.request.contextPath}/tickets">Tickets</a></li>
 				<li><a href="${pageContext.request.contextPath}/serviceOrders/show.do">Ordenes de servicio</a></li>
-				<c:if test="${sysCallCenter == true}">
-				  <li><a href="${pageContext.request.contextPath}/seguimiento">Seguimiento</a></li>
-				</c:if>
-				<li><a href="${pageContext.request.contextPath}/encuestas">Encuestas de servicio</a></li>
+				<li><a href="${pageContext.request.contextPath}/bloom/survey/show.do">Encuestas de servicio</a></li>
 				<li><a href="${pageContext.request.contextPath}/bloom/indServicios/show.do">Indicadores Serv.</a></li>
 			</c:when>		
 			<c:otherwise>
 				<li><a href="${pageContext.request.contextPath}/dashboard/show.do">Inicio</a></li>
 				<li><a href="${pageContext.request.contextPath}/tickets">Tickets</a></li>
 				<li><a href="${pageContext.request.contextPath}/serviceOrders/show.do">Ordenes de servicio</a></li>
-				<c:if test="${sysCallCenter == true}">
-				  <li><a href="${pageContext.request.contextPath}/seguimiento">Seguimiento</a></li>
-				</c:if>
-				<li><a href="${pageContext.request.contextPath}/encuestas">Encuestas de servicio</a></li>
+				<li><a href="${pageContext.request.contextPath}/bloom/survey/show.do">Encuestas de servicio</a></li>
 				<li><a href="${pageContext.request.contextPath}/bloom/indServicios/show.do">Indicadores Serv.</a></li>
 			</c:otherwise>
 		</c:choose>

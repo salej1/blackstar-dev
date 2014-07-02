@@ -39,6 +39,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @SessionAttributes({ Globals.SESSION_KEY_PARAM })
 public class InternalTicketsController extends AbstractController {
 
+  private static final Integer RESOVLED_STATUS = 5;
+  private static final Integer CLOSED_STATUS = 6;
+  
   private InternalTicketsService internalTicketsService;
   
   
@@ -166,12 +169,12 @@ public class InternalTicketsController extends AbstractController {
 	}
 
   @RequestMapping(value = "/ticketDetail/show.do", method = RequestMethod.GET)
-  public String showDetail(@RequestParam(required = true) String ticketNumber
+  public String showDetail(@RequestParam(required = true) Integer ticketId
 				                                       , ModelMap model) {
 	TicketDetailDTO ticketDetail = null;
-	Integer ticketId = null;
+	
 	try {
-		 ticketId = internalTicketsService.getTicketId(ticketNumber);
+
 		 if(ticketId != null && ticketId > 0){
 		   ticketDetail = internalTicketsService.getTicketDetail(ticketId);
 		   model.addAttribute("ticketTeam", internalTicketsService
@@ -193,7 +196,7 @@ public class InternalTicketsController extends AbstractController {
 		model.addAttribute("errorDetails", e.getStackTrace()[0].toString());
 		return "error";
 	}
-	return "bloom/ticketDetail";
+	return "bloom/internalTicketDetail";
   }
   
   @RequestMapping(value = "/ticketDetail/addFollow.do", method = RequestMethod.GET)
@@ -206,18 +209,19 @@ public class InternalTicketsController extends AbstractController {
 	try {
 		//Comment
 		if(userToAssign == -2){
-			userToAssign = internalTicketsService.getAsigneed(ticketId)
-				                                 .getBlackstarUserId();
+			// Nada no se cambia el asignatario
 			sendNotification = false;
 		} else if (userToAssign == -3){ //Response
 			userToAssign = internalTicketsService.getResponseUser(ticketId)
                                                     .getBlackstarUserId();
 		}
 		internalTicketsService.addFollow(ticketId, userId, comment);
-		internalTicketsService.addTicketTeam(ticketId, 1, userToAssign);
+		if(userToAssign != null && userToAssign > 0){
+			internalTicketsService.addTicketTeam(ticketId, 1, userToAssign);
+		}
+
 		if(sendNotification){
-		  internalTicketsService.sendNotification(userId, userToAssign, ticketId
-				                                                     , comment);
+		  internalTicketsService.sendNotification(userId, userToAssign, ticketId, comment);
 		}
 		model.addAttribute("followUps", internalTicketsService.getFollowUps(ticketId));
 	} catch (Exception e) {
@@ -246,12 +250,12 @@ public class InternalTicketsController extends AbstractController {
 	return new ResponseEntity<HttpStatus>(HttpStatus.OK);
   }
   
-  @RequestMapping(value = "/ticketDetail/close.do", method = RequestMethod.GET)
-  public String closeTicket(@RequestParam(required = true) Integer ticketId
+  @RequestMapping(value = "/ticketDetail/resolve.do", method = RequestMethod.GET)
+  public String resolveTicket(@RequestParam(required = true) Integer ticketId
 		                , @RequestParam(required = true) Integer userId
 				                                    , ModelMap model) {
 	try {
-		internalTicketsService.closeTicket(ticketId, userId);
+		internalTicketsService.closeTicket(ticketId, userId, RESOVLED_STATUS);
 	} catch (Exception e) {
 		Logger.Log(LogLevel.ERROR,e.getStackTrace()[0].toString(), e);
 		e.printStackTrace();
@@ -261,7 +265,20 @@ public class InternalTicketsController extends AbstractController {
 	return "dashboard";
   }
 
-
+  @RequestMapping(value = "/ticketDetail/close.do", method = RequestMethod.GET)
+  public String closeTicket(@RequestParam(required = true) Integer ticketId
+		                , @RequestParam(required = true) Integer userId
+				                                    , ModelMap model) {
+	try {
+		internalTicketsService.closeTicket(ticketId, userId, CLOSED_STATUS);
+	} catch (Exception e) {
+		Logger.Log(LogLevel.ERROR,e.getStackTrace()[0].toString(), e);
+		e.printStackTrace();
+		model.addAttribute("errorDetails", e.getStackTrace()[0].toString());
+		return "error";
+	}
+	return "dashboard";
+  }
 
 
 	/**
@@ -371,7 +388,6 @@ public class InternalTicketsController extends AbstractController {
 			@RequestParam(value = "slAreaSolicitanteLabel", required = true) String slAreaSolicitanteLabel,
 			@RequestParam(value = "slTipoServicioLabel", required = true) String slTipoServicioLabel,
 			@RequestParam(value = "slOficinaLabel", required = true) String slOficinaLabel,
-			
 			@RequestParam(value = "purposeVisitVL", required = true) String purposeVisitVL,
 			@RequestParam(value = "purposeVisitVISAS", required = true) String purposeVisitVISAS,
 			@RequestParam(value = "draftCopyDiagramVED", required = true) String draftCopyDiagramVED,

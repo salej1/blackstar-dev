@@ -25,7 +25,7 @@ public interface InternalTicketsService {
 	public User getAsigneed(Integer ticketId);
 	public User getResponseUser(Integer ticketId);
 	public void sendNotification(Integer fromUserId, Integer toUserId , Integer ticketId, String detail);
-	public void closeTicket(Integer ticketId, Integer userId);
+	public void closeTicket(Integer ticketId, Integer userId, Integer statusId);
 	public List<InternalTicketBean> getPendingTickets(Long userId) throws ServiceException;	
 	public List<DeliverableFileDTO> getTicketDeliverable(Integer ticketId);
 	

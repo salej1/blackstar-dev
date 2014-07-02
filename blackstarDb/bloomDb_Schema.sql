@@ -36,6 +36,19 @@ BEGIN
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
 
+-- AGREGANDO TABLA bloomSurvey
+IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'bloomSurvey') = 0 THEN
+		 CREATE TABLE blackstarDb.bloomSurvey(
+           _id Int(11) NOT NULL AUTO_INCREMENT,
+           bloomTicketId Int(11) NOT NULL,
+           evaluation Tinyint NOT NULL,
+           comments Text NOT NULL,
+           created Date NOT NULL,
+		   PRIMARY KEY (_id),
+		   FOREIGN KEY (bloomTicketId) REFERENCES bloomTicket (_id)
+         )ENGINE=INNODB;
+	END IF;	
+	
 -- AGREGANDO TABLA bloomServiceType
 	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'bloomServiceType') = 0 THEN
 		 CREATE TABLE blackstarDb.bloomServiceType(
@@ -179,9 +192,10 @@ BEGIN
 			suggestionGSM TEXT,
 			documentCodeGSM TEXT,
 			justificationGSM TEXT,
-			problemDescriptionGPTR TEXT,		   
+			problemDescriptionGPTR TEXT,	
+			resolvedOnTime INT,	   
 	   
-           PRIMARY KEY (`_id`),
+           PRIMARY KEY (_id),
            FOREIGN KEY (serviceTypeId) REFERENCES bloomServiceType (_id),
            FOREIGN KEY (statusId) REFERENCES bloomStatusType (_id),
            FOREIGN KEY (applicantUserId) REFERENCES blackstarUser (blackstarUserId),

@@ -119,6 +119,20 @@ public class InternalTicketsDaoImpl extends AbstractDAO implements InternalTicke
 				sqlBuilder.toString(), getMapperFor(DeliverableTypeDTO.class));
 	}
 
+	  
+	public List<PendingAppointmentsDTO> getPendingAppointments(){
+	    StringBuilder sqlBuilder = new StringBuilder("CALL getBloomPendingAppointments();");
+		return (List<PendingAppointmentsDTO>) getJdbcTemplate().query(sqlBuilder.toString()
+					                             , getMapperFor(DeliverableTypeDTO.class));
+	}
+	  
+	public List<PendingSurveysDTO> getPendingSurveys(){
+		StringBuilder sqlBuilder = new StringBuilder("CALL GetBloomPendingSurveys();");
+		return (List<PendingSurveysDTO>) getJdbcTemplate().query(sqlBuilder.toString()
+						                    , getMapperFor(DeliverableTypeDTO.class));
+	}
+	 
+	  
 	public void addDeliverableTrace(Integer ticketId, Integer deliverableTypeId) {
 		StringBuilder sqlBuilder = new StringBuilder(
 				"CALL AddBloomDelivarable(?, ?);");
@@ -126,11 +140,18 @@ public class InternalTicketsDaoImpl extends AbstractDAO implements InternalTicke
 				new Object[] { ticketId, deliverableTypeId });
 	}
 
-	public void closeTicket(Integer ticketId, Integer userId) {
+
+    public List<DeliverableFileDTO> getTicketDeliverable(Integer ticketId){
+		StringBuilder sqlBuilder = new StringBuilder("CALL GetBloomTicketDeliverable(?);");
+		return (List<DeliverableFileDTO>) getJdbcTemplate().query(sqlBuilder.toString()
+					 , new Object[]{ticketId}, getMapperFor(DeliverableFileDTO.class));
+	}
+
+	public void closeTicket(Integer ticketId, Integer userId, Integer statusId) {
 		StringBuilder sqlBuilder = new StringBuilder(
-				"CALL CloseBloomTicket(?, ?);");
+				"CALL CloseBloomTicket(?,?,?);");
 		getJdbcTemplate().update(sqlBuilder.toString(),
-				new Object[] { ticketId, userId });
+				new Object[] { ticketId, userId, statusId });
 	}
 
 	private static final class InternalTicketMapper implements
@@ -422,3 +443,4 @@ public class InternalTicketsDaoImpl extends AbstractDAO implements InternalTicke
 
 		return (long) idTeamMemberTicket;
 	}
+}

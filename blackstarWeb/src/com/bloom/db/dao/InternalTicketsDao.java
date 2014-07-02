@@ -70,7 +70,7 @@ public interface InternalTicketsDao {
   public void addDeliverableTrace(Integer ticketId, Integer deliverableTypeId);
   public List<User> getAsigneedUser(Integer ticketId);
   public List<User> getResponseUser(Integer ticketId);
-  public void closeTicket(Integer ticketId, Integer userId);
+  public void closeTicket(Integer ticketId, Integer userId, Integer statusId);
   public Integer getTicketId(String ticketNumber);
   public List<DeliverableFileDTO> getTicketDeliverable(Integer ticketId);
   public List<PendingAppointmentsDTO> getPendingAppointments();

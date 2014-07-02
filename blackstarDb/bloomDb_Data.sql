@@ -34,35 +34,35 @@ END IF;
 	-- PERFILES
 	
 -- -----------------------------------------------------------------------------
-IF(SELECT COUNT(*) FROM blackstarDb.usergroup WHERE externalId='sysHelpDeskManager') = 0 THEN 
-	INSERT INTO blackstarDb.usergroup (externalId,name) values('sysHelpDeskManager','Mesa de ayuda (Ingenieria)'); 
+IF(SELECT COUNT(*) FROM blackstarDb.userGroup WHERE externalId='sysHelpDeskManager') = 0 THEN 
+	INSERT INTO blackstarDb.userGroup (externalId,name) values('sysHelpDeskManager','Mesa de ayuda'); 
 END IF;
-IF(SELECT COUNT(*) FROM blackstarDb.usergroup WHERE externalId='sysPurchaseManager') = 0 THEN 
-	INSERT INTO blackstarDb.usergroup (externalId,name) values('sysPurchaseManager','Jefe de Compras'); 
+IF(SELECT COUNT(*) FROM blackstarDb.userGroup WHERE externalId='sysPurchaseManager') = 0 THEN 
+	INSERT INTO blackstarDb.userGroup (externalId,name) values('sysPurchaseManager','Jefe de Compras'); 
 END IF;
-IF(SELECT COUNT(*) FROM blackstarDb.usergroup WHERE externalId='sysHRManage') = 0 THEN 
-	INSERT INTO blackstarDb.usergroup (externalId,name) values('sysHRManage','Jefe de Capital Humano'); 
+IF(SELECT COUNT(*) FROM blackstarDb.userGroup WHERE externalId='sysHRManager') = 0 THEN 
+	INSERT INTO blackstarDb.userGroup (externalId,name) values('sysHRManager','Jefe de Capital Humano'); 
 END IF;
-IF(SELECT COUNT(*) FROM blackstarDb.usergroup WHERE externalId='sysNetworkManager') = 0 THEN 
-	INSERT INTO blackstarDb.usergroup (externalId,name) values('sysNetworkManager','Ingeniero de Redes y Monitoreo'); 
+IF(SELECT COUNT(*) FROM blackstarDb.userGroup WHERE externalId='sysNetworkManager') = 0 THEN 
+	INSERT INTO blackstarDb.userGroup (externalId,name) values('sysNetworkManager','Ingeniero de Redes y Monitoreo'); 
 END IF;
-IF(SELECT COUNT(*) FROM blackstarDb.usergroup WHERE externalId='sysQAManager') = 0 THEN 
-	INSERT INTO blackstarDb.usergroup (externalId,name) values('sysQAManager','Gerente de Calidad'); 
+IF(SELECT COUNT(*) FROM blackstarDb.userGroup WHERE externalId='sysQAManager') = 0 THEN 
+	INSERT INTO blackstarDb.userGroup (externalId,name) values('sysQAManager','Gerente de Calidad'); 
 END IF;
-IF(SELECT COUNT(*) FROM blackstarDb.usergroup WHERE externalId='sysSalesManager') = 0 THEN 
-	INSERT INTO blackstarDb.usergroup (externalId,name) values('sysSalesManager','Gerente comercial'); 
+IF(SELECT COUNT(*) FROM blackstarDb.userGroup WHERE externalId='sysSalesManager') = 0 THEN 
+	INSERT INTO blackstarDb.userGroup (externalId,name) values('sysSalesManager','Gerente comercial'); 
 END IF;
-IF(SELECT COUNT(*) FROM blackstarDb.usergroup WHERE externalId='sysCeo') = 0 THEN 
-	INSERT INTO blackstarDb.usergroup (externalId,name) values('sysCeo','Direccion'); 
+IF(SELECT COUNT(*) FROM blackstarDb.userGroup WHERE externalId='sysCeo') = 0 THEN 
+	INSERT INTO blackstarDb.userGroup (externalId,name) values('sysCeo','Direccion'); 
 END IF;
-IF(SELECT COUNT(*) FROM blackstarDb.usergroup WHERE externalId='sysPurchase') = 0 THEN 
-	INSERT INTO blackstarDb.usergroup (externalId,name) values('sysPurchase','Compras'); 
+IF(SELECT COUNT(*) FROM blackstarDb.userGroup WHERE externalId='sysPurchase') = 0 THEN 
+	INSERT INTO blackstarDb.userGroup (externalId,name) values('sysPurchase','Compras'); 
 END IF;
-IF(SELECT COUNT(*) FROM blackstarDb.usergroup WHERE externalId='sysHR') = 0 THEN 
-	INSERT INTO blackstarDb.usergroup (externalId,name) values('sysHR','Capital Humano'); 
+IF(SELECT COUNT(*) FROM blackstarDb.userGroup WHERE externalId='sysHR') = 0 THEN 
+	INSERT INTO blackstarDb.userGroup (externalId,name) values('sysHR','Capital Humano'); 
 END IF;
-IF(SELECT COUNT(*) FROM blackstarDb.usergroup WHERE externalId='sysQA') = 0 THEN 
-	INSERT INTO blackstarDb.usergroup (externalId,name) values('sysQA','Calidad'); 
+IF(SELECT COUNT(*) FROM blackstarDb.userGroup WHERE externalId='sysQA') = 0 THEN 
+	INSERT INTO blackstarDb.userGroup (externalId,name) values('sysQA','Calidad'); 
 END IF;
 
 
@@ -80,7 +80,8 @@ INSERT INTO bloomStatusType VALUES (1,'Abierto', 'Ingreso de solicitud');
 INSERT INTO bloomStatusType VALUES (2,'En proceso', 'Asignado, en proceso de solucion');
 INSERT INTO bloomStatusType VALUES (3,'Suspendido', 'Suspendido');
 INSERT INTO bloomStatusType VALUES (4,'Cancelado', 'Cancelado');
-INSERT INTO bloomStatusType VALUES (5,'Cerrado', 'Cerrado');
+INSERT INTO bloomStatusType VALUES (5,'Resuelto', 'Resuelto');
+INSERT INTO bloomStatusType VALUES (6,'Cerrado', 'Cerrado');
 
 
 
@@ -224,25 +225,25 @@ insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGrou
 
 -- creacion de usuarios segun la confi,applicantAreaIdguracion del excel en la columna de enterados.
 Call blackstarDb.UpsertUser('nicolas.andrade@gposac.com.mx','Nicolas Andrade');
-Call blackstarDb.CreateUserGroup('sysSalesManager','Gerente comercial','nicolas.andrade@gposac.com.mx');
+Call blackstarDb.CreateuserGroup('sysSalesManager','Gerente comercial','nicolas.andrade@gposac.com.mx');
      
 Call blackstarDb.UpsertUser('mesa-de-ayuda@gposac.com.mx','Mesa de ayuda');
-Call blackstarDb.CreateUserGroup('sysHelpDeskManager','Mesa de ayuda (Ingenieria)','mesa-de-ayuda@gposac.com.mx');
+Call blackstarDb.CreateuserGroup('sysHelpDeskManager','Mesa de ayuda (Ingenieria)','mesa-de-ayuda@gposac.com.mx');
      
 Call blackstarDb.UpsertUser('jose.osorio@gposac.com.mx','Ingeniero de Redes y Monitoreo');
-Call blackstarDb.CreateUserGroup('sysNetworkManager','Ingeniero de Redes y Monitoreo','jose.osorio@gposac.com.mx');
+Call blackstarDb.CreateuserGroup('sysNetworkManager','Ingeniero de Redes y Monitoreo','jose.osorio@gposac.com.mx');
   
 Call blackstarDb.UpsertUser('compras@gposac.com.mx','Compras');
-Call blackstarDb.CreateUserGroup('sysPurchase','Compras','compras@gposac.com.mx');
+Call blackstarDb.CreateuserGroup('sysPurchase','Compras','compras@gposac.com.mx');
   
 Call blackstarDb.UpsertUser('capital.humano@gposac.com.mx','Capital Humano');
-Call blackstarDb.CreateUserGroup('sysHR','Capital Humano','capital.humano@gposac.com.mx');
+Call blackstarDb.CreateuserGroup('sysHR','Capital Humano','capital.humano@gposac.com.mx');
    
 Call blackstarDb.UpsertUser('direccion@gposac.com.mx','Direccion');
-Call blackstarDb.CreateUserGroup('sysCeo','Direccion','direccion@gposac.com.mx');
+Call blackstarDb.CreateuserGroup('sysCeo','Direccion','direccion@gposac.com.mx');
   
 Call blackstarDb.UpsertUser('calidad@gposac.com.mx','Calidad');
-Call blackstarDb.CreateUserGroup('sysQA','Calidad','calidad@gposac.com.mx');
+Call blackstarDb.CreateuserGroup('sysQA','Calidad','calidad@gposac.com.mx');
 
 
 END$$

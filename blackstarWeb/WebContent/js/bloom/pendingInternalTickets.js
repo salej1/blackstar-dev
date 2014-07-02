@@ -50,8 +50,8 @@ function getPendingInternalTickets() {
 										"aoColumnDefs" : [ {
 											"mRender" : function(data, type,
 													row) {
-												return "<div align='center' style='width:70px;' ><a href='/bloom/ticketDetail/show.do?ticketNumber="
-														+ data
+												return "<div align='center' style='width:70px;' ><a href='/bloom/ticketDetail/show.do?ticketId="
+														+ row.id
 														+ "'>"
 														+ data + "</a></div>";
 											},
