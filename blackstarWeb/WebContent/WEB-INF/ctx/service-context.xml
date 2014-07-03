@@ -83,5 +83,9 @@
   <bean id="clientService" class="com.codex.service.impl.ClientServiceImpl" parent="abstractService">
       <property name="dao" ref="clientDAO" />
   </bean>
+  
+  <bean id="projectService" class="com.codex.service.impl.ProjectServiceImpl" parent="abstractService">
+      <property name="dao" ref="projectDAO" />
+  </bean>
 
 </beans>
