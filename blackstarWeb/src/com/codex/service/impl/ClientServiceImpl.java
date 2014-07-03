@@ -8,8 +8,8 @@ import com.blackstar.model.User;
 import com.blackstar.services.AbstractService;
 import com.codex.db.ClientDAO;
 import com.codex.service.ClientService;
-import com.codex.vo.ClientOriginTypes;
-import com.codex.vo.ClientTypes;
+import com.codex.vo.ClientOriginTypesVO;
+import com.codex.vo.ClientTypesVO;
 import com.codex.vo.LocationVO;
 import com.codex.vo.ClientVO;
 
@@ -29,12 +29,12 @@ public class ClientServiceImpl extends AbstractService
   }
   
   @Override
-  public List<ClientTypes> getAllClientTypes(){
+  public List<ClientTypesVO> getAllClientTypes(){
 	return dao.getAllClientTypes();	  
   }
   
   @Override
-  public List<ClientOriginTypes> getAllOriginTypes(){
+  public List<ClientOriginTypesVO> getAllOriginTypes(){
 	return dao.getAllOriginTypes();
   }
   

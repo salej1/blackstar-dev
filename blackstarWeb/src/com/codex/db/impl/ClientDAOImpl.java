@@ -13,8 +13,8 @@ import com.blackstar.db.dao.AbstractDAO;
 import com.blackstar.db.dao.mapper.JSONRowMapper;
 import com.blackstar.model.User;
 import com.codex.db.ClientDAO;
-import com.codex.vo.ClientOriginTypes;
-import com.codex.vo.ClientTypes;
+import com.codex.vo.ClientOriginTypesVO;
+import com.codex.vo.ClientTypesVO;
 import com.codex.vo.LocationVO;
 import com.codex.vo.ClientVO;
 
@@ -31,17 +31,17 @@ public class ClientDAOImpl extends AbstractDAO
   }
   
   @Override
-  public List<ClientTypes> getAllClientTypes() {
+  public List<ClientTypesVO> getAllClientTypes() {
 	String sqlQuery = "CALL CodexGetAllClientTypes()";
-	return (List<ClientTypes>) getJdbcTemplate().query(sqlQuery
-			                , getMapperFor(ClientTypes.class));
+	return (List<ClientTypesVO>) getJdbcTemplate().query(sqlQuery
+			                , getMapperFor(ClientTypesVO.class));
   }
   
   @Override
-  public List<ClientOriginTypes> getAllOriginTypes() {
+  public List<ClientOriginTypesVO> getAllOriginTypes() {
 	String sqlQuery = "CALL CodexGetAllOriginTypes()";
-	return (List<ClientOriginTypes>) getJdbcTemplate().query(sqlQuery
-			                , getMapperFor(ClientOriginTypes.class));
+	return (List<ClientOriginTypesVO>) getJdbcTemplate().query(sqlQuery
+			                , getMapperFor(ClientOriginTypesVO.class));
   }
   
   

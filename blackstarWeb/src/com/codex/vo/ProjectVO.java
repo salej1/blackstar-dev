@@ -1,5 +1,6 @@
 package com.codex.vo;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -13,6 +14,8 @@ public class ProjectVO {
 	private Integer statusId;
 	private Integer paymentTypeId;
 	private Integer currencyTypeId;
+	private String statusDescription;
+	private String clientDescription;
 	private String costCenter;
 	private Float changeType;
 	private Date created;
@@ -27,7 +30,7 @@ public class ProjectVO {
 	private Integer financesNumber;
 	private Integer servicesNumber;
 	private Integer totalProjectNumber; 
-	private List<ProjectEntryVO> entries;
+	private List<ProjectEntryVO> entries = new ArrayList<ProjectEntryVO>();
 	
 	public Integer getId() {
 		return id;
@@ -160,6 +163,18 @@ public class ProjectVO {
 	}
 	public void setEntries(List<ProjectEntryVO> entries) {
 		this.entries = entries;
+	}
+	public String getStatusDescription() {
+		return statusDescription;
+	}
+	public void setStatusDescription(String statusDescription) {
+		this.statusDescription = statusDescription;
+	}
+	public String getClientDescription() {
+		return clientDescription;
+	}
+	public void setClientDescription(String clientDescription) {
+		this.clientDescription = clientDescription;
 	}
 	
 }

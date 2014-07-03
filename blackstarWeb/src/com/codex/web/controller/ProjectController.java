@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import com.blackstar.common.Globals;
 import com.blackstar.web.AbstractController;
 import com.codex.service.ProjectService;
+import com.codex.vo.ProjectVO;
 
 
 @Controller
@@ -23,6 +24,9 @@ public class ProjectController extends AbstractController {
 	
   @RequestMapping(value = "/create.do")
   public String create(ModelMap model){
+	model.addAttribute("project", new ProjectVO());
+	model.addAttribute("entryTypes", service.getAllEntryTypes());
+	model.addAttribute("entryItemTypes", service.getAllEntryItemTypes());
 	return "codex/projectDetail";
   }
 	

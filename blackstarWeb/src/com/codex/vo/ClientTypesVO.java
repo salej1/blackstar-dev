@@ -1,6 +1,6 @@
 package com.codex.vo;
 
-public class ClientTypes {
+public class ClientTypesVO {
 	
 	private Integer id;
 	private String name;

@@ -123,13 +123,38 @@ END$$
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.CodexGetClientList
 -- -----------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS blackstardb.CodexGetClientList;
+DROP PROCEDURE IF EXISTS blackstardb.CodexGetClientList$$
 CREATE PROCEDURE blackstardb.`CodexGetClientList`(pIsProspect tinyint(4))
 BEGIN
 
   SELECT * FROM codexClient WHERE isProspect = pIsProspect;
 	
-END;
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.CodexGetEntryTypes
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstardb.CodexGetEntryTypes$$
+CREATE PROCEDURE blackstardb.`CodexGetEntryTypes`()
+BEGIN
+
+  SELECT _id id, name name, description description 
+  FROM codexProjectEntryTypes;
+	
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.CodexGetEntryItemTypes
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstardb.CodexGetEntryItemTypes$$
+CREATE PROCEDURE blackstardb.`CodexGetEntryItemTypes`()
+BEGIN
+
+  SELECT _id id, name name, description description 
+  FROM codexProjectItemTypes;
+	
+END$$
+
 
 -- -----------------------------------------------------------------------------
 	-- FIN DE LOS STORED PROCEDURES

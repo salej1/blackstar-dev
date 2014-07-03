@@ -1,6 +1,6 @@
 package com.codex.vo;
 
-public class ClientOriginTypes {
+public class ProjectEntryItemTypesVO {
 	
 	private Integer id;
 	private String name;

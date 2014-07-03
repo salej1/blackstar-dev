@@ -1,5 +1,6 @@
 package com.codex.vo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProjectEntryVO {
@@ -11,7 +12,7 @@ public class ProjectEntryVO {
 	private Float discount;
 	private Float totalPrice;
 	private String comments;
-	private List<ProjectEntryItemVO> items;
+	private List<ProjectEntryItemVO> items = new ArrayList<ProjectEntryItemVO>();
 	
 	public Integer getId() {
 		return id;
