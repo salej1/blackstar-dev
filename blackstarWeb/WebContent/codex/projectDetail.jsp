@@ -22,12 +22,15 @@
 	
 	<script type="text/javascript">
 	    var entryNumber = 0;
+	    var itemNumber = 0;
 	    function addEntry(){
 	    	entryNumber++;
-	    	$('#entryTable').append('<tr class="part" id="entry_' + entryNumber + '"><td>' + entryNumber + '</td><td colspan="2"><select name="" id="entryTypeId_' + entryNumber + '"><option value="">Seleccione</option><c:forEach var="ss" items="${entryTypes}"><option value="ss.id">${ss.name}</option></c:forEach></select></td><td colspan="3"><input type="text" id="description_' + entryNumber + '"/></td><td><input type="number" id="discount_' + entryNumber + '"/></td><td><input type="number" id="totalPrice_' + entryNumber + '"/></td><td><input type="number" id="comments_' + entryNumber + '"/></td> </tr> <tr><td></td><td><button class="searchButton" onclick="addItem(' + entryNumber +');">+ Item</button></td></tr>');
+	    	$('#entryTable').append('<tr class="part" id="entry_' + entryNumber + '"><td>' + entryNumber + '</td><td colspan="2"><select name="" id="entryTypeId_' + entryNumber + '"><option value="">Seleccione</option><c:forEach var="ss" items="${entryTypes}"><option value="ss.id">${ss.name}</option></c:forEach></select></td><td colspan="3"><input type="text" id="description_' + entryNumber + '"/></td><td><input type="number" id="discount_' + entryNumber + '"/></td><td><input type="number" id="totalPrice_' + entryNumber + '"/></td><td><input type="number" id="comments_' + entryNumber + '"/></td> </tr> <tr><td colspan="8"><table id="items_'+ entryNumber + '"></table></td></tr><tr><td></td><td><button class="searchButton" onclick="addItem(' + entryNumber +');">+ Item</button></td></tr>');
 	    } 
-	    function addItem(){
-	    	
+	    function addItem(entryNumber){
+	    	itemNumber++;
+	    	console.log('<tr id="item_' + entryNumber + '"><td><select name="" id="entryItemTypeId_' + itemNumber + '"><option value="">Seleccione</option><c:forEach var="ss" items="${entryItemTypes}"><option value="ss.id">${ss.name}</option></c:forEach></select></td><td><select id="referenceId" disabled="true"><option value="-1">Seleccione</option></select></td><td><input type="text" id="itemDescription_' + itemNumber + '"/></td><td><input type="number" id="itemQuantity_' + itemNumber + '"/></td><td><input type="number" id="itemPriceByUnit_' + itemNumber + '"/></td><td><input type="number" id="itemDiscount_' + itemNumber + '"/></td><td><input type="text" id="itemComments_' + itemNumber + '"/></td></tr>');
+	    	$('#items_' + entryNumber).append('<tr id="item_' + entryNumber + '"><td><select name="" id="entryItemTypeId_' + itemNumber + '"><option value="">Seleccione</option><c:forEach var="ss" items="${entryItemTypes}"><option value="ss.id">${ss.name}</option></c:forEach></select></td><td><select id="referenceId" disabled="true"><option value="-1">Seleccione</option></select></td><td><input type="text" id="itemDescription_' + itemNumber + '"/></td><td><input type="number" id="itemQuantity_' + itemNumber + '"/></td><td><input type="number" id="itemPriceByUnit_' + itemNumber + '"/></td><td><input type="number" id="itemDiscount_' + itemNumber + '"/></td><td><input type="text" id="itemComments_' + itemNumber + '"/></td></tr>');
 	    }
 	</script>
 	
