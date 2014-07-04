@@ -4,15 +4,20 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Insert title here</title>
+		<link rel="stylesheet" href="${pageContext.request.contextPath}/css/960.css" type="text/css" media="screen" charset="utf-8" />
+
+<title>GPO SAC</title>
 </head>
 <body>
+	<div style="margin:20px;width:100%">
 		<h1 id="head">
 			<div class="logo">
-				<img alt="Grupo Sac" src="img/grupo-sac-logo.png" border="0"/>
+				<img alt="Grupo Sac" src="/img/grupo-sac-logo.png" border="0"/>
 			</div>
 			<span class="slogan">Portal de servicios</span>
 		</h1>
 	   Este usuario no esta identificado como usuario del portal.
+	</div>
+		
 </body>
 </html>

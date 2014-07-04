@@ -18,8 +18,11 @@ import com.blackstar.logging.Logger;
 import com.blackstar.model.UserSession;
 import com.blackstar.services.interfaces.DashboardService;
 import com.blackstar.web.AbstractController;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.support.SessionStatus;
 
 @Controller
 @RequestMapping("/dashboard")
@@ -58,6 +61,29 @@ public class DashboardController extends AbstractController {
 			return "error";
 		}
 		return "dashboard";
+	}
+	
+	// Logout
+	@RequestMapping(value = "/logout.do", method = RequestMethod.GET)
+	public String logout(ModelMap model, HttpServletRequest req, HttpServletResponse resp, SessionStatus status){
+		String logoutUrl = Globals.GOOGLE_LOGOUT_URL;
+		try{
+			HttpSession session = req.getSession();
+			session.invalidate();
+			status.setComplete();
+		}
+		 catch (final Throwable e) {
+				String error = "";
+				for(StackTraceElement trace : e.getStackTrace()){
+					error = error + " at " + trace.toString();
+				}
+				Logger.Log(LogLevel.ERROR,
+						error, e);
+				e.printStackTrace();
+				model.addAttribute("errorDetails", error);
+				return "error";
+			}
+		return ("redirect:" + logoutUrl);
 	}
 
 	//================================================================================

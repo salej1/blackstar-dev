@@ -132,13 +132,15 @@
 			$("#serviceTypeId").val($(this).val());
 			$("#serviceType").val($('#serviceTypes').find('option:selected').text());
 		});
-
+		$("#serviceType").val($('#serviceTypes').find('option:selected').text());
+		
 		// Binding equipmentTypes con campo oculto de tipo de servicio
 		$("#equipmentTypeList").bind("change", function(){
 			$("#equipmentTypeId").val($(this).val());
 			$("#equipmentType").val($("option:selected", this).text());
 		});
-		
+		$("#equipmentType").val($('#equipmentTypeList').find('option:selected').text());
+
 		// Cierre de la OS
 		$("#closeBtn").bind("click", function(){
 			$("#serviceStatusId").val('C');
@@ -160,7 +162,7 @@
 
 	});
 
-	function saveService(){
+	function validate(){
 		if($("#responsible").val() == ""){
 			$("#responsibleName").val("");
 			return false;
@@ -189,12 +191,20 @@
 			if($("#responsible").val().indexOf(';') == 0){
 				$("#responsible").val($("#responsible").val().substring(1));
 			}
-			$('#serviceOrder').submit();
+			return true;
 		}
 		else{
 			setTimeout(function() { $(event.target).focus();}, 50);
 		}
+		return false;
 	}
+
+	function saveService(){
+		if(validate()){
+			$('#serviceOrder').submit();
+		}
+	}
+
 	</script> 
 	
 	</head>
@@ -505,6 +515,7 @@
 								</c:if>	
 							</c:if>	
 							<input class="searchButton lockOnEngDetail" id="guardarServicio" type="submit" onclick="saveService();" value="Guardar servicio" form="serviceOrder"/>
+							<input class="searchButton lockOnEngDetail" id="guardarServicioCrear" type="submit" onclick="saveAndNew(); return false;" value="Guardar y Nueva OS"/>
 							<button class="searchButton" onclick="window.location = '/serviceOrders/show.do'">Cancelar</button>
 							</td>
 						</tr>
@@ -512,5 +523,98 @@
 				</table>
 			</c:if>
 		</div>
+		<div id = "OsLinksImport">
+				<c:import url="newOSLinks.jsp"></c:import>
+		</div>
+		<div id="WaitMessage" title="Guardar Orden de servicio" style="text-align:center">
+			Guardando Orden de servicio... <br><br> <img src="/img/processing.gif"/>
+		</div>
+		<div id="OkMessage" title="Orden de servicio guardada">
+			La orden de servicio ${serviceOrder.serviceOrderNumber} se guardo exitosamente.
+			<br>
+			Seleccione Aceptar para crear la nueva orden de servicio.
+		</div>
+		<div id="FailMessage" title="Error al guardar la OS">
+			Ocurrio un error al guardar la orden de servicio ${serviceOrder.serviceOrderNumber}. Intente nuevamente
+		</div>
 	</body>
+	<script type="text/javascript">
+		$(function(){
+			$("#OsLinksImport").hide();
+
+			$( "#OkMessage" ).dialog({
+		      modal: true,
+		      autoOpen: false,
+		      width: 450,
+		      buttons: {
+		        Aceptar: function() {
+		          $( this ).dialog( "close" );
+		          showEquipmentSelect('X');
+		        }
+		      }
+		    });
+
+		    $( "#FailMessage" ).dialog({
+		      modal: true,
+		      autoOpen: false,
+		      width: 350,
+		      buttons: {
+		        Aceptar: function() {
+		          $( this ).dialog( "close" );
+		        }
+		      }
+		    });
+
+		    $( "#WaitMessage" ).dialog({
+		      modal: true,
+		      autoOpen: false,
+		      width: 350,
+		      buttons: {
+		        
+		        }
+		    });
+
+		    $("#selectSNDialog").dialog({
+				autoOpen: false,
+				height: 290,
+				width: 360,
+				modal: true,
+				buttons: {
+					"Aceptar": function() {
+						if(selected){
+						  okChain("policy", loadedType);
+						} else {
+							$( this ).dialog( "close" );
+						}
+					},
+					"Sin Poliza": function(){
+						okChain("open", loadedType);
+					},
+
+					"Cancelar": function() {
+						$( this ).dialog( "close" );
+						window.location = '/dashboard/show.do';
+					}
+				}
+			});	
+			
+			$(".info").hide();
+
+		});
+
+		function saveAndNew(){
+			if(validate()){
+				// sincronizando firma
+				$("#signCreated").val($("#signCreatedCapture").val())
+				$("#signReceivedBy").val($("#signReceivedByCapture").val())
+				// enviando
+				$( "#WaitMessage" ).dialog('open');
+				$.post("/plainService/save.do", $("#serviceOrder").serialize()).
+				done(function(){
+					$( "#WaitMessage" ).dialog('close');
+					$( "#OkMessage" ).dialog('open');
+				});
+			}
+		}
+	</script>
 </html>

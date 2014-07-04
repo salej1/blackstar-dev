@@ -969,6 +969,9 @@ DROP PROCEDURE blackstarDb.upgradeSchema;
 --                              blackstarDb.GetProjectsKPI
 --								blackstarDb.AddSurveyService
 -- -----------------------------------------------------------------------------
+-- 48	02/07/2014	SAG 	Se modifica:
+--								blackstarDb.GetServiceOrders
+-- -----------------------------------------------------------------------------
 use blackstarDb;
 
 DELIMITER $$
@@ -4052,7 +4055,7 @@ BEGIN
 		p.brand AS brand,
 		p.serialNumber AS serialNumber,
 		ss.serviceStatus AS serviceStatus,
-		SO.hasPdf AS hasPdf,
+		so.hasPdf AS hasPdf,
 		sc.serviceCenter AS serviceCenter
 	FROM serviceOrder so 
 		INNER JOIN serviceType st ON so.servicetypeId = st.servicetypeId

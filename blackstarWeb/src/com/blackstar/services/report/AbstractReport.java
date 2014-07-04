@@ -22,7 +22,8 @@ public abstract class AbstractReport {
   }
 	
   protected void printHeader(String title,String description, String number) throws Exception {
-	drawer.image("pdf/logoSAC.jpg", 0, 10);
+	drawer.image("pdf/logoSAC.jpg", 0, 15, 0.82);
+	drawer.image("pdf/TUV.jpg", 155, -5, 0.50);
 	drawer.text("GUADALAJARA", 165,50, true);
 	drawer.text("Tel. 01(33) 37-93-01-38", 158,62);
 	drawer.text("Fax. 01(33) 37-93-01-44", 158,72);

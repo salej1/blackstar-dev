@@ -26,6 +26,7 @@ public class SecurityController extends AbstractController {
 		//TODO Se mantienen de forma provisional por compatibilidad con version actual
 		request.getSession().setAttribute("user_id", userSession.getUser().getUserEmail());
 		request.getSession().setAttribute("user", userSession.getUser());
+		request.getSession().setAttribute("logoutUrl", com.google.appengine.api.users.UserServiceFactory.getUserService().createLogoutURL(request.getRequestURI()));
 		request.getSession().setAttribute("employees", UserServiceFactory.getUserService().getEmployeeList());
 		return ("redirect:/dashboard/show.do");
 	} 

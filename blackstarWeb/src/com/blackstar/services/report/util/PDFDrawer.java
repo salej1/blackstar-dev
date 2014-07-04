@@ -112,10 +112,11 @@ public class PDFDrawer {
 	 textBox(StringUtils.notNull(text), x, y, w, h, isBold, DEFAULT_FONT_SIZE, showBorder);
   }
   
-  public void image(String path, float x, float y) throws Exception {
+  public void image(String path, float x, float y, double scale) throws Exception {
 	Image image = new Image(pdf, getClass().getClassLoader()
 			     .getResourceAsStream(path), ImageType.JPG);
 	image.setPosition(x + LEFT_MARGIN, y + TOP_MARGIN);
+	image.scaleBy(scale);
 	image.drawOn(page);
   }
   
