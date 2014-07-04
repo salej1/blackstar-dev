@@ -157,6 +157,30 @@ END$$
 
 
 -- -----------------------------------------------------------------------------
+	-- blackstarDb.CodexGetCurrencyTypes
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstardb.CodexGetCurrencyTypes$$
+CREATE PROCEDURE blackstardb.`CodexGetCurrencyTypes`()
+BEGIN
+
+  SELECT _id id, name name, description description 
+  FROM codexCurrencyType;
+	
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.CodexGetCurrencyTypes
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstardb.CodexGetTaxesTypes$$
+CREATE PROCEDURE blackstardb.`CodexGetTaxesTypes`()
+BEGIN
+
+  SELECT _id id, name name, description description , value value
+  FROM codexTaxesTypes;
+	
+END$$
+
+-- -----------------------------------------------------------------------------
 	-- FIN DE LOS STORED PROCEDURES
 -- -----------------------------------------------------------------------------
 DELIMITER ;

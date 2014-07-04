@@ -27,6 +27,8 @@ public class ProjectController extends AbstractController {
 	model.addAttribute("project", new ProjectVO());
 	model.addAttribute("entryTypes", service.getAllEntryTypes());
 	model.addAttribute("entryItemTypes", service.getAllEntryItemTypes());
+	model.addAttribute("currencyTypes", service.getAllCurrencyTypes());
+	model.addAttribute("taxesTypes", service.getAllTaxesTypes());
 	return "codex/projectDetail";
   }
 	

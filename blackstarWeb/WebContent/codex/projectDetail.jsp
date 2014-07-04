@@ -25,12 +25,15 @@
 	    var itemNumber = 0;
 	    function addEntry(){
 	    	entryNumber++;
-	    	$('#entryTable').append('<tr class="part" id="entry_' + entryNumber + '"><td>' + entryNumber + '</td><td colspan="2"><select name="" id="entryTypeId_' + entryNumber + '"><option value="">Seleccione</option><c:forEach var="ss" items="${entryTypes}"><option value="ss.id">${ss.name}</option></c:forEach></select></td><td colspan="3"><input type="text" id="description_' + entryNumber + '"/></td><td><input type="number" id="discount_' + entryNumber + '"/></td><td><input type="number" id="totalPrice_' + entryNumber + '"/></td><td><input type="number" id="comments_' + entryNumber + '"/></td> </tr> <tr><td colspan="8"><table id="items_'+ entryNumber + '"></table></td></tr><tr><td></td><td><button class="searchButton" onclick="addItem(' + entryNumber +');">+ Item</button></td></tr>');
+	    	$('#entryTable').append('<tr class="part" id="entry_' + entryNumber + '"><td>' + entryNumber + '</td><td colspan="2"><select name="" id="entryTypeId_' + entryNumber + '" style="width:350px"><option value="">Seleccione</option><c:forEach var="ss" items="${entryTypes}"><option value="ss.id">${ss.name}</option></c:forEach></select></td><td colspan="3"><input type="text" id="description_' + entryNumber + '" style="width:280px"/></td><td><input type="number" id="discount_' + entryNumber + '" style="width:50px"/></td><td><input type="number" id="totalPrice_' + entryNumber + '" style="width:50px"/></td><td><input type="text" id="comments_' + entryNumber + '" style="width:80px"/></td> </tr> <tr><td colspan="9"><table id="items_'+ entryNumber + '" style="width:100%"></table></td></tr><tr><td></td><td><button class="searchButton" onclick="addItem(' + entryNumber +');">+ Item</button></td></tr>');
 	    } 
 	    function addItem(entryNumber){
 	    	itemNumber++;
-	    	console.log('<tr id="item_' + entryNumber + '"><td><select name="" id="entryItemTypeId_' + itemNumber + '"><option value="">Seleccione</option><c:forEach var="ss" items="${entryItemTypes}"><option value="ss.id">${ss.name}</option></c:forEach></select></td><td><select id="referenceId" disabled="true"><option value="-1">Seleccione</option></select></td><td><input type="text" id="itemDescription_' + itemNumber + '"/></td><td><input type="number" id="itemQuantity_' + itemNumber + '"/></td><td><input type="number" id="itemPriceByUnit_' + itemNumber + '"/></td><td><input type="number" id="itemDiscount_' + itemNumber + '"/></td><td><input type="text" id="itemComments_' + itemNumber + '"/></td></tr>');
-	    	$('#items_' + entryNumber).append('<tr id="item_' + entryNumber + '"><td><select name="" id="entryItemTypeId_' + itemNumber + '"><option value="">Seleccione</option><c:forEach var="ss" items="${entryItemTypes}"><option value="ss.id">${ss.name}</option></c:forEach></select></td><td><select id="referenceId" disabled="true"><option value="-1">Seleccione</option></select></td><td><input type="text" id="itemDescription_' + itemNumber + '"/></td><td><input type="number" id="itemQuantity_' + itemNumber + '"/></td><td><input type="number" id="itemPriceByUnit_' + itemNumber + '"/></td><td><input type="number" id="itemDiscount_' + itemNumber + '"/></td><td><input type="text" id="itemComments_' + itemNumber + '"/></td></tr>');
+	    	$('#items_' + entryNumber).append('<tr id="item_' + itemNumber + '"><td><button class="searchButton" onclick="removeItem(\'item_' + itemNumber +'\')" style="width:10px">-</button></td><td><select name="" id="entryItemTypeId_' + itemNumber + '" style="width:157px"><option value="">Seleccione</option><c:forEach var="ss" items="${entryItemTypes}"><option value="ss.id">${ss.name}</option></c:forEach></select></td><td><select id="referenceId" disabled="true" style="width:150px"><option value="-1">Seleccione</option></select></td><td><input type="text" id="itemDescription_' + itemNumber + '" style="width:180px"/></td><td><input type="number" id="itemQuantity_' + itemNumber + '" style="width:40px"/></td><td><input type="number" id="itemPriceByUnit_' + itemNumber + '" style="width:40px"/></td><td><input type="number" id="itemDiscount_' + itemNumber + '" style="width:40px"/></td><td><input type="number" id="itemTotalPrice_' + itemNumber + '" style="width:40px"/></td><td><input type="text" id="itemComments_' + itemNumber + '" style="width:80px"/></td></tr>');
+	    }
+	    
+	    function removeItem(itemId){
+	    	$('#' + itemId).remove();
 	    }
 	</script>
 	
@@ -54,53 +57,89 @@
                         <form:form  commandName="project" action="${pageContext.request.contextPath}/codex/project/insert.do">
                            <table>
 							  <tr>
-								<td style="width:250px;">Cotizacion</td>
-								<td><form:input type="text" path="id" readonly="true"/></td>
-								<td>Estatus</td>
-								<td><form:input type="text" path="statusDescription" readonly="true"/></td>
+								<td  style="width:140px">No. Cedula</td>
+								<td><form:input type="text" path="projectNumber" readonly="true" style="width:100%"/></td>
+								<td style="width:120px">Estatus</td>
+								<td><form:input type="text" path="statusDescription" readonly="true" style="width:100%"/></td>
 							  </tr>
 							  <tr>
 								<td>Cliente</td>
-								<td colspan="4"><form:input type="text" path="clientDescription" /></td>
+								<td colspan="4"><form:input type="text" path="clientDescription"  style="width:100%"/></td>
 							  <tr>
 							  </tr>
 								<td>Centro de costos:</td>
 								<td>
-									<form:input type="text" path="costCenter"/>
+									<form:input type="text" path="costCenter" style="width:100%"/>
 								</td>
 							  </tr>
 							  <tr>
 								<td>Tipo de cambio:</td>
-								<td><form:input type="text" path="changeType"/></td>
+								<td><form:input type="text" path="changeType" style="width:100%"/></td>
 								<td>Fecha:</td>
-								<td><form:input id="fecha" type="text" path="created"/></td>
+								<td><form:input id="fecha" type="text" path="created" style="width:100%"/></td>
 							  <tr>
 								<td>Nombre del Contacto:</td>
-								<td><form:input type="text" path="contactName" /></td>
+								<td><form:input type="text" path="contactName"  style="width:100%"/></td>
 							  </tr>
 							  <tr>
 								<td>Ubucación(es) del Proyecto:</td>
-								<td><form:input type="text" path="location" /></td>
+								<td><form:input type="text" path="location"  style="width:100%"/></td>
 								<td>Forma de pago:</td>
-								<td><form:input type="text" path="paymentTypeId"/></td>
+								<td><form:input type="text" path="paymentTypeId" style="width:100%"/></td>
+							  </tr>
+							  <tr>
+								<td>Anticipo:</td>
+								<td><form:input type="text" path="advance" style="width:100%"/></td>
+								<td>Plazo:</td>
+								<td><form:input id="fecha" type="text" path="timeLimit" style="width:100%"/></td>
+							  <tr>
+							  <tr>
+								<td>Plazo finiquito:</td>
+								<td><form:input type="text" path="settlementTimeLimit"  style="width:100%"/></td>
+							  </tr>
+							  <tr>
+								<td>Moneda:</td>
+								<td><form:select name="" id="currency" path="currencyTypeId" style="width:100%">
+								            <option value="">Seleccione</option>
+											<c:forEach var="ss" items="${currencyTypes}">
+												<option value="ss.id"
+												<c:if test="${ss.id == project.currencyTypeId}">
+													selected="true"
+												</c:if>
+												>${ss.name}</option>
+											</c:forEach>
+											
+										</form:select></td>
+								<td>IVA:</td>
+								<td><form:select name="" id="taxes" path="taxesTypeId" style="width:100%">
+								            <option value="">Seleccione</option>
+											<c:forEach var="ss" items="${taxesTypes}">
+												<option value="ss.id"
+												<c:if test="${ss.id == project.taxesTypeId}">
+													selected="true"
+												</c:if>
+												>${ss.name}</option>
+											</c:forEach>
+											
+										</form:select></td>
 							  </tr>
 							  <tr>
 								<td>Tiempo de entrega:</td>
-								<td><form:input type="text" path="deliveryTime"/></td>
+								<td><form:input type="text" path="deliveryTime" style="width:100%"/></td>
 								<td>Intercom:</td>
-								<td><form:input type="text" path="intercom"/></td>
+								<td><form:input type="text" path="intercom" style="width:100%"/></td>
 							  </tr>
 							  <tr>
 								<td>TOTAL DE PRODUCTOS</td>
-								<td><form:input type="text" path="productsNumber"/></td>
+								<td><form:input type="text" path="productsNumber" style="width:100%"/></td>
 								<td>FIANZA(S)</td>
-								<td><form:input type="text" path="financesNumber"/></td>
+								<td><form:input type="text" path="financesNumber" style="width:100%"/></td>
 							  </tr>
 							  <tr>
 								<td>TOTAL DE SERVICIOS</td>
-								<td><form:input type="text" path="servicesNumber"/></td>
+								<td><form:input type="text" path="servicesNumber" style="width:100%"/></td>
 								<td>TOTAL DEL PROYECTO</td>
-								<td><form:input type="text" path="totalProjectNumber"/></td>
+								<td><form:input type="text" path="totalProjectNumber" style="width:100%"/></td>
 							  </tr>
 						   </table>
                        </form:form>
@@ -119,7 +158,7 @@
 									<th style="width:5px;">Part.</th>
 									<th style="width:180px;">Tipo</th>
 									<th style="width:180px;">Referencia</th>
-									<th style="width:250px;">Descripcion</th>
+									<th style="width:200px;">Descripcion</th>
 									<th style="width:15px;">Cant.</th>
 									<th style="width:60px;">P. Unt.</th>
 									<th style="width:50px;">Descto.</th>
