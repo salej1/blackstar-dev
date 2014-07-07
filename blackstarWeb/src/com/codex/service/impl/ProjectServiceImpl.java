@@ -105,6 +105,10 @@ public class ProjectServiceImpl extends AbstractService
 	}
   }
 
+  @Override
+  public Integer getNewProjectId(){
+	return dao.getNewProjectId();
+  }
 
 
 }

@@ -26,7 +26,12 @@ public class ProjectController extends AbstractController {
 	
   @RequestMapping(value = "/create.do")
   public String create(ModelMap model){
-	model.addAttribute("project", new ProjectVO());
+	ProjectVO project = new ProjectVO();
+	Integer projectId = service.getNewProjectId();
+	project.setId(projectId);
+	project.setStatusId(1);
+	project.setProjectNumber("CQ" + projectId);
+	model.addAttribute("project", project);
 	model.addAttribute("entryTypes", service.getAllEntryTypes());
 	model.addAttribute("entryItemTypes", service.getAllEntryItemTypes());
 	model.addAttribute("currencyTypes", service.getAllCurrencyTypes());

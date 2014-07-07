@@ -317,6 +317,17 @@ BEGIN
 END;
 
 -- -----------------------------------------------------------------------------
+	-- blackstarDb.GetNextProjectId
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstardb.GetNextProjectId$$
+CREATE PROCEDURE blackstardb.`GetNextProjectId`()
+BEGIN
+	DECLARE newNumber INTEGER;
+	CALL blackstarDb.GetNextServiceOrderNumber('C', newNumber);
+	SELECT newNumber projectNumber;
+END$$
+
+-- -----------------------------------------------------------------------------
 	-- FIN DE LOS STORED PROCEDURES
 -- -----------------------------------------------------------------------------
 DELIMITER ;

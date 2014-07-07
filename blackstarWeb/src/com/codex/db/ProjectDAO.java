@@ -24,5 +24,6 @@ public interface ProjectDAO {
 	public void addFollow(Integer projectId, Integer userId, String comment);
 	public void addProjectTeam(Integer projectId, Integer roleId, Integer userId);
 	public List<ProjectVO> getProjectDetail(Integer projectId);
+	public Integer getNewProjectId();
 
 }

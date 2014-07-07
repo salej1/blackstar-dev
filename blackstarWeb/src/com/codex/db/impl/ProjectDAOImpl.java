@@ -77,21 +77,29 @@ public class ProjectDAOImpl extends AbstractDAO
 
   @Override
   public void addFollow(Integer projectId, Integer userId, String comment) {
-	StringBuilder sqlBuilder = new StringBuilder("CALL AddFollowUpToBloomTicket(?, ?, ?);");
+	StringBuilder sqlBuilder = new StringBuilder("CALL AddFollowUpToCodexProject(?, ?, ?);");
 	getJdbcTemplate().update(sqlBuilder.toString(),new Object[] { projectId
 		                                             , userId, comment });
   }
 
+  @Override
   public void addProjectTeam(Integer projectId, Integer roleId, Integer userId) {
-	StringBuilder sqlBuilder = new StringBuilder("CALL UpsertBloomTicketTeam(?, ?, ?);");
+	StringBuilder sqlBuilder = new StringBuilder("CALL UpsertWorkTeamByCodexProject(?, ?, ?);");
 	getJdbcTemplate().update(sqlBuilder.toString(),new Object[] { projectId
 		                                               , roleId, userId });
   }
   
+  @Override
   public List<ProjectVO> getProjectDetail(Integer projectId) {
 	StringBuilder sqlBuilder = new StringBuilder("CALL CodexGetProjectById(?)");
 	return (List<ProjectVO>) getJdbcTemplate().query(sqlBuilder.toString(),
 				new Object[] { projectId }, getMapperFor(ProjectVO.class));
+  }
+  
+  @Override
+  public Integer getNewProjectId() {
+	StringBuilder sqlBuilder = new StringBuilder("CALL GetNextProjectId()");
+	return getJdbcTemplate().queryForInt(sqlBuilder.toString());
   }
 
 }

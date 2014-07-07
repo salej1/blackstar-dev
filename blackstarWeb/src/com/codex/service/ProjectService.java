@@ -24,5 +24,6 @@ public interface ProjectService {
   public void addProjectTeam(Integer projectId, Integer roleId, Integer userId);
   public void sendNotification(Integer fromUserId, Integer toUserId 
 		                       , Integer projectId, String detail);
+  public Integer getNewProjectId();
   
 }
