@@ -23,6 +23,29 @@
 	<script type="text/javascript">
 	    var entryNumber = 0;
 	    var itemNumber = 0;
+	    
+	    $(document).ready(function () {
+
+			//Attachment dialog
+			$("#attachmentDlg").dialog({
+				autoOpen: false,
+				height: 270,
+				width: 420,
+				modal: true,
+				buttons: {
+					"Aceptar": function() {
+						$.ajax({
+					        type: "GET",
+					        url: "addDeliverableTrace.do",
+					        data: "projectId=${project.id}&deliverableTypeId=" + $("#attachmentType").val() + "&userId=${user.blackstarUserId}",
+					        success: function(html) {
+					        	$('#attachmentDlg').dialog( "close" );
+					        }
+					    });
+					}}
+			});
+	    });
+	    
 	    function addEntry(){
 	    	entryNumber++;
 	    	$('#entryTable').append('<tr class="part" id="entry_' + entryNumber + '"><td>' + entryNumber + '</td><td colspan="2"><select name="" id="entryTypeId_' + entryNumber + '" style="width:350px"><option value="">Seleccione</option><c:forEach var="ss" items="${entryTypes}"><option value="ss.id">${ss.name}</option></c:forEach></select></td><td colspan="3"><input type="text" id="description_' + entryNumber + '" style="width:280px"/></td><td><input type="number" id="discount_' + entryNumber + '" style="width:50px"/></td><td><input type="number" id="totalPrice_' + entryNumber + '" style="width:50px"/></td><td><input type="text" id="comments_' + entryNumber + '" style="width:80px"/></td> </tr> <tr><td colspan="9"><table id="items_'+ entryNumber + '" style="width:100%"></table></td></tr><tr><td></td><td><button class="searchButton" onclick="addItem(' + entryNumber +');">+ Item</button></td></tr>');
@@ -35,6 +58,11 @@
 	    function removeItem(itemId){
 	    	$('#' + itemId).remove();
 	    }
+	    
+	    function customPickerCallBack(data) {
+			$("#attachmentFileName").val(data.docs[0].name);
+			$('#attachmentDlg').dialog('open');
+		}
 	</script>
 	
 <!--   CONTENT   -->
@@ -181,40 +209,33 @@
 
 <!-- ADJUNTOS -->
 						<br><br>		
-						<table id="adjuntosTable">
-							<thead>
-								<th>Historial</th>
-							</thead>
-							<tr>
-								<td id="attachmentsContent">
-									<div class="comment"><table><tr><td style="width:20%"><strong>Creación</strong></td><td style="width:20%"><strong>Cedula creada</strong></td><td style="width:20%">Liliana Diaz</td><td style="width:20%"></td>	<td style="width:20%">12/30/2013 8:00:23 AM</td></tr> </table></div>
-								</td>
-							</tr>
-						</table>
-						<table>
-							<tbody>
-								<tr>
-									<td>
-										<p></p>
-										<button  class="searchButton" onclick="$('#attachmentDlg').dialog('open'); return false;">Agregar archivo</button>
-									</td>
-								</tr>
-							<tbody>
-						</table>
 
-						<!-- Attachment section -->
-						<div id="attachmentDlg" title="Adjuntar archivo">
-							<p>Tipo: <select id="attachmentType" style="width:200px;">
-								<option></option>
-								<option value="Requisicion general">Requisicion general</option>
-							</select></p>
-							<p></p>
-							Comentario
-							<input id="fileComment" type="text" style="width:95%" />
-							<p></p>
-							<p>Seleccione el archivo PDF</p>
-							<input type="file" id="filename" size="80"> 
-						</div>
+						 <table id="fileTraceTable">
+								<thead>
+									<th colspan="2">Seguimiento</th>
+								</thead>
+								    <c:forEach var="current" items="${deliverables}" >
+									  <tr>
+									    <td  style="width:5%;">
+		                                  <c:choose>
+											<c:when test="${current.delivered}">
+												<img src='${pageContext.request.contextPath}/img/delivered.png'/>
+											</c:when>
+											<c:otherwise>
+												<img src='${pageContext.request.contextPath}/img/notDelivered.png'/>
+											</c:otherwise>
+										  </c:choose>
+
+
+										</td>
+										<td align="left">
+										  ${current.name}
+										</td>
+									  </tr>
+									  </c:forEach>
+							</table>
+
+							<c:import url="/_attachments.jsp"></c:import>
 
 						<!-- Cotizacion DLG -->
 						<div id="mailDlg">
@@ -237,11 +258,19 @@
 					</div>					
 				</div>
 				 
-<!--   ~ BOTONES    -->
-				
-<!--   ~ CONTENT COLUMN   -->
+                 <!-- Attachment Img section -->
+				<div id="attachmentDlg" title="Referencia">
+					<p></p>
+					<p>Tipo de archivo</p>
+					<input id="attachmentFileName" size="80" readOnly="true"/> 
+					<select id="attachmentType" style="width:200px;">
+					   <option value="-1">Sin referencia</option>
+					     <c:forEach var="current" items="${deliverableTypes}" >
+					        <option value="${current.id}">${current.name}</option>
+					     </c:forEach>
+					</select>
 
-<!--   CONTENT COLUMN   -->				
+				</div>		
 								
 <!--   ~ CONTENT COLUMN   -->
 

@@ -300,7 +300,7 @@ END$$
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.CodexGetProjectById
 -- -----------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS blackstarDb.CodexGetProjectById;
+DROP PROCEDURE IF EXISTS blackstarDb.CodexGetProjectById$$
 CREATE PROCEDURE blackstarDb.`CodexGetProjectById`(pProjectId INTEGER)
 BEGIN
    SELECT cp._id id, cp.projectNumber projectNumber, cp.clientId clientId, cp.taxesTypeId taxesTypeId
@@ -314,7 +314,7 @@ BEGIN
    WHERE cp._id = pProjectId
          AND cp.statusId = cst._id 
          AND cp.clientId = cc._id ;
-END;
+END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetNextProjectId
@@ -326,6 +326,26 @@ BEGIN
 	CALL blackstarDb.GetNextServiceOrderNumber('C', newNumber);
 	SELECT newNumber projectNumber;
 END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.CodexGetDeliverableTypes
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstardb.CodexGetDeliverableTypes$$
+CREATE PROCEDURE blackstardb.`CodexGetDeliverableTypes`()
+BEGIN
+	SELECT cdt._id id, cdt.name name, cdt.description description 
+  FROM codexDeliverableType cdt;
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.CodexInsertDeliverableTrace
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstardb.CodexInsertDeliverableTrace;
+CREATE PROCEDURE blackstardb.`CodexInsertDeliverableTrace`(pProjectId int(11), pDeliverableId int(2), pUserId int(11))
+BEGIN
+	INSERT INTO codexDeliverableTrace (codexProjectId, deliverableTypeId, created, userId)
+  VALUES (pProjectId, pDeliverableId, NOW(), pUserId);
+END;
 
 -- -----------------------------------------------------------------------------
 	-- FIN DE LOS STORED PROCEDURES

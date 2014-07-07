@@ -5,6 +5,7 @@ import java.util.List;
 import com.blackstar.model.Followup;
 import com.blackstar.model.User;
 import com.codex.vo.CurrencyTypesVO;
+import com.codex.vo.DeliverableTypesVO;
 import com.codex.vo.ProjectEntryItemTypesVO;
 import com.codex.vo.ProjectEntryTypesVO;
 import com.codex.vo.TaxesTypesVO;
@@ -25,5 +26,8 @@ public interface ProjectService {
   public void sendNotification(Integer fromUserId, Integer toUserId 
 		                       , Integer projectId, String detail);
   public Integer getNewProjectId();
+  public List<DeliverableTypesVO> getDeliverableTypes();
+  public void addDeliverableTrace(Integer projectId, Integer deliverableTypeId
+                                                            , Integer userId);
   
 }

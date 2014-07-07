@@ -127,8 +127,12 @@ public class GoogleDriveServiceImpl extends AbstractService
   }
   
   public String getAccessToken() throws Exception {
-	credential.refreshToken();
-	return credential.getAccessToken();
+	String accessToken = null;
+	if(credential != null){
+	  credential.refreshToken();
+	  accessToken = credential.getAccessToken();
+	}
+	return accessToken;
   }
   
   private void setPermissions(String fileId) throws Exception{

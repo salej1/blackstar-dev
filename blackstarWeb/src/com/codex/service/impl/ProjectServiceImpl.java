@@ -11,6 +11,7 @@ import com.blackstar.services.EmailServiceFactory;
 import com.codex.db.ProjectDAO;
 import com.codex.service.ProjectService;
 import com.codex.vo.CurrencyTypesVO;
+import com.codex.vo.DeliverableTypesVO;
 import com.codex.vo.ProjectEntryItemTypesVO;
 import com.codex.vo.ProjectEntryTypesVO;
 import com.codex.vo.ProjectVO;
@@ -109,6 +110,16 @@ public class ProjectServiceImpl extends AbstractService
   public Integer getNewProjectId(){
 	return dao.getNewProjectId();
   }
-
+  
+  @Override
+  public List<DeliverableTypesVO> getDeliverableTypes(){
+	return dao.getDeliverableTypes();
+  }
+  
+  @Override
+  public void addDeliverableTrace(Integer projectId, Integer deliverableTypeId
+                                                            , Integer userId){
+	dao.addDeliverableTrace(projectId, deliverableTypeId, userId);
+  }
 
 }

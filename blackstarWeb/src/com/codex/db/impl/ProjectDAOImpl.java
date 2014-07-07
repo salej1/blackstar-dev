@@ -7,6 +7,7 @@ import com.blackstar.model.Followup;
 import com.blackstar.model.User;
 import com.codex.db.ProjectDAO;
 import com.codex.vo.CurrencyTypesVO;
+import com.codex.vo.DeliverableTypesVO;
 import com.codex.vo.ProjectEntryItemTypesVO;
 import com.codex.vo.ProjectEntryTypesVO;
 import com.codex.vo.ProjectVO;
@@ -100,6 +101,21 @@ public class ProjectDAOImpl extends AbstractDAO
   public Integer getNewProjectId() {
 	StringBuilder sqlBuilder = new StringBuilder("CALL GetNextProjectId()");
 	return getJdbcTemplate().queryForInt(sqlBuilder.toString());
+  }
+  
+  @Override
+  public List<DeliverableTypesVO> getDeliverableTypes() {
+	StringBuilder sqlBuilder = new StringBuilder("CALL CodexGetDeliverableTypes()");
+	return (List<DeliverableTypesVO>) getJdbcTemplate().query(sqlBuilder.toString() 
+			                             , getMapperFor(DeliverableTypesVO.class));
+  }
+  
+  @Override
+  public void addDeliverableTrace(Integer projectId, Integer deliverableTypeId
+		                                                   , Integer userId) {
+	String sqlQuery = "CALL CodexInsertDeliverableTrace(?, ?, ?)";
+	getJdbcTemplate().update(sqlQuery, new Object[]{projectId, deliverableTypeId
+			                                                         , userId});
   }
 
 }

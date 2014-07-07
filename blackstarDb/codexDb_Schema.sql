@@ -208,6 +208,24 @@ CREATE TABLE blackstarDb.workTeam(
   FOREIGN KEY (blackstarUserId) REFERENCES blackstarUser (blackstarUserId)
 )ENGINE=INNODB;
 		 
+CREATE TABLE blackstarDb.codexDeliverableType(
+    _id Int(11) NOT NULL AUTO_INCREMENT,
+    name Varchar(150) NOT NULL,
+    description Varchar(400) NOT NULL,
+    PRIMARY KEY (_id)
+)ENGINE=INNODB;
+
+CREATE TABLE blackstarDb.codexDeliverableTrace(
+    _id Int(11) NOT NULL AUTO_INCREMENT,
+	codexProjectId Int(11) NOT NULL,
+    deliverableTypeId Int(11) NOT NULL,
+	created Date NOT NULL,
+	userId Int(11) NOT NULL,
+	PRIMARY KEY (_id),
+    FOREIGN KEY (deliverableTypeId) REFERENCES codexDeliverableType (_id),
+	FOREIGN KEY (codexProjectId) REFERENCES codexProject (_id)
+)ENGINE=INNODB;
+		 
 		 
 ALTER TABLE blackstarDb.followUp ADD codexProjectId Int(11);
 ALTER TABLE blackstarDb.followUp ADD CONSTRAINT R121 FOREIGN KEY (codexProjectId) REFERENCES codexProject (_id);

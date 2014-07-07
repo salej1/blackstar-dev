@@ -15,8 +15,8 @@
   </bean>
   
   <bean id="googleDriveService" class="com.blackstar.services.impl.GoogleDriveServiceImpl" parent="abstractService" init-method="init">
-    <property name="serviceAccountId" value="435070024686-qo4ir0cvgafjrkhvi14hkletlq0f90c8@developer.gserviceaccount.com"/>
-    <property name="serviceAccountUser" value="sergio.gomez@innso.com.mx"/>
+    <property name="serviceAccountId" value="313287673617@developer.gserviceaccount.com"/>
+    <property name="serviceAccountUser" value="portal-servicios@gposac.com.mx"/>
   </bean>
   
   

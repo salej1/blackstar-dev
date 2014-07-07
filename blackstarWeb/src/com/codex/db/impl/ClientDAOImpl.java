@@ -90,4 +90,5 @@ public class ClientDAOImpl extends AbstractDAO
 	String sqlQuery = "CALL CodexGetClientList(?)";
 	return getJdbcTemplate().query(sqlQuery, new Object[]{isProspect ? 0 : 1} , new JSONRowMapper());
   }
+ 
 }
