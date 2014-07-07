@@ -176,52 +176,7 @@
 
 <!--   SEGUIMIENTO   -->		
 						<br /><br />		
-						<table id="seguimientoTable">
-							<thead>
-								<th>Seguimiento</th>
-							</thead>
-								<tr>
-									<td id="seguimientoContent">
-									</td>
-								</tr>
-								<tr>
-									<td id="seguimientoCapture" class="comment">
-										<div>
-											<Label id="seguimientoStamp">stamp</Label>
-										</div>
-										<div> Asignar a:
-											<select id="seguimientoWho" style="width:200px;">
-												<option></option>
-												<option>Alberto Lopez Gomez</option>
-												<option>Alejandra Diaz</option>
-												<option>Alejandro Monroy</option>
-												<option>Angeles Avila</option>
-												<option>Armando Perez Pinto</option>
-												<option>Gonzalo Ramirez</option>
-												<option>Jose Alberto Jonguitud Gallardo</option>
-												<option>Marlem Samano</option>
-												<option>Martin Vazquez</option>
-												<option>Reynaldo Garcia</option>
-												<option>Sergio  Gallegos</option>
-											</select>
-											<p></p>
-											<textarea id="seguimientoText" rows="5" style="width:65%;" onclick="fillSeguimiento();"></textarea>
-											<button class="searchButton" onclick="applySeguimiento();">Agregar</button>
-											<button class="searchButton" onclick="cancelAddSeguimiento();">Cancelar</button>
-										</div>
-									</td>
-								</tr>
-						</table>
-						<table>
-							<tbody>
-								<tr>
-									<td>
-										<p></p>
-										<button class="searchButton" onclick="addSeguimiento();">Agregar seguimiento</button>
-									</td>
-								</tr>
-							<tbody>
-						</table>
+						<c:import url="_followTable.jsp"></c:import>
 <!--   ~ SEGUIMIENTO   -->		
 
 <!-- ADJUNTOS -->

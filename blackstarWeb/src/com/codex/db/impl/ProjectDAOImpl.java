@@ -3,11 +3,15 @@ package com.codex.db.impl;
 import java.util.List;
 
 import com.blackstar.db.dao.AbstractDAO;
+import com.blackstar.model.Followup;
+import com.blackstar.model.User;
 import com.codex.db.ProjectDAO;
 import com.codex.vo.CurrencyTypesVO;
 import com.codex.vo.ProjectEntryItemTypesVO;
 import com.codex.vo.ProjectEntryTypesVO;
+import com.codex.vo.ProjectVO;
 import com.codex.vo.TaxesTypesVO;
+import com.codex.vo.TicketTeamDTO;
 
 
 @SuppressWarnings("unchecked")
@@ -40,6 +44,54 @@ public class ProjectDAOImpl extends AbstractDAO
 	String sqlQuery = "CALL CodexGetTaxesTypes()";
 	return (List<TaxesTypesVO>) getJdbcTemplate().query(sqlQuery
 				            , getMapperFor(TaxesTypesVO.class));
+  }
+  
+  @Override
+  public List<Followup> getFollowUps(Integer projectId) {
+	StringBuilder sqlBuilder = new StringBuilder("CALL GetFollowUpByProjectId(?)");
+	return (List<Followup>) getJdbcTemplate().query(sqlBuilder.toString(),
+				 new Object[] {projectId}, getMapperFor(Followup.class));
+  }
+  
+  @Override
+  public List<TicketTeamDTO> getWorkTeam(Integer projectId) {
+		StringBuilder sqlBuilder = new StringBuilder("CALL GetWorkTeamByProjectId(?);");
+		return (List<TicketTeamDTO>) getJdbcTemplate().query(
+				sqlBuilder.toString(), new Object[] { projectId },
+				getMapperFor(TicketTeamDTO.class));
+	}
+
+  @Override
+  public List<User> getAsigneedUser(Integer projectId) {
+	StringBuilder sqlBuilder = new StringBuilder("CALL GetResponsibleByProjectId(?)");
+	return (List<User>) getJdbcTemplate().query(sqlBuilder.toString(),
+			     new Object[] { projectId }, getMapperFor(User.class));
+  }
+
+  @Override
+  public List<User> getResponseUser(Integer projectId) {
+	StringBuilder sqlBuilder = new StringBuilder("CALL GetUserForResponseByProjectId(?)");
+	return (List<User>) getJdbcTemplate().query(sqlBuilder.toString(),
+				new Object[] { projectId }, getMapperFor(User.class));
+  }
+
+  @Override
+  public void addFollow(Integer projectId, Integer userId, String comment) {
+	StringBuilder sqlBuilder = new StringBuilder("CALL AddFollowUpToBloomTicket(?, ?, ?);");
+	getJdbcTemplate().update(sqlBuilder.toString(),new Object[] { projectId
+		                                             , userId, comment });
+  }
+
+  public void addProjectTeam(Integer projectId, Integer roleId, Integer userId) {
+	StringBuilder sqlBuilder = new StringBuilder("CALL UpsertBloomTicketTeam(?, ?, ?);");
+	getJdbcTemplate().update(sqlBuilder.toString(),new Object[] { projectId
+		                                               , roleId, userId });
+  }
+  
+  public List<ProjectVO> getProjectDetail(Integer projectId) {
+	StringBuilder sqlBuilder = new StringBuilder("CALL CodexGetProjectById(?)");
+	return (List<ProjectVO>) getJdbcTemplate().query(sqlBuilder.toString(),
+				new Object[] { projectId }, getMapperFor(ProjectVO.class));
   }
 
 }

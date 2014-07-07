@@ -187,8 +187,31 @@ CREATE TABLE IF NOT EXISTS blackstarDb.codexPriceList(
   PRIMARY KEY (_id)
 )ENGINE=INNODB;
 
+CREATE TABLE IF NOT EXISTS blackstarDb.workerRoleType(
+   _id Int(11) NOT NULL AUTO_INCREMENT,
+   name Varchar(150) NOT NULL,
+   description Varchar(400) NOT NULL,
+   PRIMARY KEY (_id),
+   UNIQUE UQ_bloomWorkerRoleType(name)
+)ENGINE=INNODB;
+
+CREATE TABLE blackstarDb.workTeam(
+  _id Int(11) NOT NULL AUTO_INCREMENT,
+  ticketId Int(11),
+  codexProjectId Int(11),
+  workerRoleTypeId Int(11) NOT NULL,
+  blackstarUserId Int(11) NOT NULL,
+	assignedDate Datetime NOT NULL,
+  PRIMARY KEY (`_id`),
+	FOREIGN KEY (ticketId) REFERENCES bloomTicket (_id),
+  FOREIGN KEY (workerRoleTypeId) REFERENCES bloomWorkerRoleType (_id),
+  FOREIGN KEY (blackstarUserId) REFERENCES blackstarUser (blackstarUserId)
+)ENGINE=INNODB;
+		 
+		 
 ALTER TABLE blackstarDb.followUp ADD codexProjectId Int(11);
 ALTER TABLE blackstarDb.followUp ADD CONSTRAINT R121 FOREIGN KEY (codexProjectId) REFERENCES codexProject (_id);
+ALTER TABLE blackstarDb.workTeam ADD CONSTRAINT R122 FOREIGN KEY (codexProjectId) REFERENCES codexProject (_id);
 		 
 -- -----------------------------------------------------------------------------
 -- FIN SECCION DE CAMBIOS - NO CAMBIAR CODIGO FUERA DE ESTA SECCION

@@ -181,6 +181,142 @@ BEGIN
 END$$
 
 -- -----------------------------------------------------------------------------
+	-- blackstarDb.GetFollowUpByProjectId
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetFollowUpByProjectId$$
+CREATE PROCEDURE blackstarDb.GetFollowUpByProjectId(pProjectId INTEGER)
+BEGIN
+
+	SELECT 
+		created AS timeStamp,
+		u2.name AS createdBy,
+		u.name AS asignee,
+		followup AS followUp
+	FROM followUp f
+		LEFT OUTER JOIN blackstarUser u ON f.asignee = u.email
+		LEFT OUTER JOIN blackstarUser u2 ON f.createdByUsr = u2.email
+	WHERE codexProjectId = pProjectId
+	ORDER BY created;
+
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetWorkTeamByProjectId
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetWorkTeamByProjectId$$
+CREATE PROCEDURE blackstarDb.`GetWorkTeamByProjectId`(pProjectId INTEGER)
+BEGIN
+
+SELECT *
+FROM (
+  (SELECT _id id, ticketId ticketId, workerRoleTypeId workerRoleTypeId, blackstarUserId blackstarUserId, assignedDate assignedDate
+       FROM workTeam WHERE codexProjectId = pProjectId
+  ) AS ticketTeam
+       LEFT JOIN (SELECT bu.blackstarUserId refId, bu.name blackstarUserName
+           FROM blackstarUser bu
+        ) AS j1 ON ticketTeam.blackstarUserId = j1.refId
+       LEFT JOIN (SELECT wrt._id refId, wrt.name as workerRoleTypeName 
+           FROM workerRoleType wrt
+        ) AS j2 ON ticketTeam.workerRoleTypeId = j2.refId
+);
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetResponsibleByProjectId
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetResponsibleByProjectId$$
+CREATE PROCEDURE blackstarDb.`GetResponsibleByProjectId`(pProjectId INTEGER)
+BEGIN
+
+DECLARE responsableId INTEGER;
+
+SET responsableId = (SELECT blackstarUserId 
+                     FROM workTeam 
+                     WHERE codexProjectId = pProjectId
+                           AND workerRoleTypeId = 1
+                     LIMIT 1);
+SELECT * 
+FROM blackstarUser
+WHERE blackstarUserId = responsableId;
+
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetUserForResponseByProjectId
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetUserForResponseByProjectId$$
+CREATE PROCEDURE blackstarDb.`GetUserForResponseByProjectId`(pProjectId INTEGER)
+BEGIN
+
+DECLARE responseUserId INTEGER;
+
+SET responseUserId = (SELECT blackstarUserId 
+                     FROM workTeam 
+                     WHERE codexProjectId = pProjectId
+                           AND workerRoleTypeId = 2
+                     ORDER BY assignedDate DESC
+                     LIMIT 1);
+SELECT * 
+FROM blackstarUser
+WHERE blackstarUserId = responseUserId;
+
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.AddFollowUpToCodexProject
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.AddFollowUpToCodexProject$$
+CREATE PROCEDURE blackstarDb.`AddFollowUpToCodexProject`(pProjectId INTEGER, pCreatedByUsrId INTEGER, pMessage TEXT)
+BEGIN
+  DECLARE pCreatedByUsrMail VARCHAR(100);
+  
+  SET pCreatedByUsrMail = (SELECT email FROM blackstarUser WHERE blackstarUserId = pCreatedByUsrId);
+	INSERT INTO blackstarDb.followUp(codexProjectId, followup, created, createdBy, createdByUsr)
+	VALUES(pProjectId, pMessage, NOW(), 'AddFollowUpToCodexProject', pCreatedByUsrMail);
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.UpsertWorkTeamByCodexProject
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.UpsertWorkTeamByCodexProject$$
+CREATE PROCEDURE blackstarDb.`UpsertWorkTeamByCodexProject`(pProjectId INTEGER, pWorkerRoleTypeId INTEGER, pblackstarUserId INTEGER)
+BEGIN
+
+IF NOT EXISTS (SELECT * FROM workTeam 
+               WHERE codexProjectId = pProjectId AND blackstarUserId = pblackstarUserId) THEN
+    INSERT INTO blackstarDb.workTeam(codexProjectId, workerRoleTypeId, blackstarUserId, assignedDate)
+    VALUES(pProjectId, pWorkerRoleTypeId, pblackstarUserId, NOW());   
+ELSE
+   UPDATE blackstarDb.workTeam SET assignedDate = NOW(), workerRoleTypeId = pWorkerRoleTypeId
+   WHERE codexProjectId = pProjectId AND blackstarUserId = pblackstarUserId;
+END IF;
+IF (pWorkerRoleTypeId = 1) THEN
+    UPDATE blackstarDb.workTeam SET workerRoleTypeId = 2
+    WHERE codexProjectId = pProjectId AND blackstarUserId != pblackstarUserId;
+END IF;
+    
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.CodexGetProjectById
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.CodexGetProjectById;
+CREATE PROCEDURE blackstarDb.`CodexGetProjectById`(pProjectId INTEGER)
+BEGIN
+   SELECT cp._id id, cp.projectNumber projectNumber, cp.clientId clientId, cp.taxesTypeId taxesTypeId
+         , cp.statusId statusId, cp.paymentTypeId paymentTypeId, cp.currencyTypeId currencyTypeId
+         , cst.description statusDescription, cc.corporateName clientDescription 
+         , cp.costCenter costCenter, cp.changeType changeType, cp.created created, cp.contactName contactName
+         , cp.location location, cp.advance advance, cp.timeLimit timeLimit, cp.settlementTimeLimit settlementTimeLimit
+         , cp.deliveryTime deliveryTime, cp.intercom intercom, cp.productsNumber productsNumber, cp.financesNumber financesNumber
+         , cp.servicesNumber servicesNumber, cp.totalProjectNumber totalProjectNumber
+   FROM codexProject cp, codexStatusType cst, codexClient cc
+   WHERE cp._id = pProjectId
+         AND cp.statusId = cst._id 
+         AND cp.clientId = cc._id ;
+END;
+
+-- -----------------------------------------------------------------------------
 	-- FIN DE LOS STORED PROCEDURES
 -- -----------------------------------------------------------------------------
 DELIMITER ;
