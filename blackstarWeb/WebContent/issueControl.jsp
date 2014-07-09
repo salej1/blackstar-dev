@@ -16,6 +16,7 @@
 				"bLengthChange": false,
 				"iDisplayLength": 10,
 				"bInfo": false,
+				"bAutoWidth": false ,
 				"sPaginationType": "full_numbers",
 				"aaData": data,
 				"sDom": '<"top"i>rt<"bottom"flp><"clear">',
@@ -55,6 +56,7 @@
 				"bLengthChange": false,
 				"iDisplayLength": 10,
 				"bInfo": false,
+				"bAutoWidth": false ,
 				"sPaginationType": "full_numbers",
 				"aaData": data,
 				"sDom": '<"top"i>rt<"bottom"flp><"clear">',
@@ -97,12 +99,12 @@
 			<table cellpadding="0" cellspacing="0" border="0" class="display" id="userWatchingIssues">
 				<thead>
 					<tr>
-						<th style="width:90px;">Folio</th>
+						<th style="width:75px;">Folio</th>
 						<th>Referencia</th>
 						<th>Proyecto</th>
 						<th>Cliente</th>
 						<th>Fecha</th>
-						<th style="width:200px;">Actividad</th>
+						<th style="width:250px;">Actividad</th>
 						<th>Asignado por</th>
 						<th>Asignado a</th>
 						<th>Estatus</th>
@@ -123,12 +125,12 @@
 			<table cellpadding="0" cellspacing="0" border="0" class="display" id="userIssues">
 				<thead>
 					<tr>
-						<th style="width:90px;">Folio</th>
+						<th style="width:75px;">Folio</th>
 						<th>Referencia</th>
 						<th>Proyecto</th>
 						<th>Cliente</th>
 						<th>Fecha</th>
-						<th style="width:200px;">Actividad</th>
+						<th style="width:250px;">Actividad</th>
 						<th>Asignado por</th>
 						<th>Asignado a</th>
 						<th>Estatus</th>

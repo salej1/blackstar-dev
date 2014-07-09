@@ -1358,7 +1358,7 @@ BEGIN
 		END AS title,
 		followUp AS detail,
 		coalesce(ts.ticketStatus, ist.issueStatus, '') as status,
-		u1.name AS createdByUsr,
+		ifnull(u1.name, '') AS createdByUsr,
 		u2.name AS asignee
 	FROM (
 		SELECT * FROM (
