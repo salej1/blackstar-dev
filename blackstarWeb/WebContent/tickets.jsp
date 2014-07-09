@@ -25,10 +25,10 @@
 	 $(document).ready(function() {
 
 	 try{
-	 var data = $.parseJSON(str);
+	 	var data = $.parseJSON(str);
 	 }
 	 catch(err){
-	 alert(err);
+
 	 }
 
 	 $('#tickets').dataTable({

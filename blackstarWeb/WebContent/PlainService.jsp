@@ -133,7 +133,7 @@
 			$("#serviceType").val($('#serviceTypes').find('option:selected').text());
 		});
 		$("#serviceType").val($('#serviceTypes').find('option:selected').text());
-		
+
 		// Binding equipmentTypes con campo oculto de tipo de servicio
 		$("#equipmentTypeList").bind("change", function(){
 			$("#equipmentTypeId").val($(this).val());
@@ -496,13 +496,14 @@
 			<!-- Control de secuencia y captura de seguimiento -->
 			<c:if test="${!user.belongsToGroup['Cliente']}">
 				<c:import url="followUpControl.jsp"></c:import>
+			
+				<script type="text/javascript" charset="utf-8">
+					$(function(){
+						initFollowUpDlg("os", "/osDetail/show.do?serviceOrderId=${serviceOrder.serviceOrderId}");
+					});
+				</script>
 			</c:if>
 			
-			<script type="text/javascript" charset="utf-8">
-				$(function(){
-					initFollowUpDlg("os", "/osDetail/show.do?serviceOrderId=${serviceOrder.serviceOrderId}");
-				});
-			</script>
 			<c:if test="${!user.belongsToGroup['Cliente']}">
 				<table>
 					<tbody>
@@ -515,7 +516,7 @@
 								</c:if>	
 							</c:if>	
 							<input class="searchButton lockOnEngDetail" id="guardarServicio" type="submit" onclick="saveService();" value="Guardar servicio" form="serviceOrder"/>
-							<input class="searchButton lockOnEngDetail" id="guardarServicioCrear" type="submit" onclick="saveAndNew(); return false;" value="Guardar y Nueva OS"/>
+							<input class="searchButton lockOnDetail" id="guardarServicioCrear" type="submit" onclick="saveAndNew(); return false;" value="Guardar y Nueva OS"/>
 							<button class="searchButton" onclick="window.location = '/serviceOrders/show.do'">Cancelar</button>
 							</td>
 						</tr>

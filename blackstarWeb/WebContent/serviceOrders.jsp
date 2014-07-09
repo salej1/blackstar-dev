@@ -71,9 +71,9 @@
 			</c:if>
 <!-- Fin Contenido De Perfiles SysCallCenter Y SysCoordinador-->
 
-<!-- Inicia Contenido De Perfil SysServicio -->
+<!-- Inicia Contenido De Todo GPO Sac -->
 
-			<c:set var="showHistory" scope="request" value="${user.belongsToGroup['Implementacion y Servicio'] || user.belongsToGroup['Coordinador'] || user.belongsToGroup['Call Center']}" />
+			<c:set var="showHistory" scope="request" value="${!user.belongsToGroup['Cliente']}" />
 			<c:if test="${showHistory == true}">
 
 <!-- Inicia Historial De Ordenes De Servicio -->

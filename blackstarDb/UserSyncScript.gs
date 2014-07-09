@@ -75,7 +75,8 @@ function startSyncJob(conn, sqlLog){
 	// iterate looking for new employees
   	const offset = 2; // Ajustar de acuerdo al numero de polizas cargadas en el sistema
 	var startRec = offset;
-	var range = "A" + startRec.toString() + ":E" + startRec.toString();
+	var lastCol = "F";
+	var range = "A" + startRec.toString() + ":" + lastCol + startRec.toString();
 	var ss = SpreadsheetApp.getActiveSpreadsheet();
 	var sheet = ss.getSheets()[0];
 	var data = sheet.getRange(range).getValues();
@@ -84,27 +85,28 @@ function startSyncJob(conn, sqlLog){
   	while(currUser != null && currUser[0] != null && currUser[0].toString() != ""){
         var userEmail = currUser[0];
         var userName = currUser[1];
-        var syncSeed = currUser[4];
+        var bossId = currUser[4];
+        var syncSeed = currUser[5];
 
         if(syncSeed == 1){
-        	sqlLog = sendUserToDatabase(conn, userEmail, userName, sqlLog);
+        	sqlLog = sendUserToDatabase(conn, userEmail, userName, bossId, sqlLog);
 	        
 	        var groupId = currUser[2];
 	        var groupName = currUser[3];
 	        if(groupId.indexOf("sys") == 0){
-					sqlLog = sendGroupToDatabase(conn, groupId, groupName, userEmail, sqlLog, sheet.getRange("E" + startRec.toString()));
+					sqlLog = sendGroupToDatabase(conn, groupId, groupName, userEmail, sqlLog, sheet.getRange(lastCol + startRec.toString()));
 			}
         }
 		
 		startRec++;
-		range = "A" + startRec.toString() + ":E" + startRec.toString();
+		range = "A" + startRec.toString() + ":" + lastCol + startRec.toString();
 		data = sheet.getRange(range).getValues();
 		currUser = data[0];
 	}
 }
 
-function sendUserToDatabase(conn, userEmail, userName, sqlLog){
-	var sql = "CALL UpsertUser('" + userEmail + "','" + userName + "')" ;
+function sendUserToDatabase(conn, userEmail, userName, bossId, sqlLog){
+	var sql = "CALL UpsertUser('" + userEmail + "','" + userName + "', '" + bossId + "')" ;
 	
 		Logger.log("Inserting " + userEmail);
 		

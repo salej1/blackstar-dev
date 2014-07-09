@@ -217,7 +217,8 @@ BEGIN
 		
 	-- ACTUALIZACION DEL STATUS
 	UPDATE blackstarDb.serviceOrder SET
-		serviceStatusId = CASE WHEN (closed IS NULL) THEN 'E' ELSE 'C' END;
+		serviceStatusId = 'C'
+	WHERE closed IS NOT NULL;
 		
 	-- CAMBIAR OBSERVATIONS POR FOLLOW UPS SOLO EN LOS TICKETS QUE NO TIENEN
 	INSERT INTO blackstarDb.followUp(

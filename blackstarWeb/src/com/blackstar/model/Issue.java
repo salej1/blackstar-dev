@@ -19,6 +19,7 @@ public class Issue {
 	private String modifiedBy;
 	private String modifiedByUsr; 
 	private List<Followup> followUpList;
+	private Date dueDate ;
 	
 	public Integer getIssueId() {
 		return issueId;
@@ -109,5 +110,11 @@ public class Issue {
 	}
 	public void setIssueNumber(String issueNumber) {
 		this.issueNumber = issueNumber;
+	}
+	public Date getDueDate() {
+		return dueDate;
+	}
+	public void setDueDate(Date dueDate) {
+		this.dueDate = dueDate;
 	}
 }

@@ -28,6 +28,7 @@ public class IssueDTO implements Serializable{
 	private String modifiedByUsr; 
 	private List<FollowUpDTO> followUpList;
 	private String resolution;
+	private Date dueDate;
 	
 	public String getResolution() {
 		return resolution;
@@ -57,6 +58,7 @@ public class IssueDTO implements Serializable{
 		this.modified = issue.getModified();
 		this.modifiedBy = issue.getModifiedBy();
 		this.modifiedByUsr  = issue.getModifiedByUsr();
+		this.dueDate = issue.getDueDate();
 	}
 	
 	public String getReferenceTypeId() {
@@ -164,6 +166,14 @@ public class IssueDTO implements Serializable{
 	}
 	public void setFollowUpList(List<FollowUpDTO> followUpList) {
 		this.followUpList = followUpList;
+	}
+
+	public Date getDueDate() {
+		return dueDate;
+	}
+
+	public void setDueDate(Date dueDate) {
+		this.dueDate = dueDate;
 	}
 	
 }

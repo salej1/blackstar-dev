@@ -60,6 +60,7 @@ public class IssueServiceImpl implements IssueService {
 			i.setDetail(issue.getDetail());
 			i.setIssueStatusId(issue.getReferenceStatusId());
 			i.setTitle(issue.getTitle());
+			i.setDueDate(issue.getDueDate());
 			
 			issueId = dao.saveIssue(i);
 			

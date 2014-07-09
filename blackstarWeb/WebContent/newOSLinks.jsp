@@ -168,6 +168,7 @@
 
 		$("#eqSearch").removeAttr("disabled");
 		$("#eqSearch").val("");
+		$("#soNumber").focus();
 	}
 
 	function getEquipmentList(type){

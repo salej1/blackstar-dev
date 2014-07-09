@@ -17,12 +17,17 @@
 -- -----------------------------------------------------------------------------
 -- 4	14/06/2014	SAG		Se agrega poblacion de surveyScore en serviceOrder
 -- -----------------------------------------------------------------------------
+-- 5 	08/07/2014	SAG 	Se actualiza SC Tijuana BK
+-- -----------------------------------------------------------------------------
 
 use blackstarDb;
 
 -- -----------------------------------------------------------------------------
 -- ACTUALIZACION DE DATOS
 -- -----------------------------------------------------------------------------
+
+-- Actualizando Tijuana BK
+UPDATE serviceCenter SET serviceCenter = 'Tijuana BK' WHERE serviceCenter = 'Tijuana CS';
 
 -- POBLACION DE surveyScore en serviceOrder
 UPDATE serviceOrder s

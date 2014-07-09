@@ -28,6 +28,14 @@
 -- 48	02/07/2014	SAG 	Se modifica:
 --								blackstarDb.GetServiceOrders
 -- -----------------------------------------------------------------------------
+-- 49 	05/07/2014	SAG 	Se modifica:
+--								blackstarDb.SaveIssue
+-- -----------------------------------------------------------------------------
+-- 50 	08/07/2014	SAG 	Se modifica:
+--								blackstarDb.UpsertUser
+--								blackstarDb.GetUserWatchingIssues
+-- -----------------------------------------------------------------------------
+
 use blackstarDb;
 
 DELIMITER $$
@@ -233,7 +241,7 @@ END$$
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.SaveIssue$$
 CREATE PROCEDURE blackstarDb.SaveIssue(issueId INT, issueNumber VARCHAR(100), issueStatusId CHAR(1), title VARCHAR(1000), detail TEXT, project VARCHAR(100),
-	customer VARCHAR(1000), asignee VARCHAR(100), created DATETIME, createdBy VARCHAR(100), createdByUsr VARCHAR(100))
+	customer VARCHAR(1000), asignee VARCHAR(100), created DATETIME, createdBy VARCHAR(100), createdByUsr VARCHAR(100), dueDate DATETIME)
 BEGIN
 
 	IF issueId > 0 THEN
@@ -245,13 +253,14 @@ BEGIN
 			i.asignee = asignee,
 			i.modified = created,
 			i.modifiedBy = createdBy,
-			i.modifiedByUsr = createdByUsr
+			i.modifiedByUsr = createdByUsr,
+			i.dueDate = dueDate
 		WHERE i.issueid = issueid;
 	ELSE
 		INSERT INTO issue
-			(issueId, issueNumber, issueStatusId, title, detail, project, customer, asignee, created, createdBy, createdByUsr)
+			(issueId, issueNumber, issueStatusId, title, detail, project, customer, asignee, created, createdBy, createdByUsr, dueDate)
 		VALUES
-			(issueId, issueNumber, issueStatusId, title, detail, project, customer, asignee, created, createdBy, createdByUsr);
+			(issueId, issueNumber, issueStatusId, title, detail, project, customer, asignee, created, createdBy, createdByUsr, dueDate);
 
 		SET issueId = LAST_INSERT_ID();
 
@@ -371,6 +380,7 @@ BEGIN
 
 	SET @prevRefId := 0;
 	SET @rowNumber := 0;
+	SET @myId:= (SELECT blackstarUserId FROM blackstarUser WHERE email = pUser);
 
 	SELECT 
 		f.followUpReferenceTypeId AS referenceTypeId, 
@@ -386,7 +396,9 @@ BEGIN
 			WHEN f.followUpReferenceTypeId = 'I' THEN 'Asignacion SAC'
 		END AS title,
 		followUp AS detail,
-		coalesce(ts.ticketStatus, ss.serviceStatus, ist.issueStatus) as status
+		coalesce(ts.ticketStatus, ist.issueStatus, '') as status,
+		u1.name AS createdByUsr,
+		u2.name AS asignee
 	FROM (
 		SELECT * FROM (
 			SELECT @rowNumber := IF(coalesce(ticketId, serviceOrderId, issueId) = @prevRefId, @rowNumber + 1, 1) AS RowNum,
@@ -405,8 +417,11 @@ BEGIN
 		LEFT OUTER JOIN ticketStatus ts ON ts.ticketStatusId = t.ticketStatusId
 		LEFT OUTER JOIN serviceStatus ss ON ss.serviceStatusId = s.serviceStatusId
 		LEFT OUTER JOIN issueStatus ist ON ist.issueStatusId = i.issueStatusId
-	WHERE coalesce(t.createdByUsr, s.createdByUsr, i.createdByUsr) = pUser
-	AND coalesce(t.ticketStatusId, s.serviceStatusId, i.issueStatusId) NOT IN ('C', 'F')
+		LEFT OUTER JOIN blackstarUser u1 ON f.createdByUsr = u1.email
+		LEFT OUTER JOIN blackstarUser u2 ON f.asignee = u2.email
+	WHERE (coalesce(t.createdByUsr, s.createdByUsr, i.createdByUsr) = pUser
+			OR u2.bossId = @myId)
+		AND coalesce(t.ticketStatusId, s.serviceStatusId, i.issueStatusId) NOT IN ('C', 'F')
 	ORDER BY f.created;
 	
 END$$
@@ -429,13 +444,16 @@ BEGIN
 		coalesce(p.project, c.project, i.project) AS project,
 		coalesce(p.customer, c.customerName, i.customer) AS customer,
 		f.created AS created,
+		i.dueDate AS dueDate,
 		CASE 
 			WHEN f.followUpReferenceTypeId = 'T' THEN 'Seguimiento a Ticket'
 			WHEN f.followUpReferenceTypeId = 'O' THEN 'Seguimiento a Orden de Servicio'
 			WHEN f.followUpReferenceTypeId = 'I' THEN 'Asignacion SAC'
 		END AS title,
 		followUp AS detail,
-		coalesce(ts.ticketStatus, ss.serviceStatus, ist.issueStatus) as status
+		coalesce(ts.ticketStatus, ist.issueStatus, '') as status,
+		u1.name AS createdByUsr,
+		u2.name AS asignee
 	FROM (
 		SELECT * FROM (
 			SELECT @rowNumber := IF(coalesce(ticketId, serviceOrderId, issueId) = @prevRefId, @rowNumber + 1, 1) AS RowNum,
@@ -454,6 +472,8 @@ BEGIN
 		LEFT OUTER JOIN ticketStatus ts ON ts.ticketStatusId = t.ticketStatusId
 		LEFT OUTER JOIN serviceStatus ss ON ss.serviceStatusId = s.serviceStatusId
 		LEFT OUTER JOIN issueStatus ist ON ist.issueStatusId = i.issueStatusId
+		INNER JOIN blackstarUser u1 ON f.createdByUsr = u1.email
+		INNER JOIN blackstarUser u2 ON f.asignee = u2.email
 	WHERE coalesce(t.asignee, s.asignee, i.asignee) = pUser
 	AND coalesce(t.ticketStatusId, s.serviceStatusId, i.issueStatusId) NOT IN ('C', 'F')
 	ORDER BY f.created;
@@ -3015,9 +3035,10 @@ END$$
 	-- blackstarDb.UpsertUser
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.UpsertUser$$
-CREATE PROCEDURE blackstarDb.UpsertUser(pEmail VARCHAR(100), pName VARCHAR(100))
+CREATE PROCEDURE blackstarDb.UpsertUser(pEmail VARCHAR(100), pName VARCHAR(100), pBossEmail VARCHAR(100))
 BEGIN
 
+	-- Insert the record
 	INSERT INTO blackstarDb.blackstarUser(email, name)
 	SELECT a.email, a.name
 	FROM (
@@ -3025,6 +3046,14 @@ BEGIN
 	) a
 		LEFT OUTER JOIN blackstarDb.blackstarUser u ON a.email = u.email
 	WHERE u.email IS NULL;
+
+	-- Update the details
+	UPDATE blackstarUser u
+		LEFT OUTER JOIN blackstarUser b ON u.email = pEmail AND b.email = pBossEmail
+	SET 
+		u.name = pName,
+		u.bossId = b.blackstarUserId	
+	WHERE u.email = pEmail;
 
 END$$
 

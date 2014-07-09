@@ -1,6 +1,8 @@
 package com.blackstar.web.controller;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -16,16 +18,13 @@ import com.blackstar.db.DAOFactory;
 import com.blackstar.interfaces.IEmailService;
 import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
-import com.blackstar.model.Equipmenttype;
 import com.blackstar.model.Office;
 import com.blackstar.model.Policy;
 import com.blackstar.model.Servicecenter;
 import com.blackstar.model.Serviceorder;
-import com.blackstar.model.Servicetype;
 import com.blackstar.model.Ticket;
 import com.blackstar.model.User;
 import com.blackstar.model.UserSession;
-import com.blackstar.model.dto.FollowUpDTO;
 import com.blackstar.model.dto.IssueDTO;
 import com.blackstar.services.EmailServiceFactory;
 import com.blackstar.services.interfaces.IssueService;
@@ -136,74 +135,19 @@ public static void AssignServiceOrder(int osId, String asignee, String who, Stri
 	}
 }
 
-private static void SendSOAssignationEmail(int osId, String employee, String who, String message){
-	String officeMail = "";
-	String ssMail = "";
-	int ticketId;
+private static void SendSOAssignationEmail(int osId, String asignee, String who, String message){
 	DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.MYSQL);
-	Ticket osTicket = null;
+	String timestamp;
+	SimpleDateFormat sdf = new SimpleDateFormat(Globals.DATE_FORMAT_PATTERN);
 			
 	Serviceorder so = daoFactory.getServiceOrderDAO().getServiceOrderById(osId);
 	
 	if(so != null)
 	{
-		int policiId = so.getPolicyId();
-		if(policiId > 0){
-			Policy po = daoFactory.getPolicyDAO().getPolicyById(policiId);
-			
-			ticketId = so.getTicketId();
-			if(ticketId > 0){
-				osTicket = daoFactory.getTicketDAO().getTicketById(ticketId);
-			}
-			
-			if(po != null){
-				char etId = po.getEquipmentTypeId();
-				
-				Equipmenttype et = daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(etId);
-				if(et != null){
-					
-					Servicetype st = daoFactory.getServiceTypeDAO().getServiceTypeById(so.getServiceTypeId());
-					if(st != null){
-						
-						// Enviar el email
-						IEmailService mail = EmailServiceFactory.getEmailService();
-						String to = employee + ", " + ssMail + ", " + officeMail;
-						String subject = String.format("Orden de servicio %s asignada", so.getServiceOrderNumber());
-						StringBuilder bodySb = new StringBuilder();
-						
-						bodySb.append(String.format("La orden de servicio %s le ha sido asignada para dar seguimiento. Por favor revise a continuación los detalles de la orden ", so.getServiceOrderNumber()));
-						if(message != null){
-							bodySb.append(" y la información adicional.");
-						}
-						bodySb.append(String.format("\r\n\r\n Folio: %s", so.getServiceOrderNumber()));
-						bodySb.append(String.format("\r\n\r\n Cliente: %s", po.getCustomer()));
-						if(osTicket != null){
-							bodySb.append(String.format("\r\n\r\n No ticket: %s", osTicket.getTicketNumber()));
-						}
-						else{
-							bodySb.append("\r\n\r\n Sin ticket asociado");
-						}
-						bodySb.append(String.format("\r\n\r\n Domicilio: %s", po.getEquipmentAddress()));
-						bodySb.append(String.format("\r\n\r\n Solicitante: %s", po.getContactName()));
-						bodySb.append(String.format("\r\n\r\n Telefono: %s", po.getContactPhone()));
-						bodySb.append(String.format("\r\n\r\n Fecha y hora de llegada: %s", so.getCreated()));
-						bodySb.append(String.format("\r\n\r\n Equipo: %s", et.getEquipmentType()));
-						bodySb.append(String.format("\r\n\r\n Marca: %s", po.getBrand()));
-						bodySb.append(String.format("\r\n\r\n Modelo: %s", po.getModel()));
-						bodySb.append(String.format("\r\n\r\n No. Serie: %s", po.getSerialNumber()));
-						if(osTicket != null){
-							bodySb.append(String.format("\r\n\r\n Falla: %s", so.getServiceComments()));
-						}
-						bodySb.append(String.format("\r\n\r\n Tipo de servicio: %s", po.getSerialNumber()));
-						bodySb.append(String.format("\r\n\r\n Contrato: %s", po.getCustomerContract()));
-						if(message != null){
-							bodySb.append(String.format("\r\n\r\n Información adicional: %s", message));
-						}
-						mail.sendEmail(who, to, subject, bodySb.toString());
-					}
-				}		
-			}	
-		}
+		sdf.setTimeZone(TimeZone.getTimeZone(Globals.DEFAULT_TIME_ZONE));
+		timestamp = sdf.format(new Date());
+		
+		SendAssignationEmail(asignee, who, who, timestamp, message, "O", so.getServiceOrderId(), so.getServiceOrderNumber());
 	}
 }
 
@@ -223,17 +167,20 @@ public static void AssignTicket(int ticketId, String asignee, String who, String
 	}
 }
 
-private static void SendTicketAssignationEmail(int ticketId, String employee, String who, String message){
-	String officeMail = "";
-	String ssMail = "";
+private static void SendTicketAssignationEmail(int ticketId, String asignee, String who, String message){
+	String officeMail = "No disponible";
+	String ssMail = "No disponible";
 	String ticketNum;
-	String equipmentType = "";
+	String timestamp;
+	String comment = "";
+	SimpleDateFormat sdf = new SimpleDateFormat(Globals.DATE_FORMAT_PATTERN);
 	DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.MYSQL);
 	
 	Ticket myTicket = daoFactory.getTicketDAO().getTicketById(ticketId);
 	if(myTicket != null){
 		
 		ticketNum = myTicket.getTicketNumber();
+		
 		
 		int policyId = myTicket.getPolicyId();
 		
@@ -262,51 +209,21 @@ private static void SendTicketAssignationEmail(int ticketId, String employee, St
 						ssMail = ss.getServiceCenterEmail();
 					}
 					
-					char eqId = tickPolicy.getEquipmentTypeId();
-					// Service center email
-					Equipmenttype et = null;
-					if((int)eqId > 0){
-						et = daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(eqId);
-						equipmentType = et.getEquipmentType();
-					}
+					sdf.setTimeZone(TimeZone.getTimeZone(Globals.DEFAULT_TIME_ZONE));
+					timestamp = sdf.format(new Date());
 					
 					// Enviar el email
-					IEmailService mail = EmailServiceFactory.getEmailService();
-					String to = employee + ", " + ssMail + ", " + officeMail;
-					String subject = String.format("Ticket %s asignado", ticketNum);
-					StringBuilder bodySb = new StringBuilder();
-					
-					bodySb.append(String.format("El reporte de emergencia con número de ticket %s le ha sido asignado. Por favor revise a continuación los detalles del reporte ", ticketNum));
-					if(message != null){
-						bodySb.append(" y la invormación adicional.");
+					if(ssMail != null && ssMail.length() > 0){
+						asignee = asignee + ", " + ssMail;
 					}
-					bodySb.append(String.format("\r\n\r\n Marca temporal: %s", myTicket.getCreated()));
-					bodySb.append(String.format("\r\n\r\n Contacto: %s", tickPolicy.getContactName()));
-					bodySb.append(String.format("\r\n\r\n Teléfono de Contacto: %s", tickPolicy.getContactPhone()));
-					bodySb.append(String.format("\r\n\r\n Email de Contacto: %s", tickPolicy.getContactEmail()));
-					bodySb.append(String.format("\r\n\r\n Número de serie: %s", tickPolicy.getSerialNumber()));
-					bodySb.append(String.format("\r\n\r\n Observaciones: %s", myTicket.getObservations()));
-					bodySb.append(String.format("\r\n\r\n Cliente: %s", tickPolicy.getCustomer()));
-					bodySb.append(String.format("\r\n\r\n Equipo: %s", equipmentType));
-					bodySb.append(String.format("\r\n\r\n Marca: %s", tickPolicy.getBrand()));
-					bodySb.append(String.format("\r\n\r\n Modelo: %s", tickPolicy.getModel()));
-					bodySb.append(String.format("\r\n\r\n Capacidad: %s", tickPolicy.getCapacity()));
-					bodySb.append(String.format("\r\n\r\n Tiempo de respuesta compromiso: %s", tickPolicy.getResponseTimeHR()));
-					bodySb.append(String.format("\r\n\r\n Dirección del equipo: %s", tickPolicy.getEquipmentAddress()));
-					bodySb.append(String.format("\r\n\r\n Ubicación del equipo: %s", tickPolicy.getEquipmentLocation()));
-					if(tickPolicy.getIncludesParts()){
-						bodySb.append(String.format("\r\n\r\n Incluye partes: %s", "SI"));
+					if(officeMail != null && officeMail.length() > 0){
+						asignee = asignee + ", " + officeMail;
 					}
-					else{
-						bodySb.append(String.format("\r\n\r\n Incluye partes: %s", "NO"));
+					if(message != null && message.length() > 0){
+						comment = message;
 					}
-					bodySb.append(String.format("\r\n\r\n Excepcion partes: %s", tickPolicy.getExceptionParts()));
-					bodySb.append(String.format("\r\n\r\n Centro de servicio: %s", ss.getServiceCenter()));
-					bodySb.append(String.format("\r\n\r\n Oficina: %s", off.getOfficeName()));
-					bodySb.append(String.format("\r\n\r\n Proyecto: %s", tickPolicy.getProject()));
-					bodySb.append(String.format("\r\n\r\n Informacón adicional: %s", message));
-					mail.sendEmail(who, to, subject, bodySb.toString()
-							);
+					SendAssignationEmail(asignee, who, who, timestamp, comment, "T", myTicket.getTicketId(), ticketNum);
+							
 				} catch (Exception e) {
 					Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 				}
@@ -332,33 +249,54 @@ public static void AssignIssue(Integer issueId, String asignee, String sender){
 	}
 }
 
+private static void SendAssignationEmail(String to, String sender, String createdBy, String timestamp, String comment, String issueTypeId, Integer referenceId, String referenceNumber){
+	String link = "Link no disponible";
+	StringBuilder bodySb = new StringBuilder();
+	
+	if(issueTypeId.equalsIgnoreCase("O")){
+		link = String.format("<a href='" + Globals.GOOGLE_CONTEXT_URL + "/osDetail/show.do?serviceOrderId=%s'>%s</a>", referenceId, referenceNumber);
+	}
+	else if(issueTypeId.equalsIgnoreCase("T")){
+		link = String.format("<a href='" + Globals.GOOGLE_CONTEXT_URL + "/ticketDetail?ticketId=%s'>%s</a>", referenceId, referenceNumber);
+	}
+	else if(issueTypeId.equalsIgnoreCase("I")){
+		link = String.format("<a href='" + Globals.GOOGLE_CONTEXT_URL + "/issues/show.do?issueId=%s'>%s</a>", referenceId, referenceNumber);
+	}
+	
+	bodySb.append("<img src='http://www.gposac.com.mx/images/grupo-sac-logo.png'>");
+	bodySb.append("<div style='font-family:sans-serif;margin-left:50px;'>");
+	bodySb.append("<h3 >Acci&oacute;n requerida</h3>");
+	bodySb.append("<p>Se ha registrado una acci&oacute;n requerida de su parte.</p>");
+	bodySb.append("<br>Asignado por: " + createdBy);
+	bodySb.append("<br>Fecha: " + timestamp);
+	bodySb.append("<br>Comentario: " + comment);
+	bodySb.append("<br>");
+	bodySb.append("<p>Haga click en el siguiente link para revisar los detalles y dar el seguimiento correspondiente</p>");
+	bodySb.append(link);
+	bodySb.append("</div>");
+	bodySb.append("<hr>");
+	bodySb.append("<small>Favor de no responder a este email. En caso de duda p&oacute;ngase en contacto con la persona que le asign&oacute; la tarea</small>");
+
+	// Enviar el email
+	IEmailService mail = EmailServiceFactory.getEmailService();
+	String subject = "Accion requerida por " + createdBy;
+	mail.sendEmail(sender, to, subject, bodySb.toString());
+}
+
 private static void SendIssueAssignationEmail(Integer issueId, String asignee, String sender){
 	// Recuperar el issue
 	IssueDTO issue = iServ.getIssueById("I", issueId);
 	
-	// Enviar el email
-	IEmailService mail = EmailServiceFactory.getEmailService();
-	String to = issue.getReferenceAsignee() + ", " + issue.getCreatedBy();
-	String subject = String.format("Accion requerida por ", issue.getCreatedBy());
-	StringBuilder bodySb = new StringBuilder();
-	SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+	String createdBy = "No disponible";
+	String timestamp = "No disponible";
+	String comment = "No disponible";
 	
-	bodySb.append("Se ha registrado una acción requerida de su parte. Por favor revise los detalles para dar el seguimiento correspondiente. ");
-
-	bodySb.append(String.format("\r\n\r\n No. de referencia: %s", issue.getReferenceNumber()));
-	bodySb.append(String.format("\r\n\r\n Asignado por: %s", issue.getCreatedByUsr()));
-	bodySb.append(String.format("\r\n\r\n Fecha: %s", sdf.format(issue.getCreated())));
-	bodySb.append(String.format("\r\n\r\n Accion requerida: %s", issue.getTitle()));
-	bodySb.append(String.format("\r\n\r\n Detalles: %s", issue.getDetail() != null?issue.getDetail():"" ));
-	bodySb.append(String.format("\r\n\r\n Proyecto: %s", issue.getProject()!= null?issue.getProject():""));
-	bodySb.append(String.format("\r\n\r\n Cliente: %s", issue.getCustomer()!= null?issue.getCustomer():""));
-	if(issue.getFollowUpList()!= null && issue.getFollowUpList().size() > 0){
-		if(issue.getFollowUpList().get(0).getFollowUp() != null){
-			bodySb.append(String.format("\r\n\r\n Comentario: %s", issue.getFollowUpList().get(0).getFollowUp()));
-		}
+	if(issue.getFollowUpList() != null && issue.getFollowUpList().size() > 0){
+		createdBy = issue.getFollowUpList().get(issue.getFollowUpList().size() -1).getCreatedBy();
+		timestamp = issue.getFollowUpList().get(issue.getFollowUpList().size() -1).getTimeStamp();
+		comment = issue.getFollowUpList().get(issue.getFollowUpList().size() -1).getFollowUp();
 	}
-	
-	
-	mail.sendEmail(sender, to, subject, bodySb.toString());
+
+	SendAssignationEmail(asignee, sender, createdBy, timestamp, comment, "I", issue.getReferenceId(), issue.getReferenceNumber());
 }
 }

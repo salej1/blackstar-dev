@@ -53,7 +53,7 @@ public class IssueDAOImpl extends AbstractDAO implements IssueDAO {
 	@Override
 	public Integer saveIssue(Issue issue) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		String sql = "CALL SaveIssue(?,?,?,?,?,?,?,?,?,?,?)";
+		String sql = "CALL SaveIssue(?,?,?,?,?,?,?,?,?,?,?,?)";
 		Integer issueId = (Integer)getJdbcTemplate().queryForObject(sql, new Object[]{
 				issue.getIssueId(),
 				issue.getIssueNumber(),
@@ -65,7 +65,8 @@ public class IssueDAOImpl extends AbstractDAO implements IssueDAO {
 				issue.getAsignee(),
 				sdf.format(issue.getModified() == null? issue.getCreated() : issue.getModified()),
 				issue.getModifiedBy() == null? issue.getCreatedBy() : issue.getModifiedBy(),
-				issue.getModifiedByUsr() == null? issue.getCreatedByUsr() : issue.getModifiedByUsr()
+				issue.getModifiedByUsr() == null? issue.getCreatedByUsr() : issue.getModifiedByUsr(),
+				issue.getDueDate()
 		}, Integer.class);
 		
 		return issueId;

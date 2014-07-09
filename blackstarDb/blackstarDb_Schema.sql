@@ -66,6 +66,10 @@
 -- 21 	23/06/2014 	SAG 	Se agrega transferOS a openCustomer - auxiliar para transferencia de OpenCustomer
 --							Se aumenta taman;o de openCustomer.serialNumber
 -- ---------------------------------------------------------------------------
+-- 22	05/07/2014	SAG 	Se agrega dueDate a issue
+-- ---------------------------------------------------------------------------
+-- 23 	08/07/2014 	SAG 	Se agrega bossId a blackstarUser
+-- ---------------------------------------------------------------------------
 
 
 use blackstarDb;
@@ -79,6 +83,19 @@ BEGIN
 -- -----------------------------------------------------------------------------
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
+
+--	AGREGANDO bossId a blackstarUser
+	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'blackstarUser' AND COLUMN_NAME = 'bossId') = 0  THEN
+		ALTER TABLE blackstarUser ADD bossId INTEGER;
+
+		ALTER TABLE blackstarUser ADD CONSTRAINT FK_blackstarUser_blackstarUser
+		FOREIGN KEY (bossId) REFERENCES blackstarUser(blackstarUserId);
+	END If;
+
+--	AGREGANDO dueDate a issue
+	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'issue' AND COLUMN_NAME = 'dueDate') = 0  THEN
+		ALTER TABLE issue ADD dueDate DATETIME;
+	END If;
 
 --  AUMENTANDO CAPACIDAD DE openCustomer.serialNumber
 	ALTER TABLE openCustomer MODIFY serialNumber VARCHAR(255);

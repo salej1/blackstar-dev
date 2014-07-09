@@ -8,6 +8,7 @@
 <html>
 <head>
 	<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/jquery.datetimepicker.css"/ >
+	<script src="${pageContext.request.contextPath}/js/jquery.datetimepicker.js"></script>
 	<script src="${pageContext.request.contextPath}/js/dateFormat.js"></script>
 </head>
 <body>
@@ -55,6 +56,10 @@
 						<tr>
 							<td>Cliente:</td>
 							<td><form:input cssClass="lockOnDetail" path="customer" style="width:95%"/></td>
+						</tr>
+						<tr>
+							<td>Fecha limite:</td>
+							<td><form:input cssClass="lockOnDetail" path="dueDate" style="width:95%"/></td>
 						</tr>
 						<tr>
 							<td></td>
@@ -139,6 +144,8 @@
 				$( this ).dialog( "close" );
 			}}
 		});
+
+		$("#dueDate").datetimepicker({format:'d/m/Y H:i:s', lang:'es'});
 
 	});
 

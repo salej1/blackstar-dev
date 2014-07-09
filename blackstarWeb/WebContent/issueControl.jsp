@@ -26,6 +26,8 @@
 							  { "mData": "customer" },
 							  { "mData": "created" },
 							  { "mData": "detail" },
+							  { "mData": "createdByUsr" },
+							  { "mData": "asignee" },
 							  { "mData": "status" }
 				],
 				"aoColumnDefs": [
@@ -63,6 +65,8 @@
 							  { "mData": "customer" },
 							  { "mData": "created" },
 							  { "mData": "detail" },
+							  { "mData": "createdByUsr" },
+							  { "mData": "asignee" },
 							  { "mData": "status" }
 				],
 				"aoColumnDefs": [
@@ -93,12 +97,14 @@
 			<table cellpadding="0" cellspacing="0" border="0" class="display" id="userWatchingIssues">
 				<thead>
 					<tr>
+						<th style="width:90px;">Folio</th>
 						<th>Referencia</th>
-						<th>Id</th>
 						<th>Proyecto</th>
 						<th>Cliente</th>
 						<th>Fecha</th>
-						<th style="width=200px;">Actividad</th>
+						<th style="width:200px;">Actividad</th>
+						<th>Asignado por</th>
+						<th>Asignado a</th>
 						<th>Estatus</th>
 						<th></th>
 
@@ -117,12 +123,14 @@
 			<table cellpadding="0" cellspacing="0" border="0" class="display" id="userIssues">
 				<thead>
 					<tr>
+						<th style="width:90px;">Folio</th>
 						<th>Referencia</th>
-						<th>Id</th>
 						<th>Proyecto</th>
 						<th>Cliente</th>
 						<th>Fecha</th>
-						<th style="width=200px;">Actividad</th>
+						<th style="width:200px;">Actividad</th>
+						<th>Asignado por</th>
+						<th>Asignado a</th>
 						<th>Estatus</th>
 						<th></th>
 
