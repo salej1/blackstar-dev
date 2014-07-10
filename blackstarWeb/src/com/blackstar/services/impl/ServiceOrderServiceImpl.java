@@ -198,6 +198,11 @@ public String getServiceOrderDetails(String orderNumber) {
 		return "{\"error\":\"sin datos\"}";
 	}
 }
+
+@Override
+public String getServiceOrdersByDate(Date startDate) {
+	return dao.getServiceOrdersByDate(startDate).toString();
+}
   
   
 }

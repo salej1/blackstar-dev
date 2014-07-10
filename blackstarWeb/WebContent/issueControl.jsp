@@ -99,7 +99,7 @@
 			<table cellpadding="0" cellspacing="0" border="0" class="display" id="userWatchingIssues">
 				<thead>
 					<tr>
-						<th style="width:75px;">Folio</th>
+						<th style="width:70px;">Folio</th>
 						<th>Referencia</th>
 						<th>Proyecto</th>
 						<th>Cliente</th>
@@ -125,7 +125,7 @@
 			<table cellpadding="0" cellspacing="0" border="0" class="display" id="userIssues">
 				<thead>
 					<tr>
-						<th style="width:75px;">Folio</th>
+						<th style="width:70px;">Folio</th>
 						<th>Referencia</th>
 						<th>Proyecto</th>
 						<th>Cliente</th>

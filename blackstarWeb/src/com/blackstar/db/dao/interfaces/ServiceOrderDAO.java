@@ -45,6 +45,7 @@ public interface ServiceOrderDAO {
     public String getNewServiceNumber();
     
 	public List<JSONObject> getServiceOrdersByStatus(String status);
+	public List<JSONObject> getServiceOrdersByDate(Date startDate);
 	public List<JSONObject> getServiceOrderHistory();
 	public List<JSONObject> getLimitedServiceOrdersHistory(String user);
 	

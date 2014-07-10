@@ -732,4 +732,12 @@ public class ServiceOrderDAOImpl extends AbstractDAO implements ServiceOrderDAO 
 		String query = "CALL GetServiceOrderDetails(?)";
 		return (List<JSONObject>) getJdbcTemplate().query(query, new Object[]{orderNumber}, new JSONRowMapper());
 	}
+
+
+	@Override
+	public List<JSONObject> getServiceOrdersByDate(Date startDate) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String query = "CALL GetAutoCompleteServiceOrdersByDate(?)";
+		return (List<JSONObject>) getJdbcTemplate().query(query, new Object[]{sdf.format(startDate)}, new JSONRowMapper());
+	}
 }

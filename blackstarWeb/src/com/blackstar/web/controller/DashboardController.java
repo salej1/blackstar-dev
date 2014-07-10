@@ -18,9 +18,6 @@ import com.blackstar.logging.Logger;
 import com.blackstar.model.UserSession;
 import com.blackstar.services.interfaces.DashboardService;
 import com.blackstar.web.AbstractController;
-import com.google.appengine.api.users.UserService;
-import com.google.appengine.api.users.UserServiceFactory;
-
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.support.SessionStatus;
 

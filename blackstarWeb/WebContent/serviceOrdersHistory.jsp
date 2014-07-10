@@ -7,6 +7,11 @@
 		getServiceOrdersHistory();
 	}	
 	
+	function serviceOrdersHistory_filter(office){
+		var newSOTable = $('#dtOrdersHistory').dataTable();
+			newSOTable.fnFilter(office, 11);
+	}
+
 	function getServiceOrdersHistory(){
 		$.getJSON("/serviceOrders/serviceOrdersHistoryJson.do", function(data){
 			// Inicializacion de tabla de ordenes de servicio con algun pendiente
@@ -32,6 +37,7 @@
 							  { "mData": "brand" },
 							  { "mData": "serialNumber" },
 							  { "mData": "serviceStatus" },
+							  { "mData": "officeName" },
 							  { "mData": "serviceCenter" }
 
 							  ],
@@ -77,6 +83,7 @@
 						<th>No. Serie</th>
 						<th>Estatus</th>
 						<th>Oficina</th>
+						<th>C. Servicio</th>
 					</tr>
 				</thead>
 				<tbody>

@@ -404,4 +404,10 @@ public class MySQLServiceOrderDAO implements ServiceOrderDAO, Serializable {
 		return null;
 	}
 
+	@Override
+	public List<JSONObject> getServiceOrdersByDate(Date startDate) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

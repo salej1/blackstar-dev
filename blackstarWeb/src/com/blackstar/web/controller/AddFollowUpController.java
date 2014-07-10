@@ -263,7 +263,7 @@ private static void SendAssignationEmail(String to, String sender, String create
 		link = String.format("<a href='" + Globals.GOOGLE_CONTEXT_URL + "/issues/show.do?issueId=%s'>%s</a>", referenceId, referenceNumber);
 	}
 	
-	bodySb.append("<img src='http://www.gposac.com.mx/images/grupo-sac-logo.png'>");
+	bodySb.append("<img src='" + Globals.GPOSAC_LOGO_DEFAULT_URL + "'>");
 	bodySb.append("<div style='font-family:sans-serif;margin-left:50px;'>");
 	bodySb.append("<h3 >Acci&oacute;n requerida</h3>");
 	bodySb.append("<p>Se ha registrado una acci&oacute;n requerida de su parte.</p>");

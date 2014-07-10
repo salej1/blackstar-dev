@@ -12,8 +12,11 @@
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery.ui.theme.css">
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery-ui.min.css">
 <script src="${pageContext.request.contextPath}/js/dateFormat.js"></script>
+<script src="${pageContext.request.contextPath}/js/customAutocomplete.js"></script>
+<script src="${pageContext.request.contextPath}/js/moment.min.js"></script>
 
 <script type="text/javascript">
+    
     $(function(){
        // ocultando el mensaje de error
        $(".info").hide();
@@ -27,7 +30,7 @@
         // bloqueando campos
         var mode = "${mode}";
         if(mode == "new"){
-          $("#serviceOrderList").bind("change", function(){
+          $("#serviceOrderList").bind("blur", function(){
             var custData = $.getJSON("/surveyServiceDetail/getOsDetailsJson.do?osList=" + $(this).val(), function(data){
                 if(data.error != null) {
                   $(".info").show();
@@ -54,6 +57,14 @@
         if(rightSignString != null && rightSignString != ''){
           rightSign.regenerate(rightSignString);
         }
+
+        // inicializando autocompletar
+        $.get("${pageContext.request.contextPath}/serviceOrders/getServiceOrderListJson.do?startDate=" + moment().add('days', -3).format('DD/MM/YYYY HH:mm:ss'),
+         function(data){
+          if(data != "error"){
+            init_autoComplete(data, "serviceOrderList", "serviceOrderIdList");           
+          }
+        });
     });
 </script>
 <title>Encuesta de servicio</title>
@@ -67,6 +78,7 @@
           <div>
              Ordenes de servicio:
              <form:input path="serviceOrderList" type="text" style="width:50%;" cssClass="lockOnDetail"/>
+             <input type="hidden" id="serviceOrderIdList"/>
              <div class="info" style="width:200px;margin-left:116px;">Por favor verifique la Orden de servicio</div>
           </div>
 

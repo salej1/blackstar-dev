@@ -248,6 +248,7 @@
 	<div id="content" class="container_16 clearfix">
 		<div class="grid_16">					
 			<form:form  commandName="scheduledService" action="/scheduleStatus/save.do" method="POST">
+				<form:hidden path="createdByUsr" value="${user.userEmail}"/>
 				<div class="box">
 					<h2>Datos del servicio</h2>
 					<div id="dateInfo" class="info">

@@ -62,8 +62,11 @@ implements ServiceIndicatorsService {
 			put("asignee", "");
 			put("equipmentLocation", "");
 			put("equipmentBrand", "");
+			put("serialNumber", "");
+			put("capacity", "");
 			put("arrival", "");
 			put("closed", "");
+			put("serviceOrderNumber", "");
 			put("contact", "");
 			put("contactEmail", "");
 			put("contactPhone", "");

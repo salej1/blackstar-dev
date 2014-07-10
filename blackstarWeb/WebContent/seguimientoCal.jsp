@@ -63,6 +63,7 @@
 				<p>
 					Folio de la OS que cierra el ticket:
 					<input type="text" id="osId" name="osId" style="width:95%" />
+					<input type="hidden" id="osRowId"/>
 				</p>
 				<p>
 					Fecha y hora de cierre:
@@ -71,6 +72,7 @@
 				<p>
 					Ingeniero que atendio:
 					<input type="text" id="attendingEmployee" name="attendingEmployee" style="width:95%" />
+					<input type="hidden" id="attendingEmployeeId"/>
 				</p>
 				<input type="hidden" name="action" value = "closeTicket" />
 				<input type="hidden" id="closeTicketId" name="closeTicketId" />
@@ -99,6 +101,7 @@
 		<script src="DataTables-1.9.4/media/js/jquery.dataTables.js"></script>
 		<script src="${pageContext.request.contextPath}/js/dateFormat.js"></script>
 		<script src="${pageContext.request.contextPath}/js/jquery.datetimepicker.js"></script>
+		<script src="${pageContext.request.contextPath}/js/customAutocomplete.js"></script>
 		<style type="text/css" title="currentStyle">
 			@import "DataTables-1.9.4/media/css/header.css";
 			.FixedHeader_Cloned th {
@@ -156,8 +159,22 @@
 				// var osId = $("#closureOs option:selected").val();
 				
 				// $("#osId").val(osId);
-				
-				$("#closeTicketSend").submit();
+				var osId = $("#osId").val();
+				if(osId.indexOf(",") > 0){
+					$("#osId").val(osId.substring(0, osId.indexOf(",")));				
+				}
+				var engineer = $("#attendingEmployee").val();
+				if(engineer.indexOf(",") > 0){
+					$("#attendingEmployee").val(engineer.substring(0, engineer.lastIndexOf(",")));
+				}
+
+				// Validar
+				if(osId != "" && engineer != "" && $("#closeDatetime").val() != ""){
+					$("#closeTicketSend").submit();	
+					return true;			
+				}
+
+				return false;
 			}
 			
 			function reopenTicket(id, ticketNumber){
@@ -307,8 +324,10 @@
 					modal: true,
 					buttons: {
 						"Aceptar": function() {
-							applyCloseTicket();
-							$( this ).dialog( "close" );
+							if(applyCloseTicket())
+							{
+								$( this ).dialog( "close" );
+							}
 						},
 						
 						"Cancelar": function() {
@@ -341,6 +360,26 @@
 
 				// inicializando selectores de fecha/hora
 				$('#closeDatetime').datetimepicker({format:'d/m/Y H:i', lang:'es'});
+
+				// inicializando el dialogo para autocomplete de Ing. de servicio
+				var isCallCenter = "${user.belongsToGroup['Call Center']}";
+				if(isCallCenter == "true"){
+					$.get("${pageContext.request.contextPath}/userDomain/getEmployeeListJson.do?group=Implementacion%20y%20Servicio", function(data){
+						if(data != "error"){
+							init_autoComplete(data, "attendingEmployee", "attendingEmployeeId");						
+						}
+					})
+				}
+
+				// inicializando autocomplete de ordenes de servicio
+				if(isCallCenter == "true"){
+					$.get("${pageContext.request.contextPath}/serviceOrders/getServiceOrderListJson.do?startDate=" + moment('${ticketF.arrival}').format('DD/MM/YYYY HH:mm:ss'),
+					 function(data){
+						if(data != "error"){
+							init_autoComplete(data, "osId", "osRowId");						
+						}
+					})
+				}
 			});
 		</script>
 </html>

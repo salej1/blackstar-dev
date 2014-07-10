@@ -109,5 +109,8 @@
    <bean class="com.blackstar.web.controller.AddFollowUpController" parent="abstractController">
        <property name="iServ" ref="issueService" />
    </bean>
+   <bean class="com.blackstar.web.controller.UserDomainController" parent="abstractController">
+       
+   </bean>
  
 </beans>

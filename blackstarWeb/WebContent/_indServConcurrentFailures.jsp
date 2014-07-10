@@ -35,7 +35,7 @@
 				<thead>
 					<tr bgcolor="#FF0000">
 						<th style="width:130px">Fecha</th>
-						<th>Ticket</th>
+						<th style="width:70px">Ticket</th>
 						<th>Empresa</th>
 						<th>Equipo</th>
 						<th>Marca</th>
@@ -49,13 +49,13 @@
 				   <c:forEach var="row" items="${concurrenFailures}" varStatus="status">
 				       <tr>
                        		<td><c:out value="${row.created}" /></td>
-                       		<td><c:out value="${row.ticketNumber}" /></td>
+                       		<td><a href='/ticketDetail?ticketNumber=${row.ticketNumber}'>${row.ticketNumber}</a></td>
                        		<td><c:out value="${row.customer}" /></td>
                        		<td><c:out value="${row.equipmentTypeId}" /></td>
                        		<td><c:out value="${row.brand}" /></td>
                        		<td><c:out value="${row.serialNumber}" /></td>
                        		<td><c:out value="${row.observations}" /></td>
-                       		<td><c:out value="${row.lastTicketNumber}" /></td>
+                       		<td><a href='/ticketDetail?ticketNumber=${row.lastTicketNumber}'>${row.lastTicketNumber}</a></td>
                        		<td><c:out value="${row.employee}" /></td>
 				       </tr>
 				   </c:forEach>

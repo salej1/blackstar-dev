@@ -7,7 +7,7 @@
 	try{
 	    var data = $.parseJSON(str);
 	} catch(err){
-	    alert(err);
+	    //alert(err);
 	}
 	
 	$('#tickets').dataTable({
@@ -26,9 +26,12 @@
 						 { "mData": "equipmentLocation" },
 						 { "mData": "equipmentType" },
 						 { "mData": "equipmentBrand" },
+						 { "mData": "serialNumber" },
+						 { "mData": "capacity" },
 						 { "mData": "created" }, 	             
 						 { "mData": "arrival" },
 						 { "mData": "closed" },
+						 { "mData": "serviceOrderNumber" },
 						 { "mData": "asignee" },
 						 { "mData": "contact" },
 						 { "mData": "contactEmail" },
@@ -45,13 +48,21 @@
 						 }else if(aData["ticketStatus"] == 'RETRASADO' ){
 							 backcolor = "#F0C0C0";
 						 }
-					     $('td:eq(12)', nRow).css('background', backcolor).css('font-weight', 'bold');
+					     $('td:eq(15)', nRow).css('background', backcolor).css('font-weight', 'bold');
 					     if( aData["ticketNumber"].indexOf("lbl-") == 0){
 					   	  $('td:eq(0)', nRow).html(aData["ticketNumber"]
 					   	       .substring(4, aData["ticketNumber"].length));
 					   	  $('td', nRow).css({'background':'#C0E1F3'}).css('font-weight', 'bold');
 					     }
-					   }					  
+					   },
+			"aoColumnDefs" : [
+								{"mRender" : function(data, type, row){
+									return convertToLink("T", data);
+								}, "aTargets" : [0]},
+								{"mRender" : function(data, type, row){
+									return convertToLink("O", data);
+								}, "aTargets" : [10]}
+							 ]					  
                 }
 		);
 		
@@ -73,12 +84,15 @@
 					<tr>
 						<th>No. de Ticket</th>
 						<th style="width:120px;">Cliente</th>
-						<th>Ubicación del equipo</th>
+						<th>Ubicación</th>
 						<th>Equipo</th>
 						<th>Marca</th>
-						<th>Fecha y hora en la que se levanto el reporte</th>
-						<th>Hora y fecha de Llegada a Sitio</th>
-						<th>Fecha y hora de cierre</th>
+						<th>No. Serie</th>
+						<th>Capacidad</th>
+						<th>Fecha/Hora creación</th>
+						<th>Fecha/Hora llegada</th>
+						<th>Fecha/Hora cierre</th>
+						<th>O.S. de cierre</th>
 						<th>Ingeniero que atendió</th>
 						<th>Contacto</th>
 						<th>Email Contacto</th>

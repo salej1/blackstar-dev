@@ -61,4 +61,8 @@ public class Globals {
 	  public static final String GOOGLE_DRIVE_URL_SUFIX = ""; //"/edit";
 	  public static final String GOOGLE_LOGOUT_URL = "https://www.google.com/accounts/Logout";
 	  public static final String GOOGLE_CONTEXT_URL = "http://gposac-blackstar-pro.appspot.com";
+	  
+	  // Gpo SAC
+	  public static final String GPOSAC_LOGO_DEFAULT_URL = "http://www.gposac.com.mx/images/grupo-sac-logo.png";
+	  public static final String GPOSAC_DEFAULT_SENDER = "portal-servicios@gposac.com.mx";
 }

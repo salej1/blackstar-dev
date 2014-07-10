@@ -11,6 +11,7 @@
 <link rel="stylesheet" href="css/jquery.ui.theme.css"/>
 <link rel="stylesheet" href="css/jquery-ui.min.css"/>
 <script src="DataTables-1.9.4/media/js/jquery.dataTables.js"></script>
+<script src="${pageContext.request.contextPath}/js/linkConverter.js"></script>
 
 <script type="text/javascript" charset="utf-8">
 	 var str = '${ticketsList}';
@@ -56,6 +57,7 @@
 
 					  ],
 			"aoColumnDefs" : [{"mRender" : function(data, type, row){return "<div align=center style='width:60px;'><a href=/ticketDetail?ticketId=" + row.DT_RowId + ">" + data + "</a></div>";}, "aTargets" : [0]},
+							  {"mRender" : function(data, type, row){return "<div align=center style='width:60px;'>" + convertToLink("O", data) + "</div>";}, "aTargets" : [9]},
 							  {"mRender" : function(data, type, row){
 								  	if(canAssign == "true"){
 								  		return "<a href='#' class='edit' onclick='javascript: assignTicket(" + row.DT_RowId + ", \"" + data + "\"); return false;'>Asignar</a>";	    		    	       
@@ -95,7 +97,7 @@
 			}}
 	});
 
-	refreshTicketList();
+	//refreshTicketList();
 	
 });
 

@@ -33,8 +33,25 @@
 					    	       .substring(4, aData["employee"].length));
 					    	  $('td', nRow).css({'background':'#C0E1F3'}).css('font-weight', 'bold');
 					      }
-					    }					  
-                }
+					    },
+			"aoColumnDefs" : [
+								{"mRender" : function(data, type, row){
+									var tickets = data.split(",");
+									var ticketLinkList ="";
+									var ticket;
+
+									for(ticket in tickets){
+										var ticketLink = convertToLink("T", tickets[ticket]);
+										if(ticketLinkList.length > 0){
+											ticketLinkList  = ticketLinkList + ", ";
+										}
+										ticketLinkList = ticketLinkList + ticketLink;
+									}
+
+									return ticketLinkList;
+								}, "aTargets" : [3]},
+							 ]					  
+            }
 		);
 		
 	} );

@@ -14,8 +14,9 @@
 		<script src="${pageContext.request.contextPath}/js/jquery-ui.js"></script>
 		<script src="${pageContext.request.contextPath}/DataTables-1.9.4/media/js/jquery.dataTables.js"></script>
 		<script src="${pageContext.request.contextPath}/js/moment.min.js"></script>
+		<script src="${pageContext.request.contextPath}/js/linkConverter.js"></script>
 
-		<title>Ordenes de servicio</title>
+		<title>Indicadores de servicio</title>
 		
 		<script type="text/javascript" charset="utf-8">
 			var project = "All";

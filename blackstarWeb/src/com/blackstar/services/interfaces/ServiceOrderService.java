@@ -1,5 +1,6 @@
 package com.blackstar.services.interfaces;
 
+import java.util.Date;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -46,6 +47,7 @@ public interface ServiceOrderService {
 	
 	// Servicios de despliegue de listados de ordenes de servicio
 	public String getServiceOrdersByStatus(String status);
+	public String getServiceOrdersByDate(Date startDate);
 	public String getServiceOrderHistory();
 	public String getLimitedServiceOrdersHistoryJson(String user);
 

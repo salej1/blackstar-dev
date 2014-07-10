@@ -62,12 +62,6 @@
 					});
 				</script>
 				
-				<!-- La inicializacion debe ser despues de que se pintaron las tablas -->
-				<script type="text/javascript">
-					$(function(){
-						officeFilter_init();
-					});
-				</script>
 			</c:if>
 <!-- Fin Contenido De Perfiles SysCallCenter Y SysCoordinador-->
 
@@ -97,6 +91,17 @@
 				</script>
 			</c:if>
 <!-- Fin Historial de ordenes de servicio para Clientes -->
+
+<!-- Se inicializa el filtro por oficina -->
+			<c:if test="${sysCallCenter == true}">
+				<!-- La inicializacion debe ser despues de que se pintaron las tablas -->
+				<script type="text/javascript">
+					$(function(){
+						officeFilter_init();
+					});
+				</script>
+			</c:if>
+<!-- Fin inicializacion de filtro por oficina -->
 		</div>
 	</body>
 </html>

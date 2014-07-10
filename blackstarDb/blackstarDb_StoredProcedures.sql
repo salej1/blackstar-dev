@@ -34,12 +34,29 @@
 -- 50 	08/07/2014	SAG 	Se modifica:
 --								blackstarDb.UpsertUser
 --								blackstarDb.GetUserWatchingIssues
+--								blackstarDb.GetAutoCompleteServiceOrdersByDate
 -- -----------------------------------------------------------------------------
 
 use blackstarDb;
 
 DELIMITER $$
 
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetAutoCompleteServiceOrdersByDate
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetAutoCompleteServiceOrdersByDate$$
+CREATE PROCEDURE blackstarDb.GetAutoCompleteServiceOrdersByDate (pStartDate DATETIME)
+BEGIN
+
+	SELECT 
+		so.serviceOrderId AS value,
+		so.serviceOrderNumber AS label
+	FROM serviceOrder so 
+	WHERE so.serviceDate >= pStartDate
+	ORDER BY so.serviceOrderNumber;
+	
+END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetProjectsKPI
@@ -1902,7 +1919,7 @@ BEGIN
 			of.officeName AS officeName,
 			p.project AS project,
 			IF(tk.phoneResolved = 1, 'SI', 'NO') AS phoneResolved,
-			tk.serviceOrderNumber AS serviceOrderNumber,
+			IFNULL(tk.serviceOrderNumber, '') AS serviceOrderNumber,
 			ts.ticketStatus AS ticketStatus,
 			tk.observations AS observations,
 			IFNULL(bu.name, tk.employee) AS asignee,
@@ -1937,7 +1954,7 @@ BEGIN
 			of.officeName AS officeName,
 			p.project AS project,
 			IF(tk.phoneResolved = 1, 'SI', 'NO') AS phoneResolved,
-			tk.serviceOrderNumber AS serviceOrderNumber,
+			IFNULL(tk.serviceOrderNumber, '') AS serviceOrderNumber,
 			ts.ticketStatus AS ticketStatus,
 			tk.observations AS observations,
 			IFNULL(bu.name, tk.employee) AS asignee,
@@ -1975,7 +1992,7 @@ BEGIN
 			of.officeName AS officeName,
 			p.project AS project,
 			IF(tk.phoneResolved = 1, 'SI', 'NO') AS phoneResolved,
-			tk.serviceOrderNumber AS serviceOrderNumber,
+			IFNULL(tk.serviceOrderNumber, '') AS serviceOrderNumber,
 			ts.ticketStatus AS ticketStatus,
 			tk.observations AS observations,
 			IFNULL(bu.name, tk.employee) AS asignee,
@@ -2011,7 +2028,7 @@ BEGIN
 			of.officeName AS officeName,
 			p.project AS project,
 			IF(tk.phoneResolved = 1, 'SI', 'NO') AS phoneResolved,
-			tk.serviceOrderNumber AS serviceOrderNumber,
+			IFNULL(tk.serviceOrderNumber, '') AS serviceOrderNumber,
 			ts.ticketStatus AS ticketStatus,
 			tk.observations AS observations,
 			IFNULL(bu.name, tk.employee) AS asignee,

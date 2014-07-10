@@ -1,5 +1,7 @@
 package com.blackstar.web.controller;
 
+import java.util.Date;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -109,6 +111,20 @@ public class ServiceOrdersController extends AbstractController{
 			}
 		} catch (Exception e) {
 			retVal = "{\"exists\":\"false\"}";
+		}
+		return retVal;
+	}
+	
+	@RequestMapping(value = "/getServiceOrderListJson.do", method = RequestMethod.GET)
+	public @ResponseBody String ServiceOrdersHistoryJson(ModelMap model, @RequestParam(required = true) Date startDate) {
+		String retVal;
+		try {
+			retVal = service.getServiceOrdersByDate(startDate);
+		} catch (Exception e) {
+			Logger.Log(LogLevel.ERROR,
+					e.getStackTrace()[0].toString(), e);
+			e.printStackTrace();
+			return "error";
 		}
 		return retVal;
 	}

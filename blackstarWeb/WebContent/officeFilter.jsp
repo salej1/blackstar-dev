@@ -20,6 +20,9 @@
 		// tabla de OS con pendientes
 		pendingServiceOrders_filter(office);
 			
+		// historico de tickets
+		serviceOrdersHistory_filter(office);
+		
 		// se guarda la preferencia del usuario
 		$.cookie('blackstar_office_pref', office, { expires: 365 });
 	}

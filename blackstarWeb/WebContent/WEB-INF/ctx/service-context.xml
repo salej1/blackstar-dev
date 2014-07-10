@@ -77,6 +77,7 @@
 
   <bean id="surveyServiceService" class="com.blackstar.services.impl.SurveyServiceServiceImpl" parent="abstractService">
      <property name="surveyServiceDAO" ref="surveyServiceDAO" />
+     <property name="udService" ref="userDomainService" />
   </bean>
 
   <bean id="openCustomerService" class="com.blackstar.services.impl.OpenCustomerServiceImpl" parent="abstractService">
