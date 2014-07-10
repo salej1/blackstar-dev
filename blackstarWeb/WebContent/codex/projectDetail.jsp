@@ -48,7 +48,7 @@
 	    
 	    function addEntry(){
 	    	entryNumber++;
-	    	$('#entryTable').append('<tr class="part" id="entry_' + entryNumber + '"><td>' + entryNumber + '</td><td colspan="2"><select name="" id="entryTypeId_' + entryNumber + '" style="width:350px"><option value="">Seleccione</option><c:forEach var="ss" items="${entryTypes}"><option value="ss.id">${ss.name}</option></c:forEach></select></td><td colspan="3"><input type="text" id="description_' + entryNumber + '" style="width:280px"/></td><td><input type="number" id="discount_' + entryNumber + '" style="width:50px"/></td><td><input type="number" id="totalPrice_' + entryNumber + '" style="width:50px"/></td><td><input type="text" id="comments_' + entryNumber + '" style="width:80px"/></td> </tr> <tr><td colspan="9"><table id="items_'+ entryNumber + '" style="width:100%"></table></td></tr><tr><td></td><td><button class="searchButton" onclick="addItem(' + entryNumber +');">+ Item</button></td></tr>');
+	    	$('#entryTable').append('<tr class="part" id="entry_' + entryNumber + '"><td>' + entryNumber + '</td><td colspan="2"><select name="" id="entryTypeId_' + entryNumber + '" style="width:350px"><option value="">Seleccione</option><c:forEach var="ss" items="${entryTypes}"><option value="ss.id">${ss.name}</option></c:forEach></select></td><td colspan="3"><input type="text" id="description_' + entryNumber + '" style="width:280px"/></td><td><input type="number" id="discount_' + entryNumber + '" style="width:50px"/></td><td><input type="number" id="totalPrice_' + entryNumber + '" style="width:50px"/></td><td><input type="text" id="comments_' + entryNumber + '" style="width:80px"/></td> </tr> <tr class="item_part' + entryNumber + '"><td colspan="9"><table class="items" id="items_'+ entryNumber + '" style="width:100%"></table></td></tr><tr><td></td><td><button class="searchButton" onclick="addItem(' + entryNumber +');">+ Item</button></td></tr>');
 	    } 
 	    function addItem(entryNumber){
 	    	itemNumber++;
@@ -63,6 +63,17 @@
 			$("#attachmentFileName").val(data.docs[0].name);
 			$('#attachmentDlg').dialog('open');
 		}
+	    
+	    function prepareSubmit(){
+	     	var entries = $( "tr.part" );
+	     	alert(entries.length);
+	     	for(var i = 0; i < entries.length ; i++){
+	     		alert($("#" + entries[i].id).next().find("table.items tr").length);
+	     		//alert(entries[i].find("td table.items").length);	
+	     	}
+	     	
+	    }
+	    
 	</script>
 	
 <!--   CONTENT   -->
@@ -74,9 +85,11 @@
 						<h2>Cedula de proyectos</h2>				
 						<div>
 							<p></p>							
-							<button class="searchButton" onclick="window.location = 'intTicketDetail_new.html'">Agregar Req. Gral.</button>
+							<c:if test="${enableEdition}">
+							  <button class="searchButton" onclick="window.location = 'intTicketDetail_new.html'">Agregar Req. Gral.</button>
+							  <button class="searchButton" onclick="window.location = projectDetailAut.html">Autorizar</button>
+							</c:if>
 							<button class="searchButton" onclick="window.history.back();">Guardar</button>
-							<button class="searchButton" onclick="window.location = 'projectDetailAut.html'">Autorizar</button>
 							<button class="searchButton" onclick="window.history.back();">Cancelar</button>
 							<button class="searchButton" onclick="window.history.back();">Descartar</button>
 							<hr>
@@ -170,6 +183,7 @@
 								<td><form:input type="text" path="totalProjectNumber" style="width:100%"/></td>
 							  </tr>
 						   </table>
+						   <form:input type="hidden" path="strEntries"/>
                        </form:form>
                         
                         
@@ -202,6 +216,8 @@
 						</div>
 <!--   ~PARTIDAS   -->		
 
+                         <c:if test="${enableEdition}">
+                         
 <!--   SEGUIMIENTO   -->		
 						<br /><br />		
 						<c:import url="_followTable.jsp"></c:import>
@@ -212,7 +228,6 @@
 
 						 <table id="fileTraceTable">
 								<thead>
-									<th colspan="2">Seguimiento</th>
 								</thead>
 								    <c:forEach var="current" items="${deliverables}" >
 									  <tr>
@@ -236,22 +251,17 @@
 							</table>
 
 							<c:import url="/_attachments.jsp"></c:import>
-
-						<!-- Cotizacion DLG -->
-						<div id="mailDlg">
-							<p>Correos:</p>
-							<input type="text" id="correos" style="width:95%"/>
-							<p>Cuerpo del correo:</p>
-							<textarea name="" id="mail" style="width:95%" rows="5"></textarea>
-						</div>
+							</c:if>
 <!-- ~ ADJUNTOS -->
 
 <!--   BOTONES    -->
 						<div>
 							<hr>
-							<button class="searchButton" onclick="window.location = 'intTicketDetail_new.html'">Agregar Req. Gral.</button>
-							<button class="searchButton" onclick="window.history.back();">Guardar</button>
-							<button class="searchButton" onclick="window.location = projectDetailAut.html">Autorizar</button>
+							<c:if test="${enableEdition}">
+							  <button class="searchButton" onclick="window.location = 'intTicketDetail_new.html'">Agregar Req. Gral.</button>
+							  <button class="searchButton" onclick="window.location = projectDetailAut.html">Autorizar</button>
+							</c:if>
+							<button class="searchButton" onclick="prepareSubmit();">Guardar</button>
 							<button class="searchButton" onclick="window.history.back();">Cancelar</button>
 							<button class="searchButton" onclick="window.history.back();">Descartar</button>
 						</div>

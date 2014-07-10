@@ -45,6 +45,7 @@ public class ProjectController extends AbstractController {
 	     model.addAttribute("deliverableTypes", service.getDeliverableTypes());
 	     model.addAttribute("staff", udService.getStaff());
 	     model.addAttribute("accessToken", gdService.getAccessToken());
+	     model.addAttribute("enableEdition", false);
 	     model.addAttribute("osAttachmentFolder", gdService
 	    		           .getAttachmentFolderId(project.getProjectNumber()));
 	} catch (Exception e) {

@@ -31,6 +31,7 @@ public class ProjectVO {
 	private Integer servicesNumber;
 	private Integer totalProjectNumber; 
 	private List<ProjectEntryVO> entries = new ArrayList<ProjectEntryVO>();
+	private List<ProjectEntryVO> strEntries = new ArrayList<ProjectEntryVO>();
 	
 	public Integer getId() {
 		return id;
@@ -175,6 +176,12 @@ public class ProjectVO {
 	}
 	public void setClientDescription(String clientDescription) {
 		this.clientDescription = clientDescription;
+	}
+	public List<ProjectEntryVO> getStrEntries() {
+		return strEntries;
+	}
+	public void setStrEntries(List<ProjectEntryVO> strEntries) {
+		this.strEntries = strEntries;
 	}
 	
 }
