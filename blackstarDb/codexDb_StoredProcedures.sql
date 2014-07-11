@@ -340,12 +340,26 @@ END$$
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.CodexInsertDeliverableTrace
 -- -----------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS blackstardb.CodexInsertDeliverableTrace;
+DROP PROCEDURE IF EXISTS blackstardb.CodexInsertDeliverableTrace$$
 CREATE PROCEDURE blackstardb.`CodexInsertDeliverableTrace`(pProjectId int(11), pDeliverableId int(2), pUserId int(11))
 BEGIN
 	INSERT INTO codexDeliverableTrace (codexProjectId, deliverableTypeId, created, userId)
   VALUES (pProjectId, pDeliverableId, NOW(), pUserId);
-END;
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.CodexGetReferenceTypes
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstardb.CodexGetReferenceTypes$$
+CREATE PROCEDURE blackstardb.`CodexGetReferenceTypes`(pItemTypeId int(2))
+BEGIN
+  IF (pItemTypeId = 1) THEN
+      SELECT * FROM codexPriceList;
+  END IF;
+  IF (pItemTypeId = 2) THEN
+     SELECT bt._id as _id, bt.ticketNumber as name FROM bloomTicket bt;
+  END IF;
+END$$
 
 -- -----------------------------------------------------------------------------
 	-- FIN DE LOS STORED PROCEDURES

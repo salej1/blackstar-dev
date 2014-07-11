@@ -48,11 +48,11 @@
 	    
 	    function addEntry(){
 	    	entryNumber++;
-	    	$('#entryTable').append('<tr class="part" id="entry_' + entryNumber + '"><td>' + entryNumber + '</td><td colspan="2"><select name="" id="entryTypeId_' + entryNumber + '" style="width:350px"><option value="">Seleccione</option><c:forEach var="ss" items="${entryTypes}"><option value="ss.id">${ss.name}</option></c:forEach></select></td><td colspan="3"><input type="text" id="description_' + entryNumber + '" style="width:280px"/></td><td><input type="number" id="discount_' + entryNumber + '" style="width:50px"/></td><td><input type="number" id="totalPrice_' + entryNumber + '" style="width:50px"/></td><td><input type="text" id="comments_' + entryNumber + '" style="width:80px"/></td> </tr> <tr class="item_part' + entryNumber + '"><td colspan="9"><table class="items" id="items_'+ entryNumber + '" style="width:100%"></table></td></tr><tr><td></td><td><button class="searchButton" onclick="addItem(' + entryNumber +');">+ Item</button></td></tr>');
+	    	$('#entryTable').append('<tr class="part" id="entry_' + entryNumber + '" name="' + entryNumber + '"><td>' + entryNumber + '</td><td colspan="2"><select name="" id="entryTypeId_' + entryNumber + '" style="width:350px"><option value="">Seleccione</option><c:forEach var="ss" items="${entryTypes}"><option value="${ss.id}">${ss.name}</option></c:forEach></select></td><td colspan="3"><input type="text" id="description_' + entryNumber + '" style="width:280px"/></td><td><input type="number" id="discount_' + entryNumber + '" style="width:50px"/></td><td><input type="number" id="totalPrice_' + entryNumber + '" style="width:50px"/></td><td><input type="text" id="comments_' + entryNumber + '" style="width:80px"/></td> </tr> <tr class="item_part' + entryNumber + '"><td colspan="9"><table class="items" id="items_'+ entryNumber + '" style="width:100%"></table></td></tr><tr><td></td><td><button class="searchButton" onclick="addItem(' + entryNumber +');">+ Item</button></td></tr>');
 	    } 
 	    function addItem(entryNumber){
 	    	itemNumber++;
-	    	$('#items_' + entryNumber).append('<tr id="item_' + itemNumber + '"><td><button class="searchButton" onclick="removeItem(\'item_' + itemNumber +'\')" style="width:10px">-</button></td><td><select name="" id="entryItemTypeId_' + itemNumber + '" style="width:157px"><option value="">Seleccione</option><c:forEach var="ss" items="${entryItemTypes}"><option value="ss.id">${ss.name}</option></c:forEach></select></td><td><select id="referenceId" disabled="true" style="width:150px"><option value="-1">Seleccione</option></select></td><td><input type="text" id="itemDescription_' + itemNumber + '" style="width:180px"/></td><td><input type="number" id="itemQuantity_' + itemNumber + '" style="width:40px"/></td><td><input type="number" id="itemPriceByUnit_' + itemNumber + '" style="width:40px"/></td><td><input type="number" id="itemDiscount_' + itemNumber + '" style="width:40px"/></td><td><input type="number" id="itemTotalPrice_' + itemNumber + '" style="width:40px"/></td><td><input type="text" id="itemComments_' + itemNumber + '" style="width:80px"/></td></tr>');
+	    	$('#items_' + entryNumber).append('<tr id="item_' + itemNumber + '" name="' + itemNumber + '"><td><button class="searchButton" onclick="removeItem(\'item_' + itemNumber +'\')" style="width:10px">-</button></td><td><select onchange="setReferenceTypes(this.value, referenceId_' + itemNumber + ')" id="entryItemTypeId_' + itemNumber + '" style="width:157px"><option value="">Seleccione</option><c:forEach var="ss" items="${entryItemTypes}"><option value="${ss.id}">${ss.name}</option></c:forEach></select></td><td><select id="referenceId_' + itemNumber + '" disabled="true" style="width:150px"><option value="-1">Seleccione</option></select></td><td><input type="text" id="itemDescription_' + itemNumber + '" style="width:180px"/></td><td><input type="number" id="itemQuantity_' + itemNumber + '" style="width:40px"/></td><td><input type="number" id="itemPriceByUnit_' + itemNumber + '" style="width:40px"/></td><td><input type="number" id="itemDiscount_' + itemNumber + '" style="width:40px"/></td><td><input type="number" id="itemTotalPrice_' + itemNumber + '" style="width:40px"/></td><td><input type="text" id="itemComments_' + itemNumber + '" style="width:80px"/></td></tr>');
 	    }
 	    
 	    function removeItem(itemId){
@@ -66,12 +66,50 @@
 	    
 	    function prepareSubmit(){
 	     	var entries = $( "tr.part" );
-	     	alert(entries.length);
+	     	var strEntries = "";
+	     	var entryId, itemId;
+	     	var items;
 	     	for(var i = 0; i < entries.length ; i++){
-	     		alert($("#" + entries[i].id).next().find("table.items tr").length);
-	     		//alert(entries[i].find("td table.items").length);	
+	     		entryId = entries[i].id.substring(6);
+	     		strEntries += "~" + $("#entryTypeId_" + entryId).val()
+	     		              + "|"  + $("#description_" + entryId).val()
+	     		              + "|"  + $("#discount_" + entryId).val()
+	     		              + "|"  + $("#totalPrice_" + entryId).val()
+	     		              + "|"  + $("#comments_" + entryId).val()
+	     		              + "|";
+	     		items = $("#" + entries[i].id).next().find("table.items tr");
+	     		for(var j = 0; j < items.length ; j++){
+	     			itemId = items[j].id.substring(5);
+	     			strEntries += "^" +$("#entryItemTypeId_" + itemId).val()
+	     			           +  "°" + $("#referenceId_" + itemId).val()
+	     			           +  "°" + $("#itemDescription_" + itemId).val()
+	     			           +  "°" + $("#itemQuantity_" + itemId).val()
+	     			           +  "°" + $("#itemPriceByUnit_" + itemId).val()
+	     			           +  "°" + $("#itemDiscount_" + itemId).val()
+	     			           +  "°" + $("#itemTotalPrice_" + itemId).val()
+	     			           +  "°" + $("#itemComments_" + itemId).val();
+	     		}
 	     	}
+	     	$("#strEntries").val(strEntries);
+	     	alert(strEntries);	
 	     	
+	    }
+	    
+	    function setReferenceTypes(value, targetObj){
+	    	$('#' + targetObj.id).empty().append('<option value="">Seleccione</option>');
+	    	$("#" + targetObj.id).prop( "disabled", false );
+	    	$.ajax({
+				  url: "${pageContext.request.contextPath}/codex/project/getReferenceTypes.do?itemTypeId=" + value,
+				  type: 'get',
+                  dataType: 'json',
+                  async:true,
+				  success: function(data){
+					         for (var i = 0; i < data.length; i++) {
+					            d = data[i];
+					        	$('#' + targetObj.id).append('<option value="' + d._id + '">' + d.name + '</option>');
+					         }
+                         } 
+				});
 	    }
 	    
 	</script>

@@ -2,6 +2,8 @@ package com.codex.service;
 
 import java.util.List;
 
+import org.json.JSONObject;
+
 import com.blackstar.model.Followup;
 import com.blackstar.model.User;
 import com.codex.vo.CurrencyTypesVO;
@@ -29,5 +31,6 @@ public interface ProjectService {
   public List<DeliverableTypesVO> getDeliverableTypes();
   public void addDeliverableTrace(Integer projectId, Integer deliverableTypeId
                                                             , Integer userId);
+  public String getReferenceTypes(Integer itemTypeId);
   
 }

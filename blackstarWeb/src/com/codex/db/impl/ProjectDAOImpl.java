@@ -2,7 +2,10 @@ package com.codex.db.impl;
 
 import java.util.List;
 
+import org.json.JSONObject;
+
 import com.blackstar.db.dao.AbstractDAO;
+import com.blackstar.db.dao.mapper.JSONRowMapper;
 import com.blackstar.model.Followup;
 import com.blackstar.model.User;
 import com.codex.db.ProjectDAO;
@@ -116,6 +119,13 @@ public class ProjectDAOImpl extends AbstractDAO
 	String sqlQuery = "CALL CodexInsertDeliverableTrace(?, ?, ?)";
 	getJdbcTemplate().update(sqlQuery, new Object[]{projectId, deliverableTypeId
 			                                                         , userId});
+  }
+  
+  @Override
+  public List<JSONObject> getReferenceTypes(Integer itemTypeId) {
+	String sqlQuery = "CALL CodexGetReferenceTypes(?)";
+	return getJdbcTemplate().query(sqlQuery,new Object[]{itemTypeId} 
+	                                         , new JSONRowMapper());
   }
 
 }

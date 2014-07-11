@@ -2,6 +2,8 @@ package com.codex.service.impl;
 
 import java.util.List;
 
+import org.json.JSONObject;
+
 import com.blackstar.db.dao.interfaces.UserDAO;
 import com.blackstar.interfaces.IEmailService;
 import com.blackstar.model.Followup;
@@ -120,6 +122,12 @@ public class ProjectServiceImpl extends AbstractService
   public void addDeliverableTrace(Integer projectId, Integer deliverableTypeId
                                                             , Integer userId){
 	dao.addDeliverableTrace(projectId, deliverableTypeId, userId);
+  }
+  
+  @Override
+  public String getReferenceTypes(Integer itemTypeId){
+	List<JSONObject> types = dao.getReferenceTypes(itemTypeId);
+	return types != null ? encode(types.toString()): "";
   }
 
 }
