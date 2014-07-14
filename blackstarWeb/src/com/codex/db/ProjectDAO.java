@@ -41,7 +41,8 @@ public interface ProjectDAO {
 	public void insertEntryItem(Integer entryId, Integer itemTypeId
                               , String reference, String description 
                               , Integer  quantity, Float priceByUnit
-                              , Float totalPrice, String comments);
+                              , Float discount, Float totalPrice
+                              , String comments);
 	public void insertProject(ProjectVO project);
 	public Integer getNewEntryId();
 }

@@ -144,7 +144,7 @@ public class ProjectDAOImpl extends AbstractDAO
   
   @Override 
   public void insertProject(ProjectVO project){
-	String sqlQuery = "CALL CodexInsertProject(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	String sqlQuery = "CALL CodexInsertProject(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 	getJdbcTemplate().update(sqlQuery, new Object[]{project.getId(), project.getClientId()
 			            , project.getTaxesTypeId(), project.getStatusId()
 			            , project.getPaymentTypeId(), project.getCurrencyTypeId()
@@ -154,8 +154,8 @@ public class ProjectDAOImpl extends AbstractDAO
 			            , project.getAdvance(), project.getTimeLimit()
 			            , project.getSettlementTimeLimit(), project.getDeliveryTime()
 			            , project.getIntercom(), project.getProductsNumber()
-			            , project.getFinancesNumber(), project.getFinancesNumber()
-			            , project.getServicesNumber(), project.getTotalProjectNumber()});
+			            , project.getFinancesNumber(), project.getServicesNumber()
+			                                  , project.getTotalProjectNumber()});
   }
   
   @Override
@@ -172,10 +172,10 @@ public class ProjectDAOImpl extends AbstractDAO
   public void insertEntryItem(Integer entryId, Integer itemTypeId
 		                    , String reference, String description 
 		                    , Integer  quantity, Float priceByUnit
-		                    , Float totalPrice, String comments){
-    String sqlQuery = "CALL CodexInsertProjectEntryItem(?, ?, ?, ?, ?, ?, ? ,?)";
+		                    , Float discount, Float totalPrice, String comments){
+    String sqlQuery = "CALL CodexInsertProjectEntryItem(?, ?, ?, ?, ?, ?, ? ,?, ?)";
 	getJdbcTemplate().update(sqlQuery, new Object[]{entryId, itemTypeId, reference
-			           , description, quantity, priceByUnit, totalPrice, comments});
+		   , description, quantity, priceByUnit, discount, totalPrice, comments});
   }
 
 }

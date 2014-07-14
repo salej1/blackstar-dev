@@ -198,8 +198,8 @@
 								<td colspan="2"><form:select path="sellerId" name="seller" id="seller" style="width:95%;">
 								            <option value="">Seleccione</option>
 											<c:forEach var="ss" items="${sellers}">
-												<option value="${ss.id}"
-												<c:if test="${ss.id == client.sellerId}">
+												<option value="${ss.blackstarUserId}"
+												<c:if test="${ss.blackstarUserId == client.sellerId}">
 													selected="true"
 												</c:if>
 												>${ss.userName}</option>

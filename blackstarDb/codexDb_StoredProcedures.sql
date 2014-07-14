@@ -375,10 +375,10 @@ END$$
 	-- blackstarDb.CodexInsertProjectEntry
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstardb.CodexInsertProjectEntry$$
-CREATE PROCEDURE blackstardb.`CodexInsertProjectEntry`(pProjectId int(11), pEntryTypeId int(11), pDescription TEXT, pDiscount FLOAT(6,2), pTotalPrice FLOAT(9,2), pComments TEXT)
+CREATE PROCEDURE blackstardb.`CodexInsertProjectEntry`(pEntryId int(11), pProjectId int(11), pEntryTypeId int(11), pDescription TEXT, pDiscount FLOAT(6,2), pTotalPrice FLOAT(9,2), pComments TEXT)
 BEGIN
-  INSERT INTO codexProjectEntry (projectId, entryTypeId, description, discount, totalPrice, comments)
-  VALUES (pProjectId, pEntryTypeId, pDescription, pDiscount, pTotalPrice, pComments);
+  INSERT INTO codexProjectEntry (_id, projectId, entryTypeId, description, discount, totalPrice, comments)
+  VALUES (pEntryId, pProjectId, pEntryTypeId, pDescription, pDiscount, pTotalPrice, pComments);
 END$$
 
 -- -----------------------------------------------------------------------------
@@ -395,9 +395,9 @@ END$$
 	-- blackstarDb.CodexInsertProject
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstardb.CodexInsertProject$$
-CREATE PROCEDURE blackstardb.`CodexInsertProject`(pProjectId int(11), pClientId int(11), pTaxesTypeId int(1), pStatusId int(1), pPaymentTypeId int(1),pCurrencyTypeId int(2), pProjectNumber varchar(8), pCostCenter varchar(8), pChangeType float(2,2), pCreated varchar(20), pContactName text, pLocation varchar(20), pAdvance float(7,2), pTimeLimit int(3), pSettlementTimeLimit int(3), pDeliveryTime int(3), pIntercom varchar(5), pProductsNumber int(7), pFinancesNumber int(7), pServicesNumber int(7), pTotalProjectNumber int(8), OUT oId INTEGER)
+CREATE PROCEDURE blackstardb.`CodexInsertProject`(pProjectId int(11), pClientId int(11), pTaxesTypeId int(1), pStatusId int(1), pPaymentTypeId int(1),pCurrencyTypeId int(2), pProjectNumber varchar(8), pCostCenter varchar(8), pChangeType float(2,2), pCreated varchar(20), pContactName text, pLocation varchar(20), pAdvance float(7,2), pTimeLimit int(3), pSettlementTimeLimit int(3), pDeliveryTime int(3), pIntercom varchar(5), pProductsNumber int(7), pFinancesNumber int(7), pServicesNumber int(7), pTotalProjectNumber int(8))
 BEGIN
-  INSERT INTO codexEntryItem (_id, clientId , taxesTypeId , statusId , paymentTypeId ,currencyTypeId , projectNumber , costCenter , changeType , created , contactName , location , advance , timeLimit , settlementTimeLimit , deliveryTime , intercom , productsNumber , financesNumber , servicesNumber , totalProjectNumber)
+  INSERT INTO codexProject (_id, clientId , taxesTypeId , statusId , paymentTypeId ,currencyTypeId , projectNumber , costCenter , changeType , created , contactName , location , advance , timeLimit , settlementTimeLimit , deliveryTime , intercom , productsNumber , financesNumber , servicesNumber , totalProjectNumber)
   VALUES (pProjectId, pClientId , pTaxesTypeId , pStatusId , pPaymentTypeId ,pCurrencyTypeId , pProjectNumber , pCostCenter , pChangeType , pCreated , pContactName , pLocation , pAdvance , pTimeLimit , pSettlementTimeLimit , pDeliveryTime , pIntercom , pProductsNumber , pFinancesNumber , pServicesNumber , pTotalProjectNumber);
 END$$
 
@@ -414,6 +414,22 @@ BEGIN
 	SELECT newNumber projectNumber;
 END$$
 
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.CodexGetAllClients
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstardb.CodexGetAllClients$$
+CREATE PROCEDURE blackstardb.`CodexGetAllClients`()
+BEGIN
+  SELECT _id id, clientTypeId clientTypeId, clientOriginId clientOriginId, sellerId sellerId
+         , isProspect isProspect, rfc rfc, corporateName corporateName, tradeName tradeName
+         , phoneArea phoneArea, phoneNumber phoneNumber, phoneExtension phoneExtension
+         , phoneAreaAlt phoneAreaAlt, phoneNumberAlt phoneNumberAlt, phoneExtensionAlt phoneExtensionAlt
+         , email email, emailAlt emailAlt, street street, intNumber intNumber, extNumber extNumber
+         , zipCode zipCode, country country, state state, municipality municipality, city city
+         , neighborhood neighborhood, contactName contactName, curp curp, retention retention
+  FROM codexclient
+  WHERE isProspect = 0;
+END$$
 -- -----------------------------------------------------------------------------
 	-- FIN DE LOS STORED PROCEDURES
 -- -----------------------------------------------------------------------------

@@ -65,4 +65,9 @@ public class ClientServiceImpl extends AbstractService
 	return clientList != null ? encode(clientList.toString()): "";
   }
   
+  @Override 
+  public List<ClientVO> getAllClients(){
+	return dao.getAllClients();
+  }
+  
 }

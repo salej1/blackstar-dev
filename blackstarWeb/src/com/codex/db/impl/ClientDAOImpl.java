@@ -30,6 +30,13 @@ public class ClientDAOImpl extends AbstractDAO
 			                , getMapperFor(LocationVO.class));
   }
   
+  @Override 
+  public List<ClientVO> getAllClients(){
+	String sqlQuery = "CALL CodexGetAllClients()";
+	return (List<ClientVO>) getJdbcTemplate().query(sqlQuery
+			                , getMapperFor(ClientVO.class));
+  }
+  
   @Override
   public List<ClientTypesVO> getAllClientTypes() {
 	String sqlQuery = "CALL CodexGetAllClientTypes()";

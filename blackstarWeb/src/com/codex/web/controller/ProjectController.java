@@ -1,5 +1,7 @@
 package com.codex.web.controller;
 
+import java.util.Date;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -15,8 +17,8 @@ import com.blackstar.common.Globals;
 import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
 import com.blackstar.web.AbstractController;
+import com.codex.service.ClientService;
 import com.codex.service.ProjectService;
-import com.codex.vo.ClientVO;
 import com.codex.vo.ProjectVO;
 
 
@@ -26,9 +28,14 @@ import com.codex.vo.ProjectVO;
 public class ProjectController extends AbstractController {
 
   private ProjectService service;
+  private ClientService cService = null;
 
   public void setService(ProjectService service) {
 	this.service = service;
+  }
+  
+  public void setcService(ClientService cService) {
+	this.cService = cService;
   }
 	
   @RequestMapping(value = "/create.do")
@@ -41,6 +48,7 @@ public class ProjectController extends AbstractController {
 	     project.setStatusId(1);
 	     project.setStatusDescription("Nuevo");
 	     project.setProjectNumber("CQ" + projectId);
+	     project.setCreated(new Date());
 	     model.addAttribute("project", project);
 	     model.addAttribute("entryTypes", service.getAllEntryTypes());
 	     model.addAttribute("entryItemTypes", service.getAllEntryItemTypes());
@@ -51,6 +59,7 @@ public class ProjectController extends AbstractController {
 	     model.addAttribute("staff", udService.getStaff());
 	     model.addAttribute("accessToken", gdService.getAccessToken());
 	     model.addAttribute("enableEdition", false);
+	     model.addAttribute("clients", cService.getAllClients());
 	     model.addAttribute("osAttachmentFolder", gdService
 	    		           .getAttachmentFolderId(project.getProjectNumber()));
 	} catch (Exception e) {
@@ -118,7 +127,7 @@ public class ProjectController extends AbstractController {
 	return new ResponseEntity<HttpStatus>(HttpStatus.OK);
   }
   
-  @RequestMapping(value = "/insert.do")
+  @RequestMapping(value = "/insert.do") 
   public String insert(ModelMap model,  @ModelAttribute("project") ProjectVO project){
 	try {
 	     service.insertProject(project);

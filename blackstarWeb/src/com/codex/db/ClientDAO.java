@@ -21,5 +21,6 @@ public interface ClientDAO {
   public void insertClient(ClientVO client);
   public String getNextclientId();
   public List<JSONObject> getClientList(boolean isProspect);
+  public List<ClientVO> getAllClients();
 
 }

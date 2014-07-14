@@ -66,12 +66,12 @@
 	    
 	    function prepareSubmit(){
 	     	var entries = $( "tr.part" );
-	     	var strEntries = "";
+	     	var strEntries = '';
 	     	var entryId, itemId;
 	     	var items;
 	     	for(var i = 0; i < entries.length ; i++){
 	     		entryId = entries[i].id.substring(6);
-	     		strEntries += "~" + $("#entryTypeId_" + entryId).val()
+	     		strEntries += $("#entryTypeId_" + entryId).val()
 	     		              + "|"  + $("#description_" + entryId).val()
 	     		              + "|"  + $("#discount_" + entryId).val()
 	     		              + "|"  + $("#totalPrice_" + entryId).val()
@@ -80,15 +80,17 @@
 	     		items = $("#" + entries[i].id).next().find("table.items tr");
 	     		for(var j = 0; j < items.length ; j++){
 	     			itemId = items[j].id.substring(5);
-	     			strEntries += "^" +$("#entryItemTypeId_" + itemId).val()
+	     			strEntries += $("#entryItemTypeId_" + itemId).val()
 	     			           +  "°" + $("#referenceId_" + itemId).val()
 	     			           +  "°" + $("#itemDescription_" + itemId).val()
 	     			           +  "°" + $("#itemQuantity_" + itemId).val()
 	     			           +  "°" + $("#itemPriceByUnit_" + itemId).val()
 	     			           +  "°" + $("#itemDiscount_" + itemId).val()
 	     			           +  "°" + $("#itemTotalPrice_" + itemId).val()
-	     			           +  "°" + $("#itemComments_" + itemId).val();
+	     			           +  "°" + $("#itemComments_" + itemId).val()
+	     			           +  "^";
 	     		}
+	     		strEntries += "~";
 	     	}
 	     	$("#strEntries").val(strEntries);
 	     	
@@ -157,7 +159,7 @@
 							<hr>
 						</div>		
 <!--   ENCABEZADO CEDULA   -->			
-                        <form:form  id="mainForm" commandName="project" action="${pageContext.request.contextPath}/codex/project/insert.do">
+                        <form:form  id="mainForm" commandName="project" action="/codex/project/insert.do">
                            <table>
 							  <tr>
 								<td  style="width:140px">No. Cedula</td>
@@ -167,17 +169,27 @@
 							  </tr>
 							  <tr>
 								<td>Cliente</td>
-								<td colspan="4"><form:input type="text" id="clientDescription" path="clientDescription"  style="width:100%" class="required"/></td>
+								<td colspan="4"><form:select name="" id="clientId" path="clientId" style="width:100%">
+								            <option value="">Seleccione</option>
+											<c:forEach var="ss" items="${clients}">
+												<option value="${ss.id}"
+												<c:if test="${ss.id == project.clientId}">
+													selected="true"
+												</c:if>
+												>${ss.corporateName}</option>
+											</c:forEach>
+											
+										</form:select>
 							  <tr>
 							  </tr>
 								<td>Centro de costos:</td>
 								<td>
-									<form:input type="text" id="costCenter" path="costCenter" style="width:100%" class="required"/>
+									<form:input type="text" id="costCenter" path="costCenter" style="width:100%" class="required" maxlength="8"/>
 								</td>
 							  </tr>
 							  <tr>
 								<td>Tipo de cambio:</td>
-								<td><form:input type="text" id="changeType" path="changeType" style="width:100%" class="required"/></td>
+								<td><form:input type="text" id="changeType" path="changeType" style="width:100%" class="required" maxlength="5"/></td>
 								<td>Fecha:</td>
 								<td><form:input type="text" id="created" path="created" style="width:100%" class="required"/></td>
 							  <tr>
@@ -202,13 +214,13 @@
 							  </tr>
 							  <tr>
 								<td>Anticipo:</td>
-								<td><form:input type="text" id="advance" path="advance" style="width:100%" class="required"/></td>
+								<td><form:input type="text" id="advance" path="advance" style="width:100%" class="required" maxlength="10"/></td>
 								<td>Plazo:</td>
-								<td><form:input type="text" id="timeLimit" path="timeLimit" style="width:100%" class="required"/></td>
+								<td><form:input type="text" id="timeLimit" path="timeLimit" style="width:100%" class="required" maxlength="3"/></td>
 							  <tr>
 							  <tr>
 								<td>Plazo finiquito:</td>
-								<td><form:input type="text" id="settlementTimeLimit" path="settlementTimeLimit"  style="width:100%" class="required"/></td>
+								<td><form:input type="text" id="settlementTimeLimit" path="settlementTimeLimit"  style="width:100%" class="required" maxlength="3"/></td>
 							  </tr>
 							  <tr>
 								<td>Moneda:</td>
@@ -238,24 +250,26 @@
 							  </tr>
 							  <tr>
 								<td>Tiempo de entrega:</td>
-								<td><form:input type="text" id="deliveryTime" path="deliveryTime" style="width:100%" class="required"/></td>
+								<td><form:input type="text" id="deliveryTime" path="deliveryTime" style="width:100%" class="required" maxlength="3"/></td>
 								<td>Intercom:</td>
-								<td><form:input type="text" id="intercom" path="intercom" style="width:100%" class="required"/></td>
+								<td><form:input type="text" id="intercom" path="intercom" style="width:100%" class="required" maxlength="5"/></td>
 							  </tr>
 							  <tr>
 								<td>TOTAL DE PRODUCTOS</td>
-								<td><form:input type="text" path="productsNumber" style="width:100%" class="required"/></td>
+								<td><form:input type="text" path="productsNumber" style="width:100%" class="required" maxlength="7"/></td>
 								<td>FIANZA(S)</td>
-								<td><form:input type="text" path="financesNumber" style="width:100%" class="required"/></td>
+								<td><form:input type="text" path="financesNumber" style="width:100%" class="required" maxlength="7"/></td>
 							  </tr>
 							  <tr>
 								<td>TOTAL DE SERVICIOS</td>
-								<td><form:input type="text" path="servicesNumber" style="width:100%" class="required"/></td>
+								<td><form:input type="text" path="servicesNumber" style="width:100%" class="required" maxlength="7"/></td>
 								<td>TOTAL DEL PROYECTO</td>
-								<td><form:input type="text" path="totalProjectNumber" style="width:100%" class="required"/></td>
+								<td><form:input type="text" path="totalProjectNumber" style="width:100%" class="required" maxlength="7"/></td>
 							  </tr>
 						   </table>
 						   <form:input type="hidden" path="strEntries"/>
+						   <form:input type="hidden" path="statusId"/>
+						   <form:input type="hidden" path="id"/>
                        </form:form>
                         
                         

@@ -2,8 +2,6 @@ package com.codex.service;
 
 import java.util.List;
 
-import org.json.JSONObject;
-
 import com.blackstar.model.User;
 import com.codex.vo.ClientOriginTypesVO;
 import com.codex.vo.ClientTypesVO;
@@ -20,5 +18,6 @@ public interface ClientService {
   public void insertClient(ClientVO client);
   public String getNextclientId();
   public String getClientList(boolean isProspect);
+  public List<ClientVO> getAllClients();
   
 }

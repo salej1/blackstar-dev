@@ -10,6 +10,7 @@ import com.blackstar.model.Followup;
 import com.blackstar.model.User;
 import com.blackstar.services.AbstractService;
 import com.blackstar.services.EmailServiceFactory;
+import com.codex.db.ClientDAO;
 import com.codex.db.ProjectDAO;
 import com.codex.service.ProjectService;
 import com.codex.vo.CurrencyTypesVO;
@@ -153,7 +154,7 @@ public class ProjectServiceImpl extends AbstractService
 			values = item.split("°");
 			dao.insertEntryItem(entryId, Integer.valueOf(values[0]), values[1]
 			   , values[2], Integer.valueOf(values[3]), Float.valueOf(values[4])
-			                             , Float.valueOf(values[5]), values[6]);
+			   , Float.valueOf(values[5]), Float.valueOf(values[6]), values[7]);
 		}
 	}
 	  
