@@ -5,7 +5,7 @@ public class ProjectEntryItemVO {
 	private Integer id;
 	private Integer entryId;
 	private Integer itemTypeId;
-	private Integer referenceId;
+	private String reference;
 	private String description;
 	private Integer quantity;
 	private Float priceByUnit;
@@ -31,11 +31,11 @@ public class ProjectEntryItemVO {
 	public void setItemTypeId(Integer itemTypeId) {
 		this.itemTypeId = itemTypeId;
 	}
-	public Integer getReferenceId() {
-		return referenceId;
+	public String getReferenceId() {
+		return reference;
 	}
-	public void setReferenceId(Integer referenceId) {
-		this.referenceId = referenceId;
+	public void setReferenceId(String reference) {
+		this.reference = reference;
 	}
 	public String getDescription() {
 		return description;

@@ -2,14 +2,14 @@ package com.codex.service;
 
 import java.util.List;
 
-import org.json.JSONObject;
-
 import com.blackstar.model.Followup;
 import com.blackstar.model.User;
 import com.codex.vo.CurrencyTypesVO;
 import com.codex.vo.DeliverableTypesVO;
+import com.codex.vo.PaymentTypeVO;
 import com.codex.vo.ProjectEntryItemTypesVO;
 import com.codex.vo.ProjectEntryTypesVO;
+import com.codex.vo.ProjectVO;
 import com.codex.vo.TaxesTypesVO;
 import com.codex.vo.TicketTeamDTO;
 
@@ -32,5 +32,7 @@ public interface ProjectService {
   public void addDeliverableTrace(Integer projectId, Integer deliverableTypeId
                                                             , Integer userId);
   public String getReferenceTypes(Integer itemTypeId);
+  public List<PaymentTypeVO> getAllPaymentTypes();
+  public void insertProject(ProjectVO project);
   
 }

@@ -166,7 +166,7 @@ CREATE TABLE IF NOT EXISTS blackstarDb.codexEntryItem(
   _id Int(11) NOT NULL AUTO_INCREMENT,
   entryId Int(11) NOT NULL,
   itemTypeId Int(2) NOT NULL,
-  referenceId Int(11) NOT NULL,
+  reference Text ,
   description Text NOT NULL,
   quantity Int(7) NOT NULL,
   priceByUnit Float(8,2) NOT NULL,

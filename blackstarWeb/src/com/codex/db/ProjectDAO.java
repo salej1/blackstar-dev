@@ -8,6 +8,7 @@ import com.blackstar.model.Followup;
 import com.blackstar.model.User;
 import com.codex.vo.CurrencyTypesVO;
 import com.codex.vo.DeliverableTypesVO;
+import com.codex.vo.PaymentTypeVO;
 import com.codex.vo.ProjectEntryItemTypesVO;
 import com.codex.vo.ProjectEntryTypesVO;
 import com.codex.vo.ProjectVO;
@@ -32,4 +33,15 @@ public interface ProjectDAO {
 	public void addDeliverableTrace(Integer projectId, Integer deliverableTypeId
                                                               , Integer userId);
 	public List<JSONObject> getReferenceTypes(Integer itemTypeId);
+	public List<PaymentTypeVO> getAllPaymentTypes(); 
+	public void insertProjectEntry(Integer entryId, Integer projectId
+            , Integer entryTypeId, String description 
+            , Float discount, Float totalPrice
+            , String comments);
+	public void insertEntryItem(Integer entryId, Integer itemTypeId
+                              , String reference, String description 
+                              , Integer  quantity, Float priceByUnit
+                              , Float totalPrice, String comments);
+	public void insertProject(ProjectVO project);
+	public Integer getNewEntryId();
 }

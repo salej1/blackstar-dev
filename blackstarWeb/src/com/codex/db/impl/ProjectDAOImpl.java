@@ -11,6 +11,7 @@ import com.blackstar.model.User;
 import com.codex.db.ProjectDAO;
 import com.codex.vo.CurrencyTypesVO;
 import com.codex.vo.DeliverableTypesVO;
+import com.codex.vo.PaymentTypeVO;
 import com.codex.vo.ProjectEntryItemTypesVO;
 import com.codex.vo.ProjectEntryTypesVO;
 import com.codex.vo.ProjectVO;
@@ -107,6 +108,12 @@ public class ProjectDAOImpl extends AbstractDAO
   }
   
   @Override
+  public Integer getNewEntryId() {
+	StringBuilder sqlBuilder = new StringBuilder("CALL GetNextEntryId()");
+	return getJdbcTemplate().queryForInt(sqlBuilder.toString());
+  }
+  
+  @Override
   public List<DeliverableTypesVO> getDeliverableTypes() {
 	StringBuilder sqlBuilder = new StringBuilder("CALL CodexGetDeliverableTypes()");
 	return (List<DeliverableTypesVO>) getJdbcTemplate().query(sqlBuilder.toString() 
@@ -126,6 +133,49 @@ public class ProjectDAOImpl extends AbstractDAO
 	String sqlQuery = "CALL CodexGetReferenceTypes(?)";
 	return getJdbcTemplate().query(sqlQuery,new Object[]{itemTypeId} 
 	                                         , new JSONRowMapper());
+  }
+  
+  @Override
+  public List<PaymentTypeVO> getAllPaymentTypes() {
+	String sqlQuery = "CALL CodexGetPaymentTypes()";
+	return (List<PaymentTypeVO>) getJdbcTemplate().query(sqlQuery
+				            , getMapperFor(PaymentTypeVO.class));
+  }
+  
+  @Override 
+  public void insertProject(ProjectVO project){
+	String sqlQuery = "CALL CodexInsertProject(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	getJdbcTemplate().update(sqlQuery, new Object[]{project.getId(), project.getClientId()
+			            , project.getTaxesTypeId(), project.getStatusId()
+			            , project.getPaymentTypeId(), project.getCurrencyTypeId()
+			            , project.getProjectNumber(), project.getCostCenter()
+			            , project.getChangeType(), project.getCreated()
+			            , project.getContactName(), project.getLocation()
+			            , project.getAdvance(), project.getTimeLimit()
+			            , project.getSettlementTimeLimit(), project.getDeliveryTime()
+			            , project.getIntercom(), project.getProductsNumber()
+			            , project.getFinancesNumber(), project.getFinancesNumber()
+			            , project.getServicesNumber(), project.getTotalProjectNumber()});
+  }
+  
+  @Override
+  public void insertProjectEntry(Integer entryId, Integer projectId
+		                         , Integer entryTypeId, String description 
+		                         , Float discount, Float totalPrice
+		                         , String comments) {
+	 String sqlQuery = "CALL CodexInsertProjectEntry(?, ?, ?, ?, ?, ?, ?)";
+	 getJdbcTemplate().update(sqlQuery, new Object[]{entryId, projectId
+	      , entryTypeId, description, discount, totalPrice, comments});
+  }
+  
+  @Override
+  public void insertEntryItem(Integer entryId, Integer itemTypeId
+		                    , String reference, String description 
+		                    , Integer  quantity, Float priceByUnit
+		                    , Float totalPrice, String comments){
+    String sqlQuery = "CALL CodexInsertProjectEntryItem(?, ?, ?, ?, ?, ?, ? ,?)";
+	getJdbcTemplate().update(sqlQuery, new Object[]{entryId, itemTypeId, reference
+			           , description, quantity, priceByUnit, totalPrice, comments});
   }
 
 }

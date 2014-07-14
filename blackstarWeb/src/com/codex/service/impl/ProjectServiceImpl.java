@@ -14,6 +14,7 @@ import com.codex.db.ProjectDAO;
 import com.codex.service.ProjectService;
 import com.codex.vo.CurrencyTypesVO;
 import com.codex.vo.DeliverableTypesVO;
+import com.codex.vo.PaymentTypeVO;
 import com.codex.vo.ProjectEntryItemTypesVO;
 import com.codex.vo.ProjectEntryTypesVO;
 import com.codex.vo.ProjectVO;
@@ -128,6 +129,34 @@ public class ProjectServiceImpl extends AbstractService
   public String getReferenceTypes(Integer itemTypeId){
 	List<JSONObject> types = dao.getReferenceTypes(itemTypeId);
 	return types != null ? encode(types.toString()): "";
+  }
+  
+  @Override
+  public List<PaymentTypeVO> getAllPaymentTypes(){
+	return dao.getAllPaymentTypes();
+  }
+  
+  @Override
+  public void insertProject(ProjectVO project){
+	String [] entries = project.getStrEntries().split("~");
+	String [] items, values;
+	Integer entryId;
+	dao.insertProject(project);
+	for(String entry : entries){
+		values = entry.split("\\|");
+		entryId = dao.getNewEntryId();
+		dao.insertProjectEntry(entryId, project.getId(), Integer.valueOf(values[0])
+				, values[1], Float.valueOf(values[2]), Float.valueOf(values[3])
+				                                                  , values[4]);
+		items = values[5].split("\\^");
+		for(String item : items){
+			values = item.split("°");
+			dao.insertEntryItem(entryId, Integer.valueOf(values[0]), values[1]
+			   , values[2], Integer.valueOf(values[3]), Float.valueOf(values[4])
+			                             , Float.valueOf(values[5]), values[6]);
+		}
+	}
+	  
   }
 
 }

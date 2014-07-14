@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -15,6 +16,7 @@ import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
 import com.blackstar.web.AbstractController;
 import com.codex.service.ProjectService;
+import com.codex.vo.ClientVO;
 import com.codex.vo.ProjectVO;
 
 
@@ -37,6 +39,7 @@ public class ProjectController extends AbstractController {
 		 projectId = service.getNewProjectId();
 	     project.setId(projectId);
 	     project.setStatusId(1);
+	     project.setStatusDescription("Nuevo");
 	     project.setProjectNumber("CQ" + projectId);
 	     model.addAttribute("project", project);
 	     model.addAttribute("entryTypes", service.getAllEntryTypes());
@@ -44,6 +47,7 @@ public class ProjectController extends AbstractController {
 	     model.addAttribute("currencyTypes", service.getAllCurrencyTypes());
 	     model.addAttribute("taxesTypes", service.getAllTaxesTypes());
 	     model.addAttribute("deliverableTypes", service.getDeliverableTypes());
+	     model.addAttribute("paymentTypes", service.getAllPaymentTypes());
 	     model.addAttribute("staff", udService.getStaff());
 	     model.addAttribute("accessToken", gdService.getAccessToken());
 	     model.addAttribute("enableEdition", false);
@@ -112,6 +116,18 @@ public class ProjectController extends AbstractController {
 		return new ResponseEntity<HttpStatus>(HttpStatus.BAD_REQUEST);
 	}
 	return new ResponseEntity<HttpStatus>(HttpStatus.OK);
+  }
+  
+  @RequestMapping(value = "/insert.do")
+  public String insert(ModelMap model,  @ModelAttribute("project") ProjectVO project){
+	try {
+	     service.insertProject(project);
+	} catch (Exception e) {
+		e.printStackTrace();
+		model.addAttribute("errorDetails", e.getStackTrace()[0].toString());
+		return "error";
+	}
+    return "codex/projectDetail";
   }
 	
 }
