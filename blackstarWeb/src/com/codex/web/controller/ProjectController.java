@@ -38,6 +38,44 @@ public class ProjectController extends AbstractController {
 	this.cService = cService;
   }
 	
+  @RequestMapping(value = "/showList.do") 
+  public String showList(ModelMap model){
+	try {
+		 model.addAttribute("projects", service.getAllProjectsJson());
+	} catch (Exception e) {
+		e.printStackTrace();
+		model.addAttribute("errorDetails", e.getStackTrace()[0].toString());
+		return "error";
+	}
+    return "codex/projectList";
+  }
+  
+  @RequestMapping(value = "/edit.do")
+  public String edit(ModelMap model, @RequestParam(required = true) Integer projectId){
+	ProjectVO project = null;
+	try {
+		 project = service.getProjectDetail(projectId);
+	     model.addAttribute("project", project);
+	     model.addAttribute("entryTypes", service.getAllEntryTypes());
+	     model.addAttribute("entryItemTypes", service.getAllEntryItemTypes());
+	     model.addAttribute("currencyTypes", service.getAllCurrencyTypes());
+	     model.addAttribute("taxesTypes", service.getAllTaxesTypes());
+		 model.addAttribute("deliverableTypes", service.getDeliverableTypes());
+		 model.addAttribute("paymentTypes", service.getAllPaymentTypes());
+		 model.addAttribute("staff", udService.getStaff());
+		 model.addAttribute("accessToken", gdService.getAccessToken());
+		 model.addAttribute("enableEdition", true);
+		 model.addAttribute("clients", cService.getAllClients());
+		 model.addAttribute("osAttachmentFolder", gdService
+		    		           .getAttachmentFolderId(project.getProjectNumber()));
+		} catch (Exception e) {
+			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
+			e.printStackTrace();
+			return "error";
+		}   
+		return "codex/projectDetail";
+  }
+  
   @RequestMapping(value = "/create.do")
   public String create(ModelMap model){
 	ProjectVO project = new ProjectVO();
@@ -57,11 +95,8 @@ public class ProjectController extends AbstractController {
 	     model.addAttribute("deliverableTypes", service.getDeliverableTypes());
 	     model.addAttribute("paymentTypes", service.getAllPaymentTypes());
 	     model.addAttribute("staff", udService.getStaff());
-	     model.addAttribute("accessToken", gdService.getAccessToken());
 	     model.addAttribute("enableEdition", false);
 	     model.addAttribute("clients", cService.getAllClients());
-	     model.addAttribute("osAttachmentFolder", gdService
-	    		           .getAttachmentFolderId(project.getProjectNumber()));
 	} catch (Exception e) {
 		Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 		e.printStackTrace();
@@ -136,7 +171,7 @@ public class ProjectController extends AbstractController {
 		model.addAttribute("errorDetails", e.getStackTrace()[0].toString());
 		return "error";
 	}
-    return "codex/projectDetail";
+    return "codex/projectList";
   }
 	
 }

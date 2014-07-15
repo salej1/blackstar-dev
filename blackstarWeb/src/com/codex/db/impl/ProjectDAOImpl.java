@@ -13,7 +13,9 @@ import com.codex.vo.CurrencyTypesVO;
 import com.codex.vo.DeliverableTypesVO;
 import com.codex.vo.PaymentTypeVO;
 import com.codex.vo.ProjectEntryItemTypesVO;
+import com.codex.vo.ProjectEntryItemVO;
 import com.codex.vo.ProjectEntryTypesVO;
+import com.codex.vo.ProjectEntryVO;
 import com.codex.vo.ProjectVO;
 import com.codex.vo.TaxesTypesVO;
 import com.codex.vo.TicketTeamDTO;
@@ -176,6 +178,26 @@ public class ProjectDAOImpl extends AbstractDAO
     String sqlQuery = "CALL CodexInsertProjectEntryItem(?, ?, ?, ?, ?, ?, ? ,?, ?)";
 	getJdbcTemplate().update(sqlQuery, new Object[]{entryId, itemTypeId, reference
 		   , description, quantity, priceByUnit, discount, totalPrice, comments});
+  }
+  
+  @Override
+  public List<JSONObject> getAllProjectsJson() {
+	String sqlQuery = "CALL CodexGetAllProjects()";
+	return getJdbcTemplate().query(sqlQuery , new JSONRowMapper());
+  }
+  
+  @Override
+  public List<ProjectEntryVO> getEntriesByProject(Integer projectId) {
+	String sqlQuery = "CALL CodexGetEntriesByProject(?)";
+	return (List<ProjectEntryVO>) getJdbcTemplate().query(sqlQuery
+			     , new Object[]{projectId}, getMapperFor(ProjectEntryVO.class));
+  }
+  
+  @Override
+  public List<ProjectEntryItemVO> getItemsByEntry(Integer entryId) {
+	String sqlQuery = "CALL CodexGetItemsByEntry(?)";
+	return (List<ProjectEntryItemVO>) getJdbcTemplate().query(sqlQuery
+			   , new Object[]{entryId}, getMapperFor(ProjectEntryItemVO.class));
   }
 
 }

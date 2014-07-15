@@ -17,7 +17,9 @@ import com.codex.vo.CurrencyTypesVO;
 import com.codex.vo.DeliverableTypesVO;
 import com.codex.vo.PaymentTypeVO;
 import com.codex.vo.ProjectEntryItemTypesVO;
+import com.codex.vo.ProjectEntryItemVO;
 import com.codex.vo.ProjectEntryTypesVO;
+import com.codex.vo.ProjectEntryVO;
 import com.codex.vo.ProjectVO;
 import com.codex.vo.TaxesTypesVO;
 import com.codex.vo.TicketTeamDTO;
@@ -111,6 +113,25 @@ public class ProjectServiceImpl extends AbstractService
   }
 
   @Override
+  public ProjectVO getProjectDetail(Integer projectId) {
+	ProjectVO project = null;
+	List<ProjectEntryVO> entries = null;
+	List<ProjectVO> projects = dao.getProjectDetail(projectId);
+	if(projects.size() == 0){
+		return null;
+	} else {
+		project = projects.get(0);
+	}
+	entries = dao.getEntriesByProject(project.getId());
+	for(ProjectEntryVO entry : entries){
+	  entry.setItems(dao.getItemsByEntry(entry.getId()));
+	}
+	project.setEntries(entries);
+	return project;
+  }
+  
+  
+  @Override
   public Integer getNewProjectId(){
 	return dao.getNewProjectId();
   }
@@ -129,6 +150,12 @@ public class ProjectServiceImpl extends AbstractService
   @Override
   public String getReferenceTypes(Integer itemTypeId){
 	List<JSONObject> types = dao.getReferenceTypes(itemTypeId);
+	return types != null ? encode(types.toString()): "";
+  }
+  
+  @Override
+  public String getAllProjectsJson(){
+	List<JSONObject> types = dao.getAllProjectsJson();
 	return types != null ? encode(types.toString()): "";
   }
   

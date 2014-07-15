@@ -41,7 +41,7 @@
 		<c:when test="${pageSection == 'clientes'}">
 		       <li><a href="${pageContext.request.contextPath}/dashboard/show.do">Inicio</a></li>
 			    <li><span class="active" onclick="window.location = '${pageContext.request.contextPath}/codex/client/showClientList.do'">Clientes</span></li>
-			    <li><a href="${pageContext.request.contextPath}/codex/project/create.do">Cedula de Proyectos</a></li>
+			    <li><a href="${pageContext.request.contextPath}/codex/project/showList.do">Cedula de Proyectos</a></li>
 				<li><a href="${pageContext.request.contextPath}/tickets">Tickets</a></li>
 				<li><a href="${pageContext.request.contextPath}/serviceOrders/show.do">Ordenes de servicio</a></li>
 				<c:if test="${sysCallCenter == true}">
@@ -54,7 +54,7 @@
 			<c:when test="${pageSection == 'projects'}">
 		       <li><a href="${pageContext.request.contextPath}/dashboard/show.do">Inicio</a></li>
 		       <li><a href="${pageContext.request.contextPath}/codex/client/showClientList.do">Clientes</a></li>
-			    <li><span class="active" onclick="window.location = '${pageContext.request.contextPath}/codex/project/create.do'">Cedula de Proyectos</span></li>
+			    <li><span class="active" onclick="window.location = '${pageContext.request.contextPath}/codex/project/showList.do'">Cedula de Proyectos</span></li>
 				<li><a href="${pageContext.request.contextPath}/tickets">Tickets</a></li>
 				<li><a href="${pageContext.request.contextPath}/serviceOrders/show.do">Ordenes de servicio</a></li>
 				<c:if test="${sysCallCenter == true}">
@@ -68,7 +68,7 @@
 			<c:when test="${pageSection == 'dashboard'}">
 			    <li><span class="active" onclick="window.location = '/dashboard/show.do'">Inicio</span></li>
 			    <li><a href="${pageContext.request.contextPath}/codex/client/showClientList.do">Clientes</a></li>
-			    <li><a href="${pageContext.request.contextPath}/codex/project/create.do">Cedula de Proyectos</a></li>
+			    <li><a href="${pageContext.request.contextPath}/codex/project/showList.do">Cedula de Proyectos</a></li>
 				<li><a href="${pageContext.request.contextPath}/tickets">Tickets</a></li>
 				<li><a href="${pageContext.request.contextPath}/serviceOrders/show.do">Ordenes de servicio</a></li>
 				<c:if test="${sysCallCenter == true}">
@@ -80,7 +80,7 @@
 			<c:when test="${pageSection == 'tickets'}">
 			    <li><a href="${pageContext.request.contextPath}/dashboard/show.do">Inicio</a></li>
 			    <li><a href="${pageContext.request.contextPath}/codex/client/showClientList.do">Clientes</a></li>
-			    <li><a href="${pageContext.request.contextPath}/codex/project/create.do">Cedula de Proyectos</a></li>
+			    <li><a href="${pageContext.request.contextPath}/codex/project/showList.do">Cedula de Proyectos</a></li>
 				<li><span class="active" onclick="window.location = '/tickets'">Tickets</span></li>
 				<li><a href="${pageContext.request.contextPath}/serviceOrders/show.do">Ordenes de servicio</a></li>
 				<li><a href="${pageContext.request.contextPath}/seguimiento">Seguimiento</a></li>
@@ -101,7 +101,7 @@
 			<c:when test="${pageSection == 'seguimiento'}">
 			    <li><a href="${pageContext.request.contextPath}/dashboard/show.do">Inicio</a></li>
 			    <li><a href="${pageContext.request.contextPath}/codex/client/showClientList.do">Clientes</a></li>
-			    <li><a href="${pageContext.request.contextPath}/codex/project/create.do">Cedula de Proyectos</a></li>
+			    <li><a href="${pageContext.request.contextPath}/codex/project/showList.do">Cedula de Proyectos</a></li>
 				<li><a href="${pageContext.request.contextPath}/tickets">Tickets</a></li>
 				<li><a href="${pageContext.request.contextPath}/serviceOrders/show.do">Ordenes de servicio</a></li>
 				<c:if test="${sysCallCenter == true}">
@@ -113,7 +113,7 @@
 			<c:when test="${pageSection == 'encuestas'}">
 			    <li><a href="${pageContext.request.contextPath}/dashboard/show.do">Inicio</a></li>
 			    <li><a href="${pageContext.request.contextPath}/codex/client/showClientList.do">Clientes</a></li>
-			    <li><a href="${pageContext.request.contextPath}/codex/project/create.do">Cedula de Proyectos</a></li>
+			    <li><a href="${pageContext.request.contextPath}/codex/project/showList.do">Cedula de Proyectos</a></li>
 				<li><a href="${pageContext.request.contextPath}/tickets">Tickets</a></li>
 				<li><a href="${pageContext.request.contextPath}/serviceOrders/show.do">Ordenes de servicio</a></li>
 				<c:if test="${sysCallCenter == true}">
@@ -125,7 +125,7 @@
 			<c:when test="${pageSection == 'indicadores'}">
 			    <li><a href="${pageContext.request.contextPath}/dashboard/show.do">Inicio</a></li>
 			    <li><a href="${pageContext.request.contextPath}/codex/client/showClientList.do">Clientes</a></li>
-			    <li><a href="${pageContext.request.contextPath}/codex/project/create.do">Cedula de Proyectos</a></li>
+			    <li><a href="${pageContext.request.contextPath}/codex/project/showList.do">Cedula de Proyectos</a></li>
 				<li><a href="${pageContext.request.contextPath}/tickets">Tickets</a></li>
 				<li><a href="${pageContext.request.contextPath}/serviceOrders/show.do">Ordenes de servicio</a></li>
 				<c:if test="${sysCallCenter == true}">
@@ -137,7 +137,7 @@
 			<c:otherwise>
 			    <li><a href="${pageContext.request.contextPath}/dashboard/show.do">Inicio</a></li>
 			    <li><a href="${pageContext.request.contextPath}/codex/client/showClientList.do">Clientes</a></li>
-			    <li><a href="${pageContext.request.contextPath}/codex/project/create.do">Cedula de Proyectos</a></li>
+			    <li><a href="${pageContext.request.contextPath}/codex/project/showList.do">Cedula de Proyectos</a></li>
 				<li><a href="${pageContext.request.contextPath}/tickets">Tickets</a></li>
 				<li><a href="${pageContext.request.contextPath}/serviceOrders/show.do">Ordenes de servicio</a></li>
 				<c:if test="${sysCallCenter == true}">

@@ -10,7 +10,9 @@ import com.codex.vo.CurrencyTypesVO;
 import com.codex.vo.DeliverableTypesVO;
 import com.codex.vo.PaymentTypeVO;
 import com.codex.vo.ProjectEntryItemTypesVO;
+import com.codex.vo.ProjectEntryItemVO;
 import com.codex.vo.ProjectEntryTypesVO;
+import com.codex.vo.ProjectEntryVO;
 import com.codex.vo.ProjectVO;
 import com.codex.vo.TaxesTypesVO;
 import com.codex.vo.TicketTeamDTO;
@@ -45,4 +47,7 @@ public interface ProjectDAO {
                               , String comments);
 	public void insertProject(ProjectVO project);
 	public Integer getNewEntryId();
+	public List<JSONObject> getAllProjectsJson();
+	public List<ProjectEntryVO> getEntriesByProject(Integer projectId);
+	public List<ProjectEntryItemVO> getItemsByEntry(Integer entryId);
 }

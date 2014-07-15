@@ -44,6 +44,7 @@
 					    });
 					}}
 			});
+			//prepareEntries();
 	    });
 	    
 	    function addEntry(){
@@ -63,6 +64,19 @@
 			$("#attachmentFileName").val(data.docs[0].name);
 			$('#attachmentDlg').dialog('open');
 		}
+	    
+	    function prepareEntries(){
+	    	var isEditable = '${enableEdition}';
+	    	var entries, entry, items, item;
+	    	if(isEditable){
+	    		entries = '${project.entries}';
+	    		for(var i = 0; i< entries.length ; i++){
+	    			entry = entries[i];
+	    			addEntry();
+	    			$("#entryTypeId_" + entryNumber).val(entry.entryTypeId);
+	    		}
+	    	}
+	    }
 	    
 	    function prepareSubmit(){
 	     	var entries = $( "tr.part" );
@@ -169,7 +183,7 @@
 							  </tr>
 							  <tr>
 								<td>Cliente</td>
-								<td colspan="4"><form:select name="" id="clientId" path="clientId" style="width:100%">
+								<td colspan="4"><form:select name="" id="clientId" path="clientId" style="width:100%" disabled="${enableEdition}">
 								            <option value="">Seleccione</option>
 											<c:forEach var="ss" items="${clients}">
 												<option value="${ss.id}"
@@ -184,23 +198,23 @@
 							  </tr>
 								<td>Centro de costos:</td>
 								<td>
-									<form:input type="text" id="costCenter" path="costCenter" style="width:100%" class="required" maxlength="8"/>
+									<form:input type="text" id="costCenter" path="costCenter" style="width:100%" class="required" maxlength="8" readonly="${enableEdition}"/>
 								</td>
 							  </tr>
 							  <tr>
 								<td>Tipo de cambio:</td>
-								<td><form:input type="text" id="changeType" path="changeType" style="width:100%" class="required" maxlength="5"/></td>
+								<td><form:input type="text" id="changeType" path="changeType" style="width:100%" class="required" maxlength="5" readonly="${enableEdition}"/></td>
 								<td>Fecha:</td>
-								<td><form:input type="text" id="created" path="created" style="width:100%" class="required"/></td>
+								<td><form:input type="text" id="created" path="created" style="width:100%" class="required" readonly="${enableEdition}"/></td>
 							  <tr>
 								<td>Nombre del Contacto:</td>
-								<td><form:input type="text" id="contactName" path="contactName"  style="width:100%" class="required"/></td>
+								<td><form:input type="text" id="contactName" path="contactName"  style="width:100%" class="required" readonly="${enableEdition}"/></td>
 							  </tr>
 							  <tr>
 								<td>Ubucación(es) del Proyecto:</td>
-								<td><form:input type="text" id="location" path="location"  style="width:100%" class="required"/></td>
+								<td><form:input type="text" id="location" path="location"  style="width:100%" class="required" readonly="${enableEdition}"/></td>
 								<td>Forma de pago:</td>
-								<td><form:select name="" id="paymentTypeId" path="paymentTypeId" style="width:100%">
+								<td><form:select name="" id="paymentTypeId" path="paymentTypeId" style="width:100%" disabled="${enableEdition}">
 								            <option value="">Seleccione</option>
 											<c:forEach var="ss" items="${paymentTypes}">
 												<option value="${ss.id}"
@@ -214,17 +228,17 @@
 							  </tr>
 							  <tr>
 								<td>Anticipo:</td>
-								<td><form:input type="text" id="advance" path="advance" style="width:100%" class="required" maxlength="10"/></td>
+								<td><form:input type="text" id="advance" path="advance" style="width:100%" class="required" maxlength="10" readonly="${enableEdition}"/></td>
 								<td>Plazo:</td>
-								<td><form:input type="text" id="timeLimit" path="timeLimit" style="width:100%" class="required" maxlength="3"/></td>
+								<td><form:input type="text" id="timeLimit" path="timeLimit" style="width:100%" class="required" maxlength="3" readonly="${enableEdition}"/></td>
 							  <tr>
 							  <tr>
 								<td>Plazo finiquito:</td>
-								<td><form:input type="text" id="settlementTimeLimit" path="settlementTimeLimit"  style="width:100%" class="required" maxlength="3"/></td>
+								<td><form:input type="text" id="settlementTimeLimit" path="settlementTimeLimit"  style="width:100%" class="required" maxlength="3" readonly="${enableEdition}"/></td>
 							  </tr>
 							  <tr>
 								<td>Moneda:</td>
-								<td><form:select name="" id="currencyTypeId" path="currencyTypeId" style="width:100%" class="required">
+								<td><form:select name="" id="currencyTypeId" path="currencyTypeId" style="width:100%" class="required" disabled="${enableEdition}">
 								            <option value="">Seleccione</option>
 											<c:forEach var="ss" items="${currencyTypes}">
 												<option value="${ss.id}"
@@ -236,7 +250,7 @@
 											
 										</form:select></td>
 								<td>IVA:</td>
-								<td><form:select name="" id="taxesTypeId" path="taxesTypeId" style="width:100%" class="required">
+								<td><form:select name="" id="taxesTypeId" path="taxesTypeId" style="width:100%" class="required" disabled="${enableEdition}">
 								            <option value="">Seleccione</option>
 											<c:forEach var="ss" items="${taxesTypes}">
 												<option value="${ss.id}"
@@ -250,29 +264,27 @@
 							  </tr>
 							  <tr>
 								<td>Tiempo de entrega:</td>
-								<td><form:input type="text" id="deliveryTime" path="deliveryTime" style="width:100%" class="required" maxlength="3"/></td>
+								<td><form:input type="text" id="deliveryTime" path="deliveryTime" style="width:100%" class="required" maxlength="3" readonly="${enableEdition}"/></td>
 								<td>Intercom:</td>
-								<td><form:input type="text" id="intercom" path="intercom" style="width:100%" class="required" maxlength="5"/></td>
+								<td><form:input type="text" id="intercom" path="intercom" style="width:100%" class="required" maxlength="5" readonly="${enableEdition}"/></td>
 							  </tr>
 							  <tr>
 								<td>TOTAL DE PRODUCTOS</td>
-								<td><form:input type="text" path="productsNumber" style="width:100%" class="required" maxlength="7"/></td>
+								<td><form:input type="text" path="productsNumber" style="width:100%" class="required" maxlength="7" readonly="${enableEdition}"/></td>
 								<td>FIANZA(S)</td>
-								<td><form:input type="text" path="financesNumber" style="width:100%" class="required" maxlength="7"/></td>
+								<td><form:input type="text" path="financesNumber" style="width:100%" class="required" maxlength="7" readonly="${enableEdition}"/></td>
 							  </tr>
 							  <tr>
 								<td>TOTAL DE SERVICIOS</td>
-								<td><form:input type="text" path="servicesNumber" style="width:100%" class="required" maxlength="7"/></td>
+								<td><form:input type="text" path="servicesNumber" style="width:100%" class="required" maxlength="7" readonly="${enableEdition}"/></td>
 								<td>TOTAL DEL PROYECTO</td>
-								<td><form:input type="text" path="totalProjectNumber" style="width:100%" class="required" maxlength="7"/></td>
+								<td><form:input type="text" path="totalProjectNumber" style="width:100%" class="required" maxlength="7" readonly="${enableEdition}"/></td>
 							  </tr>
 						   </table>
 						   <form:input type="hidden" path="strEntries"/>
 						   <form:input type="hidden" path="statusId"/>
 						   <form:input type="hidden" path="id"/>
                        </form:form>
-                        
-                        
 						
 <!--   ~ ENCABEZADO CEDULA   -->
 
@@ -295,6 +307,61 @@
 								</tr>
 							</thead>
 							<tbody>
+							   <c:forEach var="entry" items="${project.entries}" varStatus="index">
+                                  <tr class="part">
+                                       <td>${index.index + 1}</td>
+                                       <td colspan="2">
+                                           <input type="text" style="width:360px"/>
+                                       </td>
+	                                   <td colspan="3">
+	                                       <input type="text" style="width:280px"/>
+	                                   </td>
+	                                   <td>
+	                                        <input type="number" style="width:50px"/>
+	                                   </td>
+	                                   <td>
+	                                        <input type="number"  style="width:50px"/>
+	                                   </td>
+	                                   <td>
+	                                        <input type="text" style="width:80px"/>
+	                                   </td>
+                                 </tr> 
+                                 <tr>
+                                      <td colspan="9">
+	                                      <table class="items" style="width:100%">
+		                                      <c:forEach var="item" items="${entry.items}" varStatus="index1">
+			                                     <tr>
+                                                     <td></td>
+	                                                 <td>
+		                                                <input type="text" style="width:147px"/>
+	                                                 </td>
+	                                                 <td>
+	                                                     <input type="text" style="width:145px"/>
+	                                                 </td>
+	                                                 <td>
+	                                                     <input type="text" style="width:180px"/>
+                                                     </td>
+	                                                 <td>
+	                                                      <input type="number" style="width:40px"/>
+	                                                 </td>
+	                                                 <td>
+	                                                      <input type="number" style="width:40px"/>
+	                                                 </td>
+	                                                 <td>
+	                                                      <input type="number" style="width:40px"/>
+	                                                 </td>
+	                                                 <td>
+	                                                      <input type="number" style="width:40px"/>
+	                                                 </td>
+	                                                 <td>
+	                                                      <input type="text" style="width:80px"/>
+	                                                 </td>
+                                               </tr>
+			                                </c:forEach>
+		                                </table>
+	                                </td>
+                               </tr>
+                              </c:forEach>
 							</tbody>
 						</table>
 						<div>
