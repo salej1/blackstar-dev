@@ -456,6 +456,27 @@ WHERE cp.statusId = cst._id
 END$$
 
 -- -----------------------------------------------------------------------------
+	-- blackstarDb.CodexGetProjectsByStatus
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstardb.CodexGetProjectsByStatus$$
+CREATE PROCEDURE blackstardb.`CodexGetProjectsByStatus`(pStatusId int(2))
+BEGIN
+SELECT cp._id id, cp.projectNumber projectNumber, cp.clientId clientId, cp.taxesTypeId taxesTypeId, cp.statusId statusId
+      , cp.paymentTypeId paymentTypeId, cp.currencyTypeId currencyTypeId, cst.name statusDescription
+      , cc.tradeName clientDescription, cp.costCenter costCenter, cp.changeType changeType, cp.created created
+      , cp.contactName contactName, cp.location location, cp.advance advance, cp.timeLimit timeLimit
+      , cp.settlementTimeLimit settlementTimeLimit, cp.deliveryTime deliveryTime, cp.intercom intercom
+      , cp.productsNumber productsNumber, cp.financesNumber financesNumber, cp.servicesNumber servicesNumber
+      , cp.totalProjectNumber totalProjectNumber
+FROM codexProject cp, codexClient cc, codexStatusType cst, codexPaymentType cpt, codexCurrencyType cct
+WHERE cp.statusId = cst._id
+      AND cp.clientId = cc._id
+      AND cp.paymentTypeId = cpt._id
+      AND cp.currencyTypeId = cct._id
+      AND cp.statusId = pStatusId;
+END$$ 
+
+-- -----------------------------------------------------------------------------
 	-- blackstarDb.CodexGetEntriesByProject
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstardb.CodexGetEntriesByProject$$

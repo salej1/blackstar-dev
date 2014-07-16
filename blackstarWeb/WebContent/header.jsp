@@ -33,7 +33,7 @@
 			<div class="logo">
 				<img alt="Grupo Sac" src="${pageContext.request.contextPath}/img/grupo-sac-logo.png" border="0"/>
 			</div>
-			<span class="slogan">Portal de servicios</span>
+			<span class="slogan">Plataforma de Ventas</span>
 		</h1>
 		<form action="/search" method="GET"></form>
 		<ul id="navigation">
