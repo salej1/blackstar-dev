@@ -36,7 +36,7 @@
 	<bean id="abstractDAO" class="com.blackstar.db.dao.AbstractDAO">
 		<property name="jdbcTemplate" ref="jdbcTemplate" />
 	</bean>
-
+    <bean id="userDAO" class="com.blackstar.db.dao.impl.UserDaoImpl" parent="abstractDAO"/>
 	<bean id="userDomainDAO" class="com.blackstar.db.dao.impl.UserDomainDAOImpl" parent="abstractDAO" />
 	<bean id="dashboardDAO" class="com.blackstar.db.dao.impl.DashboardDAOImpl" parent="abstractDAO" />
 	<bean id="serviceOrderDAO" class="com.blackstar.db.dao.impl.ServiceOrderDAOImpl" parent="abstractDAO" />

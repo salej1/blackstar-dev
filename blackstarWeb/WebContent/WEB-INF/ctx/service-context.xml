@@ -86,6 +86,7 @@
   
   <bean id="projectService" class="com.codex.service.impl.ProjectServiceImpl" parent="abstractService">
       <property name="dao" ref="projectDAO" />
+      <property name="uDAO" ref="userDAO" />
   </bean>
 
 </beans>

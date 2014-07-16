@@ -40,11 +40,11 @@
 					        data: "projectId=${project.id}&deliverableTypeId=" + $("#attachmentType").val() + "&userId=${user.blackstarUserId}",
 					        success: function(html) {
 					        	$('#attachmentDlg').dialog( "close" );
+					        	$("#fileTraceArea").load("${pageContext.request.contextPath}/codex/project/getDeliverables.do?projectId=${project.id}");
 					        }
 					    });
 					}}
 			});
-			//prepareEntries();
 	    });
 	    
 	    function addEntry(){
@@ -64,19 +64,6 @@
 			$("#attachmentFileName").val(data.docs[0].name);
 			$('#attachmentDlg').dialog('open');
 		}
-	    
-	    function prepareEntries(){
-	    	var isEditable = '${enableEdition}';
-	    	var entries, entry, items, item;
-	    	if(isEditable){
-	    		entries = '${project.entries}';
-	    		for(var i = 0; i< entries.length ; i++){
-	    			entry = entries[i];
-	    			addEntry();
-	    			$("#entryTypeId_" + entryNumber).val(entry.entryTypeId);
-	    		}
-	    	}
-	    }
 	    
 	    function prepareSubmit(){
 	     	var entries = $( "tr.part" );
@@ -167,8 +154,10 @@
 							  <button class="searchButton" onclick="window.location = 'intTicketDetail_new.html'">Agregar Req. Gral.</button>
 							  <button class="searchButton" onclick="window.location = projectDetailAut.html">Autorizar</button>
 							</c:if>
-							<button class="searchButton" onclick="window.history.back();">Guardar</button>
-							<button class="searchButton" onclick="window.history.back();">Cancelar</button>
+							<c:if test="${not enableEdition}">
+							   <button class="searchButton" onclick="commit();">Guardar</button>
+							   <button class="searchButton" onclick="window.history.back();">Cancelar</button>
+							</c:if>
 							<button class="searchButton" onclick="window.history.back();">Descartar</button>
 							<hr>
 						</div>		
@@ -311,19 +300,19 @@
                                   <tr class="part">
                                        <td>${index.index + 1}</td>
                                        <td colspan="2">
-                                           <input type="text" style="width:360px"/>
+                                           <input type="text" style="width:360px" value="${entry.entryTypeDescription}" readonly/>
                                        </td>
 	                                   <td colspan="3">
-	                                       <input type="text" style="width:280px"/>
+	                                       <input type="text" style="width:280px" value="${entry.description}" readonly/>
 	                                   </td>
 	                                   <td>
-	                                        <input type="number" style="width:50px"/>
+	                                        <input type="number" style="width:50px" value="${entry.discount}" readonly/>
 	                                   </td>
 	                                   <td>
-	                                        <input type="number"  style="width:50px"/>
+	                                        <input type="number"  style="width:50px" value="${entry.totalPrice}" readonly/>
 	                                   </td>
 	                                   <td>
-	                                        <input type="text" style="width:80px"/>
+	                                        <input type="text" style="width:80px" value="${entry.comments}" readonly/>
 	                                   </td>
                                  </tr> 
                                  <tr>
@@ -333,28 +322,28 @@
 			                                     <tr>
                                                      <td></td>
 	                                                 <td>
-		                                                <input type="text" style="width:147px"/>
+		                                                <input type="text" style="width:147px" value="${item.itemTypeDescription}" readonly/>
 	                                                 </td>
 	                                                 <td>
-	                                                     <input type="text" style="width:145px"/>
+	                                                     <input type="text" style="width:145px" value="${item.reference}" readonly/>
 	                                                 </td>
 	                                                 <td>
-	                                                     <input type="text" style="width:180px"/>
+	                                                     <input type="text" style="width:180px" value="${item.description}" readonly/>
                                                      </td>
 	                                                 <td>
-	                                                      <input type="number" style="width:40px"/>
+	                                                      <input type="number" style="width:40px" value="${item.quantity}" readonly/>
 	                                                 </td>
 	                                                 <td>
-	                                                      <input type="number" style="width:40px"/>
+	                                                      <input type="number" style="width:40px" value="${item.priceByUnit}" readonly/>
 	                                                 </td>
 	                                                 <td>
-	                                                      <input type="number" style="width:40px"/>
+	                                                      <input type="number" style="width:40px" value="${item.discount}" readonly/>
 	                                                 </td>
 	                                                 <td>
-	                                                      <input type="number" style="width:40px"/>
+	                                                      <input type="number" style="width:40px" value="${item.totalPrice}" readonly/>
 	                                                 </td>
 	                                                 <td>
-	                                                      <input type="text" style="width:80px"/>
+	                                                      <input type="text" style="width:80px" value="${item.comments}" readonly/>
 	                                                 </td>
                                                </tr>
 			                                </c:forEach>
@@ -364,9 +353,11 @@
                               </c:forEach>
 							</tbody>
 						</table>
-						<div>
-							<button class="searchButton" onclick="addEntry();">+ Partida</button>
-						</div>
+						<c:if test="${not enableEdition}">
+						   <div>
+							  <button class="searchButton" onclick="addEntry();">+ Partida</button>
+						   </div>
+						</c:if>
 <!--   ~PARTIDAS   -->		
 
                          <c:if test="${enableEdition}">
@@ -378,31 +369,9 @@
 
 <!-- ADJUNTOS -->
 						<br><br>		
-
-						 <table id="fileTraceTable">
-								<thead>
-								</thead>
-								    <c:forEach var="current" items="${deliverables}" >
-									  <tr>
-									    <td  style="width:5%;">
-		                                  <c:choose>
-											<c:when test="${current.delivered}">
-												<img src='${pageContext.request.contextPath}/img/delivered.png'/>
-											</c:when>
-											<c:otherwise>
-												<img src='${pageContext.request.contextPath}/img/notDelivered.png'/>
-											</c:otherwise>
-										  </c:choose>
-
-
-										</td>
-										<td align="left">
-										  ${current.name}
-										</td>
-									  </tr>
-									  </c:forEach>
-							</table>
-
+                            <div id="fileTraceArea">
+                               <c:import url="/codex/_fileTraceTable.jsp"></c:import>
+                            </div>
 							<c:import url="/_attachments.jsp"></c:import>
 							</c:if>
 <!-- ~ ADJUNTOS -->
@@ -414,8 +383,10 @@
 							  <button class="searchButton" onclick="window.location = 'intTicketDetail_new.html'">Agregar Req. Gral.</button>
 							  <button class="searchButton" onclick="window.location = projectDetailAut.html">Autorizar</button>
 							</c:if>
-							<button class="searchButton" onclick="commit();">Guardar</button>
-							<button class="searchButton" onclick="window.history.back();">Cancelar</button>
+							<c:if test="${not enableEdition}">
+							   <button class="searchButton" onclick="commit();">Guardar</button>
+							   <button class="searchButton" onclick="window.history.back();">Cancelar</button>
+							</c:if>
 							<button class="searchButton" onclick="window.history.back();">Descartar</button>
 						</div>
 					</div>					

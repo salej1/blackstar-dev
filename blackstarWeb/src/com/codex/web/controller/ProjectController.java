@@ -68,6 +68,8 @@ public class ProjectController extends AbstractController {
 		 model.addAttribute("clients", cService.getAllClients());
 		 model.addAttribute("osAttachmentFolder", gdService
 		    		           .getAttachmentFolderId(project.getProjectNumber()));
+		 model.addAttribute("deliverables", service.getDeliverables(projectId));
+		 model.addAttribute("followUps", service.getFollowUps(projectId));
 		} catch (Exception e) {
 			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 			e.printStackTrace();
@@ -105,6 +107,13 @@ public class ProjectController extends AbstractController {
 	return "codex/projectDetail";
   }
   
+  @RequestMapping(value = "/getDeliverables.do")
+  public String getDeliverables(ModelMap model
+		                   , @RequestParam(required = true) Integer projectId) {
+	model.addAttribute("deliverables", service.getDeliverables(projectId));
+	return "codex/_fileTraceTable";
+  }
+  
   @RequestMapping(value = "/addFollow.do", method = RequestMethod.GET)
   public String addFollow(@RequestParam(required = true) Integer projectId
 		                , @RequestParam(required = true) Integer userId
@@ -113,29 +122,21 @@ public class ProjectController extends AbstractController {
 				                                    , ModelMap model) {
 	boolean sendNotification = true;
 	try {
-		//Comment
-		if(userToAssign == -2){
-			// Nada no se cambia el asignatario
-			sendNotification = false;
-		} else if (userToAssign == -3){ //Response
-			userToAssign = service.getResponseUser(userId).get(0)
-					                       .getBlackstarUserId();
-		}
-		service.addFollow(userId, userId, comment);
+		service.addFollow(projectId, userId, userToAssign, comment);
 		if(userToAssign != null && userToAssign > 0){
-			service.addProjectTeam(userId, 1, userToAssign);
+			service.addProjectTeam(projectId, 1, userToAssign);
 		}
 
 		if(sendNotification){
-			service.sendNotification(userId, userToAssign, userId, comment);
+			service.sendNotification(userId, userToAssign, projectId, comment);
 		}
-		model.addAttribute("followUps", service.getFollowUps(userId));
+		model.addAttribute("followUps", service.getFollowUps(projectId));
 	} catch (Exception e) {
 		e.printStackTrace();
 		model.addAttribute("errorDetails", e.getStackTrace()[0].toString());
 		return "error";
 	}
-	return "codex/_ticketFollow";
+	return "codex/_follow";
   }
   
   @RequestMapping(value = "/getReferenceTypes.do", produces="application/json")

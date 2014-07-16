@@ -188,8 +188,8 @@ CREATE PROCEDURE blackstarDb.GetFollowUpByProjectId(pProjectId INTEGER)
 BEGIN
 
 	SELECT 
-		created AS timeStamp,
-		u2.name AS createdBy,
+		created AS created,
+		u2.name AS createdByUsr,
 		u.name AS asignee,
 		followup AS followUp
 	FROM followUp f
@@ -266,13 +266,15 @@ END$$
 	-- blackstarDb.AddFollowUpToCodexProject
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.AddFollowUpToCodexProject$$
-CREATE PROCEDURE blackstarDb.`AddFollowUpToCodexProject`(pProjectId INTEGER, pCreatedByUsrId INTEGER, pMessage TEXT)
+CREATE PROCEDURE blackstarDb.`AddFollowUpToCodexProject`(pProjectId INTEGER, pCreatedByUsrId INTEGER, pAssignedUsrId INTEGER, pMessage TEXT)
 BEGIN
   DECLARE pCreatedByUsrMail VARCHAR(100);
+  DECLARE pAsigneeUsrMail VARCHAR(100);
   
   SET pCreatedByUsrMail = (SELECT email FROM blackstarUser WHERE blackstarUserId = pCreatedByUsrId);
-	INSERT INTO blackstarDb.followUp(codexProjectId, followup, created, createdBy, createdByUsr)
-	VALUES(pProjectId, pMessage, NOW(), 'AddFollowUpToCodexProject', pCreatedByUsrMail);
+  SET pAsigneeUsrMail = (SELECT email FROM blackstarUser WHERE blackstarUserId = pAssignedUsrId);
+	INSERT INTO blackstarDb.followUp(codexProjectId, followup, created, createdBy, createdByUsr, asignee)
+	VALUES(pProjectId, pMessage, NOW(), 'AddFollowUpToCodexProject', pCreatedByUsrMail, pAsigneeUsrMail);
 END$$
 
 -- -----------------------------------------------------------------------------
@@ -459,24 +461,42 @@ END$$
 DROP PROCEDURE IF EXISTS blackstardb.CodexGetEntriesByProject$$
 CREATE PROCEDURE blackstardb.`CodexGetEntriesByProject`(pProjectId int(11))
 BEGIN
-	SELECT _id id, projectId projectId, entryTypeId entryTypeId, description description
-         , discount discount, totalPrice totalPrice, comments comments
-  FROM codexProjectEntry
-  WHERE projectId = pProjectId;
+	SELECT cpe._id id, cpe.projectId projectId, cpe.entryTypeId entryTypeId, cpe.description description
+         , cpe.discount discount, cpe.totalPrice totalPrice, cpe.comments comments, cpet.name entryTypeDescription
+    FROM codexProjectEntry cpe, codexProjectEntryTypes cpet
+    WHERE projectId = pProjectId
+          AND  cpe.entryTypeId = cpet._id;
 END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.CodexGetItemsByEntry
 -- -----------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS blackstardb.CodexGetItemsByEntry;
+DROP PROCEDURE IF EXISTS blackstardb.CodexGetItemsByEntry$$
 CREATE PROCEDURE blackstardb.`CodexGetItemsByEntry`(pEntryId int(11))
 BEGIN
 	SELECT cei._id id, cei.entryId entryId, cei.itemTypeId itemTypeId, cei.reference reference
          , cei.description description, cei.quantity quantity, cei.priceByUnit priceByUnit
-         , cei.discount discount, cei.totalPrice totalPrice, cei.comments comments
-  FROM codexEntryItem cei
-  WHERE cei.entryId = pEntryId;
-END;
+         , cei.discount discount, cei.totalPrice totalPrice, cei.comments comments, cpit.name itemTypeDescription
+  FROM codexEntryItem cei, codexProjectItemTypes cpit
+  WHERE cei.entryId = pEntryId
+        AND cei.itemTypeId = cpit._id;
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.CodexGetDeliverables
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.CodexGetDeliverables$$
+CREATE PROCEDURE blackstarDb.CodexGetDeliverables(pProjectId INTEGER)
+BEGIN	
+  SELECT cdt._id id, cdt.codexProjectId projectId, cp.projectNumber projectNumber
+        ,cdt.deliverableTypeId deliverableTypeId, cdty.name deliverableTypeDescription
+        , cdt.created created, cdt.userId userId, bu.name userName
+	FROM codexDeliverableTrace	cdt, codexProject cp, codexDeliverableType cdty, blackstarUser bu
+  WHERE cdt.codexProjectId = 1
+        AND cdt.codexProjectId = cp._id
+        AND cdt.deliverableTypeId = cdty._id
+        AND cdt.userId = bu.blackstarUserId;
+END$$  
 
 -- -----------------------------------------------------------------------------
 	-- FIN DE LOS STORED PROCEDURES

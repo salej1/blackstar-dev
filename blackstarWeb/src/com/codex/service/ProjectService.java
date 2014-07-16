@@ -6,6 +6,7 @@ import com.blackstar.model.Followup;
 import com.blackstar.model.User;
 import com.codex.vo.CurrencyTypesVO;
 import com.codex.vo.DeliverableTypesVO;
+import com.codex.vo.DeliverableVO;
 import com.codex.vo.PaymentTypeVO;
 import com.codex.vo.ProjectEntryItemTypesVO;
 import com.codex.vo.ProjectEntryTypesVO;
@@ -23,7 +24,8 @@ public interface ProjectService {
   public List<TicketTeamDTO> getWorkTeam(Integer projectId);
   public List<User> getAsigneedUser(Integer projectId);
   public List<User> getResponseUser(Integer projectId);
-  public void addFollow(Integer projectId, Integer userId, String comment);
+  public void addFollow(Integer projectId, Integer userId, Integer assignedUserId
+                                                               , String comment);
   public void addProjectTeam(Integer projectId, Integer roleId, Integer userId);
   public void sendNotification(Integer fromUserId, Integer toUserId 
 		                       , Integer projectId, String detail);
@@ -36,5 +38,6 @@ public interface ProjectService {
   public void insertProject(ProjectVO project);
   public String getAllProjectsJson();
   public ProjectVO getProjectDetail(Integer projectId);
+  public List<DeliverableVO> getDeliverables(Integer projectId);
   
 }

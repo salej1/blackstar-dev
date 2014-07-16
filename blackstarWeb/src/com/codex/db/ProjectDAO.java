@@ -8,6 +8,7 @@ import com.blackstar.model.Followup;
 import com.blackstar.model.User;
 import com.codex.vo.CurrencyTypesVO;
 import com.codex.vo.DeliverableTypesVO;
+import com.codex.vo.DeliverableVO;
 import com.codex.vo.PaymentTypeVO;
 import com.codex.vo.ProjectEntryItemTypesVO;
 import com.codex.vo.ProjectEntryItemVO;
@@ -27,7 +28,8 @@ public interface ProjectDAO {
 	public List<TicketTeamDTO> getWorkTeam(Integer projectId);
 	public List<User> getAsigneedUser(Integer projectId);
 	public List<User> getResponseUser(Integer projectId);
-	public void addFollow(Integer projectId, Integer userId, String comment);
+	public void addFollow(Integer projectId, Integer userId, Integer asignedUserId
+                                                                , String comment);
 	public void addProjectTeam(Integer projectId, Integer roleId, Integer userId);
 	public List<ProjectVO> getProjectDetail(Integer projectId);
 	public Integer getNewProjectId();
@@ -50,4 +52,5 @@ public interface ProjectDAO {
 	public List<JSONObject> getAllProjectsJson();
 	public List<ProjectEntryVO> getEntriesByProject(Integer projectId);
 	public List<ProjectEntryItemVO> getItemsByEntry(Integer entryId);
+	public List<DeliverableVO> getDeliverables(Integer projectId);
 }

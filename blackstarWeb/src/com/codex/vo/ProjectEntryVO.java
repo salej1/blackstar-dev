@@ -8,6 +8,7 @@ public class ProjectEntryVO {
 	private Integer id;
 	private Integer projectId;
 	private Integer entryTypeId;
+	private String entryTypeDescription;
 	private String description;
 	private Float discount;
 	private Float totalPrice;
@@ -61,6 +62,12 @@ public class ProjectEntryVO {
 	}
 	public void setItems(List<ProjectEntryItemVO> items) {
 		this.items = items;
+	}
+	public String getEntryTypeDescription() {
+		return entryTypeDescription;
+	}
+	public void setEntryTypeDescription(String entryTypeDescription) {
+		this.entryTypeDescription = entryTypeDescription;
 	}
 
 }

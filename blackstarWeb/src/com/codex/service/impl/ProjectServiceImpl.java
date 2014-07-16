@@ -10,14 +10,13 @@ import com.blackstar.model.Followup;
 import com.blackstar.model.User;
 import com.blackstar.services.AbstractService;
 import com.blackstar.services.EmailServiceFactory;
-import com.codex.db.ClientDAO;
 import com.codex.db.ProjectDAO;
 import com.codex.service.ProjectService;
 import com.codex.vo.CurrencyTypesVO;
 import com.codex.vo.DeliverableTypesVO;
+import com.codex.vo.DeliverableVO;
 import com.codex.vo.PaymentTypeVO;
 import com.codex.vo.ProjectEntryItemTypesVO;
-import com.codex.vo.ProjectEntryItemVO;
 import com.codex.vo.ProjectEntryTypesVO;
 import com.codex.vo.ProjectEntryVO;
 import com.codex.vo.ProjectVO;
@@ -79,8 +78,9 @@ public class ProjectServiceImpl extends AbstractService
   }
 
   @Override
-  public void addFollow(Integer projectId, Integer userId, String comment) {
-	dao.addFollow(projectId, userId, comment);
+  public void addFollow(Integer projectId, Integer userId, Integer assignedUserId
+		                                                      , String comment) {
+	dao.addFollow(projectId, userId, assignedUserId, comment);
   }
 
   @Override
@@ -185,6 +185,11 @@ public class ProjectServiceImpl extends AbstractService
 		}
 	}
 	  
+  }
+  
+  @Override
+  public List<DeliverableVO> getDeliverables(Integer projectId){
+	 return dao.getDeliverables(projectId);
   }
 
 }

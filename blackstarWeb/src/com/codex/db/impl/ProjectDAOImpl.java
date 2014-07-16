@@ -11,6 +11,7 @@ import com.blackstar.model.User;
 import com.codex.db.ProjectDAO;
 import com.codex.vo.CurrencyTypesVO;
 import com.codex.vo.DeliverableTypesVO;
+import com.codex.vo.DeliverableVO;
 import com.codex.vo.PaymentTypeVO;
 import com.codex.vo.ProjectEntryItemTypesVO;
 import com.codex.vo.ProjectEntryItemVO;
@@ -83,10 +84,11 @@ public class ProjectDAOImpl extends AbstractDAO
   }
 
   @Override
-  public void addFollow(Integer projectId, Integer userId, String comment) {
-	StringBuilder sqlBuilder = new StringBuilder("CALL AddFollowUpToCodexProject(?, ?, ?);");
+  public void addFollow(Integer projectId, Integer userId, Integer asignedUserId
+		                                                     , String comment) {
+	StringBuilder sqlBuilder = new StringBuilder("CALL AddFollowUpToCodexProject(?, ?, ?, ?);");
 	getJdbcTemplate().update(sqlBuilder.toString(),new Object[] { projectId
-		                                             , userId, comment });
+		                               , userId, asignedUserId, comment });
   }
 
   @Override
@@ -120,6 +122,13 @@ public class ProjectDAOImpl extends AbstractDAO
 	StringBuilder sqlBuilder = new StringBuilder("CALL CodexGetDeliverableTypes()");
 	return (List<DeliverableTypesVO>) getJdbcTemplate().query(sqlBuilder.toString() 
 			                             , getMapperFor(DeliverableTypesVO.class));
+  }
+  
+  @Override
+  public List<DeliverableVO> getDeliverables(Integer projectId) {
+	StringBuilder sqlBuilder = new StringBuilder("CALL CodexGetDeliverables(?)");
+	return (List<DeliverableVO>) getJdbcTemplate().query(sqlBuilder.toString()
+			   , new Object[]{projectId} , getMapperFor(DeliverableVO.class));
   }
   
   @Override

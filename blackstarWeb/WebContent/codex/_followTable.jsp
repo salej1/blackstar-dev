@@ -86,16 +86,8 @@
 							<table>
 								<tbody>
 									<tr>
-										<td style="width: 100px;">
-											<button class="searchButton" onclick="addSeguimiento(1);">Asignar</button>
-										</td>
-										<c:if test="${fn:length(followUps) > 0}">
-											<td style="width: 100px;">
-												<button class="searchButton" onclick="addSeguimiento(3);">Responder</button>
-											</td>
-										</c:if>
-										<td style="width: 100px;">
-											<button class="searchButton" onclick="addSeguimiento(2);">Comentar</button>
+										<td style="width: 300px;">
+											<button class="searchButton" onclick="addSeguimiento(1);">Agregar Seguimiento</button>
 										</td>
 										<td></td>
 									</tr>
