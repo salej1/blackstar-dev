@@ -76,10 +76,10 @@
 	    var mesAnterior = new Date();
 	    mesAnterior.setTime(mesAnterior.getTime() - (60 * 1000 * 60 * 24 * 30));
 
-		$("#fldFechaIni").datepicker();
+		$("#fldFechaIni").datepicker({ dateFormat: 'yy-mm-dd' });
 		$("#fldFechaIni").datepicker("setDate", dia1);
 
-		$("#fldFechaFin").datepicker();
+		$("#fldFechaFin").datepicker({ dateFormat: 'yy-mm-dd' });
 		$("#fldFechaFin").datepicker("setDate",new Date());
 		
 		$( "#buscarButtonTicket" ).click(function() {

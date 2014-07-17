@@ -35,13 +35,13 @@
 		    </div>
 			<div>
 				<div>
-					<img src="/img/navigate-right.png"/><a href="#" id="getTicketByUser" onclick="go('getTicketByUser')">Requisiciones por usuario</a>
+					<img src="/img/navigate-right.png"/><a href="#" id="getTicketByUser" onclick="go('getTicketByUser')">Requisiciones por Usuario</a>
 				</div>
 				<div>
-					<img src="/img/navigate-right.png"/><a href="#" id="getTicketByOffice" onclick="go('getTicketByOffice')">Requisiciones por oficina</a>
+					<img src="/img/navigate-right.png"/><a href="#" id="getTicketByOffice" onclick="go('getTicketByOffice')">Requisiciones por Oficina</a>
 				</div>
 				<div>
-					<img src="/img/navigate-right.png"/><a href="#" id="getTicketByArea" onclick="go('getTicketByArea')">Requisiciones por Area</a>
+					<img src="/img/navigate-right.png"/><a href="#" id="getTicketByArea" onclick="go('getTicketByArea')">Requisiciones por Area solicitante</a>
 				</div>
 				<div>
 					<img src="/img/navigate-right.png"/><a href="#" id="getTicketByDay" onclick="go('getTicketByDay')">Requisiciones por Dia</a>
@@ -50,7 +50,7 @@
 					<img src="/img/navigate-right.png"/><a href="#" id="getTicketByProject" onclick="go('getTicketByProject')">Requisiciones por Proyecto</a>
 				</div>
 				<div>
-					<img src="/img/navigate-right.png"/><a href="#" id="getTicketByServiceAreaKPI" onclick="go('getTicketByServiceAreaKPI')">Requisiciones por tipo</a>
+					<img src="/img/navigate-right.png"/><a href="#" id="getTicketByServiceAreaKPI" onclick="go('getTicketByServiceAreaKPI')">Requisiciones por Area de apoyo</a>
 				</div>
 							
 				<!-- Links Para ver los reportes de Mesa de Ayuda -->

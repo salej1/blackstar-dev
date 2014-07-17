@@ -2,6 +2,7 @@ package com.bloom.db.dao;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -39,7 +40,7 @@ public class InternalTicketsDaoImpl extends AbstractDAO implements InternalTicke
 	private static final String QUERY_TICKETS_PENDIENTES = "CALL getBloomPendingTickets(%d)";
 	private static final String QUERY_TICKETS = "CALL getBloomTickets(%d)";
 
-	private static final String QUERY_HISTORICAL_TICKETS = "CALL GetBloomHistoricalTickets(%d,'%s','%s')";
+	private static final String QUERY_HISTORICAL_TICKETS = "CALL GetBloomHistoricalTickets(%d,'%s','%s',%d)";
 
 	private static final String QUERY_TICKET_NUMBER = "CALL GetNextInternalTicketNumber()";
 
@@ -112,11 +113,11 @@ public class InternalTicketsDaoImpl extends AbstractDAO implements InternalTicke
 				new Object[] { ticketId }, getMapperFor(Followup.class));
 	}
 
-	public List<DeliverableTypeDTO> getDeliverableTypes() {
+	public List<DeliverableTypeDTO> getDeliverableTypes(Integer ticketTypeId) {
 		StringBuilder sqlBuilder = new StringBuilder(
-				"CALL GetBloomDeliverableType();");
+				"CALL GetBloomDeliverableType(?);");
 		return (List<DeliverableTypeDTO>) getJdbcTemplate().query(
-				sqlBuilder.toString(), getMapperFor(DeliverableTypeDTO.class));
+				sqlBuilder.toString(), new Object[]{ticketTypeId}, getMapperFor(DeliverableTypeDTO.class));
 	}
 
 	  
@@ -133,11 +134,11 @@ public class InternalTicketsDaoImpl extends AbstractDAO implements InternalTicke
 	}
 	 
 	  
-	public void addDeliverableTrace(Integer ticketId, Integer deliverableTypeId) {
+	public void addDeliverableTrace(Integer ticketId, Integer deliverableTypeId, String docId) {
 		StringBuilder sqlBuilder = new StringBuilder(
-				"CALL AddBloomDelivarable(?, ?);");
+				"CALL AddBloomDelivarable(?,?,?);");
 		getJdbcTemplate().update(sqlBuilder.toString(),
-				new Object[] { ticketId, deliverableTypeId });
+				new Object[] { ticketId, deliverableTypeId, docId });
 	}
 
 
@@ -165,20 +166,15 @@ public class InternalTicketsDaoImpl extends AbstractDAO implements InternalTicke
 
 			ticket.setId(rs.getLong("id"));
 			ticket.setTicketNumber(rs.getString("ticketNumber"));
-			ticket.setCreated(rs.getTimestamp("created"));
-			ticket.setCreatedStr(DataTypeUtil
-					.formatearFechaDD_MM_AAAA_HH_MM_SS(rs
-							.getTimestamp("created")));
+			ticket.setCreated(rs.getDate("created"));
 			ticket.setPetitionerArea(rs.getString("areaName"));
 			ticket.setPetitionerAreaId(rs.getInt("applicantAreaId"));
 			ticket.setServiceTypeDescr(rs.getString("serviceName"));
 			ticket.setServiceTypeId(rs.getInt("serviceTypeId"));
 
 			// responseTime
-			ticket.setDeadline(rs.getTimestamp("created"));
-			ticket.setDeadlineStr(DataTypeUtil.formatearFechaDD_MM_AAAA(ticket
-					.getCreated()));
-
+			ticket.setDeadline(rs.getDate("dueDate"));
+			ticket.setDesiredDate(rs.getDate("desiredDate"));
 			ticket.setProject(rs.getString("project"));
 			ticket.setOfficeName(rs.getString("officeName"));
 			ticket.setOfficeId(rs.getString("officeId"));
@@ -275,15 +271,16 @@ public class InternalTicketsDaoImpl extends AbstractDAO implements InternalTicke
 	@Override
 	public List<InternalTicketBean> getHistoricalTickets(
 			String createDateStart, String createDateEnd,
-			Integer idStatusTicket) throws DAOException {
+			Integer idStatusTicket, Integer showHidden) throws DAOException {
 
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		List<InternalTicketBean> listaRegistros = new ArrayList<InternalTicketBean>();
 
 		try {
 
 			listaRegistros.addAll(getJdbcTemplate().query(
 					String.format(QUERY_HISTORICAL_TICKETS, idStatusTicket,
-							createDateStart, createDateEnd),
+							createDateStart, createDateEnd, showHidden),
 					new InternalTicketMapper()));
 			// listaRegistros.addAll(getJdbcTemplate().query(sq.toString(),new
 			// InternalTicketMapper()));
@@ -312,7 +309,7 @@ public class InternalTicketsDaoImpl extends AbstractDAO implements InternalTicke
 				+ "?,?,?,?,?,?,?,?,?,?,"
 				+ "?,?,?,?,?,?,?,?,?,?,"
 				+ "?,?,?,?,?,?,?,?,?,?,"
-				+ "?)");
+				+ "?,?)");
 
 		int idTicket = 0;
 
@@ -377,7 +374,8 @@ public class InternalTicketsDaoImpl extends AbstractDAO implements InternalTicke
 					ticket.getSuggestionGSM(),
 					ticket.getDocumentCodeGSM(),
 					ticket.getJustificationGSM(),
-					ticket.getProblemDescriptionGPTR()
+					ticket.getProblemDescriptionGPTR(),
+					ticket.getDesiredDate()
 };
 
 			idTicket = getJdbcTemplate().queryForInt(sqlBuilder.toString(),

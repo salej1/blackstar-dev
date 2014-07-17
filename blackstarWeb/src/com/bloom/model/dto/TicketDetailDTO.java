@@ -32,6 +32,7 @@ public class TicketDetailDTO {
     private Integer modifiedByUsr;
     private String modifiedByUsrName;
     private Integer resolvedOnTime;
+    private Date desiredDate;
     
 
 	private String purposeVisitVL;
@@ -563,6 +564,12 @@ public class TicketDetailDTO {
 	}
 	public void set_id(Integer _id) {
 		this._id = _id;
+	}
+	public Date getDesiredDate() {
+		return desiredDate;
+	}
+	public void setDesiredDate(Date desiredDate) {
+		this.desiredDate = desiredDate;
 	}
     
 }

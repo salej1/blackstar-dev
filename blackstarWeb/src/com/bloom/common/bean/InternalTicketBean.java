@@ -16,67 +16,33 @@ public class InternalTicketBean implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
 	private Long id;
-
 	private String officeId;
-	
 	private String officeName;
-
 	private Long applicantUserId;
-
 	private Integer serviceTypeId;
-
 	private String serviceTypeDescr;
-
 	private Integer statusId;
-	
 	private String statusDescr;
-
 	private Integer applicantAreaId;
-	
-	
-
 	private String ticketNumber;
-
 	private String description;
-
 	private Integer evaluation;
-
 	private Integer desviation;
-
 	private Date created;
-
-	private String createdStr;
-
 	private String createdUserName;
-
 	private Long createdUserId;
-
 	private Date modified;
-
 	private String modifiedBy;
-
 	private Integer modifiedByUsr;
-
 	private String petitionerArea;
-	
 	private Integer petitionerAreaId;
-
 	private Date deadline;
-
-	private String deadlineStr;
-	
 	private String project;
-	
 	private Integer reponseInTime;
-	
 	private DeliverableTraceBean deliverableTrace;
-	
 	private String createdUserEmail;
-	
-	
-	
+	private Date desiredDate;
 
 	private String purposeVisitVL;
 	private String purposeVisitVISAS;
@@ -571,22 +537,6 @@ public class InternalTicketBean implements Serializable {
 	}
 	
 	
-
-	/**
-	 * @return the createdStr
-	 */
-	public String getCreatedStr() {
-		return createdStr;
-	}
-
-	/**
-	 * @param createdStr
-	 *            the createdStr to set
-	 */
-	public void setCreatedStr(String createdStr) {
-		this.createdStr = createdStr;
-	}
-
 	/**
 	 * @return the deadline
 	 */
@@ -601,22 +551,6 @@ public class InternalTicketBean implements Serializable {
 	public void setDeadline(Date deadline) {
 		this.deadline = deadline;
 	}
-
-	/**
-	 * @return the deadlineStr
-	 */
-	public String getDeadlineStr() {
-		return deadlineStr;
-	}
-
-	/**
-	 * @param deadlineStr
-	 *            the deadlineStr to set
-	 */
-	public void setDeadlineStr(String deadlineStr) {
-		this.deadlineStr = deadlineStr;
-	}
-
 
 	/**
 	 * @return the serviceTypeDescr
@@ -956,6 +890,14 @@ public class InternalTicketBean implements Serializable {
 	 */
 	public void setStatusDescr(String statusDescr) {
 		this.statusDescr = statusDescr;
+	}
+
+	public Date getDesiredDate() {
+		return desiredDate;
+	}
+
+	public void setDesiredDate(Date desiredDate) {
+		this.desiredDate = desiredDate;
 	}
 
 

@@ -47,10 +47,14 @@
 					$.ajax({
 				        type: "GET",
 				        url: "addDeliverableTrace.do",
-				        data: "ticketId=${ticketDetail._id}&deliverableTypeId=" + $("#attachmentType").val(),
-				        success: function(html) {
-				        	$('#attachmentDlg').dialog( "close" );
-				        }
+				        data: "ticketId=${ticketDetail._id}&deliverableTypeId=" + $("#attachmentType").val() + 
+				        		"&prevId=" + $('#attachmentFileId').val() + 
+				        		"&deliverableName=" + $("#attachmentType option:selected").text() + 
+				        		"&ticketNumber=${ticketDetail.ticketNumber}"
+				    })
+				    .done(function(){
+			        	$('#attachmentDlg').dialog( "close" );
+			        	location.reload();
 				    });
 				}}
 		});
@@ -103,6 +107,8 @@
 		// Mosrtar - ocultar campos complementarios
 		configureAdditionalFields();
 		loadAdditionalFieldsData();
+
+		attLoader_init("attachmentFileId");
 	});
 
 		
@@ -130,8 +136,7 @@
 			who = "-3";
 		}
 
-		$("#followDetail").load("${pageContext.request.contextPath}/bloom/ticketDetail/addFollow.do?ticketId=${ticketDetail._id}&userId=${ user.blackstarUserId }" 
-				                    + "&userToAssign=" + who + "&comment=" + $("#seguimientoText").val().replace(/ /g, '%20'));
+		$("#followDetail").load("${pageContext.request.contextPath}/bloom/ticketDetail/addFollow.do?ticketId=${ticketDetail._id}&userId=${ user.blackstarUserId }" + "&userToAssign=" + who + "&comment=" + $("#seguimientoText").val().replace(/ /g, '%20'));
 		$("#seguimientoCapture").hide();	
 	}
 
@@ -141,6 +146,7 @@
 
 	function customPickerCallBack(data) {
 		$("#attachmentFileName").val(data.docs[0].name);
+		$("#attachmentFileId").val(data.docs[0].id);
 		$('#attachmentDlg').dialog('open');
 	}
 
@@ -510,7 +516,7 @@
 
 			$('#tr_requisitionFormatGRC').show();
 
-			$('#sp_requisitionFormatGRC').text("FORMATO DE REQUISICI\u00d3N DE CURSO DE CAPACITACI\u00d3N");
+			$('#sp_requisitionFormatGRC').text("Formato de requisici\u00f3n de curso de capacitaci\u00f3n");
 
 		}
 		if (serviceTypeId === 22) {
@@ -621,8 +627,12 @@
 							<tr>
 								<td>Tipo</td>
 								<td colspan="3"><input type="text" style="width:95%;" readOnly="true" value="${ticketDetail.serviceTypeName}"/></td>
-								<td>Fecha Limite</td>
+							</tr>
+							<tr>	
+								<td>Fecha Compromiso</td>
 								<td><input id="myDate" type="text" style="width:95%;" readOnly="true" value="${ticketDetail.dueDate}"/></td>
+								<td>Fecha Deseada</td>
+								<td><input id="myDesiredDate" type="text" style="width:95%;" readOnly="true" value="${ticketDetail.desiredDate}"/></td>
 							</tr>
 							<tr>
 								<td>Proyecto</td>
@@ -652,7 +662,11 @@
 							</tr>		
 							<tr>
 								<td>Entrega en tiempo</td>
-								<td><input type="checkbox" style="width:95%;" checked="${ticketDetail.resolvedOnTime != null && ticketDetail.resolvedOnTime > 0}" disabled/></td>
+								<td><input type="checkbox" style="width:95%;" 
+									<c:if test="${ticketDetail.resolvedOnTime > 0}">
+										checked
+									</c:if>
+									disabled/></td>
 							</tr>		
 							<tr>
 								<td>Calificacion interna</td>
@@ -950,16 +964,13 @@
 								<thead>
 									<th colspan="2">Archivos Requeridos</th>
 								</thead>
-								    <c:forEach var="current" items="${deliverables}" >
+								    <c:forEach var="current" items="${deliverableTrace}" >
 									  <tr>
 									    <td  style="width:5%;">
 		                                  <c:choose>
 											<c:when test="${current.delivered}">
 												<img src='${pageContext.request.contextPath}/img/delivered.png'/>
 											</c:when>
-											<c:otherwise>
-												<img src='${pageContext.request.contextPath}/img/notDelivered.png'/>
-											</c:otherwise>
 										  </c:choose>
 												    
 										  
@@ -971,7 +982,7 @@
 									  </c:forEach>
 							</table>
 							
-							<c:import url="/_attachments.jsp"></c:import>
+							<c:import url="/attLoader.jsp"></c:import>
 							<table>
 								<tbody>
 									<tr>
@@ -996,8 +1007,11 @@
 				<!-- Attachment Img section -->
 				<div id="attachmentDlg" title="Referencia">
 					<p></p>
-					<p>Tipo de archivo</p>
-					<input id="attachmentFileName" size="80" readOnly="true"/> 
+					<p>Nombre del archivo:</p>
+					<input id="attachmentFileName" style="width:80px;" readOnly="true"/> 
+					<input type="hidden" id="attachmentFileId"/> 
+					<br>
+					<p>Referencia:</p>
 					<select id="attachmentType" style="width:200px;">
 					   <option value="-1">Sin referencia</option>
 					     <c:forEach var="current" items="${deliverableTypes}" >

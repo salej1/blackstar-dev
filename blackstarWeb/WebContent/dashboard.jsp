@@ -65,16 +65,6 @@
 				officeFilter_init();
 			});
 		</script>
-		
-		
-		<!-- Tabla De Tickets internos pendientes - pendingInternalTickets.jsp -->
-		<c:import url="/bloom/bloomPendingInternalTickets.jsp"></c:import>
-		<script type="text/javascript">
-			$(function(){
-				pendingInternalTicketsInit();
-			});
-		</script>
-
 	</c:if>
 <!-- Fin Contenido De Perfiles Syscallcenter Y Syscoordinator -->
 
@@ -119,17 +109,6 @@
 				officeFilter_init();
 			});
 		</script>
-		
-		
-		<!-- Tabla De Tickets internos pendientes - pendingInternalTickets.jsp -->
-		<c:import url="/bloom/bloomInternalTickets.jsp"></c:import>
-		<script type="text/javascript">
-			$(function(){
-				internalTicketsInit();
-			});
-		</script>
-		
-
 	</c:if>
 <!-- Fin Contenido De Perfiles Syscoordinator -->
 
@@ -175,16 +154,6 @@
 			});
 		</script>
 <!-- Fin Tabla De Ordenes De Servicio Con Pendientes -->
-	
-			<!-- Tabla De Tickets internos pendientes - pendingInternalTickets.jsp -->
-		<c:import url="/bloom/bloomPendingInternalTickets.jsp"></c:import>
-		<script type="text/javascript">
-			$(function(){
-				pendingInternalTicketsInit();
-			});
-		</script>
-	
-	
 	</c:if>
 	<!-- Fin Contenido De Perfil Sysservicio -->
 	

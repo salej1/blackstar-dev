@@ -180,14 +180,15 @@ public class InternalTicketsController extends AbstractController {
 		   model.addAttribute("ticketTeam", internalTicketsService
 				                        .getTicketTeam(ticketId));
 		   model.addAttribute("ticketDetail", ticketDetail);
-		   model.addAttribute("osAttachmentFolder", gdService
+		   model.addAttribute("attachmentFolder", gdService
 				        .getAttachmentFolderId(ticketDetail.getTicketNumber()));
 		   model.addAttribute("accessToken", gdService.getAccessToken());
 		   model.addAttribute("staff", udService.getStaff());
 		   model.addAttribute("followUps", internalTicketsService
 				                        .getFollowUps(ticketId));
 		   model.addAttribute("deliverableTypes", internalTicketsService
-				                                .getDeliverableTypes());
+				                                .getDeliverableTypes(ticketDetail.getServiceTypeId()));
+		   model.addAttribute("deliverableTrace", internalTicketsService.getTicketDeliverable(ticketDetail.get_id()));
 		 }
 	} catch (Exception e) {
 		System.out.println("Error => " + e);
@@ -236,10 +237,20 @@ public class InternalTicketsController extends AbstractController {
   @RequestMapping(value = "/ticketDetail/addDeliverableTrace.do", method = RequestMethod.GET)
   public ResponseEntity<HttpStatus> addDeliverableTrace(@RequestParam(required = true) Integer ticketId
 		                        , @RequestParam(required = true) Integer deliverableTypeId
-				                                                       , ModelMap model) {
+		                        , @RequestParam(required = false) String prevId
+		                        , @RequestParam(required = false) String deliverableName
+		                        , @RequestParam(required = false) String ticketNumber
+				                , ModelMap model) {
 	try {
+		
+		// copiar el documento
+		String docId = "";
+		
+		if(prevId != null && !prevId.equals("")){		
+			docId = gdService.importFile(prevId, deliverableName, gdService.getAttachmentFolderId(ticketNumber));
+		}
 		 if(deliverableTypeId > 0){
-		   internalTicketsService.addDeliverableTrace(ticketId, deliverableTypeId);
+		   internalTicketsService.addDeliverableTrace(ticketId, deliverableTypeId, docId);
 		 }
 	} catch (Exception e) {
 		Logger.Log(LogLevel.ERROR,e.getStackTrace()[0].toString(), e);
@@ -298,11 +309,18 @@ public class InternalTicketsController extends AbstractController {
 		RespuestaJsonBean response = new RespuestaJsonBean();
 
 		Long userId = (long)userSession.getUser().getBlackstarUserId();
-
+		
+		// Ocultamiento de tickets de RH
+		Integer showHidden = 0;
+		if((userSession.getUser().getBelongsToGroup().get(Globals.GROUP_HR) != null && userSession.getUser().getBelongsToGroup().get(Globals.GROUP_HR) == true) ||
+			(userSession.getUser().getBelongsToGroup().get(Globals.GROUP_CEO) != null && userSession.getUser().getBelongsToGroup().get(Globals.GROUP_CEO) == true)){
+			showHidden = 1;
+		}
+		
 		try {
 
 			List<InternalTicketBean> registros = internalTicketsService
-					.getHistoricalTickets(startCreationDateTicket, endCreationDateTicket, idStatusTicket);
+					.getHistoricalTickets(startCreationDateTicket, endCreationDateTicket, idStatusTicket, showHidden);
 
 			if (registros == null || registros.isEmpty()) {
 				response.setEstatus("preventivo");
@@ -375,11 +393,12 @@ public class InternalTicketsController extends AbstractController {
 	RespuestaJsonBean guardarAtencion(
 			@ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession,
 			@RequestParam(value = "fldFolio", required = true) String fldFolio,
-			@RequestParam(value = "fldFechaRegsitro", required = true) String fldFechaRegsitro,
+			@RequestParam(value = "fldFechaRegsitro", required = true) Date fldFechaRegsitro,
 			@RequestParam(value = "fldEmail", required = true) String fldEmail,
 			@RequestParam(value = "slAreaSolicitante", required = true) Integer slAreaSolicitante,
 			@RequestParam(value = "slTipoServicio", required = true) Integer slTipoServicio,
-			@RequestParam(value = "fldLimite", required = true) String fldLimite,
+			@RequestParam(value = "fldLimite", required = true) Date fldLimite,
+			@RequestParam(value = "fldDesiredDate", required = true) Date fldDesiredDate,
 			@RequestParam(value = "slProyecto", required = true) String slProyecto,
 			@RequestParam(value = "slOficina", required = true) String slOficina,
 			@RequestParam(value = "slDocumento", required = true) Long slDocumento,
@@ -452,19 +471,20 @@ public class InternalTicketsController extends AbstractController {
 			DeliverableTraceBean deliverableTrace = new DeliverableTraceBean();
 			deliverableTrace.setDeliverableId(slDocumento);
 
-			ticket.setTicketNumber(fldFolio); //email
-			ticket.setCreatedStr(fldFechaRegsitro);//email
-			ticket.setApplicantAreaId(slAreaSolicitante);//email -par
-			ticket.setServiceTypeId(slTipoServicio); //email - par
+			ticket.setTicketNumber(fldFolio); 
+			ticket.setCreated(fldFechaRegsitro);
+			ticket.setApplicantAreaId(slAreaSolicitante);
+			ticket.setServiceTypeId(slTipoServicio); 
 			ticket.setDescription(fldDescripcion);
 			ticket.setReponseInTime(fldDiasRespuesta);
-			ticket.setDeadlineStr(fldLimite);
-			ticket.setProject(slProyecto);//email
-			ticket.setOfficeId(slOficina);//email - par
+			ticket.setDeadline(fldLimite);
+			ticket.setDesiredDate(fldDesiredDate);
+			ticket.setProject(slProyecto);
+			ticket.setOfficeId(slOficina);
 			ticket.setDeliverableTrace(deliverableTrace);
 			ticket.setApplicantUserId(Long.valueOf(userSession.getUser().getBlackstarUserId()));
 			ticket.setCreatedUserId(Long.valueOf(userSession.getUser().getBlackstarUserId()));
-			ticket.setCreatedUserName(userSession.getUser().getUserName());//email
+			ticket.setCreatedUserName(userSession.getUser().getUserName());
 			ticket.setCreatedUserEmail(userSession.getUser().getUserEmail());
 
 			ticket.setPetitionerArea(slAreaSolicitanteLabel);

@@ -53,6 +53,9 @@
 -- 27   29/06/2014  SAG   Correcciones de integracion:
 --                          blackstarDb.AddMemberTicketTeam
 -- ------------------------------------------------------------------------------
+-- 28   10/07/2014  SAG   Se modifica:
+--                          blackstarDb.AddInternalTicket
+-- ------------------------------------------------------------------------------
 
 use blackstarDb;
 
@@ -67,6 +70,8 @@ CREATE PROCEDURE blackstarDb.GetBloomTicketId(pTicketNumber VARCHAR(100))
 BEGIN
   SELECT _id FROM bloomTicket WHERE ticketNumber = pTicketNumber;
 END$$
+
+
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.BloomUpdateTickets
 -- -----------------------------------------------------------------------------
@@ -420,16 +425,19 @@ END$$
 	-- blackstarDb.GetBloomDeliverableType
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetBloomDeliverableType$$
-CREATE PROCEDURE blackstarDb.`GetBloomDeliverableType`()
+CREATE PROCEDURE blackstarDb.`GetBloomDeliverableType`(pServiceTypeId INTEGER)
 BEGIN
-	SELECT _id id, name name, description description FROM bloomDeliverableType;
+	SELECT 
+    _id id, name name, description description 
+  FROM bloomDeliverableType
+  WHERE serviceTypeId = pServiceTypeId;
 END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.AddBloomDelivarable
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.AddBloomDelivarable$$
-CREATE PROCEDURE blackstarDb.`AddBloomDelivarable`(pTicketId INTEGER, pDeliverableTypeId INTEGER)
+CREATE PROCEDURE blackstarDb.`AddBloomDelivarable`(pTicketId INTEGER, pDeliverableTypeId INTEGER, docId VARCHAR(200))
 BEGIN
 DECLARE counter INTEGER;
 
@@ -439,8 +447,8 @@ DECLARE counter INTEGER;
   IF (counter > 0) THEN
     UPDATE bloomDeliverableTrace SET delivered = 1, date = NOW();
   ELSE 
-	  INSERT INTO bloomDeliverableTrace (bloomTicketId, deliverableTypeId, delivered, date)
-    VALUES (pTicketId, pDeliverableTypeId, 1, NOW());
+	  INSERT INTO bloomDeliverableTrace (bloomTicketId, deliverableTypeId, delivered, date, docId)
+    VALUES (pTicketId, pDeliverableTypeId, 1, NOW(), docId);
   END IF;  
 END$$
 
@@ -512,6 +520,8 @@ BEGIN
     ti.ticketNumber,
     ti.created,
     ti.applicantAreaId, 
+    ti.dueDate, 
+    ti.desiredDate, 
     ba.name as areaName,
     ti.serviceTypeId,
     st.name as serviceName,
@@ -528,7 +538,7 @@ BEGIN
        INNER JOIN office o on (o.officeId = ti.officeId)
        INNER JOIN bloomStatusType s on (s._id = ti.statusId)
   WHERE tm.blackstarUserId=UserId
-        AND ti.statusId < 4;
+        AND ti.statusId < 6 AND ti.statusId != 4;
 END$$
 
 -- -----------------------------------------------------------------------------
@@ -753,7 +763,8 @@ CREATE PROCEDURE blackstarDb.AddInternalTicket (
 	suggestionGSM Varchar(2500),
 	documentCodeGSM Varchar(2500),
 	justificationGSM Varchar(2500),
-	problemDescriptionGPTR Varchar(2500)
+	problemDescriptionGPTR Varchar(2500),
+  desiredDate DATETIME
   )
 BEGIN
 	INSERT INTO bloomTicket
@@ -770,7 +781,7 @@ commentsPGCCP,developmentPlanPGCCP,targetPGCCP,salaryPGCCP,positionPGCNC,
 developmentPlanPGCNC,targetPGCNC,salaryPGCNC,justificationPGCNC,positionPGCF,
 collaboratorPGCF,justificationPGCF,positionPGCAA,collaboratorPGCAA,justificationPGCAA,
 requisitionFormatGRC,linkDocumentGM,suggestionGSM,documentCodeGSM,justificationGSM,
-problemDescriptionGPTR)
+problemDescriptionGPTR, desiredDate)
 VALUES
 (applicantUserId,officeId,serviceTypeId,statusId,
 applicantAreaId,dueDate,project,ticketNumber,
@@ -785,7 +796,7 @@ commentsPGCCP,developmentPlanPGCCP,targetPGCCP,salaryPGCCP,positionPGCNC,
 developmentPlanPGCNC,targetPGCNC,salaryPGCNC,justificationPGCNC,positionPGCF,
 collaboratorPGCF,justificationPGCF,positionPGCAA,collaboratorPGCAA,justificationPGCAA,
 requisitionFormatGRC,linkDocumentGM,suggestionGSM,documentCodeGSM,justificationGSM,
-problemDescriptionGPTR);
+problemDescriptionGPTR, desiredDate);
 select LAST_INSERT_ID();
 END$$
 
@@ -813,26 +824,6 @@ BEGIN
   END IF;
 	
 END$$
-
-
--- -----------------------------------------------------------------------------
-	-- blackstarDb.AddDeliverableTrace
--- -----------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS blackstarDb.AddDeliverableTrace$$
-CREATE PROCEDURE blackstarDb.AddDeliverableTrace (  
-  bloomTicketId Int(11),
-  deliverableTypeId Int(11),
-  delivered Int(11),
-  dateDeliverableTrace Datetime)
-BEGIN
-	INSERT INTO bloomDeliverableTrace
-(bloomTicketId,deliverableTypeId,delivered,date)
-VALUES
-(bloomTicketId,deliverableTypeId,delivered,dateDeliverableTrace);
-SELECT LAST_INSERT_ID();
-END$$
-
-
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.getBloomEstatusTickets
@@ -896,7 +887,7 @@ DROP PROCEDURE IF EXISTS blackstarDb.GetbloomTicketByOfficeKPI$$
 CREATE PROCEDURE blackstarDb.`GetbloomTicketByOfficeKPI`()
 BEGIN
 
-SELECT of.officeName name, count(*) counter
+SELECT of.officeName officeName, count(*) counter
 FROM bloomTicket bt, office of
 WHERE bt.officeId = of.officeId
 GROUP BY bt.officeId
@@ -950,11 +941,17 @@ END$$
 DROP PROCEDURE IF EXISTS blackstarDb.GetbloomTicketDeliverable$$
 CREATE PROCEDURE blackstarDb.`GetbloomTicketDeliverable`(pTicketId INTEGER)
 BEGIN
-SELECT bdt._id id, bdt.name name, bd.delivered delivered
-FROM bloomTicket bt, bloomDeliverableType bdt, bloomDeliverableTrace bd
-WHERE bt._id = pTicketId
-      AND bt._id = bd.bloomTicketId
-      AND bd.deliverableTypeId = bdt._id;
+
+  SELECT 
+    bdt._id id, 
+    bdt.name name, 
+    IF(bd._id IS NOT NULL, true, false) AS delivered,
+    bd.docId docId
+  FROM bloomTicket bt
+    INNER JOIN bloomDeliverableType bdt ON bt.serviceTypeId = bdt.serviceTypeId
+    LEFT OUTER JOIN  bloomDeliverableTrace bd ON bd.bloomTicketId = bt._id AND bd.deliverableTypeId = bdt._id
+  WHERE bt._id = pTicketId;
+
 END$$ 
 
 DROP PROCEDURE IF EXISTS blackstarDb.GetbloomSurveyTable$$
@@ -1383,32 +1380,57 @@ END$$
 	-- blackstarDb.GetBloomHistoricalTickets
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetBloomHistoricalTickets$$
-CREATE PROCEDURE blackstarDb.GetBloomHistoricalTickets(statusTicket INT,startCreationDate VARCHAR(50),endCreationDate VARCHAR(50))
+CREATE PROCEDURE blackstarDb.GetBloomHistoricalTickets(statusTicket INT, startCreationDate DATETIME, endCreationDate DATETIME, showHidden INT)
 BEGIN
 
-DECLARE tmp1 VARCHAR(800);
-DECLARE tmp2 VARCHAR(50);
-DECLARE tmp3 VARCHAR(50);
-DECLARE tmp4 VARCHAR(50);
-DECLARE tmp5 VARCHAR(1500);
-
-SET tmp1 = 'SELECT ti._id as id, ti.ticketNumber, ti.created, ti.applicantAreaId, ba.name as areaName, ti.serviceTypeId, st.name as serviceName, st.responseTime, ti.project, ti.officeId, o.officeName,ti.statusId, s.name as statusTicket FROM bloomTicket ti INNER JOIN bloomApplicantArea ba on (ba._id = ti.applicantAreaId) INNER JOIN bloomServiceType st on (st._id = ti.serviceTypeId) INNER JOIN office o on (o.officeId = ti.officeId) INNER JOIN bloomStatusType s on (s._id = ti.statusId) WHERE ti.created>=\'';
-SET tmp2 = '\' AND ti.created <= \'';
-
-IF statusTicket <> -1 THEN 
-	SET tmp3 = CONCAT('\' AND ti.statusId= ', statusTicket);	
-ELSE
-	SET tmp3 = '\'';
-END IF;				
-
-SET tmp4 = ' ORDER BY ti.created DESC ';
-
-SET @sqlv=CONCAT(tmp1,startCreationDate,tmp2,endCreationDate,tmp3,tmp4);
-
- PREPARE stmt FROM @sqlv;
-
-EXECUTE stmt;
-DEALLOCATE PREPARE stmt;
+  IF(statusTicket <= 0) THEN
+    SELECT 
+      ti._id as id, 
+      ti.ticketNumber, 
+      ti.created, 
+      ti.applicantAreaId, 
+      ba.name as areaName, 
+      ti.serviceTypeId, 
+      st.name as serviceName, 
+      st.responseTime, 
+      ti.project, 
+      ti.officeId, 
+      o.officeName,
+      ti.statusId, 
+      s.name as statusTicket 
+    FROM bloomTicket ti 
+      INNER JOIN bloomApplicantArea ba on (ba._id = ti.applicantAreaId) 
+      INNER JOIN bloomServiceType st on (st._id = ti.serviceTypeId) 
+      INNER JOIN office o on (o.officeId = ti.officeId) 
+      INNER JOIN bloomStatusType s on (s._id = ti.statusId) 
+    WHERE ti.created >= startCreationDate -- AND ti.created <= endCreationDate
+      AND IFNULL(st.hidden, 0) <= showHidden
+    ORDER BY ti.created DESC;
+  ELSE
+    SELECT 
+      ti._id as id, 
+      ti.ticketNumber, 
+      ti.created, 
+      ti.applicantAreaId, 
+      ba.name as areaName, 
+      ti.serviceTypeId, 
+      st.name as serviceName, 
+      st.responseTime, 
+      ti.project, 
+      ti.officeId, 
+      o.officeName,
+      ti.statusId, 
+      s.name as statusTicket 
+    FROM bloomTicket ti 
+      INNER JOIN bloomApplicantArea ba on (ba._id = ti.applicantAreaId) 
+      INNER JOIN bloomServiceType st on (st._id = ti.serviceTypeId) 
+      INNER JOIN office o on (o.officeId = ti.officeId) 
+      INNER JOIN bloomStatusType s on (s._id = ti.statusId) 
+    WHERE ti.created >= startCreationDate -- AND ti.created <= endCreationDate
+      AND IFNULL(st.hidden, 0) <= showHidden
+      AND ti.statusId = statusTicket
+    ORDER BY ti.created DESC;
+  END IF;
 
 END$$
 

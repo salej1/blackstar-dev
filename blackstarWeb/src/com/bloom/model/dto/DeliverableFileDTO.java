@@ -5,6 +5,7 @@ public class DeliverableFileDTO {
   private Integer id;
   private String name;
   private boolean delivered;
+  private String docId;
   
   public Integer getId() {
 	return id;
@@ -28,5 +29,11 @@ public class DeliverableFileDTO {
   public void setDelivered(Integer delivered) {
 	this.delivered = delivered == 1 ? true :  false;
   }
+public String getDocId() {
+	return docId;
+}
+public void setDocId(String docId) {
+	this.docId = docId;
+}
 
 }

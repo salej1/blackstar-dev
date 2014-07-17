@@ -40,10 +40,10 @@ function getPendingInternalTickets() {
 										"aoColumns" : [ 
 										{"mData" : "ticketNumber"}, 
 										{"mData" : "statusDescr"}, 
-										{"mData" : "createdStr"}, 
+										{"mData" : "created"}, 
 										{"mData" : "petitionerArea"}, 
 										{"mData" : "serviceTypeDescr"}, 
-										{"mData" : "deadlineStr"}, 
+										{"mData" : "deadline"}, 
 										{"mData" : "project"}, 
 										{"mData" : "officeName"}
 										],

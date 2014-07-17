@@ -56,8 +56,12 @@
 								</td>
 							</tr>
 							<tr>
-								<td>Fecha Limite</td>
-								<td><input id="fldLimite" type="text" style="width:95%;" readOnly="true"/></td>
+								<td>Fecha Compromiso</td>
+								<td><input id="fldLimite" type="text" style="width:200px;" readonly="true"/></td>
+							</tr>
+							<tr>
+								<td>Fecha Deseada</td>
+								<td><input id="fldDesiredDate" type="text" style="width:200px;;" readonly="true"/></td>
 							</tr>
 							<tr>
 								<td>Proyecto</td>
@@ -295,33 +299,6 @@
 			
 				<div class="grid_16">
 					<div class="box">
-						<h2>Archivos adjuntos</h2>
-							<div id="legend">Por favor proporcione los siguientes archivos:</div>
-							<ol id="attItems">
-							
-							</ol>
-							<table id="attachments">
-								<thead>
-									<tr>
-										<th colspan="3">Archivos Adjuntos</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr>
-										<td id="img1PH" style="width:150px;"></td>
-										<td id="img2PH" style="width:150px;"></td>
-										<td id="img3PH" style="width:150px;"></td>
-									</tr>
-									<tr>
-										<td id="img1Desc"></td>
-										<td id="img2Desc"></td>
-										<td id="img3Desc"></td>
-									</tr>
-									<tr>
-										<td><button id="attachButtonTicket" class="searchButton">Adjuntar Archivo</button></td>
-									</tr>
-								</tbody>
-							</table>
 							<table>
 								<tbody>
 									<tr>
@@ -388,8 +365,8 @@
 
 						$("#fldFechaRegsitro").val(dateNow());
 
-						$("#fldLimite").datepicker();
-						$("#fldLimite").datepicker("setDate", new Date());
+						$("#fldDesiredDate").datepicker({ dateFormat: 'dd/mm/yy' });
+						$("#fldDesiredDate").datepicker("setDate", new Date());
 
 						// Attachment dialog
 						$("#attachmentDlg").dialog({
@@ -491,7 +468,6 @@
 
 	function updateDueDate(){
 		
-		
 		serviceTypeId = parseInt($(
 				'#slTipoServicio').val());
 
@@ -509,8 +485,7 @@
 				.getDate()
 				+ diasLimitesTipoServicio);
 
-		$("#fldLimite").datepicker("setDate",
-				fechaLimite);
+		$("#fldLimite").val(fechaLimite.format("dd/MM/yyyy"));
 		
 		configureAdditionalFields();
 		
@@ -771,7 +746,8 @@
 				fldEmail:$('#fldEmail').val(),
 				slAreaSolicitante:$('#slAreaSolicitante').val(),
 				slTipoServicio:$('#slTipoServicio').val(),
-				fldLimite:$('#fldLimite').val(),
+				fldLimite:$('#fldLimite').val() + " 00:00:00",
+				fldDesiredDate:$('#fldDesiredDate').val() + " 00:00:00",
 				slProyecto:$('#slProyecto').val(),
 				slOficina:$('#slOficina').val(),
 				slDocumento:$('#slDocumento').val(),
@@ -876,7 +852,8 @@
 							new Option(listaServicios[i].descripcion,
 									listaServicios[i].id));
 		}*/
-
+		// Proyecto vacio
+		$("#slProyecto").append(new Option('N/A', 'N/A'));
 		for (var i = 0; i < listaProyectos.length; i++) {
 			$("#slProyecto")
 					.append(
@@ -1096,14 +1073,6 @@
 	function cancelAddSeguimiento() {
 		$("#seguimientoCapture").hide();
 	}
-
-	function fillSeguimiento() {
-		$("#seguimientoText")
-				.val(
-						'Se conocen los precios de los fletes y el precio unitario de unas de las baterias esprando el precio que falta. Ya fue enviado via correo el precio que faltaba.');
-	}
-
-
 
 	function iniHideAdditionalFields(){
 		

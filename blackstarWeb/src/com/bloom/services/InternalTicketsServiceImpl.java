@@ -1,9 +1,11 @@
 package com.bloom.services;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.blackstar.common.Globals;
 import com.blackstar.db.dao.interfaces.UserDAO;
 import com.blackstar.interfaces.IEmailService;
 import com.blackstar.model.Followup;
@@ -80,13 +82,13 @@ public class InternalTicketsServiceImpl extends AbstractService
     }
 
     @Override
-    public List<InternalTicketBean> getHistoricalTickets(String startCreationDateTicket, String endCreationDateTicket, Integer idStatusTicket) throws ServiceException {
+    public List<InternalTicketBean> getHistoricalTickets(String startCreationDateTicket, String endCreationDateTicket, Integer idStatusTicket, Integer showHidden) throws ServiceException {
     	
-    	startCreationDateTicket = DataTypeUtil.transformDateFormat(startCreationDateTicket,DataTypeUtil.MIN_TIME);
-    	endCreationDateTicket = DataTypeUtil.transformDateFormat(endCreationDateTicket,DataTypeUtil.MAX_TIME);
+    	//startCreationDateTicket = DataTypeUtil.transformDateFormat(startCreationDateTicket,DataTypeUtil.MIN_TIME);
+    	//endCreationDateTicket = DataTypeUtil.transformDateFormat(endCreationDateTicket,DataTypeUtil.MAX_TIME);
     	
         try {
-        	return getInternalTicketsDao().getHistoricalTickets(startCreationDateTicket,endCreationDateTicket,idStatusTicket);
+        	return getInternalTicketsDao().getHistoricalTickets(startCreationDateTicket,endCreationDateTicket,idStatusTicket, showHidden);
             
         } catch (DAOException e) {
             
@@ -122,10 +124,8 @@ public class InternalTicketsServiceImpl extends AbstractService
     	 if (ticket.getDescription().isEmpty()) {
              throw new ServiceException("Describa el motivo del ticket, por favor.");
          }
-    	 
-    	 ticket.setDeadline(DataTypeUtil.obtenerFecha(ticket.getDeadlineStr(), "MM/dd/yyyy"));
+    	     	 
     	 Date fechaActual = new Date();
-    	 
     	 
     	 if(ticket.getDeadline().getTime()<fechaActual.getTime()){
     		 throw new ServiceException("La fecha limite debe ser mayor a la fecha actual.");
@@ -137,9 +137,6 @@ public class InternalTicketsServiceImpl extends AbstractService
 
     @Override
     public void registrarNuevoTicket(InternalTicketBean ticket) throws ServiceException {
-
-    	ticket.setDeadline(DataTypeUtil.obtenerFecha(ticket.getDeadlineStr(), "MM/dd/yyyy"));
-    	ticket.setCreated(DataTypeUtil.obtenerFecha(ticket.getCreatedStr(), "MM/dd/yyyy HH:mm:ss"));
     	ticket.setStatusId(1);//ticket nuevo.
     	
     	List<CatalogoBean<Integer>> miebrosDtos;
@@ -212,6 +209,7 @@ public class InternalTicketsServiceImpl extends AbstractService
     private void sendAssignationEmail(InternalTicketBean ticket,TicketTeamBean member){
     	
 		// Enviar el email
+    	SimpleDateFormat sdf = new SimpleDateFormat(Globals.DATE_FORMAT_PATTERN);
 		IEmailService mail = EmailServiceFactory.getEmailService();
 		String to = member.getEmail();
 
@@ -225,10 +223,10 @@ public class InternalTicketsServiceImpl extends AbstractService
 
 		bodySb.append(String.format("\r\n\r\n Usuario Solicitante: %s", ticket.getCreatedUserName()));
 		bodySb.append(String.format("\r\n\r\n Numero de ticket interno %s",ticket.getTicketNumber()));
-		bodySb.append(String.format("\r\n\r\n Fecha y Hora de recepcion: %s", ticket.getCreatedStr()));
+		bodySb.append(String.format("\r\n\r\n Fecha y Hora de recepcion: %s", sdf.format(ticket.getCreated())));
 		bodySb.append(String.format("\r\n\r\n Departamento Solicitante: %s", ticket.getPetitionerArea()));
 		bodySb.append(String.format("\r\n\r\n Requerimiento: %s", ticket.getDescription()));
-		bodySb.append(String.format("\r\n\r\n Fecha Solicitada: %s", ticket.getDeadlineStr()));
+		bodySb.append(String.format("\r\n\r\n Fecha Solicitada: %s", sdf.format(ticket.getDeadline())));
 		bodySb.append(String.format("\r\n\r\n Proyecto: %s", ticket.getProject()));
 		bodySb.append(String.format("\r\n\r\n Oficina: %s", ticket.getOfficeName()));
 		bodySb.append(String.format("\r\n\r\n Nota o liga de Anexos: %s", ""));
@@ -270,12 +268,12 @@ public class InternalTicketsServiceImpl extends AbstractService
 	return internalTicketsDao.getFollowUps(ticketId);
   }
   
-  public List<DeliverableTypeDTO> getDeliverableTypes(){
-	 return internalTicketsDao.getDeliverableTypes();
+  public List<DeliverableTypeDTO> getDeliverableTypes(Integer ticketTypeId){
+	 return internalTicketsDao.getDeliverableTypes(ticketTypeId);
   }
   
-  public void addDeliverableTrace(Integer ticketId, Integer deliverableTypeId){
-	internalTicketsDao.addDeliverableTrace(ticketId, deliverableTypeId);
+  public void addDeliverableTrace(Integer ticketId, Integer deliverableTypeId, String docId){
+	internalTicketsDao.addDeliverableTrace(ticketId, deliverableTypeId, docId);
   }
   
   public User getAsigneed(Integer ticketId){

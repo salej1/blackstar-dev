@@ -66,8 +66,8 @@ public interface InternalTicketsDao {
   public void addFollow(Integer ticketId, Integer userId, String comment);
   public void addTicketTeam(Integer ticketId, Integer roleId, Integer userId);
   public List<Followup> getFollowUps(Integer ticketId);
-  public List<DeliverableTypeDTO> getDeliverableTypes();
-  public void addDeliverableTrace(Integer ticketId, Integer deliverableTypeId);
+  public List<DeliverableTypeDTO> getDeliverableTypes(Integer ticketTypeId);
+  public void addDeliverableTrace(Integer ticketId, Integer deliverableTypeId, String docId);
   public List<User> getAsigneedUser(Integer ticketId);
   public List<User> getResponseUser(Integer ticketId);
   public void closeTicket(Integer ticketId, Integer userId, Integer statusId);
@@ -103,6 +103,6 @@ public interface InternalTicketsDao {
 	 * @return
 	 * @throws DAOException
 	 */
-	public List<InternalTicketBean> getHistoricalTickets(String startCreationDate, String endCreationDate, Integer idStatusTicket) throws DAOException;	
+	public List<InternalTicketBean> getHistoricalTickets(String startCreationDate, String endCreationDate, Integer idStatusTicket, Integer showHidden) throws DAOException;	
 
 }

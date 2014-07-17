@@ -17,11 +17,16 @@
 --                              * bloomTicket
 --                              * bloomTicketTeam
 --                              * bloomDeliverableTrace
--- 1    22/06/2014  OMA  	Cambios adicionales para el nuevo manejo de tickets internos
+-- ---------------------------------------------------------------------------
+-- 2    22/06/2014  OMA  	Cambios adicionales para el nuevo manejo de tickets internos
 --                              * bloomAdvisedGroup Nueva tabla
 --                              * bloomServiceType Actualizacion de campos
 --                              * bloomDeliverableType Actualizacion de campos
 --                              * bloomTicket Actualizacion de campos
+-- ---------------------------------------------------------------------------
+-- 3 	10/07/2014	SAG 	Se agrega desiredDate a bloomTicket
+--							Se agrega hidden a bloomServiceType
+--							Se agrega docId a bloomDeliverableTrace
 -- ---------------------------------------------------------------------------
 
 use blackstarDb;
@@ -36,19 +41,6 @@ BEGIN
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
 
--- AGREGANDO TABLA bloomSurvey
-IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'bloomSurvey') = 0 THEN
-		 CREATE TABLE blackstarDb.bloomSurvey(
-           _id Int(11) NOT NULL AUTO_INCREMENT,
-           bloomTicketId Int(11) NOT NULL,
-           evaluation Tinyint NOT NULL,
-           comments Text NOT NULL,
-           created Date NOT NULL,
-		   PRIMARY KEY (_id),
-		   FOREIGN KEY (bloomTicketId) REFERENCES bloomTicket (_id)
-         )ENGINE=INNODB;
-	END IF;	
-	
 -- AGREGANDO TABLA bloomServiceType
 	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'bloomServiceType') = 0 THEN
 		 CREATE TABLE blackstarDb.bloomServiceType(
@@ -60,6 +52,13 @@ IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blacksta
 			PRIMARY KEY (_id)
          ) ENGINE=INNODB;
 	END IF;
+
+	
+-- Agregando hidden a bloomServiceType
+	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'bloomServiceType' AND COLUMN_NAME = 'hidden') = 0  THEN
+		ALTER TABLE bloomServiceType ADD hidden INT NULL;
+	END IF;
+
 
 -- AGREGANDO TABLA bloomWorkerRoleType
 	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'bloomWorkerRoleType') = 0 THEN
@@ -208,6 +207,24 @@ IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blacksta
 		
 	END IF;	
 
+-- Agregando desiredDate a bloomTicket
+	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'bloomTicket' AND COLUMN_NAME = 'desiredDate') = 0  THEN
+		ALTER TABLE bloomTicket ADD desiredDate DATETIME NULL;
+	END IF;
+
+-- AGREGANDO TABLA bloomSurvey
+IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'bloomSurvey') = 0 THEN
+		 CREATE TABLE blackstarDb.bloomSurvey(
+           _id Int(11) NOT NULL AUTO_INCREMENT,
+           bloomTicketId Int(11) NOT NULL,
+           evaluation Tinyint NOT NULL,
+           comments Text NOT NULL,
+           created Date NOT NULL,
+		   PRIMARY KEY (_id),
+		   FOREIGN KEY (bloomTicketId) REFERENCES bloomTicket (_id)
+         )ENGINE=INNODB;
+	END IF;	
+	
  -- AGREGANDO TABLA bloomTicketTeam
 	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'bloomTicketTeam') = 0 THEN
 		 CREATE TABLE blackstarDb.bloomTicketTeam(
@@ -238,8 +255,12 @@ IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blacksta
          )ENGINE=INNODB;
 	END IF;		
 
+-- Agregando docId a bloomDeliverableTrace
+	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'bloomDeliverableTrace' AND COLUMN_NAME = 'docId') = 0  THEN
+		ALTER TABLE bloomDeliverableTrace ADD docId VARCHAR(400) NULL;
+	END IF;
 
-	-- AGREGANDO COLUMNA bloomTicketId A followUp
+-- AGREGANDO COLUMNA bloomTicketId A followUp
 	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'followUp' AND COLUMN_NAME = 'bloomTicketId') =0  THEN
 		 ALTER TABLE blackstarDb.followUp ADD bloomTicketId Int(11);
 		 ALTER TABLE blackstarDb.followUp ADD CONSTRAINT R11 FOREIGN KEY (bloomTicketId) REFERENCES bloomTicket (_id) ON DELETE NO ACTION ON UPDATE NO ACTION;

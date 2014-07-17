@@ -13,6 +13,7 @@
 		<file name ="bloomDb_StoredProcedures.sql"/>
 		
 		<file name ="blackstarDb_Data.sql"/>
+		<file name ="bloomDb_Data.sql"/>
 	</files>
 	<outputs>
 		<output prefix="" suffix="" name="DatabaseScripts.sql"/>
