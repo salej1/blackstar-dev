@@ -19,5 +19,6 @@ public interface ClientService {
   public String getNextclientId();
   public String getClientList(boolean isProspect);
   public List<ClientVO> getAllClients();
+  public ClientVO getClientById(Integer clientId);
   
 }

@@ -19,6 +19,7 @@ import com.blackstar.logging.Logger;
 import com.blackstar.web.AbstractController;
 import com.codex.service.ClientService;
 import com.codex.service.ProjectService;
+import com.codex.vo.ClientVO;
 import com.codex.vo.ProjectVO;
 
 
@@ -79,11 +80,17 @@ public class ProjectController extends AbstractController {
   }
   
   @RequestMapping(value = "/create.do")
-  public String create(ModelMap model){
+  public String create(ModelMap model, @RequestParam(required = false) Integer clientId){
 	ProjectVO project = new ProjectVO();
+	ClientVO client= null;
 	Integer projectId = null;
 	try {
 		 projectId = service.getNewProjectId();
+		 if(clientId != null && ((client = cService.getClientById(clientId)) != null)){
+			 project.setClientId(client.getId());
+			 project.setLocation(client.getState());
+			 project.setContactName(client.getContactName());
+		 }
 	     project.setId(projectId);
 	     project.setStatusId(1);
 	     project.setStatusDescription("Nuevo");
@@ -172,7 +179,7 @@ public class ProjectController extends AbstractController {
 		model.addAttribute("errorDetails", e.getStackTrace()[0].toString());
 		return "error";
 	}
-    return "codex/projectList";
+    return showList(model);
   }
 	
 }

@@ -27,7 +27,7 @@ public class Globals {
 	      AppEngineDataStoreFactory.getDefaultInstance();
 
 	  public static GoogleClientSecrets clientSecrets = null;
-	  public static final String MAIN_SERVLET_PATH = "/dashboard/show.do";
+	  public static final String MAIN_SERVLET_PATH = "/codex/dashboard/show.do";
 	  public static final String AUTH_CALLBACK_SERVLET_PATH = "/oauth2callback";
 	  public static final HttpTransport HTTP_TRANSPORT = new UrlFetchTransport();
 	  public static final JacksonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();

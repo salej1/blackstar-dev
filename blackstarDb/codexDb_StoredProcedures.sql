@@ -75,7 +75,7 @@ END$$
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetLocationsByState
 -- -----------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS blackstarDb.GetLocationsByState;
+DROP PROCEDURE IF EXISTS blackstarDb.GetLocationsByState$$
 CREATE PROCEDURE blackstarDb.GetLocationsByState(pZipCode VARCHAR(5))
 BEGIN
 
@@ -83,7 +83,7 @@ BEGIN
    FROM location
    WHERE zipCode = pZipCode;
 
-END;
+END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.CodexInsertClient
@@ -379,7 +379,7 @@ END$$
 	-- blackstarDb.CodexInsertProjectEntry
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstardb.CodexInsertProjectEntry$$
-CREATE PROCEDURE blackstardb.`CodexInsertProjectEntry`(pEntryId int(11), pProjectId int(11), pEntryTypeId int(11), pDescription TEXT, pDiscount FLOAT(6,2), pTotalPrice FLOAT(9,2), pComments TEXT)
+CREATE PROCEDURE blackstardb.`CodexInsertProject`(pProjectId int(11), pClientId int(11), pTaxesTypeId int(1), pStatusId int(1), pPaymentTypeId int(1),pCurrencyTypeId int(2), pProjectNumber varchar(8), pCostCenter varchar(8), pChangeType float, pCreated varchar(20), pContactName text, pLocation varchar(20), pAdvance float, pTimeLimit int(3), pSettlementTimeLimit int(3), pDeliveryTime int(3), pIntercom varchar(5), pProductsNumber int(7), pFinancesNumber int(7), pServicesNumber int(7), pTotalProjectNumber int(8))
 BEGIN
   INSERT INTO codexProjectEntry (_id, projectId, entryTypeId, description, discount, totalPrice, comments)
   VALUES (pEntryId, pProjectId, pEntryTypeId, pDescription, pDiscount, pTotalPrice, pComments);
@@ -433,6 +433,23 @@ BEGIN
          , neighborhood neighborhood, contactName contactName, curp curp, retention retention
   FROM codexclient
   WHERE isProspect = 0;
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.CodexGetClientById
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstardb.CodexGetClientById$$
+CREATE PROCEDURE blackstardb.`CodexGetClientById`(pClientId int(11))
+BEGIN
+  SELECT _id id, clientTypeId clientTypeId, clientOriginId clientOriginId, sellerId sellerId
+         , isProspect isProspect, rfc rfc, corporateName corporateName, tradeName tradeName
+         , phoneArea phoneArea, phoneNumber phoneNumber, phoneExtension phoneExtension
+         , phoneAreaAlt phoneAreaAlt, phoneNumberAlt phoneNumberAlt, phoneExtensionAlt phoneExtensionAlt
+         , email email, emailAlt emailAlt, street street, intNumber intNumber, extNumber extNumber
+         , zipCode zipCode, country country, state state, municipality municipality, city city
+         , neighborhood neighborhood, contactName contactName, curp curp, retention retention
+  FROM codexclient
+  WHERE _id = pClientId;
 END$$
 
 -- -----------------------------------------------------------------------------
@@ -513,7 +530,7 @@ BEGIN
         ,cdt.deliverableTypeId deliverableTypeId, cdty.name deliverableTypeDescription
         , cdt.created created, cdt.userId userId, bu.name userName
 	FROM codexDeliverableTrace	cdt, codexProject cp, codexDeliverableType cdty, blackstarUser bu
-  WHERE cdt.codexProjectId = 1
+  WHERE cdt.codexProjectId = pProjectId
         AND cdt.codexProjectId = cp._id
         AND cdt.deliverableTypeId = cdty._id
         AND cdt.userId = bu.blackstarUserId;

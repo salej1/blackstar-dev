@@ -121,5 +121,9 @@
 	    <property name="service" ref="projectService" />
 	    <property name="cService" ref="clientService" />
 	</bean>
+	
+	<bean class="com.codex.web.controller.DashboardController" parent="abstractController">
+	    <property name="service" ref="codexDashboardService" />
+	</bean>
 	<context:annotation-config />
 </beans>

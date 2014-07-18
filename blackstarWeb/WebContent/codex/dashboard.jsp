@@ -3,7 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@page isELIgnored="false"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<c:set var="pageSection" scope="request" value="clientes" />
+<c:set var="pageSection" scope="request" value="dashboard" />
 <c:import url="../header.jsp"></c:import>
 <html>
 <head>
@@ -19,53 +19,74 @@
 	 $(document).ready(function() {
 
 		 try{
-		     var prospects = $.parseJSON('${prospects}');
-		     var clients = $.parseJSON('${clients}');
+		     var newProjects = $.parseJSON('${newProjects}');
+		     var authProjects = $.parseJSON('${authProjects}');
+		     var cotProjects = $.parseJSON('${cotProjects}');
 		 }
 		 catch(err){
 		 alert(err);
 		 }
 
-		 $('#propectList').dataTable({
+		 $('#newProjectsList').dataTable({
 				"bProcessing": true,
 				"bFilter": true,
 				"bLengthChange": false,
 				"iDisplayLength": 10,
 				"bInfo": false,
 				"sPaginationType": "full_numbers",
-				"aaData": prospects,
+				"aaData": newProjects,
 				"sDom": '<"top"i>rt<"bottom"flp><"clear">',
 				"aoColumns": [
-							  { "mData": "id"},
-							  { "mData": "clientTypeId" },
-							  { "mData": "corporateName" },
-							  { "mData": "city" },
-							  { "mData": "contactName" },
+							  { "mData": "projectNumber"},
+							  { "mData": "clientDescription" },
+							  { "mData": "created" },
+							  { "mData": "location" },
+							  { "mData": "statusDescription" },
 							  { "mData": null }
 						  ],
-				"aoColumnDefs" : [{"mRender" : function(data, type, row){return "<div align=center style='width:75px;'><a href=/ticketDetail?ticketId=" + row.DT_RowId + ">" + "Crear Cedula" + "</a></div>";}, "aTargets" : [5]}]}
+				"aoColumnDefs" : [{"mRender" : function(data, type, row){return "<div align=center style='width:75px;'><a href=/ticketDetail?ticketId=" + row.DT_RowId + ">" + "Enviar a autorización" + "</a></div>";}, "aTargets" : [5]}]}
 			);
 		 
-		 $('#clientList').dataTable({
+		 $('#authProjectsList').dataTable({
 				"bProcessing": true,
 				"bFilter": true,
 				"bLengthChange": false,
 				"iDisplayLength": 10,
 				"bInfo": false,
 				"sPaginationType": "full_numbers",
-				"aaData": clients,
+				"aaData": authProjects,
 				"sDom": '<"top"i>rt<"bottom"flp><"clear">',
 				"aoColumns": [
-							  { "mData": "id"},
-							  { "mData": "clientTypeId" },
-							  { "mData": "corporateName" },
-							  { "mData": "city" },
-							  { "mData": "contactName" },
-							  { "mData": null}
-							  
+							  { "mData": "projectNumber"},
+							  { "mData": "clientDescription" },
+							  { "mData": "created" },
+							  { "mData": "location" },
+							  { "mData": "statusDescription" },
+							  { "mData": null }
 						  ],
-				"aoColumnDefs" : [{"mRender" : function(data, type, row){return "<div align=center style='width:75px;'><a href=/ticketDetail?ticketId=" + row.DT_RowId + ">" + "Crear Cedula" + "</a></div>";}, "aTargets" : [5]}]}
+				"aoColumnDefs" : [{"mRender" : function(data, type, row){return "<div align=center style='width:75px;'><a href=/ticketDetail?ticketId=" + row.DT_RowId + ">" + "Crear cotización" + "</a></div>";}, "aTargets" : [5]}]}
 			);
+		 
+		 $('#cotProjectsList').dataTable({
+				"bProcessing": true,
+				"bFilter": true,
+				"bLengthChange": false,
+				"iDisplayLength": 10,
+				"bInfo": false,
+				"sPaginationType": "full_numbers",
+				"aaData": cotProjects,
+				"sDom": '<"top"i>rt<"bottom"flp><"clear">',
+				"aoColumns": [
+							  { "mData": "projectNumber"},
+							  { "mData": "clientDescription" },
+							  { "mData": "created" },
+							  { "mData": "location" },
+							  { "mData": "statusDescription" },
+							  { "mData": null }
+						  ],
+				"aoColumnDefs" : [{"mRender" : function(data, type, row){return "<div align=center style='width:75px;'><a href=/ticketDetail?ticketId=" + row.DT_RowId + ">" + "Crear pedido" + "</a></div>";}, "aTargets" : [5]}]}
+			);
+
 		
 	} );
 
@@ -80,17 +101,79 @@
 			<p>
 				<img src="/img/navigate-right.png"/><a href="${pageContext.request.contextPath}/codex/client/create.do" >Nuevo Prospecto</a>
 			</p>
+			<p>
+				<img src="/img/navigate-right.png"/><a href="${pageContext.request.contextPath}/codex/project/create.do" >Nueva cedula de proyectos</a>
+			</p>
 		</div>
 		
 		<div class="grid_16">
 
 			<div class="grid_16">
 		<div class="box">
-			<h2>Prospectos</h2>
+			<h2>C. de proyectos nuevas</h2>
 			<div class="utils">
 				
 			</div>
-			<table cellpadding="0" cellspacing="0" border="0" class="display" id="propectList">
+			<table cellpadding="0" cellspacing="0" border="0" class="display" id="newProjectsList">
+				<thead>
+					<tr>
+						<th>Proyecto</th>
+						<th>Cliente</th>
+						<th>Ultima Actividad</th>
+						<th>Ubicacion</th>
+						<th>Estatus</th>
+						<th>Accion</th>
+					</tr>
+				</thead>
+				<tbody>
+
+				</tbody>
+			</table>
+		</div>
+	</div>
+	
+	
+		</div>
+		
+		
+		<div class="grid_16">
+
+			<div class="grid_16">
+		<div class="box">
+			<h2>C. de proyectos autorizadas</h2>
+			<div class="utils">
+				
+			</div>
+			<table cellpadding="0" cellspacing="0" border="0" class="display" id="authProjectsList">
+				<thead>
+					<tr>
+						<th>Proyecto</th>
+						<th>Cliente</th>
+						<th>Ultima Actividad</th>
+						<th>Ubicacion</th>
+						<th>Estatus</th>
+						<th>Accion</th>
+					</tr>
+				</thead>
+				<tbody>
+
+				</tbody>
+			</table>
+		</div>
+	</div>
+	
+	
+		</div>
+		
+		<div class="grid_16">
+
+			<div class="grid_16">
+		<div class="box">
+			<h2>C. de proyectos en cotización</h2>
+			<div class="utils">
+				
+			</div>
+			<table cellpadding="0" cellspacing="0" border="0" class="display" id="cotProjectsList">
 				<thead>
 					<tr>
 						<th>Proyecto</th>

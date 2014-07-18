@@ -1,11 +1,18 @@
 package com.codex.web.controller;
 
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.SessionAttributes;
 
+import com.blackstar.common.Globals;
+import com.blackstar.web.AbstractController;
 import com.codex.service.impl.DashboardServiceImpl;
 
-public class DashboardController {
+@Controller
+@RequestMapping("/codex/dashboard")
+@SessionAttributes({ Globals.SESSION_KEY_PARAM })
+public class DashboardController extends AbstractController{
 	
   private DashboardServiceImpl service;
 	

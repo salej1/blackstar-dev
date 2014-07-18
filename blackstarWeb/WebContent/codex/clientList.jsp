@@ -43,7 +43,7 @@
 							  { "mData": "contactName" },
 							  { "mData": null }
 						  ],
-				"aoColumnDefs" : [{"mRender" : function(data, type, row){return "<div align=center style='width:75px;'><a href=/ticketDetail?ticketId=" + row.DT_RowId + ">" + "Crear Cedula" + "</a></div>";}, "aTargets" : [5]}]}
+				"aoColumnDefs" : [{"mRender" : function(data, type, row){return "<div align=center style='width:75px;'><a href=${pageContext.request.contextPath}/codex/project/create.do?clientId=" + row.id + ">" + "Crear Cedula" + "</a></div>";}, "aTargets" : [5]}]}
 			);
 		 
 		 $('#clientList').dataTable({

@@ -70,4 +70,9 @@ public class ClientServiceImpl extends AbstractService
 	return dao.getAllClients();
   }
   
+  @Override
+  public ClientVO getClientById(Integer clientId){
+	return dao.getClientById(clientId);
+  }
+  
 }

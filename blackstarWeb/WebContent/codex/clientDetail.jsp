@@ -3,7 +3,7 @@
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ page isELIgnored="false"%>
 <!DOCTYPE html>
-<c:set var="pageSection" scope="request" value="clientDetail" />
+<c:set var="pageSection" scope="request" value="clientes" />
 <c:import url="../header.jsp"></c:import>
 <html>
 	<head>
@@ -159,7 +159,7 @@
 								<td><form:select name="" id="state" path="state">
 								            <option value="">Seleccione</option>
 											<c:forEach var="ss" items="${states}">
-												<option value="ss.state"
+												<option value="${ss.state}"
 												<c:if test="${ss.state == client.state}">
 													selected="true"
 												</c:if>
