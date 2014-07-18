@@ -191,5 +191,32 @@ public class ProjectServiceImpl extends AbstractService
   public List<DeliverableVO> getDeliverables(Integer projectId){
 	 return dao.getDeliverables(projectId);
   }
+  
+  @Override
+  public void advanceStatus(ProjectVO project){
+	switch(project.getStatusId()){
+	  case 1: gotoByAuthStatus(project);
+	          break;
+	  case 2: gotoAuthStatus(project);
+              break;      
+	}
+  }
+  
+  private void gotoByAuthStatus(ProjectVO project){
+	StringBuilder message = new StringBuilder();
+	
+	IEmailService mail = EmailServiceFactory.getEmailService();
+	dao.advanceStatus(project.getId());
+//	User to = dao.getManagerForProject(project.getId());
+//	message.append(String.format("Proyecto pendiente de Autorización: ", project.getProjectNumber()));
+//	message.append(String.format("\r\n\r\n Estatus: %s", project.getStatusDescription()));
+//	message.append(String.format("\r\n\r\n Cliente: %s", project.getClientDescription()));
+//	message.append(String.format("\r\n\r\n"));
+//	mail.sendEmail("portal-servicios@gposac.com.mx", to.getUserEmail(), "Proyecto pendiente de Autorización " + project.getProjectNumber(), message.toString());
+  }
+  
+  private void gotoAuthStatus(ProjectVO project){
+	  dao.advanceStatus(project.getId());
+  }
 
 }

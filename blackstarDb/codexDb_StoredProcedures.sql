@@ -537,6 +537,18 @@ BEGIN
 END$$  
 
 -- -----------------------------------------------------------------------------
+	-- blackstarDb.CodexAdvanceStatus
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstardb.CodexAdvanceStatus$$
+CREATE PROCEDURE blackstardb.`CodexAdvanceStatus`(pProjectId int(11))
+BEGIN
+
+  DECLARE status INTEGER;
+  SET status = (SELECT cp.statusId FROM codexProject cp WHERE cp._id =  pProjectId);
+  UPDATE codexProject SET statusId = (status + 1) WHERE _id = pProjectId;
+END$$
+
+-- -----------------------------------------------------------------------------
 	-- FIN DE LOS STORED PROCEDURES
 -- -----------------------------------------------------------------------------
 DELIMITER ;

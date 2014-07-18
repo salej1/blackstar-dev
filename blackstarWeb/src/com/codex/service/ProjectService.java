@@ -2,8 +2,6 @@ package com.codex.service;
 
 import java.util.List;
 
-import org.json.JSONObject;
-
 import com.blackstar.model.Followup;
 import com.blackstar.model.User;
 import com.codex.vo.CurrencyTypesVO;
@@ -41,5 +39,6 @@ public interface ProjectService {
   public String getAllProjectsJson();
   public ProjectVO getProjectDetail(Integer projectId);
   public List<DeliverableVO> getDeliverables(Integer projectId);
+  public void advanceStatus(ProjectVO project);
   
 }

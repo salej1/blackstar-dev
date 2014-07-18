@@ -45,7 +45,17 @@
 					    });
 					}}
 			});
+			setButtonStatusText();
 	    });
+	    
+	    function setButtonStatusText(){
+	      var projectStatus = '${project.statusId}';
+		  if(projectStatus == '1'){
+		  	$("#statusButton").html("Enviar a Autorización");
+		  } else if(projectStatus == '2'){
+		  	$("#statusButton").html("Autorizar");
+		  }
+	    }
 	    
 	    function addEntry(){
 	    	entryNumber++;
@@ -139,6 +149,11 @@
 	    	}
 	    }
 	    
+	    function advanceStatus(){
+	      $('#mainForm').attr('action', '/codex/project/advanceStatus.do?projectId=' +  $("#projectId").val());
+	      $("#mainForm").submit();
+	    }
+	    
 	</script>
 	
 <!--   CONTENT   -->
@@ -152,7 +167,7 @@
 							<p></p>							
 							<c:if test="${enableEdition}">
 							  <button class="searchButton" onclick="window.location = 'intTicketDetail_new.html'">Agregar Req. Gral.</button>
-							  <button class="searchButton" onclick="window.location = projectDetailAut.html">Autorizar</button>
+							  <button id="statusButton" class="searchButton" onclick="advanceStatus()"></button>
 							</c:if>
 							<c:if test="${not enableEdition}">
 							   <button class="searchButton" onclick="commit();">Guardar</button>
@@ -272,7 +287,7 @@
 						   </table>
 						   <form:input type="hidden" path="strEntries"/>
 						   <form:input type="hidden" path="statusId"/>
-						   <form:input type="hidden" path="id"/>
+						   <form:input type="hidden" path="id" id="projectId"/>
                        </form:form>
 						
 <!--   ~ ENCABEZADO CEDULA   -->

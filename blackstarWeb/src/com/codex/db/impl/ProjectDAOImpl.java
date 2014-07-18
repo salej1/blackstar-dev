@@ -9,6 +9,7 @@ import com.blackstar.db.dao.mapper.JSONRowMapper;
 import com.blackstar.model.Followup;
 import com.blackstar.model.User;
 import com.codex.db.ProjectDAO;
+import com.codex.vo.ClientVO;
 import com.codex.vo.CurrencyTypesVO;
 import com.codex.vo.DeliverableTypesVO;
 import com.codex.vo.DeliverableVO;
@@ -207,6 +208,19 @@ public class ProjectDAOImpl extends AbstractDAO
 	String sqlQuery = "CALL CodexGetItemsByEntry(?)";
 	return (List<ProjectEntryItemVO>) getJdbcTemplate().query(sqlQuery
 			   , new Object[]{entryId}, getMapperFor(ProjectEntryItemVO.class));
+  }
+  
+  @Override
+  public void advanceStatus(Integer projectId){
+	String sqlQuery = "CALL CodexAdvanceStatus(?)";
+	getJdbcTemplate().update(sqlQuery, new Object[]{projectId});
+  }
+  
+  @Override
+  public User getManagerForProject(Integer projectId){
+	String sqlQuery = "CALL CodexGetManagerForProject(?)";
+    return (User) getJdbcTemplate().queryForObject(sqlQuery
+            , getMapperFor(User.class), new Object[]{projectId});
   }
 
 }

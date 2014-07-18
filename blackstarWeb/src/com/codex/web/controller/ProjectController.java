@@ -181,5 +181,19 @@ public class ProjectController extends AbstractController {
 	}
     return showList(model);
   }
+  
+  @RequestMapping(value = "/advanceStatus.do") 
+  public String advanceStatus(ModelMap model,  @RequestParam(required = true) Integer projectId){
+	  ProjectVO project = null;
+	  try {
+		    project = service.getProjectDetail(projectId);
+	        service.advanceStatus(project);
+	  } catch (Exception e) {
+			e.printStackTrace();
+			model.addAttribute("errorDetails", e.getStackTrace()[0].toString());
+			return "error";
+	}
+	return showList(model);
+  }
 	
 }
