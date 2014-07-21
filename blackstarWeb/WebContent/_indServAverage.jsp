@@ -55,6 +55,7 @@
 			"aaData": generalData,
 			"sDom": '<"top"i>rt<"bottom"><"clear">',
 			"aaSorting": [],
+			"bPaginate":false,
 			"aoColumns": [
 						  { "mData": "office"},
 						  { "mData": "services"},
@@ -70,6 +71,7 @@
 			"aaData": userData,
 			"sDom": '<"top"i>rt<"bottom"><"clear">',
 			"aaSorting": [],
+			"bPaginate":false,
 			"aoColumns": [
 						  { "mData": "name"},
 						  { "mData": "average"},

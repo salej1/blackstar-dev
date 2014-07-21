@@ -28,6 +28,7 @@
 					"aoColumns": [
 							  { "mData": "serviceOrderNumber" },
 							  { "mData": "placeHolder" },
+							  { "mData": "placeHolder" },
 							  { "mData": "ticketNumber" },
 							  { "mData": "serviceType" },
 							  { "mData": "serviceDate" },
@@ -51,7 +52,16 @@
 									  			return "&nbsp";
 									  		}
 									  	}, "aTargets" : [1]},
-									  {"mRender" : function(data, type, row){return "<div align='center'><a href='${pageContext.request.contextPath}/ticketDetail?ticketNumber=" + data + "'>" + data + "</a></div>";}, "aTargets" : [2]}	    		    	       
+									  	{"mRender" : function(data, type, row){
+									  		if(row.surveyServiceId != ""){
+									  			return "<a href='/surveyServiceDetail/show.do?operation=2&idObject=" + row.surveyServiceId + "'><img src='${pageContext.request.contextPath}/img/survey.png'</a>" ;									  			
+									  		}
+									  		else
+									  		{
+									  			return "&nbsp";
+									  		}
+									  	}, "aTargets" : [2]},
+									  {"mRender" : function(data, type, row){return "<div align='center'><a href='${pageContext.request.contextPath}/ticketDetail?ticketNumber=" + data + "'>" + data + "</a></div>";}, "aTargets" : [3]}	    		    	       
 									   ]}
 			);
 		});
@@ -72,6 +82,7 @@
 				<thead>
 					<tr>
 						<th style="width:50px">Folio</th>
+						<th style="width:10px"></th>
 						<th style="width:10px"></th>
 						<th style="width:70px">Ticket</th>
 						<th>Tipo</th>

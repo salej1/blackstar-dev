@@ -3,6 +3,7 @@ package com.blackstar.web.controller;
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -75,7 +76,7 @@ public class ScheduleStatusController extends AbstractController{
 	}
 	
 	private void printDates(ModelMap model){
-		DateFormat dateFormatter = DateFormat.getDateInstance(DateFormat.FULL);
+		DateFormat dateFormatter = DateFormat.getDateInstance(DateFormat.FULL, new Locale("es", "ES"));
 		Calendar cal = Calendar.getInstance();
 		
 		Date today = new Date();

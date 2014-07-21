@@ -77,13 +77,16 @@ public class ServiceIndicatorsController extends AbstractController {
   public String  getPolicies( @RequestParam(required = true) Date startDate,
 		  @RequestParam(required = true) Date endDate,
 		  @RequestParam(required = true) String project,
+		  @RequestParam(required = true) String param,
 		  ModelMap model, @ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession){
+	  Integer includeRenewed = (param != null && param.equals("1")?1:0);
+	  
 	try {
 		if(userSession.getUser().getBelongsToGroup().get(Globals.GROUP_CUSTOMER) != null && userSession.getUser().getBelongsToGroup().get(Globals.GROUP_CUSTOMER) == true){
-	    	model.addAttribute("policies", service.getPolicies("", project, startDate, endDate, userSession.getUser().getUserEmail()));
+	    	model.addAttribute("policies", service.getPolicies("", project, startDate, endDate, userSession.getUser().getUserEmail(), includeRenewed));
 		}
 	     else{
-	    	model.addAttribute("policies", service.getPolicies("", project, startDate, endDate, ""));
+	    	model.addAttribute("policies", service.getPolicies("", project, startDate, endDate, "", includeRenewed));
 	    }
 	} catch (Exception e) {
 		Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);

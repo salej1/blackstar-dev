@@ -227,6 +227,8 @@
 									<td>
 										<form:hidden path="ticketId" />
 										<form:hidden path="hasPdf" />
+										<form:hidden path="requestedBy" />
+										<form:hidden path="finalUser" />
 										<select class="lockOnDetail lockForEng" id="ticketList">
 											<option value="">NA</option>
 											<c:forEach var="ticket" items="${ticketList}">
@@ -250,7 +252,7 @@
 								</tr>
 								<tr>
 									<td>Solicitante</td>
-									<td><form:textarea cssClass="lockOnDetail" path="finalUser" style="width:95%;height:50px;" required="true"></form:textarea></td>
+									<td><form:textarea cssClass="lockOnDetail" path="requestedBy" style="width:95%;height:50px;" required="true"></form:textarea></td>
 									<td>Teléfono</td>
 									<td><form:input type="text" cssClass="lockOnDetail lockOnPolicy" path="contactPhone" style="width:95%;"  required="true"/></td>
 								</tr>

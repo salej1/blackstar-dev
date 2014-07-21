@@ -85,6 +85,8 @@ public class PlainServiceController extends AbstractController {
 	  				  Policy policy = this.daoFactory.getPolicyDAO().getPolicyById(ticket.getPolicyId());
 	  				  Equipmenttype equipType = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
 	  				  plainServicePolicyDTO = new PlainServicePolicyDTO(policy, equipType.getEquipmentType());
+	  				  plainServicePolicyDTO.setRequestedBy(ticket.getContact());
+	  				  plainServicePolicyDTO.setFinalUser(ticket.getContact());
 	  				  plainServicePolicyDTO.setServiceOrderNumber(service.getNewServiceNumber());  
 	  				  plainServicePolicyDTO.setServiceStatusId("N");
 	  				  plainServicePolicyDTO.setServiceTypeId("C");
@@ -116,7 +118,11 @@ public class PlainServiceController extends AbstractController {
 		  				  plainServicePolicyDTO = new PlainServicePolicyDTO(oc, serviceOrder, plainServiceDTO);
 		  				  model.addAttribute("hasPolicy", false);
 		  			  }
-	  				  
+	  				  // seleccion del solicitante
+		  			  if(serviceOrder.getTicketId() != null && serviceOrder.getTicketId() > 0){
+		  				  Ticket ticket = daoFactory.getTicketDAO().getTicketById(serviceOrder.getTicketId());
+		  				  plainServicePolicyDTO.setRequestedBy(ticket.getContact());
+		  			  }
 	  				  model.addAttribute("serviceOrder", plainServicePolicyDTO);
 	  				  model.addAttribute("followUps", service.getFollows(idOrderService));
 	  				  model.addAttribute("mode", "detail");
@@ -324,6 +330,12 @@ public class PlainServiceController extends AbstractController {
 	    }
 	    
 	    private void sendNotification(String to, byte [] report){
+	    	// copia a call center
+	    	List<EmployeeDTO> callCtr = udService.getStaff(Globals.GROUP_CALL_CENTER);
+	    	for(EmployeeDTO usr : callCtr){
+	    		to = to + "," + usr.getEmail();
+	    	}
+	    	//
 	    	gmService.sendEmail(to, "Orden de Servicio", "Orden de Servicio", "ServiceOrder.pdf", report);
 	    }
 	    

@@ -26,7 +26,7 @@
 			</div>
 			<p><small>&nbsp;</small></p>
 <!-- Inicia Contenido De Perfil Coordinadoras e Ingenieros de Servicio-->
-			<c:set var="captOsLinks" scope="request" value="${user.belongsToGroup['Coordinador'] || user.belongsToGroup['Implementacion y Servicio']}" />
+			<c:set var="captOsLinks" scope="request" value="${user.belongsToGroup['Coordinador'] || user.belongsToGroup['Implementacion y Servicio'] || user.belongsToGroup['Call Center']}" />
 			<c:if test="${captOsLinks == true}">
 
 <!-- Links Para Crear Ordenes De Servicio -->

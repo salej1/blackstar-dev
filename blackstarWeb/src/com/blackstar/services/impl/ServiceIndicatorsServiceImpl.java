@@ -70,6 +70,8 @@ implements ServiceIndicatorsService {
 			put("contact", "");
 			put("contactEmail", "");
 			put("contactPhone", "");
+			put("solutionTime", "");
+			put("solutionTimeDeviationHr", "");
 		}};
 		for(int i = 0; i < jsonData.size();i++){
 			month = jsonData.get(i).get("created").toString().substring(5,7);
@@ -82,8 +84,8 @@ implements ServiceIndicatorsService {
 		return jsonData != null ? jsonData.toString() : "";
 	}
 
-	public String getPolicies(String search, String project, Date startDate, Date endDate, String user) throws Exception{
-		List<JSONObject> jsonData = dao.getPolicies(search, project, startDate, endDate, user);
+	public String getPolicies(String search, String project, Date startDate, Date endDate, String user, Integer includeRenewed) throws Exception{
+		List<JSONObject> jsonData = dao.getPolicies(search, project, startDate, endDate, user, includeRenewed);
 		return jsonData != null ? jsonData.toString() : "";
 	}
 

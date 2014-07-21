@@ -36,6 +36,8 @@
 						 { "mData": "contact" },
 						 { "mData": "contactEmail" },
 						 { "mData": "contactPhone" },
+						 { "mData": "solutionTime" },
+						 { "mData": "solutionTimeDeviationHr" },
 						 { "mData": "ticketStatus"}
 
 					 ],
@@ -48,7 +50,7 @@
 						 }else if(aData["ticketStatus"] == 'RETRASADO' ){
 							 backcolor = "#F0C0C0";
 						 }
-					     $('td:eq(15)', nRow).css('background', backcolor).css('font-weight', 'bold');
+					     $('td:eq(17)', nRow).css('background', backcolor).css('font-weight', 'bold');
 					     if( aData["ticketNumber"].indexOf("lbl-") == 0){
 					   	  $('td:eq(0)', nRow).html(aData["ticketNumber"]
 					   	       .substring(4, aData["ticketNumber"].length));
@@ -96,7 +98,9 @@
 						<th>Ingeniero que atendió</th>
 						<th>Contacto</th>
 						<th>Email Contacto</th>
-						<th>Telefono Contacto</th>
+						<th>Teléfono Contacto</th>
+						<th>Tiempo solución</th>
+						<th>Desv. Tiempo solución</th>
 						<th>Estatus</th>
 					</tr>
 				</thead>

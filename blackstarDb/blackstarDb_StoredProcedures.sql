@@ -36,6 +36,9 @@
 --								blackstarDb.GetUserWatchingIssues
 --								blackstarDb.GetAutoCompleteServiceOrdersByDate
 -- -----------------------------------------------------------------------------
+-- 51	18/07/2014	SAG 	Se modifica:
+--								blackstarDb.GetPoliciesKPI
+-- -----------------------------------------------------------------------------
 
 use blackstarDb;
 
@@ -1704,8 +1707,25 @@ END$$
 	-- blackstarDb.GetPoliciesKPI
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetPoliciesKPI$$
-CREATE PROCEDURE blackstarDb.`GetPoliciesKPI`(search VARCHAR(100), pProject VARCHAR(100), pStartDate DATETIME, pEndDate DATETIME, pUser VARCHAR(100))
+CREATE PROCEDURE blackstarDb.`GetPoliciesKPI`(search VARCHAR(100), pProject VARCHAR(100), pStartDate DATETIME, pEndDate DATETIME, pUser VARCHAR(100), includeRenewed INTEGER)
 BEGIN
+	CREATE TEMPORARY TABLE policiesKpi(policyId INTEGER, serialNumber VARCHAR(400), equipmentTypeId CHAR(1), brand VARCHAR(400), model VARCHAR(400));
+
+	IF includeRenewed = 1 THEN
+		INSERT INTO policiesKpi(policyId, serialNumber, equipmentTypeId, brand, model)
+		SELECT policyId, serialNumber, equipmentTypeId, brand, model FROM policy;
+	ELSE
+		INSERT INTO policiesKpi(policyId, serialNumber, equipmentTypeId, brand, model)
+		SELECT p1.policyId, p1.serialNumber, p1.equipmentTypeId, p1.brand, p1.model
+		FROM policy p1 
+			LEFT OUTER JOIN policy p2 ON p1.serialNumber = p1.serialNumber 
+				AND p1.equipmentTypeId = p2.equipmentTypeId
+				AND p1.brand = p2.brand
+				AND p1.model = p2.model
+				AND p2.endDate > p1.endDate
+		WHERE p2.policyId IS NULL;
+	END IF;
+
 	IF pProject = 'ALL' THEN
 		IF pUser = '' THEN
 			SELECT py.policyId as policyId,
@@ -1740,6 +1760,7 @@ BEGIN
 			INNER JOIN office of ON py.officeId = of.officeId
 			INNER JOIN equipmentType eq ON eq.equipmentTypeId = py.equipmentTypeId
 			INNER JOIN serviceCenter sc ON py.serviceCenterId = sc.serviceCenterId
+			INNER JOIN policiesKpi pk ON pk.policyId = py.policyId
 			WHERE py.endDate >= DATE_ADD(pStartDate, INTERVAL -2 MONTH) AND py.startDate < pEndDate
 				AND (of.officeName LIKE CONCAT('%', search, '%') OR
 				py.customerContract LIKE CONCAT('%', search, '%') OR
@@ -1784,6 +1805,7 @@ BEGIN
 			INNER JOIN office of ON py.officeId = of.officeId
 			INNER JOIN equipmentType eq ON eq.equipmentTypeId = py.equipmentTypeId
 			INNER JOIN serviceCenter sc ON py.serviceCenterId = sc.serviceCenterId
+			INNER JOIN policiesKpi pk ON pk.policyId = py.policyId
 			WHERE py.endDate >= DATE_ADD(pStartDate, INTERVAL -2 MONTH) AND py.startDate < pEndDate
 				AND (of.officeName LIKE CONCAT('%', search, '%') OR
 				py.customerContract LIKE CONCAT('%', search, '%') OR
@@ -1832,6 +1854,7 @@ BEGIN
 			INNER JOIN office of ON py.officeId = of.officeId
 			INNER JOIN equipmentType eq ON eq.equipmentTypeId = py.equipmentTypeId
 			INNER JOIN serviceCenter sc ON py.serviceCenterId = sc.serviceCenterId
+			INNER JOIN policiesKpi pk ON pk.policyId = py.policyId
 			WHERE py.endDate >= DATE_ADD(pStartDate, INTERVAL -2 MONTH) AND py.startDate < pEndDate
 			AND (of.officeName LIKE CONCAT('%', search, '%') OR
 				py.customerContract LIKE CONCAT('%', search, '%') OR
@@ -1877,6 +1900,7 @@ BEGIN
 			INNER JOIN office of ON py.officeId = of.officeId
 			INNER JOIN equipmentType eq ON eq.equipmentTypeId = py.equipmentTypeId
 			INNER JOIN serviceCenter sc ON py.serviceCenterId = sc.serviceCenterId
+			INNER JOIN policiesKpi pk ON pk.policyId = py.policyId
 			WHERE py.endDate >= DATE_ADD(pStartDate, INTERVAL -2 MONTH) AND py.startDate < pEndDate
 			AND (of.officeName LIKE CONCAT('%', search, '%') OR
 				py.customerContract LIKE CONCAT('%', search, '%') OR
@@ -1893,6 +1917,8 @@ BEGIN
 		END IF;
 		
 	END IF;
+
+	DROP TEMPORARY TABLE policiesKpi;
 END$$
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetTicketsKPI
@@ -1927,7 +1953,9 @@ BEGIN
 			IFNULL(tk.closed, '') AS closed,
 			tk.contact AS contact,
 			tk.contactEmail AS contactEmail,
-			tk.contactPhone AS contactPhone
+			tk.contactPhone AS contactPhone,
+			IFNULL(tk.solutionTime, '') AS solutionTime,
+			IF(tk.solutionTimeDeviationHr < 0, 0, IFNULL(tk.solutionTimeDeviationHr, ''))  AS solutionTimeDeviationHr
 			FROM ticket tk
 			INNER JOIN ticketStatus ts ON tk.ticketStatusId = ts.ticketStatusId
 			INNER JOIN policy p ON tk.policyId = p.policyId
@@ -1962,7 +1990,9 @@ BEGIN
 			IFNULL(tk.closed, '') AS closed,
 			tk.contact AS contact,
 			tk.contactEmail AS contactEmail,
-			tk.contactPhone AS contactPhone
+			tk.contactPhone AS contactPhone,
+			IFNULL(tk.solutionTime, '') AS solutionTime,
+			IF(tk.solutionTimeDeviationHr < 0, 0, IFNULL(tk.solutionTimeDeviationHr, ''))  AS solutionTimeDeviationHr
 			FROM ticket tk
 			INNER JOIN ticketStatus ts ON tk.ticketStatusId = ts.ticketStatusId
 			INNER JOIN policy p ON tk.policyId = p.policyId
@@ -2000,7 +2030,9 @@ BEGIN
 			IFNULL(tk.closed, '') AS closed,
 			tk.contact AS contact,
 			tk.contactEmail AS contactEmail,
-			tk.contactPhone AS contactPhone
+			tk.contactPhone AS contactPhone,
+			IFNULL(tk.solutionTime, '') AS solutionTime,
+			IF(tk.solutionTimeDeviationHr < 0, 0, IFNULL(tk.solutionTimeDeviationHr, ''))  AS solutionTimeDeviationHr
 			FROM ticket tk
 			INNER JOIN ticketStatus ts ON tk.ticketStatusId = ts.ticketStatusId
 			INNER JOIN policy p ON tk.policyId = p.policyId
@@ -2036,7 +2068,9 @@ BEGIN
 			IFNULL(tk.closed, '') AS closed,
 			tk.contact AS contact,
 			tk.contactEmail AS contactEmail,
-			tk.contactPhone AS contactPhone
+			tk.contactPhone AS contactPhone,
+			IFNULL(tk.solutionTime, '') AS solutionTime,
+			IF(tk.solutionTimeDeviationHr < 0, 0, IFNULL(tk.solutionTimeDeviationHr, ''))  AS solutionTimeDeviationHr
 			FROM ticket tk
 			INNER JOIN ticketStatus ts ON tk.ticketStatusId = ts.ticketStatusId
 			INNER JOIN policy p ON tk.policyId = p.policyId
@@ -2205,7 +2239,8 @@ BEGIN
 			p.serialNumber AS serialNumber,
 			ss.serviceStatus AS serviceStatus,
 			so.hasPdf AS hasPdf,
-			sc.serviceCenter AS serviceCenter
+			IFNULL(sc.serviceCenter, '') AS serviceCenter,
+			IFNULL(so.surveyServiceId, '') AS surveyServiceId
 		FROM serviceOrder so 
 			INNER JOIN serviceType st ON so.servicetypeId = st.servicetypeId
 			INNER JOIN serviceStatus ss ON so.serviceStatusId = ss.serviceStatusId
@@ -2230,7 +2265,8 @@ BEGIN
 			oc.serialNumber AS serialNumber,
 			ss.serviceStatus AS serviceStatus,
 			so.hasPdf AS hasPdf,
-			o.officeName AS serviceCenter
+			IFNULL(o.officeName, '') AS serviceCenter,
+			IFNULL(so.surveyServiceId, '') AS surveyServiceId
 		FROM serviceOrder so 
 			INNER JOIN serviceType st ON so.servicetypeId = st.servicetypeId
 			INNER JOIN serviceStatus ss ON so.serviceStatusId = ss.serviceStatusId
@@ -3158,7 +3194,7 @@ BEGIN
 		p.serialNumber AS serialNumber,
 		ss.serviceStatus AS serviceStatus,
 		so.hasPdf AS hasPdf,
-		sc.serviceCenter AS serviceCenter
+		IFNULL(sc.serviceCenter, '') AS serviceCenter
 	FROM serviceOrder so 
 		INNER JOIN serviceType st ON so.servicetypeId = st.servicetypeId
 		INNER JOIN serviceStatus ss ON so.serviceStatusId = ss.serviceStatusId

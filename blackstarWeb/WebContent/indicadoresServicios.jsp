@@ -61,12 +61,19 @@
 			});
 
 			 function go(indAction, mode){
+			 	// Indicador para incluir o no polizas ya renovadas
+			 	var param = "0";
+			 	if(indAction == 'getPolicies'){
+			 		if($('#includeRenewedPolicies').prop('checked') ){
+			 			param = 1;
+			 		}
+			 	}
 			 	if(typeof(mode) != undefined && mode == 'display'){
 			 		window.open("${pageContext.request.contextPath}/indServicios/" + indAction + ".do?project=" + project + "&startDate=" + encodeURIComponent(startDateStr) + "&endDate=" + encodeURIComponent(endDateStr));
 			 	}
 			 	else{
 			 		 $("a[href*=#]").css({ "color": "#888", "text-decoration":"underline"});
-		    		 $("#indicatorDetail").load("${pageContext.request.contextPath}/indServicios/" + indAction + ".do?project=" + project + "&startDate=" + encodeURIComponent(startDateStr) + "&endDate=" + encodeURIComponent(endDateStr), function() {
+		    		 $("#indicatorDetail").load("${pageContext.request.contextPath}/indServicios/" + indAction + ".do?project=" + project + "&startDate=" + encodeURIComponent(startDateStr) + "&endDate=" + encodeURIComponent(endDateStr) + "&param=" + param, function() {
 		    		  $("#" + indAction).css({ "color": "#800080", "text-decoration":"none"});
 		    	  });
 			 	}
@@ -159,6 +166,7 @@
 						</div> -->
 						<div>
 							<img src="/img/navigate-right.png"/><a href="#" id="getPolicies" onclick="go('getPolicies');">Concentrado polizas</a>
+							<input type="checkbox" name="includeRenewedPolicies">Incluir renovadas</input>
 						</div>
 						<c:if test="${user.belongsToGroup['Call Center']}">
 							<div>

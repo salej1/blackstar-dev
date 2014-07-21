@@ -25,7 +25,7 @@
 <!-- FIN - Seccion de links que permiten crear nueva orden de servicio : INGENIEROS DE SERVICIO -->
 
 <!-- Seccion de links que permiten crear nueva orden de servicio : COORDINADOR -->
-<c:set var="sysCoordinador" scope="request" value="${user.belongsToGroup['Coordinador']}" />
+<c:set var="sysCoordinador" scope="request" value="${user.belongsToGroup['Coordinador'] || user.belongsToGroup['Call Center']}" />
 <c:if test="${sysCoordinador == true}">
 	<div>
 		<div>

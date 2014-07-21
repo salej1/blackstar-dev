@@ -29,7 +29,7 @@ public class PlainServicePolicyDTO {
 		this.contactPhone = customer.getPhone();
 		this.officeId = customer.getOfficeId();
 		this.project = customer.getProject();
-		
+		this.requestedBy = customer.getContactEmail();
 	}
 	
 	public PlainServicePolicyDTO(OpenCustomer customer, Serviceorder serviceOrder, PlainServiceDTO plainServiceDTO)
@@ -48,6 +48,7 @@ public class PlainServicePolicyDTO {
 		this.contactPhone = customer.getPhone();
 		this.officeId = customer.getOfficeId();
 		this.project = customer.getProject();
+		this.requestedBy = customer.getContactEmail();
 		
 		this.serviceOrderId = serviceOrder.getServiceOrderId();
 		this.ticketId = serviceOrder.getTicketId();
@@ -107,6 +108,7 @@ public class PlainServicePolicyDTO {
 		this.contactName = policy.getContactName();
 		this.contactPhone = policy.getContactPhone();
 		this.project = policy.getProject();
+		this.requestedBy = policy.getContactName();
 	}
 	
 
@@ -127,6 +129,7 @@ public class PlainServicePolicyDTO {
 		this.contactName = policy.getContactName();
 		this.contactPhone = policy.getContactPhone();
 		this.project = policy.getProject();
+		this.requestedBy = policy.getContactName();
 		
 		this.serviceOrderId = serviceOrder.getServiceOrderId();
 		this.ticketId = serviceOrder.getTicketId();
@@ -174,6 +177,7 @@ public class PlainServicePolicyDTO {
 		this.contactName = policy.getContactName();
 		this.contactPhone = policy.getContactPhone();
 		this.project = policy.getProject();
+		this.requestedBy = policy.getContactName();
 		
 		this.serviceOrderId = serviceOrder.getServiceOrderId();
 		this.ticketId = serviceOrder.getTicketId();
@@ -231,6 +235,7 @@ public class PlainServicePolicyDTO {
 	private String officeId;
 	private String contactName;
 	private String contactPhone;
+	private String requestedBy;
 
 	private Integer serviceOrderId;
 	private Integer ticketId;
@@ -641,5 +646,15 @@ public class PlainServicePolicyDTO {
 
 	public void setSurveyServiceId(Integer surveyServiceId) {
 		this.surveyServiceId = surveyServiceId;
+	}
+
+
+	public String getRequestedBy() {
+		return requestedBy;
+	}
+
+
+	public void setRequestedBy(String requestedBy) {
+		this.requestedBy = requestedBy;
 	}
 }

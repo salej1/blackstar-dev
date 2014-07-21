@@ -180,54 +180,21 @@ private static void SendTicketAssignationEmail(int ticketId, String asignee, Str
 	if(myTicket != null){
 		
 		ticketNum = myTicket.getTicketNumber();
-		
-		
-		int policyId = myTicket.getPolicyId();
-		
-		if(policyId > 0)
-		{
-			Policy tickPolicy;
-			tickPolicy = daoFactory.getPolicyDAO().getPolicyById(policyId);
+
+		try {
 			
-			if(tickPolicy != null){
-				char officeId = tickPolicy.getOfficeId();
-				
-				
-				try {
-					Office off = null;
-					// Office email
-					if((int)officeId > 0){
-						off = daoFactory.getOfficeDAO().getOfficeById(officeId);
-						officeMail = off.getOfficeEmail();
-					}
-					
-					char ssId = tickPolicy.getServiceCenterId();
-					// Service center email
-					Servicecenter ss = null;
-					if(ssId > 0){
-						ss = daoFactory.getServiceCenterDAO().getServiceCenterById(ssId);
-						ssMail = ss.getServiceCenterEmail();
-					}
-					
-					sdf.setTimeZone(TimeZone.getTimeZone(Globals.DEFAULT_TIME_ZONE));
-					timestamp = sdf.format(new Date());
-					
-					// Enviar el email
-					if(ssMail != null && ssMail.length() > 0){
-						asignee = asignee + ", " + ssMail;
-					}
-					if(officeMail != null && officeMail.length() > 0){
-						asignee = asignee + ", " + officeMail;
-					}
-					if(message != null && message.length() > 0){
-						comment = message;
-					}
-					SendAssignationEmail(asignee, who, who, timestamp, comment, "T", myTicket.getTicketId(), ticketNum);
-							
-				} catch (Exception e) {
-					Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
-				}
+			sdf.setTimeZone(TimeZone.getTimeZone(Globals.DEFAULT_TIME_ZONE));
+			timestamp = sdf.format(new Date());
+			
+			// Enviar el email
+			
+			if(message != null && message.length() > 0){
+				comment = message;
 			}
+			SendAssignationEmail(asignee, who, who, timestamp, comment, "T", myTicket.getTicketId(), ticketNum);
+					
+		} catch (Exception e) {
+			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 		}
 	}
 }

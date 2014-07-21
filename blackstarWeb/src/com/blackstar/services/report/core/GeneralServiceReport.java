@@ -29,7 +29,7 @@ public class GeneralServiceReport extends AbstractReport {
 	drawer.text("CLIENTE: " , 5, 98, false);
 	drawer.text(data.getCustomer(), 43, 98, true);
 	drawer.text("No. DE TICKET: " , 375, 98, false);
-	drawer.text(data.getTicketId(), 438, 98, true);
+	drawer.text(data.getTicketNumber(), 438, 98, true);
 	drawer.hLine(0, 555, 102);
 	drawer.text("DOMICILIO : ", 5, 113, false);
 	drawer.text(trimAddress(data.getEquipmentAddress()), 55, 113, true);
@@ -37,7 +37,7 @@ public class GeneralServiceReport extends AbstractReport {
 	drawer.text(format(data.getServiceDate()), 438, 113, true);
 	drawer.hLine(0, 555, 117);
 	drawer.text("SOLICITANTE : ", 5, 128, false);
-	drawer.text(data.getContactName(), 64, 128, true);
+	drawer.text(data.getRequestedBy(), 64, 128, true);
 	drawer.text("TELÉFONO : ", 387, 128, false);
 	drawer.text(data.getContactPhone(), 438, 128, true);
 	drawer.hLine(0, 555, 132);

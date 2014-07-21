@@ -1,7 +1,7 @@
 function convertToLink(referenceType, reference){
 	var link = "";
 
-	if(reference != null && reference != ""){
+	if(reference != null && reference != "" && reference != "NA" && reference != "N/A" && reference != "N A"){
 		reference = reference.trim();
 
 		switch(referenceType){
