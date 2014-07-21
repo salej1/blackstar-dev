@@ -47,17 +47,24 @@ public class SecurityServiceImpl extends AbstractService implements SecurityServ
 	Userinfo userInfo = null;
 	User user = null;
 	try{
+		System.out.println("Error=>" + 1);
 		credential = getCredential(code);
+		System.out.println("Error=>" + 2);
 		userInfo = getOauth2Service(credential).userinfo().get().execute();
+		System.out.println("Error=>" + 3);
 		if((user = DAOFactory.getDAOFactory(DAOFactory.MYSQL).getUserDAO()
 				.getUserById(userInfo.getEmail())) == null){
+			System.out.println("MailError=>" + userInfo.getEmail());
 			return null;
 		}
+		System.out.println("Error=>" + 4);
 		userSession.setGoogleId(userInfo.getId());
+		System.out.println("Error=>" + 5);
 		userSession.setUser(user);
 		credentialStore.store(userSession.getGoogleId(), credential);
 	} catch(Exception e){
 		e.printStackTrace();
+		System.out.println("Error=>" + e);
 		return null;
 	}
 	return userSession;

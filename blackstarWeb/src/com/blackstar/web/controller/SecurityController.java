@@ -24,10 +24,13 @@ public class SecurityController extends AbstractController {
 		System.out.println("bsMessage = > New gId : " + userSession.getGoogleId());
 		request.getSession().setAttribute(Globals.SESSION_KEY_PARAM, userSession);
 		//TODO Se mantienen de forma provisional por compatibilidad con version actual
+		System.out.println("bsMessage = > Login : " + 1);
 		request.getSession().setAttribute("user_id", userSession.getUser().getUserEmail());
+		System.out.println("bsMessage = > Login : " + 2);
 		request.getSession().setAttribute("user", userSession.getUser());
+		System.out.println("bsMessage = > Login : " + 3);
 		request.getSession().setAttribute("employees", UserServiceFactory.getUserService().getEmployeeList());
-		return ("redirect:/dashboard/show.do");
+		return ("redirect:/codex/dashboard/show.do");
 	} 
 	return ("noUser");
   }

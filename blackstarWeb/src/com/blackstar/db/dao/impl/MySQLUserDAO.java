@@ -40,6 +40,7 @@ public class MySQLUserDAO implements UserDAO {
 			}
 			
 		} catch (ClassNotFoundException | SQLException e) {
+			System.out.println("LoginError => " + e);
 			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 		}
 		finally{

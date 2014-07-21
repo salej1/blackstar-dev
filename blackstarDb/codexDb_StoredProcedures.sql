@@ -88,8 +88,8 @@ END$$
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.CodexInsertClient
 -- -----------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS blackstardb.CodexInsertClient$$
-CREATE PROCEDURE blackstardb.`CodexInsertClient`(pClientTypeId int(2), pClientOriginId int(2), pSellerId int(11)
+DROP PROCEDURE IF EXISTS blackstarDb.CodexInsertClient$$
+CREATE PROCEDURE blackstarDb.`CodexInsertClient`(pClientTypeId int(2), pClientOriginId int(2), pSellerId int(11)
                                                  , pIsProspect tinyint(4), pRfc varchar(13), pCorporateName text, pTradeName text, pPhoneArea varchar(3), pPhoneNumber varchar(10)
                                                  , pPhoneExtension varchar(6), pPhoneAreaAlt varchar(3), pPhoneNumberAlt varchar(10), pPhoneExtensionAlt varchar(6)
                                                  , pEmail varchar(60), pEmailAlt varchar(60), pStreet text, pIntNumber varchar(5), pExtNumber varchar(5)
@@ -112,8 +112,8 @@ END$$
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.CodexGetNextClientId
 -- -----------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS blackstardb.CodexGetNextClientId$$
-CREATE PROCEDURE blackstardb.`CodexGetNextClientId`()
+DROP PROCEDURE IF EXISTS blackstarDb.CodexGetNextClientId$$
+CREATE PROCEDURE blackstarDb.`CodexGetNextClientId`()
 BEGIN
 
   SELECT IFNULL(MAX(_ID)  + 1, 1) FROM codexClient;
@@ -123,19 +123,23 @@ END$$
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.CodexGetClientList
 -- -----------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS blackstardb.CodexGetClientList$$
-CREATE PROCEDURE blackstardb.`CodexGetClientList`(pIsProspect tinyint(4))
+DROP PROCEDURE IF EXISTS blackstarDb.CodexGetClientList$$
+CREATE PROCEDURE blackstarDb.`CodexGetClientList`(pIsProspect tinyint(4))
 BEGIN
 
-  SELECT * FROM codexClient WHERE isProspect = pIsProspect;
+  SELECT _id id, IFNULL(clientTypeId,0) clientTypeId ,
+         IFNULL(corporateName, '') corporateName, 
+         IFNULL(city, '') city, IFNULL(contactName, '') contactName
+  FROM codexClient
+  WHERE isProspect = pIsProspect;
 	
 END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.CodexGetEntryTypes
 -- -----------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS blackstardb.CodexGetEntryTypes$$
-CREATE PROCEDURE blackstardb.`CodexGetEntryTypes`()
+DROP PROCEDURE IF EXISTS blackstarDb.CodexGetEntryTypes$$
+CREATE PROCEDURE blackstarDb.`CodexGetEntryTypes`()
 BEGIN
 
   SELECT _id id, name name, description description 
@@ -146,8 +150,8 @@ END$$
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.CodexGetEntryItemTypes
 -- -----------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS blackstardb.CodexGetEntryItemTypes$$
-CREATE PROCEDURE blackstardb.`CodexGetEntryItemTypes`()
+DROP PROCEDURE IF EXISTS blackstarDb.CodexGetEntryItemTypes$$
+CREATE PROCEDURE blackstarDb.`CodexGetEntryItemTypes`()
 BEGIN
 
   SELECT _id id, name name, description description 
@@ -159,8 +163,8 @@ END$$
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.CodexGetCurrencyTypes
 -- -----------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS blackstardb.CodexGetCurrencyTypes$$
-CREATE PROCEDURE blackstardb.`CodexGetCurrencyTypes`()
+DROP PROCEDURE IF EXISTS blackstarDb.CodexGetCurrencyTypes$$
+CREATE PROCEDURE blackstarDb.`CodexGetCurrencyTypes`()
 BEGIN
 
   SELECT _id id, name name, description description 
@@ -171,8 +175,8 @@ END$$
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.CodexGetCurrencyTypes
 -- -----------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS blackstardb.CodexGetTaxesTypes$$
-CREATE PROCEDURE blackstardb.`CodexGetTaxesTypes`()
+DROP PROCEDURE IF EXISTS blackstarDb.CodexGetTaxesTypes$$
+CREATE PROCEDURE blackstarDb.`CodexGetTaxesTypes`()
 BEGIN
 
   SELECT _id id, name name, description description , value value
@@ -302,8 +306,8 @@ END$$
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.CodexGetProjectById
 -- -----------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS blackstardb.CodexGetProjectById$$
-CREATE PROCEDURE blackstardb.`CodexGetProjectById`(pProjectId int(11))
+DROP PROCEDURE IF EXISTS blackstarDb.CodexGetProjectById$$
+CREATE PROCEDURE blackstarDb.`CodexGetProjectById`(pProjectId int(11))
 BEGIN
 SELECT cp._id id, cp.projectNumber projectNumber, cp.clientId clientId, cp.taxesTypeId taxesTypeId, cp.statusId statusId
       , cp.paymentTypeId paymentTypeId, cp.currencyTypeId currencyTypeId, cst.name statusDescription
@@ -323,8 +327,8 @@ END$$
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetNextProjectId
 -- -----------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS blackstardb.GetNextProjectId$$
-CREATE PROCEDURE blackstardb.`GetNextProjectId`()
+DROP PROCEDURE IF EXISTS blackstarDb.GetNextProjectId$$
+CREATE PROCEDURE blackstarDb.`GetNextProjectId`()
 BEGIN
 	DECLARE newNumber INTEGER;
 	CALL blackstarDb.GetNextServiceOrderNumber('C', newNumber);
@@ -334,8 +338,8 @@ END$$
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.CodexGetDeliverableTypes
 -- -----------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS blackstardb.CodexGetDeliverableTypes$$
-CREATE PROCEDURE blackstardb.`CodexGetDeliverableTypes`()
+DROP PROCEDURE IF EXISTS blackstarDb.CodexGetDeliverableTypes$$
+CREATE PROCEDURE blackstarDb.`CodexGetDeliverableTypes`()
 BEGIN
 	SELECT cdt._id id, cdt.name name, cdt.description description 
   FROM codexDeliverableType cdt;
@@ -344,8 +348,8 @@ END$$
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.CodexInsertDeliverableTrace
 -- -----------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS blackstardb.CodexInsertDeliverableTrace$$
-CREATE PROCEDURE blackstardb.`CodexInsertDeliverableTrace`(pProjectId int(11), pDeliverableId int(2), pUserId int(11))
+DROP PROCEDURE IF EXISTS blackstarDb.CodexInsertDeliverableTrace$$
+CREATE PROCEDURE blackstarDb.`CodexInsertDeliverableTrace`(pProjectId int(11), pDeliverableId int(2), pUserId int(11))
 BEGIN
 	INSERT INTO codexDeliverableTrace (codexProjectId, deliverableTypeId, created, userId)
   VALUES (pProjectId, pDeliverableId, NOW(), pUserId);
@@ -354,8 +358,8 @@ END$$
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.CodexGetReferenceTypes
 -- -----------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS blackstardb.CodexGetReferenceTypes$$
-CREATE PROCEDURE blackstardb.`CodexGetReferenceTypes`(pItemTypeId int(2))
+DROP PROCEDURE IF EXISTS blackstarDb.CodexGetReferenceTypes$$
+CREATE PROCEDURE blackstarDb.`CodexGetReferenceTypes`(pItemTypeId int(2))
 BEGIN
   IF (pItemTypeId = 1) THEN
       SELECT * FROM codexPriceList;
@@ -368,8 +372,8 @@ END$$
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.CodexGetPaymentTypes
 -- -----------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS blackstardb.CodexGetPaymentTypes$$
-CREATE PROCEDURE blackstardb.`CodexGetPaymentTypes`()
+DROP PROCEDURE IF EXISTS blackstarDb.CodexGetPaymentTypes$$
+CREATE PROCEDURE blackstarDb.`CodexGetPaymentTypes`()
 BEGIN
 	SELECT cpt._id id, cpt.name name, cpt.description description 
   FROM codexPaymentType cpt;
@@ -378,8 +382,8 @@ END$$
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.CodexInsertProjectEntry
 -- -----------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS blackstardb.CodexInsertProjectEntry$$
-CREATE PROCEDURE blackstardb.`CodexInsertProject`(pProjectId int(11), pClientId int(11), pTaxesTypeId int(1), pStatusId int(1), pPaymentTypeId int(1),pCurrencyTypeId int(2), pProjectNumber varchar(8), pCostCenter varchar(8), pChangeType float, pCreated varchar(20), pContactName text, pLocation varchar(20), pAdvance float, pTimeLimit int(3), pSettlementTimeLimit int(3), pDeliveryTime int(3), pIntercom varchar(5), pProductsNumber int(7), pFinancesNumber int(7), pServicesNumber int(7), pTotalProjectNumber int(8))
+DROP PROCEDURE IF EXISTS blackstarDb.CodexInsertProjectEntry$$
+CREATE PROCEDURE blackstarDb.`CodexInsertProjectEntry`(pProjectId int(11), pClientId int(11), pTaxesTypeId int(1), pStatusId int(1), pPaymentTypeId int(1),pCurrencyTypeId int(2), pProjectNumber varchar(8), pCostCenter varchar(8), pChangeType float, pCreated varchar(20), pContactName text, pLocation varchar(20), pAdvance float, pTimeLimit int(3), pSettlementTimeLimit int(3), pDeliveryTime int(3), pIntercom varchar(5), pProductsNumber int(7), pFinancesNumber int(7), pServicesNumber int(7), pTotalProjectNumber int(8))
 BEGIN
   INSERT INTO codexProjectEntry (_id, projectId, entryTypeId, description, discount, totalPrice, comments)
   VALUES (pEntryId, pProjectId, pEntryTypeId, pDescription, pDiscount, pTotalPrice, pComments);
@@ -388,8 +392,8 @@ END$$
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.CodexInsertProjectEntryItem
 -- -----------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS blackstardb.CodexInsertProjectEntryItem$$
-CREATE PROCEDURE blackstardb.`CodexInsertProjectEntryItem`(pEntryId int(11), pItemTypeId int(11), pReference TEXT, pDescription TEXT, pQuantity int(11), pPriceByUnit float(8,2), pDiscount float(6,2), pTotalPrice float(10,2), pComments TEXT)
+DROP PROCEDURE IF EXISTS blackstarDb.CodexInsertProjectEntryItem$$
+CREATE PROCEDURE blackstarDb.`CodexInsertProjectEntryItem`(pEntryId int(11), pItemTypeId int(11), pReference TEXT, pDescription TEXT, pQuantity int(11), pPriceByUnit float(8,2), pDiscount float(6,2), pTotalPrice float(10,2), pComments TEXT)
 BEGIN
   INSERT INTO codexEntryItem (entryId, itemTypeId, reference, description, quantity, priceByUnit, discount, totalPrice, comments)
   VALUES (pEntryId, pItemTypeId, pReference, pDescription, pQuantity, pPriceByUnit, pDiscount, pTotalPrice, pComments);
@@ -398,18 +402,42 @@ END$$
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.CodexInsertProject
 -- -----------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS blackstardb.CodexInsertProject$$
-CREATE PROCEDURE blackstardb.`CodexInsertProject`(pProjectId int(11), pClientId int(11), pTaxesTypeId int(1), pStatusId int(1), pPaymentTypeId int(1),pCurrencyTypeId int(2), pProjectNumber varchar(8), pCostCenter varchar(8), pChangeType float(2,2), pCreated varchar(20), pContactName text, pLocation varchar(20), pAdvance float(7,2), pTimeLimit int(3), pSettlementTimeLimit int(3), pDeliveryTime int(3), pIntercom varchar(5), pProductsNumber int(7), pFinancesNumber int(7), pServicesNumber int(7), pTotalProjectNumber int(8))
+DROP PROCEDURE IF EXISTS blackstarDb.CodexInsertProject$$
+CREATE PROCEDURE blackstarDb.`CodexInsertProject`(pProjectId int(11), pClientId int(11), pTaxesTypeId int(1), pStatusId int(1), pPaymentTypeId int(1),pCurrencyTypeId int(2), pProjectNumber varchar(8), pCostCenter varchar(8), pChangeType float(2,2), pCreated varchar(20), pContactName text, pLocation varchar(20), pAdvance float(7,2), pTimeLimit int(3), pSettlementTimeLimit int(3), pDeliveryTime int(3), pIntercom varchar(5), pProductsNumber int(7), pFinancesNumber int(7), pServicesNumber int(7), pTotalProjectNumber int(8))
 BEGIN
   INSERT INTO codexProject (_id, clientId , taxesTypeId , statusId , paymentTypeId ,currencyTypeId , projectNumber , costCenter , changeType , created , contactName , location , advance , timeLimit , settlementTimeLimit , deliveryTime , intercom , productsNumber , financesNumber , servicesNumber , totalProjectNumber)
   VALUES (pProjectId, pClientId , pTaxesTypeId , pStatusId , pPaymentTypeId ,pCurrencyTypeId , pProjectNumber , pCostCenter , pChangeType , pCreated , pContactName , pLocation , pAdvance , pTimeLimit , pSettlementTimeLimit , pDeliveryTime , pIntercom , pProductsNumber , pFinancesNumber , pServicesNumber , pTotalProjectNumber);
 END$$
 
 -- -----------------------------------------------------------------------------
+	-- blackstarDb.CodexInsertProspect
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.CodexInsertProspect$$
+CREATE PROCEDURE blackstarDb.`CodexInsertProspect`(pClientTypeId int(2), pClientOriginId int(2), pSellerId int(11)
+                                                 , pIsProspect tinyint(4), pRfc varchar(13), pCorporateName text, pTradeName text, pPhoneArea varchar(3), pPhoneNumber varchar(10)
+                                                 , pPhoneExtension varchar(6), pPhoneAreaAlt varchar(3), pPhoneNumberAlt varchar(10), pPhoneExtensionAlt varchar(6)
+                                                 , pEmail varchar(60), pEmailAlt varchar(60), pStreet text, pIntNumber varchar(5), pExtNumber varchar(5)
+                                                 , pZipCode int(5), pCountry text, pState varchar(20), pMunicipality text, pCity text, pNeighborhood text
+                                                 , pContactName text, pCurp varchar(18), pRetention varchar(20))
+BEGIN
+
+	INSERT INTO codexClient (clientTypeId, clientOriginId, sellerId, isProspect, rfc, corporateName,
+              tradeName, phoneArea, phoneNumber, phoneExtension, phoneAreaAlt, phoneNumberAlt,
+              phoneExtensionAlt, email, emailAlt, street, intNumber, extNumber, zipCode, country,
+              state, municipality, city, neighborhood, contactName, curp, retention)
+              VALUES
+              (pClientTypeId, pClientOriginId, pSellerId, pIsProspect, pRfc, pCorporateName,
+              pTradeName, pPhoneArea, pPhoneNumber, pPhoneExtension, pPhoneAreaAlt, pPhoneNumberAlt,
+              pPhoneExtensionAlt, pEmail, pEmailAlt, pStreet, pIntNumber, pExtNumber, pZipCode, pCountry,
+              pState, pMunicipality, pCity, pNeighborhood, pContactName, pCurp, pRetention);
+	
+END$$
+
+-- -----------------------------------------------------------------------------
 	-- blackstarDb.GetNextEntryId
 -- -----------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS blackstardb.GetNextEntryId$$
-CREATE PROCEDURE blackstardb.`GetNextEntryId`()
+DROP PROCEDURE IF EXISTS blackstarDb.GetNextEntryId$$
+CREATE PROCEDURE blackstarDb.`GetNextEntryId`()
 BEGIN
 
 	DECLARE newNumber INTEGER;
@@ -421,8 +449,8 @@ END$$
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.CodexGetAllClients
 -- -----------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS blackstardb.CodexGetAllClients$$
-CREATE PROCEDURE blackstardb.`CodexGetAllClients`()
+DROP PROCEDURE IF EXISTS blackstarDb.CodexGetAllClients$$
+CREATE PROCEDURE blackstarDb.`CodexGetAllClients`()
 BEGIN
   SELECT _id id, clientTypeId clientTypeId, clientOriginId clientOriginId, sellerId sellerId
          , isProspect isProspect, rfc rfc, corporateName corporateName, tradeName tradeName
@@ -431,15 +459,15 @@ BEGIN
          , email email, emailAlt emailAlt, street street, intNumber intNumber, extNumber extNumber
          , zipCode zipCode, country country, state state, municipality municipality, city city
          , neighborhood neighborhood, contactName contactName, curp curp, retention retention
-  FROM codexclient
+  FROM codexClient
   WHERE isProspect = 0;
 END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.CodexGetClientById
 -- -----------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS blackstardb.CodexGetClientById$$
-CREATE PROCEDURE blackstardb.`CodexGetClientById`(pClientId int(11))
+DROP PROCEDURE IF EXISTS blackstarDb.CodexGetClientById$$
+CREATE PROCEDURE blackstarDb.`CodexGetClientById`(pClientId int(11))
 BEGIN
   SELECT _id id, clientTypeId clientTypeId, clientOriginId clientOriginId, sellerId sellerId
          , isProspect isProspect, rfc rfc, corporateName corporateName, tradeName tradeName
@@ -448,15 +476,15 @@ BEGIN
          , email email, emailAlt emailAlt, street street, intNumber intNumber, extNumber extNumber
          , zipCode zipCode, country country, state state, municipality municipality, city city
          , neighborhood neighborhood, contactName contactName, curp curp, retention retention
-  FROM codexclient
+  FROM codexClient
   WHERE _id = pClientId;
 END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.CodexGetAllProjects
 -- -----------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS blackstardb.CodexGetAllProjects$$
-CREATE PROCEDURE blackstardb.`CodexGetAllProjects`()
+DROP PROCEDURE IF EXISTS blackstarDb.CodexGetAllProjects$$
+CREATE PROCEDURE blackstarDb.`CodexGetAllProjects`()
 BEGIN
 SELECT cp._id id, cp.projectNumber projectNumber, cp.clientId clientId, cp.taxesTypeId taxesTypeId, cp.statusId statusId
       , cp.paymentTypeId paymentTypeId, cp.currencyTypeId currencyTypeId, cst.name statusDescription
@@ -475,8 +503,8 @@ END$$
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.CodexGetProjectsByStatus
 -- -----------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS blackstardb.CodexGetProjectsByStatus$$
-CREATE PROCEDURE blackstardb.`CodexGetProjectsByStatus`(pStatusId int(2))
+DROP PROCEDURE IF EXISTS blackstarDb.CodexGetProjectsByStatus$$
+CREATE PROCEDURE blackstarDb.`CodexGetProjectsByStatus`(pStatusId int(2))
 BEGIN
 SELECT cp._id id, cp.projectNumber projectNumber, cp.clientId clientId, cp.taxesTypeId taxesTypeId, cp.statusId statusId
       , cp.paymentTypeId paymentTypeId, cp.currencyTypeId currencyTypeId, cst.name statusDescription
@@ -496,8 +524,8 @@ END$$
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.CodexGetEntriesByProject
 -- -----------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS blackstardb.CodexGetEntriesByProject$$
-CREATE PROCEDURE blackstardb.`CodexGetEntriesByProject`(pProjectId int(11))
+DROP PROCEDURE IF EXISTS blackstarDb.CodexGetEntriesByProject$$
+CREATE PROCEDURE blackstarDb.`CodexGetEntriesByProject`(pProjectId int(11))
 BEGIN
 	SELECT cpe._id id, cpe.projectId projectId, cpe.entryTypeId entryTypeId, cpe.description description
          , cpe.discount discount, cpe.totalPrice totalPrice, cpe.comments comments, cpet.name entryTypeDescription
@@ -509,8 +537,8 @@ END$$
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.CodexGetItemsByEntry
 -- -----------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS blackstardb.CodexGetItemsByEntry$$
-CREATE PROCEDURE blackstardb.`CodexGetItemsByEntry`(pEntryId int(11))
+DROP PROCEDURE IF EXISTS blackstarDb.CodexGetItemsByEntry$$
+CREATE PROCEDURE blackstarDb.`CodexGetItemsByEntry`(pEntryId int(11))
 BEGIN
 	SELECT cei._id id, cei.entryId entryId, cei.itemTypeId itemTypeId, cei.reference reference
          , cei.description description, cei.quantity quantity, cei.priceByUnit priceByUnit
@@ -539,8 +567,8 @@ END$$
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.CodexAdvanceStatus
 -- -----------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS blackstardb.CodexAdvanceStatus$$
-CREATE PROCEDURE blackstardb.`CodexAdvanceStatus`(pProjectId int(11))
+DROP PROCEDURE IF EXISTS blackstarDb.CodexAdvanceStatus$$
+CREATE PROCEDURE blackstarDb.`CodexAdvanceStatus`(pProjectId int(11))
 BEGIN
 
   DECLARE status INTEGER;

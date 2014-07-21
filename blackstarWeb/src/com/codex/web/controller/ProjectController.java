@@ -108,6 +108,7 @@ public class ProjectController extends AbstractController {
 	     model.addAttribute("clients", cService.getAllClients());
 	} catch (Exception e) {
 		Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
+		System.out.println("CodexCreateProjectError=> " + e);
 		e.printStackTrace();
 		return "error";
 	}   
