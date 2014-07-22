@@ -200,7 +200,7 @@
 <div id="selectSNDialog">
 	<p>Escriba el numero de serie del equipo
 	<input type="text" id="eqSearch" style="width:95%;"></p>
-	<c:if test="${user.belongsToGroup['Coordinador']}">
+	<c:if test="${sysCoordinador == true}">
 		<p>Escriba el numero de folio del reporte
 		<input type="text" id="soNumber" style="width:95%;" required></p>
 	</c:if>

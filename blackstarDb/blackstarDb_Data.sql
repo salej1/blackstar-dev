@@ -19,12 +19,17 @@
 -- -----------------------------------------------------------------------------
 -- 5 	08/07/2014	SAG 	Se actualiza SC Tijuana BK
 -- -----------------------------------------------------------------------------
+--	6	21/07/2014	SAG 	Se cambia Servicio de Descontaminacion de Data Center 
+--								 por: Descontaminacion
+-- -----------------------------------------------------------------------------
 
 use blackstarDb;
 
 -- -----------------------------------------------------------------------------
 -- ACTUALIZACION DE DATOS
 -- -----------------------------------------------------------------------------
+-- Actualizando Descontaminacino de Data Center
+UPDATE equipmentType SET equipmentType = 'DESCONTAMINACION' WHERE equipmentTypeId = 'S';
 
 -- Actualizando Tijuana BK
 UPDATE serviceCenter SET serviceCenter = 'Tijuana BK' WHERE serviceCenter = 'Tijuana CS';

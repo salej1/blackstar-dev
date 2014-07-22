@@ -43,10 +43,10 @@ public class GeneralServiceReport extends AbstractReport {
 	drawer.hLine(0, 555, 132);
 	drawer.text("EQUIPO : ", 5, 143, false);
 	drawer.text(data.getEquipmentType(), 43, 143, true);
-	drawer.text("MARCA : ", 155, 143, false);
-	drawer.text(data.getBrand(), 190, 143, true);
-	drawer.text("MODELO : ", 290, 143, false);
-	drawer.text(data.getModel(), 332, 143, true);
+	drawer.text("MARCA : ", 135, 143, false);
+	drawer.text(data.getBrand(), 170, 143, true);
+	drawer.text("MODELO : ", 225, 143, false);
+	drawer.text(data.getModel(), 267, 143, true);
 	drawer.text("SERIE : ", 407, 143, false);
 	drawer.text(data.getSerialNumber(), 438, 143, true);
 	drawer.hLine(0, 555, 147);

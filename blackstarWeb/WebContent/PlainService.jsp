@@ -31,7 +31,7 @@
 	}
 
 	var mode = "${mode}";
-	var isCoord = "${user.belongsToGroup['Coordinador']}";
+	var isCoord = "${user.belongsToGroup['Coordinador'] || user.belongsToGroup['Call Center']}";
 	var isEng = "${user.belongsToGroup['Implementacion y Servicio']}";
 	var hasPolicy = "${hasPolicy}";
 
@@ -226,6 +226,7 @@
 									<td style="width:140px">No. de ticket</td>
 									<td>
 										<form:hidden path="ticketId" />
+										<form:hidden path="ticketNumber" />
 										<form:hidden path="hasPdf" />
 										<form:hidden path="requestedBy" />
 										<form:hidden path="finalUser" />
@@ -481,7 +482,7 @@
 			</c:if>
 			
 			<!-- Importacion del archivo de OS desde GDrive -->
-			<c:if test="${user.belongsToGroup['Coordinador'] && serviceOrder.hasPdf != 1}">
+			<c:if test="${(user.belongsToGroup['Coordinador'] || user.belongsToGroup['Call Center']) && serviceOrder.hasPdf != 1}">
 				<c:import url="osLoader.jsp"></c:import>
 				<script type="text/javascript" charset="utf-8">
 					$(function(){

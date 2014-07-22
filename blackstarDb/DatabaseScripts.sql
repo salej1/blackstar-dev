@@ -999,6 +999,8 @@ DROP PROCEDURE blackstarDb.upgradeSchema;
 -- -----------------------------------------------------------------------------
 -- 51	18/07/2014	SAG 	Se modifica:
 --								blackstarDb.GetPoliciesKPI
+--								blackstarDb.GetTicketsKPI
+--								blackstarDb.GetServiceOrders
 -- -----------------------------------------------------------------------------
 
 use blackstarDb;
@@ -2010,16 +2012,18 @@ BEGIN
 	IF pProject = 'All' THEN
 		SELECT * FROM (
 			SELECT 
-				sc.serviceCenter as office, 
+				IFNULL(sc.serviceCenter, sc2.serviceCenter) as office, 
 				count(*) as services,
 				IFNULL(AVG(ss.score),0) as average
 			FROM serviceOrder so
 				INNER JOIN surveyService ss ON so.surveyServiceId = ss.surveyServiceId
-				INNER JOIN policy p ON p.policyId = so.policyId
-				INNER JOIN serviceCenter sc ON sc.serviceCenterId = p.serviceCenterId
+				LEFT OUTER JOIN policy p ON p.policyId = so.policyId
+				LEFT OUTER JOIN openCustomer c ON c.openCustomerId = so.openCustomerId
+				LEFT OUTER JOIN serviceCenter sc ON sc.serviceCenterId = p.serviceCenterId
+				LEFT OUTER JOIN serviceCenter sc2 ON sc2.serviceCenterId = c.officeId
 			WHERE so.created >= pStartDate and so.created <= pEndDate
-			GROUP BY sc.serviceCenter
-			ORDER BY sc.serviceCenter
+				AND (so.openCustomerId IS NOT NULL OR so.policyId IS NOT NULL)
+			GROUP BY office
 		) A 
 		UNION
 		SELECT 
@@ -2028,23 +2032,28 @@ BEGIN
 			IFNULL(AVG(ss.score),0) as average
 		FROM serviceOrder so
 			INNER JOIN surveyService ss ON so.surveyServiceId = ss.surveyServiceId
-			INNER JOIN policy p ON p.policyId = so.policyId
-			INNER JOIN serviceCenter sc ON sc.serviceCenterId = p.serviceCenterId
-		WHERE so.created >= pStartDate and so.created <= pEndDate;
+			LEFT OUTER JOIN policy p ON p.policyId = so.policyId
+			LEFT OUTER JOIN openCustomer c ON c.openCustomerId = so.openCustomerId
+			LEFT OUTER JOIN serviceCenter sc ON sc.serviceCenterId = p.serviceCenterId
+			LEFT OUTER JOIN serviceCenter sc2 ON sc2.serviceCenterId = c.officeId
+		WHERE so.created >= pStartDate and so.created <= pEndDate
+			AND (so.openCustomerId IS NOT NULL OR so.policyId IS NOT NULL);
 	ELSE
 		SELECT * FROM (
 			SELECT 
-				sc.serviceCenter as office, 
+				IFNULL(sc.serviceCenter, sc2.serviceCenter) as office, 
 				count(*) as services,
 				IFNULL(AVG(ss.score),0) as average
 			FROM serviceOrder so
 				INNER JOIN surveyService ss ON so.surveyServiceId = ss.surveyServiceId
-				INNER JOIN policy p ON p.policyId = so.policyId
-				INNER JOIN serviceCenter sc ON sc.serviceCenterId = p.serviceCenterId
+				LEFT OUTER JOIN policy p ON p.policyId = so.policyId
+				LEFT OUTER JOIN openCustomer c ON c.openCustomerId = so.openCustomerId
+				LEFT OUTER JOIN serviceCenter sc ON sc.serviceCenterId = p.serviceCenterId
+				LEFT OUTER JOIN serviceCenter sc2 ON sc2.serviceCenterId = c.officeId
 			WHERE so.created >= pStartDate and so.created <= pEndDate
 				AND p.project = pProject
-			GROUP BY sc.serviceCenter
-			ORDER BY sc.serviceCenter
+				AND (so.openCustomerId IS NOT NULL OR so.policyId IS NOT NULL)
+			GROUP BY office
 		) A 
 		UNION
 		SELECT 
@@ -2053,10 +2062,13 @@ BEGIN
 			IFNULL(AVG(ss.score),0) as average
 		FROM serviceOrder so
 			INNER JOIN surveyService ss ON so.surveyServiceId = ss.surveyServiceId
-			INNER JOIN policy p ON p.policyId = so.policyId
-			INNER JOIN serviceCenter sc ON sc.serviceCenterId = p.serviceCenterId
+			LEFT OUTER JOIN policy p ON p.policyId = so.policyId
+			LEFT OUTER JOIN openCustomer c ON c.openCustomerId = so.openCustomerId
+			LEFT OUTER JOIN serviceCenter sc ON sc.serviceCenterId = p.serviceCenterId
+			LEFT OUTER JOIN serviceCenter sc2 ON sc2.serviceCenterId = c.officeId
 		WHERE so.created >= pStartDate and so.created <= pEndDate
-			AND p.project = pProject;
+			AND p.project = pProject
+			AND (so.openCustomerId IS NOT NULL OR so.policyId IS NOT NULL);
 	END IF;
 
 END$$
@@ -4139,33 +4151,59 @@ END$$
 DROP PROCEDURE IF EXISTS blackstarDb.GetServiceOrders$$
 CREATE PROCEDURE blackstarDb.GetServiceOrders(IN status VARCHAR(200))
 BEGIN
-
-	SELECT 
-		so.ServiceOrderId AS DT_RowId,
-		so.serviceOrderNumber AS serviceOrderNumber,
-		'' AS placeHolder,
-		IFNULL(t.ticketNumber, '') AS ticketNumber,
-		st.serviceType AS serviceType,
-		DATE(so.serviceDate) AS created,
-		p.customer AS customer,
-		et.equipmentType AS equipmentType,
-		p.project AS project,
-		of.officeName AS officeName,
-		p.brand AS brand,
-		p.serialNumber AS serialNumber,
-		ss.serviceStatus AS serviceStatus,
-		so.hasPdf AS hasPdf,
-		IFNULL(sc.serviceCenter, '') AS serviceCenter
-	FROM serviceOrder so 
-		INNER JOIN serviceType st ON so.servicetypeId = st.servicetypeId
-		INNER JOIN serviceStatus ss ON so.serviceStatusId = ss.serviceStatusId
-		INNER JOIN policy p ON so.policyId = p.policyId
-		INNER JOIN equipmentType et ON p.equipmentTypeId = et.equipmentTypeId
-		INNER JOIN office of on p.officeId = of.officeId
-		INNER JOIN serviceCenter sc ON sc.serviceCenterId = p.serviceCenterId
-     LEFT OUTER JOIN ticket t on t.ticketId = so.ticketId
-	WHERE ss.serviceStatus IN(status) 
-	ORDER BY serviceDate DESC ;
+	
+	SELECT * FROM (
+		SELECT 
+			so.ServiceOrderId AS DT_RowId,
+			so.serviceOrderNumber AS serviceOrderNumber,
+			'' AS placeHolder,
+			IFNULL(t.ticketNumber, '') AS ticketNumber,
+			st.serviceType AS serviceType,
+			DATE(so.serviceDate) AS created,
+			p.customer AS customer,
+			et.equipmentType AS equipmentType,
+			p.project AS project,
+			of.officeName AS officeName,
+			p.brand AS brand,
+			p.serialNumber AS serialNumber,
+			ss.serviceStatus AS serviceStatus,
+			so.hasPdf AS hasPdf,
+			IFNULL(sc.serviceCenter, '') AS serviceCenter
+		FROM serviceOrder so 
+			INNER JOIN serviceType st ON so.servicetypeId = st.servicetypeId
+			INNER JOIN serviceStatus ss ON so.serviceStatusId = ss.serviceStatusId
+			INNER JOIN policy p ON so.policyId = p.policyId
+			INNER JOIN equipmentType et ON p.equipmentTypeId = et.equipmentTypeId
+			INNER JOIN office of on p.officeId = of.officeId
+			INNER JOIN serviceCenter sc ON sc.serviceCenterId = p.serviceCenterId
+	     LEFT OUTER JOIN ticket t on t.ticketId = so.ticketId
+		WHERE ss.serviceStatus IN(status) 
+		UNION
+		SELECT 
+			so.ServiceOrderId AS DT_RowId,
+			so.serviceOrderNumber AS serviceOrderNumber,
+			'' AS placeHolder,
+			IFNULL(t.ticketNumber, '') AS ticketNumber,
+			st.serviceType AS serviceType,
+			DATE(so.serviceDate) AS created,
+			p.customerName AS customer,
+			et.equipmentType AS equipmentType,
+			p.project AS project,
+			of.officeName AS officeName,
+			p.brand AS brand,
+			p.serialNumber AS serialNumber,
+			ss.serviceStatus AS serviceStatus,
+			so.hasPdf AS hasPdf,
+			of.officeName AS serviceCenter
+		FROM serviceOrder so 
+			INNER JOIN serviceType st ON so.servicetypeId = st.servicetypeId
+			INNER JOIN serviceStatus ss ON so.serviceStatusId = ss.serviceStatusId
+			INNER JOIN openCustomer p ON so.openCustomerId = p.openCustomerId
+			INNER JOIN equipmentType et ON p.equipmentTypeId = et.equipmentTypeId
+			INNER JOIN office of on p.officeId = of.officeId
+	     LEFT OUTER JOIN ticket t on t.ticketId = so.ticketId
+		WHERE ss.serviceStatus IN(status)
+	) A ORDER BY created DESC ;
 	
 END$$
 
@@ -5636,12 +5674,17 @@ WHERE serviceTypeId IN('O', 'M', 'R', 'N', 'V');
 -- -----------------------------------------------------------------------------
 -- 5 	08/07/2014	SAG 	Se actualiza SC Tijuana BK
 -- -----------------------------------------------------------------------------
+--	6	21/07/2014	SAG 	Se cambia Servicio de Descontaminacion de Data Center 
+--								 por: Descontaminacion
+-- -----------------------------------------------------------------------------
 
 use blackstarDb;
 
 -- -----------------------------------------------------------------------------
 -- ACTUALIZACION DE DATOS
 -- -----------------------------------------------------------------------------
+-- Actualizando Descontaminacino de Data Center
+UPDATE equipmentType SET equipmentType = 'DESCONTAMINACION' WHERE equipmentTypeId = 'S';
 
 -- Actualizando Tijuana BK
 UPDATE serviceCenter SET serviceCenter = 'Tijuana BK' WHERE serviceCenter = 'Tijuana CS';
