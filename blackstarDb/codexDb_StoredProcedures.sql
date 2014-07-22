@@ -383,7 +383,7 @@ END$$
 	-- blackstarDb.CodexInsertProjectEntry
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.CodexInsertProjectEntry$$
-CREATE PROCEDURE blackstarDb.`CodexInsertProjectEntry`(pProjectId int(11), pClientId int(11), pTaxesTypeId int(1), pStatusId int(1), pPaymentTypeId int(1),pCurrencyTypeId int(2), pProjectNumber varchar(8), pCostCenter varchar(8), pChangeType float, pCreated varchar(20), pContactName text, pLocation varchar(20), pAdvance float, pTimeLimit int(3), pSettlementTimeLimit int(3), pDeliveryTime int(3), pIntercom varchar(5), pProductsNumber int(7), pFinancesNumber int(7), pServicesNumber int(7), pTotalProjectNumber int(8))
+CREATE PROCEDURE blackstarDb.`CodexInsertProjectEntry`(pEntryId int(11), pProjectId int(11), pEntryTypeId int(11), pDescription TEXT, pDiscount FLOAT(6,2), pTotalPrice FLOAT(9,2), pComments TEXT)
 BEGIN
   INSERT INTO codexProjectEntry (_id, projectId, entryTypeId, description, discount, totalPrice, comments)
   VALUES (pEntryId, pProjectId, pEntryTypeId, pDescription, pDiscount, pTotalPrice, pComments);
@@ -403,33 +403,47 @@ END$$
 	-- blackstarDb.CodexInsertProject
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.CodexInsertProject$$
-CREATE PROCEDURE blackstarDb.`CodexInsertProject`(pProjectId int(11), pClientId int(11), pTaxesTypeId int(1), pStatusId int(1), pPaymentTypeId int(1),pCurrencyTypeId int(2), pProjectNumber varchar(8), pCostCenter varchar(8), pChangeType float(2,2), pCreated varchar(20), pContactName text, pLocation varchar(20), pAdvance float(7,2), pTimeLimit int(3), pSettlementTimeLimit int(3), pDeliveryTime int(3), pIntercom varchar(5), pProductsNumber int(7), pFinancesNumber int(7), pServicesNumber int(7), pTotalProjectNumber int(8))
+CREATE PROCEDURE blackstarDb.`CodexInsertProject`(pProjectId int(11), pClientId int(11), pTaxesTypeId int(1), pStatusId int(1), pPaymentTypeId int(1),pCurrencyTypeId int(2), pProjectNumber varchar(8), pCostCenter varchar(8), pChangeType float(2,2), pCreated varchar(40), pContactName text, pLocation varchar(20), pAdvance float(7,2), pTimeLimit int(3), pSettlementTimeLimit int(3), pDeliveryTime int(3), pIntercom varchar(5), pProductsNumber int(7), pFinancesNumber int(7), pServicesNumber int(7), pTotalProjectNumber int(8))
 BEGIN
   INSERT INTO codexProject (_id, clientId , taxesTypeId , statusId , paymentTypeId ,currencyTypeId , projectNumber , costCenter , changeType , created , contactName , location , advance , timeLimit , settlementTimeLimit , deliveryTime , intercom , productsNumber , financesNumber , servicesNumber , totalProjectNumber)
   VALUES (pProjectId, pClientId , pTaxesTypeId , pStatusId , pPaymentTypeId ,pCurrencyTypeId , pProjectNumber , pCostCenter , pChangeType , pCreated , pContactName , pLocation , pAdvance , pTimeLimit , pSettlementTimeLimit , pDeliveryTime , pIntercom , pProductsNumber , pFinancesNumber , pServicesNumber , pTotalProjectNumber);
 END$$
 
 -- -----------------------------------------------------------------------------
-	-- blackstarDb.CodexInsertProspect
+	-- blackstarDb.CodexUpsertProspect
 -- -----------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS blackstarDb.CodexInsertProspect$$
-CREATE PROCEDURE blackstarDb.`CodexInsertProspect`(pClientTypeId int(2), pClientOriginId int(2), pSellerId int(11)
+DROP PROCEDURE IF EXISTS blackstarDb.CodexUpsertProspect$$
+CREATE PROCEDURE blackstarDb.`CodexUpsertProspect`(pClientTypeId int(2), pClientOriginId int(2), pSellerId int(11)
                                                  , pIsProspect tinyint(4), pRfc varchar(13), pCorporateName text, pTradeName text, pPhoneArea varchar(3), pPhoneNumber varchar(10)
                                                  , pPhoneExtension varchar(6), pPhoneAreaAlt varchar(3), pPhoneNumberAlt varchar(10), pPhoneExtensionAlt varchar(6)
                                                  , pEmail varchar(60), pEmailAlt varchar(60), pStreet text, pIntNumber varchar(5), pExtNumber varchar(5)
                                                  , pZipCode int(5), pCountry text, pState varchar(20), pMunicipality text, pCity text, pNeighborhood text
                                                  , pContactName text, pCurp varchar(18), pRetention varchar(20))
 BEGIN
-
-	INSERT INTO codexClient (clientTypeId, clientOriginId, sellerId, isProspect, rfc, corporateName,
-              tradeName, phoneArea, phoneNumber, phoneExtension, phoneAreaAlt, phoneNumberAlt,
-              phoneExtensionAlt, email, emailAlt, street, intNumber, extNumber, zipCode, country,
-              state, municipality, city, neighborhood, contactName, curp, retention)
-              VALUES
-              (pClientTypeId, pClientOriginId, pSellerId, pIsProspect, pRfc, pCorporateName,
-              pTradeName, pPhoneArea, pPhoneNumber, pPhoneExtension, pPhoneAreaAlt, pPhoneNumberAlt,
-              pPhoneExtensionAlt, pEmail, pEmailAlt, pStreet, pIntNumber, pExtNumber, pZipCode, pCountry,
-              pState, pMunicipality, pCity, pNeighborhood, pContactName, pCurp, pRetention);
+  DECLARE existsId INTEGER;
+  
+  SET existsId = (SELECT COUNT(*) FROM codexClient WHERE _id = pClientId);
+  IF (existsId = 0) THEN
+     INSERT INTO codexClient (_id, clientTypeId, clientOriginId, sellerId, isProspect, rfc, corporateName,
+                 tradeName, phoneArea, phoneNumber, phoneExtension, phoneAreaAlt, phoneNumberAlt,
+                 phoneExtensionAlt, email, emailAlt, street, intNumber, extNumber, zipCode, country,
+                 state, municipality, city, neighborhood, contactName, curp, retention)
+                 VALUES
+                 (pClientId, pClientTypeId, pClientOriginId, pSellerId, pIsProspect, pRfc, pCorporateName,
+                 pTradeName, pPhoneArea, pPhoneNumber, pPhoneExtension, pPhoneAreaAlt, pPhoneNumberAlt,
+                 pPhoneExtensionAlt, pEmail, pEmailAlt, pStreet, pIntNumber, pExtNumber, pZipCode, pCountry,
+                 pState, pMunicipality, pCity, pNeighborhood, pContactName, pCurp, pRetention);
+  END IF;
+  IF (existsId > 0) THEN
+      UPDATE codexClient SET _id = pClientId, clientTypeId = pClientTypeId, clientOriginId = pClientOriginId
+           , sellerId = pSellerId, isProspect = pIsProspect, rfc = pRfc, corporateName = pCorporateName
+           , tradeName = pTradeName, phoneArea = pPhoneArea, phoneNumber = pPhoneNumber, phoneExtension = pPhoneExtension
+           , phoneAreaAlt = pPhoneAreaAlt, phoneNumberAlt = pPhoneNumberAlt, phoneExtensionAlt = pPhoneExtensionAlt
+           , email = pEmail, emailAlt = pEmailAlt, street = pStreet, intNumber = pIntNumber, extNumber = pExtNumber
+           , zipCode = pZipCode, country = pCountry, state = pState, municipality = pMunicipality, city = pCity
+           , neighborhood = pNeighborhood, contactName = pContactName, curp = pCurp, retention = pRetention
+      WHERE _id = pClientId;
+  END IF;
 	
 END$$
 

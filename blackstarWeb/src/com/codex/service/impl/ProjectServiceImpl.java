@@ -99,8 +99,9 @@ public class ProjectServiceImpl extends AbstractService
 	if(projects.size() > 0){
 	  project = projects.get(0);
 	  message = new StringBuilder();
+	  System.out.println("sendNot=> From(" + fromUserId + "), to(" + toUserId + ")");
 	  to = uDAO.getUserById(toUserId);
-	  from = uDAO.getUserById(toUserId);
+	  from = uDAO.getUserById(fromUserId);
 	  IEmailService mail = EmailServiceFactory.getEmailService();
 	  message.append(String.format("La requisicion %s le ha sido asignada para dar seguimiento. Por favor revise a continuación los detalles: ", project.getProjectNumber()));
 	  message.append(String.format("\r\n\r\n Estatus: %s", project.getStatusDescription()));
@@ -179,6 +180,7 @@ public class ProjectServiceImpl extends AbstractService
 		items = values[5].split("\\^");
 		for(String item : items){
 			values = item.split("°");
+			System.out.println("Mesagge=> " + entryId + ", " + Integer.valueOf(values[0]) + ", " + values[2] + ", " + Integer.valueOf(values[3]) + ", " + Float.valueOf(values[4]));
 			dao.insertEntryItem(entryId, Integer.valueOf(values[0]), values[1]
 			   , values[2], Integer.valueOf(values[3]), Float.valueOf(values[4])
 			   , Float.valueOf(values[5]), Float.valueOf(values[6]), values[7]);

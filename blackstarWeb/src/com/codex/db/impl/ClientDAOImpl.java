@@ -75,8 +75,8 @@ public class ClientDAOImpl extends AbstractDAO
   
   @Override
   public void insertClient(ClientVO client) {
-	String sqlQuery = "CALL CodexInsertProspect(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-	Object [] params = new Object[]{client.getClientTypeId(), client.getClientOriginId()
+	String sqlQuery = "CALL CodexUpsertProspect(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	Object [] params = new Object[]{client.getId(), client.getClientTypeId(), client.getClientOriginId()
 			                      , client.getSellerId(), client.isProspect()
 			                      , client.getRfc(), client.getCorporateName()
 			                      , client.getTradeName(), client.getPhoneArea()

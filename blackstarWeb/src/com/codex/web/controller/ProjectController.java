@@ -142,6 +142,7 @@ public class ProjectController extends AbstractController {
 	} catch (Exception e) {
 		e.printStackTrace();
 		model.addAttribute("errorDetails", e.getStackTrace()[0].toString());
+		System.out.println("CodexAddFollowError=> " + e);
 		return "error";
 	}
 	return "codex/_follow";
@@ -178,6 +179,7 @@ public class ProjectController extends AbstractController {
 	} catch (Exception e) {
 		e.printStackTrace();
 		model.addAttribute("errorDetails", e.getStackTrace()[0].toString());
+		System.out.println("Error =>" + e);
 		return "error";
 	}
     return showList(model);

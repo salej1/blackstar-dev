@@ -45,6 +45,17 @@ public class ClientController extends AbstractController {
 	return "codex/clientDetail";
   }
   
+  @RequestMapping(value = "/edit.do")
+  public String edit(ModelMap model, @RequestParam(required = true) Integer clientId){
+	ClientVO client = service.getClientById(clientId);
+	model.addAttribute("client", client);
+	model.addAttribute("sellers", service.getUsersByGroup("sysCST"));
+	model.addAttribute("states", service.getAllStates());
+	model.addAttribute("originTypes", service.getAllOriginTypes());
+	model.addAttribute("clientTypes", service.getAllClientTypes());
+	return "codex/clientDetail";
+  }
+  
   @RequestMapping(value = "/insert.do")
   public String insert(ModelMap model, @ModelAttribute("prospect") ClientVO client){
 	 service.insertClient(client);
