@@ -380,23 +380,38 @@ BEGIN
 END$$
 
 -- -----------------------------------------------------------------------------
-	-- blackstarDb.CodexInsertProjectEntry
+	-- blackstarDb.CodexUpsertProjectEntry
 -- -----------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS blackstarDb.CodexInsertProjectEntry$$
-CREATE PROCEDURE blackstarDb.`CodexInsertProjectEntry`(pEntryId int(11), pProjectId int(11), pEntryTypeId int(11), pDescription TEXT, pDiscount FLOAT(6,2), pTotalPrice FLOAT(9,2), pComments TEXT)
+DROP PROCEDURE IF EXISTS blackstarDb.CodexUpsertProjectEntry$$
+CREATE PROCEDURE blackstarDb.`CodexUpsertProjectEntry`(pEntryId int(11), pProjectId int(11), pEntryTypeId int(11), pDescription TEXT, pDiscount FLOAT(6,2), pTotalPrice FLOAT(9,2), pComments TEXT)
 BEGIN
-  INSERT INTO codexProjectEntry (_id, projectId, entryTypeId, description, discount, totalPrice, comments)
-  VALUES (pEntryId, pProjectId, pEntryTypeId, pDescription, pDiscount, pTotalPrice, pComments);
+  DECLARE isUpdate INTEGER;
+  SET isUpdate = (SELECT COUNT(*) FROM codexProjectEntry WHERE _id = pEntryId);
+  IF(isUpdate = 0) THEN
+    INSERT INTO codexProjectEntry (_id, projectId, entryTypeId, description, discount, totalPrice, comments)
+    VALUES (pEntryId, pProjectId, pEntryTypeId, pDescription, pDiscount, pTotalPrice, pComments);
+  ELSE
+    UPDATE  codexProjectEntry SET comments = pComments
+    WHERE _id = pEntryId;
+  END IF;
 END$$
 
 -- -----------------------------------------------------------------------------
-	-- blackstarDb.CodexInsertProjectEntryItem
+	-- blackstarDb.CodexUpsertProjectEntryItem
 -- -----------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS blackstarDb.CodexInsertProjectEntryItem$$
-CREATE PROCEDURE blackstarDb.`CodexInsertProjectEntryItem`(pEntryId int(11), pItemTypeId int(11), pReference TEXT, pDescription TEXT, pQuantity int(11), pPriceByUnit float(8,2), pDiscount float(6,2), pTotalPrice float(10,2), pComments TEXT)
+DROP PROCEDURE IF EXISTS blackstarDb.CodexUpsertProjectEntryItem$$
+CREATE PROCEDURE blackstarDb.`CodexUpsertProjectEntryItem`(pItemId int(11),pEntryId int(11), pItemTypeId int(11), pReference TEXT, pDescription TEXT, pQuantity int(11), pPriceByUnit float(8,2), pDiscount float(6,2), pTotalPrice float(10,2), pComments TEXT)
 BEGIN
-  INSERT INTO codexEntryItem (entryId, itemTypeId, reference, description, quantity, priceByUnit, discount, totalPrice, comments)
-  VALUES (pEntryId, pItemTypeId, pReference, pDescription, pQuantity, pPriceByUnit, pDiscount, pTotalPrice, pComments);
+  DECLARE isUpdate INTEGER;
+  SET isUpdate = (SELECT COUNT(*) FROM codexEntryItem WHERE _id = pItemId);
+  IF(isUpdate = 0) THEN
+    INSERT INTO codexEntryItem (entryId, itemTypeId, reference, description, quantity, priceByUnit, discount, totalPrice, comments)
+    VALUES (pEntryId, pItemTypeId, pReference, pDescription, pQuantity, pPriceByUnit, pDiscount, pTotalPrice, pComments);
+  ELSE
+    UPDATE  codexEntryItem SET comments = pComments
+    WHERE _id = pItemId;
+  END IF;
+  
 END$$
 
 -- -----------------------------------------------------------------------------

@@ -38,15 +38,14 @@ public interface ProjectDAO {
                                                               , Integer userId);
 	public List<JSONObject> getReferenceTypes(Integer itemTypeId);
 	public List<PaymentTypeVO> getAllPaymentTypes(); 
-	public void insertProjectEntry(Integer entryId, Integer projectId
+	public void upsertProjectEntry(Integer entryId, Integer projectId
             , Integer entryTypeId, String description 
             , Float discount, Float totalPrice
             , String comments);
-	public void insertEntryItem(Integer entryId, Integer itemTypeId
-                              , String reference, String description 
-                              , Integer  quantity, Float priceByUnit
-                              , Float discount, Float totalPrice
-                              , String comments);
+	public void upsertEntryItem(Integer itemId, Integer entryId, Integer itemTypeId
+                      , String reference, String description , Integer  quantity
+                      , Float priceByUnit, Float discount, Float totalPrice
+                      , String comments);
 	public void insertProject(ProjectVO project);
 	public Integer getNewEntryId();
 	public List<JSONObject> getAllProjectsJson();

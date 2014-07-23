@@ -88,6 +88,7 @@
 	     		              + "|"  + $("#discount_" + entryId).val()
 	     		              + "|"  + $("#totalPrice_" + entryId).val()
 	     		              + "|"  + $("#comments_" + entryId).val()
+	     		              + "|"  + entryId
 	     		              + "|";
 	     		items = $("#" + entries[i].id).next().find("table.items tr");
 	     		for(var j = 0; j < items.length ; j++){
@@ -105,6 +106,7 @@
 	     			           +  "°" + $("#itemDiscount_" + itemId).val()
 	     			           +  "°" + $("#itemTotalPrice_" + itemId).val()
 	     			           +  "°" + $("#itemComments_" + itemId).val()
+	     			           +  "°" + itemId
 	     			           +  "^";
 	     		}
 	     		strEntries += "~";
@@ -125,8 +127,12 @@
 	    }
 	    
 	    function commit(){
+	      var isUpdate = '${enableEdition}';
 	      if(validate()){
 	    	prepareSubmit();
+	    	if(isUpdate == 'true'){
+	    	  $('#mainForm').attr('action', '/codex/project/update.do?projectId=' +  $("#projectId").val() + "&strEntries=" + $("#strEntries").val());
+	    	}
 	    	$("#mainForm").submit();
 	      }
 	    }
@@ -176,14 +182,14 @@
 							  <button id="statusButton" class="searchButton" onclick="advanceStatus()"></button>
 							</c:if>
 							<c:if test="${not enableEdition}">
-							   <button class="searchButton" onclick="commit();">Guardar</button>
 							   <button class="searchButton" onclick="window.history.back();">Cancelar</button>
 							</c:if>
+							<button class="searchButton" onclick="commit();">Guardar</button>
 							<button class="searchButton" onclick="window.history.back();">Descartar</button>
 							<hr>
 						</div>		
 <!--   ENCABEZADO CEDULA   -->			
-                        <form:form  id="mainForm" commandName="project" action="/codex/project/insert.do">
+                        <form:form  id="mainForm" commandName="project" action="/codex/project/insert.do?project.strEntries=seeee">
                            <table>
 							  <tr>
 								<td  style="width:140px">No. Cedula</td>
@@ -318,7 +324,7 @@
 							</thead>
 							<tbody>
 							   <c:forEach var="entry" items="${project.entries}" varStatus="index">
-                                  <tr class="part">
+                                  <tr class="part" id="entry_${entry.id}">
                                        <td>${index.index + 1}</td>
                                        <td colspan="2">
                                            <input type="text" style="width:360px" value="${entry.entryTypeDescription}" readonly/>
@@ -333,14 +339,14 @@
 	                                        <input type="number"  style="width:50px" value="${entry.totalPrice}" readonly/>
 	                                   </td>
 	                                   <td>
-	                                        <input type="text" style="width:80px" value="${entry.comments}" readonly/>
+	                                        <input type="text" style="width:80px" value="${entry.comments}" id="comments_${entry.id}" class="entryComments"/>
 	                                   </td>
                                  </tr> 
                                  <tr>
                                       <td colspan="9">
 	                                      <table class="items" style="width:100%">
 		                                      <c:forEach var="item" items="${entry.items}" varStatus="index1">
-			                                     <tr>
+			                                     <tr id="item_${item.id}">
                                                      <td></td>
 	                                                 <td>
 		                                                <input type="text" style="width:147px" value="${item.itemTypeDescription}" readonly/>
@@ -364,7 +370,7 @@
 	                                                      <input type="number" style="width:40px" value="${item.totalPrice}" readonly/>
 	                                                 </td>
 	                                                 <td>
-	                                                      <input type="text" style="width:80px" value="${item.comments}" readonly/>
+	                                                      <input type="text" style="width:80px" value="${item.comments}" id="itemComments_${item.id}" class="itemComments"/>
 	                                                 </td>
                                                </tr>
 			                                </c:forEach>
@@ -405,9 +411,9 @@
 							  <button class="searchButton" onclick="window.location = projectDetailAut.html">Autorizar</button>
 							</c:if>
 							<c:if test="${not enableEdition}">
-							   <button class="searchButton" onclick="commit();">Guardar</button>
 							   <button class="searchButton" onclick="window.history.back();">Cancelar</button>
 							</c:if>
+							<button class="searchButton" onclick="commit();">Guardar</button>
 							<button class="searchButton" onclick="window.history.back();">Descartar</button>
 						</div>
 					</div>					

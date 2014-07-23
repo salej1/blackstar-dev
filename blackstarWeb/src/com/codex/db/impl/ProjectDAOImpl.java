@@ -9,7 +9,6 @@ import com.blackstar.db.dao.mapper.JSONRowMapper;
 import com.blackstar.model.Followup;
 import com.blackstar.model.User;
 import com.codex.db.ProjectDAO;
-import com.codex.vo.ClientVO;
 import com.codex.vo.CurrencyTypesVO;
 import com.codex.vo.DeliverableTypesVO;
 import com.codex.vo.DeliverableVO;
@@ -171,23 +170,24 @@ public class ProjectDAOImpl extends AbstractDAO
   }
   
   @Override
-  public void insertProjectEntry(Integer entryId, Integer projectId
+  public void upsertProjectEntry(Integer entryId, Integer projectId
 		                         , Integer entryTypeId, String description 
 		                         , Float discount, Float totalPrice
 		                         , String comments) {
-	 String sqlQuery = "CALL CodexInsertProjectEntry(?, ?, ?, ?, ?, ?, ?)";
+	 String sqlQuery = "CALL CodexUpsertProjectEntry(?, ?, ?, ?, ?, ?, ?)";
 	 getJdbcTemplate().update(sqlQuery, new Object[]{entryId, projectId
 	      , entryTypeId, description, discount, totalPrice, comments});
   }
   
   @Override
-  public void insertEntryItem(Integer entryId, Integer itemTypeId
+  public void upsertEntryItem(Integer itemId, Integer entryId, Integer itemTypeId
 		                    , String reference, String description 
 		                    , Integer  quantity, Float priceByUnit
 		                    , Float discount, Float totalPrice, String comments){
-    String sqlQuery = "CALL CodexInsertProjectEntryItem(?, ?, ?, ?, ?, ?, ? ,?, ?)";
-	getJdbcTemplate().update(sqlQuery, new Object[]{entryId, itemTypeId, reference
-		   , description, quantity, priceByUnit, discount, totalPrice, comments});
+    String sqlQuery = "CALL CodexUpsertProjectEntryItem(?, ?, ?, ?, ?, ?, ?, ? ,?, ?)";
+	getJdbcTemplate().update(sqlQuery, new Object[]{itemId, entryId, itemTypeId
+			           , reference, description, quantity, priceByUnit, discount
+			                                           , totalPrice, comments});
   }
   
   @Override

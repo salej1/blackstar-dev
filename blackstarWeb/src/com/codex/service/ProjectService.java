@@ -40,5 +40,6 @@ public interface ProjectService {
   public ProjectVO getProjectDetail(Integer projectId);
   public List<DeliverableVO> getDeliverables(Integer projectId);
   public void advanceStatus(ProjectVO project);
+  public void updateEntries(ProjectVO project);
   
 }
