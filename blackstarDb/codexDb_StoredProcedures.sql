@@ -410,6 +410,19 @@ BEGIN
 END$$
 
 -- -----------------------------------------------------------------------------
+	-- blackstarDb.CodexInsertProject
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstardb.GetLocationsByZipCode$$
+CREATE PROCEDURE blackstardb.`GetLocationsByZipCode`(pZipCode VARCHAR(5))
+BEGIN
+
+   SELECT * 
+   FROM location
+   WHERE zipCode = pZipCode;
+
+END$$
+
+-- -----------------------------------------------------------------------------
 	-- blackstarDb.CodexUpsertProspect
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.CodexUpsertProspect$$

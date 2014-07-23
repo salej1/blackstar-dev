@@ -142,7 +142,7 @@ CREATE TABLE IF NOT EXISTS blackstarDb.codexProjectEntryTypes(
 )ENGINE=INNODB;
 
 CREATE TABLE IF NOT EXISTS blackstarDb.codexProjectEntry(
-  _id Int(11) NOT NULL AUTO_INCREMENT,
+  _id Int(11) NOT NULL,
   projectId Int(11) NOT NULL,
   entryTypeId Int(2) NOT NULL,
   description Text NOT NULL,

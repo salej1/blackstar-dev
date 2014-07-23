@@ -63,7 +63,7 @@
 	    } 
 	    function addItem(entryNumber){
 	    	itemNumber++;
-	    	$('#items_' + entryNumber).append('<tr id="item_' + itemNumber + '" name="' + itemNumber + '"><td><button class="searchButton" onclick="removeItem(\'item_' + itemNumber +'\')" style="width:10px">-</button></td><td><select onchange="setReferenceTypes(this.value, referenceId_' + itemNumber + ', reference_' + itemNumber + ')" id="entryItemTypeId_' + itemNumber + '" style="width:157px" class="required"><option value="">Seleccione</option><c:forEach var="ss" items="${entryItemTypes}"><option value="${ss.id}">${ss.name}</option></c:forEach></select></td><td><select id="referenceId_' + itemNumber + '" disabled="true" style="width:155px" class="required"><option value="-1">Seleccione</option></select><input type="text" id="reference_' + itemNumber + '" style="display: none;width:145px"/></td><td><input type="text" id="itemDescription_' + itemNumber + '" style="width:180px" class="required"/></td><td><input type="number" id="itemQuantity_' + itemNumber + '" style="width:40px" class="required"/></td><td><input type="number" id="itemPriceByUnit_' + itemNumber + '" style="width:40px" class="required"/></td><td><input type="number" id="itemDiscount_' + itemNumber + '" style="width:40px" class="required"/></td><td><input type="number" id="itemTotalPrice_' + itemNumber + '" style="width:40px" class="required"/></td><td><input type="text" id="itemComments_' + itemNumber + '" style="width:80px" class="required"/></td></tr>');
+	    	$('#items_' + entryNumber).append('<tr id="item_' + itemNumber + '" name="' + itemNumber + '"><td><button class="searchButton" onclick="removeItem(\'item_' + itemNumber +'\')" style="width:10px">-</button></td><td><select onchange="setReferenceTypes(this.value, referenceId_' + itemNumber + ', reference_' + itemNumber + ')" id="entryItemTypeId_' + itemNumber + '" style="width:157px" class="required"><option value="">Seleccione</option><c:forEach var="ss" items="${entryItemTypes}"><option value="${ss.id}">${ss.name}</option></c:forEach></select></td><td><select id="referenceId_' + itemNumber + '" disabled="true" style="width:155px" class="required"><option value="-1">Seleccione</option></select><input type="text" id="reference_' + itemNumber + '" style="display: none;width:145px" class="required"/></td><td><input type="text" id="itemDescription_' + itemNumber + '" style="width:180px" class="required"/></td><td><input type="number" id="itemQuantity_' + itemNumber + '" style="width:40px" class="required"/></td><td><input type="number" id="itemPriceByUnit_' + itemNumber + '" style="width:40px" class="required"/></td><td><input type="number" id="itemDiscount_' + itemNumber + '" style="width:40px" class="required"/></td><td><input type="number" id="itemTotalPrice_' + itemNumber + '" style="width:40px" class="required"/></td><td><input type="text" id="itemComments_' + itemNumber + '" style="width:80px" class="required"/></td></tr>');
 	    }
 	    
 	    function removeItem(itemId){
@@ -80,6 +80,7 @@
 	     	var strEntries = '';
 	     	var entryId, itemId;
 	     	var items;
+	     	var itemReference;
 	     	for(var i = 0; i < entries.length ; i++){
 	     		entryId = entries[i].id.substring(6);
 	     		strEntries += $("#entryTypeId_" + entryId).val()
@@ -91,8 +92,13 @@
 	     		items = $("#" + entries[i].id).next().find("table.items tr");
 	     		for(var j = 0; j < items.length ; j++){
 	     			itemId = items[j].id.substring(5);
+	     			if($("#referenceId_" + itemId).is(":visible")){
+	     				itemReference = $("#referenceId_" + itemId).val();
+	     			} else {
+	     				itemReference = $("#reference_" + itemId).val();
+	     			}
 	     			strEntries += $("#entryItemTypeId_" + itemId).val()
-	     			           +  "°" + $("#referenceId_" + itemId).val()
+	     			           +  "°" + itemReference
 	     			           +  "°" + $("#itemDescription_" + itemId).val()
 	     			           +  "°" + $("#itemQuantity_" + itemId).val()
 	     			           +  "°" + $("#itemPriceByUnit_" + itemId).val()
@@ -110,7 +116,7 @@
 	    function validate(){
 	    	var notNullFields = $(".required");
 	    	for(var i = 0; i < notNullFields.length ; i++){
-	    		if(notNullFields[i].value == ""){
+	    		if($("#" + notNullFields[i].id).is(":visible") && notNullFields[i].value == ""){
 	    			alert ("Favor de completar los campos requeridos");
 	    			return false;
 	    		}

@@ -65,7 +65,12 @@ public class ClientController extends AbstractController {
   @RequestMapping(value = "/getLocationsByZipCode.do", produces="application/json")
   public @ResponseBody String getLocationsByZipCode(@RequestParam(required = true) String zipCode
 		                                                        , ModelMap model) {
-	  return service.getLocationsJSONByZipCode(zipCode);
+	  try {
+	        return service.getLocationsJSONByZipCode(zipCode);
+	  } catch (Exception e) {
+            System.out.println("getLocationsByZipCodeError=>" + e);
+	  }
+	  return null;
   }
   
 }
