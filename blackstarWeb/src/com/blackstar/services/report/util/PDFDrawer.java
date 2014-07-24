@@ -37,6 +37,10 @@ public class PDFDrawer {
 	page = new Page(pdf, A4.PORTRAIT);
   }
   
+  public void changeToNewPage() throws Exception {
+	 page = new Page(pdf, A4.PORTRAIT);
+  }
+  
   public ByteArrayOutputStream getStream(){
 	return stream;
   }

@@ -22,4 +22,4 @@ prodDatabasePassword=
 prodDatabaseUser=
 prodInstanceName=salej1-blackstar-dev\:salej1-blackstar-dev
 prodIsConfigured=true
-validationExclusions=src/com/blackstar/services/ReportUtil.java
+validationExclusions=src/com/blackstar/services/ReportUtil.java|src/com/codex/service/pdf/PriceProposalReport.java
