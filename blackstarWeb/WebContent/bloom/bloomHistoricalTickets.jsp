@@ -45,10 +45,11 @@
 					<th>Estatus</th>
 					<th style="width:140px;">Creado</th>
 					<th>Solicitante</th>
-					<th style="width:300px;">Tipo</th>
+					<th style="width:200px;">Tipo</th>
 					<th>Fecha Limite</th>
 					<th>Proyecto</th>
 					<th>Oficina</th>
+					<th>Area de apoyo</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -155,12 +156,13 @@
 							"aoColumns" : [ 
 							{"mData" : "ticketNumber"}, 
 							{"mData" : "statusDescr"}, 
-							{"mData" : "createdStr"}, 
+							{"mData" : "created"}, 
 							{"mData" : "petitionerArea"}, 
 							{"mData" : "serviceTypeDescr"}, 
-							{"mData" : "deadlineStr"}, 
+							{"mData" : "dueDate"}, 
 							{"mData" : "project"}, 
-							{"mData" : "officeName"}
+							{"mData" : "officeName"},
+							{"mData" : "serviceArea"}
 							],
 							"aoColumnDefs" : [ {
 								"mRender" : function(data, type,

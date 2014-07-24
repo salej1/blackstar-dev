@@ -60,7 +60,6 @@ public interface InternalTicketsDao {
 	 */
 	public List<InternalTicketBean> getTickets(Long userId) throws DAOException;
 
-  public List<InternalTicketBean> getPendingTickets ();
   public List<TicketDetailDTO> getTicketDetail(Integer ticketId);
   public List<TicketTeamDTO> getTicketTeam(Integer ticketId);
   public void addFollow(Integer ticketId, Integer userId, String comment);

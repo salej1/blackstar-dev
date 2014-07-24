@@ -169,25 +169,22 @@ public class InternalTicketsController extends AbstractController {
 	}
 
   @RequestMapping(value = "/ticketDetail/show.do", method = RequestMethod.GET)
-  public String showDetail(@RequestParam(required = true) Integer ticketId
-				                                       , ModelMap model) {
+  public String showDetail(@RequestParam(required = true) Integer ticketId,
+					ModelMap model,
+				    @ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession) {
 	TicketDetailDTO ticketDetail = null;
 	
 	try {
 
 		 if(ticketId != null && ticketId > 0){
-		   ticketDetail = internalTicketsService.getTicketDetail(ticketId);
-		   model.addAttribute("ticketTeam", internalTicketsService
-				                        .getTicketTeam(ticketId));
+		   ticketDetail = internalTicketsService.getTicketDetail(ticketId, userSession.getUser().getBlackstarUserId());
+		   model.addAttribute("ticketTeam", internalTicketsService.getTicketTeam(ticketId));
 		   model.addAttribute("ticketDetail", ticketDetail);
-		   model.addAttribute("attachmentFolder", gdService
-				        .getAttachmentFolderId(ticketDetail.getTicketNumber()));
+		   model.addAttribute("attachmentFolder", gdService.getAttachmentFolderId(ticketDetail.getTicketNumber()));
 		   model.addAttribute("accessToken", gdService.getAccessToken());
 		   model.addAttribute("staff", udService.getStaff());
-		   model.addAttribute("followUps", internalTicketsService
-				                        .getFollowUps(ticketId));
-		   model.addAttribute("deliverableTypes", internalTicketsService
-				                                .getDeliverableTypes(ticketDetail.getServiceTypeId()));
+		   model.addAttribute("followUps", internalTicketsService.getFollowUps(ticketId));
+		   model.addAttribute("deliverableTypes", internalTicketsService.getDeliverableTypes(ticketDetail.getServiceTypeId()));
 		   model.addAttribute("deliverableTrace", internalTicketsService.getTicketDeliverable(ticketDetail.get_id()));
 		 }
 	} catch (Exception e) {
@@ -388,7 +385,7 @@ public class InternalTicketsController extends AbstractController {
 	 * @param model
 	 * @return
 	 */
-	@RequestMapping(value = "/guardarTicket.do", method = RequestMethod.POST, produces = "application/json")
+	@RequestMapping(value = "/saveTicket.do", method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
 	RespuestaJsonBean guardarAtencion(
 			@ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession,
@@ -477,7 +474,7 @@ public class InternalTicketsController extends AbstractController {
 			ticket.setServiceTypeId(slTipoServicio); 
 			ticket.setDescription(fldDescripcion);
 			ticket.setReponseInTime(fldDiasRespuesta);
-			ticket.setDeadline(fldLimite);
+			ticket.setDueDate(fldLimite);
 			ticket.setDesiredDate(fldDesiredDate);
 			ticket.setProject(slProyecto);
 			ticket.setOfficeId(slOficina);

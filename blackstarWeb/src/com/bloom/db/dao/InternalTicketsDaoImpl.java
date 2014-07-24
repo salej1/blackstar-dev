@@ -48,13 +48,6 @@ public class InternalTicketsDaoImpl extends AbstractDAO implements InternalTicke
 
 	private static final String EMPTY_CONSULTA = "No se encontraron registros";
 
-	public List<InternalTicketBean> getPendingTickets() {
-		String sqlQuery = "CALL getPendingTickets();";
-		List<InternalTicketBean> listaTickets = new ArrayList<InternalTicketBean>();
-		InternalTicketBean ticket = new InternalTicketBean();
-		return getJdbcTemplate().query(sqlQuery, new InternalTicketMapper());
-	}
-
 	public List<TicketDetailDTO> getTicketDetail(Integer ticketId) {
 		StringBuilder sqlBuilder = new StringBuilder(
 				"CALL GetBloomTicketDetail(?);");
@@ -171,9 +164,10 @@ public class InternalTicketsDaoImpl extends AbstractDAO implements InternalTicke
 			ticket.setPetitionerAreaId(rs.getInt("applicantAreaId"));
 			ticket.setServiceTypeDescr(rs.getString("serviceName"));
 			ticket.setServiceTypeId(rs.getInt("serviceTypeId"));
+			ticket.setServiceArea(rs.getString("serviceArea"));
 
 			// responseTime
-			ticket.setDeadline(rs.getDate("dueDate"));
+			ticket.setDueDate(rs.getDate("dueDate"));
 			ticket.setDesiredDate(rs.getDate("desiredDate"));
 			ticket.setProject(rs.getString("project"));
 			ticket.setOfficeName(rs.getString("officeName"));
@@ -318,7 +312,7 @@ public class InternalTicketsDaoImpl extends AbstractDAO implements InternalTicke
 			Object[] args = new Object[] { ticket.getApplicantUserId(),
 					ticket.getOfficeId(), ticket.getServiceTypeId(),
 					ticket.getStatusId(), ticket.getApplicantAreaId(),
-					ticket.getDeadline(), ticket.getProject(),
+					ticket.getDueDate(), ticket.getProject(),
 					ticket.getTicketNumber(), ticket.getDescription(),
 					ticket.getCreated(), ticket.getCreatedUserName(),
 					ticket.getCreatedUserId(), ticket.getReponseInTime(),
@@ -428,11 +422,9 @@ public class InternalTicketsDaoImpl extends AbstractDAO implements InternalTicke
 
 		try {
 
-			Object[] args = new Object[] { teamMember.getIdTicket(),
-					teamMember.getWorkerRoleId(), teamMember.getUserId() };
+			Object[] args = new Object[] { teamMember.getIdTicket(), teamMember.getWorkerRoleId(), teamMember.getUserId() };
 
-			idTeamMemberTicket = getJdbcTemplate().queryForInt(
-					sqlBuilder.toString(), args);
+			idTeamMemberTicket = getJdbcTemplate().queryForInt(sqlBuilder.toString(), args);
 
 		} catch (Exception e) {
 			Logger.Log(LogLevel.WARNING, EMPTY_CONSULTA, e);

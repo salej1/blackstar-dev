@@ -63,7 +63,9 @@
       <td></td>
 		</tr>
 		<tr>
-			<td colspan="2"><button class="searchButton" onclick="showLoaderPicker();">Adjuntar Archivo</button></td>
+      <c:if test="${ticketDetail.userCanClose == true}">
+  			<td colspan="2"><button class="searchButton" onclick="showLoaderPicker();">Adjuntar Archivo</button></td>
+      </c:if>
 		</tr>
 	</tbody>
 </table>

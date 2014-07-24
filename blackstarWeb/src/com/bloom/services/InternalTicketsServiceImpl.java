@@ -21,6 +21,7 @@ import com.bloom.common.exception.ServiceException;
 import com.bloom.common.utils.DataTypeUtil;
 import com.bloom.db.dao.CatalogInternalTicketsDao;
 import com.bloom.db.dao.InternalTicketsDao;
+import com.bloom.model.dto.AdvisedUserDTO;
 import com.bloom.model.dto.DeliverableFileDTO;
 import com.bloom.model.dto.DeliverableTypeDTO;
 import com.bloom.model.dto.PendingAppointmentsDTO;
@@ -43,13 +44,7 @@ public class InternalTicketsServiceImpl extends AbstractService
 	this.uDAO = uDAO;
   }
   
-  @Override
-  public List<InternalTicketBean> getPendingTickets(){
-	List<InternalTicketBean> listaTickets = internalTicketsDao.getPendingTickets();
-	return listaTickets;
-  }
-
-	 private CatalogInternalTicketsDao catalogInternalTicketsDao;
+  private CatalogInternalTicketsDao catalogInternalTicketsDao;
 
 
     @Override
@@ -127,7 +122,7 @@ public class InternalTicketsServiceImpl extends AbstractService
     	     	 
     	 Date fechaActual = new Date();
     	 
-    	 if(ticket.getDeadline().getTime()<fechaActual.getTime()){
+    	 if(ticket.getDueDate().getTime()<fechaActual.getTime()){
     		 throw new ServiceException("La fecha limite debe ser mayor a la fecha actual.");
     	 }
     	
@@ -139,7 +134,7 @@ public class InternalTicketsServiceImpl extends AbstractService
     public void registrarNuevoTicket(InternalTicketBean ticket) throws ServiceException {
     	ticket.setStatusId(1);//ticket nuevo.
     	
-    	List<CatalogoBean<Integer>> miebrosDtos;
+    	List<AdvisedUserDTO> teamDto;
     	List<CatalogoBean<Integer>> doctos;
     	
     	List<TicketTeamBean> miembros= new ArrayList<TicketTeamBean>();
@@ -157,17 +152,14 @@ public class InternalTicketsServiceImpl extends AbstractService
             	//miebrosDtos=catalogInternalTicketsDao.getEmployeesByGroup("sysCoordinador");
             	
             	//obtenemos la lista de usuarios de enterados para bloomTicketTeam
-            	miebrosDtos=catalogInternalTicketsDao.getAdviceUsers(ticket.getApplicantAreaId(), ticket.getServiceTypeId());
+            	teamDto = catalogInternalTicketsDao.getAdviceUsers(ticket.getApplicantAreaId(), ticket.getServiceTypeId());
             	
-            	for(CatalogoBean<Integer> coordinador:miebrosDtos){
-            		//los cordinadores entran con rol de colaborador.
-            		//coordinador.getId() --idUser
-            		//coordinador.getExtra()--email
-            		//coordinador.getDescripcion() --UserName
-            		miembros.add(new TicketTeamBean(idTicket, 2L, 
-            				(long)coordinador.getId(),
-            				coordinador.getExtra(),
-            				coordinador.getDescripcion()));
+            	for(AdvisedUserDTO teamM : teamDto){
+
+            		miembros.add(new TicketTeamBean(idTicket, (long)teamM.getWorkerRoleTypeId(), 
+            				(long)teamM.getId(),
+            				teamM.getName(),
+            				teamM.getEmail()));
             		
             	}
             	
@@ -194,11 +186,7 @@ public class InternalTicketsServiceImpl extends AbstractService
             		//enviar correos a los coordinadores involucrados.
             		sendAssignationEmail(ticket,miembro);
             	}
-            	
-            	
             }
-        	
-
         } catch (DAOException ex) {
             throw new ServiceException("No se pudo registrar requisicion ");
         }
@@ -226,14 +214,14 @@ public class InternalTicketsServiceImpl extends AbstractService
 		bodySb.append(String.format("\r\n\r\n Fecha y Hora de recepcion: %s", sdf.format(ticket.getCreated())));
 		bodySb.append(String.format("\r\n\r\n Departamento Solicitante: %s", ticket.getPetitionerArea()));
 		bodySb.append(String.format("\r\n\r\n Requerimiento: %s", ticket.getDescription()));
-		bodySb.append(String.format("\r\n\r\n Fecha Solicitada: %s", sdf.format(ticket.getDeadline())));
+		bodySb.append(String.format("\r\n\r\n Fecha Solicitada: %s", sdf.format(ticket.getDueDate())));
 		bodySb.append(String.format("\r\n\r\n Proyecto: %s", ticket.getProject()));
 		bodySb.append(String.format("\r\n\r\n Oficina: %s", ticket.getOfficeName()));
 		bodySb.append(String.format("\r\n\r\n Nota o liga de Anexos: %s", ""));
 		bodySb.append(String.format("\r\n\r\n Tiempo de respuesta máximo en días: %s %s", ticket.getServiceTypeDescr(),ticket.getReponseInTime()));
 
 
-		String who = "mesa-de-ayuda@gposac.com.mx";
+		String who = "portal-servicios@gposac.com.mx";
 
 		mail.sendEmail(who, to, subject, bodySb.toString());
     }
@@ -243,10 +231,24 @@ public class InternalTicketsServiceImpl extends AbstractService
 	}
 
     
-
-  public TicketDetailDTO getTicketDetail(Integer ticketId){
+ public TicketDetailDTO getTicketDetail(Integer ticketId){
+	 List<TicketDetailDTO> details = internalTicketsDao.getTicketDetail(ticketId);
+		if(details.size() > 0){
+			return details.get(0);
+		}
+		return null;
+ }
+  public TicketDetailDTO getTicketDetail(Integer ticketId, Integer userId){
 	List<TicketDetailDTO> details = internalTicketsDao.getTicketDetail(ticketId);
 	if(details.size() > 0){
+		List<TicketTeamDTO> team = internalTicketsDao.getTicketTeam(ticketId);
+		for(TicketTeamDTO tm : team){
+			if(tm.getBlackstarUserId() == userId && tm.getWorkerRoleTypeId() == 1){
+				details.get(0).setUserCanClose(true);
+				break;
+			}
+		}
+
 		return details.get(0);
 	}
 	return null;

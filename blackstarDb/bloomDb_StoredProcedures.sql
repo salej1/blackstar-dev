@@ -129,11 +129,11 @@ BEGIN
 			   LEAVE loop_lbl;
 		  END IF;                           
       SET bolResponseInTime = 0;
-      SET createdByUsrId = IFNULL((SELECT blackstarUserId from blackstarUser where email = 'portal-servicios@gposac.com.mx'), -1);                               
-      SET applicantUserId = IFNULL((SELECT blackstarUserId from blackstarUser where email = createdByUsr), -1);
-      SET officeL = IFNULL((SELECT officeId from office where officeName = officeStr), '?');
-      SET serviceTypeId = IFNULL((SELECT _id from bloomServiceType where name = serviceType), -1);
-      SET applicantAreaId = IFNULL((SELECT _id from bloomApplicantArea where name = applicantArea), -1);
+      SET createdByUsrId = IFNULL((SELECT blackstarUserId from blackstarUser WHERE email = 'portal-servicios@gposac.com.mx'), -1);                               
+      SET applicantUserId = IFNULL((SELECT blackstarUserId from blackstarUser WHERE email = createdByUsr), -1);
+      SET officeL = IFNULL((SELECT officeId from office WHERE officeName = officeStr), '?');
+      SET serviceTypeId = IFNULL((SELECT _id from bloomServiceType WHERE name = serviceType), -1);
+      SET applicantAreaId = IFNULL((SELECT _id from bloomApplicantArea WHERE name = applicantArea), -1);
       IF project IS NULL THEN
         SET project = 'UNKNOWN';
       END IF;
@@ -198,7 +198,7 @@ BEGIN
       IF done = 1 THEN 
 			   LEAVE loop_lbl;
 		  END IF;  
-      SET ticketId =(SELECT _id from bloomTicket where ticketNumber = ticket);
+      SET ticketId =(SELECT _id from bloomTicket WHERE ticketNumber = ticket);
       INSERT INTO followUp(bloomTicketId,followup, created, createdBy, createdByUsr) 
              VALUES(ticketId, comment, STR_TO_DATE(createdStr, '%y/%m/%d'), 'BloomDataLoader', 'portal-servicios@gposac.com.mx');
       SET counter = counter + 1;
@@ -236,10 +236,10 @@ BEGIN
 			   LEAVE loop_lbl;
 		  END IF;
       -- INSERT INTO messages VALUES (CONCAT('TICKET: ', ticket));
-      SET ticketId =(SELECT _id from bloomTicket where ticketNumber = ticket);
+      SET ticketId =(SELECT _id from bloomTicket WHERE ticketNumber = ticket);
       -- INSERT INTO messages VALUES (CONCAT('TICKET_ID: ', ticketId));
       -- INSERT INTO messages VALUES (CONCAT('USER: ', userName));
-      SET userId = IFNULL((SELECT blackstarUserId from blackstarUser where name LIKE CONCAT(userName,'%')), -1);
+      SET userId = IFNULL((SELECT blackstarUserId from blackstarUser WHERE name LIKE CONCAT(userName,'%')), -1);
       -- INSERT INTO messages VALUES (CONCAT('USER_ID: ', userId));
       INSERT INTO bloomTicketTeam(ticketId,workerRoleTypeId, blackstarUserId) 
              VALUES(ticketId,1, userId);
@@ -396,12 +396,11 @@ IF NOT EXISTS (SELECT * FROM bloomTicketTeam
     INSERT INTO blackstarDb.bloomTicketTeam(ticketId, workerRoleTypeId, blackstarUserId, assignedDate)
     VALUES(pTicketId, pWorkerRoleTypeId, pblackstarUserId, NOW());   
 ELSE
-   UPDATE blackstarDb.bloomTicketTeam SET assignedDate = NOW(), workerRoleTypeId = pWorkerRoleTypeId
-   WHERE ticketId = pTicketId AND blackstarUserId = pblackstarUserId;
-END IF;
-IF (pWorkerRoleTypeId = 1) THEN
-    UPDATE blackstarDb.bloomTicketTeam SET workerRoleTypeId = 2
-    WHERE ticketId = pTicketId AND blackstarUserId != pblackstarUserId;
+   UPDATE blackstarDb.bloomTicketTeam SET 
+      assignedDate = NOW(), 
+      workerRoleTypeId = pWorkerRoleTypeId
+   WHERE ticketId = pTicketId 
+    AND blackstarUserId = pblackstarUserId;
 END IF;
     
 END$$
@@ -530,15 +529,20 @@ BEGIN
     ti.officeId, 
     o.officeName,
     ti.statusId,
-    s.name as statusTicket
+    s.name as statusTicket,
+    a.bloomServiceArea as serviceArea
   FROM bloomTicket ti
        INNER JOIN bloomTicketTeam tm on (ti._id = tm.ticketId)
        INNER JOIN bloomApplicantArea ba on (ba._id = ti.applicantAreaId)
        INNER JOIN bloomServiceType st on (st._id = ti.serviceTypeId)
        INNER JOIN office o on (o.officeId = ti.officeId)
        INNER JOIN bloomStatusType s on (s._id = ti.statusId)
-  WHERE tm.blackstarUserId=UserId
-        AND ti.statusId < 6 AND ti.statusId != 4;
+       INNER JOIN bloomServiceArea a ON a.bloomServiceAreaId = st.bloomServiceAreaId
+  WHERE tm.blackstarUserId = UserId 
+      AND tm.workerRoleTypeId = 1
+      AND ti.statusId < 6 
+      AND ti.statusId != 4
+  ORDER BY ti.statusId, ti.created;
 END$$
 
 -- -----------------------------------------------------------------------------
@@ -807,10 +811,7 @@ END$$
 	-- blackstarDb.AddMemberTicketTeam
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.AddMemberTicketTeam$$
-CREATE PROCEDURE blackstarDb.AddMemberTicketTeam (  
-  pTicketId Int(11),
-  pWorkerRoleTypeId Int(11),
-  pBlackstarUserId Int(11))
+CREATE PROCEDURE blackstarDb.AddMemberTicketTeam (pTicketId Int(11),  pWorkerRoleTypeId Int(11),  pBlackstarUserId Int(11))
 BEGIN
 
   IF (SELECT count(*) FROM bloomTicketTeam WHERE ticketId = pTicketId AND blackstarUserId = pBlackstarUserId) = 0 THEN
@@ -820,6 +821,10 @@ BEGIN
       (pTicketId,pWorkerRoleTypeId,pBlackstarUserId,CURRENT_TIMESTAMP());
     SELECT LAST_INSERT_ID();
   ELSE
+    UPDATE bloomTicketTeam SET
+      workerRoleTypeId = pWorkerRoleTypeId,
+      assignedDate = now()
+    WHERE ticketId = pTicketId AND blackstarUserId = pBlackstarUserId;
     SELECT 0;
   END IF;
 	
@@ -969,7 +974,7 @@ DROP PROCEDURE IF EXISTS blackstarDb.GetBloomPendingSurveyTable$$
 CREATE PROCEDURE blackstarDb.`GetBloomPendingSurveyTable`(pTicketId INTEGER)
 BEGIN
 SELECT distinct bt.ticketNumber ticketNumber, baa.name applicantArea, bt.project project,
-       bu.name risponsableName
+       GROUP_CONCAT(DISTINCT bu.name ORDER BY bu.name SEPARATOR ', ') AS risponsableName
 FROM bloomTicket bt, bloomApplicantArea baa, blackstarUser bu, bloomTicketTeam btt
 WHERE createdByUsr = pTicketId
       AND bt.applicantAreaId = baa._id
@@ -978,7 +983,8 @@ WHERE createdByUsr = pTicketId
       AND btt.blackstarUserId = bu.blackstarUserId
       AND NOT EXISTS (SELECT * 
                       FROM bloomSurvey bs 
-                      WHERE bt._id = bs.bloomTicketId);
+                      WHERE bt._id = bs.bloomTicketId)
+      GROUP BY bt._id;
 END$$
 
 DROP PROCEDURE IF EXISTS blackstarDb.InsertbloomSurvey$$
@@ -1258,14 +1264,14 @@ BEGIN
 
 	SET noTicketsSatisfactory = (select count(id) from (
 		select t._id as id, t.created ,t.dueDate,t.responseDate,date(t.responseDate),t.statusId from bloomTicket t
-		where t.statusId=6 -- tickets cerrados
+		WHERE t.statusId=6 -- tickets cerrados
 		AND t.created>= startCreationDate
 		AND t.created <= endCreationDate
 		and date(t.responseDate) <= t.dueDate) as satisfactory);
 
 	SET noTicketsUnsatisfactory = (select count(id) from (
 		select t._id as id, t.created ,t.dueDate,t.responseDate,date(t.responseDate),t.statusId from bloomTicket t
-		where t.statusId=6 -- tickets cerrados 
+		WHERE t.statusId=6 -- tickets cerrados 
 		AND t.created>= startCreationDate
 		AND t.created <= endCreationDate
 		and date(t.responseDate) > t.dueDate) as unatisfactory);
@@ -1298,7 +1304,7 @@ BEGIN
 
 	SET noTicketsEvaluationSatisfactory = (select count(id) from (
 		select t._id as id, t.evaluation, t.created ,t.dueDate,t.responseDate,date(t.responseDate),t.statusId from bloomTicket t
-		where t.evaluation>=initEvaluationValue
+		WHERE t.evaluation>=initEvaluationValue
 		AND t.statusId=6 -- tickets cerrados
 		AND t.created>= startCreationDate
 		AND t.created <= endCreationDate
@@ -1306,7 +1312,7 @@ BEGIN
 
 	SET noTicketsEvaluationUnsatisfactory = (select count(id) from (
 		select t._id as id, t.evaluation, t.created ,t.dueDate,t.responseDate,date(t.responseDate),t.statusId from bloomTicket t
-		where t.evaluation<initEvaluationValue
+		WHERE t.evaluation<initEvaluationValue
 		AND t.statusId=6 -- tickets cerrados
 		AND t.created>= startCreationDate
 		AND t.created <= endCreationDate
@@ -1385,47 +1391,55 @@ BEGIN
 
   IF(statusTicket <= 0) THEN
     SELECT 
-      ti._id as id, 
+      ti._id AS id, 
       ti.ticketNumber, 
-      ti.created, 
+      ti.created AS created,
       ti.applicantAreaId, 
-      ba.name as areaName, 
+      ba.name AS areaName, 
       ti.serviceTypeId, 
-      st.name as serviceName, 
+      st.name AS serviceName, 
       st.responseTime, 
       ti.project, 
       ti.officeId, 
       o.officeName,
       ti.statusId, 
-      s.name as statusTicket 
+      s.name AS statusTicket,
+      ti.dueDate AS dueDate,
+      ti.desiredDate AS desiredDate,
+      a.bloomServiceArea AS serviceArea
     FROM bloomTicket ti 
       INNER JOIN bloomApplicantArea ba on (ba._id = ti.applicantAreaId) 
       INNER JOIN bloomServiceType st on (st._id = ti.serviceTypeId) 
       INNER JOIN office o on (o.officeId = ti.officeId) 
-      INNER JOIN bloomStatusType s on (s._id = ti.statusId) 
+      INNER JOIN bloomStatusType s on (s._id = ti.statusId)
+      INNER JOIN bloomServiceArea a ON st.bloomServiceAreaId = a.bloomServiceAreaId 
     WHERE ti.created >= startCreationDate -- AND ti.created <= endCreationDate
       AND IFNULL(st.hidden, 0) <= showHidden
     ORDER BY ti.created DESC;
   ELSE
     SELECT 
-      ti._id as id, 
+      ti._id AS id, 
       ti.ticketNumber, 
-      ti.created, 
+      ti.created AS created,
       ti.applicantAreaId, 
-      ba.name as areaName, 
+      ba.name AS areaName, 
       ti.serviceTypeId, 
-      st.name as serviceName, 
+      st.name AS serviceName, 
       st.responseTime, 
       ti.project, 
       ti.officeId, 
       o.officeName,
       ti.statusId, 
-      s.name as statusTicket 
+      s.name AS statusTicket,
+      ti.dueDate AS dueDate,
+      ti.desiredDate AS desiredDate,
+      a.bloomServiceArea AS serviceArea
     FROM bloomTicket ti 
       INNER JOIN bloomApplicantArea ba on (ba._id = ti.applicantAreaId) 
       INNER JOIN bloomServiceType st on (st._id = ti.serviceTypeId) 
       INNER JOIN office o on (o.officeId = ti.officeId) 
       INNER JOIN bloomStatusType s on (s._id = ti.statusId) 
+      INNER JOIN bloomServiceArea a ON st.bloomServiceAreaId = a.bloomServiceAreaId 
     WHERE ti.created >= startCreationDate -- AND ti.created <= endCreationDate
       AND IFNULL(st.hidden, 0) <= showHidden
       AND ti.statusId = statusTicket
@@ -1444,12 +1458,17 @@ DROP PROCEDURE IF EXISTS blackstarDb.getBloomAdvisedUsers$$
 CREATE PROCEDURE blackstarDb.getBloomAdvisedUsers(applicantAreaIdParam INTEGER,serviceTypeIdParam INTEGER)
 BEGIN
 
-select u.blackstarUserId as id,u.name name, u.email email from blackstarUser u
-inner join blackstarUser_userGroup ug on (u.blackstarUserId=ug.blackstarUserId)
-inner join userGroup g on (g.userGroupId=ug.userGroupId)
-inner join bloomAdvisedGroup ag on (ag.userGroup=g.externalId)
-where ag.applicantAreaId=applicantAreaIdParam
-and ag.serviceTypeId=serviceTypeIdParam;
+SELECT DISTINCT 
+    u.blackstarUserId as id,
+    u.name name,
+    u.email email,
+    workerRoleTypeId workerRoleTypeId 
+FROM blackstarUser u
+  INNER JOIN blackstarUser_userGroup ug on (u.blackstarUserId=ug.blackstarUserId)
+  INNER JOIN userGroup g on (g.userGroupId=ug.userGroupId)
+  INNER JOIN bloomAdvisedGroup ag on (ag.userGroup=g.externalId)
+WHERE ag.applicantAreaId=applicantAreaIdParam
+  AND ag.serviceTypeId=serviceTypeIdParam;
 	
 END$$
 

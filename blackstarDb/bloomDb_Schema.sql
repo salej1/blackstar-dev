@@ -28,6 +28,11 @@
 --							Se agrega hidden a bloomServiceType
 --							Se agrega docId a bloomDeliverableTrace
 -- ---------------------------------------------------------------------------
+-- 4 	23/07/2014	SAG 	Se agrega autoClose a bloomServiceType
+--							Se agrega workerRoleTypeId a bloomAdvisedGroup
+--							Se agrega bloomServiceArea
+--							Se agrega bloomServiceAreaId a bloomServiceType
+-- ---------------------------------------------------------------------------
 
 use blackstarDb;
 
@@ -40,6 +45,15 @@ BEGIN
 -- -----------------------------------------------------------------------------
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
+
+-- AGREGANDO TABLA bloomServiceArea
+	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'bloomServiceArea') = 0 THEN
+		 CREATE TABLE blackstarDb.bloomServiceArea(
+            bloomServiceAreaId CHAR(1) NOT NULL,
+            bloomServiceArea VARCHAR(200) NOT NULL,
+			PRIMARY KEY (bloomServiceAreaId)
+         ) ENGINE=INNODB;
+	END IF;
 
 -- AGREGANDO TABLA bloomServiceType
 	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'bloomServiceType') = 0 THEN
@@ -58,7 +72,22 @@ BEGIN
 	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'bloomServiceType' AND COLUMN_NAME = 'hidden') = 0  THEN
 		ALTER TABLE bloomServiceType ADD hidden INT NULL;
 	END IF;
+	
+-- Agregando autoclose a bloomServiceType
+	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'bloomServiceType' AND COLUMN_NAME = 'autoClose') = 0  THEN
+		ALTER TABLE bloomServiceType ADD autoClose INT NULL;
+	END IF;
 
+-- Agregando bloomServiceAreaId a bloomServiceType
+	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'bloomServiceType' AND COLUMN_NAME = 'bloomServiceAreaId') = 0  THEN
+		ALTER TABLE bloomServiceType ADD bloomServiceAreaId CHAR(1) NOT NULL DEFAULT 'I';
+		ALTER TABLE bloomServiceType ADD CONSTRAINT bloomServiceType_bloomServiceArea FOREIGN KEY (bloomServiceAreaId) REFERENCES bloomServiceArea(bloomServiceAreaId);
+		UPDATE bloomServiceType SET bloomServiceAreaId = 'I' WHERE _id >= 1 AND _id <= 14;
+		UPDATE bloomServiceType SET bloomServiceAreaId = 'C' WHERE _id = 15;
+		UPDATE bloomServiceType SET bloomServiceAreaId = 'H' WHERE _id >= 16 AND _id <= 20;
+		UPDATE bloomServiceType SET bloomServiceAreaId = 'A' WHERE _id >= 16 AND _id <= 21;
+		UPDATE bloomServiceType SET bloomServiceAreaId = 'R' WHERE _id = 24;
+	END IF;
 
 -- AGREGANDO TABLA bloomWorkerRoleType
 	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'bloomWorkerRoleType') = 0 THEN
@@ -281,7 +310,11 @@ IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blacksta
 
 	END IF;
 
-
+-- Agregando docId a bloomDeliverableTrace
+	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'bloomAdvisedGroup' AND COLUMN_NAME = 'workerRoleTypeId') = 0  THEN
+		ALTER TABLE bloomAdvisedGroup ADD workerRoleTypeId INT NULL;
+		ALTER TABLE blackstarDb.bloomAdvisedGroup ADD CONSTRAINT bloomAdvisedGroup_workerRoleType FOREIGN KEY (workerRoleTypeId) REFERENCES bloomWorkerRoleType (_id) ON DELETE NO ACTION ON UPDATE NO ACTION;
+	END IF;
 	
 -- -----------------------------------------------------------------------------
 -- FIN SECCION DE CAMBIOS - NO CAMBIAR CODIGO FUERA DE ESTA SECCION

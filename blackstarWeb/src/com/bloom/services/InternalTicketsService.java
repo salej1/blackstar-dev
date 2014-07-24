@@ -14,8 +14,8 @@ import com.bloom.common.exception.ServiceException;
 
 public interface InternalTicketsService {
 
-	public List<InternalTicketBean> getPendingTickets();
 	public TicketDetailDTO getTicketDetail(Integer ticketId);
+	public TicketDetailDTO getTicketDetail(Integer ticketId, Integer userId);
 	public List<TicketTeamDTO> getTicketTeam(Integer ticketId);
 	public void addFollow(Integer ticketId, Integer userId, String comment);
 	public void addTicketTeam(Integer ticketId, Integer roleId, Integer userId);

@@ -304,6 +304,7 @@
 									<tr>
 										<td>
 											<button id="saveButtonTicket" class="searchButton">Guardar Requisición</button>
+											<button class="searchButton" onclick="window.location = '/dashboard/show.do'">Cancelar</button>
 										</td>
 									</tr>
 								<tbody>
@@ -738,7 +739,7 @@
 		}
 		
 		$.ajax({
-			url : "/bloom/guardarTicket.do",
+			url : "/bloom/saveTicket.do",
 			type : "POST",
 			data : {
 				fldFolio:$('#fldFolio').val(),

@@ -37,12 +37,13 @@ public class InternalTicketBean implements Serializable {
 	private Integer modifiedByUsr;
 	private String petitionerArea;
 	private Integer petitionerAreaId;
-	private Date deadline;
+	private Date dueDate;
 	private String project;
 	private Integer reponseInTime;
 	private DeliverableTraceBean deliverableTrace;
 	private String createdUserEmail;
 	private Date desiredDate;
+	private String serviceArea;
 
 	private String purposeVisitVL;
 	private String purposeVisitVISAS;
@@ -540,16 +541,16 @@ public class InternalTicketBean implements Serializable {
 	/**
 	 * @return the deadline
 	 */
-	public Date getDeadline() {
-		return deadline;
+	public Date getDueDate() {
+		return dueDate;
 	}
 
 	/**
 	 * @param deadline
 	 *            the deadline to set
 	 */
-	public void setDeadline(Date deadline) {
-		this.deadline = deadline;
+	public void setDueDate(Date deadline) {
+		this.dueDate = deadline;
 	}
 
 	/**
@@ -898,6 +899,14 @@ public class InternalTicketBean implements Serializable {
 
 	public void setDesiredDate(Date desiredDate) {
 		this.desiredDate = desiredDate;
+	}
+
+	public String getServiceArea() {
+		return serviceArea;
+	}
+
+	public void setServiceArea(String serviceArea) {
+		this.serviceArea = serviceArea;
 	}
 
 

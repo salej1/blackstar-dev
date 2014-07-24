@@ -35,44 +35,8 @@ IF(SELECT COUNT(*) FROM blackstarDb.sequence WHERE sequenceTypeId='I') = 0 THEN
 	INSERT INTO blackstarDb.sequence (sequenceTypeId,sequenceNumber) values('I',1);	
 END IF;	
 
-
 -- -----------------------------------------------------------------------------
-	-- PERFILES
--- -----------------------------------------------------------------------------
-IF(SELECT COUNT(*) FROM blackstarDb.userGroup WHERE externalId='sysHelpDeskManager') = 0 THEN 
-	INSERT INTO blackstarDb.userGroup (externalId,name) values('sysHelpDeskManager','Mesa de ayuda'); 
-END IF;
-IF(SELECT COUNT(*) FROM blackstarDb.userGroup WHERE externalId='sysPurchaseManager') = 0 THEN 
-	INSERT INTO blackstarDb.userGroup (externalId,name) values('sysPurchaseManager','Jefe de Compras'); 
-END IF;
-IF(SELECT COUNT(*) FROM blackstarDb.userGroup WHERE externalId='sysHRManager') = 0 THEN 
-	INSERT INTO blackstarDb.userGroup (externalId,name) values('sysHRManager','Jefe de Capital Humano'); 
-END IF;
-IF(SELECT COUNT(*) FROM blackstarDb.userGroup WHERE externalId='sysNetworkManager') = 0 THEN 
-	INSERT INTO blackstarDb.userGroup (externalId,name) values('sysNetworkManager','Ingeniero de Redes y Monitoreo'); 
-END IF;
-IF(SELECT COUNT(*) FROM blackstarDb.userGroup WHERE externalId='sysQAManager') = 0 THEN 
-	INSERT INTO blackstarDb.userGroup (externalId,name) values('sysQAManager','Gerente de Calidad'); 
-END IF;
-IF(SELECT COUNT(*) FROM blackstarDb.userGroup WHERE externalId='sysSalesManager') = 0 THEN 
-	INSERT INTO blackstarDb.userGroup (externalId,name) values('sysSalesManager','Gerente comercial'); 
-END IF;
-IF(SELECT COUNT(*) FROM blackstarDb.userGroup WHERE externalId='sysCeo') = 0 THEN 
-	INSERT INTO blackstarDb.userGroup (externalId,name) values('sysCeo','Direccion'); 
-END IF;
-IF(SELECT COUNT(*) FROM blackstarDb.userGroup WHERE externalId='sysPurchase') = 0 THEN 
-	INSERT INTO blackstarDb.userGroup (externalId,name) values('sysPurchase','Compras'); 
-END IF;
-IF(SELECT COUNT(*) FROM blackstarDb.userGroup WHERE externalId='sysHR') = 0 THEN 
-	INSERT INTO blackstarDb.userGroup (externalId,name) values('sysHR','Capital Humano'); 
-END IF;
-IF(SELECT COUNT(*) FROM blackstarDb.userGroup WHERE externalId='sysQA') = 0 THEN 
-	INSERT INTO blackstarDb.userGroup (externalId,name) values('sysQA','Calidad'); 
-END IF;
-
-
--- -----------------------------------------------------------------------------
-	-- CATALOGS
+	-- CATALOGOS
 -- -----------------------------------------------------------------------------
 
 IF(SELECT count(*) FROM bloomWorkerRoleType) = 0 THEN
@@ -83,7 +47,7 @@ END IF;
 IF(SELECT count(*) FROM bloomStatusType) = 0 THEN
 	INSERT INTO bloomStatusType VALUES (1,'Abierto', 'Ingreso de solicitud');
 	INSERT INTO bloomStatusType VALUES (2,'En proceso', 'Asignado, en proceso de solucion');
-	INSERT INTO bloomStatusType VALUES (3,'Suspendido', 'Suspendido');
+	INSERT INTO bloomStatusType VALUES (3,'Retrasado', 'Retrasado');
 	INSERT INTO bloomStatusType VALUES (4,'Cancelado', 'Cancelado');
 	INSERT INTO bloomStatusType VALUES (5,'Resuelto', 'Resuelto');
 	INSERT INTO bloomStatusType VALUES (6,'Cerrado', 'Cerrado');
@@ -98,139 +62,191 @@ IF(SELECT count(*) FROM bloomApplicantArea) = 0 THEN
 	INSERT INTO blackstarDb.bloomApplicantArea VALUES (5,'General', 'General');
 END IF;
  
-   
+-- Lista de Areas de servicio
+IF(SELECT count(*) FROM bloomServiceArea) = 0 THEN
+	INSERT INTO blackstarDb.bloomServiceArea(bloomServiceAreaId, bloomServiceArea) VALUES('I','Ingenieria');
+	INSERT INTO blackstarDb.bloomServiceArea(bloomServiceAreaId, bloomServiceArea) VALUES('C','Compras');
+	INSERT INTO blackstarDb.bloomServiceArea(bloomServiceAreaId, bloomServiceArea) VALUES('R','Redes');
+	INSERT INTO blackstarDb.bloomServiceArea(bloomServiceAreaId, bloomServiceArea) VALUES('H','Capital Humano');
+	INSERT INTO blackstarDb.bloomServiceArea(bloomServiceAreaId, bloomServiceArea) VALUES('A','Calidad');
+END IF;   
+
 -- Solicitante:Ventas, Lista de tipo de servicios
 IF(SELECT count(*) FROM bloomServiceType) = 0 THEN
-	INSERT INTO blackstarDb.bloomServiceType (_id,applicantAreaId,responseTime,name,description) VALUES (1,1,7,'Levantamiento', 'Levantamiento');
-	INSERT INTO blackstarDb.bloomServiceType (_id,applicantAreaId,responseTime,name,description) VALUES (2,1,7,'Apoyo de Ingeniero de Soprte o Apoyo de Servicio', 'Apoyo de Ingeniero de Soprte o Apoyo de Servicio');
-	INSERT INTO blackstarDb.bloomServiceType (_id,applicantAreaId,responseTime,name,description) VALUES (3,1,4,'Elaboracion de Diagrama CAD', 'Elaboracion de Diagrama CAD');
-	INSERT INTO blackstarDb.bloomServiceType (_id,applicantAreaId,responseTime,name,description) VALUES (4,1,4,'Elaboracion de Plano e Imagenes 3D del SITE', 'Elaboracion de Plano e Imagenes 3D del SITE');
-	INSERT INTO blackstarDb.bloomServiceType (_id,applicantAreaId,responseTime,name,description) VALUES (5,1,4,'Realizacion de Cedula de Costos', 'Realizacion de Cedula de Costos');
-	INSERT INTO blackstarDb.bloomServiceType (_id,applicantAreaId,responseTime,name,description) VALUES (6,1,2,'Pregunta tecnica', 'Pregunta tecnica');
-	INSERT INTO blackstarDb.bloomServiceType (_id,applicantAreaId,responseTime,name,description) VALUES (7,1,4,'Solicitud de Aprobacion de Proyectos Mayores a 50KUSD y con minimo 3 lineas diferentes', 'Solicitud de Aprobacion de Proyectos Mayores a 50KUSD y con minimo 3 lineas diferentes');
-	INSERT INTO blackstarDb.bloomServiceType (_id,applicantAreaId,responseTime,name,description) VALUES (8,1,4,'Solicitud de Precio de Lista de algun producto que no se encuentre en lista de precio', 'Solicitud de Precio de Lista de algun producto que no se encuentre en lista de precio');
+	INSERT INTO blackstarDb.bloomServiceType (_id,applicantAreaId,responseTime,name,description,bloomServiceAreaId) VALUES (1,1,7,'Levantamiento', 'Levantamiento','I');
+	INSERT INTO blackstarDb.bloomServiceType (_id,applicantAreaId,responseTime,name,description,bloomServiceAreaId) VALUES (2,1,7,'Apoyo de Ingeniero de Soprte o Apoyo de Servicio', 'Apoyo de Ingeniero de Soprte o Apoyo de Servicio','I');
+	INSERT INTO blackstarDb.bloomServiceType (_id,applicantAreaId,responseTime,name,description,bloomServiceAreaId) VALUES (3,1,4,'Elaboracion de Diagrama CAD', 'Elaboracion de Diagrama CAD','I');
+	INSERT INTO blackstarDb.bloomServiceType (_id,applicantAreaId,responseTime,name,description,bloomServiceAreaId) VALUES (4,1,4,'Elaboracion de Plano e Imagenes 3D del SITE', 'Elaboracion de Plano e Imagenes 3D del SITE','I');
+	INSERT INTO blackstarDb.bloomServiceType (_id,applicantAreaId,responseTime,name,description,bloomServiceAreaId) VALUES (5,1,4,'Realizacion de Cedula de Costos', 'Realizacion de Cedula de Costos','I');
+	INSERT INTO blackstarDb.bloomServiceType (_id,applicantAreaId,responseTime,name,description,bloomServiceAreaId) VALUES (6,1,2,'Pregunta tecnica', 'Pregunta tecnica','I');
+	INSERT INTO blackstarDb.bloomServiceType (_id,applicantAreaId,responseTime,name,description,bloomServiceAreaId) VALUES (7,1,4,'Solicitud de Aprobacion de Proyectos Mayores a 50KUSD y con minimo 3 lineas diferentes', 'Solicitud de Aprobacion de Proyectos Mayores a 50KUSD y con minimo 3 lineas diferentes','I');
+	INSERT INTO blackstarDb.bloomServiceType (_id,applicantAreaId,responseTime,name,description,bloomServiceAreaId) VALUES (8,1,4,'Solicitud de Precio de Lista de algun producto que no se encuentre en lista de precio', 'Solicitud de Precio de Lista de algun producto que no se encuentre en lista de precio','I');
 
                                                                    
--- Solicitante:Implementacion y Servicio, Lista de tipo de servicios                                                                
-	INSERT INTO blackstarDb.bloomServiceType (_id,applicantAreaId,responseTime,name,description) VALUES (9, 2,4,'Elaboracion de Diagrama CAD o de Plano en 3D', 'Elaboracion de Diagrama CAD o de Plano en 3D');
-	INSERT INTO blackstarDb.bloomServiceType (_id,applicantAreaId,responseTime,name,description) VALUES (10,2,4,'Reporte de Calidad de Energia', 'Reporte de Calidad de Energia');
-	INSERT INTO blackstarDb.bloomServiceType (_id,applicantAreaId,responseTime,name,description) VALUES (11,2,8,'Soporte en Monitoreo y/o desarrollo de mapeo', 'Soporte en Monitoreo y/o desarrollo de mapeo');
-	INSERT INTO blackstarDb.bloomServiceType (_id,applicantAreaId,responseTime,name,description) VALUES (12,2,2,'Pregunta tecnica', 'Pregunta tecnica');
-	INSERT INTO blackstarDb.bloomServiceType (_id,applicantAreaId,responseTime,name,description) VALUES (13,2,8,'Requisicion de Parte o Refaccion', 'Requisicion de Parte o Refaccion');
-	INSERT INTO blackstarDb.bloomServiceType (_id,applicantAreaId,responseTime,name,description) VALUES (14,2,4,'Solicitud de Precio de Costo', 'Solicitud de Precio de Costo');
+-- Solicitante:Implementacion y Servicio, Lista de tipo de servicios                                  
+	INSERT INTO blackstarDb.bloomServiceType (_id,applicantAreaId,responseTime,name,description,bloomServiceAreaId) VALUES (9, 2,4,'Elaboracion de Diagrama CAD o de Plano en 3D', 'Elaboracion de Diagrama CAD o de Plano en 3D','I');
+	INSERT INTO blackstarDb.bloomServiceType (_id,applicantAreaId,responseTime,name,description,bloomServiceAreaId) VALUES (10,2,4,'Reporte de Calidad de Energia', 'Reporte de Calidad de Energia','I');
+	INSERT INTO blackstarDb.bloomServiceType (_id,applicantAreaId,responseTime,name,description,bloomServiceAreaId) VALUES (11,2,8,'Soporte en Monitoreo y/o desarrollo de mapeo', 'Soporte en Monitoreo y/o desarrollo de mapeo','I');
+	INSERT INTO blackstarDb.bloomServiceType (_id,applicantAreaId,responseTime,name,description,bloomServiceAreaId) VALUES (12,2,2,'Pregunta tecnica', 'Pregunta tecnica','I');
+	INSERT INTO blackstarDb.bloomServiceType (_id,applicantAreaId,responseTime,name,description,bloomServiceAreaId) VALUES (13,2,8,'Requisicion de Parte o Refaccion', 'Requisicion de Parte o Refaccion','I');
+	INSERT INTO blackstarDb.bloomServiceType (_id,applicantAreaId,responseTime,name,description,bloomServiceAreaId) VALUES (14,2,4,'Solicitud de Precio de Costo', 'Solicitud de Precio de Costo','I');
                                                   
                                                   
 -- Solicitante:Gerentes o Coordinadoras al Area de Compras, Lista de tipo de servicios                                                   
-	INSERT INTO blackstarDb.bloomServiceType (_id,applicantAreaId,responseTime,name,description) VALUES (15,3,11,'Requerimiento de Compra de Activos', 'Requerimiento de Compra de Activos');
+	INSERT INTO blackstarDb.bloomServiceType (_id,applicantAreaId,responseTime,name,description,bloomServiceAreaId) VALUES (15,3,15,'Requerimiento de Compra de Activos', 'Requerimiento de Compra de Activos','C');
                                                       
 -- Solicitante:Personal con gente a su cargo, Lista de tipo de servicios                                                
-	INSERT INTO blackstarDb.bloomServiceType (_id,applicantAreaId,responseTime,name,description) VALUES (16,4,5,'Aumento de sueldo', 'Aumento de sueldo');
-	INSERT INTO blackstarDb.bloomServiceType (_id,applicantAreaId,responseTime,name,description) VALUES (17,4,30,'Contratacion de personal', 'Contratacion de personal');
-	INSERT INTO blackstarDb.bloomServiceType (_id,applicantAreaId,responseTime,name,description) VALUES (18,4,5,'Nueva Creacion', 'Nueva Creacion');
-	INSERT INTO blackstarDb.bloomServiceType (_id,applicantAreaId,responseTime,name,description) VALUES (19,4,3,'Finiquito', 'Finiquito');
-	INSERT INTO blackstarDb.bloomServiceType (_id,applicantAreaId,responseTime,name,description) VALUES (20,4,2,'Acta Adminsitrativa', 'Acta Adminsitrativa');
+	INSERT INTO blackstarDb.bloomServiceType (_id,applicantAreaId,responseTime,name,description,bloomServiceAreaId) VALUES (16,4,5,'Aumento de sueldo', 'Aumento de sueldo','H');
+	INSERT INTO blackstarDb.bloomServiceType (_id,applicantAreaId,responseTime,name,description,bloomServiceAreaId) VALUES (17,4,30,'Contratacion de personal', 'Contratacion de personal','H');
+	INSERT INTO blackstarDb.bloomServiceType (_id,applicantAreaId,responseTime,name,description,bloomServiceAreaId) VALUES (18,4,5,'Nueva Creacion', 'Nueva Creacion','H');
+	INSERT INTO blackstarDb.bloomServiceType (_id,applicantAreaId,responseTime,name,description,bloomServiceAreaId) VALUES (19,4,3,'Finiquito', 'Finiquito','H');
+	INSERT INTO blackstarDb.bloomServiceType (_id,applicantAreaId,responseTime,name,description,bloomServiceAreaId) VALUES (20,4,2,'Acta Adminsitrativa', 'Acta Adminsitrativa','H');
                                                       
                                                       
 -- Solicitante:General, Lista de tipo de servicios                                                    
-	INSERT INTO blackstarDb.bloomServiceType (_id,applicantAreaId,responseTime,name,description) VALUES (21,5,5,'Req. de Curso', 'Req. de Curso');
-	INSERT INTO blackstarDb.bloomServiceType (_id,applicantAreaId,responseTime,name,description) VALUES (22,5,5,'Modificacion del SGC', 'Modificacion del SGC');
-	INSERT INTO blackstarDb.bloomServiceType (_id,applicantAreaId,responseTime,name,description) VALUES (23,5,5,'Sugerencia de Modificacion', 'Sugerencia de Modificacion');
-	INSERT INTO blackstarDb.bloomServiceType (_id,applicantAreaId,responseTime,name,description) VALUES (24,5,4,'Problemas con telefonia o con la red', 'Problemas con telefonia o con la red');
+	INSERT INTO blackstarDb.bloomServiceType  (_id,applicantAreaId,responseTime,name,description,bloomServiceAreaId) VALUES (21,5,5,'Req. de Curso', 'Req. de Curso','H');
+	INSERT INTO blackstarDb.bloomServiceType  (_id,applicantAreaId,responseTime,name,description,bloomServiceAreaId) VALUES (22,5,5,'Modificacion del SGC', 'Modificacion del SGC','A');
+	INSERT INTO blackstarDb.bloomServiceType  (_id,applicantAreaId,responseTime,name,description,bloomServiceAreaId) VALUES (23,5,5,'Sugerencia de Modificacion', 'Sugerencia de Modificacion','A');
+	INSERT INTO blackstarDb.bloomServiceType  (_id,applicantAreaId,responseTime,name,description,bloomServiceAreaId) VALUES (24,5,1,'Problemas con telefonia o con la red', 'Problemas con telefonia o con la red','R');
 END IF;
 
 IF(SELECT count(*) FROM bloomDeliverableType) = 0 THEN
 	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (1,1,'CheckList de levantamiento', 'CheckList de levantamiento');
-	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (2,1,'Encuesta de Satisfaccion', 'Encuesta de Satisfaccion');
-	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (3,2,'Encuesta de Satisfaccion', 'Encuesta de Satisfaccion');
 	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (4,3,'Diagrama en CAD', 'Diagrama en CAD');
 	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (5,3,'Diagrama en PDF', 'Diagrama en PDF');
-	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (6,3,'Encuesta de Satisfaccion', 'Encuesta de Satisfaccion');
 	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (7,4,'Imagenes de Plano en 3D', 'Imagenes de Plano en 3D');
-	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (8,4,'Encuesta de Satisfaccion', 'Encuesta de Satisfaccion');
 	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (9,5,'Cedula de Costos', 'Cedula de Costos');
-	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (10,5,'Cedula de Costos', 'Cedula de Costos');
 	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (11,6,'Respuesta', 'Respuesta');
-	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (12,6,'Encuesta de Satisfaccion', 'Encuesta de Satisfaccion');
 	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (13,7,'Aprobacion o retroalimentacion', 'Aprobacion o retroalimentacion');
-	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (14,7,'Encuesta de Satisfaccion', 'Encuesta de Satisfaccion');
 	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (15,8,'Precio de Lista y Condiciones comerciales', 'Precio de Lista y Condiciones comerciales');
-	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (16,8,'Encuesta de Satisfaccion', 'Encuesta de Satisfaccion');
 	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (17,9,'Diagrama en CAD o Imagenes de Plano en 3D', 'Diagrama en CAD o Imagenes de Plano en 3D');
 	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (18,9,'Diagrama en PDF', 'Diagrama en PDF');
-	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (19,9,'Encuesta de Satisfaccion', 'Encuesta de Satisfaccion');
 	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (20,10,'Reporte de Calidad', 'Reporte de Calidad');
-	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (21,10,'Encuesta de Satisfaccion', 'Encuesta de Satisfaccion');
 	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (22,11,'Respuesta o desarrollo', 'Respuesta o desarrollo');
-	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (23,11,'Encuesta de Satisfaccion', 'Encuesta de Satisfaccion');
 	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (24,12,'Respuesta', 'Respuesta');
-	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (25,12,'Encuesta de Satisfaccion', 'Encuesta de Satisfaccion');
 	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (26,13,'Entrega de la parte', 'Entrega de la parte');
 	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (27,13,'Orden de Compra', 'Orden de Compra');
-	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (28,13,'Encuesta de Satisfaccion', 'Encuesta de Satisfaccion');
 	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (29,14,'Precio de Costo', 'Precio de Costo');
-	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (30,14,'Encuesta de Satisfaccion', 'Encuesta de Satisfaccion');
 	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (31,15,'Entrega de Activos', 'Entrega de Activos');
-	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (32,15,'Encuesta de Satisfaccion', 'Encuesta de Satisfaccion');
 	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (33,16,'Respuesta del incremento', 'Respuesta del incremento');
-	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (34,16,'Encuesta de Satisfaccion', 'Encuesta de Satisfaccion');
 	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (35,17,'Nuevo personal', 'Nuevo personal');
-	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (36,17,'Encuesta de Satisfaccion', 'Encuesta de Satisfaccion');
 	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (37,18,'Respuesta', 'Respuesta');
-	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (38,18,'Encuesta de Satisfaccion', 'Encuesta de Satisfaccion');
 	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (39,19,'Baja del colaborador', 'Baja del colaborador');
-	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (40,19,'Encuesta de Satisfaccion', 'Encuesta de Satisfaccion');
 	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (41,20,'Acta Administrativa personalizada', 'Acta Administrativa personalizada');
 	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (42,21,'RESPUESTA DEL REQ.', 'RESPUESTA DEL REQ.');
 	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (43,22,'RESPUESTA DEL REQ.', 'RESPUESTA DEL REQ.');
 	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (44,23,'RESPUESTA DEL REQ.', 'RESPUESTA DEL REQ.');
 	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (45,24,'Respuesta', 'Respuesta');
-	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (46,24,'Encuesta de Satisfaccion', 'Encuesta de Satisfaccion');
 END IF;
 
-IF(SELECT count(*) FROM bloomDeliverableType) = 0 THEN
-	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup) values(1,1,'sysHelpDeskManager');
-	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup) values(1,1,'sysSalesManager');
-	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup) values(1,2,'sysHelpDeskManager');
-	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup) values(1,2,'sysSalesManager');
-	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup) values(1,3,'sysHelpDeskManager');
-	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup) values(1,3,'sysSalesManager');
-	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup) values(1,4,'sysHelpDeskManager');
-	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup) values(1,4,'sysSalesManager');
-	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup) values(1,5,'sysHelpDeskManager');
-	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup) values(1,5,'sysSalesManager');
-	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup) values(1,6,'sysHelpDeskManager');
-	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup) values(1,6,'sysSalesManager');
-	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup) values(1,7,'sysHelpDeskManager');
-	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup) values(1,7,'sysSalesManager');
-	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup) values(1,8,'sysHelpDeskManager');
-	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup) values(1,8,'sysSalesManager');
-	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup) values(2,9,'sysHelpDeskManager');
-	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup) values(2,10,'sysHelpDeskManager');
-	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup) values(2,11,'sysHelpDeskManager');
-	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup) values(2,11,'sysNetworkManager');
-	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup) values(2,12,'sysHelpDeskManager');
-	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup) values(2,13,'sysHelpDeskManager');
-	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup) values(2,13,'sysPurchase');
-	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup) values(2,14,'sysHelpDeskManager');
-	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup) values(3,15,'sysPurchase');
-	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup) values(4,16,'sysHR');
-	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup) values(4,16,'sysCeo');
-	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup) values(4,17,'sysHR');
-	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup) values(4,17,'sysCeo');
-	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup) values(4,18,'sysHR');
-	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup) values(4,18,'sysCeo');
-	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup) values(4,19,'sysHR');
-	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup) values(4,19,'sysCeo');
-	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup) values(4,20,'sysHR');
-	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup) values(4,20,'sysCeo');
-	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup) values(5,21,'sysHR');
-	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup) values(5,21,'sysCeo');
-	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup) values(5,22,'sysQA');
-	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup) values(5,22,'sysCeo');
-	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup) values(5,23,'sysQA');
-	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup) values(5,23,'sysCeo');
-	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup) values(5,24,'sysPurchase');
+IF(SELECT count(*) FROM bloomAdvisedGroup) = 0 THEN
+	-- Levantamiento
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(1,1,'sysSupportEng',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(1,1,'sysEngLead',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(1,1,'sysHelpDeskGroup',2);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(1,1,'sysSalesManager',2);
+	-- Apoyo de Ingeniero de Soprte o Apoyo de Servicio
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(1,2,'sysSupportEng',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(1,2,'sysEngLead',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(1,2,'sysHelpDeskGroup',2);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(1,2,'sysSalesManager',2);
+	-- Elaboración de Diagrama CAD
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(1,3,'sysSupportEng',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(1,3,'sysEngLead',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(1,3,'sysHelpDeskGroup',2);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(1,3,'sysSalesManager',2);
+	-- Elaboración de Plano e Imágenes 3D del SITE
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(1,4,'sysSupportEng',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(1,4,'sysEngLead',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(1,4,'sysHelpDeskGroup',2);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(1,4,'sysSalesManager',2);
+	-- Realización de Cédula de Costos
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(1,5,'sysSupportEng',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(1,5,'sysEngLead',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(1,5,'sysHelpDeskGroup',2);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(1,5,'sysSalesManager',2);
+	-- Pregunta técnica
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(1,6,'sysSupportEng',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(1,6,'sysEngLead',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(1,6,'sysHelpDeskGroup',2);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(1,6,'sysSalesManager',2);
+	-- Solicitud de Aprobación de Proyectos Mayores a 50KUSD y con mínimo 3 líneas diferentes
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(1,7,'sysEngManager',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(1,7,'sysEngLead',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(1,7,'sysHelpDeskGroup',2);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(1,7,'sysSalesManager',2);
+	-- Solicitud de Precio de Lista de algún producto que no se encuentre en lista de precio 
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(1,8,'sysSupportEng',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(1,8,'sysEngLead',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(1,8,'sysHelpDeskGroup',2);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(1,8,'sysSalesManager',2);
+	-- Elaboración de Diagrama CAD o de Plano en 3D
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(2,9,'sysSupportEng',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(2,9,'sysEngLead',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(2,9,'sysHelpDeskGroup',2);
+	-- Reporte de Calidad de Energía
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(2,10,'sysSupportEng',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(2,10,'sysEngLead',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(2,10,'sysHelpDeskGroup',2);
+	-- Soporte en Monitoreo y/o desarrollo de mapeo
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(2,11,'sysNetworkManager',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(2,11,'sysHelpDeskGroup',2);
+	-- Pregunta técnica
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(2,12,'sysSupportEng',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(2,12,'sysEngLead',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(2,12,'sysHelpDeskGroup',2);
+	-- Requisición de Parte o Refacción
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(2,13,'sysPurchaseManager',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(2,13,'sysPurchase',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(2,13,'sysHelpDeskGroup',2);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(2,13,'sysCallCenter',2);
+	-- Solicitud de Precio de Costo
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(2,14,'sysSupportEng',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(2,14,'sysEngLead',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(2,14,'sysHelpDeskGroup',2);
+	-- Requerimiento de Compra de Activos
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(4,15,'sysPurchaseManager',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(4,15,'sysPurchase',1);
+	-- Aumento de sueldo
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(4,16,'sysHRManager',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(4,16,'sysCeo',2);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(4,16,'sysHR',2);
+	-- Contratación de personal
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(4,17,'sysHRManager',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(4,17,'sysCeo',2);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(4,17,'sysHR',2);
+	-- Nueva Creación
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(4,18,'sysHRManager',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(4,18,'sysCeo',2);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(4,18,'sysHR',2);
+	-- Finiquito
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(4,19,'sysHRManager',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(4,19,'sysCeo',2);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(4,19,'sysHR',2);
+	-- Acta Adminsitrativa
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(5,20,'sysHRManager',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(5,20,'sysCeo',2);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(5,20,'sysHR',2);
+	-- Req. de Curso
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(5,21,'sysHRManager',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(5,21,'sysCeo',2);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(5,21,'sysHR',2);
+	-- Modificación del SGC
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(5,22,'sysQAManager',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(5,22,'sysCeo',2);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(5,22,'sysQA',2);
+	-- Sugerencia de Modificación
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(5,23,'sysQAManager',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(5,23,'sysCeo',2);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(5,23,'sysQA',2);
+	-- Problemas con telefonía o con la red
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(5,24,'sysPurchaseManager',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(5,24,'sysNetworkManager',1);
 END IF;
+
+-- Eliminando Encuesta de satisfaccion de salidas requeridas
+DELETE FROM bloomDeliverableType WHERE name = 'Encuesta de Satisfaccion';
+
 
 END$$
 

@@ -33,6 +33,7 @@ public class TicketDetailDTO {
     private String modifiedByUsrName;
     private Integer resolvedOnTime;
     private Date desiredDate;
+    private boolean userCanClose;
     
 
 	private String purposeVisitVL;
@@ -570,6 +571,12 @@ public class TicketDetailDTO {
 	}
 	public void setDesiredDate(Date desiredDate) {
 		this.desiredDate = desiredDate;
+	}
+	public boolean isUserCanClose() {
+		return userCanClose;
+	}
+	public void setUserCanClose(boolean userCanClose) {
+		this.userCanClose = userCanClose;
 	}
     
 }

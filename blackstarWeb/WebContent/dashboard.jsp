@@ -162,7 +162,13 @@
 	<c:set var="sysCliente" scope="request" value="${user.belongsToGroup['Cliente']}" />
 	<c:if test="${sysCliente == null || sysCliente == false}">
 		<c:import url="bloom/newInternalTicketLink.jsp"></c:import>
+	</c:if>
+	<!-- FIN Link para crear nuevo ticket interno  -->
 
+	<!-- Requisiciones por cerrar - Disponible solo apra usuarios responsables de Req -->
+	<c:set var="reqViewer" scope="session" value="${user.belongsToGroup['Lider de Ingenieria'] || user.belongsToGroup['Ingeniero de Soporte'] || user.belongsToGroup['Gerente de Implementación y Servicio'] || user.belongsToGroup['Ingeniero de Redes y Monitoreo'] || user.belongsToGroup['Jefe de Compras'] || user.belongsToGroup['Compras'] || user.belongsToGroup['Jefe de Capital Humano'] || user.belongsToGroup['Gerente de Calidad']}"/> 
+	<c:if test="${reqViewer == true}">
+		
 		<!-- Tabla De Tickets internos pendientes - bloomPendingInternalTickets.jsp -->
 		<c:import url="/bloom/bloomPendingInternalTickets.jsp"></c:import>
 		<script type="text/javascript">
@@ -172,13 +178,9 @@
 		</script>
 		
 	</c:if>
-	<!-- FIN Link para crear nuevo ticket interno  -->
+	<!-- FIN Requisiciones por cerrar - Disponible solo apra usuarios responsables de Req -->
 
-	<!-- Inicia Contenido De Perfil sysHelpDesk -->
-	<c:set var="sysHelpDesk" scope="request" value="${user.belongsToGroup['Mesa de ayuda']}" />
-	<c:if test="${sysHelpDesk == true}">
-	<!-- Fin Contenido De Perfil sysHelpDesk -->
-	
+	<!-- Historico de requisiciones, disponible para todos los usuarios grupo sac -->
 		<!-- Tabla De Tickets internos pendientes - bloomPendingInternalTickets.jsp -->
 		<c:import url="/bloom/bloomHistoricalTickets.jsp"></c:import>
 		<script type="text/javascript">
@@ -186,10 +188,8 @@
 				historicalInternalTicketsInit();
 			});
 		</script>
+	<!-- FIN Historico de requisiciones, disponible para todos los usuarios grupo sac -->
 		
-	
-	</c:if>
-
 
 </div>
 </body>

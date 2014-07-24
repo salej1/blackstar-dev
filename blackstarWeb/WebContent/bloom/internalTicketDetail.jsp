@@ -607,7 +607,7 @@
 <!--   CONTENT COLUMN   -->			
 				<div class="grid_15">					
 					<div class="box">
-						<h2>Requisición</h2>
+						<h2>Requisición ${ticketDetail.ticketNumber}</h2>
 						<div class="utils">
 					
 						</div>
@@ -687,207 +687,207 @@
 							<input type="hidden" id="slTipoServicio" value="${ticketDetail.serviceTypeId}"/>
 							<tr id='tr_purposeVisitVL'>
 								<td><span id='sp_purposeVisitVL'>Datos Adicionales 1</span></td>
-								<td><textarea id='txt_purposeVisitVL' style='width: 100%; height: 100%;' rows='2'></textarea></td>
+								<td><textarea id='txt_purposeVisitVL' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
 							</tr>
 							<tr id='tr_purposeVisitVISAS'>
 								<td><span id='sp_purposeVisitVISAS'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_purposeVisitVISAS' style='width: 100%; height: 100%;' rows='2'></textarea></td>
+								<td colspan="5"><textarea id='txt_purposeVisitVISAS' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
 							</tr>
 							<tr id='tr_draftCopyDiagramVED'>
 								<td><span id='sp_draftCopyDiagramVED'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_draftCopyDiagramVED' style='width: 100%; height: 100%;' rows='2'></textarea></td>
+								<td colspan="5"><textarea id='txt_draftCopyDiagramVED' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
 							</tr>
 							<tr id='tr_formProjectVED'>
 								<td><span id='sp_formProjectVED'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_formProjectVED' style='width: 100%; height: 100%;' rows='2'></textarea></td>
+								<td colspan="5"><textarea id='txt_formProjectVED' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
 							</tr>
 							<tr id='tr_observationsVEPI'>
 								<td><span id='sp_observationsVEPI'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_observationsVEPI' style='width: 100%; height: 100%;' rows='2'></textarea></td>
+								<td colspan="5"><textarea id='txt_observationsVEPI' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
 							</tr>
 							<tr id='tr_draftCopyPlanVEPI'>
 								<td><span id='sp_draftCopyPlanVEPI'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_draftCopyPlanVEPI' style='width: 100%; height: 100%;' rows='2'></textarea></td>
+								<td colspan="5"><textarea id='txt_draftCopyPlanVEPI' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
 							</tr>
 							<tr id='tr_formProjectVEPI'>
 								<td><span id='sp_formProjectVEPI'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_formProjectVEPI' style='width: 100%; height: 100%;' rows='2'></textarea></td>
+								<td colspan="5"><textarea id='txt_formProjectVEPI' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
 							</tr>
 							<tr id='tr_observationsVRCC'>
 								<td><span id='sp_observationsVRCC'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_observationsVRCC' style='width: 100%; height: 100%;' rows='2'></textarea></td>
+								<td colspan="5"><textarea id='txt_observationsVRCC' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
 							</tr>
 							<tr id='tr_checkListVRCC'>
 								<td><span id='sp_checkListVRCC'>Datos Adicionales 1</span></td>
-								<td><textarea id='txt_checkListVRCC' style='width: 100%; height: 100%;' rows='2'></textarea></td>
+								<td><textarea id='txt_checkListVRCC' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
 							</tr>
 							<tr id='tr_formProjectVRCC'>
 								<td><span id='sp_formProjectVRCC'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_formProjectVRCC' style='width: 100%; height: 100%;' rows='2'></textarea></td>
+								<td colspan="5"><textarea id='txt_formProjectVRCC' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
 							</tr>
 							<tr id='tr_questionVPT'>
 								<td><span id='sp_questionVPT'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_questionVPT' style='width: 100%; height: 100%;' rows='2'></textarea></td>
+								<td colspan="5"><textarea id='txt_questionVPT' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
 							</tr>
 							<tr id='tr_observationsVSA'>
 								<td><span id='sp_observationsVSA'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_observationsVSA' style='width: 100%; height: 100%;' rows='2'></textarea></td>
+								<td colspan="5"><textarea id='txt_observationsVSA' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
 							</tr>
 							<tr id='tr_formProjectVSA'>
 								<td><span id='sp_formProjectVSA'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_formProjectVSA' style='width: 100%; height: 100%;' rows='2'></textarea></td>
+								<td colspan="5"><textarea id='txt_formProjectVSA' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
 							</tr>
 							<tr id='tr_productInformationVSP'>
 								<td><span id='sp_productInformationVSP'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_productInformationVSP' style='width: 100%; height: 100%;' rows='2'></textarea></td>
+								<td colspan="5"><textarea id='txt_productInformationVSP' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
 							</tr>
 							<tr id='tr_observationsISED'>
 								<td><span id='sp_observationsISED'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_observationsISED' style='width: 100%; height: 100%;' rows='2'></textarea></td>
+								<td colspan="5"><textarea id='txt_observationsISED' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
 							</tr>
 							<tr id='tr_draftCopyPlanISED'>
 								<td><span id='sp_draftCopyPlanISED'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_draftCopyPlanISED' style='width: 100%; height: 100%;' rows='2'></textarea></td>
+								<td colspan="5"><textarea id='txt_draftCopyPlanISED' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
 							</tr>
 							<tr id='tr_observationsISRC'>
 								<td><span id='sp_observationsISRC'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_observationsISRC' style='width: 100%; height: 100%;' rows='2'></textarea></td>
+								<td colspan="5"><textarea id='txt_observationsISRC' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
 							</tr>
 							<tr id='tr_attachmentsISRC'>
 								<td><span id='sp_attachmentsISRC'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_attachmentsISRC' style='width: 100%; height: 100%;' rows='2'></textarea></td>
+								<td colspan="5"><textarea id='txt_attachmentsISRC' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
 							</tr>
 							<tr id='tr_apparatusTraceISSM'>
 								<td><span id='sp_apparatusTraceISSM'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_apparatusTraceISSM' style='width: 100%; height: 100%;' rows='2'></textarea></td>
+								<td colspan="5"><textarea id='txt_apparatusTraceISSM' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
 							</tr>
 							<tr id='tr_observationsISSM'>
 								<td><span id='sp_observationsISSM'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_observationsISSM' style='width: 100%; height: 100%;' rows='2'></textarea></td>
+								<td colspan="5"><textarea id='txt_observationsISSM' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
 							</tr>
 							<tr id='tr_questionISPT'>
 								<td><span id='sp_questionISPT'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_questionISPT' style='width: 100%; height: 100%;' rows='2'></textarea></td>
+								<td colspan="5"><textarea id='txt_questionISPT' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
 							</tr>
 							<tr id='tr_ticketISRPR'>
 								<td><span id='sp_ticketISRPR'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_ticketISRPR' style='width: 100%; height: 100%;' rows='2'></textarea></td>
+								<td colspan="5"><textarea id='txt_ticketISRPR' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
 							</tr>
 							<tr id='tr_modelPartISRPR'>
 								<td><span id='sp_modelPartISRPR'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_modelPartISRPR' style='width: 100%; height: 100%;' rows='2'></textarea></td>
+								<td colspan="5"><textarea id='txt_modelPartISRPR' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
 							</tr>
 							<tr id='tr_observationsISRPR'>
 								<td><span id='sp_observationsISRPR'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_observationsISRPR' style='width: 100%; height: 100%;' rows='2'></textarea></td>
+								<td colspan="5"><textarea id='txt_observationsISRPR' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
 							</tr>
 							<tr id='tr_productInformationISSPC'>
 								<td><span id='sp_productInformationISSPC'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_productInformationISSPC' style='width: 100%; height: 100%;' rows='2'></textarea></td>
+								<td colspan="5"><textarea id='txt_productInformationISSPC' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
 							</tr>
 							<tr id='tr_positionPGCAS'>
 								<td><span id='sp_positionPGCAS'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_positionPGCAS' style='width: 100%; height: 100%;' rows='2'></textarea></td>
+								<td colspan="5"><textarea id='txt_positionPGCAS' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
 							</tr>
 							<tr id='tr_collaboratorPGCAS'>
 								<td><span id='sp_collaboratorPGCAS'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_collaboratorPGCAS' style='width: 100%; height: 100%;' rows='2'></textarea></td>
+								<td colspan="5"><textarea id='txt_collaboratorPGCAS' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
 							</tr>
 							<tr id='tr_justificationPGCAS'>
 								<td><span id='sp_justificationPGCAS'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_justificationPGCAS' style='width: 100%; height: 100%;' rows='2'></textarea></td>
+								<td colspan="5"><textarea id='txt_justificationPGCAS' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
 							</tr>
 							<tr id='tr_salaryPGCAS'>
 								<td><span id='sp_salaryPGCAS'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_salaryPGCAS' style='width: 100%; height: 100%;' rows='2'></textarea></td>
+								<td colspan="5"><textarea id='txt_salaryPGCAS' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
 							</tr>
 							<tr id='tr_positionPGCCP'>
 								<td><span id='sp_positionPGCCP'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_positionPGCCP' style='width: 100%; height: 100%;' rows='2'></textarea></td>
+								<td colspan="5"><textarea id='txt_positionPGCCP' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
 							</tr>
 							<tr id='tr_commentsPGCCP'>
 								<td><span id='sp_commentsPGCCP'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_commentsPGCCP' style='width: 100%; height: 100%;' rows='2'></textarea></td>
+								<td colspan="5"><textarea id='txt_commentsPGCCP' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
 							</tr>
 							<tr id='tr_developmentPlanPGCCP'>
 								<td><span id='sp_developmentPlanPGCCP'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_developmentPlanPGCCP' style='width: 100%; height: 100%;' rows='2'></textarea></td>
+								<td colspan="5"><textarea id='txt_developmentPlanPGCCP' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
 							</tr>
 							<tr id='tr_targetPGCCP'>
 								<td><span id='sp_targetPGCCP'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_targetPGCCP' style='width: 100%; height: 100%;' rows='2'></textarea></td>
+								<td colspan="5"><textarea id='txt_targetPGCCP' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
 							</tr>
 							<tr id='tr_salaryPGCCP'>
 								<td><span id='sp_salaryPGCCP'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_salaryPGCCP' style='width: 100%; height: 100%;' rows='2'></textarea></td>
+								<td colspan="5"><textarea id='txt_salaryPGCCP' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
 							</tr>
 							<tr id='tr_positionPGCNC'>
 								<td><span id='sp_positionPGCNC'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_positionPGCNC' style='width: 100%; height: 100%;' rows='2'></textarea></td>
+								<td colspan="5"><textarea id='txt_positionPGCNC' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
 							</tr>
 							<tr id='tr_developmentPlanPGCNC'>
 								<td><span id='sp_developmentPlanPGCNC'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_developmentPlanPGCNC' style='width: 100%; height: 100%;' rows='2'></textarea></td>
+								<td colspan="5"><textarea id='txt_developmentPlanPGCNC' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
 							</tr>
 							<tr id='tr_targetPGCNC'>
 								<td><span id='sp_targetPGCNC'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_targetPGCNC' style='width: 100%; height: 100%;' rows='2'></textarea></td>
+								<td colspan="5"><textarea id='txt_targetPGCNC' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
 							</tr>
 							<tr id='tr_salaryPGCNC'>
 								<td><span id='sp_salaryPGCNC'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_salaryPGCNC' style='width: 100%; height: 100%;' rows='2'></textarea></td>
+								<td colspan="5"><textarea id='txt_salaryPGCNC' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
 							</tr>
 							<tr id='tr_justificationPGCNC'>
 								<td><span id='sp_justificationPGCNC'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_justificationPGCNC' style='width: 100%; height: 100%;' rows='2'></textarea></td>
+								<td colspan="5"><textarea id='txt_justificationPGCNC' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
 							</tr>
 							<tr id='tr_positionPGCF'>
 								<td><span id='sp_positionPGCF'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_positionPGCF' style='width: 100%; height: 100%;' rows='2'></textarea></td>
+								<td colspan="5"><textarea id='txt_positionPGCF' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
 							</tr>
 							<tr id='tr_collaboratorPGCF'>
 								<td><span id='sp_collaboratorPGCF'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_collaboratorPGCF' style='width: 100%; height: 100%;' rows='2'></textarea></td>
+								<td colspan="5"><textarea id='txt_collaboratorPGCF' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
 							</tr>
 							<tr id='tr_justificationPGCF'>
 								<td><span id='sp_justificationPGCF'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_justificationPGCF' style='width: 100%; height: 100%;' rows='2'></textarea></td>
+								<td colspan="5"><textarea id='txt_justificationPGCF' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
 							</tr>
 							<tr id='tr_positionPGCAA'>
 								<td><span id='sp_positionPGCAA'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_positionPGCAA' style='width: 100%; height: 100%;' rows='2'></textarea></td>
+								<td colspan="5"><textarea id='txt_positionPGCAA' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
 							</tr>
 							<tr id='tr_collaboratorPGCAA'>
 								<td><span id='sp_collaboratorPGCAA'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_collaboratorPGCAA' style='width: 100%; height: 100%;' rows='2'></textarea></td>
+								<td colspan="5"><textarea id='txt_collaboratorPGCAA' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
 							</tr>
 							<tr id='tr_justificationPGCAA'>
 								<td><span id='sp_justificationPGCAA'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_justificationPGCAA' style='width: 100%; height: 100%;' rows='2'></textarea></td>
+								<td colspan="5"><textarea id='txt_justificationPGCAA' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
 							</tr>
 							<tr id='tr_requisitionFormatGRC'>
 								<td><span id='sp_requisitionFormatGRC'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_requisitionFormatGRC' style='width: 100%; height: 100%;' rows='2'></textarea></td>
+								<td colspan="5"><textarea id='txt_requisitionFormatGRC' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
 							</tr>
 							<tr id='tr_linkDocumentGM'>
 								<td><span id='sp_linkDocumentGM'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_linkDocumentGM' style='width: 100%; height: 100%;' rows='2'></textarea></td>
+								<td colspan="5"><textarea id='txt_linkDocumentGM' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
 							</tr>
 							<tr id='tr_suggestionGSM'>
 								<td><span id='sp_suggestionGSM'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_suggestionGSM' style='width: 100%; height: 100%;' rows='2'></textarea></td>
+								<td colspan="5"><textarea id='txt_suggestionGSM' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
 							</tr>
 							<tr id='tr_documentCodeGSM'>
 								<td><span id='sp_documentCodeGSM'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_documentCodeGSM' style='width: 100%; height: 100%;' rows='2'></textarea></td>
+								<td colspan="5"><textarea id='txt_documentCodeGSM' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
 							</tr>
 							<tr id='tr_justificationGSM'>
 								<td><span id='sp_justificationGSM'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_justificationGSM' style='width: 100%; height: 100%;' rows='2'></textarea></td>
+								<td colspan="5"><textarea id='txt_justificationGSM' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
 							</tr>
 							<tr id='tr_problemDescriptionGPTR'>
 								<td><span id='sp_problemDescriptionGPTR'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_problemDescriptionGPTR' style='width: 100%; height: 100%;' rows='2'></textarea></td>
+								<td colspan="5"><textarea id='txt_problemDescriptionGPTR' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
 							</tr>
 
 						</table>
@@ -943,9 +943,11 @@
 							<table>
 								<tbody>
 									<tr>
-										<td style="width: 100px;">
-											<button class="searchButton" onclick="addSeguimiento(1);">Asignar</button>
-										</td>
+										<c:if test="${ticketDetail.userCanClose ==  true}">
+											<td style="width: 100px;">
+												<button class="searchButton" onclick="addSeguimiento(1);">Asignar</button>
+											</td>
+										</c:if>
 										<c:if test="${fn:length(followUps) > 0}">
 											<td style="width: 100px;">
 												<button class="searchButton" onclick="addSeguimiento(3);">Responder</button>
@@ -991,7 +993,7 @@
 												<button class="searchButton" onclick="$('#resolveConfirm').dialog('open');">Resolver Requisicion</button>
 											</td>
 										</c:if>
-										<c:if test="${ticketDetail.statusId == 5 && ticketDetail.createdByUsr == user.blackstarUserId}">
+										<c:if test="${ticketDetail.statusId == 5 && ticketDetail.userCanClose == true}">
 											<td>
 												<button class="searchButton" onclick="$('#closeConfirm').dialog('open');">Cerrar Requisicion</button>
 											</td>

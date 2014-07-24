@@ -10,12 +10,15 @@ import org.springframework.dao.EmptyResultDataAccessException;
 
 
 
+
+
 import com.blackstar.db.dao.AbstractDAO;
 import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
 import com.bloom.common.bean.CatalogoBean;
 import com.bloom.common.exception.DAOException;
 import com.bloom.db.dao.mapper.CatalogoMapper;
+import com.bloom.model.dto.AdvisedUserDTO;
 
 public class CatalogInternalTicketsDaoImpl extends AbstractDAO implements CatalogInternalTicketsDao {
 
@@ -32,7 +35,7 @@ public class CatalogInternalTicketsDaoImpl extends AbstractDAO implements Catalo
 	
 	private static final String QUERY_EMPLOYEES_BY_GROUP = "CALL getCatalogEmployeeByGroup('%s')";
 	
-	private static final String QUERY_ADVICE_USERS_TEAM = "CALL getBloomAdvisedUsers(%d,%d)";
+	private static final String QUERY_ADVICE_USERS_TEAM = "CALL getBloomAdvisedUsers(?,?)";
 	
 	private static final String QUERY_ESTATUS_TICKETS = "CALL getBloomEstatusTickets()";
 	
@@ -181,16 +184,17 @@ public class CatalogInternalTicketsDaoImpl extends AbstractDAO implements Catalo
     }   
     
     
-    @Override
-    public List<CatalogoBean<Integer>> getAdviceUsers(Integer applicantAreaIdParam, Integer serviceTypeIdParam) throws DAOException {
+    @SuppressWarnings("unchecked")
+	@Override
+    public List<AdvisedUserDTO> getAdviceUsers(Integer applicantAreaIdParam, Integer serviceTypeIdParam) throws DAOException {
 
-        List<CatalogoBean<Integer>> listaUsuarios = new ArrayList<CatalogoBean<Integer>>();
+        List<AdvisedUserDTO> listaUsuarios;
         
-        String sql=String.format(QUERY_ADVICE_USERS_TEAM, applicantAreaIdParam,serviceTypeIdParam);
+        String sql = QUERY_ADVICE_USERS_TEAM;
 
         try {
         	
-        	listaUsuarios.addAll(getJdbcTemplate().query(sql, new CatalogoMapper<Integer>("id", "name","email")));
+        	listaUsuarios = (List<AdvisedUserDTO>) getJdbcTemplate().query(sql, new Object[]{applicantAreaIdParam, serviceTypeIdParam}, getMapperFor(AdvisedUserDTO.class));
 
             return listaUsuarios;
 

@@ -8,8 +8,10 @@ import java.util.List;
 
 
 
+
 import com.bloom.common.bean.CatalogoBean;
 import com.bloom.common.exception.DAOException;
+import com.bloom.model.dto.AdvisedUserDTO;
 
 public interface CatalogInternalTicketsDao {
 
@@ -75,6 +77,6 @@ public interface CatalogInternalTicketsDao {
 	 * @return
 	 * @throws DAOException
 	 */
-	public List<CatalogoBean<Integer>> getAdviceUsers(Integer applicantAreaIdParam, Integer serviceTypeIdParam) throws DAOException;	
+	public List<AdvisedUserDTO> getAdviceUsers(Integer applicantAreaIdParam, Integer serviceTypeIdParam) throws DAOException;	
 	
 }

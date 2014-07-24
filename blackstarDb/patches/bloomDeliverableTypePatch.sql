@@ -1,0 +1,1 @@
+DELETE FROM bloomDeliverableType WHERE _id = 10;
