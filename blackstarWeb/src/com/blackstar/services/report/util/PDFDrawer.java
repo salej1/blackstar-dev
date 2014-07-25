@@ -37,7 +37,7 @@ public class PDFDrawer {
 	page = new Page(pdf, A4.PORTRAIT);
   }
   
-  public void changeToNewPage() throws Exception {
+  public void newPage() throws Exception {
 	 page = new Page(pdf, A4.PORTRAIT);
   }
   
@@ -49,6 +49,14 @@ public class PDFDrawer {
 	pdf.close();  
   }
   
+  public void point(float x, float y, float radius, int color, boolean fill) throws Exception {
+	com.pdfjet.Point point = new com.pdfjet.Point(x, y);
+	point.setShape(com.pdfjet.Point.CIRCLE);
+	point.setRadius(radius);
+	point.setColor(color);
+	point.setFillShape(fill);
+	point.drawOn(page);  
+  }
   
   public void line(int x1, int y1, int x2, int y2) throws Exception {
 	 line(x1, y1, x2, y2 , DEFAULT_COLOR, DEFAULT_LINE_WIDTH);

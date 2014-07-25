@@ -15,6 +15,24 @@ public class ProjectEntryVO {
 	private String comments;
 	private List<ProjectEntryItemVO> items = new ArrayList<ProjectEntryItemVO>();
 	
+	
+	public ProjectEntryVO (){
+		
+	}
+
+    public ProjectEntryVO (Integer id, Integer projectId, Integer entryTypeId
+    		   , String entryTypeDescription, String description, Float discount
+    		                               , Float totalPrice, String comments){
+		this.id = id;
+		this.projectId = projectId;
+		this.entryTypeId = entryTypeId;
+		this. entryTypeDescription = entryTypeDescription;
+		this.description = description;
+		this.discount = discount;
+		this.totalPrice = totalPrice;
+		this.comments = comments;
+	}
+
 	public Integer getId() {
 		return id;
 	}

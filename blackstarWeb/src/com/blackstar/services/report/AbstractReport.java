@@ -70,5 +70,9 @@ public abstract class AbstractReport {
 	drawer.text("TRAM: 1 AÑO", 443, 790);
 	drawer.text("www.gposac.com.mx", 235, 785, true, 0x0155A5);
   }
+  
+  protected int getCenterX(String input){
+	return (555 - (input.length() * 12)) / 2;
+  }
 
 }

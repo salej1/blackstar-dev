@@ -14,6 +14,28 @@ public class ProjectEntryItemVO {
 	private Float totalPrice;
 	private String comments;
 	
+	
+	public ProjectEntryItemVO (){
+		
+	}
+	
+	public ProjectEntryItemVO(Integer id, Integer entryId, Integer itemTypeId
+			, String itemTypeDescription, String reference, String description
+			, Integer quantity, Float priceByUnit, Float discount, Float totalPrice
+			, String comments){
+		this.id = id;
+		this.entryId = entryId;
+		this.itemTypeId = itemTypeId;
+		this.itemTypeDescription = itemTypeDescription;
+		this.reference = reference;
+		this.description = description;
+		this.quantity = quantity;
+		this.priceByUnit = priceByUnit;
+		this.discount = discount;
+		this.totalPrice = totalPrice;
+		this.comments = comments;
+	}
+	
 	public Integer getId() {
 		return id;
 	}
