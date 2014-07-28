@@ -90,12 +90,13 @@
       <property name="cDAO" ref="clientDAO" />
       <property name="pdfService" ref="codexPDFService" />
       <property name="gmService" ref="gmService" />
+      <property name="gdService" ref="googleDriveService" />
   </bean>
   
   <bean id="codexDashboardService" class="com.codex.service.impl.DashboardServiceImpl" parent="abstractService">
       <property name="dao" ref="codexDashboardDAO" />
   </bean>
   
-  <bean id="codexPDFService" class="com.blackstar.services.AbstractService.PDFReportServiceImpl" parent="abstractService"/>
+  <bean id="codexPDFService" class="com.codex.service.impl.PDFReportServiceImpl" parent="abstractService"/>
 
 </beans>

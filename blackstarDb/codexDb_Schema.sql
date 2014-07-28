@@ -112,7 +112,7 @@ CREATE TABLE IF NOT EXISTS blackstarDb.codexProject(
   currencyTypeId Int(2) NOT NULL,
   projectNumber Varchar(8) NOT NULL,
   costCenter Varchar(8) NOT NULL,
-  changeType Float(4,4) NOT NULL,
+  changeType Float NOT NULL,
   created Varchar(20) NOT NULL,
   contactName Text NOT NULL,
   location Varchar(20),

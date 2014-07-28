@@ -16,7 +16,7 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
 
-public class GmailService implements IEmailService{
+public class GmailService extends AbstractService implements IEmailService{
 
 	private JavaMailSenderImpl  mailSender;
 	
