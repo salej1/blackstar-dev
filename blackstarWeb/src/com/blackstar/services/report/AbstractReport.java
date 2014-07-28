@@ -72,7 +72,8 @@ public abstract class AbstractReport {
   }
   
   protected int getCenterX(String input){
-	return (555 - (input.length() * 12)) / 2;
+	int lengthPix = input.length();
+	return ((555 - lengthPix) / 2) - (lengthPix/2);
   }
 
 }

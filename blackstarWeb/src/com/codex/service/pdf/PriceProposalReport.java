@@ -42,7 +42,7 @@ public class PriceProposalReport extends AbstractReport {
   }
   
   private void printCover() throws Exception {
-	  String projectNumber = "CQ" + data.getId() + "-1";
+	  String projectNumber = "         CQ" + data.getId() + "-1";
 	  drawer.text("Cotización No.", 267,250, true, 0 , 12);
 	  drawer.text(projectNumber, getCenterX(projectNumber),270, false, 0 , 12);
 	  drawer.text("Cliente:", 295,300);

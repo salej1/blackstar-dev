@@ -115,10 +115,11 @@
 
  </script> 
 
- <title>Clientes</title>
+ <title>Dashboard</title>
  </head>
 <body>
 	<div id="content" class="container_16 clearfix">
+	     <c:set var="sysSalesManger" scope="request" value="${user.belongsToGroup['Gerente Comercial']}" />
 	     <div class="grid_16">	
 			<p>
 				<img src="/img/navigate-right.png"/><a href="${pageContext.request.contextPath}/codex/client/create.do" >Nuevo Prospecto</a>
@@ -128,7 +129,34 @@
 			</p>
 		</div>
 		
-		<div class="grid_16">
+		<c:choose>
+		         <c:when test="${sysSalesManger == true}">
+                      <div class="grid_16">
+		<div class="box">
+			<h2>C. de proyectos por autorizar</h2>
+			<div class="utils">
+				
+			</div>
+			<table cellpadding="0" cellspacing="0" border="0" class="display" id="byAuthProjectsList">
+				<thead>
+					<tr>
+						<th>Proyecto</th>
+						<th>Cliente</th>
+						<th>Ultima Actividad</th>
+						<th>Ubicacion</th>
+						<th>Estatus</th>
+						<th>Accion</th>
+					</tr>
+				</thead>
+				<tbody>
+
+				</tbody>
+			</table>
+		</div>
+	</div>
+                 </c:when>
+                 <c:otherwise>
+                     <div class="grid_16">
 
 			<div class="grid_16">
 		<div class="box">
@@ -156,32 +184,6 @@
 	
 	
 		</div>
-		
-		<div class="grid_16">
-		<div class="box">
-			<h2>C. de proyectos por autorizar</h2>
-			<div class="utils">
-				
-			</div>
-			<table cellpadding="0" cellspacing="0" border="0" class="display" id="byAuthProjectsList">
-				<thead>
-					<tr>
-						<th>Proyecto</th>
-						<th>Cliente</th>
-						<th>Ultima Actividad</th>
-						<th>Ubicacion</th>
-						<th>Estatus</th>
-						<th>Accion</th>
-					</tr>
-				</thead>
-				<tbody>
-
-				</tbody>
-			</table>
-		</div>
-	</div>
-		
-		
 		<div class="grid_16">
 
 			<div class="grid_16">
@@ -239,6 +241,8 @@
 	
 	
 		</div>
+                </c:otherwise>
+         </c:choose>
 	</div>
 </body>
 </html>
