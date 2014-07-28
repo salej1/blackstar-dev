@@ -35,11 +35,11 @@ public interface ProjectService {
                                                             , Integer userId);
   public String getReferenceTypes(Integer itemTypeId);
   public List<PaymentTypeVO> getAllPaymentTypes();
-  public void insertProject(ProjectVO project);
+  public void insertProject(ProjectVO project, User user);
   public String getAllProjectsJson();
   public ProjectVO getProjectDetail(Integer projectId);
   public List<DeliverableVO> getDeliverables(Integer projectId);
-  public void advanceStatus(ProjectVO project);
+  public void advanceStatus(ProjectVO project) throws Exception;
   public void updateEntries(ProjectVO project);
   
 }

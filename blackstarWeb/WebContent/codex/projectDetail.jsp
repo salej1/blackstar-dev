@@ -117,9 +117,22 @@
 	    
 	    function validate(){
 	    	var notNullFields = $(".required");
+	    	var entries = $( "tr.part" );
+	    	var items;
 	    	for(var i = 0; i < notNullFields.length ; i++){
 	    		if($("#" + notNullFields[i].id).is(":visible") && notNullFields[i].value == ""){
 	    			alert ("Favor de completar los campos requeridos");
+	    			return false;
+	    		}
+	    	}
+	    	if(entries.length == 0){
+	    		alert ("Favor de ingresar al menos una partida");
+	    		return false;
+	    	}
+	    	for(var i = 0; i < entries.length ; i++){
+	    		items = $("#" + entries[i].id).next().find("table.items tr");
+	    		if(items.length == 0){
+	    			alert ("Favor de ingresar al menos un Item para cada partida");
 	    			return false;
 	    		}
 	    	}
@@ -189,7 +202,7 @@
 							<hr>
 						</div>		
 <!--   ENCABEZADO CEDULA   -->			
-                        <form:form  id="mainForm" commandName="project" action="/codex/project/insert.do?project.strEntries=seeee">
+                        <form:form  id="mainForm" commandName="project" action="/codex/project/insert.do">
                            <table>
 							  <tr>
 								<td  style="width:140px">No. Cedula</td>

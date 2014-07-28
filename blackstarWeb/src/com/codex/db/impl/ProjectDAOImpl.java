@@ -217,10 +217,17 @@ public class ProjectDAOImpl extends AbstractDAO
   }
   
   @Override
-  public User getManagerForProject(Integer projectId){
-	String sqlQuery = "CALL CodexGetManagerForProject(?)";
+  public User getSalesManger(){
+	String sqlQuery = "CALL CodexGetSalesManger()";
     return (User) getJdbcTemplate().queryForObject(sqlQuery
-            , getMapperFor(User.class), new Object[]{projectId});
+    		                   , getMapperFor(User.class));
+  }
+  
+  @Override
+  public User getResponsable(Integer projectId){
+	String sqlQuery = "CALL CodexGetProjectRisponsable(?)";
+    return (User) getJdbcTemplate().queryForObject(sqlQuery
+      , new Object[]{projectId}, getMapperFor(User.class));
   }
 
 }

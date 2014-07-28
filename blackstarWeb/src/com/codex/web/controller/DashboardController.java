@@ -23,8 +23,9 @@ public class DashboardController extends AbstractController{
   @RequestMapping(value = "/show.do")
   public String show(ModelMap model){
     model.addAttribute("newProjects", service.getProjectsByStatusJson(1));
-	model.addAttribute("authProjects", service.getProjectsByStatusJson(2));
-	model.addAttribute("cotProjects", service.getProjectsByStatusJson(3));
+    model.addAttribute("byAuthProjects", service.getProjectsByStatusJson(2));
+	model.addAttribute("authProjects", service.getProjectsByStatusJson(3));
+	model.addAttribute("cotProjects", service.getProjectsByStatusJson(4));
 	return "codex/dashboard";
   }
 

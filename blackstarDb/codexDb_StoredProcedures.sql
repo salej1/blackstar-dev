@@ -619,6 +619,32 @@ BEGIN
 END$$
 
 -- -----------------------------------------------------------------------------
+	-- blackstarDb.CodexGetsSalesManger
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.CodexGetSalesManger$$
+CREATE PROCEDURE blackstarDb.`CodexGetSalesManger`()
+BEGIN
+
+  SELECT bu.blackstarUserId blackstarUserId, bu.email userEmail, bu.name userName
+  FROM blackstarUser bu, userGroup ug, blackstarUser_userGroup bug
+  WHERE ug.externalId = 'sysSalesManger'
+        AND bug.userGroupId = ug.userGroupId
+        AND bug.blackstarUserId = bu.blackstarUserId;
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.CodexGetProjectRisponsable
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.CodexGetProjectRisponsable$$
+CREATE PROCEDURE blackstarDb.`CodexGetProjectRisponsable`(pProjectId int(11))
+BEGIN
+SELECT bu.blackstarUserId blackstarUserId, bu.email userEmail, bu.name userName
+FROM blackstarUser bu, workTeam wt
+WHERE wt.codexProjectId = pProjectId
+     AND wt.workerRoleTypeId = 1
+     AND bu.blackstarUserId = wt.blackstarUserId;
+END$$
+-- -----------------------------------------------------------------------------
 	-- FIN DE LOS STORED PROCEDURES
 -- -----------------------------------------------------------------------------
 DELIMITER ;

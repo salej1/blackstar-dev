@@ -185,7 +185,7 @@ public class PlainServiceController extends AbstractController {
 	    
 	    private void saveReport(Integer id, byte[] report) throws Exception {
 	    	String parentId = gdService.getReportsFolderId(id);
-	    	gdService.insertFileFromStream(id, "application/pdf"
+	    	gdService.insertFileFromStream("application/pdf"
 	    			   , "ServiceOrder.pdf", parentId, report);
 	    }
 	    

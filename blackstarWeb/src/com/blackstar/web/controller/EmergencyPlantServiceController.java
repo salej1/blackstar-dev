@@ -177,7 +177,7 @@ public class EmergencyPlantServiceController extends AbstractController {
   private void saveReport(EmergencyPlantServicePolicyDTO serviceOrder) throws Exception {
 	Integer id = serviceOrder.getServiceOrderId();
 	String parentId = gdService.getReportsFolderId(id);
-	gdService.insertFileFromStream(id, "application/pdf", "ServiceOrder.pdf"
+	gdService.insertFileFromStream("application/pdf", "ServiceOrder.pdf"
 	    		   , parentId, rpService.getEmergencyPlantReport(serviceOrder));
   }
 }

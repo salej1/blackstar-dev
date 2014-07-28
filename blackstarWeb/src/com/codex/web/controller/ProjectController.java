@@ -2,6 +2,8 @@ package com.codex.web.controller;
 
 import java.util.Date;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import com.blackstar.common.Globals;
 import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
+import com.blackstar.model.UserSession;
 import com.blackstar.web.AbstractController;
 import com.codex.service.ClientService;
 import com.codex.service.ProjectService;
@@ -173,9 +176,13 @@ public class ProjectController extends AbstractController {
   }
   
   @RequestMapping(value = "/insert.do") 
-  public String insert(ModelMap model,  @ModelAttribute("project") ProjectVO project){
+  public String insert(ModelMap model, HttpServletRequest request 
+		       ,  @ModelAttribute("project") ProjectVO project) {
+	UserSession userSession = null;
 	try {
-	     service.insertProject(project);
+		userSession = (UserSession) request.getSession().getAttribute(Globals
+				                                         .SESSION_KEY_PARAM);
+	     service.insertProject(project, userSession.getUser());
 	} catch (Exception e) {
 		e.printStackTrace();
 		model.addAttribute("errorDetails", e.getStackTrace()[0].toString());

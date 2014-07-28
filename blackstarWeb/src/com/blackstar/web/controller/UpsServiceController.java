@@ -185,7 +185,7 @@ public class UpsServiceController extends AbstractController {
   private void saveReport(UpsServicePolicyDTO serviceOrder) throws Exception {
 	Integer id = serviceOrder.getServiceOrderId();
 	String parentId = gdService.getReportsFolderId(id);
-	gdService.insertFileFromStream(id, "application/pdf", "ServiceOrder.pdf"
+	gdService.insertFileFromStream("application/pdf", "ServiceOrder.pdf"
 	    	      , parentId, rpService.getUPSReport(serviceOrder));
   }
 }

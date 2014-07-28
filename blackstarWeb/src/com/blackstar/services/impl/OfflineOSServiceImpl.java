@@ -218,7 +218,7 @@ public class OfflineOSServiceImpl extends AbstractService
 		parentId = gdService.getReportsFolderId(id);
 		report = rpService.getBatteryReport((BatteryServicePolicyDTO) serviceOrder);
 	}
-	gdService.insertFileFromStream(id, "application/pdf", "ServiceOrder.pdf"
+	gdService.insertFileFromStream("application/pdf", "ServiceOrder.pdf"
 	                                                    , parentId, report);
   }
   

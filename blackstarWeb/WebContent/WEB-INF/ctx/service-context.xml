@@ -87,10 +87,15 @@
   <bean id="projectService" class="com.codex.service.impl.ProjectServiceImpl" parent="abstractService">
       <property name="dao" ref="projectDAO" />
       <property name="uDAO" ref="userDAO" />
+      <property name="cDAO" ref="clientDAO" />
+      <property name="pdfService" ref="codexPDFService" />
+      <property name="gmService" ref="gmService" />
   </bean>
   
   <bean id="codexDashboardService" class="com.codex.service.impl.DashboardServiceImpl" parent="abstractService">
       <property name="dao" ref="codexDashboardDAO" />
   </bean>
+  
+  <bean id="codexPDFService" class="com.blackstar.services.AbstractService.PDFReportServiceImpl" parent="abstractService"/>
 
 </beans>

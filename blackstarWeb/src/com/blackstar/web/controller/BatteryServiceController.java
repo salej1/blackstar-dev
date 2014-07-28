@@ -173,7 +173,7 @@ public class BatteryServiceController extends AbstractController {
   private void saveReport(BatteryServicePolicyDTO serviceOrder) throws Exception {
 	Integer id = serviceOrder.getServiceOrderId();
 	String parentId = gdService.getReportsFolderId(id);
-	gdService.insertFileFromStream(id, "application/pdf", "ServiceOrder.pdf"
+	gdService.insertFileFromStream("application/pdf", "ServiceOrder.pdf"
 	    			      , parentId, rpService.getBatteryReport(serviceOrder));
   }
 }

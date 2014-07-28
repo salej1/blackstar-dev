@@ -53,5 +53,6 @@ public interface ProjectDAO {
 	public List<ProjectEntryItemVO> getItemsByEntry(Integer entryId);
 	public List<DeliverableVO> getDeliverables(Integer projectId);
 	public void advanceStatus(Integer projectId);
-	public User getManagerForProject(Integer projectId);
+	public User getSalesManger();
+	public User getResponsable(Integer projectId);
 }

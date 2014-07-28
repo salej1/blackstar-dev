@@ -177,8 +177,8 @@ public class AirCoServiceController extends AbstractController {
   
   private void saveReport(Integer id, byte[] report) throws Exception {
   	String parentId = gdService.getReportsFolderId(id);
-  	gdService.insertFileFromStream(id, "application/pdf"
-  			   , "ServiceOrder.pdf", parentId, report);
+  	gdService.insertFileFromStream("application/pdf", "ServiceOrder.pdf"
+  			                                       , parentId, report);
   }
   
   private void sendNotification(String to, byte [] report){

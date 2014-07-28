@@ -22,6 +22,7 @@
 		     var newProjects = $.parseJSON('${newProjects}');
 		     var authProjects = $.parseJSON('${authProjects}');
 		     var cotProjects = $.parseJSON('${cotProjects}');
+		     var byAuthProjects = $.parseJSON('${byAuthProjects}');
 		 }
 		 catch(err){
 		 alert(err);
@@ -44,7 +45,7 @@
 							  { "mData": "statusDescription" },
 							  { "mData": null }
 						  ],
-				"aoColumnDefs" : [{"mRender" : function(data, type, row){return "<div align=center style='width:75px;'><a href=/ticketDetail?ticketId=" + row.DT_RowId + ">" + "Enviar a autorización" + "</a></div>";}, "aTargets" : [5]}]}
+				"aoColumnDefs" : [{"mRender" : function(data, type, row){return "<div align=center style='width:75px;'><a href=/codex/project/advanceStatus.do?projectId=" + row.id + ">" + "Enviar a autorización" + "</a></div>";}, "aTargets" : [5]}]}
 			);
 		 
 		 $('#authProjectsList').dataTable({
@@ -64,7 +65,7 @@
 							  { "mData": "statusDescription" },
 							  { "mData": null }
 						  ],
-				"aoColumnDefs" : [{"mRender" : function(data, type, row){return "<div align=center style='width:75px;'><a href=/ticketDetail?ticketId=" + row.DT_RowId + ">" + "Crear cotización" + "</a></div>";}, "aTargets" : [5]}]}
+				"aoColumnDefs" : [{"mRender" : function(data, type, row){return "<div align=center style='width:75px;'><a href=/codex/project/advanceStatus.do?projectId=" + row.id + ">" + "Crear cotización" + "</a></div>";}, "aTargets" : [5]}]}
 			);
 		 
 		 $('#cotProjectsList').dataTable({
@@ -84,7 +85,28 @@
 							  { "mData": "statusDescription" },
 							  { "mData": null }
 						  ],
-				"aoColumnDefs" : [{"mRender" : function(data, type, row){return "<div align=center style='width:75px;'><a href=/ticketDetail?ticketId=" + row.DT_RowId + ">" + "Crear pedido" + "</a></div>";}, "aTargets" : [5]}]}
+				"aoColumnDefs" : [{"mRender" : function(data, type, row){return "<div align=center style='width:75px;'><a href=/codex/project/advanceStatus.do?projectId=" + row.id + ">" + "Crear pedido" + "</a></div>";}, "aTargets" : [5]}]}
+			);
+		 
+		 
+		 $('#byAuthProjectsList').dataTable({
+				"bProcessing": true,
+				"bFilter": true,
+				"bLengthChange": false,
+				"iDisplayLength": 10,
+				"bInfo": false,
+				"sPaginationType": "full_numbers",
+				"aaData": byAuthProjects,
+				"sDom": '<"top"i>rt<"bottom"flp><"clear">',
+				"aoColumns": [
+							  { "mData": "projectNumber"},
+							  { "mData": "clientDescription" },
+							  { "mData": "created" },
+							  { "mData": "location" },
+							  { "mData": "statusDescription" },
+							  { "mData": null }
+						  ],
+				"aoColumnDefs" : [{"mRender" : function(data, type, row){return "<div align=center style='width:75px;'><a href=/codex/project/advanceStatus.do?projectId=" + row.id + ">" + "Autorizar" + "</a></div>";}, "aTargets" : [5]}]}
 			);
 
 		
@@ -134,6 +156,30 @@
 	
 	
 		</div>
+		
+		<div class="grid_16">
+		<div class="box">
+			<h2>C. de proyectos por autorizar</h2>
+			<div class="utils">
+				
+			</div>
+			<table cellpadding="0" cellspacing="0" border="0" class="display" id="byAuthProjectsList">
+				<thead>
+					<tr>
+						<th>Proyecto</th>
+						<th>Cliente</th>
+						<th>Ultima Actividad</th>
+						<th>Ubicacion</th>
+						<th>Estatus</th>
+						<th>Accion</th>
+					</tr>
+				</thead>
+				<tbody>
+
+				</tbody>
+			</table>
+		</div>
+	</div>
 		
 		
 		<div class="grid_16">
