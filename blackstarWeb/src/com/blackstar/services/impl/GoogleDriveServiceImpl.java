@@ -64,13 +64,13 @@ public class GoogleDriveServiceImpl extends AbstractService
 	 	   folderId = insertFile("os_reports", null , FOLDER_FILE_TYPE);
 	 	  setPermissions(folderId);
 	 	 } 
-	 	sysFolderIds.put("CX_PROPOSAL", folderId);
+	 	sysFolderIds.put("OS_REPORTS", folderId);
 	 	folderId = getFolderId("cx_proposal", null);
 	 	 if(folderId == null){
 	 	   folderId = insertFile("cx_proposal", null , FOLDER_FILE_TYPE);
 	 	   setPermissions(folderId);
 	 	 } 
-	 	sysFolderIds.put("OS_REPORTS", folderId);
+	 	sysFolderIds.put("CX_PROPOSAL", folderId);
 	} catch(Exception e){
 		e.printStackTrace();
 		Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
