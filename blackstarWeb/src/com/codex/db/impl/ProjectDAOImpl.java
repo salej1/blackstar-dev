@@ -154,8 +154,8 @@ public class ProjectDAOImpl extends AbstractDAO
   }
   
   @Override 
-  public void insertProject(ProjectVO project){
-	String sqlQuery = "CALL CodexInsertProject(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+  public void upsertProject(ProjectVO project){
+	String sqlQuery = "CALL CodexUpsertProject(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 	getJdbcTemplate().update(sqlQuery, new Object[]{project.getId(), project.getClientId()
 			            , project.getTaxesTypeId(), project.getStatusId()
 			            , project.getPaymentTypeId(), project.getCurrencyTypeId()
@@ -228,6 +228,12 @@ public class ProjectDAOImpl extends AbstractDAO
 	String sqlQuery = "CALL CodexGetProjectRisponsable(?)";
     return (User) getJdbcTemplate().queryForObject(sqlQuery
       , new Object[]{projectId}, getMapperFor(User.class));
+  }
+  
+  @Override
+  public void cleanProjectDependencies(Integer projectId){
+	String sqlQuery = "CALL CodexCleanProjectDependencies(?)";
+	getJdbcTemplate().update(sqlQuery, new Object[]{projectId});
   }
 
 }

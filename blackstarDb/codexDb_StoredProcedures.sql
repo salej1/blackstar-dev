@@ -415,17 +415,30 @@ BEGIN
 END$$
 
 -- -----------------------------------------------------------------------------
-	-- blackstarDb.CodexInsertProject
+	-- blackstarDb.CodexUpsertProject
 -- -----------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS blackstarDb.CodexInsertProject$$
-CREATE PROCEDURE blackstarDb.`CodexInsertProject`(pProjectId int(11), pClientId int(11), pTaxesTypeId int(1), pStatusId int(1), pPaymentTypeId int(1),pCurrencyTypeId int(2), pProjectNumber varchar(8), pCostCenter varchar(8), pChangeType float, pCreated varchar(40), pContactName text, pLocation varchar(20), pAdvance float(7,2), pTimeLimit int(3), pSettlementTimeLimit int(3), pDeliveryTime int(3), pIntercom varchar(5), pProductsNumber int(7), pFinancesNumber int(7), pServicesNumber int(7), pTotalProjectNumber int(8))
+DROP PROCEDURE IF EXISTS blackstarDb.CodexUpsertProject;
+CREATE PROCEDURE blackstarDb.`CodexUpsertProject`(pProjectId int(11), pClientId int(11), pTaxesTypeId int(1), pStatusId int(1), pPaymentTypeId int(1),pCurrencyTypeId int(2), pProjectNumber varchar(8), pCostCenter varchar(8), pChangeType float, pCreated varchar(40), pContactName text, pLocation varchar(20), pAdvance float(7,2), pTimeLimit int(3), pSettlementTimeLimit int(3), pDeliveryTime int(3), pIntercom varchar(5), pProductsNumber int(7), pFinancesNumber int(7), pServicesNumber int(7), pTotalProjectNumber int(8))
 BEGIN
-  INSERT INTO codexProject (_id, clientId , taxesTypeId , statusId , paymentTypeId ,currencyTypeId , projectNumber , costCenter , changeType , created , contactName , location , advance , timeLimit , settlementTimeLimit , deliveryTime , intercom , productsNumber , financesNumber , servicesNumber , totalProjectNumber)
-  VALUES (pProjectId, pClientId , pTaxesTypeId , pStatusId , pPaymentTypeId ,pCurrencyTypeId , pProjectNumber , pCostCenter , pChangeType , pCreated , pContactName , pLocation , pAdvance , pTimeLimit , pSettlementTimeLimit , pDeliveryTime , pIntercom , pProductsNumber , pFinancesNumber , pServicesNumber , pTotalProjectNumber);
-END$$
+  DECLARE isUpdate INTEGER;
+  SET isUpdate = (SELECT COUNT(*) FROM codexProject WHERE _id = pProjectId);
+  IF(isUpdate = 0) THEN
+     INSERT INTO codexProject (_id, clientId , taxesTypeId , statusId , paymentTypeId ,currencyTypeId , projectNumber , costCenter , changeType , created , contactName , location , advance , timeLimit , settlementTimeLimit , deliveryTime , intercom , productsNumber , financesNumber , servicesNumber , totalProjectNumber)
+     VALUES (pProjectId, pClientId , pTaxesTypeId , pStatusId , pPaymentTypeId ,pCurrencyTypeId , pProjectNumber , pCostCenter , pChangeType , pCreated , pContactName , pLocation , pAdvance , pTimeLimit , pSettlementTimeLimit , pDeliveryTime , pIntercom , pProductsNumber , pFinancesNumber , pServicesNumber , pTotalProjectNumber);
+  ELSE
+     UPDATE codexProject
+     SET clientId = pClientId, taxesTypeId = pTaxesTypeId, statusId = pStatusId, paymentTypeId = pPaymentTypeId
+         , currencyTypeId = pCurrencyTypeId, projectNumber = pProjectNumber, costCenter = pCostCenter
+         , changeType = pChangeType, created = pCreated, contactName = pContactName, location = pLocation
+         , advance = pAdvance, timeLimit = pTimeLimit, settlementTimeLimit = pSettlementTimeLimit
+         , deliveryTime = pDeliveryTime, intercom = pIntercom, productsNumber = pProductsNumber
+         , financesNumber = pFinancesNumber, servicesNumber = pServicesNumber, totalProjectNumber = pTotalProjectNumber
+     WHERE _id = pProjectId;
+  END IF;
+END;
 
 -- -----------------------------------------------------------------------------
-	-- blackstarDb.CodexInsertProject
+	-- blackstarDb.GetLocationsByZipCode
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetLocationsByZipCode$$
 CREATE PROCEDURE blackstarDb.`GetLocationsByZipCode`(pZipCode VARCHAR(5))
@@ -643,6 +656,17 @@ FROM blackstarUser bu, workTeam wt
 WHERE wt.codexProjectId = pProjectId
      AND wt.workerRoleTypeId = 1
      AND bu.blackstarUserId = wt.blackstarUserId;
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.CodexCleanProjectDependencies
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.CodexCleanProjectDependencies$$
+CREATE PROCEDURE blackstarDb.`CodexCleanProjectDependencies`(pProjectId int(11))
+BEGIN
+   DELETE FROM codexEntryItem
+   WHERE entryId IN (SELECT _id FROM codexProjectEntry WHERE projectId = pProjectId);
+   DELETE FROM codexProjectEntry WHERE projectId = pProjectId;
 END$$
 -- -----------------------------------------------------------------------------
 	-- FIN DE LOS STORED PROCEDURES

@@ -46,7 +46,7 @@ public interface ProjectDAO {
                       , String reference, String description , Integer  quantity
                       , Float priceByUnit, Float discount, Float totalPrice
                       , String comments);
-	public void insertProject(ProjectVO project);
+	public void upsertProject(ProjectVO project);
 	public Integer getNewEntryId();
 	public List<JSONObject> getAllProjectsJson();
 	public List<ProjectEntryVO> getEntriesByProject(Integer projectId);
@@ -55,4 +55,5 @@ public interface ProjectDAO {
 	public void advanceStatus(Integer projectId);
 	public User getSalesManger();
 	public User getResponsable(Integer projectId);
+	public void cleanProjectDependencies(Integer projectId);
 }

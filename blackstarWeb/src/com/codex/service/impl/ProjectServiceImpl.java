@@ -189,7 +189,7 @@ public class ProjectServiceImpl extends AbstractService
 	String [] entries = project.getStrEntries().split("~");
 	String [] items, values;
 	Integer entryId;
-	dao.insertProject(project);
+	dao.upsertProject(project);
 	for(String entry : entries){
 		values = entry.split("\\|");
 		entryId = dao.getNewEntryId();
@@ -205,6 +205,29 @@ public class ProjectServiceImpl extends AbstractService
 		}
 	}
 	dao.addProjectTeam(project.getId(), 1, user.getBlackstarUserId());
+  }
+  
+  @Override
+  public void updateProject(ProjectVO project){
+	String [] entries = project.getStrEntries().split("~");
+	String [] items, values;
+	Integer entryId;
+	dao.upsertProject(project);
+	dao.cleanProjectDependencies(project.getId());
+	for(String entry : entries){
+		values = entry.split("\\|");
+		entryId = dao.getNewEntryId();
+		dao.upsertProjectEntry(entryId, project.getId(), Integer.valueOf(values[0])
+				, values[1], Float.valueOf(values[2]), Float.valueOf(values[3])
+				                                                  , values[4]);
+		items = values[6].split("\\^");
+		for(String item : items){
+			values = item.split("°");
+			dao.upsertEntryItem(-1, entryId, Integer.valueOf(values[0]), values[1]
+			   , values[2], Integer.valueOf(values[3]), Float.valueOf(values[4])
+			   , Float.valueOf(values[5]), Float.valueOf(values[6]), values[7]);
+		}
+	}
   }
   
   @Override

@@ -68,7 +68,9 @@ public class ProjectController extends AbstractController {
 		 model.addAttribute("paymentTypes", service.getAllPaymentTypes());
 		 model.addAttribute("staff", udService.getStaff());
 		 model.addAttribute("accessToken", gdService.getAccessToken());
-		 model.addAttribute("enableEdition", true);
+		 model.addAttribute("enableEdition", project.getStatusId()== 1 ? false 
+				                                                      : true);
+		 model.addAttribute("isUpdate", true);
 		 model.addAttribute("clients", cService.getAllClients());
 		 model.addAttribute("osAttachmentFolder", gdService
 		    		           .getAttachmentFolderId(project.getProjectNumber()));
@@ -108,6 +110,7 @@ public class ProjectController extends AbstractController {
 	     model.addAttribute("paymentTypes", service.getAllPaymentTypes());
 	     model.addAttribute("staff", udService.getStaff());
 	     model.addAttribute("enableEdition", false);
+	     model.addAttribute("isUpdate", false);
 	     model.addAttribute("clients", cService.getAllClients());
 	} catch (Exception e) {
 		Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
@@ -193,13 +196,13 @@ public class ProjectController extends AbstractController {
   }
   
   @RequestMapping(value = "/update.do") 
-  public String update(ModelMap model,   @RequestParam(required = true) Integer projectId
-		                              ,  @RequestParam(required = true) String strEntries){
-	  ProjectVO project = null;
+  public String update(ModelMap model,   @ModelAttribute("project") ProjectVO project){
 		try {
-			 project = service.getProjectDetail(projectId);
-			 project.setStrEntries(strEntries);
-	         service.updateEntries(project);
+			if(project.getStatusId() == 1){
+				service.updateProject(project);
+			} else {
+	            service.updateEntries(project);
+			}
 	} catch (Exception e) {
 		e.printStackTrace();
 		model.addAttribute("errorDetails", e.getStackTrace()[0].toString());

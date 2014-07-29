@@ -140,7 +140,7 @@
 	    }
 	    
 	    function commit(){
-	      var isUpdate = '${enableEdition}';
+	      var isUpdate = '${isUpdate}';
 	      if(validate()){
 	    	prepareSubmit();
 	    	if(isUpdate == 'true'){
@@ -151,23 +151,31 @@
 	    }
 	    
 	    function setReferenceTypes(value, selectObj, inputObj){
-	    	$('#' + selectObj.id).empty().append('<option value="">Seleccione</option>');
-	    	$("#" + selectObj.id).prop( "disabled", false );
+	    	var selectObjId = selectObj.id;
+	    	var inputObjId = inputObj.id;
+	    	if(selectObjId == undefined){
+	    		selectObjId = selectObj.attr('id');
+	    	}
+	    	if(inputObjId == undefined){
+	    		inputObjId = selectObj.attr('id');
+	    	}
+	    	$('#' + selectObjId).empty().append('<option value="">Seleccione</option>');
+	    	$("#" + selectObjId).prop( "disabled", false );
 	    	if(value == 3){
-	    		$("#" + inputObj.id).show();
-	    		$("#" + selectObj.id).hide();
+	    		$("#" + inputObjId).show();
+	    		$("#" + selectObjId).hide();
 	    	} else {
-	    		$("#" + inputObj.id).hide();
-	    		$("#" + selectObj.id).show();
+	    		$("#" + inputObjId).hide();
+	    		$("#" + selectObjId).show();
 	    	    $.ajax({
 				       url: "${pageContext.request.contextPath}/codex/project/getReferenceTypes.do?itemTypeId=" + value,
 				       type: 'get',
                        dataType: 'json',
-                       async:true,
+                       async:false,
 				       success: function(data){
 					         for (var i = 0; i < data.length; i++) {
 					            d = data[i];
-					        	$('#' + selectObj.id).append('<option value="' + d._id + '">' + d.name + '</option>');
+					        	$('#' + selectObjId).append('<option value="' + d._id + '">' + d.name + '</option>');
 					         }
                        } 
 				});
@@ -337,59 +345,28 @@
 							</thead>
 							<tbody>
 							   <c:forEach var="entry" items="${project.entries}" varStatus="index">
-                                  <tr class="part" id="entry_${entry.id}">
-                                       <td>${index.index + 1}</td>
-                                       <td colspan="2">
-                                           <input type="text" style="width:360px" value="${entry.entryTypeDescription}" readonly/>
-                                       </td>
-	                                   <td colspan="3">
-	                                       <input type="text" style="width:280px" value="${entry.description}" readonly/>
-	                                   </td>
-	                                   <td>
-	                                        <input type="number" style="width:50px" value="${entry.discount}" readonly/>
-	                                   </td>
-	                                   <td>
-	                                        <input type="number"  style="width:50px" value="${entry.totalPrice}" readonly/>
-	                                   </td>
-	                                   <td>
-	                                        <input type="text" style="width:80px" value="${entry.comments}" id="comments_${entry.id}" class="entryComments"/>
-	                                   </td>
-                                 </tr> 
-                                 <tr>
-                                      <td colspan="9">
-	                                      <table class="items" style="width:100%">
-		                                      <c:forEach var="item" items="${entry.items}" varStatus="index1">
-			                                     <tr id="item_${item.id}">
-                                                     <td></td>
-	                                                 <td>
-		                                                <input type="text" style="width:147px" value="${item.itemTypeDescription}" readonly/>
-	                                                 </td>
-	                                                 <td>
-	                                                     <input type="text" style="width:145px" value="${item.reference}" readonly/>
-	                                                 </td>
-	                                                 <td>
-	                                                     <input type="text" style="width:180px" value="${item.description}" readonly/>
-                                                     </td>
-	                                                 <td>
-	                                                      <input type="number" style="width:40px" value="${item.quantity}" readonly/>
-	                                                 </td>
-	                                                 <td>
-	                                                      <input type="number" style="width:40px" value="${item.priceByUnit}" readonly/>
-	                                                 </td>
-	                                                 <td>
-	                                                      <input type="number" style="width:40px" value="${item.discount}" readonly/>
-	                                                 </td>
-	                                                 <td>
-	                                                      <input type="number" style="width:40px" value="${item.totalPrice}" readonly/>
-	                                                 </td>
-	                                                 <td>
-	                                                      <input type="text" style="width:80px" value="${item.comments}" id="itemComments_${item.id}" class="itemComments"/>
-	                                                 </td>
-                                               </tr>
-			                                </c:forEach>
-		                                </table>
-	                                </td>
-                               </tr>
+							      <script type="text/javascript">
+                                       addEntry();
+                                       $("#entryTypeId_" + entryNumber).val('${entry.entryTypeId}');
+                 	     		       $("#description_" + entryNumber).val('${entry.description}');
+                 	     		       $("#discount_" + entryNumber).val('${entry.discount}');
+                 	     		       $("#totalPrice_" + entryNumber).val('${entry.totalPrice}');
+                 	     		       $("#comments_" + entryNumber).val('${entry.comments}');
+                                  </script>
+                                   <c:forEach var="item" items="${entry.items}" varStatus="index1">
+                                           <script type="text/javascript">
+                                                 addItem(entryNumber);
+                                                 $("#entryItemTypeId_" + itemNumber).val('${item.itemTypeId}');
+                                                 setReferenceTypes('${item.itemTypeId}', $('#referenceId_' + itemNumber) , $('#reference_' + itemNumber));
+                                                 $("#reference_" + itemNumber).val('${item.reference}');
+                  	     			             $("#itemDescription_" + itemNumber).val('${item.description}');
+                  	     			             $("#itemQuantity_" + itemNumber).val('${item.quantity}');
+                  	     			             $("#itemPriceByUnit_" + itemNumber).val('${item.priceByUnit}');
+                  	     			             $("#itemDiscount_" + itemNumber).val('${item.discount}');
+                  	     			             $("#itemTotalPrice_" + itemNumber).val('${item.totalPrice}');
+                  	     			             $("#itemComments_" + itemNumber).val('${item.comments}');
+                                            </script>
+                                   </c:forEach>
                               </c:forEach>
 							</tbody>
 						</table>

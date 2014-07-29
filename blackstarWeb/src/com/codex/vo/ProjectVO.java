@@ -1,5 +1,8 @@
 package com.codex.vo;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -32,6 +35,7 @@ public class ProjectVO {
 	private Integer totalProjectNumber; 
 	private List<ProjectEntryVO> entries = new ArrayList<ProjectEntryVO>();
 	private String strEntries;
+	private DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 	
 	public Integer getId() {
 		return id;
@@ -91,7 +95,12 @@ public class ProjectVO {
 		return created;
 	}
 	public void setCreated(Date created) {
-		this.created = created;
+	  try {
+		  this.created = formatter.parse(formatter.format(created));
+	  } catch (ParseException e) {
+		  System.out.println("Unparsable date error: " + e);
+		  this.created = created;
+	  }
 	}
 	public String getContactName() {
 		return contactName;

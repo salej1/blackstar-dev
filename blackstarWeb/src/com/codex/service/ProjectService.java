@@ -36,6 +36,7 @@ public interface ProjectService {
   public String getReferenceTypes(Integer itemTypeId);
   public List<PaymentTypeVO> getAllPaymentTypes();
   public void insertProject(ProjectVO project, User user);
+  public void updateProject(ProjectVO project);
   public String getAllProjectsJson();
   public ProjectVO getProjectDetail(Integer projectId);
   public List<DeliverableVO> getDeliverables(Integer projectId);
