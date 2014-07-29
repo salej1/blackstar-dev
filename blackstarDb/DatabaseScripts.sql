@@ -9,47 +9,6 @@
 -- -----------------------------------------------------------------------------
 -- PR   Date    	Author	Description
 -- ---------------------------------------------------------------------------
--- 1    11/11/2013  SAG  	Version inicial. Modificaciones a OS
--- ---------------------------------------------------------------------------
--- 2    12/11/2013  SAG  	Modificaciones a followUp - isSource
--- ---------------------------------------------------------------------------
--- 3    13/11/2013  SAG  	Se agrega scheduledService
--- ---------------------------------------------------------------------------
--- 4    28/11/2013  JAGH  	Se agregan tablas para captura de OS
--- ---------------------------------------------------------------------------
--- 5    12/12/2013  SAG  	Se agrega sequence y sequenceNumberPool
--- ---------------------------------------------------------------------------
--- 6	26/01/2014  LERV  	Se agrega tabla surveyService
--- ---------------------------------------------------------------------------
--- 7    09/02/2014  SAG  	Se cambia serviceOrderAdditionalEngineer por
--- 							serviceOrderEmployee
--- ---------------------------------------------------------------------------
--- 8    12/03/2014  SAG  	Se agrega openCustomerId a policy
---							Se agrega la entidad openCustomer
--- ---------------------------------------------------------------------------
--- 9    13/03/2014  SAG  	Se agrega equipmentUser a policy
--- ---------------------------------------------------------------------------
--- 10 	03/04/2014	SAG 	Se agregan campos de contacto para ticket
--- ---------------------------------------------------------------------------
--- 11	10/04/2014	SAG 	Se aumenta capacidad de campo numero de serie
---							Se aumenta capacidad de campo finalUser
---							Se agrega serviceOrderNumber a ticket - provisional
--- ---------------------------------------------------------------------------
--- 12	20/04/2014	SAG 	Se aumenta capacidad de campo plainService.observaciones 
---							Se agrega description a scheduledService
---							Se agrega openCustomerId a scheduledService
---							Se agrega project a scheduledService
---							Se agrega officeId a openCustomer
---							Se modifica serviceDate en scheduledServiceDate
--- ---------------------------------------------------------------------------
--- 13	24/04/2014	SAG 	Se agrega tabla issue
---							Se agrega tabla followUpReferenceType
---							Se agrega tabla issueStatus
---							Se modifica FollowUp
---							Se agrega project a openCustomer
--- ---------------------------------------------------------------------------
--- 14	28/04/2014	SAG 	Se incrementan campos de texto en plainService
--- ---------------------------------------------------------------------------
 -- 15	05/05/2014	SAG 	Se agregan serviceContact & serviceContactEmail a scheduledService
 -- ---------------------------------------------------------------------------
 -- 16	28/04/2014	SAG 	Se incrementa responsible en serviceOrder
@@ -70,6 +29,8 @@
 -- ---------------------------------------------------------------------------
 -- 23 	08/07/2014 	SAG 	Se agrega bossId a blackstarUser
 -- ---------------------------------------------------------------------------
+-- 24 	24/04/2014	SAG 	Se agrega tabla policyEquipmentUser
+-- ---------------------------------------------------------------------------
 
 
 use blackstarDb;
@@ -83,6 +44,21 @@ BEGIN
 -- -----------------------------------------------------------------------------
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
+
+-- AGREGANDO TABLA policyEquipmentUser - Asocia polizas con varios usuarios Cliente
+	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'policyEquipmentUser') = 0 THEN
+		 CREATE TABLE blackstarDb.policyEquipmentUser(
+			policyEquipmentUserId INT NOT NULL AUTO_INCREMENT,
+			policyId INT NOT NULL,
+			equipmentUserId VARCHAR(200),
+			PRIMARY KEY (policyEquipmentUserId),
+			CONSTRAINT policyEquipmentUser_policy FOREIGN KEY (policyId) REFERENCES policy(policyId),
+			UNIQUE UQ_policyEquipmentUser_policyEquipmentUserId(policyEquipmentUserId)
+		) ENGINE=INNODB;
+
+		-- Eliminando columna equipmentUser de policy
+		ALTER TABLE policy DROP COLUMN equipmentUser;
+	END IF;
 
 --	AGREGANDO bossId a blackstarUser
 	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'blackstarUser' AND COLUMN_NAME = 'bossId') = 0  THEN
@@ -1002,6 +978,8 @@ DROP PROCEDURE blackstarDb.upgradeSchema;
 --								blackstarDb.GetTicketsKPI
 --								blackstarDb.GetServiceOrders
 -- -----------------------------------------------------------------------------
+-- 52 	24/07/2014	SAG 	Se implementa relacion 1-n entre polizas y usuarios cliente
+-- -----------------------------------------------------------------------------
 
 use blackstarDb;
 
@@ -1113,16 +1091,17 @@ BEGIN
 	FROM blackstarDb.scheduledService s
 		LEFT OUTER JOIN blackstarDb.scheduledServicePolicy sp ON sp.scheduledServiceId = s.scheduledServiceId
 		LEFT OUTER JOIN blackstarDb.openCustomer oc ON oc.openCustomerId = s.openCustomerId
-		LEFT OUTER  JOIN blackstarDb.scheduledServiceDate sd ON sd.scheduledServiceId = s.scheduledServiceId
-		LEFT OUTER  JOIN blackstarDb.policy p ON sp.policyId = p.policyId
-		LEFT OUTER  JOIN blackstarDb.serviceStatus ss ON ss.serviceStatusId = s.serviceStatusId
-		LEFT OUTER  JOIN blackstarDb.equipmentType et ON et.equipmentTypeId = ifnull(p.equipmentTypeId, oc.equipmentTypeId)
-		LEFT OUTER  JOIN blackstarDb.scheduledServiceEmployee em ON em.scheduledServiceId = s.scheduledServiceId AND em.isDefault = 1
-		LEFT OUTER  JOIN blackstarDb.blackstarUser us ON us.email = em.employeeId
-		LEFT OUTER  JOIN blackstarDb.office o ON o.officeId = ifnull(p.officeId, oc.officeId)
+		LEFT OUTER JOIN blackstarDb.scheduledServiceDate sd ON sd.scheduledServiceId = s.scheduledServiceId
+		LEFT OUTER JOIN blackstarDb.policy p ON sp.policyId = p.policyId
+		LEFT OUTER JOIN blackstarDb.serviceStatus ss ON ss.serviceStatusId = s.serviceStatusId
+		LEFT OUTER JOIN blackstarDb.equipmentType et ON et.equipmentTypeId = ifnull(p.equipmentTypeId, oc.equipmentTypeId)
+		LEFT OUTER JOIN blackstarDb.scheduledServiceEmployee em ON em.scheduledServiceId = s.scheduledServiceId AND em.isDefault = 1
+		LEFT OUTER JOIN blackstarDb.blackstarUser us ON us.email = em.employeeId
+		LEFT OUTER JOIN blackstarDb.office o ON o.officeId = ifnull(p.officeId, oc.officeId)
+		LEFT OUTER JOIN blackstarDb.policyEquipmentUser pe ON pe.policyId = p.policyId
 	WHERE s.serviceStatusId = 'P'
 		AND serviceDate >= pServiceDate
-		AND p.equipmentUser = user
+		AND pe.equipmentUserId = user
 	ORDER BY equipmentType;
 	
 END$$
@@ -1151,9 +1130,10 @@ BEGIN
 		LEFT OUTER JOIN blackstarDb.equipmentType et ON et.equipmentTypeId = ifnull(p.equipmentTypeId, oc.equipmentTypeId)
 		LEFT OUTER JOIN blackstarDb.scheduledServiceEmployee em ON em.scheduledServiceId = s.scheduledServiceId AND em.isDefault = 1
 		LEFT OUTER JOIN blackstarDb.blackstarUser us ON us.email = em.employeeId
+		LEFT OUTER JOIN blackstarDb.policyEquipmentUser pe ON pe.policyId = p.policyId
 	WHERE s.serviceStatusId = 'P'
 		AND serviceDate > pServiceDate AND serviceDate < DATE_ADD(pServiceDate, INTERVAL 1 DAY)
-		AND p.equipmentUser = user
+		AND pe.equipmentUserId = user
 	ORDER BY equipmentType;
 
 END$$
@@ -1597,17 +1577,19 @@ BEGIN
 	ELSE
 		IF pProject = 'All' THEN
 			INSERT INTO selectedEquipment(policyId, solutionTimeHR, responseTimeHR, timeAlive) 
-			SELECT policyId, solutionTimeHR, responseTimeHR,
+			SELECT p.policyId, solutionTimeHR, responseTimeHR,
 				(DATEDIFF(CASE WHEN (endDate < pEndDate) THEN endDate ELSE pEndDate END, CASE WHEN (pStartDate > startDate) THEN pStartDate ELSE startDate END) * 24)
-			FROM policy 
-			WHERE equipmentUser = customer 
+			FROM policy p 
+			INNER JOIN policyEquipmentUser pe ON p.policyId = pe.policyId
+			WHERE pe.equipmentUserId = customer 
 				AND NOT (endDate < pStartDate OR startDate > pEndDate);
 		ELSE
 			INSERT INTO selectedEquipment(policyId, solutionTimeHR, responseTimeHR, timeAlive) 
-			SELECT policyId, solutionTimeHR, responseTimeHR,
+			SELECT p.policyId, solutionTimeHR, responseTimeHR,
 				(DATEDIFF(CASE WHEN (endDate < pEndDate) THEN endDate ELSE pEndDate END, CASE WHEN (pStartDate > startDate) THEN pStartDate ELSE startDate END) * 24)
-			FROM policy 
-			WHERE equipmentUser = customer 
+			FROM policy p 
+			INNER JOIN policyEquipmentUser pe ON p.policyId = pe.policyId
+			WHERE pe.equipmentUserId = customer 
 				AND NOT (endDate < pStartDate OR startDate > pEndDate)
 				AND project = pProject;
 		END IF;
@@ -1696,8 +1678,9 @@ BEGIN
 	SELECT DISTINCT 
 		p.project as project
 	FROM blackstarDb.policy p
+		INNER JOIN policyEquipmentUser pe ON p.policyId = pe.policyId
 	WHERE p.startDate <= NOW() AND NOW() <= p.endDate
-	AND p.equipmentUser = pUser
+	AND pe.equipmentUserId = pUser
 	ORDER BY project;
 
 END$$
@@ -1719,7 +1702,8 @@ BEGIN
 	FROM surveyService s
 		INNER JOIN serviceOrder o ON o.surveyServiceId = s.surveyServiceId
 		INNER JOIN policy p ON o.policyId = p.policyId
-    WHERE p.equipmentUser = pUser
+		INNER JOIN policyEquipmentUser pe ON p.policyId = pe.policyId
+    WHERE pe.equipmentUserId = pUser
 	ORDER BY surveyDate DESC;
 	
 END$$
@@ -1753,8 +1737,9 @@ BEGIN
 		INNER JOIN equipmentType et ON p.equipmentTypeId = et.equipmentTypeId
 		INNER JOIN office of on p.officeId = of.officeId
 		INNER JOIN serviceCenter sc ON sc.serviceCenterId = p.serviceCenterId
-    LEFT OUTER JOIN ticket t on t.ticketId = so.ticketId
-    WHERE p.equipmentUser = pUser
+		INNER JOIN policyEquipmentUser pe ON p.policyId = pe.policyId
+    	LEFT OUTER JOIN ticket t on t.ticketId = so.ticketId
+    WHERE pe.equipmentUserId = pUser
 	ORDER BY so.serviceDate DESC;
 	
 END$$
@@ -1790,9 +1775,10 @@ BEGIN
 		INNER JOIN equipmentType et ON p.equipmentTypeId = et.equipmentTypeId
 		INNER JOIN office of on p.officeId = of.officeId
 		INNER JOIN serviceCenter sc ON sc.serviceCenterId = p.serviceCenterId
-     LEFT OUTER JOIN ticket t on t.ticketId = so.ticketId
+		INNER JOIN policyEquipmentUser pe ON p.policyId = pe.policyId
+     	LEFT OUTER JOIN ticket t on t.ticketId = so.ticketId
 	WHERE ss.serviceStatus IN(status) 
-	AND p.equipmentUser = pUser
+	AND pe.equipmentUserId = pUser
 	ORDER BY serviceDate DESC ;
 	
 END$$
@@ -1821,8 +1807,9 @@ BEGIN
 		INNER JOIN policy p ON p.policyId = t.policyId
 		INNER JOIN equipmentType e ON e.equipmentTypeId = p.equipmentTypeId
 		INNER JOIN ticketStatus ts ON t.ticketStatusId = ts.ticketStatusId
+		INNER JOIN policyEquipmentUser pe ON p.policyId = pe.policyId
 		LEFT OUTER JOIN blackstarUser bu ON bu.email = t.asignee
-	WHERE p.equipmentUser = pUser
+	WHERE pe.equipmentUserId = pUser
 	ORDER BY created;
 END$$
 
@@ -1847,7 +1834,8 @@ BEGIN
 		INNER JOIN policy p ON p.policyId = t.policyId
 		INNER JOIN equipmentType e ON e.equipmentTypeId = p.equipmentTypeId
 		INNER JOIN ticketStatus ts ON t.ticketStatusId = ts.ticketStatusId
-	WHERE p.equipmentUser = pUser
+		INNER JOIN policyEquipmentUser pe ON p.policyId = pe.policyId
+	WHERE pe.equipmentUserId = pUser
 	AND t.closed IS NULL
 	ORDER BY ticketDate;
 END$$
@@ -2330,9 +2318,10 @@ IF pProject = 'All' THEN
 			INNER JOIN policy py on tk.policyId = py.policyId
 			INNER JOIN serviceCenter sc ON py.serviceCenterId = sc.serviceCenterId
 			INNER JOIN ticketStatus ts ON tk.ticketStatusId = ts.ticketStatusId
+			INNER JOIN policyEquipmentUser pe ON py.policyId = pe.policyId
 		WHERE tk.created >= startDate AND tk.created <= endDate
 			AND sc.serviceCenterId LIKE pType
-			AND py.equipmentUser = pUser
+			AND pe.equipmentUserId = pUser
 		GROUP BY tk.ticketStatusId
 		ORDER BY ticketStatus;
 	END IF;
@@ -2354,10 +2343,11 @@ ELSE
 			INNER JOIN policy py on tk.policyId = py.policyId
 			INNER JOIN serviceCenter sc ON py.serviceCenterId = sc.serviceCenterId
 			INNER JOIN ticketStatus ts ON tk.ticketStatusId = ts.ticketStatusId
+			INNER JOIN policyEquipmentUser pe ON py.policyId = pe.policyId
 		WHERE tk.created >= startDate AND tk.created <= endDate
 			AND sc.serviceCenterId LIKE pType
 			AND py.project = pProject
-			AND py.equipmentUser = pUser
+			AND pe.equipmentUserId = pUser
 		GROUP BY tk.ticketStatusId
 		ORDER BY ticketStatus;
 	END IF;
@@ -2383,8 +2373,9 @@ IF pProject = 'All' THEN
 		FROM ticket tk
 			INNER JOIN policy py on tk.policyId = py.policyId
 			INNER JOIN serviceCenter sc ON py.serviceCenterId = sc.serviceCenterId
+			INNER JOIN policyEquipmentUser pe ON py.policyId = pe.policyId
 		WHERE tk.created >= startDate AND tk.created <= endDate
-			AND py.equipmentUser = pUser
+			AND pe.equipmentUserId = pUser
 		GROUP BY sc.serviceCenter;
 	END IF;
 ELSE
@@ -2401,9 +2392,10 @@ ELSE
 		FROM ticket tk
 			INNER JOIN policy py on tk.policyId = py.policyId
 			INNER JOIN serviceCenter sc ON py.serviceCenterId = sc.serviceCenterId
+			INNER JOIN policyEquipmentUser pe ON py.policyId = pe.policyId
 		WHERE tk.created >= startDate AND tk.created <= endDate
 			AND py.project = pProject
-			AND py.equipmentUser = pUser
+			AND pe.equipmentUser = pUser
 		GROUP BY sc.serviceCenter;
 	END IF;
 END IF;
@@ -2428,8 +2420,9 @@ IF pProject = 'All' THEN
 		FROM ticket tk
 		INNER JOIN policy py on py.policyId = tk.policyId
 		INNER JOIN equipmentType et ON et.equipmentTypeId = py.equipmentTypeId
+		INNER JOIN policyEquipmentUser pe ON py.policyId = pe.policyId
 		WHERE tk.created >= startDate AND tk.created <= endDate
-			AND py.equipmentUser = pUser
+			AND pe.equipmentUserId = pUser
 		GROUP BY py.equipmentTypeId;
 	END IF;
 ELSE
@@ -2446,9 +2439,10 @@ ELSE
 		FROM ticket tk
 			INNER JOIN policy py on py.policyId = tk.policyId
 			INNER JOIN equipmentType et ON et.equipmentTypeId = py.equipmentTypeId
+			INNER JOIN policyEquipmentUser pe ON py.policyId = pe.policyId
 		WHERE tk.created >= startDate AND tk.created <= endDate
 			AND py.project = pProject
-			AND py.equipmentUser = pUser
+			AND pe.equipmentUserId = pUser
 		GROUP BY py.equipmentTypeId;
 	END IF;
 END IF;
@@ -2613,8 +2607,9 @@ BEGIN
 			INNER JOIN ticket t2  on t2.policyId = p2.policyId 
 				AND t2.ticketId = (SELECT t3.ticketId FROM ticket t3 WHERE t3.policyId = p2.policyId AND t3.ticketId < t1.ticketId ORDER BY created DESC LIMIT 1)
 				AND DATEDIFF(t1.created, t2.created) <= 15
+			INNER JOIN policyEquipmentUser pe ON p1.policyId = pe.policyId
 			WHERE t1.created >= startDate and t1.created <= endDate
-				AND p1.equipmentUser = user
+				AND pe.equipmentUserId = user
 			ORDER BY t1.created DESC;
 		END IF;
 	ELSE
@@ -2665,9 +2660,10 @@ BEGIN
 			INNER JOIN ticket t2  on t2.policyId = p2.policyId 
 				AND t2.ticketId = (SELECT t3.ticketId FROM ticket t3 WHERE t3.policyId = p2.policyId AND t3.ticketId < t1.ticketId ORDER BY created DESC LIMIT 1)
 				AND DATEDIFF(t1.created, t2.created) <= 15
+			INNER JOIN policyEquipmentUser pe ON p1.policyId = pe.policyId
 			WHERE t1.created >= startDate and t1.created <= endDate
 			AND p1.project = project
-			AND p1.equipmentUser = user 
+			AND pe.equipmentUserId = user 
 			ORDER BY t1.created DESC;
 		END IF;
 		
@@ -2691,7 +2687,7 @@ BEGIN
 		INSERT INTO policiesKpi(policyId, serialNumber, equipmentTypeId, brand, model)
 		SELECT p1.policyId, p1.serialNumber, p1.equipmentTypeId, p1.brand, p1.model
 		FROM policy p1 
-			LEFT OUTER JOIN policy p2 ON p1.serialNumber = p1.serialNumber 
+			LEFT OUTER JOIN policy p2 ON p1.serialNumber = p2.serialNumber 
 				AND p1.equipmentTypeId = p2.equipmentTypeId
 				AND p1.brand = p2.brand
 				AND p1.model = p2.model
@@ -2779,6 +2775,7 @@ BEGIN
 			INNER JOIN equipmentType eq ON eq.equipmentTypeId = py.equipmentTypeId
 			INNER JOIN serviceCenter sc ON py.serviceCenterId = sc.serviceCenterId
 			INNER JOIN policiesKpi pk ON pk.policyId = py.policyId
+			INNER JOIN policyEquipmentUser pe ON py.policyId = pe.policyId
 			WHERE py.endDate >= DATE_ADD(pStartDate, INTERVAL -2 MONTH) AND py.startDate < pEndDate
 				AND (of.officeName LIKE CONCAT('%', search, '%') OR
 				py.customerContract LIKE CONCAT('%', search, '%') OR
@@ -2789,7 +2786,7 @@ BEGIN
 				py.model LIKE CONCAT('%', search, '%') OR
 				py.serialNumber LIKE CONCAT('%', search, '%') OR
 				py.contactName LIKE CONCAT('%', search, '%')) 
-				AND	py.equipmentUser = pUser
+				AND	pe.equipmentUserId = pUser
 			ORDER BY py.endDate ASC;
 		END IF;
 		
@@ -2874,6 +2871,7 @@ BEGIN
 			INNER JOIN equipmentType eq ON eq.equipmentTypeId = py.equipmentTypeId
 			INNER JOIN serviceCenter sc ON py.serviceCenterId = sc.serviceCenterId
 			INNER JOIN policiesKpi pk ON pk.policyId = py.policyId
+			INNER JOIN policyEquipmentUser pe ON py.policyId = pe.policyId
 			WHERE py.endDate >= DATE_ADD(pStartDate, INTERVAL -2 MONTH) AND py.startDate < pEndDate
 			AND (of.officeName LIKE CONCAT('%', search, '%') OR
 				py.customerContract LIKE CONCAT('%', search, '%') OR
@@ -2884,7 +2882,7 @@ BEGIN
 				py.model LIKE CONCAT('%', search, '%') OR
 				py.serialNumber LIKE CONCAT('%', search, '%') OR
 				py.contactName LIKE CONCAT('%', search, '%'))
-			AND py.equipmentUser = pUser
+			AND pe.equipmentUserId = pUser
 			AND project = pProject
 			ORDER BY py.endDate ASC;
 		END IF;
@@ -2971,9 +2969,10 @@ BEGIN
 			INNER JOIN policy p ON tk.policyId = p.policyId
 			INNER JOIN equipmentType et ON p.equipmentTypeId = et.equipmentTypeId
 			INNER JOIN office of on p.officeId = of.officeId
+			INNER JOIN policyEquipmentUser pe ON p.policyId = pe.policyId
 			LEFT OUTER JOIN blackstarUser bu ON bu.email = tk.employee
 			WHERE tk.created >= pStartDate AND tk.created <= pEndDate
-			AND p.equipmentUser = pUser
+			AND pe.equipmentUserId = pUser
 			ORDER BY tk.created ASC;
 		END IF;
 	ELSE
@@ -3049,10 +3048,11 @@ BEGIN
 			INNER JOIN policy p ON tk.policyId = p.policyId
 			INNER JOIN equipmentType et ON p.equipmentTypeId = et.equipmentTypeId
 			INNER JOIN office of on p.officeId = of.officeId
+			INNER JOIN policyEquipmentUser pe ON p.policyId = pe.policyId
 			LEFT OUTER JOIN blackstarUser bu ON bu.email = tk.employee
 			WHERE tk.created >= pStartDate AND tk.created <= pEndDate
 			AND p.project = pProject
-			AND p.equipmentUser = pUser
+			AND pe.equipmentUserId = pUser
 			ORDER BY tk.created ASC;
 		END IF;
 	END IF;
@@ -5209,18 +5209,67 @@ DROP PROCEDURE blackstarDbTransfer.upgradeSchema;
 -- -----------------------------------------------------------------------------
 -- 6	23/06/2014	SAG		Se agrega referencia a open customer para OS importadas
 -- -----------------------------------------------------------------------------
-
+-- 7 	24/07/2014	SAG 	Se implementa multi usuario cliente de poliza
+-- -----------------------------------------------------------------------------
 use blackstarDbTransfer;
 
 
 DELIMITER $$
 -- -----------------------------------------------------------------------------
-	-- blackstarDb.GetEquipmentByCustomer
+	-- blackstarDb.syncPolicyUsers
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS syncPolicyUsers $$
+CREATE PROCEDURE syncPolicyUsers()
+BEGIN
+
+    DECLARE id INT DEFAULT 0;
+    DECLARE value TEXT;
+    DECLARE occurance INT DEFAULT 0;
+    DECLARE i INT DEFAULT 0;
+    DECLARE splitted_value VARCHAR(1000);
+    DECLARE done INT DEFAULT 0;
+    DECLARE cur1 CURSOR FOR 
+    	SELECT p2.policyId, p1.equipmentUser
+		FROM blackstarDbTransfer.policy p1
+			INNER JOIN blackstarDb.policy p2 ON p1.serialNumber = p2.serialNumber AND p1.project = p2.project
+		WHERE IFNULL(p1.equipmentUser, '') != '';
+
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+
+    TRUNCATE TABLE blackstarDb.policyEquipmentUser;
+   
+    OPEN cur1;
+      read_loop: LOOP
+        FETCH cur1 INTO id, value;
+        IF done THEN
+          LEAVE read_loop;
+        END IF;
+
+        SET value = REPLACE(value,' ','');
+        SET occurance = (SELECT LENGTH(value)
+                                 - LENGTH(REPLACE(value, ',', ''))
+                                 +1);
+        SET i=1;
+        WHILE i <= occurance DO
+          SET splitted_value =
+          (SELECT REPLACE(SUBSTRING(SUBSTRING_INDEX(value, ',', i),
+          LENGTH(SUBSTRING_INDEX(value, ',', i - 1)) + 1), ',', ''));
+
+          INSERT INTO blackstarDb.policyEquipmentUser(policyId, equipmentUserId) VALUES (id, splitted_value);
+          SET i = i + 1;
+
+        END WHILE;
+      END LOOP;
+
+    CLOSE cur1;
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.ExecuteTransfer
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDbTransfer.ExecuteTransfer$$
 CREATE PROCEDURE blackstarDbTransfer.ExecuteTransfer()
 BEGIN
-
   -- LLENAR CATALOGO DE POLIZAS
 	INSERT INTO blackstarDb.policy(
 		officeId,
@@ -5266,15 +5315,17 @@ BEGIN
 		LEFT OUTER JOIN blackstarDb.policy bp on p.serialNumber = bp.serialNumber AND p.project = bp.project
 	WHERE bp.policyId IS NULL;
 
-	-- ACTUALIZAR LOS CORREOS DE ACCESO A CLIENTES
+	-- ACTUALIZAR LAS POLIZAS
 	UPDATE blackstarDb.policy bp 
 		INNER JOIN blackstarDbTransfer.policy p ON p.serialNumber = bp.serialNumber AND p.project = bp.project
 		INNER JOIN blackstarDb.serviceCenter s ON s.serviceCenter = p.serviceCenter
 	SET
-		bp.equipmentUser = p.equipmentUser,
 		bp.startDate = p.startDate,
 		bp.endDate = p.endDate,
 		bp.serviceCenterId = s.serviceCenterId;
+
+	-- ACTUALIZAR LOS CORREOS DE ACCESO A CLIENTES
+	CALL syncPolicyUsers();
 
 -- -----------------------------------------------------------------------------
 
@@ -5503,7 +5554,9 @@ BEGIN
 -- -----------------------------------------------------------------------------
 	-- SINCRONIZACION Y ACCESO A USUARIOS DE CLIENTES
 	INSERT INTO blackstarDbTransfer.equipmentUserSync (customerName, equipmentUser)
-	SELECT DISTINCT customer, equipmentUser FROM policy p
+	SELECT DISTINCT customer, equipmentUserId 
+	FROM blackstarDb.policy p 
+		INNER JOIN blackstarDb.policyEquipmentUser e ON p.policyId = e.policyId
 		LEFT OUTER JOIN blackstarDb.blackstarUser u ON p.equipmentUser = u.email
 	WHERE ifnull(equipmentUser, '') != ''
 	AND u.blackstarUserId IS NULL;
@@ -5516,7 +5569,7 @@ BEGIN
 	    WHILE @c <= @max DO
 	    	SET  @customer = (SELECT customerName FROM blackstarDbTransfer.equipmentUserSync WHERE equipmentUserSyncId = @c);
 	    	SET  @access = (SELECT equipmentUser FROM blackstarDbTransfer.equipmentUserSync WHERE equipmentUserSyncId = @c);
-	    	Call blackstarDb.UpsertUser(@access, @customer);
+	    	Call blackstarDb.UpsertUser(@access, @customer,null);
 			Call blackstarDb.CreateUserGroup('sysCliente','Cliente',@access);
 
 	      	SET @c = @c + 1 ;

@@ -9,47 +9,6 @@
 -- -----------------------------------------------------------------------------
 -- PR   Date    	Author	Description
 -- ---------------------------------------------------------------------------
--- 1    11/11/2013  SAG  	Version inicial. Modificaciones a OS
--- ---------------------------------------------------------------------------
--- 2    12/11/2013  SAG  	Modificaciones a followUp - isSource
--- ---------------------------------------------------------------------------
--- 3    13/11/2013  SAG  	Se agrega scheduledService
--- ---------------------------------------------------------------------------
--- 4    28/11/2013  JAGH  	Se agregan tablas para captura de OS
--- ---------------------------------------------------------------------------
--- 5    12/12/2013  SAG  	Se agrega sequence y sequenceNumberPool
--- ---------------------------------------------------------------------------
--- 6	26/01/2014  LERV  	Se agrega tabla surveyService
--- ---------------------------------------------------------------------------
--- 7    09/02/2014  SAG  	Se cambia serviceOrderAdditionalEngineer por
--- 							serviceOrderEmployee
--- ---------------------------------------------------------------------------
--- 8    12/03/2014  SAG  	Se agrega openCustomerId a policy
---							Se agrega la entidad openCustomer
--- ---------------------------------------------------------------------------
--- 9    13/03/2014  SAG  	Se agrega equipmentUser a policy
--- ---------------------------------------------------------------------------
--- 10 	03/04/2014	SAG 	Se agregan campos de contacto para ticket
--- ---------------------------------------------------------------------------
--- 11	10/04/2014	SAG 	Se aumenta capacidad de campo numero de serie
---							Se aumenta capacidad de campo finalUser
---							Se agrega serviceOrderNumber a ticket - provisional
--- ---------------------------------------------------------------------------
--- 12	20/04/2014	SAG 	Se aumenta capacidad de campo plainService.observaciones 
---							Se agrega description a scheduledService
---							Se agrega openCustomerId a scheduledService
---							Se agrega project a scheduledService
---							Se agrega officeId a openCustomer
---							Se modifica serviceDate en scheduledServiceDate
--- ---------------------------------------------------------------------------
--- 13	24/04/2014	SAG 	Se agrega tabla issue
---							Se agrega tabla followUpReferenceType
---							Se agrega tabla issueStatus
---							Se modifica FollowUp
---							Se agrega project a openCustomer
--- ---------------------------------------------------------------------------
--- 14	28/04/2014	SAG 	Se incrementan campos de texto en plainService
--- ---------------------------------------------------------------------------
 -- 15	05/05/2014	SAG 	Se agregan serviceContact & serviceContactEmail a scheduledService
 -- ---------------------------------------------------------------------------
 -- 16	28/04/2014	SAG 	Se incrementa responsible en serviceOrder
@@ -70,6 +29,8 @@
 -- ---------------------------------------------------------------------------
 -- 23 	08/07/2014 	SAG 	Se agrega bossId a blackstarUser
 -- ---------------------------------------------------------------------------
+-- 24 	24/04/2014	SAG 	Se agrega tabla policyEquipmentUser
+-- ---------------------------------------------------------------------------
 
 
 use blackstarDb;
@@ -83,6 +44,21 @@ BEGIN
 -- -----------------------------------------------------------------------------
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
+
+-- AGREGANDO TABLA policyEquipmentUser - Asocia polizas con varios usuarios Cliente
+	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'policyEquipmentUser') = 0 THEN
+		 CREATE TABLE blackstarDb.policyEquipmentUser(
+			policyEquipmentUserId INT NOT NULL AUTO_INCREMENT,
+			policyId INT NOT NULL,
+			equipmentUserId VARCHAR(200),
+			PRIMARY KEY (policyEquipmentUserId),
+			CONSTRAINT policyEquipmentUser_policy FOREIGN KEY (policyId) REFERENCES policy(policyId),
+			UNIQUE UQ_policyEquipmentUser_policyEquipmentUserId(policyEquipmentUserId)
+		) ENGINE=INNODB;
+
+		-- Eliminando columna equipmentUser de policy
+		ALTER TABLE policy DROP COLUMN equipmentUser;
+	END IF;
 
 --	AGREGANDO bossId a blackstarUser
 	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'blackstarUser' AND COLUMN_NAME = 'bossId') = 0  THEN

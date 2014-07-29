@@ -21,18 +21,67 @@
 -- -----------------------------------------------------------------------------
 -- 6	23/06/2014	SAG		Se agrega referencia a open customer para OS importadas
 -- -----------------------------------------------------------------------------
-
+-- 7 	24/07/2014	SAG 	Se implementa multi usuario cliente de poliza
+-- -----------------------------------------------------------------------------
 use blackstarDbTransfer;
 
 
 DELIMITER $$
 -- -----------------------------------------------------------------------------
-	-- blackstarDb.GetEquipmentByCustomer
+	-- blackstarDb.syncPolicyUsers
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS syncPolicyUsers $$
+CREATE PROCEDURE syncPolicyUsers()
+BEGIN
+
+    DECLARE id INT DEFAULT 0;
+    DECLARE value TEXT;
+    DECLARE occurance INT DEFAULT 0;
+    DECLARE i INT DEFAULT 0;
+    DECLARE splitted_value VARCHAR(1000);
+    DECLARE done INT DEFAULT 0;
+    DECLARE cur1 CURSOR FOR 
+    	SELECT p2.policyId, p1.equipmentUser
+		FROM blackstarDbTransfer.policy p1
+			INNER JOIN blackstarDb.policy p2 ON p1.serialNumber = p2.serialNumber AND p1.project = p2.project
+		WHERE IFNULL(p1.equipmentUser, '') != '';
+
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+
+    TRUNCATE TABLE blackstarDb.policyEquipmentUser;
+   
+    OPEN cur1;
+      read_loop: LOOP
+        FETCH cur1 INTO id, value;
+        IF done THEN
+          LEAVE read_loop;
+        END IF;
+
+        SET value = REPLACE(value,' ','');
+        SET occurance = (SELECT LENGTH(value)
+                                 - LENGTH(REPLACE(value, ',', ''))
+                                 +1);
+        SET i=1;
+        WHILE i <= occurance DO
+          SET splitted_value =
+          (SELECT REPLACE(SUBSTRING(SUBSTRING_INDEX(value, ',', i),
+          LENGTH(SUBSTRING_INDEX(value, ',', i - 1)) + 1), ',', ''));
+
+          INSERT INTO blackstarDb.policyEquipmentUser(policyId, equipmentUserId) VALUES (id, splitted_value);
+          SET i = i + 1;
+
+        END WHILE;
+      END LOOP;
+
+    CLOSE cur1;
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.ExecuteTransfer
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDbTransfer.ExecuteTransfer$$
 CREATE PROCEDURE blackstarDbTransfer.ExecuteTransfer()
 BEGIN
-
   -- LLENAR CATALOGO DE POLIZAS
 	INSERT INTO blackstarDb.policy(
 		officeId,
@@ -78,15 +127,17 @@ BEGIN
 		LEFT OUTER JOIN blackstarDb.policy bp on p.serialNumber = bp.serialNumber AND p.project = bp.project
 	WHERE bp.policyId IS NULL;
 
-	-- ACTUALIZAR LOS CORREOS DE ACCESO A CLIENTES
+	-- ACTUALIZAR LAS POLIZAS
 	UPDATE blackstarDb.policy bp 
 		INNER JOIN blackstarDbTransfer.policy p ON p.serialNumber = bp.serialNumber AND p.project = bp.project
 		INNER JOIN blackstarDb.serviceCenter s ON s.serviceCenter = p.serviceCenter
 	SET
-		bp.equipmentUser = p.equipmentUser,
 		bp.startDate = p.startDate,
 		bp.endDate = p.endDate,
 		bp.serviceCenterId = s.serviceCenterId;
+
+	-- ACTUALIZAR LOS CORREOS DE ACCESO A CLIENTES
+	CALL syncPolicyUsers();
 
 -- -----------------------------------------------------------------------------
 
@@ -315,7 +366,9 @@ BEGIN
 -- -----------------------------------------------------------------------------
 	-- SINCRONIZACION Y ACCESO A USUARIOS DE CLIENTES
 	INSERT INTO blackstarDbTransfer.equipmentUserSync (customerName, equipmentUser)
-	SELECT DISTINCT customer, equipmentUser FROM policy p
+	SELECT DISTINCT customer, equipmentUserId 
+	FROM blackstarDb.policy p 
+		INNER JOIN blackstarDb.policyEquipmentUser e ON p.policyId = e.policyId
 		LEFT OUTER JOIN blackstarDb.blackstarUser u ON p.equipmentUser = u.email
 	WHERE ifnull(equipmentUser, '') != ''
 	AND u.blackstarUserId IS NULL;
@@ -328,7 +381,7 @@ BEGIN
 	    WHILE @c <= @max DO
 	    	SET  @customer = (SELECT customerName FROM blackstarDbTransfer.equipmentUserSync WHERE equipmentUserSyncId = @c);
 	    	SET  @access = (SELECT equipmentUser FROM blackstarDbTransfer.equipmentUserSync WHERE equipmentUserSyncId = @c);
-	    	Call blackstarDb.UpsertUser(@access, @customer);
+	    	Call blackstarDb.UpsertUser(@access, @customer,null);
 			Call blackstarDb.CreateUserGroup('sysCliente','Cliente',@access);
 
 	      	SET @c = @c + 1 ;
