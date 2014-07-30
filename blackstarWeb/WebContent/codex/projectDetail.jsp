@@ -46,6 +46,9 @@
 					}}
 			});
 			setButtonStatusText();
+			if('${enableEdition}' == 'true'){
+				$('#addItemButton').hide();
+			}
 	    });
 	    
 	    function setButtonStatusText(){
@@ -59,11 +62,14 @@
 	    
 	    function addEntry(){
 	    	entryNumber++;
-	    	$('#entryTable').append('<tr class="part" id="entry_' + entryNumber + '" name="' + entryNumber + '"><td>' + entryNumber + '</td><td colspan="2"><select name="" id="entryTypeId_' + entryNumber + '" style="width:350px" class="required"><option value="">Seleccione</option><c:forEach var="ss" items="${entryTypes}"><option value="${ss.id}">${ss.name}</option></c:forEach></select></td><td colspan="3"><input type="text" id="description_' + entryNumber + '" style="width:280px" class="required"/></td><td><input type="number" id="discount_' + entryNumber + '" style="width:50px" class="required"/></td><td><input type="number" id="totalPrice_' + entryNumber + '" style="width:50px" class="required"/></td><td><input type="text" id="comments_' + entryNumber + '" style="width:80px" class="required"/></td> </tr> <tr class="item_part' + entryNumber + '"><td colspan="9"><table class="items" id="items_'+ entryNumber + '" style="width:100%"></table></td></tr><tr><td></td><td><button class="searchButton" onclick="addItem(' + entryNumber +');">+ Item</button></td></tr>');
+	    	$('#entryTable').append('<tr class="part" id="entry_' + entryNumber + '" name="' + entryNumber + '"><td>' + entryNumber + '</td><td colspan="2"><select name="" id="entryTypeId_' + entryNumber + '" style="width:350px" class="required" ><option value="">Seleccione</option><c:forEach var="ss" items="${entryTypes}"><option value="${ss.id}">${ss.name}</option></c:forEach></select></td><td colspan="3"><input type="text" id="description_' + entryNumber + '" style="width:280px" class="required"/></td><td><input type="number" id="discount_' + entryNumber + '" style="width:50px" class="required"/></td><td><input type="number" id="totalPrice_' + entryNumber + '" style="width:50px" class="required"/></td><td><input type="text" id="comments_' + entryNumber + '" style="width:80px" class="required"/></td> </tr> <tr class="item_part' + entryNumber + '"><td colspan="9"><table class="items" id="items_'+ entryNumber + '" style="width:100%"></table></td></tr><tr><td></td><td><button class="searchButton" onclick="addItem(' + entryNumber +');" id="addItemButton">+ Item</button></td></tr>');
 	    } 
 	    function addItem(entryNumber){
 	    	itemNumber++;
-	    	$('#items_' + entryNumber).append('<tr id="item_' + itemNumber + '" name="' + itemNumber + '"><td><button class="searchButton" onclick="removeItem(\'item_' + itemNumber +'\')" style="width:10px">-</button></td><td><select onchange="setReferenceTypes(this.value, referenceId_' + itemNumber + ', reference_' + itemNumber + ')" id="entryItemTypeId_' + itemNumber + '" style="width:157px" class="required"><option value="">Seleccione</option><c:forEach var="ss" items="${entryItemTypes}"><option value="${ss.id}">${ss.name}</option></c:forEach></select></td><td><select id="referenceId_' + itemNumber + '" disabled="true" style="width:155px" class="required"><option value="-1">Seleccione</option></select><input type="text" id="reference_' + itemNumber + '" style="display: none;width:145px" class="required"/></td><td><input type="text" id="itemDescription_' + itemNumber + '" style="width:180px" class="required"/></td><td><input type="number" id="itemQuantity_' + itemNumber + '" style="width:40px" class="required"/></td><td><input type="number" id="itemPriceByUnit_' + itemNumber + '" style="width:40px" class="required"/></td><td><input type="number" id="itemDiscount_' + itemNumber + '" style="width:40px" class="required"/></td><td><input type="number" id="itemTotalPrice_' + itemNumber + '" style="width:40px" class="required"/></td><td><input type="text" id="itemComments_' + itemNumber + '" style="width:80px" class="required"/></td></tr>');
+	    	$('#items_' + entryNumber).append('<tr id="item_' + itemNumber + '" name="' + itemNumber + '"><td><button class="searchButton" onclick="removeItem(\'item_' + itemNumber +'\')" style="width:10px" id="removeItemButton_' + itemNumber +'">-</button></td><td><select onchange="setReferenceTypes(this.value, referenceId_' + itemNumber + ', reference_' + itemNumber + ')" id="entryItemTypeId_' + itemNumber + '" style="width:157px" class="required"><option value="">Seleccione</option><c:forEach var="ss" items="${entryItemTypes}"><option value="${ss.id}">${ss.name}</option></c:forEach></select></td><td><select id="referenceId_' + itemNumber + '" disabled="true" style="width:155px" class="required"><option value="-1">Seleccione</option></select><input type="text" id="reference_' + itemNumber + '" style="display: none;width:145px" class="required"/></td><td><input type="text" id="itemDescription_' + itemNumber + '" style="width:180px" class="required"/></td><td><input type="number" id="itemQuantity_' + itemNumber + '" style="width:40px" class="required"/></td><td><input type="number" id="itemPriceByUnit_' + itemNumber + '" style="width:40px" class="required"/></td><td><input type="number" id="itemDiscount_' + itemNumber + '" style="width:40px" class="required"/></td><td><input type="number" id="itemTotalPrice_' + itemNumber + '" style="width:40px" class="required"/></td><td><input type="text" id="itemComments_' + itemNumber + '" style="width:80px" class="required"/></td></tr>');
+	    	if('${enableEdition}' == 'true'){
+	    		$("#removeItemButton_" + itemNumber).hide();
+	    	}
 	    }
 	    
 	    function removeItem(itemId){
@@ -112,6 +118,7 @@
 	     		strEntries += "~";
 	     	}
 	     	$("#strEntries").val(strEntries);
+	     	console.log(strEntries);
 	     	
 	    }
 	    
@@ -144,7 +151,7 @@
 	      if(validate()){
 	    	prepareSubmit();
 	    	if(isUpdate == 'true'){
-	    	  $('#mainForm').attr('action', '/codex/project/update.do?projectId=' +  $("#projectId").val() + "&strEntries=" + $("#strEntries").val());
+	    	  $('#mainForm').attr('action', '/codex/project/update.do');
 	    	}
 	    	$("#mainForm").submit();
 	      }
@@ -175,7 +182,7 @@
 				       success: function(data){
 					         for (var i = 0; i < data.length; i++) {
 					            d = data[i];
-					        	$('#' + selectObjId).append('<option value="' + d._id + '">' + d.name + '</option>');
+					        	$('#' + selectObjId).append('<option value="' + d.name + '">' + d.name + '</option>');
 					         }
                        } 
 				});
@@ -352,19 +359,43 @@
                  	     		       $("#discount_" + entryNumber).val('${entry.discount}');
                  	     		       $("#totalPrice_" + entryNumber).val('${entry.totalPrice}');
                  	     		       $("#comments_" + entryNumber).val('${entry.comments}');
+                 	     		       if('${enableEdition}' == 'true'){
+                 	     		    	 $("#entryTypeId_" + entryNumber).prop( "disabled", true );
+                   	     		         $("#description_" + entryNumber).prop( "disabled", true );
+                   	     		         $("#discount_" + entryNumber).prop( "disabled", true );
+                   	     		         $("#totalPrice_" + entryNumber).prop( "disabled", true );
+                 	     		       }
                                   </script>
                                    <c:forEach var="item" items="${entry.items}" varStatus="index1">
                                            <script type="text/javascript">
                                                  addItem(entryNumber);
                                                  $("#entryItemTypeId_" + itemNumber).val('${item.itemTypeId}');
                                                  setReferenceTypes('${item.itemTypeId}', $('#referenceId_' + itemNumber) , $('#reference_' + itemNumber));
-                                                 $("#reference_" + itemNumber).val('${item.reference}');
+                                                 if('${item.itemTypeId}' == "3"){
+                                                	 $("#reference_" + itemNumber).val('${item.reference}');
+                                                	 $("#reference_" + itemNumber).show();
+                                                	 $("#referenceId_" + itemNumber).hide();
+                                                 } else {
+                                                    $("#referenceId_" + itemNumber).val('${item.reference}');
+                                                    $("#reference_" + itemNumber).hide();
+                                                    $("#referenceId_" + itemNumber).show();
+                                                 }
                   	     			             $("#itemDescription_" + itemNumber).val('${item.description}');
                   	     			             $("#itemQuantity_" + itemNumber).val('${item.quantity}');
                   	     			             $("#itemPriceByUnit_" + itemNumber).val('${item.priceByUnit}');
                   	     			             $("#itemDiscount_" + itemNumber).val('${item.discount}');
                   	     			             $("#itemTotalPrice_" + itemNumber).val('${item.totalPrice}');
                   	     			             $("#itemComments_" + itemNumber).val('${item.comments}');
+                  	     			             if('${enableEdition}' == 'true'){
+                  	     			            	$("#entryItemTypeId_" + itemNumber).prop( "disabled", true );
+                  	     			            	$("#reference_" + itemNumber).prop( "disabled", true );
+                  	     			            	$("#referenceId_" + itemNumber).prop( "disabled", true );
+                  	     			            	$("#itemDescription_" + itemNumber).prop( "disabled", true );
+                     	     			            $("#itemQuantity_" + itemNumber).prop( "disabled", true );
+                     	     			            $("#itemPriceByUnit_" + itemNumber).prop( "disabled", true );
+                     	     			            $("#itemDiscount_" + itemNumber).prop( "disabled", true );
+                     	     			            $("#itemTotalPrice_" + itemNumber).prop( "disabled", true );
+                  	     			             }
                                             </script>
                                    </c:forEach>
                               </c:forEach>
