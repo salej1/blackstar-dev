@@ -36,8 +36,8 @@ public interface ProjectService {
   public String getReferenceTypes(Integer itemTypeId);
   public List<PaymentTypeVO> getAllPaymentTypes();
   public void insertProject(ProjectVO project, User user);
-  public void updateProject(ProjectVO project);
-  public String getAllProjectsJson();
+  public void updateProject(ProjectVO project, User user);
+  public String getAllProjectsByUsrJson(Integer userId);
   public ProjectVO getProjectDetail(Integer projectId);
   public List<DeliverableVO> getDeliverables(Integer projectId);
   public void advanceStatus(ProjectVO project) throws Exception;

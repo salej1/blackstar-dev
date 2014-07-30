@@ -155,7 +155,7 @@ public class ProjectDAOImpl extends AbstractDAO
   
   @Override 
   public void upsertProject(ProjectVO project){
-	String sqlQuery = "CALL CodexUpsertProject(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	String sqlQuery = "CALL CodexUpsertProject(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 	getJdbcTemplate().update(sqlQuery, new Object[]{project.getId(), project.getClientId()
 			            , project.getTaxesTypeId(), project.getStatusId()
 			            , project.getPaymentTypeId(), project.getCurrencyTypeId()
@@ -166,7 +166,8 @@ public class ProjectDAOImpl extends AbstractDAO
 			            , project.getSettlementTimeLimit(), project.getDeliveryTime()
 			            , project.getIntercom(), project.getProductsNumber()
 			            , project.getFinancesNumber(), project.getServicesNumber()
-			                                  , project.getTotalProjectNumber()});
+			            , project.getTotalProjectNumber(), project.getCreatedByUsr()
+			                                         , project.getModifiedByUsr()});
   }
   
   @Override
@@ -191,9 +192,10 @@ public class ProjectDAOImpl extends AbstractDAO
   }
   
   @Override
-  public List<JSONObject> getAllProjectsJson() {
-	String sqlQuery = "CALL CodexGetAllProjects()";
-	return getJdbcTemplate().query(sqlQuery , new JSONRowMapper());
+  public List<JSONObject> getAllProjectsByUsrJson(Integer userId) {
+	String sqlQuery = "CALL CodexGetAllProjectsByUsr(?)";
+	return getJdbcTemplate().query(sqlQuery , new Object[]{userId}
+	                                        ,new JSONRowMapper());
   }
   
   @Override

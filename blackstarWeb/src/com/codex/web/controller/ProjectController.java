@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import com.blackstar.common.Globals;
 import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
+import com.blackstar.model.User;
 import com.blackstar.model.UserSession;
 import com.blackstar.web.AbstractController;
 import com.codex.service.ClientService;
@@ -43,9 +44,13 @@ public class ProjectController extends AbstractController {
   }
 	
   @RequestMapping(value = "/showList.do") 
-  public String showList(ModelMap model){
+  public String showList(ModelMap model, HttpServletRequest request ){
+	User user = null;
 	try {
-		 model.addAttribute("projects", service.getAllProjectsJson());
+		 user = ((UserSession) request.getSession().getAttribute(Globals
+	                                     .SESSION_KEY_PARAM)).getUser();
+		 model.addAttribute("projects", service.getAllProjectsByUsrJson(user
+				                                    .getBlackstarUserId()));
 	} catch (Exception e) {
 		e.printStackTrace();
 		model.addAttribute("errorDetails", e.getStackTrace()[0].toString());
@@ -192,28 +197,33 @@ public class ProjectController extends AbstractController {
 		System.out.println("Error =>" + e);
 		return "error";
 	}
-    return showList(model);
+    return showList(model, request);
   }
   
   @RequestMapping(value = "/update.do") 
-  public String update(ModelMap model,   @ModelAttribute("project") ProjectVO project){
-		try {
-			if(project.getStatusId() == 1){
-				service.updateProject(project);
-			} else {
-	            service.updateEntries(project);
-			}
+  public String update(ModelMap model, HttpServletRequest request 
+		       ,   @ModelAttribute("project") ProjectVO project){
+    User user = null;
+	try {
+		 user = ((UserSession) request.getSession().getAttribute(Globals
+                                         .SESSION_KEY_PARAM)).getUser();
+		 if(project.getStatusId() == 1){
+			service.updateProject(project, user);
+		 } else {
+	        service.updateEntries(project);
+		 }
 	} catch (Exception e) {
 		e.printStackTrace();
 		model.addAttribute("errorDetails", e.getStackTrace()[0].toString());
 		System.out.println("Error =>" + e);
 		return "error";
 	}
-    return showList(model);
+    return showList(model, request);
   }
   
   @RequestMapping(value = "/advanceStatus.do") 
-  public String advanceStatus(ModelMap model,  @RequestParam(required = true) Integer projectId){
+  public String advanceStatus(ModelMap model, HttpServletRequest request 
+		            , @RequestParam(required = true) Integer projectId){
 	  ProjectVO project = null;
 	  try {
 		    project = service.getProjectDetail(projectId);
@@ -223,7 +233,7 @@ public class ProjectController extends AbstractController {
 			model.addAttribute("errorDetails", e.getStackTrace()[0].toString());
 			return "error";
 	}
-	return showList(model);
+	return showList(model, request);
   }
 	
 }

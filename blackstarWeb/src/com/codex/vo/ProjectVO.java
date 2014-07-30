@@ -36,6 +36,11 @@ public class ProjectVO {
 	private List<ProjectEntryVO> entries = new ArrayList<ProjectEntryVO>();
 	private String strEntries;
 	private DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+	private String createdBy;
+	private Integer createdByUsr;
+	private Date modified;
+	private String modifiedBy;
+	private Integer modifiedByUsr;
 	
 	public Integer getId() {
 		return id;
@@ -191,6 +196,42 @@ public class ProjectVO {
 	}
 	public void setStrEntries(String strEntries) {
 		this.strEntries = strEntries;
+	}
+	public DateFormat getFormatter() {
+		return formatter;
+	}
+	public void setFormatter(DateFormat formatter) {
+		this.formatter = formatter;
+	}
+	public String getCreatedBy() {
+		return createdBy;
+	}
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+	public Integer getCreatedByUsr() {
+		return createdByUsr;
+	}
+	public void setCreatedByUsr(Integer createdByUsr) {
+		this.createdByUsr = createdByUsr;
+	}
+	public Date getModified() {
+		return modified;
+	}
+	public void setModified(Date modified) {
+		this.modified = modified;
+	}
+	public String getModifiedBy() {
+		return modifiedBy;
+	}
+	public void setModifiedBy(String modifiedBy) {
+		this.modifiedBy = modifiedBy;
+	}
+	public Integer getModifiedByUsr() {
+		return modifiedByUsr;
+	}
+	public void setModifiedByUsr(Integer modifiedByUsr) {
+		this.modifiedByUsr = modifiedByUsr;
 	}
 	
 }

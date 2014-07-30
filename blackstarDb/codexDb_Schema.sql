@@ -113,7 +113,6 @@ CREATE TABLE IF NOT EXISTS blackstarDb.codexProject(
   projectNumber Varchar(8) NOT NULL,
   costCenter Varchar(8) NOT NULL,
   changeType Float NOT NULL,
-  created Varchar(20) NOT NULL,
   contactName Text NOT NULL,
   location Varchar(20),
   advance Float(7,2),
@@ -125,12 +124,20 @@ CREATE TABLE IF NOT EXISTS blackstarDb.codexProject(
   financesNumber Int(7),
   servicesNumber Int(7),
   totalProjectNumber Int(8),
+  created DATETIME NULL,
+  createdBy NVARCHAR(50) NULL,
+  createdByUsr INT(11) NULL,
+  modified DATETIME NULL,
+  modifiedBy NVARCHAR(50) NULL,
+  modifiedByUsr INT(11) NULL,
   PRIMARY KEY (_id),
   FOREIGN KEY (statusId) REFERENCES codexStatusType (_id),
   FOREIGN KEY (paymentTypeId) REFERENCES codexPaymentType (_id),
   FOREIGN KEY (currencyTypeId) REFERENCES codexCurrencyType (_id),
   FOREIGN KEY (taxesTypeId) REFERENCES codexTaxesTypes (_id),
-  FOREIGN KEY (clientId) REFERENCES codexClient (_id)
+  FOREIGN KEY (clientId) REFERENCES codexClient (_id),
+  FOREIGN KEY (createdByUsr) REFERENCES blackstarUser (blackstarUserId),
+  FOREIGN KEY (modifiedByUsr) REFERENCES blackstarUser (blackstarUserId)
 )ENGINE=INNODB;
 
 
@@ -203,9 +210,10 @@ CREATE TABLE blackstarDb.workTeam(
   blackstarUserId Int(11) NOT NULL,
 	assignedDate Datetime NOT NULL,
   PRIMARY KEY (`_id`),
-	FOREIGN KEY (ticketId) REFERENCES bloomTicket (_id),
+  FOREIGN KEY (ticketId) REFERENCES bloomTicket (_id),
   FOREIGN KEY (workerRoleTypeId) REFERENCES bloomWorkerRoleType (_id),
-  FOREIGN KEY (blackstarUserId) REFERENCES blackstarUser (blackstarUserId)
+  FOREIGN KEY (blackstarUserId) REFERENCES blackstarUser (blackstarUserId),
+  FOREIGN KEY (codexProjectId) REFERENCES codexProject (_id)
 )ENGINE=INNODB;
 		 
 CREATE TABLE blackstarDb.codexDeliverableType(

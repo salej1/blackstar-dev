@@ -22,6 +22,13 @@ public class DashboardServiceImpl extends AbstractService
 	List<JSONObject> projects = dao.getProjectsByStatusJson(statusId);
 	return projects != null ? encode(projects.toString()): "";
   }
+  
+  @Override
+  public String getProjectsByStatusAndUserJson(Integer statusId, Integer userId){
+	List<JSONObject> projects = dao.getProjectsByStatusAndUserJson(statusId
+			                                                     , userId);
+	return projects != null ? encode(projects.toString()): "";
+  }
 
 
 

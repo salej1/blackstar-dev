@@ -315,7 +315,8 @@ SELECT cp._id id, cp.projectNumber projectNumber, cp.clientId clientId, cp.taxes
       , cp.contactName contactName, cp.location location, cp.advance advance, cp.timeLimit timeLimit
       , cp.settlementTimeLimit settlementTimeLimit, cp.deliveryTime deliveryTime, cp.intercom intercom
       , cp.productsNumber productsNumber, cp.financesNumber financesNumber, cp.servicesNumber servicesNumber
-      , cp.totalProjectNumber totalProjectNumber
+      , cp.totalProjectNumber totalProjectNumber, cp.createdBy createdBy, cp.createdByUsr createdByUsr
+      , cp. modified modified, cp.modifiedBy modifiedBy, cp.modifiedByUsr modifiedByUsr
 FROM codexProject cp, codexClient cc, codexStatusType cst, codexPaymentType cpt, codexCurrencyType cct
 WHERE cp.statusId = cst._id
       AND cp.clientId = cc._id
@@ -417,14 +418,14 @@ END$$
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.CodexUpsertProject
 -- -----------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS blackstarDb.CodexUpsertProject;
-CREATE PROCEDURE blackstarDb.`CodexUpsertProject`(pProjectId int(11), pClientId int(11), pTaxesTypeId int(1), pStatusId int(1), pPaymentTypeId int(1),pCurrencyTypeId int(2), pProjectNumber varchar(8), pCostCenter varchar(8), pChangeType float, pCreated varchar(40), pContactName text, pLocation varchar(20), pAdvance float(7,2), pTimeLimit int(3), pSettlementTimeLimit int(3), pDeliveryTime int(3), pIntercom varchar(5), pProductsNumber int(7), pFinancesNumber int(7), pServicesNumber int(7), pTotalProjectNumber int(8))
+DROP PROCEDURE IF EXISTS blackstarDb.CodexUpsertProject$$
+CREATE PROCEDURE blackstarDb.`CodexUpsertProject`(pProjectId int(11), pClientId int(11), pTaxesTypeId int(1), pStatusId int(1), pPaymentTypeId int(1),pCurrencyTypeId int(2), pProjectNumber varchar(8), pCostCenter varchar(8), pChangeType float, pCreated varchar(40), pContactName text, pLocation varchar(20), pAdvance float(7,2), pTimeLimit int(3), pSettlementTimeLimit int(3), pDeliveryTime int(3), pIntercom varchar(5), pProductsNumber int(7), pFinancesNumber int(7), pServicesNumber int(7), pTotalProjectNumber int(8), pCreatedByUsr int(11), pModifiedByUsr int(11))
 BEGIN
   DECLARE isUpdate INTEGER;
   SET isUpdate = (SELECT COUNT(*) FROM codexProject WHERE _id = pProjectId);
   IF(isUpdate = 0) THEN
-     INSERT INTO codexProject (_id, clientId , taxesTypeId , statusId , paymentTypeId ,currencyTypeId , projectNumber , costCenter , changeType , created , contactName , location , advance , timeLimit , settlementTimeLimit , deliveryTime , intercom , productsNumber , financesNumber , servicesNumber , totalProjectNumber)
-     VALUES (pProjectId, pClientId , pTaxesTypeId , pStatusId , pPaymentTypeId ,pCurrencyTypeId , pProjectNumber , pCostCenter , pChangeType , pCreated , pContactName , pLocation , pAdvance , pTimeLimit , pSettlementTimeLimit , pDeliveryTime , pIntercom , pProductsNumber , pFinancesNumber , pServicesNumber , pTotalProjectNumber);
+     INSERT INTO codexProject (_id, clientId , taxesTypeId , statusId , paymentTypeId ,currencyTypeId , projectNumber , costCenter , changeType , created , contactName , location , advance , timeLimit , settlementTimeLimit , deliveryTime , intercom , productsNumber , financesNumber , servicesNumber , totalProjectNumber, createdByUsr)
+     VALUES (pProjectId, pClientId , pTaxesTypeId , pStatusId , pPaymentTypeId ,pCurrencyTypeId , pProjectNumber , pCostCenter , pChangeType , pCreated , pContactName , pLocation , pAdvance , pTimeLimit , pSettlementTimeLimit , pDeliveryTime , pIntercom , pProductsNumber , pFinancesNumber , pServicesNumber , pTotalProjectNumber, pCreatedByUsr);
   ELSE
      UPDATE codexProject
      SET clientId = pClientId, taxesTypeId = pTaxesTypeId, statusId = pStatusId, paymentTypeId = pPaymentTypeId
@@ -433,9 +434,10 @@ BEGIN
          , advance = pAdvance, timeLimit = pTimeLimit, settlementTimeLimit = pSettlementTimeLimit
          , deliveryTime = pDeliveryTime, intercom = pIntercom, productsNumber = pProductsNumber
          , financesNumber = pFinancesNumber, servicesNumber = pServicesNumber, totalProjectNumber = pTotalProjectNumber
+		 , modifiedByUsr = pModifiedByUsr, modified = NOW()
      WHERE _id = pProjectId;
   END IF;
-END;
+END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetLocationsByZipCode
@@ -538,8 +540,8 @@ END$$
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.CodexGetAllProjects
 -- -----------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS blackstarDb.CodexGetAllProjects$$
-CREATE PROCEDURE blackstarDb.`CodexGetAllProjects`()
+DROP PROCEDURE IF EXISTS blackstarDb.CodexGetAllProjectsByUsr$$
+CREATE PROCEDURE blackstarDb.`CodexGetAllProjectsByUsr`(pUserId int(11))
 BEGIN
 SELECT cp._id id, cp.projectNumber projectNumber, cp.clientId clientId, cp.taxesTypeId taxesTypeId, cp.statusId statusId
       , cp.paymentTypeId paymentTypeId, cp.currencyTypeId currencyTypeId, cst.name statusDescription
@@ -547,19 +549,21 @@ SELECT cp._id id, cp.projectNumber projectNumber, cp.clientId clientId, cp.taxes
       , cp.contactName contactName, cp.location location, cp.advance advance, cp.timeLimit timeLimit
       , cp.settlementTimeLimit settlementTimeLimit, cp.deliveryTime deliveryTime, cp.intercom intercom
       , cp.productsNumber productsNumber, cp.financesNumber financesNumber, cp.servicesNumber servicesNumber
-      , cp.totalProjectNumber totalProjectNumber
+      , cp.totalProjectNumber totalProjectNumber, cp.createdBy createdBy, cp.createdByUsr createdByUsr
+      , cp. modified modified, cp.modifiedBy modifiedBy, cp.modifiedByUsr modifiedByUsr
 FROM codexProject cp, codexClient cc, codexStatusType cst, codexPaymentType cpt, codexCurrencyType cct
 WHERE cp.statusId = cst._id
       AND cp.clientId = cc._id
       AND cp.paymentTypeId = cpt._id
-      AND cp.currencyTypeId = cct._id;
+      AND cp.currencyTypeId = cct._id
+	  AND cp.createdByUsr = pUserId;
 END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.CodexGetProjectsByStatus
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.CodexGetProjectsByStatus$$
-CREATE PROCEDURE blackstarDb.`CodexGetProjectsByStatus`(pStatusId int(2))
+CREATE PROCEDURE blackstarDb.`CodexGetProjectsByStatus`(pStatusId INT(2))
 BEGIN
 SELECT cp._id id, cp.projectNumber projectNumber, cp.clientId clientId, cp.taxesTypeId taxesTypeId, cp.statusId statusId
       , cp.paymentTypeId paymentTypeId, cp.currencyTypeId currencyTypeId, cst.name statusDescription
@@ -567,13 +571,37 @@ SELECT cp._id id, cp.projectNumber projectNumber, cp.clientId clientId, cp.taxes
       , cp.contactName contactName, cp.location location, cp.advance advance, cp.timeLimit timeLimit
       , cp.settlementTimeLimit settlementTimeLimit, cp.deliveryTime deliveryTime, cp.intercom intercom
       , cp.productsNumber productsNumber, cp.financesNumber financesNumber, cp.servicesNumber servicesNumber
-      , cp.totalProjectNumber totalProjectNumber
+      , cp.totalProjectNumber totalProjectNumber, cp.createdBy createdBy, cp.createdByUsr createdByUsr
+      , cp. modified modified, cp.modifiedBy modifiedBy, cp.modifiedByUsr modifiedByUsr
 FROM codexProject cp, codexClient cc, codexStatusType cst, codexPaymentType cpt, codexCurrencyType cct
 WHERE cp.statusId = cst._id
       AND cp.clientId = cc._id
       AND cp.paymentTypeId = cpt._id
       AND cp.currencyTypeId = cct._id
       AND cp.statusId = pStatusId;
+END$$ 
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.CodexGetProjectsByStatusAndUser
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.CodexGetProjectsByStatusAndUser$$
+CREATE PROCEDURE blackstarDb.`CodexGetProjectsByStatusAndUser`(pStatusId INT(2), pCreatedByUsr INT(11))
+BEGIN
+SELECT cp._id id, cp.projectNumber projectNumber, cp.clientId clientId, cp.taxesTypeId taxesTypeId, cp.statusId statusId
+      , cp.paymentTypeId paymentTypeId, cp.currencyTypeId currencyTypeId, cst.name statusDescription
+      , cc.tradeName clientDescription, cp.costCenter costCenter, cp.changeType changeType, cp.created created
+      , cp.contactName contactName, cp.location location, cp.advance advance, cp.timeLimit timeLimit
+      , cp.settlementTimeLimit settlementTimeLimit, cp.deliveryTime deliveryTime, cp.intercom intercom
+      , cp.productsNumber productsNumber, cp.financesNumber financesNumber, cp.servicesNumber servicesNumber
+      , cp.totalProjectNumber totalProjectNumber, cp.createdBy createdBy, cp.createdByUsr createdByUsr
+      , cp. modified modified, cp.modifiedBy modifiedBy, cp.modifiedByUsr modifiedByUsr
+FROM codexProject cp, codexClient cc, codexStatusType cst, codexPaymentType cpt, codexCurrencyType cct
+WHERE cp.statusId = cst._id
+      AND cp.clientId = cc._id
+      AND cp.paymentTypeId = cpt._id
+      AND cp.currencyTypeId = cct._id
+      AND cp.statusId = pStatusId
+	  AND cp.createdByUsr = pCreatedByUsr;
 END$$ 
 
 -- -----------------------------------------------------------------------------

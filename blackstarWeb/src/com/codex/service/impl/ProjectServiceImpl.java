@@ -174,8 +174,8 @@ public class ProjectServiceImpl extends AbstractService
   }
   
   @Override
-  public String getAllProjectsJson(){
-	List<JSONObject> types = dao.getAllProjectsJson();
+  public String getAllProjectsByUsrJson(Integer userId){
+	List<JSONObject> types = dao.getAllProjectsByUsrJson(userId);
 	return types != null ? encode(types.toString()): "";
   }
   
@@ -189,6 +189,7 @@ public class ProjectServiceImpl extends AbstractService
 	String [] entries = project.getStrEntries().split("~");
 	String [] items, values;
 	Integer entryId;
+	project.setCreatedByUsr(user.getBlackstarUserId());
 	dao.upsertProject(project);
 	for(String entry : entries){
 		values = entry.split("\\|");
@@ -208,10 +209,11 @@ public class ProjectServiceImpl extends AbstractService
   }
   
   @Override
-  public void updateProject(ProjectVO project){
+  public void updateProject(ProjectVO project, User user){
 	String [] entries = project.getStrEntries().split("~");
 	String [] items, values;
 	Integer entryId;
+	project.setModifiedByUsr(user.getBlackstarUserId());
 	dao.upsertProject(project);
 	dao.cleanProjectDependencies(project.getId());
 	for(String entry : entries){

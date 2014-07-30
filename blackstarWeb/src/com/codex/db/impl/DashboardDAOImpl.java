@@ -17,5 +17,13 @@ public class DashboardDAOImpl extends AbstractDAO
 	return getJdbcTemplate().query(sqlQuery , new Object[]{statusId}
 		                                     , new JSONRowMapper());
   }
+  
+  @Override
+  public List<JSONObject> getProjectsByStatusAndUserJson(Integer statusId
+		                                              , Integer userId) {
+	String sqlQuery = "CALL CodexGetProjectsByStatusAndUser(?, ?)";
+	return getJdbcTemplate().query(sqlQuery , new Object[]{statusId, userId}
+		                                             , new JSONRowMapper());
+  }
 
 }

@@ -48,7 +48,6 @@ public interface ProjectDAO {
                       , String comments);
 	public void upsertProject(ProjectVO project);
 	public Integer getNewEntryId();
-	public List<JSONObject> getAllProjectsJson();
 	public List<ProjectEntryVO> getEntriesByProject(Integer projectId);
 	public List<ProjectEntryItemVO> getItemsByEntry(Integer entryId);
 	public List<DeliverableVO> getDeliverables(Integer projectId);
@@ -56,4 +55,5 @@ public interface ProjectDAO {
 	public User getSalesManger();
 	public User getResponsable(Integer projectId);
 	public void cleanProjectDependencies(Integer projectId);
+	public List<JSONObject> getAllProjectsByUsrJson(Integer userId);
 }
