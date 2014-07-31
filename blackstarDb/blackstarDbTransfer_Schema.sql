@@ -28,6 +28,8 @@
 -- ---------------------------------------------------------------------------
 -- 9	23/06/2014	SAG		Se agregan campos de detalle del equipo a serviceTx
 -- ---------------------------------------------------------------------------
+-- 10	30/06/2014	SAG		Se incrementa tamaño de equipmentUser y contact en policy
+-- ---------------------------------------------------------------------------
 
 
 USE blackstarDbTransfer;
@@ -42,6 +44,10 @@ BEGIN
 -- -----------------------------------------------------------------------------
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
+
+	-- Aumentando capacidad de equipmentUser de policy
+	ALTER TABLE policy MODIFY equipmentUser VARCHAR(400);
+	ALTER TABLE policy MODIFY contact VARCHAR(200);
 
 	-- Agregando detalle del equipo a serviceTx
 	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDbTransfer' AND TABLE_NAME = 'serviceTx' AND COLUMN_NAME = 'equipmentTypeId') = 0  THEN

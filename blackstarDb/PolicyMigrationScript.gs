@@ -15,6 +15,8 @@
 ** 2    13/03/2014  SAG  	Se Integra equipmentUser
 ** --   --------   -------  ------------------------------------
 ** 3	09/04/2014	SAG 	Se implementa sincronizacion selectiva
+** --   --------   -------  ------------------------------------
+** 4	30/07/2014	SAG 	Se implementa upsert
 *****************************************************************************/
 
 function policyMain() {
@@ -84,14 +86,7 @@ String.prototype.trim = function() {
 
 function sendPolicyToDatabase(policy, conn, eqTypes, sqlLog){
 	// sql string initialization
-	var sql = "INSERT INTO blackstarDbTransfer.policy( \
-						office,policyType,customerContract,customer,finalUser,project,cst,equipmentTypeId,brand,model,serialNumber,capacity,equipmentAddress,equipmentLocation,contact,contactEmail,contactPhone,startDate,endDate,visitsPerYear,responseTimeHr,solutionTimeHr,penalty,service,includesParts,exceptionParts,serviceCenter,observations,equipmentUser,created,createdBy,createdByUsr) \
-				SELECT	a.office,a.policyType,a.customerContract,a.customer,a.finalUser,a.project,a.cst,a.equipmentTypeId,a.brand,a.model,a.serialNumber,a.capacity,a.equipmentAddress,a.equipmentLocation,a.contact,a.contactEmail,a.contactPhone,a.startDate,a.endDate,a.visitsPerYear,a.responseTimeHr,a.solutionTimeHr,a.penalty,a.service,a.includesParts,a.exceptionParts,a.serviceCenter,a.observations,a.equipmentUser,a.created,a.createdBy,a.createdByUsr  \
-				FROM ( \
-					SELECT VALUES_PLACEHOLDER \
-				) a \
-				LEFT OUTER JOIN blackstarDbTransfer.policy p on p.serialNumber = a.serialNumber AND p.project = a.project \
-				WHERE p.policyId IS NULL;";
+	var sql = "CALL upsertPolicy(VALUES_PLACEHOLDER);";
 	
 	// reading the values
 	var ix = 1;
@@ -156,43 +151,43 @@ function sendPolicyToDatabase(policy, conn, eqTypes, sqlLog){
 	// appending the values to the sql string
 
 	var values = "";
-	values = values + Utilities.formatString("'%s' COLLATE utf8mb4_general_ci  AS office,",office);
-	values = values + Utilities.formatString("'%s' COLLATE utf8mb4_general_ci  AS policyType,",policyType);
-	values = values + Utilities.formatString("'%s' COLLATE utf8mb4_general_ci  AS customerContract,",customerContract);
-	values = values + Utilities.formatString("'%s' COLLATE utf8mb4_general_ci  AS customer,",customer);
-	values = values + Utilities.formatString("'%s' COLLATE utf8mb4_general_ci  AS finalUser,",finalUser);
-	values = values + Utilities.formatString("'%s' COLLATE utf8mb4_general_ci  AS project,",project);
-	values = values + Utilities.formatString("'%s' COLLATE utf8mb4_general_ci  AS cst,",cst);
-	values = values + Utilities.formatString("'%s' COLLATE utf8mb4_general_ci  AS equipmentTypeId,",equipmentTypeId);
-	values = values + Utilities.formatString("'%s' COLLATE utf8mb4_general_ci  AS brand,",brand);
-	values = values + Utilities.formatString("'%s' COLLATE utf8mb4_general_ci  AS model,",model);
-	values = values + Utilities.formatString("'%s' COLLATE utf8mb4_general_ci  AS serialNumber,",serialNumber);
-	values = values + Utilities.formatString("'%s' COLLATE utf8mb4_general_ci  AS capacity,",capacity);
-	values = values + Utilities.formatString("'%s' COLLATE utf8mb4_general_ci  AS equipmentAddress,",equipmentAddress);
-	values = values + Utilities.formatString("'%s' COLLATE utf8mb4_general_ci  AS equipmentLocation,",equipmentLocation);
-	values = values + Utilities.formatString("'%s' COLLATE utf8mb4_general_ci  AS contact,",contact);
-	values = values + Utilities.formatString("'%s' COLLATE utf8mb4_general_ci  AS contactEmail,",contactEmail);
-	values = values + Utilities.formatString("'%s' COLLATE utf8mb4_general_ci  AS contactPhone,",contactPhone);
-	values = values + Utilities.formatString("'%s' AS startDate,",Utilities.formatDate(startDate, "CST", "yyyy-MM-dd HH:mm:ss"));
-	values = values + Utilities.formatString("'%s' AS endDate,",Utilities.formatDate(endDate, "CST", "yyyy-MM-dd HH:mm:ss"));
+	values = values + Utilities.formatString("'%s',",office);
+	values = values + Utilities.formatString("'%s',",policyType);
+	values = values + Utilities.formatString("'%s',",customerContract);
+	values = values + Utilities.formatString("'%s',",customer);
+	values = values + Utilities.formatString("'%s',",finalUser);
+	values = values + Utilities.formatString("'%s',",project);
+	values = values + Utilities.formatString("'%s',",cst);
+	values = values + Utilities.formatString("'%s',",equipmentTypeId);
+	values = values + Utilities.formatString("'%s',",brand);
+	values = values + Utilities.formatString("'%s',",model);
+	values = values + Utilities.formatString("'%s',",serialNumber);
+	values = values + Utilities.formatString("'%s',",capacity);
+	values = values + Utilities.formatString("'%s',",equipmentAddress);
+	values = values + Utilities.formatString("'%s',",equipmentLocation);
+	values = values + Utilities.formatString("'%s',",contact);
+	values = values + Utilities.formatString("'%s',",contactEmail);
+	values = values + Utilities.formatString("'%s',",contactPhone);
+	values = values + Utilities.formatString("'%s',",Utilities.formatDate(startDate, "CST", "yyyy-MM-dd HH:mm:ss"));
+	values = values + Utilities.formatString("'%s',",Utilities.formatDate(endDate, "CST", "yyyy-MM-dd HH:mm:ss"));
 	if(parseInt(visitsPerYear, 10) > 0) {
-		values = values + Utilities.formatString("'%s' COLLATE utf8mb4_general_ci  AS visitsPerYear,",visitsPerYear);
+		values = values + Utilities.formatString("'%s',",visitsPerYear);
 	}
 	else{
-		values = values + Utilities.formatString("NULL AS visitsPerYear,");
+		values = values + Utilities.formatString("NULL,");
 	}
-	values = values + Utilities.formatString("'%s' AS responseTimeHr,",responseTimeHr);
-	values = values + Utilities.formatString("'%s' AS solutionTimeHr,",solutionTimeHr);
-	values = values + Utilities.formatString("'%s' COLLATE utf8mb4_general_ci  AS penalty,",penalty);
-	values = values + Utilities.formatString("'%s' COLLATE utf8mb4_general_ci  AS service,",service);
-	values = values + Utilities.formatString("'%s' includesParts,",includesPartsBool);
-	values = values + Utilities.formatString("'%s' COLLATE utf8mb4_general_ci  AS exceptionParts,",exceptionParts);
-	values = values + Utilities.formatString("'%s' COLLATE utf8mb4_general_ci  AS serviceCenter,",serviceCenter);
-	values = values + Utilities.formatString("'%s' COLLATE utf8mb4_general_ci  AS observations,",observations);
-	values = values + Utilities.formatString("'%s' COLLATE utf8mb4_general_ci  AS equipmentUser,",equipmentUser);
-	values = values + Utilities.formatString("'%s' AS created,",Utilities.formatDate(created, "CST", "yyyy-MM-dd HH:mm:ss"));
-	values = values + Utilities.formatString("'%s' COLLATE utf8mb4_general_ci  AS createdBy,",createdBy);
-	values = values + Utilities.formatString("'%s' COLLATE utf8mb4_general_ci  AS createdByUsr",createdByUsr);
+	values = values + Utilities.formatString("'%s',",responseTimeHr);
+	values = values + Utilities.formatString("'%s',",solutionTimeHr);
+	values = values + Utilities.formatString("'%s',",penalty);
+	values = values + Utilities.formatString("'%s',",service);
+	values = values + Utilities.formatString("'%s',",includesPartsBool);
+	values = values + Utilities.formatString("'%s',",exceptionParts);
+	values = values + Utilities.formatString("'%s',",serviceCenter);
+	values = values + Utilities.formatString("'%s',",observations);
+	values = values + Utilities.formatString("'%s',",equipmentUser);
+	values = values + Utilities.formatString("'%s',",Utilities.formatDate(created, "CST", "yyyy-MM-dd HH:mm:ss"));
+	values = values + Utilities.formatString("'%s',",createdBy);
+	values = values + Utilities.formatString("'%s'",createdByUsr);
 	
 	sql = sql.replace("VALUES_PLACEHOLDER", values);
 

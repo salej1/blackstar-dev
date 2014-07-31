@@ -5100,6 +5100,8 @@ DELIMITER ;
 -- ---------------------------------------------------------------------------
 -- 9	23/06/2014	SAG		Se agregan campos de detalle del equipo a serviceTx
 -- ---------------------------------------------------------------------------
+-- 10	30/06/2014	SAG		Se incrementa tamaño de equipmentUser y contact en policy
+-- ---------------------------------------------------------------------------
 
 
 USE blackstarDbTransfer;
@@ -5114,6 +5116,10 @@ BEGIN
 -- -----------------------------------------------------------------------------
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
+
+	-- Aumentando capacidad de equipmentUser de policy
+	ALTER TABLE policy MODIFY equipmentUser VARCHAR(400);
+	ALTER TABLE policy MODIFY contact VARCHAR(200);
 
 	-- Agregando detalle del equipo a serviceTx
 	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDbTransfer' AND TABLE_NAME = 'serviceTx' AND COLUMN_NAME = 'equipmentTypeId') = 0  THEN
@@ -5211,10 +5217,70 @@ DROP PROCEDURE blackstarDbTransfer.upgradeSchema;
 -- -----------------------------------------------------------------------------
 -- 7 	24/07/2014	SAG 	Se implementa multi usuario cliente de poliza
 -- -----------------------------------------------------------------------------
+-- 7 	30/07/2014	SAG 	Se implementa UpsertPolicy
+-- -----------------------------------------------------------------------------
 use blackstarDbTransfer;
 
 
 DELIMITER $$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.upsertPolicy
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS upsertPolicy $$
+CREATE PROCEDURE upsertPolicy(
+	  pOffice VARCHAR(50),
+	  pPolicyType VARCHAR(50),
+	  pCustomerContract VARCHAR(50),
+	  pCustomer VARCHAR(100),
+	  pFinalUser VARCHAR(200),
+	  pProject VARCHAR(50),
+	  pCst VARCHAR(50),
+	  pEquipmentTypeId CHAR(1),
+	  pBrand VARCHAR(50),
+	  pModel VARCHAR(100),
+	  pSerialNumber VARCHAR(100),
+	  pCapacity VARCHAR(50),
+	  pEquipmentAddress VARCHAR(250),
+	  pEquipmentLocation VARCHAR(250),
+	  pContact VARCHAR(100),
+	  pContactEmail VARCHAR(200),
+	  pContactPhone VARCHAR(200),
+	  pStartDate DATETIME,
+	  pEndDate DATETIME,
+	  pVisitsPerYear INT(11),
+	  pResponseTimeHr INT(11),
+	  pSolutionTimeHr INT(11),
+	  pPenalty TEXT,
+	  pService VARCHAR(50),
+	  pIncludesParts TINYINT(1),
+	  pExceptionParts VARCHAR(100),
+	  pServiceCenter VARCHAR(50),
+	  pObservations TEXT,
+	  pEquipmentUser VARCHAR(200),
+	  pCreated DATETIME,
+	  pCreatedBy VARCHAR(45),
+	  pCreatedByUsr VARCHAR(45))
+BEGIN
+	IF (SELECT count(*) FROM policy p WHERE p.serialNumber = pSerialNumber AND p.project = pProject) = 0 THEN
+		INSERT INTO blackstarDbTransfer.policy(office,  policyType,  customerContract,  customer,  finalUser,  project,  cst,  equipmentTypeId,  brand,  model,  serialNumber,  capacity,  equipmentAddress,  equipmentLocation,  contact,  contactEmail,  contactPhone,  startDate,  endDate,  visitsPerYear,  responseTimeHr,  solutionTimeHr,  penalty,  service,  includesParts,  exceptionParts,  serviceCenter,  observations,  created,  createdBy,  createdByUsr,  equipmentUser)
+										SELECT 	pOffice, pPolicyType, pCustomerContract, pCustomer, pFinalUser, pProject, pCst, pEquipmentTypeId, pBrand, pModel, pSerialNumber, pCapacity, pEquipmentAddress, pEquipmentLocation, pContact, pContactEmail, pContactPhone, pStartDate, pEndDate, pVisitsPerYear, pResponseTimeHr, pSolutionTimeHr, pPenalty, pService, pIncludesParts, pExceptionParts, pServiceCenter, pObservations, pCreated, pCreatedBy, pCreatedByUsr, pEquipmentUser;
+	ELSE
+		UPDATE blackstarDbTransfer.policy SET 
+			startDate = pStartDate,
+			endDate = pEndDate,
+			serviceCenter = pServiceCenter,
+			equipmentUser = pEquipmentUser,
+			equipmentAddress = equipmentAddress,
+			contact = pContact,
+			contactEmail = pContactEmail,
+			contactPhone = pContactPhone,
+			modified = now(),
+			modifiedBy = 'UpsertPolicy'
+		WHERE serialNumber = pSerialNumber AND project = pProject;
+	END IF;
+END$$
+
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.syncPolicyUsers
 -- -----------------------------------------------------------------------------
@@ -5231,13 +5297,13 @@ BEGIN
     DECLARE cur1 CURSOR FOR 
     	SELECT p2.policyId, p1.equipmentUser
 		FROM blackstarDbTransfer.policy p1
-			INNER JOIN blackstarDb.policy p2 ON p1.serialNumber = p2.serialNumber AND p1.project = p2.project
+			INNER JOIN blackstarDb.policy p2 ON p1.serialNumber = p2.serialNumber AND p1.brand = p2.brand AND p1.model = p2.model
 		WHERE IFNULL(p1.equipmentUser, '') != '';
 
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
-
-    TRUNCATE TABLE blackstarDb.policyEquipmentUser;
    
+	CREATE TEMPORARY TABLE rawPolicyEquipment(policyId INT, user VARCHAR(200));
+
     OPEN cur1;
       read_loop: LOOP
         FETCH cur1 INTO id, value;
@@ -5255,13 +5321,23 @@ BEGIN
           (SELECT REPLACE(SUBSTRING(SUBSTRING_INDEX(value, ',', i),
           LENGTH(SUBSTRING_INDEX(value, ',', i - 1)) + 1), ',', ''));
 
-          INSERT INTO blackstarDb.policyEquipmentUser(policyId, equipmentUserId) VALUES (id, splitted_value);
+          INSERT INTO rawPolicyEquipment(policyId, user) VALUES (id, splitted_value);
           SET i = i + 1;
 
         END WHILE;
       END LOOP;
 
     CLOSE cur1;
+
+    -- Insertando los valores reales
+    TRUNCATE TABLE blackstarDb.policyEquipmentUser;
+
+    INSERT INTO blackstarDb.policyEquipmentUser(policyId, equipmentUserId)
+    SELECT DISTINCT policyId, user 
+    FROM rawPolicyEquipment;
+
+    DROP TEMPORARY TABLE rawPolicyEquipment;
+
 END$$
 
 -- -----------------------------------------------------------------------------
@@ -5322,7 +5398,11 @@ BEGIN
 	SET
 		bp.startDate = p.startDate,
 		bp.endDate = p.endDate,
-		bp.serviceCenterId = s.serviceCenterId;
+		bp.serviceCenterId = s.serviceCenterId,
+		bp.equipmentAddress = p.equipmentAddress,
+		bp.contactName = p.contact,
+		bp.contactPhone = p.contactPhone,
+		bp.contactEmail = p.contactEmail;
 
 	-- ACTUALIZAR LOS CORREOS DE ACCESO A CLIENTES
 	CALL syncPolicyUsers();
