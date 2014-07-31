@@ -46,5 +46,6 @@
 	<bean id="clientDAO" class="com.codex.db.impl.ClientDAOImpl" parent="abstractDAO" />
 	<bean id="projectDAO" class="com.codex.db.impl.ProjectDAOImpl" parent="abstractDAO" />
 	<bean id="codexDashboardDAO" class="com.codex.db.impl.DashboardDAOImpl" parent="abstractDAO" />
+	<bean id="priceProposalDAO" class="com.codex.db.impl.PriceProposalDAOImpl" parent="abstractDAO" />
 
 </beans>

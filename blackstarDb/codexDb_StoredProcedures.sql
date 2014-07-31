@@ -17,7 +17,7 @@ DELIMITER $$
 
 
 -- -----------------------------------------------------------------------------
-	-- blackstarDb.CodexGetAllStates
+	-- blackstarDb.CodexGetAllStatesrt
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.CodexGetAllStates$$
 CREATE PROCEDURE blackstarDb.CodexGetAllStates()
@@ -695,6 +695,69 @@ BEGIN
    DELETE FROM codexEntryItem
    WHERE entryId IN (SELECT _id FROM codexProjectEntry WHERE projectId = pProjectId);
    DELETE FROM codexProjectEntry WHERE projectId = pProjectId;
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.CodexInsertPriceProposal
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.CodexInsertPriceProposal$$
+CREATE PROCEDURE blackstarDb.`CodexInsertPriceProposal`(pProposalId int(11), pProjectId int(11),pPriceProposalNumber varchar(8), pClientId int(11), pTaxesTypeId int(1), pPaymentTypeId int(1),pCurrencyTypeId int(2), pCostCenter varchar(8), pChangeType float, pCreated varchar(40), pContactName text, pLocation varchar(20), pAdvance float(7,2), pTimeLimit int(3), pSettlementTimeLimit int(3), pDeliveryTime int(3), pIntercom varchar(5), pProductsNumber int(7), pFinancesNumber int(7), pServicesNumber int(7), pTotalProjectNumber int(8))
+BEGIN
+     INSERT INTO codexPriceProposal (_id, projectId, priceProposalNumber, clientId , taxesTypeId , paymentTypeId ,currencyTypeId  , costCenter , changeType , created , contactName , location , advance , timeLimit , settlementTimeLimit , deliveryTime , intercom , productsNumber , financesNumber , servicesNumber , totalProjectNumber)
+     VALUES (pProposalId, pProjectId, pPriceProposalNumber, pClientId , pTaxesTypeId , pPaymentTypeId ,pCurrencyTypeId , pCostCenter , pChangeType , pCreated , pContactName , pLocation , pAdvance , pTimeLimit , pSettlementTimeLimit , pDeliveryTime , pIntercom , pProductsNumber , pFinancesNumber , pServicesNumber , pTotalProjectNumber);
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.CodexInsertPriceProposalEntryItem
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.CodexInsertPriceProposalEntryItem$$
+CREATE PROCEDURE blackstarDb.`CodexInsertPriceProposalEntryItem`(pItemId int(11),pEntryId int(11), pItemTypeId int(11), pReference TEXT, pDescription TEXT, pQuantity int(11), pPriceByUnit float(8,2), pDiscount float(6,2), pTotalPrice float(10,2), pComments TEXT)
+BEGIN
+    INSERT INTO codexPriceProposalItem (entryId, itemTypeId, reference, description, quantity, priceByUnit, discount, totalPrice, comments)
+    VALUES (pEntryId, pItemTypeId, pReference, pDescription, pQuantity, pPriceByUnit, pDiscount, pTotalPrice, pComments);  
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.CodexInsertPriceProposalEntry
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.CodexInsertPriceProposalEntry$$
+CREATE PROCEDURE blackstarDb.`CodexInsertPriceProposalEntry`(pProposalEntryId int(11), pProjectId int(11), pEntryTypeId int(11), pDescription TEXT, pDiscount FLOAT(6,2), pTotalPrice FLOAT(9,2), pComments TEXT)
+BEGIN
+    INSERT INTO codexPriceProposalEntry (_id, projectId, entryTypeId, description, discount, totalPrice, comments)
+     VALUES (pProposalEntryId, pProjectId, pEntryTypeId, pDescription, pDiscount, pTotalPrice, pComments);
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetNextPriceProposalId
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetNextPriceProposalId$$
+CREATE PROCEDURE blackstarDb.`GetNextPriceProposalId`()
+BEGIN
+	DECLARE newNumber INTEGER;
+	CALL blackstarDb.GetNextServiceOrderNumber('P', newNumber);
+	SELECT newNumber projectNumber;
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetNextProposalEntryId
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetNextProposalEntryId$$
+CREATE PROCEDURE blackstarDb.`GetNextProposalEntryId`()
+BEGIN
+
+	DECLARE newNumber INTEGER;
+
+	CALL blackstarDb.GetNextServiceOrderNumber('E', newNumber);
+	SELECT newNumber projectNumber;
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetProposalNumberForProject
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetProposalNumberForProject$$
+CREATE PROCEDURE blackstarDb.`GetProposalNumberForProject`(pProjectId Int(11))
+BEGIN
+	SELECT COUNT(*) FROM codexPriceProposal WHERE projectId = pProjectId;
 END$$
 -- -----------------------------------------------------------------------------
 	-- FIN DE LOS STORED PROCEDURES

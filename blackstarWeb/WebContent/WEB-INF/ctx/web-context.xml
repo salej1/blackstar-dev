@@ -125,5 +125,9 @@
 	<bean class="com.codex.web.controller.DashboardController" parent="abstractController">
 	    <property name="service" ref="codexDashboardService" />
 	</bean>
+	
+	<bean class="com.codex.web.controller.PriceProposalController" parent="abstractController">
+	    <property name="service" ref="priceProposalService" />
+	</bean>
 	<context:annotation-config />
 </beans>
