@@ -711,20 +711,20 @@ END$$
 	-- blackstarDb.CodexInsertPriceProposalEntryItem
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.CodexInsertPriceProposalEntryItem$$
-CREATE PROCEDURE blackstarDb.`CodexInsertPriceProposalEntryItem`(pItemId int(11),pEntryId int(11), pItemTypeId int(11), pReference TEXT, pDescription TEXT, pQuantity int(11), pPriceByUnit float(8,2), pDiscount float(6,2), pTotalPrice float(10,2), pComments TEXT)
+CREATE PROCEDURE blackstarDb.`CodexInsertPriceProposalEntryItem`(pPriceProposalEntryId int(11), pItemTypeId int(11), pReference TEXT, pDescription TEXT, pQuantity int(11), pPriceByUnit float(8,2), pDiscount float(6,2), pTotalPrice float(10,2), pComments TEXT)
 BEGIN
-    INSERT INTO codexPriceProposalItem (entryId, itemTypeId, reference, description, quantity, priceByUnit, discount, totalPrice, comments)
-    VALUES (pEntryId, pItemTypeId, pReference, pDescription, pQuantity, pPriceByUnit, pDiscount, pTotalPrice, pComments);  
+    INSERT INTO codexPriceProposalItem (priceProposalEntryId, itemTypeId, reference, description, quantity, priceByUnit, discount, totalPrice, comments)
+    VALUES (pPriceProposalEntryId, pItemTypeId, pReference, pDescription, pQuantity, pPriceByUnit, pDiscount, pTotalPrice, pComments);  
 END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.CodexInsertPriceProposalEntry
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.CodexInsertPriceProposalEntry$$
-CREATE PROCEDURE blackstarDb.`CodexInsertPriceProposalEntry`(pProposalEntryId int(11), pProjectId int(11), pEntryTypeId int(11), pDescription TEXT, pDiscount FLOAT(6,2), pTotalPrice FLOAT(9,2), pComments TEXT)
+CREATE PROCEDURE blackstarDb.`CodexInsertPriceProposalEntry`(pProposalEntryId int(11), pPriceProposalId int(11), pEntryTypeId int(11), pDescription TEXT, pDiscount FLOAT(6,2), pTotalPrice FLOAT(9,2), pComments TEXT)
 BEGIN
-    INSERT INTO codexPriceProposalEntry (_id, projectId, entryTypeId, description, discount, totalPrice, comments)
-     VALUES (pProposalEntryId, pProjectId, pEntryTypeId, pDescription, pDiscount, pTotalPrice, pComments);
+    INSERT INTO codexPriceProposalEntry (_id, priceProposalId, entryTypeId, description, discount, totalPrice, comments)
+     VALUES (pProposalEntryId, pPriceProposalId, pEntryTypeId, pDescription, pDiscount, pTotalPrice, pComments);
 END$$
 
 -- -----------------------------------------------------------------------------
@@ -757,7 +757,7 @@ END$$
 DROP PROCEDURE IF EXISTS blackstarDb.GetProposalNumberForProject$$
 CREATE PROCEDURE blackstarDb.`GetProposalNumberForProject`(pProjectId Int(11))
 BEGIN
-	SELECT COUNT(*) FROM codexPriceProposal WHERE projectId = pProjectId;
+	SELECT COUNT(*) + 1 FROM codexPriceProposal WHERE projectId = pProjectId;
 END$$
 -- -----------------------------------------------------------------------------
 	-- FIN DE LOS STORED PROCEDURES

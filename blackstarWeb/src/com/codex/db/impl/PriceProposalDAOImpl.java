@@ -36,7 +36,7 @@ public class PriceProposalDAOImpl extends AbstractDAO
   
   @Override
   public void insertPriceProposalEntryItem(PriceProposalItemVO priceProposalItem){
-    String sqlQuery = "CALL CodexInsertPriceProposalEntryItem(?, ?, ?, ?, ?, ?, ?, ? ,?, ?)";
+    String sqlQuery = "CALL CodexInsertPriceProposalEntryItem(?, ?, ?, ?, ?, ?, ?, ? ,?)";
 	getJdbcTemplate().update(sqlQuery, new Object[]{priceProposalItem.getPriceProposalEntryId()
 			              , priceProposalItem.getItemTypeId(), priceProposalItem.getReference()
 			              , priceProposalItem.getDescription(), priceProposalItem.getQuantity()

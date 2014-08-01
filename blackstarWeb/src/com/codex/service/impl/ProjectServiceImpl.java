@@ -13,12 +13,14 @@ import com.blackstar.services.EmailServiceFactory;
 import com.codex.db.ClientDAO;
 import com.codex.db.ProjectDAO;
 import com.codex.service.PDFReportService;
+import com.codex.service.PriceProposalService;
 import com.codex.service.ProjectService;
 import com.codex.vo.ClientVO;
 import com.codex.vo.CurrencyTypesVO;
 import com.codex.vo.DeliverableTypesVO;
 import com.codex.vo.DeliverableVO;
 import com.codex.vo.PaymentTypeVO;
+import com.codex.vo.PriceProposalVO;
 import com.codex.vo.ProjectEntryItemTypesVO;
 import com.codex.vo.ProjectEntryTypesVO;
 import com.codex.vo.ProjectEntryVO;
@@ -33,8 +35,12 @@ public class ProjectServiceImpl extends AbstractService
   private UserDAO uDAO = null;
   private ClientDAO cDAO = null;
   private PDFReportService pdfService = null;
+  private PriceProposalService priceProposalService = null;
   private IEmailService gmService = null;
   
+  public void setPriceProposalService(PriceProposalService priceProposalService) {
+	this.priceProposalService = priceProposalService;
+  }
   
   public void setGmService(IEmailService gmService) {
 	this.gmService = gmService;
@@ -258,6 +264,7 @@ public class ProjectServiceImpl extends AbstractService
   
   @Override
   public void advanceStatus(ProjectVO project) throws Exception{
+	  
 	switch(project.getStatusId()){
 	  case 1: gotoByAuthStatus(project);
 	          break;
@@ -298,11 +305,14 @@ public class ProjectServiceImpl extends AbstractService
   
   private void gotoPricePropStatus(ProjectVO project) throws Exception{
 	byte[] report = pdfService.getPriceProposalReport(project);
+	PriceProposalVO priceProposal = priceProposalService
+			           .getProposalFromProject(project);
+	priceProposalService.insertPriceProposal(priceProposal);
 	ClientVO client = cDAO.getClientById(project.getClientId());
 	dao.advanceStatus(project.getId());
 	saveReport(project, report);
-	gmService.sendEmail(client.getEmail(), "Cotización "  + project
-		           .getProjectNumber(), "Cotización", "Cotizacion.pdf", report);
+	gmService.sendEmail(client.getEmail(), "Cotización "  + priceProposal
+			 .getPriceProposalNumber(), "Cotización", "Cotizacion.pdf", report);
   }
   
   
@@ -311,8 +321,5 @@ public class ProjectServiceImpl extends AbstractService
 	gdService.insertFileFromStream("application/pdf", project.getProjectNumber() 
 			                                        + ".pdf", parentId, report);
   }
-
-
-
 
 }
