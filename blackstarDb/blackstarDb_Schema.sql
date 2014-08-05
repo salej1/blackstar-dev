@@ -31,7 +31,8 @@
 -- ---------------------------------------------------------------------------
 -- 24 	24/04/2014	SAG 	Se agrega tabla policyEquipmentUser
 -- ---------------------------------------------------------------------------
-
+-- 25 	31/07/2014	SAG 	Se incremente tamaño de manufacturedDateSeria en upsServiceBatteryBank
+-- ---------------------------------------------------------------------------
 
 use blackstarDb;
 
@@ -44,6 +45,9 @@ BEGIN
 -- -----------------------------------------------------------------------------
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
+
+-- INCREMENTANDO TAMAÑO DE manufacturedDateSerial EN upsService
+ALTER TABLE upsServiceBatteryBank MODIFY manufacturedDateSerial VARCHAR(200);
 
 -- AGREGANDO TABLA policyEquipmentUser - Asocia polizas con varios usuarios Cliente
 	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'policyEquipmentUser') = 0 THEN

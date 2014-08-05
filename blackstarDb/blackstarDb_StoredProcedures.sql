@@ -3923,11 +3923,11 @@ END$$
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.AddupsServiceBatteryBank$$
 CREATE PROCEDURE blackstarDb.AddupsServiceBatteryBank (
-   upsServiceId int(11) ,
+  upsServiceId int(11) ,
   checkConnectors bit(1) ,
   cverifyOutflow bit(1) ,
   numberBatteries int(11) ,
-  manufacturedDateSerial varchar(10) ,
+  manufacturedDateSerial varchar(200) ,
   damageBatteries varchar(50) ,
   other varchar(250) ,
   temp decimal(10,0) ,
