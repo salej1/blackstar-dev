@@ -160,7 +160,7 @@ public class UpsServiceController extends AbstractController {
 		    		servicioOrderSave.setIsWrong(serviceOrder.getIsWrong()?1:0);
 		    		servicioOrderSave.setStatusId(serviceOrder.getServiceStatusId());
 		    		
-		    		service.updateServiceOrder(servicioOrderSave, "EmergencyPlantServiceController", userSession.getUser().getUserEmail());
+		    		service.updateServiceOrder(servicioOrderSave, "UpsServiceController", userSession.getUser().getUserEmail());
 		    		idServicio = serviceOrder.getServiceOrderId();
 		    	}
 				else{
@@ -180,7 +180,7 @@ public class UpsServiceController extends AbstractController {
 			    		customer.setProject(serviceOrder.getProject());
 			    		customer.setOfficeId(String.valueOf(serviceOrder.getOfficeId()));	
 			    		customer.setCreated(new Date());
-			    		customer.setCreatedBy("EmergencyPlantServiceController");
+			    		customer.setCreatedBy("UpsServiceController");
 			    		customer.setCreatedByUsr(userSession.getUser().getUserEmail());
 			    		custId = ocService.SaveOpenCustomer(customer);
 		    		}
@@ -211,7 +211,7 @@ public class UpsServiceController extends AbstractController {
 					servicioOrderSave.setTicketId(serviceOrder.getTicketId());
 					servicioOrderSave.setHasPdf(1);
 					
-					idServicio = service.saveServiceOrder(servicioOrderSave, "BatteryServiceController", userSession.getUser().getUserEmail());
+					idServicio = service.saveServiceOrder(servicioOrderSave, "UpsServiceController", userSession.getUser().getUserEmail());
 					serviceOrder.setServiceOrderId(idServicio);
 					doCommit = true;
 				}
@@ -229,7 +229,7 @@ public class UpsServiceController extends AbstractController {
 				Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
 				e.printStackTrace();
 				model.addAttribute("errorDetails", e.getMessage() + " - " + e.getStackTrace()[0].toString());
-				return "error";
+				throw e;
 			}
 	    	
 	    	return "dashboard";

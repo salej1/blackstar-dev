@@ -144,7 +144,7 @@ public class AirCoServiceController extends AbstractController {
   @RequestMapping(value = "/save.do", method = RequestMethod.POST)
   public String save(@ModelAttribute("serviceOrder") AirCoServicePolicyDTO serviceOrder,
 	    		     @ModelAttribute(Globals.SESSION_KEY_PARAM)  UserSession userSession,
-                     ModelMap model){
+                     ModelMap model) throws Exception{
     int idServicio = 0;
     boolean doCommit = false;
     int custId = 0;
@@ -228,7 +228,7 @@ public class AirCoServiceController extends AbstractController {
 	    		                                           .toString(), e);
 	    e.printStackTrace();
 	    model.addAttribute("errorDetails", e.getMessage() + " - " + e.getStackTrace()[0].toString());
-	    return "error";
+	    throw e;
 	}
     return "dashboard";
   }

@@ -102,6 +102,17 @@
 			});
 		</script>
 <!-- Fin Tabla De Tickets Asignados -->
+
+<!-- Mecanismo de envio de OS offline -->
+		<c:import url="offlineSoSend.jsp"></c:import>
+		<script type="text/javascript">
+			$(function(){
+				offlineSoSend_init();
+
+				sendOfflineSO();
+			});
+		</script>
+<!-- Fin Mecanismo de envio de OS offline -->
 	</c:if>
 
 <!-- Fin Contenido De Perfil Sysservicio -->

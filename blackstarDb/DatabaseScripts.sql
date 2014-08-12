@@ -2080,7 +2080,7 @@ BEGIN
 			SUM(so.isWrong) as wrongOs,
 			ifnull(group_concat(if(so.isWrong, so.serviceOrderNumber, null) separator ','), '') AS wrongOsList,
 			((COUNT(*) * 5) - SUM(ss.questionTreatment) - SUM(ss.questionIdentificationPersonal) - SUM(ss.questionIdealEquipment) - SUM(ss.questionTime) - SUM(ss.questionUniform)) AS badComments,
-			ifnull(group_concat(if((ss.questionTreatment + ss.questionIdentificationPersonal + ss.questionIdealEquipment + ss.questionTime + ss.questionUniform) < 5, ss.surveyServiceId, null) separator ','), '') AS badCommentsOsList
+			ifnull(group_concat(DISTINCT if((ss.questionTreatment + ss.questionIdentificationPersonal + ss.questionIdealEquipment + ss.questionTime + ss.questionUniform) < 5, ss.surveyServiceId, null) separator ','), '') AS badCommentsOsList
 		FROM serviceOrder so 
 			INNER JOIN serviceOrderEmployee se on so.serviceOrderId = se.serviceOrderId
 			INNER JOIN surveyService ss ON so.surveyServiceId = ss.surveyServiceId
@@ -2094,7 +2094,8 @@ BEGIN
 			AVG(ss.score) as average, 
 			SUM(so.isWrong) as wrongOs,
 			COUNT(*) as services,
-			((COUNT(*) * 5) - SUM(ss.questionTreatment) - SUM(ss.questionIdentificationPersonal) - SUM(questionIdealEquipment) - SUM(questionTime) - SUM(questionUniform)) AS badComments
+			((COUNT(*) * 5) - SUM(ss.questionTreatment) - SUM(ss.questionIdentificationPersonal) - SUM(questionIdealEquipment) - SUM(questionTime) - SUM(questionUniform)) AS badComments,
+			ifnull(group_concat(DISTINCT if((ss.questionTreatment + ss.questionIdentificationPersonal + ss.questionIdealEquipment + ss.questionTime + ss.questionUniform) < 5, ss.surveyServiceId, null) separator ','), '') AS badCommentsOsList
 		FROM serviceOrder so 
 			INNER JOIN serviceOrderEmployee se on so.serviceOrderId = se.serviceOrderId
 			INNER JOIN surveyService ss ON so.surveyServiceId = ss.surveyServiceId
@@ -4067,24 +4068,24 @@ END$$
 DROP PROCEDURE IF EXISTS blackstarDb.UpsertUser$$
 CREATE PROCEDURE blackstarDb.UpsertUser(pEmail VARCHAR(100), pName VARCHAR(100), pBossEmail VARCHAR(100))
 BEGIN
+	IF(pEmail IS NOT NULL AND pName IS NOT NULL) THEN
+		-- Insert the record
+		INSERT INTO blackstarDb.blackstarUser(email, name)
+		SELECT a.email, a.name
+		FROM (
+			SELECT pEmail AS email, pName AS name
+		) a
+			LEFT OUTER JOIN blackstarDb.blackstarUser u ON a.email = u.email
+		WHERE u.email IS NULL;
 
-	-- Insert the record
-	INSERT INTO blackstarDb.blackstarUser(email, name)
-	SELECT a.email, a.name
-	FROM (
-		SELECT pEmail AS email, pName AS name
-	) a
-		LEFT OUTER JOIN blackstarDb.blackstarUser u ON a.email = u.email
-	WHERE u.email IS NULL;
-
-	-- Update the details
-	UPDATE blackstarUser u
-		LEFT OUTER JOIN blackstarUser b ON u.email = pEmail AND b.email = pBossEmail
-	SET 
-		u.name = pName,
-		u.bossId = b.blackstarUserId	
-	WHERE u.email = pEmail;
-
+		-- Update the details
+		UPDATE blackstarUser u
+			LEFT OUTER JOIN blackstarUser b ON u.email = pEmail AND b.email = pBossEmail
+		SET 
+			u.name = pName,
+			u.bossId = b.blackstarUserId	
+		WHERE u.email = pEmail;
+	END IF;
 END$$
 
 -- -----------------------------------------------------------------------------
@@ -5641,7 +5642,7 @@ BEGIN
 	SELECT DISTINCT customer, equipmentUserId 
 	FROM blackstarDb.policy p 
 		INNER JOIN blackstarDb.policyEquipmentUser e ON p.policyId = e.policyId
-		LEFT OUTER JOIN blackstarDb.blackstarUser u ON p.equipmentUser = u.email
+		LEFT OUTER JOIN blackstarDb.blackstarUser u ON e.equipmentUserId = u.email
 	WHERE ifnull(equipmentUser, '') != ''
 	AND u.blackstarUserId IS NULL;
 
@@ -5653,7 +5654,7 @@ BEGIN
 	    WHILE @c <= @max DO
 	    	SET  @customer = (SELECT customerName FROM blackstarDbTransfer.equipmentUserSync WHERE equipmentUserSyncId = @c);
 	    	SET  @access = (SELECT equipmentUser FROM blackstarDbTransfer.equipmentUserSync WHERE equipmentUserSyncId = @c);
-	    	Call blackstarDb.UpsertUser(@access, @customer,null);
+	    	Call blackstarDb.UpsertUser(@access, @customer, null);
 			Call blackstarDb.CreateUserGroup('sysCliente','Cliente',@access);
 
 	      	SET @c = @c + 1 ;

@@ -443,7 +443,7 @@ BEGIN
 	SELECT DISTINCT customer, equipmentUserId 
 	FROM blackstarDb.policy p 
 		INNER JOIN blackstarDb.policyEquipmentUser e ON p.policyId = e.policyId
-		LEFT OUTER JOIN blackstarDb.blackstarUser u ON p.equipmentUser = u.email
+		LEFT OUTER JOIN blackstarDb.blackstarUser u ON e.equipmentUserId = u.email
 	WHERE ifnull(equipmentUser, '') != ''
 	AND u.blackstarUserId IS NULL;
 
@@ -455,7 +455,7 @@ BEGIN
 	    WHILE @c <= @max DO
 	    	SET  @customer = (SELECT customerName FROM blackstarDbTransfer.equipmentUserSync WHERE equipmentUserSyncId = @c);
 	    	SET  @access = (SELECT equipmentUser FROM blackstarDbTransfer.equipmentUserSync WHERE equipmentUserSyncId = @c);
-	    	Call blackstarDb.UpsertUser(@access, @customer,null);
+	    	Call blackstarDb.UpsertUser(@access, @customer, null);
 			Call blackstarDb.CreateUserGroup('sysCliente','Cliente',@access);
 
 	      	SET @c = @c + 1 ;

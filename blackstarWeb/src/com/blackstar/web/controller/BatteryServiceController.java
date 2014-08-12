@@ -142,7 +142,7 @@ public class BatteryServiceController extends AbstractController {
   @RequestMapping(value = "/save.do", method = RequestMethod.POST)
   public String save(@ModelAttribute("serviceOrder") BatteryServicePolicyDTO serviceOrder,
 	    		     @ModelAttribute(Globals.SESSION_KEY_PARAM)  UserSession userSession,
-                     ModelMap model, HttpServletRequest req, HttpServletResponse resp) {
+                     ModelMap model, HttpServletRequest req, HttpServletResponse resp) throws Exception {
     int idServicio = 0;
     int custId = 0;
     boolean doCommit = false;
@@ -218,14 +218,14 @@ public class BatteryServiceController extends AbstractController {
 	     if(serviceOrder.getBbServiceId()==null && doCommit) {
 	    	serviceOrder.setServiceOrderId(idServicio);
 	    	//Crear orden de servicio de Battery
-	    	service.saveBateryService(new BatteryServiceDTO(serviceOrder), "AirCoServiceController", userSession.getUser().getUserName());
+	    	service.saveBateryService(new BatteryServiceDTO(serviceOrder), "BatteryServiceController", userSession.getUser().getUserName());
 	    	commit(serviceOrder);
 	     }
     } catch(Exception e){
 	    Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
 	    e.printStackTrace();
 	    model.addAttribute("errorDetails", e.getMessage() + " - " + e.getStackTrace()[0].toString());
-	    return "error";
+	    throw e;
 	}
     return "dashboard";
   }

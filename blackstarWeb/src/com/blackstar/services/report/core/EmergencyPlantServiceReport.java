@@ -125,11 +125,11 @@ public class EmergencyPlantServiceReport extends AbstractReport {
 	drawer.text(data.getClockLecture().toString(), 463, 258, true);
 	drawer.hLine(0, 555, 264, 0x0155A5);
 	drawer.text("ULTIMO CAMBIO DE ACEITE: ", 2, 273, false, 0, 6);
-	drawer.text(format(data.getOilChange()), 95, 273, true);
+	drawer.text(format(data.getOilChange()).substring(0, 10), 95, 273, true);
 	drawer.text("ULTIMA FECHA DE AFINACION: ", 186, 273, false, 0, 6);
-	drawer.text(format(data.getTuningDate()), 279, 273, true);
+	drawer.text(format(data.getTuningDate()).substring(0, 10), 279, 273, true);
 	drawer.text("ULTIMO SERVICIO CORRECTIVO: ", 370, 273, false, 0, 5.6f);
-	drawer.text(format(data.getServiceCorrective()), 463, 273, true);
+	drawer.text(format(data.getServiceCorrective()).substring(0, 10), 463, 273, true);
 	drawer.hLine(0, 555, 275, 0x0155A5);
 	
 	drawer.vLine(141, 275, 0, 0x0155A5);

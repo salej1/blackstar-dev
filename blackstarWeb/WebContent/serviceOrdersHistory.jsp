@@ -25,6 +25,7 @@
 					"aaData": data,
 					"sDom": '<"top"i>rt<"bottom"flp><"clear">',
 					"aaSorting": [],
+					"deferRender": true,
 					"aoColumns": [
 							  { "mData": "serviceOrderNumber" },
 							  { "mData": "placeHolder" },

@@ -73,15 +73,6 @@
 
 		});
 
-		function isNumberKey(evt){
-		     var charCode = (evt.which) ? evt.which : event.keyCode;
-	         if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57)){
-	            return false;
-	         }
-
-	         return true;
-		}
-		
 		function closeService(){
 			$("#serviceStatusId").val('C');
 			$("#closed").val(dateNow());
@@ -91,57 +82,65 @@
 			$('#serviceOrder').submit();
 		}
 
-		function saveService(){
+		function validate(){
 			var startTimestamp = Date.parseExact($("#serviceDate").val(), 'dd/MM/yyyy HH:mm:ss');
 			if(startTimestamp == undefined || startTimestamp == null){
-				$("#serviceDate").val("");
+				$("#InvalidMessage").html("Por favor revise la fecha y hora del servicio");
+				return false;
 			}
 
 			// Dates verification
 			// Oil change
 			var startTimestamp = Date.parseExact($("#oilChange").val(), 'dd/MM/yyyy');
 			if(startTimestamp == undefined || startTimestamp == null || startTimestamp == "Invalid Date"){
-				$("#oilChange").val("");
+				$("#InvalidMessage").html("Por favor revise la fecha del ultimo cambio de aceite");
+				return false;
 			}
 
 			// tunning date
 			startTimestamp = Date.parseExact($("#tuningDate").val(), 'dd/MM/yyyy');
 			if(startTimestamp == undefined || startTimestamp == null || startTimestamp == "Invalid Date"){
-				$("#tuningDate").val("");
+				$("#InvalidMessage").html("Por favor revise la fecha de ultima afinacion");
+				return false;
 			}
 
 			// serviceCorrective
 			startTimestamp = Date.parseExact($("#serviceCorrective").val(), 'dd/MM/yyyy');
 			if(startTimestamp == undefined || startTimestamp == null || startTimestamp == "Invalid Date"){
-				$("#serviceCorrective").val("");
+				$("#InvalidMessage").html("Por favor revise la fecha de ultimo servicio correctivo");
+				return false;
 			}
 
 			$("#brandPE").val($("#brand").val());
 			$("#modelPE").val($("#model").val());
 			$("#serialPE").val($("#serialNumber").val());
 
+			if($("#signCreatedCapture").val().trim().length == 0 || $("#signReceivedByCapture").val().trim().length == 0){
+				$("#InvalidMessage").html("Por favor firme la orden de servicio");
+				return false;
+			}
+
 			if($('#serviceOrder')[0].checkValidity()){
 				$('input').removeAttr("disabled");
 				$('select').removeAttr("disabled");
 				$('textarea').removeAttr("disabled");
+
 				if($("#responsible").val().indexOf(';') == 0){
 					$("#responsible").val($("#responsible").val().substring(1));
 				}
-				if($("#signCreatedCapture").val().trim().length == 0 || $("#signReceivedByCapture").val().trim().length == 0){
-					return false;
-				}
-				else{
-					$("#signCreated").val($("#signCreatedCapture").val())
-					$("#signReceivedBy").val($("#signReceivedByCapture").val())
-					$("#serviceEndDate").val(dateNow());
-					$("#oilChange").val($("#oilChange").val() + " 00:00:00");
-					$("#tuningDate").val($("#tuningDate").val() + " 00:00:00");
-					$("#serviceCorrective").val($("#serviceCorrective").val() + " 00:00:00");
-					$('#serviceOrder').submit();
-				}
+				
+				$("#signCreated").val($("#signCreatedCapture").val())
+				$("#signReceivedBy").val($("#signReceivedByCapture").val())
+				$("#serviceEndDate").val(dateNow());
+				$("#oilChange").val($("#oilChange").val() + " 00:00:00");
+				$("#tuningDate").val($("#tuningDate").val() + " 00:00:00");
+				$("#serviceCorrective").val($("#serviceCorrective").val() + " 00:00:00");
+			
+				return true;
 			}
 			else{
 				setTimeout(function() { $(event.target).focus();}, 50);
+				$("#InvalidMessage").html("Por favor revise que todos los campos hayan sido correctamente capturados");
 				return false;
 			}
 		}
@@ -233,7 +232,7 @@
 							<td>MOTOR DIESEL MARCA:</td>
 							<td><form:input path="brandMotor" type="text" style="width:95%;"  cssClass="lockOnDetail" required="true"/></td>
 							<td>CAPACIDAD TANQUE DIESEL:</td>
-							<td><form:input path="tankCapacity" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail" required="true" /></td>
+							<td><form:input path="tankCapacity" type="text" style="width:95%;" cssClass="lockOnDetail" required="true" /></td>
 						</tr>
 						<tr>
 							<td>MODELO PE:</td>
@@ -289,7 +288,7 @@
 							<td>MCA/MODELO REGULADOR DE VELOCIDAD:</td>
 							<td><form:input path="modelRegVelocity" type="text" style="width:95%;"  cssClass="lockOnDetail" required="true"/></td>
 							<td>POTENCIA (KW) GENERADOR:</td>
-							<td><form:input path="powerWattGenerator" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail" required="true"/></td>
+							<td><form:input path="powerWattGenerator" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
 							<td>MODELO DE BATERÍAS:</td>
 							<td><form:input path="brandBattery" type="text" style="width:95%;"  cssClass="lockOnDetail" required="true"/></td>
 						</tr>
@@ -297,7 +296,7 @@
 							<td>MCA/MODELO CARGADOR DE BAT:</td>
 							<td><form:input path="modelCharger" type="text" style="width:95%;" cssClass="lockOnDetail" required="true" /></td>
 							<td>TENSIÓN GENERADOR:</td>
-							<td><form:input path="tensionGenerator" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail" required="true"/></td>
+							<td><form:input path="tensionGenerator" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
 							<td>LECTURA RELOJ CUENTA HORAS:</td>
 							<td><form:input path="clockLecture" type="text" style="width:95%;"  cssClass="lockOnDetail" required="true"/></td>
 						</tr>
@@ -334,9 +333,9 @@
 						</tr>
 						<tr>
 							<td>NIVEL ELECTROLITO BATERÍA:</td>
-							<td><form:input path="levelBattery" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail" required="true"/></td>
+							<td><form:input path="levelBattery" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
 							<td>NIVEL DE COMBUSTIBLE %:</td>
-							<td><form:input path="levelOil" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail" required="true"/></td>
+							<td><form:input path="levelOil" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
 							<td>VÁLVULAS Y TUBERÍAS (CU/NEGRA):</td>
 							<td><form:input path="tubeValve" type="text" style="width:95%;" cssClass="lockOnDetail" required="true" /></td>
 						</tr>
@@ -396,27 +395,27 @@
 						</thead>
 						<tr>
 							<td>FRECUENCIA EN VACÍO:</td>
-							<td><form:input path="vacuumFrequency" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail" required="true"/></td>
+							<td><form:input path="vacuumFrequency" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
 							<td>VOLTAJE EN VACÍO:</td>
-							<td><form:input path="vacuumVoltage" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail" required="true"/></td>
+							<td><form:input path="vacuumVoltage" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
 							<td>TIEMPO DE ARRANQUE:</td>
-							<td><form:input path="startTime" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail" required="true"/></td>
+							<td><form:input path="startTime" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
 						</tr>
 						<tr>
 							<td>FRECUENCIA EN CARGA:</td>
-							<td><form:input path="chargeFrequency" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail" required="true"/></td>
+							<td><form:input path="chargeFrequency" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
 							<td>VOLTAJE EN CARGA:</td>
-							<td><form:input path="chargeVoltage" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail" required="true"/></td>
+							<td><form:input path="chargeVoltage" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
 							<td>TIEMPO DE TRANSFERENCIA:</td>
-							<td><form:input path="transferTime" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail" required="true"/></td>
+							<td><form:input path="transferTime" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
 						</tr>
 						<tr>
 							<td>NUM. DE INTENTOS DE ARRANQUE:</td>
-							<td><form:input path="bootTryouts" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail" required="true"/></td>
+							<td><form:input path="bootTryouts" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
 							<td>CALIDAD DE EMISIONES DE HUMO:</td>
-							<td><form:input path="qualitySmoke" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail" required="true"/></td>
+							<td><form:input path="qualitySmoke" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
 							<td>TIEMPO DE PARO:</td>
-							<td><form:input path="stopTime" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail" required="true"/></td>
+							<td><form:input path="stopTime" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
 						</tr>
 					</table>
 					<table>
@@ -427,19 +426,19 @@
 						</thead>
 						<tr>
 							<td>SENSOR DE TEMPERATURA:</td>
-							<td><form:input path="tempSensor" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail" required="true"/></td>
+							<td><form:input path="tempSensor" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
 							<td>SENSOR DE VOLTAJE O GENERACIÓN:</td>
-							<td><form:input path="voltageSensor" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail" required="true"/></td>
+							<td><form:input path="voltageSensor" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
 							<td>SENSOR BAJA PRESIÓN DE ACEITE:</td>
-							<td><form:input path="oilPreasureSensor" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail" required="true"/></td>
+							<td><form:input path="oilPreasureSensor" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
 						</tr>
 						<tr>
 							<td>SENSOR DE PRESIÓN DEL ACEITE:</td>
-							<td><form:input path="oilSensor" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail" required="true"/></td>
+							<td><form:input path="oilSensor" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
 							<td>SENSOR DE SOBRE-VELOCIDAD:</td>
-							<td><form:input path="overSpeedSensor" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail" required="true"/></td>
+							<td><form:input path="overSpeedSensor" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
 							<td>SENSOR DE NIVEL DE AGUA:</td>
-							<td><form:input path="waterLevelSensor" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail" required="true"/></td>
+							<td><form:input path="waterLevelSensor" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
 						</tr>
 					</table>
 					<table>
@@ -470,7 +469,7 @@
 							<td>MOTORES DEL SISTEMA:</td>
 							<td><form:input path="systemMotors" type="text" style="width:95%;"  cssClass="lockOnDetail" required="true"/></td>
 							<td>CAPACIDAD EN AMPERES:</td>
-							<td><form:input path="capacityAmp" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail" required="true"/></td>
+							<td><form:input path="capacityAmp" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
 						</tr>
 					</table>
 					<table>
@@ -483,29 +482,29 @@
 							<td>VOLTAJE AB/AN:</td>
 							<td><form:input path="voltageABAN" type="text" style="width:95%;" onkeypress='return isNumberKey(event) cssClass="lockOnDetail" required="true"'/></td>
 							<td>CORRIENTE A(AMP):</td>
-							<td><form:input path="currentA" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail" required="true"/></td>
+							<td><form:input path="currentA" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
 							<td>FRECUENCIA:</td>
-							<td><form:input path="frequency" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail" required="true"/></td>
+							<td><form:input path="frequency" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
 						</tr>
 						<tr>
 							<td>VOLTAJE AC/CN:</td>
-							<td><form:input path="voltageACCN" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail" required="true"/></td>
+							<td><form:input path="voltageACCN" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
 							<td>CORRIENTE B(AMP):</td>
-							<td><form:input path="currentB" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail" required="true"/></td>
+							<td><form:input path="currentB" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
 							<td>PRESIÓN DE ACEITE:</td>
-							<td><form:input path="oilPreassure" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail" required="true"/></td>
+							<td><form:input path="oilPreassure" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
 						</tr>
 						<tr>
 							<td>VOLTAJE BC/BN:</td>
-							<td><form:input path="voltageBCBN" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail" required="true"/></td>
+							<td><form:input path="voltageBCBN" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
 							<td>CORRIENTE C (AMP):</td>
-							<td><form:input path="currentC" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail" required="true"/></td>
+							<td><form:input path="currentC" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
 							<td>TEMPERATURA:</td>
-							<td><form:input path="temp" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail" required="true"/></td>
+							<td><form:input path="temp" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
 						</tr>
 						<tr>
 							<td>VOLTAJE NT:</td>
-							<td><form:input path="voltageNT" type="text" style="width:95%;" onkeypress='return isNumberKey(event)'  cssClass="lockOnDetail" required="true"/></td>
+							<td><form:input path="voltageNT" type="text" style="width:95%;"  cssClass="lockOnDetail" required="true"/></td>
 						</tr>
 					</table>
 					<table>
@@ -637,6 +636,7 @@
 			<!-- Control de secuencia y captura de seguimiento -->
 			<c:if test="${!user.belongsToGroup['Cliente']}">
 				<c:import url="followUpControl.jsp"></c:import>
+				<c:import url="saveService.jsp"></c:import>
 				<table>
 					<tbody>
 						<tr>
@@ -647,7 +647,8 @@
 									<button class="searchButton eligible coorOnly lockOnEngDetail" id="closeBtn" onclick="closeService();">Cerrar</button>
 								</c:if>	
 							</c:if>	
-							<input class="searchButton lockOnEngDetail" id="guardarServicio" type="submit" onclick="return saveService();" value="Guardar servicio" form="serviceOrder"/>
+							<input class="searchButton lockOnEngDetail" id="guardarServicio" type="submit" onclick="saveService('PE', validate); return false;" 
+								value="Guardar servicio" form="serviceOrder"/>
 							<button class="searchButton" onclick="window.location = '/serviceOrders/show.do'">Cancelar</button>
 							</td>
 						</tr>

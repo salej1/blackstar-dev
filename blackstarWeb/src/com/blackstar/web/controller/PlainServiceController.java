@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.blackstar.common.Globals;
@@ -215,7 +216,7 @@ public class PlainServiceController extends AbstractController {
 	    public String save( 
 	    		@ModelAttribute("serviceOrder") PlainServicePolicyDTO serviceOrder,
 	    		@ModelAttribute(Globals.SESSION_KEY_PARAM)  UserSession userSession,
-              ModelMap model, HttpServletRequest req, HttpServletResponse resp)
+              ModelMap model, HttpServletRequest req, HttpServletResponse resp) throws Exception
 	    {
 	    	int idServicio = 0;
 	    	int custId = 0;
@@ -315,7 +316,7 @@ public class PlainServiceController extends AbstractController {
 	    	catch(Exception e){
 	    		 Logger.Log(LogLevel.FATAL, e.getStackTrace()[0].toString(), e);
 				 model.addAttribute("errorDetails", e.getMessage() + " - " + e.getStackTrace()[0].toString());
-				 return "error";
+				 throw e;
 	    	}
 	    	return "redirect:/dashboard/show.do";
 	    }
@@ -330,25 +331,23 @@ public class PlainServiceController extends AbstractController {
 	    }
 	    
 	    private void sendNotification(String to, byte [] report){
+	    	// envio de la OS en PDF
+	    	gmService.sendEmail(to, "Orden de Servicio", "Orden de Servicio", "ServiceOrder.pdf", report);
+	    	
 	    	// copia a call center
 	    	List<EmployeeDTO> callCtr = udService.getStaff(Globals.GROUP_CALL_CENTER);
 	    	for(EmployeeDTO usr : callCtr){
-	    		to = to + "," + usr.getEmail();
+	    		to = usr.getEmail();
+	    		gmService.sendEmail(to, "Orden de Servicio", "Orden de Servicio", "ServiceOrder.pdf", report);
 	    	}
 	    	//
-	    	gmService.sendEmail(to, "Orden de Servicio", "Orden de Servicio", "ServiceOrder.pdf", report);
+	    	
 	    }
 	    
 	    private void callCenterLink(PlainServicePolicyDTO serviceOrder){
 	    	String who = serviceOrder.getResponsible().split(";")[0];
 	    	StringBuilder asignee = new StringBuilder();
 	    	String message = "Orden de servicio creada";
-	    	
-	    	List<EmployeeDTO> receivers = udService.getStaff(Globals.GROUP_CALL_CENTER);
-	    	
-	    	for(EmployeeDTO emp : receivers){
-	    		asignee.append(emp.getEmail() + ";");
-	    	}
 	    	
 	    	AddFollowUpController.AssignServiceOrder(serviceOrder.getServiceOrderId(), Utils.noCommas(asignee.toString()), who, message);
 	    }

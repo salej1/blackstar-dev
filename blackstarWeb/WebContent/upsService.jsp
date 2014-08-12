@@ -69,15 +69,6 @@
 
 		});
 
-		function isNumberKey(evt){
-		     var charCode = (evt.which) ? evt.which : event.keyCode;
-	         if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57)){
-	            return false;
-	         }
-
-	         return true;
-		}
-		
 		function closeService(){
 			$("#serviceStatusId").val('C');
 			$("#closed").val(dateNow());
@@ -87,31 +78,36 @@
 			$('#serviceOrder').submit();
 		}
 
-		function saveService(){
+		function validate(){
 			var startTimestamp = Date.parseExact($("#serviceDate").val(), 'dd/MM/yyyy HH:mm:ss');
 			if(startTimestamp == undefined || startTimestamp == null){
-				$("#serviceDate").val("");
+				$("#InvalidMessage").html("Por favor revise la fecha y hora del servicio");
+				return false;
 			}
 			
+			if($("#signCreatedCapture").val().trim().length == 0 || $("#signReceivedByCapture").val().trim().length == 0){
+				$("#InvalidMessage").html("Por favor firme la orden de servicio");
+				return false;
+			}
+
 			if($('#serviceOrder')[0].checkValidity()){
 				$('input').removeAttr("disabled");
 				$('select').removeAttr("disabled");
 				$('textarea').removeAttr("disabled");
+
 				if($("#responsible").val().indexOf(';') == 0){
 					$("#responsible").val($("#responsible").val().substring(1));
 				}
-				if($("#signCreatedCapture").val().trim().length == 0 || $("#signReceivedByCapture").val().trim().length == 0){
-					return false;
-				}
-				else{
-					$("#signCreated").val($("#signCreatedCapture").val())
-					$("#signReceivedBy").val($("#signReceivedByCapture").val())
-					$("#serviceEndDate").val(dateNow());
-					$('#serviceOrder').submit();
-				}
+				
+				$("#signCreated").val($("#signCreatedCapture").val())
+				$("#signReceivedBy").val($("#signReceivedByCapture").val())
+				$("#serviceEndDate").val(dateNow());
+				
+				return true;
 			}
 			else{
 				setTimeout(function() { $(event.target).focus();}, 50);
+				$("#InvalidMessage").html("Por favor revise que todos los campos hayan sido correctamente capturados");
 				return false;
 			}
 		}
@@ -236,7 +232,7 @@
 							<td>Reapriete de puentes/conectores:</td>
 							<td><form:checkbox path="checkConnectors"  style="width:95%;" cssClass="lockOnDetail"/></td>
 							<td>Temperatura ambiente:</td>
-							<td><form:input path="temp" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail" required="true"/></td>
+							<td><form:input path="temp" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
 						</tr>
 						<tr>
 							<td>Verificación de fugas/sulfataciones:</td>
@@ -246,7 +242,7 @@
 						</tr>
 						<tr>
 							<td>No de baterías:</td>
-							<td><form:input path="numberBatteries" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail" required="true"/></td>
+							<td><form:input path="numberBatteries" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
 							<td>Marca, modelo, capacidad:</td>
 							<td><form:input path="brandModel" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
 						</tr>
@@ -254,7 +250,7 @@
 							<td>Fecha o serie de fabricación:</td>
 							<td><form:input path="manufacturedDateSerial" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
 							<td>Voltaje promedio de baterías:</td>
-							<td><form:input path="batteryVoltage" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail" required="true"/></td>
+							<td><form:input path="batteryVoltage" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
 						</tr>
 						<tr>
 							<td>Baterías dañadas (cant y voltaje de c/carga):</td>
@@ -284,27 +280,27 @@
 						</tr>
 						<tr>
 							<td>Voltaje entrada fase a fase:</td>
-							<td><form:input path="inputVoltagePhase" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' /></td>
+							<td><form:input path="inputVoltagePhase" type="text" style="width:95%;" /></td>
 							<td>Voltaje salida fase a fase:</td>
-							<td><form:input path="outputVoltagePhase" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail" required="true"/></td>
+							<td><form:input path="outputVoltagePhase" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
 						</tr>
 						<tr>
 							<td>Voltaje entrada fase a neutro:</td>
-							<td><form:input path="inputVoltageNeutro" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail" required="true"/></td>
+							<td><form:input path="inputVoltageNeutro" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
 							<td>Voltaje salida fase a neutro:</td>
-							<td><form:input path="outputVoltageNeutro" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail" required="true"/></td>
+							<td><form:input path="outputVoltageNeutro" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
 						</tr>
 						<tr>
 							<td>Voltaje entre neutro y tierra:</td>
-							<td><form:input path="inputVoltageNeutroGround" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail" required="true"/></td>
+							<td><form:input path="inputVoltageNeutroGround" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
 							<td>Frec. entrada/salida:</td>
-							<td><form:input path="inOutFrecuency" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail" required="true"/></td>
+							<td><form:input path="inOutFrecuency" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
 						</tr>
 						<tr>
 							<td>Porcentaje de carga o corriente:</td>
-							<td><form:input path="percentCharge" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' /></td>
+							<td><form:input path="percentCharge" type="text" style="width:95%;" /></td>
 							<td>Frec. entrada/salida:</td>
-							<td><form:input path="busVoltage" type="text" style="width:95%;"  onkeypress='return isNumberKey(event)' cssClass="lockOnDetail" required="true"/></td>
+							<td><form:input path="busVoltage" type="text" style="width:95%;"  cssClass="lockOnDetail" required="true"/></td>
 						</tr>
 					</table>
 					<table>
@@ -416,6 +412,7 @@
 			<!-- Control de secuencia y captura de seguimiento -->
 			<c:if test="${!user.belongsToGroup['Cliente']}">
 				<c:import url="followUpControl.jsp"></c:import>
+				<c:import url="saveService.jsp"></c:import>
 				<table>
 					<tbody>
 						<tr>
@@ -426,7 +423,8 @@
 									<button class="searchButton eligible coorOnly lockOnEngDetail" id="closeBtn" onclick="closeService();">Cerrar</button>
 								</c:if>	
 							</c:if>	
-							<input class="searchButton lockOnEngDetail" id="guardarServicio" type="submit" onclick="saveService();" value="Guardar servicio" form="serviceOrder"/>
+							<input class="searchButton lockOnEngDetail" id="guardarServicio" type="submit" onclick="saveService('UPS', validate); return false;" 
+							value="Guardar servicio" form="serviceOrder"/>
 							<button class="searchButton" onclick="window.location = '/serviceOrders/show.do'">Cancelar</button>
 							</td>
 						</tr>

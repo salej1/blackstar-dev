@@ -70,15 +70,6 @@
 
 		});
 
-		function isNumberKey(evt){
-		     var charCode = (evt.which) ? evt.which : event.keyCode;
-	         if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57)){
-	            return false;
-	         }
-
-	         return true;
-		}
-		
 		function closeService(){
 			$("#serviceStatusId").val('C');
 			$("#closed").val(dateNow());
@@ -88,31 +79,35 @@
 			$('#serviceOrder').submit();
 		}
 
-		function saveService(){
+		function validate(){
 			var startTimestamp = Date.parseExact($("#serviceDate").val(), 'dd/MM/yyyy HH:mm:ss');
 			if(startTimestamp == undefined || startTimestamp == null){
-				$("#serviceDate").val("");
+				$("#InvalidMessage").html("Por favor revise la fecha y hora del servicio");
+				return false;
 			}
 			
+			if($("#signCreatedCapture").val().trim().length == 0 || $("#signReceivedByCapture").val().trim().length == 0){
+				$("#InvalidMessage").html("Por favor firme la orden de servicio");
+				return false;
+			}
+
 			if($('#serviceOrder')[0].checkValidity()){
 				$('input').removeAttr("disabled");
 				$('select').removeAttr("disabled");
 				$('textarea').removeAttr("disabled");
+				
 				if($("#responsible").val().indexOf(';') == 0){
 					$("#responsible").val($("#responsible").val().substring(1));
 				}
-				if($("#signCreatedCapture").val().trim().length == 0 || $("#signReceivedByCapture").val().trim().length == 0){
-					return false;
-				}
-				else{
-					$("#signCreated").val($("#signCreatedCapture").val())
-					$("#signReceivedBy").val($("#signReceivedByCapture").val())
-					$("#serviceEndDate").val(dateNow());
-					$('#serviceOrder').submit();
-				}
+				
+				$("#signCreated").val($("#signCreatedCapture").val())
+				$("#signReceivedBy").val($("#signReceivedByCapture").val())
+				$("#serviceEndDate").val(dateNow());
+				return true;
 			}
 			else{
 				setTimeout(function() { $(event.target).focus();}, 50);
+				$("#InvalidMessage").html("Por favor revise que todos los campos hayan sido correctamente capturados");
 				return false;
 			}
 		}
@@ -250,10 +245,10 @@
 					<table>
 						<tr>
 							<td>VOLTAJE DE FLOTACIÓN DEL BUS:</td>
-							<td><form:input path="voltageBus" type="text" style="width:95%;"  onkeypress='return isNumberKey(event)' cssClass="lockOnDetail" required="true"/></td>
+							<td><form:input path="voltageBus" type="text" style="width:95%;"  cssClass="lockOnDetail" required="true"/></td>
 							<td>V.C.D.</td>
 							<td>TEMPERATURA AMBIENTE::</td>
-							<td><form:input path="temperature" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail" required="true"/> </td>
+							<td><form:input path="temperature" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/> </td>
 							<td>°C</td>
 						</tr>
 					</table>
@@ -278,37 +273,37 @@
 								<td><c:out value="${i+1}"/></td>
 								<td>
 									<form:hidden path="cells[${i}].cellNumber" value="${i}"/>
-									<form:input path="cells[${i}].floatVoltage"  type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail"/>
+									<form:input path="cells[${i}].floatVoltage"  type="text" style="width:95%;" cssClass="lockOnDetail"/>
 								</td>
 								<td>
-									<form:input path="cells[${i}].chargeVoltage"  type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail"/>
+									<form:input path="cells[${i}].chargeVoltage"  type="text" style="width:95%;" cssClass="lockOnDetail"/>
 								</td>
 								
 								<td><c:out value="${i+23}"/></td>
 								<td>
 									<form:hidden path="cells[${i+23}].cellNumber" value="${i+23}"/>
-									<form:input path="cells[${i+23}].floatVoltage"  type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail"/>
+									<form:input path="cells[${i+23}].floatVoltage"  type="text" style="width:95%;" cssClass="lockOnDetail"/>
 								</td>
 								<td>
-									<form:input path="cells[${i+23}].chargeVoltage"  type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail"/>
+									<form:input path="cells[${i+23}].chargeVoltage"  type="text" style="width:95%;" cssClass="lockOnDetail"/>
 								</td>
 								
 								<td><c:out value="${i+45}"/></td>
 								<td>
 									<form:hidden path="cells[${i+45}].cellNumber" value="${i+45}"/>
-									<form:input path="cells[${i+45}].floatVoltage"  type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail"/>
+									<form:input path="cells[${i+45}].floatVoltage"  type="text" style="width:95%;" cssClass="lockOnDetail"/>
 								</td>
 								<td>
-									<form:input path="cells[${i+45}].chargeVoltage"  type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail"/>
+									<form:input path="cells[${i+45}].chargeVoltage"  type="text" style="width:95%;" cssClass="lockOnDetail"/>
 								</td>
 								
 								<td><c:out value="${i+67}"/></td>
 								<td>
 									<form:hidden path="cells[${i+67}].cellNumber" value="${i+67}"/>
-									<form:input path="cells[${i+67}].floatVoltage"  type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail"/>
+									<form:input path="cells[${i+67}].floatVoltage"  type="text" style="width:95%;" cssClass="lockOnDetail"/>
 								</td>
 								<td>
-									<form:input path="cells[${i+67}].chargeVoltage"  type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail"/>
+									<form:input path="cells[${i+67}].chargeVoltage"  type="text" style="width:95%;" cssClass="lockOnDetail"/>
 								</td>
 								
 					   		</tr>
@@ -411,6 +406,7 @@
 			<!-- Control de secuencia y captura de seguimiento -->
 			<c:if test="${!user.belongsToGroup['Cliente']}">
 				<c:import url="followUpControl.jsp"></c:import>
+				<c:import url="saveService.jsp"></c:import>
 				<table>
 					<tbody>
 						<tr>
@@ -421,7 +417,8 @@
 									<button class="searchButton eligible coorOnly lockOnEngDetail" id="closeBtn" onclick="closeService();">Cerrar</button>
 								</c:if>	
 							</c:if>	
-							<input class="searchButton lockOnEngDetail" id="guardarServicio" type="submit" onclick="return saveService();" value="Guardar servicio" form="serviceOrder"/>
+							<input class="searchButton lockOnEngDetail" id="guardarServicio" type="submit" onclick="saveService('BB', validate); return false;" 
+								value="Guardar servicio" form="serviceOrder"/>
 							<button class="searchButton" onclick="window.location = '/serviceOrders/show.do'">Cancelar</button>
 							</td>
 						</tr>

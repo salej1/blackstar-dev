@@ -18,6 +18,7 @@ import com.blackstar.logging.Logger;
 import com.blackstar.model.UserSession;
 import com.blackstar.services.interfaces.DashboardService;
 import com.blackstar.web.AbstractController;
+
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.support.SessionStatus;
 
@@ -247,4 +248,9 @@ public class DashboardController extends AbstractController {
     //================================================================================
 
 
+    @RequestMapping(value = "/ping.do", method = RequestMethod.GET)
+    public @ResponseBody String ping()
+    {
+    	return "OK";
+    }
 }

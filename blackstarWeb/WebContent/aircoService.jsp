@@ -70,15 +70,6 @@
 
 		});
 
-		function isNumberKey(evt){
-		     var charCode = (evt.which) ? evt.which : event.keyCode;
-	         if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57)){
-	            return false;
-	         }
-
-	         return true;
-		}
-		
 		function closeService(){
 			$("#serviceStatusId").val('C');
 			$("#closed").val(dateNow());
@@ -88,31 +79,33 @@
 			$('#serviceOrder').submit();
 		}
 
-		function saveService(){
+		function validate(){
 			var startTimestamp = Date.parseExact($("#serviceDate").val(), 'dd/MM/yyyy HH:mm:ss');
 			if(startTimestamp == undefined || startTimestamp == null){
-				$("#serviceDate").val("");
+				$("#InvalidMessage").html("Por favor revise la fecha y hora del servicio");
+				return false;
 			}
 			
 			if($('#serviceOrder')[0].checkValidity()){
+				if($("#signCreatedCapture").val().trim().length == 0 || $("#signReceivedByCapture").val().trim().length == 0){
+					$("#InvalidMessage").html("Por favor firme la OS");
+					return false;
+				}
+
 				$('input').removeAttr("disabled");
 				$('select').removeAttr("disabled");
 				$('textarea').removeAttr("disabled");
 				if($("#responsible").val().indexOf(';') == 0){
 					$("#responsible").val($("#responsible").val().substring(1));
 				}
-				if($("#signCreatedCapture").val().trim().length == 0 || $("#signReceivedByCapture").val().trim().length == 0){
-					return false;
-				}
-				else{
-					$("#signCreated").val($("#signCreatedCapture").val())
-					$("#signReceivedBy").val($("#signReceivedByCapture").val())
-					$("#serviceEndDate").val(dateNow());
-					$('#serviceOrder').submit();
-				}
+				$("#signCreated").val($("#signCreatedCapture").val())
+				$("#signReceivedBy").val($("#signReceivedByCapture").val())
+				$("#serviceEndDate").val(dateNow());
+				return true;
 			}
 			else{
 				setTimeout(function() { $(event.target).focus();}, 50);
+				$("#InvalidMessage").html("Por favor revise que todos los campos hayan sido correctamente capturados");
 				return false;
 			}
 		}
@@ -209,16 +202,16 @@
 								<tr>
 									<td colspan="5">1.2 VALORES ACTUALES</td>
 									<td>Temp.</td>
-									<td><form:input path="evaValTemp" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail" required="true"/></td>
+									<td><form:input path="evaValTemp" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
 									<td>Hum.</td>
-									<td><form:input path="evaValHum" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail" required="true"/></td>
+									<td><form:input path="evaValHum" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
 								</tr>
 								<tr>
 									<td colspan="5">1.2.1 SETPOINTS</td>
 									<td>Temp.</td>
-									<td><form:input path="evaSetpointTemp" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail" required="true"/></td>
+									<td><form:input path="evaSetpointTemp" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
 									<td>Hum.</td>
-									<td><form:input path="evaSetpointHum" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail" required="true"/></td>
+									<td><form:input path="evaSetpointHum" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
 								</tr>
 								<tr>
 									<td colspan="5">1.3 SE REALIZÓ COMPARACION Y CALIBRACION T/H MEDIDO</td>
@@ -247,27 +240,27 @@
 								<tr>
 									<td colspan="5">1.9	LECTURA DE PRESIÓN DE COMPRESIÓN EN OPERACIÓN NORMAL</td>
 									<td>Alta</td>
-									<td><form:input path="evaLectrurePreasureHigh" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail" required="true"/></td>
+									<td><form:input path="evaLectrurePreasureHigh" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
 									<td>Baja(60 psig min)</td>
-									<td><form:input path="evaLectrurePreasureLow" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail" required="true"/></td>
+									<td><form:input path="evaLectrurePreasureLow" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
 								</tr>
 								<tr>
 									<td colspan="5">1.10 LECTURA DE TEMPERATURA EN SUCCIÓN Y ENTRADA DE VÁLVULA DE EXPANSIÓN</td>
-									<td colspan="4"><form:input path="evaLectureTemp" type="text" style="width:99%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail" required="true"/></td>
+									<td colspan="4"><form:input path="evaLectureTemp" type="text" style="width:99%;" cssClass="lockOnDetail" required="true"/></td>
 								</tr>
 								<tr>
 									<td colspan="5">1.11 ESTADO DE ACEITE EN EL COMPRESOR</td>
 									<td>Color</td>
 									<td><form:input path="evaLectureOilColor" type="text" style="width:95%;"  cssClass="lockOnDetail"/></td>
 									<td>Nivel</td>
-									<td><form:input path="evaLectureOilLevel" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail"  required="true"/></td>
+									<td><form:input path="evaLectureOilLevel" type="text" style="width:95%;" cssClass="lockOnDetail"  required="true"/></td>
 								</tr>
 								<tr>
 									<td colspan="5">1.12 VERIFICAR MIRILLA DEL SISTEMA DE REFRIGERACIÓN</td>
 									<td>Color</td>
 									<td><form:input path="evaLectureCoolerColor" type="text" style="width:95%;" cssClass="lockOnDetail" /></td>
 									<td>Nivel</td>
-									<td><form:input path="evaLectureCoolerLevel" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail" required="true"/></td>
+									<td><form:input path="evaLectureCoolerLevel" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
 								</tr>
 								<tr>
 									<td colspan="5">1.13 REVISIÓN DE OPERACIÓN DE PROTECCIONES POR ALTA Y BAJA PRESIÓN</td>
@@ -284,33 +277,33 @@
 								<tr>
 									<td colspan="3">1.16 TOMA DE LECTURAS DE VOLTAJE</td>
 									<td>Tomas a tierra</td>
-									<td><form:input path="evaLectureVoltageGroud" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail" required="true"/></td>
+									<td><form:input path="evaLectureVoltageGroud" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
 									<td>Entre fases</td>
-									<td><form:input path="evaLectureVoltagePhases" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail" required="true"/></td>
+									<td><form:input path="evaLectureVoltagePhases" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
 									<td>Control</td>
-									<td><form:input path="evaLectureVoltageControl" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail" required="true"/></td>
+									<td><form:input path="evaLectureVoltageControl" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
 								</tr>
 								<tr>
 									<td colspan="1">1.17 LECTURA DE CORRIENTE POR FASE</td>
 									<td>Motor</td>
-									<td><form:input path="evaLectureCurrentMotor1" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail" required="true"/></td> 
-									<td><form:input path="evaLectureCurrentMotor2" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail" required="true"/></td> 
-									<td><form:input path="evaLectureCurrentMotor3" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail" required="true"/></td>
+									<td><form:input path="evaLectureCurrentMotor1" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td> 
+									<td><form:input path="evaLectureCurrentMotor2" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td> 
+									<td><form:input path="evaLectureCurrentMotor3" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
 									<td>Compresor</td>
-									<td><form:input path="evaLectureCurrentCompressor1" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail"/></td> 
-									<td><form:input path="evaLectureCurrentCompressor2" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail"/></td> 
-									<td><form:input path="evaLectureCurrentCompressor3" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail"/></td>
+									<td><form:input path="evaLectureCurrentCompressor1" type="text" style="width:95%;" cssClass="lockOnDetail"/></td> 
+									<td><form:input path="evaLectureCurrentCompressor2" type="text" style="width:95%;" cssClass="lockOnDetail"/></td> 
+									<td><form:input path="evaLectureCurrentCompressor3" type="text" style="width:95%;" cssClass="lockOnDetail"/></td>
 								</tr>
 								<tr>
 									<td colspan="1"></td>
 									<td>Humidificador</td>
-									<td><form:input path="evaLectureCurrentHumidifier1" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail" required="true"/></td>
-									<td><form:input path="evaLectureCurrentHumidifier2" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail" required="true"/></td>
-									<td><form:input path="evaLectureCurrentHumidifier3" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail" required="true"/></td>
+									<td><form:input path="evaLectureCurrentHumidifier1" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
+									<td><form:input path="evaLectureCurrentHumidifier2" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
+									<td><form:input path="evaLectureCurrentHumidifier3" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
 									<td>Calentador</td>
-									<td><form:input path="evaLectureCurrentHeater1" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail" required="true"/></td>
-									<td><form:input path="evaLectureCurrentHeater2" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail" required="true"/></td>
-									<td><form:input path="evaLectureCurrentHeater3" type="text" style="width:95%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail" required="true"/></td>
+									<td><form:input path="evaLectureCurrentHeater1" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
+									<td><form:input path="evaLectureCurrentHeater2" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
+									<td><form:input path="evaLectureCurrentHeater3" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
 								</tr>
 								<tr>
 									<td colspan="5">1.18 PRUEBA DE SENSOR DE AIRE Y FILTRO SUCIO</td>
@@ -342,15 +335,15 @@
 								<tr>
 									<td>2.4	TOMA DE LECTURAS DE VOLTAJE</td>
 									<td>Fases a tierra</td>
-									<td><form:input path="condLectureVoltageGroud" type="text" style="width:90%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail" required="true"/></td>
+									<td><form:input path="condLectureVoltageGroud" type="text" style="width:90%;" cssClass="lockOnDetail" required="true"/></td>
 									<td>Entre fases</td>
-									<td><form:input path="condLectureVoltagePhases" type="text" style="width:90%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail" required="true"/></td>
+									<td><form:input path="condLectureVoltagePhases" type="text" style="width:90%;" cssClass="lockOnDetail" required="true"/></td>
 									<td>Control</td>
-									<td><form:input path="condLectureVoltageControl" type="text" style="width:90%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail" required="true"/></td>
+									<td><form:input path="condLectureVoltageControl" type="text" style="width:90%;" cssClass="lockOnDetail" required="true"/></td>
 								</tr>
 								<tr>
 									<td>2.5	LECTURA DE CORRIENTE EN MONITORES DE CONDENSADOR</td>
-									<td colspan="6" ><form:input path="condLectureMotorCurrent" type="text" style="width:99%;" onkeypress='return isNumberKey(event)' cssClass="lockOnDetail" required="true"/></td>
+									<td colspan="6" ><form:input path="condLectureMotorCurrent" type="text" style="width:99%;" cssClass="lockOnDetail" required="true"/></td>
 								</tr>
 								<tr>
 									<td>2.6	REVISIÓN Y AJUSTE DE TERMOSTATO</td>
@@ -477,6 +470,7 @@
 			<!-- Control de secuencia y captura de seguimiento -->
 			<c:if test="${!user.belongsToGroup['Cliente']}">
 				<c:import url="followUpControl.jsp"></c:import>
+				<c:import url="saveService.jsp"></c:import>
 			
 				<table>
 					<tbody>
@@ -488,7 +482,8 @@
 									<button class="searchButton eligible coorOnly lockOnEngDetail" id="closeBtn" onclick="closeService();">Cerrar</button>
 								</c:if>	
 							</c:if>	
-							<input class="searchButton lockOnEngDetail" id="guardarServicio" type="submit" onclick="return saveService();" value="Guardar servicio" form="serviceOrder"/>
+							<input class="searchButton lockOnEngDetail" id="guardarServicio" type="submit" onclick="saveService('AA', validate); return false;" 
+								value="Guardar servicio" form="serviceOrder"/>
 							<button class="searchButton" onclick="window.location = '/serviceOrders/show.do'">Cancelar</button>
 							</td>
 						</tr>

@@ -210,7 +210,7 @@ public class EmergencyPlantServiceController extends AbstractController {
 					servicioOrderSave.setTicketId(serviceOrder.getTicketId());
 					servicioOrderSave.setHasPdf(1);
 					
-					idServicio = service.saveServiceOrder(servicioOrderSave, "BatteryServiceController", userSession.getUser().getUserEmail());
+					idServicio = service.saveServiceOrder(servicioOrderSave, "EmergencyPlantServiceController", userSession.getUser().getUserEmail());
 					serviceOrder.setServiceOrderId(idServicio);
 					doCommit = true;
 				}
@@ -228,7 +228,7 @@ public class EmergencyPlantServiceController extends AbstractController {
 				Logger.Log(LogLevel.ERROR, e.getStackTrace().toString(), e);
 				e.printStackTrace();
 				model.addAttribute("errorDetails", e.getMessage() + " - " + e.getStackTrace()[0].toString());
-				return "error";
+				throw e;
 			}
 
 	    	return "dashboard";
