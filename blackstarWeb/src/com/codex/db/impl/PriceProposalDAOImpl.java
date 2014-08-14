@@ -20,7 +20,7 @@ public class PriceProposalDAOImpl extends AbstractDAO
 				            , priceProposal.getCreated(), priceProposal.getContactName()
 				            , priceProposal.getLocation(), priceProposal.getAdvance()
 				            , priceProposal.getTimeLimit(), priceProposal.getSettlementTimeLimit()
-				            , priceProposal.getDeliveryTime(), priceProposal.getIntercom()
+				            , priceProposal.getDeliveryTime(), priceProposal.getIncoterm()
 				            , priceProposal.getProductsNumber(), priceProposal.getFinancesNumber()
 				            , priceProposal.getServicesNumber(), priceProposal.getTotalProjectNumber()});
   }

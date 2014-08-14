@@ -35,6 +35,11 @@ BEGIN
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
 
+-- AGREGANDO COLUMNA description a sequence
+	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'sequence' AND COLUMN_NAME = 'description') = 0  THEN
+		ALTER TABLE sequence ADD description VARCHAR(200) NULL;
+	END IF;
+
 -- ELIMINANDO TABLA serviceOrderAdditionalEngineer
 	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'serviceOrderAdditionalEngineer') = 1 THEN
 		DROP TABLE serviceOrderAdditionalEngineer;

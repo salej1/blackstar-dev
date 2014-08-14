@@ -1,6 +1,8 @@
 package com.codex.web.controller;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -21,27 +23,33 @@ import com.blackstar.logging.Logger;
 import com.blackstar.model.User;
 import com.blackstar.model.UserSession;
 import com.blackstar.web.AbstractController;
+import com.codex.model.dto.CostCenterDTO;
 import com.codex.service.ClientService;
+import com.codex.service.ExchangeRateService;
 import com.codex.service.ProjectService;
 import com.codex.vo.ClientVO;
 import com.codex.vo.ProjectVO;
-
 
 @Controller
 @RequestMapping("/codex/project")
 @SessionAttributes({ Globals.SESSION_KEY_PARAM })
 public class ProjectController extends AbstractController {
 
-  private ProjectService service;
-  private ClientService cService = null;
+	private ProjectService service;
+	private ClientService cService = null;
+	private ExchangeRateService xrService;
 
-  public void setService(ProjectService service) {
-	this.service = service;
-  }
-  
-  public void setcService(ClientService cService) {
-	this.cService = cService;
-  }
+	public void setService(ProjectService service) {
+		this.service = service;
+	}
+
+	public void setcService(ClientService cService) {
+		this.cService = cService;
+	}
+
+	public void setXrService(ExchangeRateService xrService) {
+		this.xrService = xrService;
+	}
 	
   @RequestMapping(value = "/showList.do") 
   public String showList(ModelMap model, HttpServletRequest request ){
@@ -73,12 +81,10 @@ public class ProjectController extends AbstractController {
 		 model.addAttribute("paymentTypes", service.getAllPaymentTypes());
 		 model.addAttribute("staff", udService.getStaff());
 		 model.addAttribute("accessToken", gdService.getAccessToken());
-		 model.addAttribute("enableEdition", project.getStatusId()== 1 ? false 
-				                                                      : true);
+		 model.addAttribute("enableEdition", project.getStatusId()== 1 ? false : true);
 		 model.addAttribute("isUpdate", true);
 		 model.addAttribute("clients", cService.getAllClients());
-		 model.addAttribute("osAttachmentFolder", gdService
-		    		           .getAttachmentFolderId(project.getProjectNumber()));
+		 model.addAttribute("osAttachmentFolder", gdService.getAttachmentFolderId(project.getProjectNumber()));
 		 model.addAttribute("deliverables", service.getDeliverables(projectId));
 		 model.addAttribute("followUps", service.getFollowUps(projectId));
 		} catch (Exception e) {
@@ -90,12 +96,15 @@ public class ProjectController extends AbstractController {
   }
   
   @RequestMapping(value = "/create.do")
-  public String create(ModelMap model, @RequestParam(required = false) Integer clientId){
+  public String create(ModelMap model, @RequestParam(required = false) Integer clientId,
+		  @ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession){
 	ProjectVO project = new ProjectVO();
 	ClientVO client= null;
 	Integer projectId = null;
+	String officeId = null;
 	try {
 		 projectId = service.getNewProjectId();
+		 officeId = service.getCSTOffice(userSession.getUser().getUserEmail());
 		 if(clientId != null && ((client = cService.getClientById(clientId)) != null)){
 			 project.setClientId(client.getId());
 			 project.setLocation(client.getState());
@@ -104,8 +113,9 @@ public class ProjectController extends AbstractController {
 	     project.setId(projectId);
 	     project.setStatusId(1);
 	     project.setStatusDescription("Nuevo");
-	     project.setProjectNumber("CQ" + projectId);
+	     project.setProjectNumber("C" + officeId + projectId);
 	     project.setCreated(new Date());
+	     project.setChangeType(xrService.getExchangeRate());
 	     model.addAttribute("project", project);
 	     model.addAttribute("entryTypes", service.getAllEntryTypes());
 	     model.addAttribute("entryItemTypes", service.getAllEntryItemTypes());
@@ -117,6 +127,8 @@ public class ProjectController extends AbstractController {
 	     model.addAttribute("enableEdition", false);
 	     model.addAttribute("isUpdate", false);
 	     model.addAttribute("clients", cService.getAllClients());
+	     model.addAttribute("costCenterList", getCostCenterList(project.getProjectNumber()));
+	     
 	} catch (Exception e) {
 		Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 		System.out.println("CodexCreateProjectError=> " + e);
@@ -236,4 +248,14 @@ public class ProjectController extends AbstractController {
 	return showList(model, request);
   }
 	
+  private List<CostCenterDTO> getCostCenterList(String projectNumber){
+	  List<CostCenterDTO> ccList = service.getCostCenterList();
+	  
+	  if(ccList == null){
+		  ccList = new ArrayList<CostCenterDTO>();
+	  }
+	  ccList.add(0, new CostCenterDTO(0, projectNumber));
+	  
+	  return ccList;
+  }
 }

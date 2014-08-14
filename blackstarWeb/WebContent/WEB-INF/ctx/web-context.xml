@@ -120,6 +120,7 @@
 	<bean class="com.codex.web.controller.ProjectController" parent="abstractController">
 	    <property name="service" ref="projectService" />
 	    <property name="cService" ref="clientService" />
+	    <property name="xrService" ref="exchangeRateService" />
 	</bean>
 	
 	<bean class="com.codex.web.controller.DashboardController" parent="abstractController">

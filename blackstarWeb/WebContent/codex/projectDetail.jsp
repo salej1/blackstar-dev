@@ -221,9 +221,9 @@
                            <table>
 							  <tr>
 								<td  style="width:140px">No. Cedula</td>
-								<td><form:input type="text" path="projectNumber" readonly="true" style="width:100%"/></td>
+								<td><form:input type="text" path="projectNumber" readOnly="true" style="width:100%"/></td>
 								<td style="width:120px">Estatus</td>
-								<td><form:input type="text" path="statusDescription" readonly="true" style="width:100%"/></td>
+								<td><form:input type="text" path="statusDescription" readOnly="true" style="width:100%"/></td>
 							  </tr>
 							  <tr>
 								<td>Cliente</td>
@@ -240,23 +240,23 @@
 										</form:select>
 							  <tr>
 							  </tr>
-								<td>Centro de costos:</td>
+								<td>Proyecto:</td>
 								<td>
-									<form:input type="text" id="costCenter" path="costCenter" style="width:100%" class="required" maxlength="8" readonly="${enableEdition}"/>
+									<form:select items="costCenterList" itemLabel="costCenter" itemValue="_id" path="costCenterId" class="required" readOnly="${enableEdition}"/>
 								</td>
 							  </tr>
 							  <tr>
 								<td>Tipo de cambio:</td>
-								<td><form:input type="text" id="changeType" path="changeType" style="width:100%" class="required" maxlength="5" readonly="${enableEdition}"/></td>
+								<td><form:input type="text" id="changeType" path="changeType" style="width:100%" class="required" maxlength="5" readOnly="${enableEdition}"/></td>
 								<td>Fecha:</td>
-								<td><form:input type="text" id="created" path="created" style="width:100%" class="required" readonly="${enableEdition}"/></td>
+								<td><form:input type="text" id="created" path="created" style="width:100%" class="required" readOnly="${enableEdition}"/></td>
 							  <tr>
 								<td>Nombre del Contacto:</td>
-								<td><form:input type="text" id="contactName" path="contactName"  style="width:100%" class="required" readonly="${enableEdition}"/></td>
+								<td><form:input type="text" id="contactName" path="contactName"  style="width:100%" class="required" readOnly="${enableEdition}"/></td>
 							  </tr>
 							  <tr>
-								<td>Ubucación(es) del Proyecto:</td>
-								<td><form:input type="text" id="location" path="location"  style="width:100%" class="required" readonly="${enableEdition}"/></td>
+								<td>Ubicación(es) del Proyecto:</td>
+								<td><form:input type="text" id="location" path="location"  style="width:100%" class="required" readOnly="${enableEdition}"/></td>
 								<td>Forma de pago:</td>
 								<td><form:select name="" id="paymentTypeId" path="paymentTypeId" style="width:100%" disabled="${enableEdition}" class="required">
 								            <option value="">Seleccione</option>
@@ -272,13 +272,13 @@
 							  </tr>
 							  <tr>
 								<td>Anticipo:</td>
-								<td><form:input type="text" id="advance" path="advance" style="width:100%" class="required" maxlength="10" readonly="${enableEdition}"/></td>
+								<td><form:input type="text" id="advance" path="advance" style="width:100%" class="required" maxlength="10" readOnly="${enableEdition}"/></td>
 								<td>Plazo:</td>
-								<td><form:input type="text" id="timeLimit" path="timeLimit" style="width:100%" class="required" maxlength="3" readonly="${enableEdition}"/></td>
+								<td><form:input type="text" id="timeLimit" path="timeLimit" style="width:100%" class="required" maxlength="3" readOnly="${enableEdition}"/></td>
 							  <tr>
 							  <tr>
 								<td>Plazo finiquito:</td>
-								<td><form:input type="text" id="settlementTimeLimit" path="settlementTimeLimit"  style="width:100%" class="required" maxlength="3" readonly="${enableEdition}"/></td>
+								<td><form:input type="text" id="settlementTimeLimit" path="settlementTimeLimit"  style="width:100%" class="required" maxlength="3" readOnly="${enableEdition}"/></td>
 							  </tr>
 							  <tr>
 								<td>Moneda:</td>
@@ -308,21 +308,21 @@
 							  </tr>
 							  <tr>
 								<td>Tiempo de entrega:</td>
-								<td><form:input type="text" id="deliveryTime" path="deliveryTime" style="width:100%" class="required" maxlength="3" readonly="${enableEdition}"/></td>
-								<td>Intercom:</td>
-								<td><form:input type="text" id="intercom" path="intercom" style="width:100%" class="required" maxlength="5" readonly="${enableEdition}"/></td>
+								<td><form:input type="text" id="deliveryTime" path="deliveryTime" style="width:100%" class="required" maxlength="3" readOnly="${enableEdition}"/></td>
+								<td>Incoterm:</td>
+								<td><form:input type="text" id="incoterm" path="incoterm" style="width:100%" class="required" maxlength="5" readOnly="${enableEdition}"/></td>
 							  </tr>
 							  <tr>
 								<td>TOTAL DE PRODUCTOS</td>
-								<td><form:input type="text" path="productsNumber" style="width:100%" class="required" maxlength="7" readonly="${enableEdition}"/></td>
+								<td><form:input type="text" path="productsNumber" style="width:100%" class="required" maxlength="7" readOnly="true"/></td>
 								<td>FIANZA(S)</td>
-								<td><form:input type="text" path="financesNumber" style="width:100%" class="required" maxlength="7" readonly="${enableEdition}"/></td>
+								<td><form:input type="text" path="financesNumber" style="width:100%" class="required" maxlength="7" readOnly="true"/></td>
 							  </tr>
 							  <tr>
 								<td>TOTAL DE SERVICIOS</td>
-								<td><form:input type="text" path="servicesNumber" style="width:100%" class="required" maxlength="7" readonly="${enableEdition}"/></td>
+								<td><form:input type="text" path="servicesNumber" style="width:100%" class="required" maxlength="7" readOnly="true"/></td>
 								<td>TOTAL DEL PROYECTO</td>
-								<td><form:input type="text" path="totalProjectNumber" style="width:100%" class="required" maxlength="7" readonly="${enableEdition}"/></td>
+								<td><form:input type="text" path="totalProjectNumber" style="width:100%" class="required" maxlength="7" readOnly="true"/></td>
 							  </tr>
 						   </table>
 						   <form:input type="hidden" path="strEntries"/>

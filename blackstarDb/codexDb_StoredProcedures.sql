@@ -6,26 +6,54 @@
 -- -----------------------------------------------------------------------------
 -- Change History
 -- -----------------------------------------------------------------------------
--- PR   Date    	Author	Description
--- --   --------   -------  ----------------------------------------------------
--- 1    24/06/2014	DCB		Se Integran los SP iniciales:
---								blackstarDb.GetCodexAllStates
-
+-- PR   Date        Author	 Description
+-- --   --------   -------  ------------------------------------
+-- 1    24/06/2014  DCB		  Se Integran los SP iniciales:
+--								              blackstarDb.GetCodexAllStates
+-- --   --------   -------  ------------------------------------
+-- 2    13/08/2014  SAG     Se agrega:
+--                              blackstarDb.GetCostCenterList
+--                              blackstarDb.GetCSTOffice
+-- -----------------------------------------------------------------------------
 use blackstarDb;
 
 DELIMITER $$
 
 
 -- -----------------------------------------------------------------------------
-	-- blackstarDb.CodexGetAllStatesrt
+  -- blackstarDb.GetCostCenterList
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetCSTOffice$$
+CREATE PROCEDURE blackstarDb.GetCSTOffice(pCst VARCHAR(200))
+BEGIN
+
+  SELECT officeId FROM blackstarDb.cstOffice WHERE cstId = pCst LIMIT 1;
+  
+END$$
+
+-- -----------------------------------------------------------------------------
+  -- blackstarDb.GetCostCenterList
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetCostCenterList$$
+CREATE PROCEDURE blackstarDb.GetCostCenterList()
+BEGIN
+
+  SELECT * 
+  FROM codexCostCenter
+  ORDER BY codexCostCenter DESC;
+  
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.CodexGetAllStates
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.CodexGetAllStates$$
 CREATE PROCEDURE blackstarDb.CodexGetAllStates()
 BEGIN
 
 	SELECT DISTINCT loc.state AS state 
-    FROM location loc 
-    ORDER BY state ASC;
+  FROM location loc 
+  ORDER BY state ASC;
 	
 END$$
 
@@ -37,7 +65,7 @@ CREATE PROCEDURE blackstarDb.CodexGetAllClientTypes()
 BEGIN
 
 	SELECT cct._id AS id, cct.name AS name, cct.description AS description
-    FROM codexClientType cct;
+  FROM codexClientType cct;
 	
 END$$
 
@@ -313,7 +341,7 @@ SELECT cp._id id, cp.projectNumber projectNumber, cp.clientId clientId, cp.taxes
       , cp.paymentTypeId paymentTypeId, cp.currencyTypeId currencyTypeId, cst.name statusDescription
       , cc.tradeName clientDescription, cp.costCenter costCenter, cp.changeType changeType, cp.created created
       , cp.contactName contactName, cp.location location, cp.advance advance, cp.timeLimit timeLimit
-      , cp.settlementTimeLimit settlementTimeLimit, cp.deliveryTime deliveryTime, cp.intercom intercom
+      , cp.settlementTimeLimit settlementTimeLimit, cp.deliveryTime deliveryTime, cp.incoterm incoterm
       , cp.productsNumber productsNumber, cp.financesNumber financesNumber, cp.servicesNumber servicesNumber
       , cp.totalProjectNumber totalProjectNumber, cp.createdBy createdBy, cp.createdByUsr createdByUsr
       , cp. modified modified, cp.modifiedBy modifiedBy, cp.modifiedByUsr modifiedByUsr
@@ -419,20 +447,20 @@ END$$
 	-- blackstarDb.CodexUpsertProject
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.CodexUpsertProject$$
-CREATE PROCEDURE blackstarDb.`CodexUpsertProject`(pProjectId int(11), pClientId int(11), pTaxesTypeId int(1), pStatusId int(1), pPaymentTypeId int(1),pCurrencyTypeId int(2), pProjectNumber varchar(8), pCostCenter varchar(8), pChangeType float, pCreated varchar(40), pContactName text, pLocation varchar(20), pAdvance float(7,2), pTimeLimit int(3), pSettlementTimeLimit int(3), pDeliveryTime int(3), pIntercom varchar(5), pProductsNumber int(7), pFinancesNumber int(7), pServicesNumber int(7), pTotalProjectNumber int(8), pCreatedByUsr int(11), pModifiedByUsr int(11))
+CREATE PROCEDURE blackstarDb.`CodexUpsertProject`(pProjectId int(11), pClientId int(11), pTaxesTypeId int(1), pStatusId int(1), pPaymentTypeId int(1),pCurrencyTypeId int(2), pProjectNumber varchar(8), pCostCenter varchar(8), pChangeType float, pCreated varchar(40), pContactName text, pLocation varchar(20), pAdvance float(7,2), pTimeLimit int(3), pSettlementTimeLimit int(3), pDeliveryTime int(3), pincoterm varchar(5), pProductsNumber int(7), pFinancesNumber int(7), pServicesNumber int(7), pTotalProjectNumber int(8), pCreatedByUsr int(11), pModifiedByUsr int(11))
 BEGIN
   DECLARE isUpdate INTEGER;
   SET isUpdate = (SELECT COUNT(*) FROM codexProject WHERE _id = pProjectId);
   IF(isUpdate = 0) THEN
-     INSERT INTO codexProject (_id, clientId , taxesTypeId , statusId , paymentTypeId ,currencyTypeId , projectNumber , costCenter , changeType , created , contactName , location , advance , timeLimit , settlementTimeLimit , deliveryTime , intercom , productsNumber , financesNumber , servicesNumber , totalProjectNumber, createdByUsr)
-     VALUES (pProjectId, pClientId , pTaxesTypeId , pStatusId , pPaymentTypeId ,pCurrencyTypeId , pProjectNumber , pCostCenter , pChangeType , pCreated , pContactName , pLocation , pAdvance , pTimeLimit , pSettlementTimeLimit , pDeliveryTime , pIntercom , pProductsNumber , pFinancesNumber , pServicesNumber , pTotalProjectNumber, pCreatedByUsr);
+     INSERT INTO codexProject (_id, clientId , taxesTypeId , statusId , paymentTypeId ,currencyTypeId , projectNumber , costCenter , changeType , created , contactName , location , advance , timeLimit , settlementTimeLimit , deliveryTime , incoterm , productsNumber , financesNumber , servicesNumber , totalProjectNumber, createdByUsr)
+     VALUES (pProjectId, pClientId , pTaxesTypeId , pStatusId , pPaymentTypeId ,pCurrencyTypeId , pProjectNumber , pCostCenter , pChangeType , pCreated , pContactName , pLocation , pAdvance , pTimeLimit , pSettlementTimeLimit , pDeliveryTime , pincoterm , pProductsNumber , pFinancesNumber , pServicesNumber , pTotalProjectNumber, pCreatedByUsr);
   ELSE
      UPDATE codexProject
      SET clientId = pClientId, taxesTypeId = pTaxesTypeId, statusId = pStatusId, paymentTypeId = pPaymentTypeId
          , currencyTypeId = pCurrencyTypeId, projectNumber = pProjectNumber, costCenter = pCostCenter
          , changeType = pChangeType, created = pCreated, contactName = pContactName, location = pLocation
          , advance = pAdvance, timeLimit = pTimeLimit, settlementTimeLimit = pSettlementTimeLimit
-         , deliveryTime = pDeliveryTime, intercom = pIntercom, productsNumber = pProductsNumber
+         , deliveryTime = pDeliveryTime, incoterm = pincoterm, productsNumber = pProductsNumber
          , financesNumber = pFinancesNumber, servicesNumber = pServicesNumber, totalProjectNumber = pTotalProjectNumber
 		 , modifiedByUsr = pModifiedByUsr, modified = NOW()
      WHERE _id = pProjectId;
@@ -547,7 +575,7 @@ SELECT cp._id id, cp.projectNumber projectNumber, cp.clientId clientId, cp.taxes
       , cp.paymentTypeId paymentTypeId, cp.currencyTypeId currencyTypeId, cst.name statusDescription
       , cc.tradeName clientDescription, cp.costCenter costCenter, cp.changeType changeType, cp.created created
       , cp.contactName contactName, cp.location location, cp.advance advance, cp.timeLimit timeLimit
-      , cp.settlementTimeLimit settlementTimeLimit, cp.deliveryTime deliveryTime, cp.intercom intercom
+      , cp.settlementTimeLimit settlementTimeLimit, cp.deliveryTime deliveryTime, cp.incoterm incoterm
       , cp.productsNumber productsNumber, cp.financesNumber financesNumber, cp.servicesNumber servicesNumber
       , cp.totalProjectNumber totalProjectNumber, cp.createdBy createdBy, cp.createdByUsr createdByUsr
       , cp. modified modified, cp.modifiedBy modifiedBy, cp.modifiedByUsr modifiedByUsr
@@ -569,7 +597,7 @@ SELECT cp._id id, cp.projectNumber projectNumber, cp.clientId clientId, cp.taxes
       , cp.paymentTypeId paymentTypeId, cp.currencyTypeId currencyTypeId, cst.name statusDescription
       , cc.tradeName clientDescription, cp.costCenter costCenter, cp.changeType changeType, cp.created created
       , cp.contactName contactName, cp.location location, cp.advance advance, cp.timeLimit timeLimit
-      , cp.settlementTimeLimit settlementTimeLimit, cp.deliveryTime deliveryTime, cp.intercom intercom
+      , cp.settlementTimeLimit settlementTimeLimit, cp.deliveryTime deliveryTime, cp.incoterm incoterm
       , cp.productsNumber productsNumber, cp.financesNumber financesNumber, cp.servicesNumber servicesNumber
       , cp.totalProjectNumber totalProjectNumber, cp.createdBy createdBy, cp.createdByUsr createdByUsr
       , cp. modified modified, cp.modifiedBy modifiedBy, cp.modifiedByUsr modifiedByUsr
@@ -591,7 +619,7 @@ SELECT cp._id id, cp.projectNumber projectNumber, cp.clientId clientId, cp.taxes
       , cp.paymentTypeId paymentTypeId, cp.currencyTypeId currencyTypeId, cst.name statusDescription
       , cc.tradeName clientDescription, cp.costCenter costCenter, cp.changeType changeType, cp.created created
       , cp.contactName contactName, cp.location location, cp.advance advance, cp.timeLimit timeLimit
-      , cp.settlementTimeLimit settlementTimeLimit, cp.deliveryTime deliveryTime, cp.intercom intercom
+      , cp.settlementTimeLimit settlementTimeLimit, cp.deliveryTime deliveryTime, cp.incoterm incoterm
       , cp.productsNumber productsNumber, cp.financesNumber financesNumber, cp.servicesNumber servicesNumber
       , cp.totalProjectNumber totalProjectNumber, cp.createdBy createdBy, cp.createdByUsr createdByUsr
       , cp. modified modified, cp.modifiedBy modifiedBy, cp.modifiedByUsr modifiedByUsr
@@ -701,10 +729,10 @@ END$$
 	-- blackstarDb.CodexInsertPriceProposal
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.CodexInsertPriceProposal$$
-CREATE PROCEDURE blackstarDb.`CodexInsertPriceProposal`(pProposalId int(11), pProjectId int(11),pPriceProposalNumber varchar(8), pClientId int(11), pTaxesTypeId int(1), pPaymentTypeId int(1),pCurrencyTypeId int(2), pCostCenter varchar(8), pChangeType float, pCreated varchar(40), pContactName text, pLocation varchar(20), pAdvance float(7,2), pTimeLimit int(3), pSettlementTimeLimit int(3), pDeliveryTime int(3), pIntercom varchar(5), pProductsNumber int(7), pFinancesNumber int(7), pServicesNumber int(7), pTotalProjectNumber int(8))
+CREATE PROCEDURE blackstarDb.`CodexInsertPriceProposal`(pProposalId int(11), pProjectId int(11),pPriceProposalNumber varchar(8), pClientId int(11), pTaxesTypeId int(1), pPaymentTypeId int(1),pCurrencyTypeId int(2), pCostCenter varchar(8), pChangeType float, pCreated varchar(40), pContactName text, pLocation varchar(20), pAdvance float(7,2), pTimeLimit int(3), pSettlementTimeLimit int(3), pDeliveryTime int(3), pincoterm varchar(5), pProductsNumber int(7), pFinancesNumber int(7), pServicesNumber int(7), pTotalProjectNumber int(8))
 BEGIN
-     INSERT INTO codexPriceProposal (_id, projectId, priceProposalNumber, clientId , taxesTypeId , paymentTypeId ,currencyTypeId  , costCenter , changeType , created , contactName , location , advance , timeLimit , settlementTimeLimit , deliveryTime , intercom , productsNumber , financesNumber , servicesNumber , totalProjectNumber)
-     VALUES (pProposalId, pProjectId, pPriceProposalNumber, pClientId , pTaxesTypeId , pPaymentTypeId ,pCurrencyTypeId , pCostCenter , pChangeType , pCreated , pContactName , pLocation , pAdvance , pTimeLimit , pSettlementTimeLimit , pDeliveryTime , pIntercom , pProductsNumber , pFinancesNumber , pServicesNumber , pTotalProjectNumber);
+     INSERT INTO codexPriceProposal (_id, projectId, priceProposalNumber, clientId , taxesTypeId , paymentTypeId ,currencyTypeId  , costCenter , changeType , created , contactName , location , advance , timeLimit , settlementTimeLimit , deliveryTime , incoterm , productsNumber , financesNumber , servicesNumber , totalProjectNumber)
+     VALUES (pProposalId, pProjectId, pPriceProposalNumber, pClientId , pTaxesTypeId , pPaymentTypeId ,pCurrencyTypeId , pCostCenter , pChangeType , pCreated , pContactName , pLocation , pAdvance , pTimeLimit , pSettlementTimeLimit , pDeliveryTime , pincoterm , pProductsNumber , pFinancesNumber , pServicesNumber , pTotalProjectNumber);
 END$$
 
 -- -----------------------------------------------------------------------------

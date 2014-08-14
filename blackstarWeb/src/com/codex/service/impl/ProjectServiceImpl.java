@@ -10,6 +10,7 @@ import com.blackstar.model.Followup;
 import com.blackstar.model.User;
 import com.blackstar.services.AbstractService;
 import com.blackstar.services.EmailServiceFactory;
+import com.codex.model.dto.CostCenterDTO;
 import com.codex.db.ClientDAO;
 import com.codex.db.ProjectDAO;
 import com.codex.service.PDFReportService;
@@ -321,5 +322,15 @@ public class ProjectServiceImpl extends AbstractService
 	gdService.insertFileFromStream("application/pdf", project.getProjectNumber() 
 			                                        + ".pdf", parentId, report);
   }
+
+  @Override
+  public List<CostCenterDTO> getCostCenterList() {
+	 return dao.getCostCenterList();
+  }
+
+@Override
+public String getCSTOffice(String cst) {
+	return dao.getCSTOffice(cst);
+}
 
 }

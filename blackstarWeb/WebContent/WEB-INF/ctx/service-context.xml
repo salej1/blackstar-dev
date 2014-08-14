@@ -103,4 +103,9 @@
   <bean id="priceProposalService" class="com.codex.service.impl.PriceProposalServiceImpl" parent="abstractService">
       <property name="dao" ref="priceProposalDAO" />
   </bean>
+
+  <bean id="exchangeRateService" class="com.codex.service.impl.ExchangeRateServiceImpl" parent="abstractService">
+      <property name="exchangeProviderUrl" value="https://openexchangerates.org/api/latest.json" />
+      <property name="exchangeProviderKey" value="app_id=8e3017fc55b647ca92c9ea9f4f956ae7" />
+  </bean>
 </beans>

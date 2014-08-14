@@ -8,6 +8,7 @@ import com.blackstar.db.dao.AbstractDAO;
 import com.blackstar.db.dao.mapper.JSONRowMapper;
 import com.blackstar.model.Followup;
 import com.blackstar.model.User;
+import com.codex.model.dto.CostCenterDTO;
 import com.codex.db.ProjectDAO;
 import com.codex.vo.CurrencyTypesVO;
 import com.codex.vo.DeliverableTypesVO;
@@ -105,12 +106,14 @@ public class ProjectDAOImpl extends AbstractDAO
 				new Object[] { projectId }, getMapperFor(ProjectVO.class));
   }
   
+  @SuppressWarnings("deprecation")
   @Override
   public Integer getNewProjectId() {
 	StringBuilder sqlBuilder = new StringBuilder("CALL GetNextProjectId()");
 	return getJdbcTemplate().queryForInt(sqlBuilder.toString());
   }
   
+  @SuppressWarnings("deprecation")
   @Override
   public Integer getNewEntryId() {
 	StringBuilder sqlBuilder = new StringBuilder("CALL GetNextEntryId()");
@@ -164,7 +167,7 @@ public class ProjectDAOImpl extends AbstractDAO
 			            , project.getContactName(), project.getLocation()
 			            , project.getAdvance(), project.getTimeLimit()
 			            , project.getSettlementTimeLimit(), project.getDeliveryTime()
-			            , project.getIntercom(), project.getProductsNumber()
+			            , project.getIncoterm(), project.getProductsNumber()
 			            , project.getFinancesNumber(), project.getServicesNumber()
 			            , project.getTotalProjectNumber(), project.getCreatedByUsr()
 			                                         , project.getModifiedByUsr()});
@@ -237,5 +240,20 @@ public class ProjectDAOImpl extends AbstractDAO
 	String sqlQuery = "CALL CodexCleanProjectDependencies(?)";
 	getJdbcTemplate().update(sqlQuery, new Object[]{projectId});
   }
+
+@Override
+public List<CostCenterDTO> getCostCenterList() {
+	String sql = "CALL GetCostCenterList();";
+	List<CostCenterDTO> ccList = (List<CostCenterDTO>) getJdbcTemplate().query(sql, getMapperFor(CostCenterDTO.class));
+	return ccList;
+}
+
+@Override
+public String getCSTOffice(String cst) {
+	String sql = "CALL GetCSTOffice(?)";
+	String office = getJdbcTemplate().queryForObject(sql, new Object[]{cst}, String.class);
+	
+	return office;
+}
 
 }

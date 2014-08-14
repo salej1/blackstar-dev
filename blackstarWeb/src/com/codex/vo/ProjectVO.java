@@ -28,7 +28,7 @@ public class ProjectVO {
 	private Integer timeLimit;
 	private Integer settlementTimeLimit;
 	private Integer deliveryTime;
-	private String intercom;
+	private String incoterm;
 	private Integer productsNumber;
 	private Integer financesNumber;
 	private Integer servicesNumber;
@@ -143,11 +143,11 @@ public class ProjectVO {
 	public void setDeliveryTime(Integer deliveryTime) {
 		this.deliveryTime = deliveryTime;
 	}
-	public String getIntercom() {
-		return intercom;
+	public String getIncoterm() {
+		return incoterm;
 	}
-	public void setIntercom(String intercom) {
-		this.intercom = intercom;
+	public void setIncoterm(String incoterm) {
+		this.incoterm = incoterm;
 	}
 	public Integer getProductsNumber() {
 		return productsNumber;

@@ -19,7 +19,7 @@ public class PriceProposalVO {
 	private Integer timeLimit;
 	private Integer settlementTimeLimit;
 	private Integer deliveryTime;
-	private String intercom;
+	private String incoterm;
 	private String contactName;
 	private Integer productsNumber;
 	private Integer financesNumber;
@@ -107,11 +107,11 @@ public class PriceProposalVO {
 	public void setDeliveryTime(Integer deliveryTime) {
 		this.deliveryTime = deliveryTime;
 	}
-	public String getIntercom() {
-		return intercom;
+	public String getIncoterm() {
+		return incoterm;
 	}
-	public void setIntercom(String intercom) {
-		this.intercom = intercom;
+	public void setIncoterm(String incoterm) {
+		this.incoterm = incoterm;
 	}
 	public Integer getProductsNumber() {
 		return productsNumber;

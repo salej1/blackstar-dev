@@ -6,6 +6,7 @@ import org.json.JSONObject;
 
 import com.blackstar.model.Followup;
 import com.blackstar.model.User;
+import com.codex.model.dto.CostCenterDTO;
 import com.codex.vo.CurrencyTypesVO;
 import com.codex.vo.DeliverableTypesVO;
 import com.codex.vo.DeliverableVO;
@@ -56,4 +57,6 @@ public interface ProjectDAO {
 	public User getResponsable(Integer projectId);
 	public void cleanProjectDependencies(Integer projectId);
 	public List<JSONObject> getAllProjectsByUsrJson(Integer userId);
+	public List<CostCenterDTO> getCostCenterList();
+	public String getCSTOffice(String cst);
 }

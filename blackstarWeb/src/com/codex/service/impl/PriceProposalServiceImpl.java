@@ -48,7 +48,7 @@ public class PriceProposalServiceImpl extends AbstractService
      priceProposal.setTimeLimit(project.getTimeLimit());
      priceProposal.setSettlementTimeLimit(project.getSettlementTimeLimit());
      priceProposal.setDeliveryTime(project.getDeliveryTime());
-     priceProposal.setIntercom(project.getIntercom());
+     priceProposal.setIncoterm(project.getIncoterm());
      priceProposal.setProductsNumber(project.getProductsNumber());
      priceProposal.setFinancesNumber(project.getFinancesNumber());
      priceProposal.setServicesNumber(project.getServicesNumber());

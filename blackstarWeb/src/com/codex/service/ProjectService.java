@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.blackstar.model.Followup;
 import com.blackstar.model.User;
+import com.codex.model.dto.CostCenterDTO;
 import com.codex.vo.CurrencyTypesVO;
 import com.codex.vo.DeliverableTypesVO;
 import com.codex.vo.DeliverableVO;
@@ -42,5 +43,6 @@ public interface ProjectService {
   public List<DeliverableVO> getDeliverables(Integer projectId);
   public void advanceStatus(ProjectVO project) throws Exception;
   public void updateEntries(ProjectVO project);
-  
+  public List<CostCenterDTO> getCostCenterList();
+  public String getCSTOffice(String cst);
 }
