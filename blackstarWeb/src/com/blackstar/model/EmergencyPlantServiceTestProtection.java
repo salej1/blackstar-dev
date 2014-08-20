@@ -3,9 +3,9 @@ package com.blackstar.model;
 public class EmergencyPlantServiceTestProtection {
 	
 	public EmergencyPlantServiceTestProtection(
-			Integer epServiceTestProtectionId, Integer tempSensor,
-			Integer oilSensor, Integer voltageSensor, Integer overSpeedSensor,
-			Integer oilPreasureSensor, Integer waterLevelSensor,
+			Integer epServiceTestProtectionId, String tempSensor,
+			String oilSensor, String voltageSensor, String overSpeedSensor,
+			String oilPreasureSensor, String waterLevelSensor,
 			Integer epServiceId) {
 		this.epServiceTestProtectionId = epServiceTestProtectionId;
 		this.tempSensor = tempSensor;
@@ -19,12 +19,12 @@ public class EmergencyPlantServiceTestProtection {
 	
 	private Integer epServiceId;
 	private Integer epServiceTestProtectionId;
-	private Integer tempSensor;
-	private Integer oilSensor;
-	private Integer voltageSensor;
-	private Integer overSpeedSensor;
-	private Integer oilPreasureSensor;
-	private Integer waterLevelSensor;
+	private String tempSensor;
+	private String oilSensor;
+	private String voltageSensor;
+	private String overSpeedSensor;
+	private String oilPreasureSensor;
+	private String waterLevelSensor;
 	
 	public Integer getEpServiceId() {
 		return epServiceId;
@@ -38,40 +38,42 @@ public class EmergencyPlantServiceTestProtection {
 	public void setEpServiceTestProtectionId(Integer epServiceTestProtectionId) {
 		this.epServiceTestProtectionId = epServiceTestProtectionId;
 	}
-	public Integer getTempSensor() {
+	public String getTempSensor() {
 		return tempSensor;
 	}
-	public void setTempSensor(Integer tempSensor) {
+	public void setTempSensor(String tempSensor) {
 		this.tempSensor = tempSensor;
 	}
-	public Integer getOilSensor() {
+	public String getOilSensor() {
 		return oilSensor;
 	}
-	public void setOilSensor(Integer oilSensor) {
+	public void setOilSensor(String oilSensor) {
 		this.oilSensor = oilSensor;
 	}
-	public Integer getVoltageSensor() {
+	public String getVoltageSensor() {
 		return voltageSensor;
 	}
-	public void setVoltageSensor(Integer voltageSensor) {
+	public void setVoltageSensor(String voltageSensor) {
 		this.voltageSensor = voltageSensor;
 	}
-	public Integer getOverSpeedSensor() {
+	public String getOverSpeedSensor() {
 		return overSpeedSensor;
 	}
-	public void setOverSpeedSensor(Integer overSpeedSensor) {
+	public void setOverSpeedSensor(String overSpeedSensor) {
 		this.overSpeedSensor = overSpeedSensor;
 	}
-	public Integer getOilPreasureSensor() {
+	public String getOilPreasureSensor() {
 		return oilPreasureSensor;
 	}
-	public void setOilPreasureSensor(Integer oilPreasureSensor) {
+	public void setOilPreasureSensor(String oilPreasureSensor) {
 		this.oilPreasureSensor = oilPreasureSensor;
 	}
-	public Integer getWaterLevelSensor() {
+	public String getWaterLevelSensor() {
 		return waterLevelSensor;
 	}
-	public void setWaterLevelSensor(Integer waterLevelSensor) {
+	public void setWaterLevelSensor(String waterLevelSensor) {
 		this.waterLevelSensor = waterLevelSensor;
 	}
+	
+	
 }

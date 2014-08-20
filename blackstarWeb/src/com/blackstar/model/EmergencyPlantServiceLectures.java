@@ -3,10 +3,10 @@ package com.blackstar.model;
 public class EmergencyPlantServiceLectures {
 	
 	public EmergencyPlantServiceLectures(Integer epServiceId,
-			Integer epServiceLecturesId, Integer voltageABAN,
-			Integer voltageACCN, Integer voltageBCBN, Integer voltageNT,
-			Integer currentA, Integer currentB, Integer currentC,
-			Integer frequency, Integer oilPreassure, Integer temp) {
+			Integer epServiceLecturesId, String voltageABAN,
+			String voltageACCN, String voltageBCBN, String voltageNT,
+			String currentA, String currentB, String currentC,
+			String frequency, String oilPreassure, String temp) {
 		this.epServiceId = epServiceId;
 		this.epServiceLecturesId = epServiceLecturesId;
 		this.voltageABAN = voltageABAN;
@@ -23,16 +23,16 @@ public class EmergencyPlantServiceLectures {
 	
 	private Integer epServiceId;
 	private Integer epServiceLecturesId;
-	private Integer voltageABAN;
-	private Integer voltageACCN;
-	private Integer voltageBCBN;
-	private Integer voltageNT;
-	private Integer currentA;
-	private Integer currentB;
-	private Integer currentC;
-	private Integer frequency;
-	private Integer oilPreassure;
-	private Integer temp;
+	private String voltageABAN;
+	private String voltageACCN;
+	private String voltageBCBN;
+	private String voltageNT;
+	private String currentA;
+	private String currentB;
+	private String currentC;
+	private String frequency;
+	private String oilPreassure;
+	private String temp;
 	
 	public Integer getEpServiceId() {
 		return epServiceId;
@@ -46,65 +46,66 @@ public class EmergencyPlantServiceLectures {
 	public void setEpServiceLecturesId(Integer epServiceLecturesId) {
 		this.epServiceLecturesId = epServiceLecturesId;
 	}
-	public Integer getVoltageABAN() {
+	public String getVoltageABAN() {
 		return voltageABAN;
 	}
-	public void setVoltageABAN(Integer voltageABAN) {
+	public void setVoltageABAN(String voltageABAN) {
 		this.voltageABAN = voltageABAN;
 	}
-	public Integer getVoltageACCN() {
+	public String getVoltageACCN() {
 		return voltageACCN;
 	}
-	public void setVoltageACCN(Integer voltageACCN) {
+	public void setVoltageACCN(String voltageACCN) {
 		this.voltageACCN = voltageACCN;
 	}
-	public Integer getVoltageBCBN() {
+	public String getVoltageBCBN() {
 		return voltageBCBN;
 	}
-	public void setVoltageBCBN(Integer voltageBCBN) {
+	public void setVoltageBCBN(String voltageBCBN) {
 		this.voltageBCBN = voltageBCBN;
 	}
-	public Integer getVoltageNT() {
+	public String getVoltageNT() {
 		return voltageNT;
 	}
-	public void setVoltageNT(Integer voltageNT) {
+	public void setVoltageNT(String voltageNT) {
 		this.voltageNT = voltageNT;
 	}
-	public Integer getCurrentA() {
+	public String getCurrentA() {
 		return currentA;
 	}
-	public void setCurrentA(Integer currentA) {
+	public void setCurrentA(String currentA) {
 		this.currentA = currentA;
 	}
-	public Integer getCurrentB() {
+	public String getCurrentB() {
 		return currentB;
 	}
-	public void setCurrentB(Integer currentB) {
+	public void setCurrentB(String currentB) {
 		this.currentB = currentB;
 	}
-	public Integer getCurrentC() {
+	public String getCurrentC() {
 		return currentC;
 	}
-	public void setCurrentC(Integer currentC) {
+	public void setCurrentC(String currentC) {
 		this.currentC = currentC;
 	}
-	public Integer getFrequency() {
+	public String getFrequency() {
 		return frequency;
 	}
-	public void setFrequency(Integer frequency) {
+	public void setFrequency(String frequency) {
 		this.frequency = frequency;
 	}
-	public Integer getOilPreassure() {
+	public String getOilPreassure() {
 		return oilPreassure;
 	}
-	public void setOilPreassure(Integer oilPreassure) {
+	public void setOilPreassure(String oilPreassure) {
 		this.oilPreassure = oilPreassure;
 	}
-	public Integer getTemp() {
+	public String getTemp() {
 		return temp;
 	}
-	public void setTemp(Integer temp) {
+	public void setTemp(String temp) {
 		this.temp = temp;
 	}
+	
 
 }

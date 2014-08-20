@@ -3,10 +3,10 @@ package com.blackstar.model;
 public class EmergencyPlantServiceDynamicTest {
 
 	public EmergencyPlantServiceDynamicTest(Integer epServiceId,
-			Integer epServiceDynamicTestId, Double vacuumFrequency,
-			Double chargeFrequency, Double bootTryouts, Double vacuumVoltage,
-			Double chargeVoltage, Double qualitySmoke, Integer startTime,
-			Integer transferTime, Integer stopTime) {
+			Integer epServiceDynamicTestId, String vacuumFrequency,
+			String chargeFrequency, String bootTryouts, String vacuumVoltage,
+			String chargeVoltage, String qualitySmoke, String startTime,
+			String transferTime, String stopTime) {
 		this.epServiceId = epServiceId;
 		this.epServiceDynamicTestId = epServiceDynamicTestId;
 		this.vacuumFrequency = vacuumFrequency;
@@ -22,15 +22,15 @@ public class EmergencyPlantServiceDynamicTest {
 	
 	private Integer epServiceId;
 	private Integer epServiceDynamicTestId;
-	private Double vacuumFrequency;
-	private Double chargeFrequency;
-	private Double bootTryouts;
-	private Double vacuumVoltage;
-	private Double chargeVoltage;
-	private Double qualitySmoke;
-	private Integer startTime;
-	private Integer transferTime;
-	private Integer stopTime;
+	private String vacuumFrequency;
+	private String chargeFrequency;
+	private String bootTryouts;
+	private String vacuumVoltage;
+	private String chargeVoltage;
+	private String qualitySmoke;
+	private String startTime;
+	private String transferTime;
+	private String stopTime;
 	
 	public Integer getEpServiceId() {
 		return epServiceId;
@@ -44,60 +44,59 @@ public class EmergencyPlantServiceDynamicTest {
 	public void setEpServiceDynamicTestId(Integer epServiceDynamicTestId) {
 		this.epServiceDynamicTestId = epServiceDynamicTestId;
 	}
-	public Double getVacuumFrequency() {
+	public String getVacuumFrequency() {
 		return vacuumFrequency;
 	}
-	public void setVacuumFrequency(Double vacuumFrequency) {
+	public void setVacuumFrequency(String vacuumFrequency) {
 		this.vacuumFrequency = vacuumFrequency;
 	}
-	public Double getChargeFrequency() {
+	public String getChargeFrequency() {
 		return chargeFrequency;
 	}
-	public void setChargeFrequency(Double chargeFrequency) {
+	public void setChargeFrequency(String chargeFrequency) {
 		this.chargeFrequency = chargeFrequency;
 	}
-	public Double getBootTryouts() {
+	public String getBootTryouts() {
 		return bootTryouts;
 	}
-	public void setBootTryouts(Double bootTryouts) {
+	public void setBootTryouts(String bootTryouts) {
 		this.bootTryouts = bootTryouts;
 	}
-	public Double getVacuumVoltage() {
+	public String getVacuumVoltage() {
 		return vacuumVoltage;
 	}
-	public void setVacuumVoltage(Double vacuumVoltage) {
+	public void setVacuumVoltage(String vacuumVoltage) {
 		this.vacuumVoltage = vacuumVoltage;
 	}
-	public Double getChargeVoltage() {
+	public String getChargeVoltage() {
 		return chargeVoltage;
 	}
-	public void setChargeVoltage(Double chargeVoltage) {
+	public void setChargeVoltage(String chargeVoltage) {
 		this.chargeVoltage = chargeVoltage;
 	}
-	public Double getQualitySmoke() {
+	public String getQualitySmoke() {
 		return qualitySmoke;
 	}
-	public void setQualitySmoke(Double qualitySmoke) {
+	public void setQualitySmoke(String qualitySmoke) {
 		this.qualitySmoke = qualitySmoke;
 	}
-	public Integer getStartTime() {
+	public String getStartTime() {
 		return startTime;
 	}
-	public void setStartTime(Integer startTime) {
+	public void setStartTime(String startTime) {
 		this.startTime = startTime;
 	}
-	public Integer getTransferTime() {
+	public String getTransferTime() {
 		return transferTime;
 	}
-	public void setTransferTime(Integer transferTime) {
+	public void setTransferTime(String transferTime) {
 		this.transferTime = transferTime;
 	}
-	public Integer getStopTime() {
+	public String getStopTime() {
 		return stopTime;
 	}
-	public void setStopTime(Integer stopTime) {
+	public void setStopTime(String stopTime) {
 		this.stopTime = stopTime;
 	}
-	
-	
+		
 }

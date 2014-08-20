@@ -1,6 +1,5 @@
 package com.blackstar.services.report.core;
 
-import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -269,7 +268,6 @@ public class BatteryMaintenanceReport extends AbstractReport {
   }
   
   public static void main(String [] args) throws Exception{
-	BatteryMaintenanceReport serv = new BatteryMaintenanceReport();
 	Policy policy = new Policy();
 	Serviceorder serviceOrder = new Serviceorder();
 	BatteryServiceDTO batteryServiceDTO = new BatteryServiceDTO();
@@ -322,17 +320,15 @@ public class BatteryMaintenanceReport extends AbstractReport {
 	batteryServiceDTO.setRackCleanComments("rackCleanComments");
 	batteryServiceDTO.setSerialNoDateManufact("serialNoDateManufact");
 	batteryServiceDTO.setBatteryTemperature("batteryTemperature");
-	batteryServiceDTO.setVoltageBus(123);
-	batteryServiceDTO.setTemperature(124);
+	batteryServiceDTO.setVoltageBus("123");
+	batteryServiceDTO.setTemperature("124");
 	
 	
 	List<BatteryCellServiceDTO>  cells = new ArrayList<BatteryCellServiceDTO> ();
 	for(int i = 1; i <= 85; i++){
-		cells.add(new BatteryCellServiceDTO(i, i, i, i , i));
+		cells.add(new BatteryCellServiceDTO(i, i, i, String.valueOf(i) , String.valueOf(i)));
 	}
 	batteryServiceDTO.setCells(cells);
-	
-	BatteryServicePolicyDTO data = new BatteryServicePolicyDTO(policy, serviceOrder,  batteryServiceDTO);
 	
     //FileOutputStream see = new FileOutputStream("C:/BatteryMaintenanceReport.pdf");
     //see.write(serv.getReport(data));

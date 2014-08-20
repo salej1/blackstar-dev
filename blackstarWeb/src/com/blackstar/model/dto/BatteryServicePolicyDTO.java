@@ -272,8 +272,8 @@ public class BatteryServicePolicyDTO {
 	private String rackCleanComments;
 	private String serialNoDateManufact;
 	private String batteryTemperature;
-	private Integer voltageBus;
-	private Integer temperature;
+	private String voltageBus;
+	private String temperature;
 	private String receivedByEmail;
 	private List<BatteryCellServiceDTO> cells;
 	private String responsibleName;
@@ -281,301 +281,397 @@ public class BatteryServicePolicyDTO {
 	private Integer openCustomerId;
 	private Date serviceEndDate;
 	private Integer surveyScore;
-	private Integer surveyServiceId;	
-	
+	private Integer surveyServiceId;
 	public Integer getPolicyId() {
 		return policyId;
 	}
+
 	public void setPolicyId(Integer policyId) {
 		this.policyId = policyId;
 	}
+
 	public String getCustomer() {
 		return customer;
 	}
+
 	public void setCustomer(String customer) {
 		this.customer = customer;
 	}
+
 	public String getFinalUser() {
 		return finalUser;
 	}
+
 	public void setFinalUser(String finalUser) {
 		this.finalUser = finalUser;
 	}
+
 	public String getProject() {
 		return project;
 	}
+
 	public void setProject(String project) {
 		this.project = project;
 	}
+
 	public Character getEquipmentTypeId() {
 		return equipmentTypeId;
 	}
+
 	public void setEquipmentTypeId(Character equipmentTypeId) {
 		this.equipmentTypeId = equipmentTypeId;
 	}
+
 	public String getEquipmentType() {
 		return equipmentType;
 	}
+
 	public void setEquipmentType(String equipmentType) {
 		this.equipmentType = equipmentType;
 	}
+
 	public String getBrand() {
 		return brand;
 	}
+
 	public void setBrand(String brand) {
 		this.brand = brand;
 	}
+
 	public String getModel() {
 		return model;
 	}
+
 	public void setModel(String model) {
 		this.model = model;
 	}
+
 	public String getSerialNumber() {
 		return serialNumber;
 	}
+
 	public void setSerialNumber(String serialNumber) {
 		this.serialNumber = serialNumber;
 	}
+
 	public String getCapacity() {
 		return capacity;
 	}
+
 	public void setCapacity(String capacity) {
 		this.capacity = capacity;
 	}
+
 	public String getEquipmentAddress() {
 		return equipmentAddress;
 	}
+
 	public void setEquipmentAddress(String equipmentAddress) {
 		this.equipmentAddress = equipmentAddress;
 	}
+
 	public String getOfficeId() {
 		return officeId;
 	}
+
 	public void setOfficeId(String officeId) {
 		this.officeId = officeId;
 	}
+
 	public String getContactName() {
 		return contactName;
 	}
+
 	public void setContactName(String contactName) {
 		this.contactName = contactName;
 	}
+
 	public String getContactPhone() {
 		return contactPhone;
 	}
+
 	public void setContactPhone(String contactPhone) {
 		this.contactPhone = contactPhone;
 	}
+
 	public Integer getServiceOrderId() {
 		return serviceOrderId;
 	}
+
 	public void setServiceOrderId(Integer serviceOrderId) {
 		this.serviceOrderId = serviceOrderId;
 	}
+
 	public Integer getTicketId() {
 		return ticketId;
 	}
+
 	public void setTicketId(Integer ticketId) {
 		this.ticketId = ticketId;
 	}
+
 	public Date getServiceDate() {
 		return serviceDate;
 	}
+
 	public void setServiceDate(Date serviceDate) {
 		this.serviceDate = serviceDate;
 	}
+
 	public String getResponsible() {
 		return responsible;
 	}
+
 	public void setResponsible(String responsible) {
 		this.responsible = responsible;
 	}
+
 	public String getReceivedBy() {
 		return receivedBy;
 	}
+
 	public void setReceivedBy(String receivedBy) {
 		this.receivedBy = receivedBy;
 	}
+
 	public String getServiceStatusId() {
 		return serviceStatusId;
 	}
+
 	public void setServiceStatusId(String serviceStatusId) {
 		this.serviceStatusId = serviceStatusId;
 	}
+
 	public Date getClosed() {
 		return closed;
 	}
+
 	public void setClosed(Date closed) {
 		this.closed = closed;
 	}
+
 	public String getConsultant() {
 		return consultant;
 	}
+
 	public void setConsultant(String consultant) {
 		this.consultant = consultant;
 	}
+
 	public String getCoordinator() {
 		return coordinator;
 	}
+
 	public void setCoordinator(String coordinator) {
 		this.coordinator = coordinator;
 	}
+
 	public String getAsignee() {
 		return asignee;
 	}
+
 	public void setAsignee(String asignee) {
 		this.asignee = asignee;
 	}
+
 	public String getSignCreated() {
 		return signCreated;
 	}
+
 	public void setSignCreated(String signCreated) {
 		this.signCreated = signCreated;
 	}
+
 	public String getSignReceivedBy() {
 		return signReceivedBy;
 	}
+
 	public void setSignReceivedBy(String signReceivedBy) {
 		this.signReceivedBy = signReceivedBy;
 	}
+
 	public String getReceivedByPosition() {
 		return receivedByPosition;
 	}
+
 	public void setReceivedByPosition(String receivedByPosition) {
 		this.receivedByPosition = receivedByPosition;
 	}
+
 	public String getServiceOrderNumber() {
 		return serviceOrderNumber;
 	}
+
 	public void setServiceOrderNumber(String serviceOrderNumber) {
 		this.serviceOrderNumber = serviceOrderNumber;
 	}
+
+	public String getServiceTypeId() {
+		return serviceTypeId;
+	}
+
+	public void setServiceTypeId(String serviceTypeId) {
+		this.serviceTypeId = serviceTypeId;
+	}
+
 	public Integer getBbServiceId() {
 		return bbServiceId;
 	}
+
 	public void setBbServiceId(Integer bbServiceId) {
 		this.bbServiceId = bbServiceId;
 	}
+
 	public Boolean getPlugClean() {
 		return plugClean;
 	}
+
 	public void setPlugClean(Boolean plugClean) {
 		this.plugClean = plugClean;
 	}
+
 	public String getPlugCleanStatus() {
 		return plugCleanStatus;
 	}
+
 	public void setPlugCleanStatus(String plugCleanStatus) {
 		this.plugCleanStatus = plugCleanStatus;
 	}
+
 	public String getPlugCleanComments() {
 		return plugCleanComments;
 	}
+
 	public void setPlugCleanComments(String plugCleanComments) {
 		this.plugCleanComments = plugCleanComments;
 	}
+
 	public Boolean getCoverClean() {
 		return coverClean;
 	}
+
 	public void setCoverClean(Boolean coverClean) {
 		this.coverClean = coverClean;
 	}
+
 	public String getCoverCleanStatus() {
 		return coverCleanStatus;
 	}
+
 	public void setCoverCleanStatus(String coverCleanStatus) {
 		this.coverCleanStatus = coverCleanStatus;
 	}
+
 	public String getCoverCleanComments() {
 		return coverCleanComments;
 	}
+
 	public void setCoverCleanComments(String coverCleanComments) {
 		this.coverCleanComments = coverCleanComments;
 	}
+
 	public Boolean getCapClean() {
 		return capClean;
 	}
+
 	public void setCapClean(Boolean capClean) {
 		this.capClean = capClean;
 	}
+
 	public String getCapCleanStatus() {
 		return capCleanStatus;
 	}
+
 	public void setCapCleanStatus(String capCleanStatus) {
 		this.capCleanStatus = capCleanStatus;
 	}
+
 	public String getCapCleanComments() {
 		return capCleanComments;
 	}
+
 	public void setCapCleanComments(String capCleanComments) {
 		this.capCleanComments = capCleanComments;
 	}
+
 	public Boolean getGroundClean() {
 		return groundClean;
 	}
+
 	public void setGroundClean(Boolean groundClean) {
 		this.groundClean = groundClean;
 	}
+
 	public String getGroundCleanStatus() {
 		return groundCleanStatus;
 	}
+
 	public void setGroundCleanStatus(String groundCleanStatus) {
 		this.groundCleanStatus = groundCleanStatus;
 	}
+
 	public String getGroundCleanComments() {
 		return groundCleanComments;
 	}
+
 	public void setGroundCleanComments(String groundCleanComments) {
 		this.groundCleanComments = groundCleanComments;
 	}
+
 	public Boolean getRackClean() {
 		return rackClean;
 	}
+
 	public void setRackClean(Boolean rackClean) {
 		this.rackClean = rackClean;
 	}
+
 	public String getRackCleanStatus() {
 		return rackCleanStatus;
 	}
+
 	public void setRackCleanStatus(String rackCleanStatus) {
 		this.rackCleanStatus = rackCleanStatus;
 	}
+
 	public String getRackCleanComments() {
 		return rackCleanComments;
 	}
+
 	public void setRackCleanComments(String rackCleanComments) {
 		this.rackCleanComments = rackCleanComments;
 	}
+
 	public String getSerialNoDateManufact() {
 		return serialNoDateManufact;
 	}
+
 	public void setSerialNoDateManufact(String serialNoDateManufact) {
 		this.serialNoDateManufact = serialNoDateManufact;
 	}
+
 	public String getBatteryTemperature() {
 		return batteryTemperature;
 	}
+
 	public void setBatteryTemperature(String batteryTemperature) {
 		this.batteryTemperature = batteryTemperature;
 	}
-	public Integer getVoltageBus() {
+
+	public String getVoltageBus() {
 		return voltageBus;
 	}
-	public void setVoltageBus(Integer voltageBus) {
+
+	public void setVoltageBus(String voltageBus) {
 		this.voltageBus = voltageBus;
 	}
-	public Integer getTemperature() {
+
+	public String getTemperature() {
 		return temperature;
 	}
-	public void setTemperature(Integer temperature) {
+
+	public void setTemperature(String temperature) {
 		this.temperature = temperature;
-	}
-	public List<BatteryCellServiceDTO> getCells() {
-		return cells;
-	}
-	public void setCells(List<BatteryCellServiceDTO> cells) {
-		this.cells = cells;
 	}
 
 	public String getReceivedByEmail() {
@@ -586,12 +682,12 @@ public class BatteryServicePolicyDTO {
 		this.receivedByEmail = receivedByEmail;
 	}
 
-	public String getServiceTypeId() {
-		return serviceTypeId;
+	public List<BatteryCellServiceDTO> getCells() {
+		return cells;
 	}
 
-	public void setServiceTypeId(String serviceTypeId) {
-		this.serviceTypeId = serviceTypeId;
+	public void setCells(List<BatteryCellServiceDTO> cells) {
+		this.cells = cells;
 	}
 
 	public String getResponsibleName() {
@@ -640,7 +736,8 @@ public class BatteryServicePolicyDTO {
 
 	public void setSurveyServiceId(Integer surveyServiceId) {
 		this.surveyServiceId = surveyServiceId;
-	}
+	}	
+	
 	
 	
 

@@ -4,8 +4,8 @@ public class EmergencyPlantServiceSurvey {
 
 	public EmergencyPlantServiceSurvey(Integer epServiceId,
 			Integer epServiceSurveyId, Boolean levelOilFlag,
-			Boolean levelWaterFlag, Integer levelBattery, Boolean tubeLeak,
-			String batteryCap, String batterySulfate, Integer levelOil,
+			Boolean levelWaterFlag, String levelBattery, Boolean tubeLeak,
+			String batteryCap, String batterySulfate, String levelOil,
 			String heatEngine, String hoseOil, String hoseWater,
 			String tubeValve, String stripBlades) {
 		this.epServiceId = epServiceId;
@@ -28,11 +28,11 @@ public class EmergencyPlantServiceSurvey {
 	private Integer epServiceSurveyId;
 	private Boolean levelOilFlag;
 	private Boolean levelWaterFlag;
-	private Integer levelBattery;
+	private String levelBattery;
 	private Boolean tubeLeak;
 	private String batteryCap;
 	private String batterySulfate;
-	private Integer levelOil;
+	private String levelOil;
 	private String heatEngine;
 	private String hoseOil;
 	private String hoseWater;
@@ -63,10 +63,10 @@ public class EmergencyPlantServiceSurvey {
 	public void setLevelWaterFlag(Boolean levelWaterFlag) {
 		this.levelWaterFlag = levelWaterFlag;
 	}
-	public Integer getLevelBattery() {
+	public String getLevelBattery() {
 		return levelBattery;
 	}
-	public void setLevelBattery(Integer levelBattery) {
+	public void setLevelBattery(String levelBattery) {
 		this.levelBattery = levelBattery;
 	}
 	public Boolean getTubeLeak() {
@@ -87,10 +87,10 @@ public class EmergencyPlantServiceSurvey {
 	public void setBatterySulfate(String batterySulfate) {
 		this.batterySulfate = batterySulfate;
 	}
-	public Integer getLevelOil() {
+	public String getLevelOil() {
 		return levelOil;
 	}
-	public void setLevelOil(Integer levelOil) {
+	public void setLevelOil(String levelOil) {
 		this.levelOil = levelOil;
 	}
 	public String getHeatEngine() {

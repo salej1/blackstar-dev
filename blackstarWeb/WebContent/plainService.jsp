@@ -175,7 +175,7 @@
 			return false;
 		}
 
-		if(isCoord == "true"){
+		if(isCoord == "true" && mode == "new"){
 			var endTimestamp = Date.parseExact($("#serviceEndDate").val(), 'dd/MM/yyyy HH:mm:ss');
 			if(endTimestamp == undefined || endTimestamp == null){
 				$("#InvalidMessage").html("Por favor revise la fecha y hora de salida");

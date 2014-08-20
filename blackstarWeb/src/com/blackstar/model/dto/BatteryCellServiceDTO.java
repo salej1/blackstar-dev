@@ -19,7 +19,7 @@ public class BatteryCellServiceDTO {
 	}
 	
 	public BatteryCellServiceDTO(Integer bbCellServiceId, Integer bbServiceId,
-			Integer cellNumber, Integer floatVoltage, Integer chargeVoltage) {
+			Integer cellNumber, String floatVoltage, String chargeVoltage) {
 		this.bbCellServiceId = bbCellServiceId;
 		this.bbServiceId = bbServiceId;
 		this.cellNumber = cellNumber;
@@ -30,37 +30,47 @@ public class BatteryCellServiceDTO {
 	private Integer bbCellServiceId;
 	private Integer bbServiceId;
 	private Integer cellNumber;
-	private Integer floatVoltage;
-	private Integer chargeVoltage;
+	private String floatVoltage;
+	private String chargeVoltage;
 	
 	public Integer getBbCellServiceId() {
 		return bbCellServiceId;
 	}
+
 	public void setBbCellServiceId(Integer bbCellServiceId) {
 		this.bbCellServiceId = bbCellServiceId;
 	}
+
 	public Integer getBbServiceId() {
 		return bbServiceId;
 	}
+
 	public void setBbServiceId(Integer bbServiceId) {
 		this.bbServiceId = bbServiceId;
 	}
+
 	public Integer getCellNumber() {
 		return cellNumber;
 	}
+
 	public void setCellNumber(Integer cellNumber) {
 		this.cellNumber = cellNumber;
 	}
-	public Integer getFloatVoltage() {
+
+	public String getFloatVoltage() {
 		return floatVoltage;
 	}
-	public void setFloatVoltage(Integer floatVoltage) {
+
+	public void setFloatVoltage(String floatVoltage) {
 		this.floatVoltage = floatVoltage;
 	}
-	public Integer getChargeVoltage() {
+
+	public String getChargeVoltage() {
 		return chargeVoltage;
 	}
-	public void setChargeVoltage(Integer chargeVoltage) {
+
+	public void setChargeVoltage(String chargeVoltage) {
 		this.chargeVoltage = chargeVoltage;
 	}
+	
 }

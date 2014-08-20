@@ -4,38 +4,37 @@ import java.util.Date;
 
 public class AirCoService {
 	
-	
-	
 	public AirCoService(Integer aaServiceId, Integer serviceOrderId,
-			String evaDescription, Double evaValTemp, Double evaValHum,
-			Double evaSetpointTemp, Double evaSetpointHum,
+			String evaDescription, String evaValTemp, String evaValHum,
+			String evaSetpointTemp, String evaSetpointHum,
 			Boolean evaFlagCalibration, Boolean evaReviewFilter,
 			Boolean evaReviewStrip, Boolean evaCleanElectricSystem,
 			Boolean evaCleanControlCard, Boolean evaCleanTray,
-			Double evaLectrurePreasureHigh, Double evaLectrurePreasureLow,
-			Double evaLectureTemp, String evaLectureOilColor,
-			Double evaLectureOilLevel, String evaLectureCoolerColor,
-			Double evaLectureCoolerLevel, String evaCheckOperatation,
+			String evaLectrurePreasureHigh, String evaLectrurePreasureLow,
+			String evaLectureTemp, String evaLectureOilColor,
+			String evaLectureOilLevel, String evaLectureCoolerColor,
+			String evaLectureCoolerLevel, String evaCheckOperatation,
 			String evaCheckNoise, String evaCheckIsolated,
-			Double evaLectureVoltageGroud, Double evaLectureVoltagePhases,
-			Double evaLectureVoltageControl, Double evaLectureCurrentMotor1,
-			Double evaLectureCurrentMotor2, Double evaLectureCurrentMotor3,
-			Double evaLectureCurrentCompressor1,
-			Double evaLectureCurrentCompressor2,
-			Double evaLectureCurrentCompressor3,
-			Double evaLectureCurrentHumidifier1,
-			Double evaLectureCurrentHumidifier2,
-			Double evaLectureCurrentHumidifier3,
-			Double evaLectureCurrentHeater1, Double evaLectureCurrentHeater2,
-			Double evaLectureCurrentHeater3, Boolean evaCheckFluidSensor,
+			String evaLectureVoltageGroud, String evaLectureVoltagePhases,
+			String evaLectureVoltageControl, String evaLectureCurrentMotor1,
+			String evaLectureCurrentMotor2, String evaLectureCurrentMotor3,
+			String evaLectureCurrentCompressor1,
+			String evaLectureCurrentCompressor2,
+			String evaLectureCurrentCompressor3,
+			String evaLectureCurrentHumidifier1,
+			String evaLectureCurrentHumidifier2,
+			String evaLectureCurrentHumidifier3,
+			String evaLectureCurrentHeater1, String evaLectureCurrentHeater2,
+			String evaLectureCurrentHeater3, Boolean evaCheckFluidSensor,
 			Boolean evaRequirMaintenance, String condReview,
 			Boolean condCleanElectricSystem, Boolean condClean,
-			Double condLectureVoltageGroud, Double condLectureVoltagePhases,
-			Double condLectureVoltageControl, Double condLectureMotorCurrent,
+			String condLectureVoltageGroud, String condLectureVoltagePhases,
+			String condLectureVoltageControl, String condLectureMotorCurrent,
 			String condReviewThermostat, String condModel,
 			String condSerialNumber, String condBrand, String observations,
 			Date created, String createdBy, String createdByUsr, Date modified,
 			String modifiedBy, String modifiedByUsr) {
+		
 		this.aaServiceId = aaServiceId;
 		this.serviceOrderId = serviceOrderId;
 		this.evaDescription = evaDescription;
@@ -99,50 +98,50 @@ public class AirCoService {
 	private Integer aaServiceId;
 	private Integer serviceOrderId;
 	private String evaDescription;
-	private Double evaValTemp;
-	private Double evaValHum;
-	private Double evaSetpointTemp;
-	private Double evaSetpointHum;
+	private String evaValTemp;
+	private String evaValHum;
+	private String evaSetpointTemp;
+	private String evaSetpointHum;
 	private Boolean evaFlagCalibration;
 	private Boolean evaReviewFilter;
 	private Boolean evaReviewStrip;
 	private Boolean evaCleanElectricSystem;
 	private Boolean evaCleanControlCard;
 	private Boolean evaCleanTray;
-	private Double evaLectrurePreasureHigh;
-	private Double evaLectrurePreasureLow;
-	private Double evaLectureTemp;
+	private String evaLectrurePreasureHigh;
+	private String evaLectrurePreasureLow;
+	private String evaLectureTemp;
 	private String evaLectureOilColor;
-	private Double evaLectureOilLevel;
+	private String evaLectureOilLevel;
 	private String evaLectureCoolerColor;
-	private Double evaLectureCoolerLevel;
+	private String evaLectureCoolerLevel;
 	private String evaCheckOperatation;
 	private String evaCheckNoise;
 	private String evaCheckIsolated;
-	private Double evaLectureVoltageGroud;
-	private Double evaLectureVoltagePhases;
-	private Double evaLectureVoltageControl;
-	private Double evaLectureCurrentMotor1;
-	private Double evaLectureCurrentMotor2;
-	private Double evaLectureCurrentMotor3;
-	private Double evaLectureCurrentCompressor1;
-	private Double evaLectureCurrentCompressor2;
-	private Double evaLectureCurrentCompressor3;
-	private Double evaLectureCurrentHumidifier1;
-	private Double evaLectureCurrentHumidifier2;
-	private Double evaLectureCurrentHumidifier3;
-	private Double evaLectureCurrentHeater1;
-	private Double evaLectureCurrentHeater2;
-	private Double evaLectureCurrentHeater3;
+	private String evaLectureVoltageGroud;
+	private String evaLectureVoltagePhases;
+	private String evaLectureVoltageControl;
+	private String evaLectureCurrentMotor1;
+	private String evaLectureCurrentMotor2;
+	private String evaLectureCurrentMotor3;
+	private String evaLectureCurrentCompressor1;
+	private String evaLectureCurrentCompressor2;
+	private String evaLectureCurrentCompressor3;
+	private String evaLectureCurrentHumidifier1;
+	private String evaLectureCurrentHumidifier2;
+	private String evaLectureCurrentHumidifier3;
+	private String evaLectureCurrentHeater1;
+	private String evaLectureCurrentHeater2;
+	private String evaLectureCurrentHeater3;
 	private Boolean evaCheckFluidSensor;
 	private Boolean evaRequirMaintenance;
 	private String condReview;
 	private Boolean condCleanElectricSystem;
 	private Boolean condClean;
-	private Double condLectureVoltageGroud;
-	private Double condLectureVoltagePhases;
-	private Double condLectureVoltageControl;
-	private Double condLectureMotorCurrent;
+	private String condLectureVoltageGroud;
+	private String condLectureVoltagePhases;
+	private String condLectureVoltageControl;
+	private String condLectureMotorCurrent;
 	private String condReviewThermostat;
 	private String condModel;
 	private String condSerialNumber;
@@ -154,7 +153,6 @@ public class AirCoService {
 	private Date modified;
 	private String modifiedBy;
 	private String modifiedByUsr;
-
 	
 	public Integer getAaServiceId() {
 		return aaServiceId;
@@ -174,28 +172,28 @@ public class AirCoService {
 	public void setEvaDescription(String evaDescription) {
 		this.evaDescription = evaDescription;
 	}
-	public Double getEvaValTemp() {
+	public String getEvaValTemp() {
 		return evaValTemp;
 	}
-	public void setEvaValTemp(Double evaValTemp) {
+	public void setEvaValTemp(String evaValTemp) {
 		this.evaValTemp = evaValTemp;
 	}
-	public Double getEvaValHum() {
+	public String getEvaValHum() {
 		return evaValHum;
 	}
-	public void setEvaValHum(Double evaValHum) {
+	public void setEvaValHum(String evaValHum) {
 		this.evaValHum = evaValHum;
 	}
-	public Double getEvaSetpointTemp() {
+	public String getEvaSetpointTemp() {
 		return evaSetpointTemp;
 	}
-	public void setEvaSetpointTemp(Double evaSetpointTemp) {
+	public void setEvaSetpointTemp(String evaSetpointTemp) {
 		this.evaSetpointTemp = evaSetpointTemp;
 	}
-	public Double getEvaSetpointHum() {
+	public String getEvaSetpointHum() {
 		return evaSetpointHum;
 	}
-	public void setEvaSetpointHum(Double evaSetpointHum) {
+	public void setEvaSetpointHum(String evaSetpointHum) {
 		this.evaSetpointHum = evaSetpointHum;
 	}
 	public Boolean getEvaFlagCalibration() {
@@ -234,22 +232,22 @@ public class AirCoService {
 	public void setEvaCleanTray(Boolean evaCleanTray) {
 		this.evaCleanTray = evaCleanTray;
 	}
-	public Double getEvaLectrurePreasureHigh() {
+	public String getEvaLectrurePreasureHigh() {
 		return evaLectrurePreasureHigh;
 	}
-	public void setEvaLectrurePreasureHigh(Double evaLectrurePreasureHigh) {
+	public void setEvaLectrurePreasureHigh(String evaLectrurePreasureHigh) {
 		this.evaLectrurePreasureHigh = evaLectrurePreasureHigh;
 	}
-	public Double getEvaLectrurePreasureLow() {
+	public String getEvaLectrurePreasureLow() {
 		return evaLectrurePreasureLow;
 	}
-	public void setEvaLectrurePreasureLow(Double evaLectrurePreasureLow) {
+	public void setEvaLectrurePreasureLow(String evaLectrurePreasureLow) {
 		this.evaLectrurePreasureLow = evaLectrurePreasureLow;
 	}
-	public Double getEvaLectureTemp() {
+	public String getEvaLectureTemp() {
 		return evaLectureTemp;
 	}
-	public void setEvaLectureTemp(Double evaLectureTemp) {
+	public void setEvaLectureTemp(String evaLectureTemp) {
 		this.evaLectureTemp = evaLectureTemp;
 	}
 	public String getEvaLectureOilColor() {
@@ -258,10 +256,10 @@ public class AirCoService {
 	public void setEvaLectureOilColor(String evaLectureOilColor) {
 		this.evaLectureOilColor = evaLectureOilColor;
 	}
-	public Double getEvaLectureOilLevel() {
+	public String getEvaLectureOilLevel() {
 		return evaLectureOilLevel;
 	}
-	public void setEvaLectureOilLevel(Double evaLectureOilLevel) {
+	public void setEvaLectureOilLevel(String evaLectureOilLevel) {
 		this.evaLectureOilLevel = evaLectureOilLevel;
 	}
 	public String getEvaLectureCoolerColor() {
@@ -270,10 +268,10 @@ public class AirCoService {
 	public void setEvaLectureCoolerColor(String evaLectureCoolerColor) {
 		this.evaLectureCoolerColor = evaLectureCoolerColor;
 	}
-	public Double getEvaLectureCoolerLevel() {
+	public String getEvaLectureCoolerLevel() {
 		return evaLectureCoolerLevel;
 	}
-	public void setEvaLectureCoolerLevel(Double evaLectureCoolerLevel) {
+	public void setEvaLectureCoolerLevel(String evaLectureCoolerLevel) {
 		this.evaLectureCoolerLevel = evaLectureCoolerLevel;
 	}
 	public String getEvaCheckOperatation() {
@@ -294,94 +292,94 @@ public class AirCoService {
 	public void setEvaCheckIsolated(String evaCheckIsolated) {
 		this.evaCheckIsolated = evaCheckIsolated;
 	}
-	public Double getEvaLectureVoltageGroud() {
+	public String getEvaLectureVoltageGroud() {
 		return evaLectureVoltageGroud;
 	}
-	public void setEvaLectureVoltageGroud(Double evaLectureVoltageGroud) {
+	public void setEvaLectureVoltageGroud(String evaLectureVoltageGroud) {
 		this.evaLectureVoltageGroud = evaLectureVoltageGroud;
 	}
-	public Double getEvaLectureVoltagePhases() {
+	public String getEvaLectureVoltagePhases() {
 		return evaLectureVoltagePhases;
 	}
-	public void setEvaLectureVoltagePhases(Double evaLectureVoltagePhases) {
+	public void setEvaLectureVoltagePhases(String evaLectureVoltagePhases) {
 		this.evaLectureVoltagePhases = evaLectureVoltagePhases;
 	}
-	public Double getEvaLectureVoltageControl() {
+	public String getEvaLectureVoltageControl() {
 		return evaLectureVoltageControl;
 	}
-	public void setEvaLectureVoltageControl(Double evaLectureVoltageControl) {
+	public void setEvaLectureVoltageControl(String evaLectureVoltageControl) {
 		this.evaLectureVoltageControl = evaLectureVoltageControl;
 	}
-	public Double getEvaLectureCurrentMotor1() {
+	public String getEvaLectureCurrentMotor1() {
 		return evaLectureCurrentMotor1;
 	}
-	public void setEvaLectureCurrentMotor1(Double evaLectureCurrentMotor1) {
+	public void setEvaLectureCurrentMotor1(String evaLectureCurrentMotor1) {
 		this.evaLectureCurrentMotor1 = evaLectureCurrentMotor1;
 	}
-	public Double getEvaLectureCurrentMotor2() {
+	public String getEvaLectureCurrentMotor2() {
 		return evaLectureCurrentMotor2;
 	}
-	public void setEvaLectureCurrentMotor2(Double evaLectureCurrentMotor2) {
+	public void setEvaLectureCurrentMotor2(String evaLectureCurrentMotor2) {
 		this.evaLectureCurrentMotor2 = evaLectureCurrentMotor2;
 	}
-	public Double getEvaLectureCurrentMotor3() {
+	public String getEvaLectureCurrentMotor3() {
 		return evaLectureCurrentMotor3;
 	}
-	public void setEvaLectureCurrentMotor3(Double evaLectureCurrentMotor3) {
+	public void setEvaLectureCurrentMotor3(String evaLectureCurrentMotor3) {
 		this.evaLectureCurrentMotor3 = evaLectureCurrentMotor3;
 	}
-	public Double getEvaLectureCurrentCompressor1() {
+	public String getEvaLectureCurrentCompressor1() {
 		return evaLectureCurrentCompressor1;
 	}
-	public void setEvaLectureCurrentCompressor1(Double evaLectureCurrentCompressor1) {
+	public void setEvaLectureCurrentCompressor1(String evaLectureCurrentCompressor1) {
 		this.evaLectureCurrentCompressor1 = evaLectureCurrentCompressor1;
 	}
-	public Double getEvaLectureCurrentCompressor2() {
+	public String getEvaLectureCurrentCompressor2() {
 		return evaLectureCurrentCompressor2;
 	}
-	public void setEvaLectureCurrentCompressor2(Double evaLectureCurrentCompressor2) {
+	public void setEvaLectureCurrentCompressor2(String evaLectureCurrentCompressor2) {
 		this.evaLectureCurrentCompressor2 = evaLectureCurrentCompressor2;
 	}
-	public Double getEvaLectureCurrentCompressor3() {
+	public String getEvaLectureCurrentCompressor3() {
 		return evaLectureCurrentCompressor3;
 	}
-	public void setEvaLectureCurrentCompressor3(Double evaLectureCurrentCompressor3) {
+	public void setEvaLectureCurrentCompressor3(String evaLectureCurrentCompressor3) {
 		this.evaLectureCurrentCompressor3 = evaLectureCurrentCompressor3;
 	}
-	public Double getEvaLectureCurrentHumidifier1() {
+	public String getEvaLectureCurrentHumidifier1() {
 		return evaLectureCurrentHumidifier1;
 	}
-	public void setEvaLectureCurrentHumidifier1(Double evaLectureCurrentHumidifier1) {
+	public void setEvaLectureCurrentHumidifier1(String evaLectureCurrentHumidifier1) {
 		this.evaLectureCurrentHumidifier1 = evaLectureCurrentHumidifier1;
 	}
-	public Double getEvaLectureCurrentHumidifier2() {
+	public String getEvaLectureCurrentHumidifier2() {
 		return evaLectureCurrentHumidifier2;
 	}
-	public void setEvaLectureCurrentHumidifier2(Double evaLectureCurrentHumidifier2) {
+	public void setEvaLectureCurrentHumidifier2(String evaLectureCurrentHumidifier2) {
 		this.evaLectureCurrentHumidifier2 = evaLectureCurrentHumidifier2;
 	}
-	public Double getEvaLectureCurrentHumidifier3() {
+	public String getEvaLectureCurrentHumidifier3() {
 		return evaLectureCurrentHumidifier3;
 	}
-	public void setEvaLectureCurrentHumidifier3(Double evaLectureCurrentHumidifier3) {
+	public void setEvaLectureCurrentHumidifier3(String evaLectureCurrentHumidifier3) {
 		this.evaLectureCurrentHumidifier3 = evaLectureCurrentHumidifier3;
 	}
-	public Double getEvaLectureCurrentHeater1() {
+	public String getEvaLectureCurrentHeater1() {
 		return evaLectureCurrentHeater1;
 	}
-	public void setEvaLectureCurrentHeater1(Double evaLectureCurrentHeater1) {
+	public void setEvaLectureCurrentHeater1(String evaLectureCurrentHeater1) {
 		this.evaLectureCurrentHeater1 = evaLectureCurrentHeater1;
 	}
-	public Double getEvaLectureCurrentHeater2() {
+	public String getEvaLectureCurrentHeater2() {
 		return evaLectureCurrentHeater2;
 	}
-	public void setEvaLectureCurrentHeater2(Double evaLectureCurrentHeater2) {
+	public void setEvaLectureCurrentHeater2(String evaLectureCurrentHeater2) {
 		this.evaLectureCurrentHeater2 = evaLectureCurrentHeater2;
 	}
-	public Double getEvaLectureCurrentHeater3() {
+	public String getEvaLectureCurrentHeater3() {
 		return evaLectureCurrentHeater3;
 	}
-	public void setEvaLectureCurrentHeater3(Double evaLectureCurrentHeater3) {
+	public void setEvaLectureCurrentHeater3(String evaLectureCurrentHeater3) {
 		this.evaLectureCurrentHeater3 = evaLectureCurrentHeater3;
 	}
 	public Boolean getEvaCheckFluidSensor() {
@@ -414,28 +412,28 @@ public class AirCoService {
 	public void setCondClean(Boolean condClean) {
 		this.condClean = condClean;
 	}
-	public Double getCondLectureVoltageGroud() {
+	public String getCondLectureVoltageGroud() {
 		return condLectureVoltageGroud;
 	}
-	public void setCondLectureVoltageGroud(Double condLectureVoltageGroud) {
+	public void setCondLectureVoltageGroud(String condLectureVoltageGroud) {
 		this.condLectureVoltageGroud = condLectureVoltageGroud;
 	}
-	public Double getCondLectureVoltagePhases() {
+	public String getCondLectureVoltagePhases() {
 		return condLectureVoltagePhases;
 	}
-	public void setCondLectureVoltagePhases(Double condLectureVoltagePhases) {
+	public void setCondLectureVoltagePhases(String condLectureVoltagePhases) {
 		this.condLectureVoltagePhases = condLectureVoltagePhases;
 	}
-	public Double getCondLectureVoltageControl() {
+	public String getCondLectureVoltageControl() {
 		return condLectureVoltageControl;
 	}
-	public void setCondLectureVoltageControl(Double condLectureVoltageControl) {
+	public void setCondLectureVoltageControl(String condLectureVoltageControl) {
 		this.condLectureVoltageControl = condLectureVoltageControl;
 	}
-	public Double getCondLectureMotorCurrent() {
+	public String getCondLectureMotorCurrent() {
 		return condLectureMotorCurrent;
 	}
-	public void setCondLectureMotorCurrent(Double condLectureMotorCurrent) {
+	public void setCondLectureMotorCurrent(String condLectureMotorCurrent) {
 		this.condLectureMotorCurrent = condLectureMotorCurrent;
 	}
 	public String getCondReviewThermostat() {
@@ -504,7 +502,6 @@ public class AirCoService {
 	public void setModifiedByUsr(String modifiedByUsr) {
 		this.modifiedByUsr = modifiedByUsr;
 	}
-
 
 
 }

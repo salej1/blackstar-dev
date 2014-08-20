@@ -13,7 +13,7 @@ public class BatteryService {
 			String groundCleanComments, Boolean rackClean,
 			String rackCleanStatus, String rackCleanComments,
 			String serialNoDateManufact, String batteryTemperature,
-			Integer voltageBus, Integer temperature, Date created,
+			String voltageBus, String temperature, Date created,
 			String createdBy, String createdByUsr, Date modified,
 			String modifiedBy, String modifiedByUsr) {
 		this.bbServiceId = bbServiceId;
@@ -64,16 +64,14 @@ public class BatteryService {
 	private String rackCleanComments;
 	private String serialNoDateManufact;
 	private String batteryTemperature;
-	private Integer voltageBus;
-	private Integer temperature;
+	private String voltageBus;
+	private String temperature;
 	private Date created;
 	private String createdBy;
 	private String createdByUsr;
 	private Date modified;
 	private String modifiedBy;
 	private String modifiedByUsr;
-
-	
 	public Integer getBbServiceId() {
 		return bbServiceId;
 	}
@@ -188,16 +186,16 @@ public class BatteryService {
 	public void setBatteryTemperature(String batteryTemperature) {
 		this.batteryTemperature = batteryTemperature;
 	}
-	public Integer getVoltageBus() {
+	public String getVoltageBus() {
 		return voltageBus;
 	}
-	public void setVoltageBus(Integer voltageBus) {
+	public void setVoltageBus(String voltageBus) {
 		this.voltageBus = voltageBus;
 	}
-	public Integer getTemperature() {
+	public String getTemperature() {
 		return temperature;
 	}
-	public void setTemperature(Integer temperature) {
+	public void setTemperature(String temperature) {
 		this.temperature = temperature;
 	}
 	public Date getCreated() {
@@ -236,4 +234,7 @@ public class BatteryService {
 	public void setModifiedByUsr(String modifiedByUsr) {
 		this.modifiedByUsr = modifiedByUsr;
 	}
+
+	
+	
 }

@@ -74,7 +74,7 @@ public class BatteryServiceDTO {
 			String groundCleanComments, Boolean rackClean,
 			String rackCleanStatus, String rackCleanComments,
 			String serialNoDateManufact, String batteryTemperature,
-			Integer voltageBus, Integer temperature,
+			String voltageBus, String temperature,
 			List<BatteryCellServiceDTO> cells) {
 		this.bbServiceId = bbServiceId;
 		this.serviceOrderId = serviceOrderId;
@@ -109,7 +109,7 @@ public class BatteryServiceDTO {
 			String groundCleanComments, Boolean rackClean,
 			String rackCleanStatus, String rackCleanComments,
 			String serialNoDateManufact, String batteryTemperature,
-			Integer voltageBus, Integer temperature) {
+			String voltageBus, String temperature) {
 		this.bbServiceId = bbServiceId;
 		this.serviceOrderId = serviceOrderId;
 		this.plugClean = plugClean;
@@ -152,8 +152,8 @@ public class BatteryServiceDTO {
 	private String rackCleanComments;
 	private String serialNoDateManufact;
 	private String batteryTemperature;
-	private Integer voltageBus;
-	private Integer temperature;
+	private String voltageBus;
+	private String temperature;
 
 	private List<BatteryCellServiceDTO> cells;
 
@@ -161,178 +161,220 @@ public class BatteryServiceDTO {
 		return bbServiceId;
 	}
 
+
 	public void setBbServiceId(Integer bbServiceId) {
 		this.bbServiceId = bbServiceId;
 	}
+
 
 	public Integer getServiceOrderId() {
 		return serviceOrderId;
 	}
 
+
 	public void setServiceOrderId(Integer serviceOrderId) {
 		this.serviceOrderId = serviceOrderId;
 	}
+
 
 	public Boolean getPlugClean() {
 		return plugClean;
 	}
 
+
 	public void setPlugClean(Boolean plugClean) {
 		this.plugClean = plugClean;
 	}
+
 
 	public String getPlugCleanStatus() {
 		return plugCleanStatus;
 	}
 
+
 	public void setPlugCleanStatus(String plugCleanStatus) {
 		this.plugCleanStatus = plugCleanStatus;
 	}
+
 
 	public String getPlugCleanComments() {
 		return plugCleanComments;
 	}
 
+
 	public void setPlugCleanComments(String plugCleanComments) {
 		this.plugCleanComments = plugCleanComments;
 	}
+
 
 	public Boolean getCoverClean() {
 		return coverClean;
 	}
 
+
 	public void setCoverClean(Boolean coverClean) {
 		this.coverClean = coverClean;
 	}
+
 
 	public String getCoverCleanStatus() {
 		return coverCleanStatus;
 	}
 
+
 	public void setCoverCleanStatus(String coverCleanStatus) {
 		this.coverCleanStatus = coverCleanStatus;
 	}
+
 
 	public String getCoverCleanComments() {
 		return coverCleanComments;
 	}
 
+
 	public void setCoverCleanComments(String coverCleanComments) {
 		this.coverCleanComments = coverCleanComments;
 	}
+
 
 	public Boolean getCapClean() {
 		return capClean;
 	}
 
+
 	public void setCapClean(Boolean capClean) {
 		this.capClean = capClean;
 	}
+
 
 	public String getCapCleanStatus() {
 		return capCleanStatus;
 	}
 
+
 	public void setCapCleanStatus(String capCleanStatus) {
 		this.capCleanStatus = capCleanStatus;
 	}
+
 
 	public String getCapCleanComments() {
 		return capCleanComments;
 	}
 
+
 	public void setCapCleanComments(String capCleanComments) {
 		this.capCleanComments = capCleanComments;
 	}
+
 
 	public Boolean getGroundClean() {
 		return groundClean;
 	}
 
+
 	public void setGroundClean(Boolean groundClean) {
 		this.groundClean = groundClean;
 	}
+
 
 	public String getGroundCleanStatus() {
 		return groundCleanStatus;
 	}
 
+
 	public void setGroundCleanStatus(String groundCleanStatus) {
 		this.groundCleanStatus = groundCleanStatus;
 	}
+
 
 	public String getGroundCleanComments() {
 		return groundCleanComments;
 	}
 
+
 	public void setGroundCleanComments(String groundCleanComments) {
 		this.groundCleanComments = groundCleanComments;
 	}
+
 
 	public Boolean getRackClean() {
 		return rackClean;
 	}
 
+
 	public void setRackClean(Boolean rackClean) {
 		this.rackClean = rackClean;
 	}
+
 
 	public String getRackCleanStatus() {
 		return rackCleanStatus;
 	}
 
+
 	public void setRackCleanStatus(String rackCleanStatus) {
 		this.rackCleanStatus = rackCleanStatus;
 	}
+
 
 	public String getRackCleanComments() {
 		return rackCleanComments;
 	}
 
+
 	public void setRackCleanComments(String rackCleanComments) {
 		this.rackCleanComments = rackCleanComments;
 	}
+
 
 	public String getSerialNoDateManufact() {
 		return serialNoDateManufact;
 	}
 
+
 	public void setSerialNoDateManufact(String serialNoDateManufact) {
 		this.serialNoDateManufact = serialNoDateManufact;
 	}
+
 
 	public String getBatteryTemperature() {
 		return batteryTemperature;
 	}
 
+
 	public void setBatteryTemperature(String batteryTemperature) {
 		this.batteryTemperature = batteryTemperature;
 	}
 
-	public Integer getVoltageBus() {
+
+	public String getVoltageBus() {
 		return voltageBus;
 	}
 
-	public void setVoltageBus(Integer voltageBus) {
+
+	public void setVoltageBus(String voltageBus) {
 		this.voltageBus = voltageBus;
 	}
 
-	public Integer getTemperature() {
+
+	public String getTemperature() {
 		return temperature;
 	}
 
-	public void setTemperature(Integer temperature) {
+
+	public void setTemperature(String temperature) {
 		this.temperature = temperature;
 	}
+
 
 	public List<BatteryCellServiceDTO> getCells() {
 		return cells;
 	}
 
+
 	public void setCells(List<BatteryCellServiceDTO> cells) {
 		this.cells = cells;
 	}
-	
-	
+
 
 }

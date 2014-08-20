@@ -1,6 +1,5 @@
 package com.blackstar.services.report.core;
 
-import java.io.FileOutputStream;
 import java.util.Date;
 
 import com.blackstar.model.Policy;
@@ -231,7 +230,6 @@ public class AirConditioningReport extends AbstractReport {
   }
  
   public static void main(String [] args) throws Exception{
-	AirConditioningReport serv = new AirConditioningReport();
 	Policy policy = new Policy();
 	Serviceorder serviceOrder = new Serviceorder();
 	AirCoServiceDTO airCo = new AirCoServiceDTO();
@@ -267,50 +265,50 @@ public class AirConditioningReport extends AbstractReport {
 	
 	airCo.setAaServiceId(12345);
 	airCo.setEvaDescription("evaDescription");
-	airCo.setEvaValTemp(12D);
-	airCo.setEvaValHum(21D);
-	airCo.setEvaSetpointTemp(215D);
-	airCo.setEvaSetpointHum(512D);
+	airCo.setEvaValTemp("12");
+	airCo.setEvaValHum("21");
+	airCo.setEvaSetpointTemp("215");
+	airCo.setEvaSetpointHum("512");
 	airCo.setEvaFlagCalibration(true);
 	airCo.setEvaReviewFilter(false);
 	airCo.setEvaReviewStrip(false);
 	airCo.setEvaCleanElectricSystem(true);
 	airCo.setEvaCleanControlCard(false);
 	airCo.setEvaCleanTray(true);
-	airCo.setEvaLectrurePreasureHigh(54D);
-	airCo.setEvaLectrurePreasureLow(12D);
-	airCo.setEvaLectureTemp(25d);
+	airCo.setEvaLectrurePreasureHigh("54");
+	airCo.setEvaLectrurePreasureLow("12");
+	airCo.setEvaLectureTemp("25");
 	airCo.setEvaLectureOilColor("Color");
-	airCo.setEvaLectureOilLevel(12D);
+	airCo.setEvaLectureOilLevel("12");
 	airCo.setEvaLectureCoolerColor("Color");
-	airCo.setEvaLectureCoolerLevel(14D);
+	airCo.setEvaLectureCoolerLevel("14");
 	airCo.setEvaCheckOperatation("evaCheckOperatation");
 	airCo.setEvaCheckNoise("evaCheckNoise");
 	airCo.setEvaCheckIsolated("evaCheckIsolated");
-	airCo.setEvaLectureVoltageGroud(123D);
-	airCo.setEvaLectureVoltagePhases(41D);
-	airCo.setEvaLectureVoltageControl(23D);
-	airCo.setEvaLectureCurrentMotor1(1d);
-	airCo.setEvaLectureCurrentMotor2(2d);
-	airCo.setEvaLectureCurrentMotor3(3d);
-	airCo.setEvaLectureCurrentCompressor1(1D);
-	airCo.setEvaLectureCurrentCompressor2(2D);
-	airCo.setEvaLectureCurrentCompressor3(3D);
-	airCo.setEvaLectureCurrentHumidifier1(1D);
-	airCo.setEvaLectureCurrentHumidifier2(2D);
-	airCo.setEvaLectureCurrentHumidifier3(3D);
-	airCo.setEvaLectureCurrentHeater1(1D);
-	airCo.setEvaLectureCurrentHeater2(2D);
-	airCo.setEvaLectureCurrentHeater3(3D);
+	airCo.setEvaLectureVoltageGroud("123");
+	airCo.setEvaLectureVoltagePhases("41");
+	airCo.setEvaLectureVoltageControl("23");
+	airCo.setEvaLectureCurrentMotor1("1");
+	airCo.setEvaLectureCurrentMotor2("2");
+	airCo.setEvaLectureCurrentMotor3("3");
+	airCo.setEvaLectureCurrentCompressor1("1");
+	airCo.setEvaLectureCurrentCompressor2("2");
+	airCo.setEvaLectureCurrentCompressor3("3");
+	airCo.setEvaLectureCurrentHumidifier1("1");
+	airCo.setEvaLectureCurrentHumidifier2("2");
+	airCo.setEvaLectureCurrentHumidifier3("3");
+	airCo.setEvaLectureCurrentHeater1("1");
+	airCo.setEvaLectureCurrentHeater2("2");
+	airCo.setEvaLectureCurrentHeater3("3");
 	airCo.setEvaCheckFluidSensor(true);
 	airCo.setEvaRequirMaintenance(true);
 	airCo.setCondReview("condReview");
     airCo.setCondCleanElectricSystem(false);
     airCo.setCondClean(true);
-    airCo.setCondLectureVoltageGroud(12D);
-    airCo.setCondLectureVoltagePhases(14D);
-    airCo.setCondLectureVoltageControl(1D);
-    airCo.setCondLectureMotorCurrent(8D);
+    airCo.setCondLectureVoltageGroud("12");
+    airCo.setCondLectureVoltagePhases("14");
+    airCo.setCondLectureVoltageControl("1");
+    airCo.setCondLectureMotorCurrent("8");
     airCo.setCondReviewThermostat("condReviewThermostat");
     airCo.setCondModel("condModel");
     airCo.setCondSerialNumber("condSerialNumber");

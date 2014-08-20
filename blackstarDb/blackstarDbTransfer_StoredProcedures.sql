@@ -23,12 +23,63 @@
 -- -----------------------------------------------------------------------------
 -- 7 	24/07/2014	SAG 	Se implementa multi usuario cliente de poliza
 -- -----------------------------------------------------------------------------
--- 7 	30/07/2014	SAG 	Se implementa UpsertPolicy
+-- 8 	30/07/2014	SAG 	Se implementa UpsertPolicy
 -- -----------------------------------------------------------------------------
+-- 9 	30/07/2014	SAG 	Se implementa UpsertServiceOrder
+-- -----------------------------------------------------------------------------
+
 use blackstarDbTransfer;
 
 
 DELIMITER $$
+
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.UpsertServiceOrder
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS upsertServiceOrder $$
+CREATE PROCEDURE upsertServiceOrder(
+	pServiceNumber varchar(50),
+	pTicketNumber varchar(50),
+	pServiceUnit varchar(10),
+	pProject varchar(50),
+	pCustomer varchar(200),
+	pCity varchar(50),
+	pAddress varchar(300),
+	pServiceTypeId char(1),
+	pServiceDate datetime,
+	pSerialNumber varchar(200),
+	pResponsible varchar(100),
+	pReceivedBy varchar(100),
+	pServiceComments text,
+	pClosed datetime,
+	pFollowUp text,
+	pSpares text,
+	pConsultant varchar(100),
+	pContractorCompany varchar(100),
+	pServiceRate int(11),
+	pCustomerComments text,
+	pCreated datetime,
+	pCreatedBy varchar(45),
+	pCreatedByUsr varchar(45),
+	pEquipmentTypeId char(1),
+	pBrand varchar(100),
+	pModel varchar(100),
+	pCapacity varchar(100),
+	pEmployeeId varchar(400)
+)
+BEGIN
+	IF(SELECT count(*) FROM serviceTx WHERE serviceNumber = pServiceNumber) = 0 THEN
+		INSERT INTO blackstarDbTransfer.serviceTx(
+			serviceNumber,  ticketNumber,  serviceUnit,  project,  customer,  city,  address,  serviceTypeId,  serviceDate,  serialNumber,  responsible,  receivedBy,  serviceComments,  closed,  followUp,  spares,  consultant,  contractorCompany,  serviceRate,  customerComments,  created,  createdBy,  createdByUsr,  equipmentTypeId,  brand,  model,  capacity,  employeeId )
+		SELECT
+			pServiceNumber, pTicketNumber, pServiceUnit, pProject, pCustomer, pCity, pAddress, pServiceTypeId, pServiceDate, pSerialNumber, pResponsible, pReceivedBy, pServiceComments, pClosed, pFollowUp, pSpares, pConsultant, pContractorCompany, pServiceRate, pCustomerComments, pCreated, pCreatedBy, pCreatedByUsr, pEquipmentTypeId, pBrand, pModel, pCapacity, pEmployeeId;
+	ELSE
+		UPDATE serviceTx SET
+			employeeId = pEmployeeId
+		WHERE serviceNumber = pServiceNumber;
+	END IF;
+END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.upsertPolicy

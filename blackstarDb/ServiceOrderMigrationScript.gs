@@ -14,6 +14,8 @@
 ** 2    26/05/2014  SAG  	Se elimina carga de polizas, se seleccionan las hojas por indice.
 ** --   --------   -------  ------------------------------------
 ** 3 	23/06/2014	SAG 	Se agregan detalles del equipo
+** --   --------   -------  ------------------------------------
+** 4	18/08/2014	SAG 	Se implementa sincronizacion upsert
 *****************************************************************************/
 
 function main() {
@@ -94,36 +96,7 @@ function sendToDatabase(serviceOrder, conn, serviceTypes, equipmentTypes, sqlLog
 	var stmt = conn.createStatement();
 	stmt.execute(sql);
 
-	sql = "INSERT INTO blackstarDbTransfer.serviceTx( \
-			serviceNumber, \
-			ticketNumber, \
-			serviceUnit, \
-			project, \
-			customer, \
-			city, \
-			address, \
-			serviceTypeId, \
-			serviceDate, \
-			serialNumber, \
-			responsible, \
-			receivedBy, \
-			serviceComments, \
-			closed, \
-			followUp, \
-			spares, \
-			consultant, \
-			contractorCompany, \
-			serviceRate, \
-			customerComments, \
-			created, \
-			createdBy, \
-			createdByUsr, \
-			equipmentTypeId, \
-			brand, \
-			model, \
-			capacity, \
-			employeeId) \
-			VALUES(";
+	sql = "CALL upsertServiceOrder(";
 				
 	// reading the values
 	var serviceUnit = serviceOrder[ 0 ];
@@ -202,7 +175,7 @@ function sendToDatabase(serviceOrder, conn, serviceTypes, equipmentTypes, sqlLog
 	sql = sql + Utilities.formatString("'%s',", capacity);	
 	sql = sql + Utilities.formatString("'%s');", employeeId);	
 	
-	Logger.log(Utilities.formatString("Inserting ServiceOrder %s", serviceNumber));
+	Logger.log(Utilities.formatString("Upserting ServiceOrder %s", serviceNumber));
 	
 	sqlLog = saveSql(sqlLog, sql);
 	stmt = conn.createStatement();
@@ -241,12 +214,6 @@ function loadEquipmentTypes(conn){
 	stmt.close();
 	
 	return equipmentTypes;
-}
-
-function saveSql(sqlLog, sql){
-	sqlLog = sqlLog + sql + "\r\n" ;
-	
-	return sqlLog;
 }
 
 function saveSql(sqlLog, sql){

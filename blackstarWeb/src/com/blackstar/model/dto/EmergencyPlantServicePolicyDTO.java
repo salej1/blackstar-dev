@@ -1,5 +1,6 @@
 package com.blackstar.model.dto;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import com.blackstar.model.OpenCustomer;
@@ -437,6 +438,7 @@ public class EmergencyPlantServicePolicyDTO {
 	private String modelRegVelocity;
 	private String modelCharger;
 	private Date oilChange;
+	private String oilChangeDisplay;
 	private String brandMotor;
 	private String modelMotor;
 	private String serialMotor;
@@ -444,10 +446,11 @@ public class EmergencyPlantServicePolicyDTO {
 	private String brandGenerator;
 	private String modelGenerator;
 	private String serialGenerator;
-	private Integer powerWattGenerator;
-	private Integer tensionGenerator;
+	private String powerWattGenerator;
+	private String tensionGenerator;
 	private Date tuningDate;
-	private Integer tankCapacity;
+	private String tuningDateDisplay;
+	private String tankCapacity;
 	private String pumpFuelModel;
 	private Boolean filterFuelFlag;
 	private Boolean filterOilFlag;
@@ -457,16 +460,17 @@ public class EmergencyPlantServicePolicyDTO {
 	private String brandBattery;
 	private String clockLecture;
 	private Date serviceCorrective;
+	private String serviceCorrectiveDisplay;
 	private String observations;
 	
 	private Integer epServiceSurveyId;
 	private Boolean levelOilFlag;
 	private Boolean levelWaterFlag;
-	private Integer levelBattery;
+	private String levelBattery;
 	private Boolean tubeLeak;
 	private String batteryCap;
 	private String batterySulfate;
-	private Integer levelOil;
+	private String levelOil;
 	private String heatEngine;
 	private String hoseOil;
 	private String hoseWater;
@@ -488,23 +492,23 @@ public class EmergencyPlantServicePolicyDTO {
 	private Boolean cleanGenerator;
 
 	private Integer epServiceDynamicTestId;
-	private Double vacuumFrequency;
-	private Double chargeFrequency;
-	private Double bootTryouts;
-	private Double vacuumVoltage;
-	private Double chargeVoltage;
-	private Double qualitySmoke;
-	private Integer startTime;
-	private Integer transferTime;
-	private Integer stopTime;
+	private String vacuumFrequency;
+	private String chargeFrequency;
+	private String bootTryouts;
+	private String vacuumVoltage;
+	private String chargeVoltage;
+	private String qualitySmoke;
+	private String startTime;
+	private String transferTime;
+	private String stopTime;
 
 	private Integer epServiceTestProtectionId;
-	private Integer tempSensor;
-	private Integer oilSensor;
-	private Integer voltageSensor;
-	private Integer overSpeedSensor;
-	private Integer oilPreasureSensor;
-	private Integer waterLevelSensor;
+	private String tempSensor;
+	private String oilSensor;
+	private String voltageSensor;
+	private String overSpeedSensor;
+	private String oilPreasureSensor;
+	private String waterLevelSensor;
 
 	private Integer epServiceTransferSwitchId;
 	private String mechanicalStatus;
@@ -515,19 +519,19 @@ public class EmergencyPlantServicePolicyDTO {
 	private String systemMotors;
 	private String electricInterlock;
 	private String mechanicalInterlock;
-	private Integer capacityAmp;
+	private String capacityAmp;
 
 	private Integer epServiceLecturesId;
-	private Integer voltageABAN;
-	private Integer voltageACCN;
-	private Integer voltageBCBN;
-	private Integer voltageNT;
-	private Integer currentA;
-	private Integer currentB;
-	private Integer currentC;
-	private Integer frequency;
-	private Integer oilPreassure;
-	private Integer temp;
+	private String voltageABAN;
+	private String voltageACCN;
+	private String voltageBCBN;
+	private String voltageNT;
+	private String currentA;
+	private String currentB;
+	private String currentC;
+	private String frequency;
+	private String oilPreassure;
+	private String temp;
 
 	private Integer epServiceParamsId;
 	private String adjsutmentTherm;
@@ -541,798 +545,225 @@ public class EmergencyPlantServicePolicyDTO {
 	public Integer getPolicyId() {
 		return policyId;
 	}
+
 	public void setPolicyId(Integer policyId) {
 		this.policyId = policyId;
 	}
+
 	public String getCustomer() {
 		return customer;
 	}
+
 	public void setCustomer(String customer) {
 		this.customer = customer;
 	}
+
 	public String getFinalUser() {
 		return finalUser;
 	}
+
 	public void setFinalUser(String finalUser) {
 		this.finalUser = finalUser;
 	}
+
 	public String getProject() {
 		return project;
 	}
+
 	public void setProject(String project) {
 		this.project = project;
 	}
+
 	public Character getEquipmentTypeId() {
 		return equipmentTypeId;
 	}
+
 	public void setEquipmentTypeId(Character equipmentTypeId) {
 		this.equipmentTypeId = equipmentTypeId;
 	}
+
 	public String getEquipmentType() {
 		return equipmentType;
 	}
+
 	public void setEquipmentType(String equipmentType) {
 		this.equipmentType = equipmentType;
 	}
+
 	public String getBrand() {
 		return brand;
 	}
+
 	public void setBrand(String brand) {
 		this.brand = brand;
 	}
+
 	public String getModel() {
 		return model;
 	}
+
 	public void setModel(String model) {
 		this.model = model;
 	}
+
 	public String getSerialNumber() {
 		return serialNumber;
 	}
+
 	public void setSerialNumber(String serialNumber) {
 		this.serialNumber = serialNumber;
 	}
+
 	public String getCapacity() {
 		return capacity;
 	}
+
 	public void setCapacity(String capacity) {
 		this.capacity = capacity;
 	}
+
 	public String getEquipmentAddress() {
 		return equipmentAddress;
 	}
+
 	public void setEquipmentAddress(String equipmentAddress) {
 		this.equipmentAddress = equipmentAddress;
 	}
+
 	public String getOfficeId() {
 		return officeId;
 	}
+
 	public void setOfficeId(String officeId) {
 		this.officeId = officeId;
 	}
+
 	public String getContactName() {
 		return contactName;
 	}
+
 	public void setContactName(String contactName) {
 		this.contactName = contactName;
 	}
+
 	public String getContactPhone() {
 		return contactPhone;
 	}
+
 	public void setContactPhone(String contactPhone) {
 		this.contactPhone = contactPhone;
 	}
+
 	public Integer getServiceOrderId() {
 		return serviceOrderId;
 	}
+
 	public void setServiceOrderId(Integer serviceOrderId) {
 		this.serviceOrderId = serviceOrderId;
 	}
+
 	public Integer getTicketId() {
 		return ticketId;
 	}
+
 	public void setTicketId(Integer ticketId) {
 		this.ticketId = ticketId;
 	}
+
 	public Date getServiceDate() {
 		return serviceDate;
 	}
+
 	public void setServiceDate(Date serviceDate) {
 		this.serviceDate = serviceDate;
 	}
+
 	public String getResponsible() {
 		return responsible;
 	}
+
 	public void setResponsible(String responsible) {
 		this.responsible = responsible;
 	}
+
 	public String getReceivedBy() {
 		return receivedBy;
 	}
+
 	public void setReceivedBy(String receivedBy) {
 		this.receivedBy = receivedBy;
 	}
+
 	public String getServiceStatusId() {
 		return serviceStatusId;
 	}
+
 	public void setServiceStatusId(String serviceStatusId) {
 		this.serviceStatusId = serviceStatusId;
 	}
+
 	public Date getClosed() {
 		return closed;
 	}
+
 	public void setClosed(Date closed) {
 		this.closed = closed;
 	}
+
 	public String getConsultant() {
 		return consultant;
 	}
+
 	public void setConsultant(String consultant) {
 		this.consultant = consultant;
 	}
+
 	public String getCoordinator() {
 		return coordinator;
 	}
+
 	public void setCoordinator(String coordinator) {
 		this.coordinator = coordinator;
 	}
+
 	public String getAsignee() {
 		return asignee;
 	}
+
 	public void setAsignee(String asignee) {
 		this.asignee = asignee;
 	}
+
 	public String getSignCreated() {
 		return signCreated;
 	}
+
 	public void setSignCreated(String signCreated) {
 		this.signCreated = signCreated;
 	}
+
 	public String getSignReceivedBy() {
 		return signReceivedBy;
 	}
+
 	public void setSignReceivedBy(String signReceivedBy) {
 		this.signReceivedBy = signReceivedBy;
 	}
+
 	public String getReceivedByPosition() {
 		return receivedByPosition;
 	}
+
 	public void setReceivedByPosition(String receivedByPosition) {
 		this.receivedByPosition = receivedByPosition;
 	}
+
 	public String getServiceOrderNumber() {
 		return serviceOrderNumber;
 	}
+
 	public void setServiceOrderNumber(String serviceOrderNumber) {
 		this.serviceOrderNumber = serviceOrderNumber;
-	}
-	public Integer getEpServiceId() {
-		return epServiceId;
-	}
-	public void setEpServiceId(Integer epServiceId) {
-		this.epServiceId = epServiceId;
-	}
-	public String getBrandPE() {
-		return brandPE;
-	}
-	public void setBrandPE(String brandPE) {
-		this.brandPE = brandPE;
-	}
-	public String getModelPE() {
-		return modelPE;
-	}
-	public void setModelPE(String modelPE) {
-		this.modelPE = modelPE;
-	}
-	public String getSerialPE() {
-		return serialPE;
-	}
-	public void setSerialPE(String serialPE) {
-		this.serialPE = serialPE;
-	}
-	public String getTransferType() {
-		return transferType;
-	}
-	public void setTransferType(String transferType) {
-		this.transferType = transferType;
-	}
-	public String getModelTransfer() {
-		return modelTransfer;
-	}
-	public void setModelTransfer(String modelTransfer) {
-		this.modelTransfer = modelTransfer;
-	}
-	public String getModelControl() {
-		return modelControl;
-	}
-	public void setModelControl(String modelControl) {
-		this.modelControl = modelControl;
-	}
-	public String getModelRegVoltage() {
-		return modelRegVoltage;
-	}
-	public void setModelRegVoltage(String modelRegVoltage) {
-		this.modelRegVoltage = modelRegVoltage;
-	}
-	public String getModelRegVelocity() {
-		return modelRegVelocity;
-	}
-	public void setModelRegVelocity(String modelRegVelocity) {
-		this.modelRegVelocity = modelRegVelocity;
-	}
-	public String getModelCharger() {
-		return modelCharger;
-	}
-	public void setModelCharger(String modelCharger) {
-		this.modelCharger = modelCharger;
-	}
-	public Date getOilChange() {
-		return oilChange;
-	}
-	public void setOilChange(Date oilChange) {
-		this.oilChange = oilChange;
-	}
-	public String getBrandMotor() {
-		return brandMotor;
-	}
-	public void setBrandMotor(String brandMotor) {
-		this.brandMotor = brandMotor;
-	}
-	public String getModelMotor() {
-		return modelMotor;
-	}
-	public void setModelMotor(String modelMotor) {
-		this.modelMotor = modelMotor;
-	}
-	public String getSerialMotor() {
-		return serialMotor;
-	}
-	public void setSerialMotor(String serialMotor) {
-		this.serialMotor = serialMotor;
-	}
-	public String getCplMotor() {
-		return cplMotor;
-	}
-	public void setCplMotor(String cplMotor) {
-		this.cplMotor = cplMotor;
-	}
-	public String getBrandGenerator() {
-		return brandGenerator;
-	}
-	public void setBrandGenerator(String brandGenerator) {
-		this.brandGenerator = brandGenerator;
-	}
-	public String getModelGenerator() {
-		return modelGenerator;
-	}
-	public void setModelGenerator(String modelGenerator) {
-		this.modelGenerator = modelGenerator;
-	}
-	public String getSerialGenerator() {
-		return serialGenerator;
-	}
-	public void setSerialGenerator(String serialGenerator) {
-		this.serialGenerator = serialGenerator;
-	}
-	public Integer getPowerWattGenerator() {
-		return powerWattGenerator;
-	}
-	public void setPowerWattGenerator(Integer powerWattGenerator) {
-		this.powerWattGenerator = powerWattGenerator;
-	}
-	public Integer getTensionGenerator() {
-		return tensionGenerator;
-	}
-	public void setTensionGenerator(Integer tensionGenerator) {
-		this.tensionGenerator = tensionGenerator;
-	}
-	public Date getTuningDate() {
-		return tuningDate;
-	}
-	public void setTuningDate(Date tuningDate) {
-		this.tuningDate = tuningDate;
-	}
-	public Integer getTankCapacity() {
-		return tankCapacity;
-	}
-	public void setTankCapacity(Integer tankCapacity) {
-		this.tankCapacity = tankCapacity;
-	}
-	public String getPumpFuelModel() {
-		return pumpFuelModel;
-	}
-	public void setPumpFuelModel(String pumpFuelModel) {
-		this.pumpFuelModel = pumpFuelModel;
-	}
-	public Boolean getFilterFuelFlag() {
-		return filterFuelFlag;
-	}
-	public void setFilterFuelFlag(Boolean filterFuelFlag) {
-		this.filterFuelFlag = filterFuelFlag;
-	}
-	public Boolean getFilterOilFlag() {
-		return filterOilFlag;
-	}
-	public void setFilterOilFlag(Boolean filterOilFlag) {
-		this.filterOilFlag = filterOilFlag;
-	}
-	public Boolean getFilterWaterFlag() {
-		return filterWaterFlag;
-	}
-	public void setFilterWaterFlag(Boolean filterWaterFlag) {
-		this.filterWaterFlag = filterWaterFlag;
-	}
-	public Boolean getFilterAirFlag() {
-		return filterAirFlag;
-	}
-	public void setFilterAirFlag(Boolean filterAirFlag) {
-		this.filterAirFlag = filterAirFlag;
-	}
-	public String getBrandGear() {
-		return brandGear;
-	}
-	public void setBrandGear(String brandGear) {
-		this.brandGear = brandGear;
-	}
-	public String getBrandBattery() {
-		return brandBattery;
-	}
-	public void setBrandBattery(String brandBattery) {
-		this.brandBattery = brandBattery;
-	}
-	public String getClockLecture() {
-		return clockLecture;
-	}
-	public void setClockLecture(String clockLecture) {
-		this.clockLecture = clockLecture;
-	}
-	public Date getServiceCorrective() {
-		return serviceCorrective;
-	}
-	public void setServiceCorrective(Date serviceCorrective) {
-		this.serviceCorrective = serviceCorrective;
-	}
-	public String getObservations() {
-		return observations;
-	}
-	public void setObservations(String observations) {
-		this.observations = observations;
-	}
-	public Integer getEpServiceSurveyId() {
-		return epServiceSurveyId;
-	}
-	public void setEpServiceSurveyId(Integer epServiceSurveyId) {
-		this.epServiceSurveyId = epServiceSurveyId;
-	}
-	public Boolean getLevelOilFlag() {
-		return levelOilFlag;
-	}
-	public void setLevelOilFlag(Boolean levelOilFlag) {
-		this.levelOilFlag = levelOilFlag;
-	}
-	public Boolean getLevelWaterFlag() {
-		return levelWaterFlag;
-	}
-	public void setLevelWaterFlag(Boolean levelWaterFlag) {
-		this.levelWaterFlag = levelWaterFlag;
-	}
-	public Integer getLevelBattery() {
-		return levelBattery;
-	}
-	public void setLevelBattery(Integer levelBattery) {
-		this.levelBattery = levelBattery;
-	}
-	public Boolean getTubeLeak() {
-		return tubeLeak;
-	}
-	public void setTubeLeak(Boolean tubeLeak) {
-		this.tubeLeak = tubeLeak;
-	}
-	public String getBatteryCap() {
-		return batteryCap;
-	}
-	public void setBatteryCap(String batteryCap) {
-		this.batteryCap = batteryCap;
-	}
-	public String getBatterySulfate() {
-		return batterySulfate;
-	}
-	public void setBatterySulfate(String batterySulfate) {
-		this.batterySulfate = batterySulfate;
-	}
-	public Integer getLevelOil() {
-		return levelOil;
-	}
-	public void setLevelOil(Integer levelOil) {
-		this.levelOil = levelOil;
-	}
-	public String getHeatEngine() {
-		return heatEngine;
-	}
-	public void setHeatEngine(String heatEngine) {
-		this.heatEngine = heatEngine;
-	}
-	public String getHoseOil() {
-		return hoseOil;
-	}
-	public void setHoseOil(String hoseOil) {
-		this.hoseOil = hoseOil;
-	}
-	public String getHoseWater() {
-		return hoseWater;
-	}
-	public void setHoseWater(String hoseWater) {
-		this.hoseWater = hoseWater;
-	}
-	public String getTubeValve() {
-		return tubeValve;
-	}
-	public void setTubeValve(String tubeValve) {
-		this.tubeValve = tubeValve;
-	}
-	public String getStripBlades() {
-		return stripBlades;
-	}
-	public void setStripBlades(String stripBlades) {
-		this.stripBlades = stripBlades;
-	}
-	public Integer getEpServiceWorkBasicId() {
-		return epServiceWorkBasicId;
-	}
-	public void setEpServiceWorkBasicId(Integer epServiceWorkBasicId) {
-		this.epServiceWorkBasicId = epServiceWorkBasicId;
-	}
-	public Boolean getWashEngine() {
-		return washEngine;
-	}
-	public void setWashEngine(Boolean washEngine) {
-		this.washEngine = washEngine;
-	}
-	public Boolean getWashRadiator() {
-		return washRadiator;
-	}
-	public void setWashRadiator(Boolean washRadiator) {
-		this.washRadiator = washRadiator;
-	}
-	public Boolean getCleanWorkArea() {
-		return cleanWorkArea;
-	}
-	public void setCleanWorkArea(Boolean cleanWorkArea) {
-		this.cleanWorkArea = cleanWorkArea;
-	}
-	public Boolean getConectionCheck() {
-		return conectionCheck;
-	}
-	public void setConectionCheck(Boolean conectionCheck) {
-		this.conectionCheck = conectionCheck;
-	}
-	public Boolean getCleanTransfer() {
-		return cleanTransfer;
-	}
-	public void setCleanTransfer(Boolean cleanTransfer) {
-		this.cleanTransfer = cleanTransfer;
-	}
-	public Boolean getCleanCardControl() {
-		return cleanCardControl;
-	}
-	public void setCleanCardControl(Boolean cleanCardControl) {
-		this.cleanCardControl = cleanCardControl;
-	}
-	public Boolean getCheckConectionControl() {
-		return checkConectionControl;
-	}
-	public void setCheckConectionControl(Boolean checkConectionControl) {
-		this.checkConectionControl = checkConectionControl;
-	}
-	public Boolean getCheckWinding() {
-		return checkWinding;
-	}
-	public void setCheckWinding(Boolean checkWinding) {
-		this.checkWinding = checkWinding;
-	}
-	public Boolean getBatteryTests() {
-		return batteryTests;
-	}
-	public void setBatteryTests(Boolean batteryTests) {
-		this.batteryTests = batteryTests;
-	}
-	public Boolean getCheckCharger() {
-		return checkCharger;
-	}
-	public void setCheckCharger(Boolean checkCharger) {
-		this.checkCharger = checkCharger;
-	}
-	public Boolean getCheckPaint() {
-		return checkPaint;
-	}
-	public void setCheckPaint(Boolean checkPaint) {
-		this.checkPaint = checkPaint;
-	}
-	public Boolean getCleanGenerator() {
-		return cleanGenerator;
-	}
-	public void setCleanGenerator(Boolean cleanGenerator) {
-		this.cleanGenerator = cleanGenerator;
-	}
-	public Integer getEpServiceDynamicTestId() {
-		return epServiceDynamicTestId;
-	}
-	public void setEpServiceDynamicTestId(Integer epServiceDynamicTestId) {
-		this.epServiceDynamicTestId = epServiceDynamicTestId;
-	}
-	public Double getVacuumFrequency() {
-		return vacuumFrequency;
-	}
-	public void setVacuumFrequency(Double vacuumFrequency) {
-		this.vacuumFrequency = vacuumFrequency;
-	}
-	public Double getChargeFrequency() {
-		return chargeFrequency;
-	}
-	public void setChargeFrequency(Double chargeFrequency) {
-		this.chargeFrequency = chargeFrequency;
-	}
-	public Double getBootTryouts() {
-		return bootTryouts;
-	}
-	public void setBootTryouts(Double bootTryouts) {
-		this.bootTryouts = bootTryouts;
-	}
-	public Double getVacuumVoltage() {
-		return vacuumVoltage;
-	}
-	public void setVacuumVoltage(Double vacuumVoltage) {
-		this.vacuumVoltage = vacuumVoltage;
-	}
-	public Double getChargeVoltage() {
-		return chargeVoltage;
-	}
-	public void setChargeVoltage(Double chargeVoltage) {
-		this.chargeVoltage = chargeVoltage;
-	}
-	public Double getQualitySmoke() {
-		return qualitySmoke;
-	}
-	public void setQualitySmoke(Double qualitySmoke) {
-		this.qualitySmoke = qualitySmoke;
-	}
-	public Integer getStartTime() {
-		return startTime;
-	}
-	public void setStartTime(Integer startTime) {
-		this.startTime = startTime;
-	}
-	public Integer getTransferTime() {
-		return transferTime;
-	}
-	public void setTransferTime(Integer transferTime) {
-		this.transferTime = transferTime;
-	}
-	public Integer getStopTime() {
-		return stopTime;
-	}
-	public void setStopTime(Integer stopTime) {
-		this.stopTime = stopTime;
-	}
-	public Integer getEpServiceTestProtectionId() {
-		return epServiceTestProtectionId;
-	}
-	public void setEpServiceTestProtectionId(Integer epServiceTestProtectionId) {
-		this.epServiceTestProtectionId = epServiceTestProtectionId;
-	}
-	public Integer getTempSensor() {
-		return tempSensor;
-	}
-	public void setTempSensor(Integer tempSensor) {
-		this.tempSensor = tempSensor;
-	}
-	public Integer getOilSensor() {
-		return oilSensor;
-	}
-	public void setOilSensor(Integer oilSensor) {
-		this.oilSensor = oilSensor;
-	}
-	public Integer getVoltageSensor() {
-		return voltageSensor;
-	}
-	public void setVoltageSensor(Integer voltageSensor) {
-		this.voltageSensor = voltageSensor;
-	}
-	public Integer getOverSpeedSensor() {
-		return overSpeedSensor;
-	}
-	public void setOverSpeedSensor(Integer overSpeedSensor) {
-		this.overSpeedSensor = overSpeedSensor;
-	}
-	public Integer getOilPreasureSensor() {
-		return oilPreasureSensor;
-	}
-	public void setOilPreasureSensor(Integer oilPreasureSensor) {
-		this.oilPreasureSensor = oilPreasureSensor;
-	}
-	public Integer getWaterLevelSensor() {
-		return waterLevelSensor;
-	}
-	public void setWaterLevelSensor(Integer waterLevelSensor) {
-		this.waterLevelSensor = waterLevelSensor;
-	}
-	public Integer getEpServiceTransferSwitchId() {
-		return epServiceTransferSwitchId;
-	}
-	public void setEpServiceTransferSwitchId(Integer epServiceTransferSwitchId) {
-		this.epServiceTransferSwitchId = epServiceTransferSwitchId;
-	}
-	public String getMechanicalStatus() {
-		return mechanicalStatus;
-	}
-	public void setMechanicalStatus(String mechanicalStatus) {
-		this.mechanicalStatus = mechanicalStatus;
-	}
-	public Boolean getBoardClean() {
-		return boardClean;
-	}
-	public void setBoardClean(Boolean boardClean) {
-		this.boardClean = boardClean;
-	}
-	public Boolean getScrewAdjust() {
-		return screwAdjust;
-	}
-	public void setScrewAdjust(Boolean screwAdjust) {
-		this.screwAdjust = screwAdjust;
-	}
-	public Boolean getConectionAdjust() {
-		return conectionAdjust;
-	}
-	public void setConectionAdjust(Boolean conectionAdjust) {
-		this.conectionAdjust = conectionAdjust;
-	}
-	public String getSystemMotors() {
-		return systemMotors;
-	}
-	public void setSystemMotors(String systemMotors) {
-		this.systemMotors = systemMotors;
-	}
-	public String getElectricInterlock() {
-		return electricInterlock;
-	}
-	public void setElectricInterlock(String electricInterlock) {
-		this.electricInterlock = electricInterlock;
-	}
-	public String getMechanicalInterlock() {
-		return mechanicalInterlock;
-	}
-	public void setMechanicalInterlock(String mechanicalInterlock) {
-		this.mechanicalInterlock = mechanicalInterlock;
-	}
-	public Integer getCapacityAmp() {
-		return capacityAmp;
-	}
-	public void setCapacityAmp(Integer capacityAmp) {
-		this.capacityAmp = capacityAmp;
-	}
-	public Integer getEpServiceLecturesId() {
-		return epServiceLecturesId;
-	}
-	public void setEpServiceLecturesId(Integer epServiceLecturesId) {
-		this.epServiceLecturesId = epServiceLecturesId;
-	}
-	public Integer getVoltageABAN() {
-		return voltageABAN;
-	}
-	public void setVoltageABAN(Integer voltageABAN) {
-		this.voltageABAN = voltageABAN;
-	}
-	public Integer getVoltageACCN() {
-		return voltageACCN;
-	}
-	public void setVoltageACCN(Integer voltageACCN) {
-		this.voltageACCN = voltageACCN;
-	}
-	public Integer getVoltageBCBN() {
-		return voltageBCBN;
-	}
-	public void setVoltageBCBN(Integer voltageBCBN) {
-		this.voltageBCBN = voltageBCBN;
-	}
-	public Integer getVoltageNT() {
-		return voltageNT;
-	}
-	public void setVoltageNT(Integer voltageNT) {
-		this.voltageNT = voltageNT;
-	}
-	public Integer getCurrentA() {
-		return currentA;
-	}
-	public void setCurrentA(Integer currentA) {
-		this.currentA = currentA;
-	}
-	public Integer getCurrentB() {
-		return currentB;
-	}
-	public void setCurrentB(Integer currentB) {
-		this.currentB = currentB;
-	}
-	public Integer getCurrentC() {
-		return currentC;
-	}
-	public void setCurrentC(Integer currentC) {
-		this.currentC = currentC;
-	}
-	public Integer getFrequency() {
-		return frequency;
-	}
-	public void setFrequency(Integer frequency) {
-		this.frequency = frequency;
-	}
-	public Integer getOilPreassure() {
-		return oilPreassure;
-	}
-	public void setOilPreassure(Integer oilPreassure) {
-		this.oilPreassure = oilPreassure;
-	}
-	public Integer getTemp() {
-		return temp;
-	}
-	public void setTemp(Integer temp) {
-		this.temp = temp;
-	}
-	public Integer getEpServiceParamsId() {
-		return epServiceParamsId;
-	}
-	public void setEpServiceParamsId(Integer epServiceParamsId) {
-		this.epServiceParamsId = epServiceParamsId;
-	}
-	public String getAdjsutmentTherm() {
-		return adjsutmentTherm;
-	}
-	public void setAdjsutmentTherm(String adjsutmentTherm) {
-		this.adjsutmentTherm = adjsutmentTherm;
-	}
-	public String getCurrent() {
-		return current;
-	}
-	public void setCurrent(String current) {
-		this.current = current;
-	}
-	public String getBatteryCurrent() {
-		return batteryCurrent;
-	}
-	public void setBatteryCurrent(String batteryCurrent) {
-		this.batteryCurrent = batteryCurrent;
-	}
-	public String getClockStatus() {
-		return clockStatus;
-	}
-	public void setClockStatus(String clockStatus) {
-		this.clockStatus = clockStatus;
-	}
-	public String getTrasnferTypeProtection() {
-		return trasnferTypeProtection;
-	}
-	public void setTrasnferTypeProtection(String trasnferTypeProtection) {
-		this.trasnferTypeProtection = trasnferTypeProtection;
-	}
-	public String getGeneratorTypeProtection() {
-		return generatorTypeProtection;
-	}
-	public void setGeneratorTypeProtection(String generatorTypeProtection) {
-		this.generatorTypeProtection = generatorTypeProtection;
-	}
-
-	public Boolean getLampTest() {
-		return lampTest;
-	}
-
-	public void setLampTest(Boolean lampTest) {
-		this.lampTest = lampTest;
-	}
-
-	public String getReceivedByEmail() {
-		return receivedByEmail;
-	}
-
-	public void setReceivedByEmail(String receivedByEmail) {
-		this.receivedByEmail = receivedByEmail;
 	}
 
 	public String getServiceTypeId() {
@@ -1391,4 +822,880 @@ public class EmergencyPlantServicePolicyDTO {
 		this.surveyServiceId = surveyServiceId;
 	}
 
+	public Integer getEpServiceId() {
+		return epServiceId;
+	}
+
+	public void setEpServiceId(Integer epServiceId) {
+		this.epServiceId = epServiceId;
+	}
+
+	public String getBrandPE() {
+		return brandPE;
+	}
+
+	public void setBrandPE(String brandPE) {
+		this.brandPE = brandPE;
+	}
+
+	public String getModelPE() {
+		return modelPE;
+	}
+
+	public void setModelPE(String modelPE) {
+		this.modelPE = modelPE;
+	}
+
+	public String getSerialPE() {
+		return serialPE;
+	}
+
+	public void setSerialPE(String serialPE) {
+		this.serialPE = serialPE;
+	}
+
+	public String getTransferType() {
+		return transferType;
+	}
+
+	public void setTransferType(String transferType) {
+		this.transferType = transferType;
+	}
+
+	public String getModelTransfer() {
+		return modelTransfer;
+	}
+
+	public void setModelTransfer(String modelTransfer) {
+		this.modelTransfer = modelTransfer;
+	}
+
+	public String getModelControl() {
+		return modelControl;
+	}
+
+	public void setModelControl(String modelControl) {
+		this.modelControl = modelControl;
+	}
+
+	public String getModelRegVoltage() {
+		return modelRegVoltage;
+	}
+
+	public void setModelRegVoltage(String modelRegVoltage) {
+		this.modelRegVoltage = modelRegVoltage;
+	}
+
+	public String getModelRegVelocity() {
+		return modelRegVelocity;
+	}
+
+	public void setModelRegVelocity(String modelRegVelocity) {
+		this.modelRegVelocity = modelRegVelocity;
+	}
+
+	public String getModelCharger() {
+		return modelCharger;
+	}
+
+	public void setModelCharger(String modelCharger) {
+		this.modelCharger = modelCharger;
+	}
+
+	public Date getOilChange() {
+		return oilChange;
+	}
+
+	public void setOilChange(Date oilChange) {
+		this.oilChange = oilChange;
+	}
+
+	public String getBrandMotor() {
+		return brandMotor;
+	}
+
+	public void setBrandMotor(String brandMotor) {
+		this.brandMotor = brandMotor;
+	}
+
+	public String getModelMotor() {
+		return modelMotor;
+	}
+
+	public void setModelMotor(String modelMotor) {
+		this.modelMotor = modelMotor;
+	}
+
+	public String getSerialMotor() {
+		return serialMotor;
+	}
+
+	public void setSerialMotor(String serialMotor) {
+		this.serialMotor = serialMotor;
+	}
+
+	public String getCplMotor() {
+		return cplMotor;
+	}
+
+	public void setCplMotor(String cplMotor) {
+		this.cplMotor = cplMotor;
+	}
+
+	public String getBrandGenerator() {
+		return brandGenerator;
+	}
+
+	public void setBrandGenerator(String brandGenerator) {
+		this.brandGenerator = brandGenerator;
+	}
+
+	public String getModelGenerator() {
+		return modelGenerator;
+	}
+
+	public void setModelGenerator(String modelGenerator) {
+		this.modelGenerator = modelGenerator;
+	}
+
+	public String getSerialGenerator() {
+		return serialGenerator;
+	}
+
+	public void setSerialGenerator(String serialGenerator) {
+		this.serialGenerator = serialGenerator;
+	}
+
+	public String getPowerWattGenerator() {
+		return powerWattGenerator;
+	}
+
+	public void setPowerWattGenerator(String powerWattGenerator) {
+		this.powerWattGenerator = powerWattGenerator;
+	}
+
+	public String getTensionGenerator() {
+		return tensionGenerator;
+	}
+
+	public void setTensionGenerator(String tensionGenerator) {
+		this.tensionGenerator = tensionGenerator;
+	}
+
+	public Date getTuningDate() {
+		return tuningDate;
+	}
+
+	public void setTuningDate(Date tuningDate) {
+		this.tuningDate = tuningDate;
+	}
+
+	public String getTankCapacity() {
+		return tankCapacity;
+	}
+
+	public void setTankCapacity(String tankCapacity) {
+		this.tankCapacity = tankCapacity;
+	}
+
+	public String getPumpFuelModel() {
+		return pumpFuelModel;
+	}
+
+	public void setPumpFuelModel(String pumpFuelModel) {
+		this.pumpFuelModel = pumpFuelModel;
+	}
+
+	public Boolean getFilterFuelFlag() {
+		return filterFuelFlag;
+	}
+
+	public void setFilterFuelFlag(Boolean filterFuelFlag) {
+		this.filterFuelFlag = filterFuelFlag;
+	}
+
+	public Boolean getFilterOilFlag() {
+		return filterOilFlag;
+	}
+
+	public void setFilterOilFlag(Boolean filterOilFlag) {
+		this.filterOilFlag = filterOilFlag;
+	}
+
+	public Boolean getFilterWaterFlag() {
+		return filterWaterFlag;
+	}
+
+	public void setFilterWaterFlag(Boolean filterWaterFlag) {
+		this.filterWaterFlag = filterWaterFlag;
+	}
+
+	public Boolean getFilterAirFlag() {
+		return filterAirFlag;
+	}
+
+	public void setFilterAirFlag(Boolean filterAirFlag) {
+		this.filterAirFlag = filterAirFlag;
+	}
+
+	public String getBrandGear() {
+		return brandGear;
+	}
+
+	public void setBrandGear(String brandGear) {
+		this.brandGear = brandGear;
+	}
+
+	public String getBrandBattery() {
+		return brandBattery;
+	}
+
+	public void setBrandBattery(String brandBattery) {
+		this.brandBattery = brandBattery;
+	}
+
+	public String getClockLecture() {
+		return clockLecture;
+	}
+
+	public void setClockLecture(String clockLecture) {
+		this.clockLecture = clockLecture;
+	}
+
+	public Date getServiceCorrective() {
+		return serviceCorrective;
+	}
+
+	public void setServiceCorrective(Date serviceCorrective) {
+		this.serviceCorrective = serviceCorrective;
+	}
+
+	public String getObservations() {
+		return observations;
+	}
+
+	public void setObservations(String observations) {
+		this.observations = observations;
+	}
+
+	public Integer getEpServiceSurveyId() {
+		return epServiceSurveyId;
+	}
+
+	public void setEpServiceSurveyId(Integer epServiceSurveyId) {
+		this.epServiceSurveyId = epServiceSurveyId;
+	}
+
+	public Boolean getLevelOilFlag() {
+		return levelOilFlag;
+	}
+
+	public void setLevelOilFlag(Boolean levelOilFlag) {
+		this.levelOilFlag = levelOilFlag;
+	}
+
+	public Boolean getLevelWaterFlag() {
+		return levelWaterFlag;
+	}
+
+	public void setLevelWaterFlag(Boolean levelWaterFlag) {
+		this.levelWaterFlag = levelWaterFlag;
+	}
+
+	public String getLevelBattery() {
+		return levelBattery;
+	}
+
+	public void setLevelBattery(String levelBattery) {
+		this.levelBattery = levelBattery;
+	}
+
+	public Boolean getTubeLeak() {
+		return tubeLeak;
+	}
+
+	public void setTubeLeak(Boolean tubeLeak) {
+		this.tubeLeak = tubeLeak;
+	}
+
+	public String getBatteryCap() {
+		return batteryCap;
+	}
+
+	public void setBatteryCap(String batteryCap) {
+		this.batteryCap = batteryCap;
+	}
+
+	public String getBatterySulfate() {
+		return batterySulfate;
+	}
+
+	public void setBatterySulfate(String batterySulfate) {
+		this.batterySulfate = batterySulfate;
+	}
+
+	public String getLevelOil() {
+		return levelOil;
+	}
+
+	public void setLevelOil(String levelOil) {
+		this.levelOil = levelOil;
+	}
+
+	public String getHeatEngine() {
+		return heatEngine;
+	}
+
+	public void setHeatEngine(String heatEngine) {
+		this.heatEngine = heatEngine;
+	}
+
+	public String getHoseOil() {
+		return hoseOil;
+	}
+
+	public void setHoseOil(String hoseOil) {
+		this.hoseOil = hoseOil;
+	}
+
+	public String getHoseWater() {
+		return hoseWater;
+	}
+
+	public void setHoseWater(String hoseWater) {
+		this.hoseWater = hoseWater;
+	}
+
+	public String getTubeValve() {
+		return tubeValve;
+	}
+
+	public void setTubeValve(String tubeValve) {
+		this.tubeValve = tubeValve;
+	}
+
+	public String getStripBlades() {
+		return stripBlades;
+	}
+
+	public void setStripBlades(String stripBlades) {
+		this.stripBlades = stripBlades;
+	}
+
+	public Integer getEpServiceWorkBasicId() {
+		return epServiceWorkBasicId;
+	}
+
+	public void setEpServiceWorkBasicId(Integer epServiceWorkBasicId) {
+		this.epServiceWorkBasicId = epServiceWorkBasicId;
+	}
+
+	public Boolean getWashEngine() {
+		return washEngine;
+	}
+
+	public void setWashEngine(Boolean washEngine) {
+		this.washEngine = washEngine;
+	}
+
+	public Boolean getWashRadiator() {
+		return washRadiator;
+	}
+
+	public void setWashRadiator(Boolean washRadiator) {
+		this.washRadiator = washRadiator;
+	}
+
+	public Boolean getCleanWorkArea() {
+		return cleanWorkArea;
+	}
+
+	public void setCleanWorkArea(Boolean cleanWorkArea) {
+		this.cleanWorkArea = cleanWorkArea;
+	}
+
+	public Boolean getConectionCheck() {
+		return conectionCheck;
+	}
+
+	public void setConectionCheck(Boolean conectionCheck) {
+		this.conectionCheck = conectionCheck;
+	}
+
+	public Boolean getCleanTransfer() {
+		return cleanTransfer;
+	}
+
+	public void setCleanTransfer(Boolean cleanTransfer) {
+		this.cleanTransfer = cleanTransfer;
+	}
+
+	public Boolean getCleanCardControl() {
+		return cleanCardControl;
+	}
+
+	public void setCleanCardControl(Boolean cleanCardControl) {
+		this.cleanCardControl = cleanCardControl;
+	}
+
+	public Boolean getCheckConectionControl() {
+		return checkConectionControl;
+	}
+
+	public void setCheckConectionControl(Boolean checkConectionControl) {
+		this.checkConectionControl = checkConectionControl;
+	}
+
+	public Boolean getCheckWinding() {
+		return checkWinding;
+	}
+
+	public void setCheckWinding(Boolean checkWinding) {
+		this.checkWinding = checkWinding;
+	}
+
+	public Boolean getBatteryTests() {
+		return batteryTests;
+	}
+
+	public void setBatteryTests(Boolean batteryTests) {
+		this.batteryTests = batteryTests;
+	}
+
+	public Boolean getCheckCharger() {
+		return checkCharger;
+	}
+
+	public void setCheckCharger(Boolean checkCharger) {
+		this.checkCharger = checkCharger;
+	}
+
+	public Boolean getCheckPaint() {
+		return checkPaint;
+	}
+
+	public void setCheckPaint(Boolean checkPaint) {
+		this.checkPaint = checkPaint;
+	}
+
+	public Boolean getCleanGenerator() {
+		return cleanGenerator;
+	}
+
+	public void setCleanGenerator(Boolean cleanGenerator) {
+		this.cleanGenerator = cleanGenerator;
+	}
+
+	public Integer getEpServiceDynamicTestId() {
+		return epServiceDynamicTestId;
+	}
+
+	public void setEpServiceDynamicTestId(Integer epServiceDynamicTestId) {
+		this.epServiceDynamicTestId = epServiceDynamicTestId;
+	}
+
+	public String getVacuumFrequency() {
+		return vacuumFrequency;
+	}
+
+	public void setVacuumFrequency(String vacuumFrequency) {
+		this.vacuumFrequency = vacuumFrequency;
+	}
+
+	public String getChargeFrequency() {
+		return chargeFrequency;
+	}
+
+	public void setChargeFrequency(String chargeFrequency) {
+		this.chargeFrequency = chargeFrequency;
+	}
+
+	public String getBootTryouts() {
+		return bootTryouts;
+	}
+
+	public void setBootTryouts(String bootTryouts) {
+		this.bootTryouts = bootTryouts;
+	}
+
+	public String getVacuumVoltage() {
+		return vacuumVoltage;
+	}
+
+	public void setVacuumVoltage(String vacuumVoltage) {
+		this.vacuumVoltage = vacuumVoltage;
+	}
+
+	public String getChargeVoltage() {
+		return chargeVoltage;
+	}
+
+	public void setChargeVoltage(String chargeVoltage) {
+		this.chargeVoltage = chargeVoltage;
+	}
+
+	public String getQualitySmoke() {
+		return qualitySmoke;
+	}
+
+	public void setQualitySmoke(String qualitySmoke) {
+		this.qualitySmoke = qualitySmoke;
+	}
+
+	public String getStartTime() {
+		return startTime;
+	}
+
+	public void setStartTime(String startTime) {
+		this.startTime = startTime;
+	}
+
+	public String getTransferTime() {
+		return transferTime;
+	}
+
+	public void setTransferTime(String transferTime) {
+		this.transferTime = transferTime;
+	}
+
+	public String getStopTime() {
+		return stopTime;
+	}
+
+	public void setStopTime(String stopTime) {
+		this.stopTime = stopTime;
+	}
+
+	public Integer getEpServiceTestProtectionId() {
+		return epServiceTestProtectionId;
+	}
+
+	public void setEpServiceTestProtectionId(Integer epServiceTestProtectionId) {
+		this.epServiceTestProtectionId = epServiceTestProtectionId;
+	}
+
+	public String getTempSensor() {
+		return tempSensor;
+	}
+
+	public void setTempSensor(String tempSensor) {
+		this.tempSensor = tempSensor;
+	}
+
+	public String getOilSensor() {
+		return oilSensor;
+	}
+
+	public void setOilSensor(String oilSensor) {
+		this.oilSensor = oilSensor;
+	}
+
+	public String getVoltageSensor() {
+		return voltageSensor;
+	}
+
+	public void setVoltageSensor(String voltageSensor) {
+		this.voltageSensor = voltageSensor;
+	}
+
+	public String getOverSpeedSensor() {
+		return overSpeedSensor;
+	}
+
+	public void setOverSpeedSensor(String overSpeedSensor) {
+		this.overSpeedSensor = overSpeedSensor;
+	}
+
+	public String getOilPreasureSensor() {
+		return oilPreasureSensor;
+	}
+
+	public void setOilPreasureSensor(String oilPreasureSensor) {
+		this.oilPreasureSensor = oilPreasureSensor;
+	}
+
+	public String getWaterLevelSensor() {
+		return waterLevelSensor;
+	}
+
+	public void setWaterLevelSensor(String waterLevelSensor) {
+		this.waterLevelSensor = waterLevelSensor;
+	}
+
+	public Integer getEpServiceTransferSwitchId() {
+		return epServiceTransferSwitchId;
+	}
+
+	public void setEpServiceTransferSwitchId(Integer epServiceTransferSwitchId) {
+		this.epServiceTransferSwitchId = epServiceTransferSwitchId;
+	}
+
+	public String getMechanicalStatus() {
+		return mechanicalStatus;
+	}
+
+	public void setMechanicalStatus(String mechanicalStatus) {
+		this.mechanicalStatus = mechanicalStatus;
+	}
+
+	public Boolean getBoardClean() {
+		return boardClean;
+	}
+
+	public void setBoardClean(Boolean boardClean) {
+		this.boardClean = boardClean;
+	}
+
+	public Boolean getLampTest() {
+		return lampTest;
+	}
+
+	public void setLampTest(Boolean lampTest) {
+		this.lampTest = lampTest;
+	}
+
+	public Boolean getScrewAdjust() {
+		return screwAdjust;
+	}
+
+	public void setScrewAdjust(Boolean screwAdjust) {
+		this.screwAdjust = screwAdjust;
+	}
+
+	public Boolean getConectionAdjust() {
+		return conectionAdjust;
+	}
+
+	public void setConectionAdjust(Boolean conectionAdjust) {
+		this.conectionAdjust = conectionAdjust;
+	}
+
+	public String getSystemMotors() {
+		return systemMotors;
+	}
+
+	public void setSystemMotors(String systemMotors) {
+		this.systemMotors = systemMotors;
+	}
+
+	public String getElectricInterlock() {
+		return electricInterlock;
+	}
+
+	public void setElectricInterlock(String electricInterlock) {
+		this.electricInterlock = electricInterlock;
+	}
+
+	public String getMechanicalInterlock() {
+		return mechanicalInterlock;
+	}
+
+	public void setMechanicalInterlock(String mechanicalInterlock) {
+		this.mechanicalInterlock = mechanicalInterlock;
+	}
+
+	public String getCapacityAmp() {
+		return capacityAmp;
+	}
+
+	public void setCapacityAmp(String capacityAmp) {
+		this.capacityAmp = capacityAmp;
+	}
+
+	public Integer getEpServiceLecturesId() {
+		return epServiceLecturesId;
+	}
+
+	public void setEpServiceLecturesId(Integer epServiceLecturesId) {
+		this.epServiceLecturesId = epServiceLecturesId;
+	}
+
+	public String getVoltageABAN() {
+		return voltageABAN;
+	}
+
+	public void setVoltageABAN(String voltageABAN) {
+		this.voltageABAN = voltageABAN;
+	}
+
+	public String getVoltageACCN() {
+		return voltageACCN;
+	}
+
+	public void setVoltageACCN(String voltageACCN) {
+		this.voltageACCN = voltageACCN;
+	}
+
+	public String getVoltageBCBN() {
+		return voltageBCBN;
+	}
+
+	public void setVoltageBCBN(String voltageBCBN) {
+		this.voltageBCBN = voltageBCBN;
+	}
+
+	public String getVoltageNT() {
+		return voltageNT;
+	}
+
+	public void setVoltageNT(String voltageNT) {
+		this.voltageNT = voltageNT;
+	}
+
+	public String getCurrentA() {
+		return currentA;
+	}
+
+	public void setCurrentA(String currentA) {
+		this.currentA = currentA;
+	}
+
+	public String getCurrentB() {
+		return currentB;
+	}
+
+	public void setCurrentB(String currentB) {
+		this.currentB = currentB;
+	}
+
+	public String getCurrentC() {
+		return currentC;
+	}
+
+	public void setCurrentC(String currentC) {
+		this.currentC = currentC;
+	}
+
+	public String getFrequency() {
+		return frequency;
+	}
+
+	public void setFrequency(String frequency) {
+		this.frequency = frequency;
+	}
+
+	public String getOilPreassure() {
+		return oilPreassure;
+	}
+
+	public void setOilPreassure(String oilPreassure) {
+		this.oilPreassure = oilPreassure;
+	}
+
+	public String getTemp() {
+		return temp;
+	}
+
+	public void setTemp(String temp) {
+		this.temp = temp;
+	}
+
+	public Integer getEpServiceParamsId() {
+		return epServiceParamsId;
+	}
+
+	public void setEpServiceParamsId(Integer epServiceParamsId) {
+		this.epServiceParamsId = epServiceParamsId;
+	}
+
+	public String getAdjsutmentTherm() {
+		return adjsutmentTherm;
+	}
+
+	public void setAdjsutmentTherm(String adjsutmentTherm) {
+		this.adjsutmentTherm = adjsutmentTherm;
+	}
+
+	public String getCurrent() {
+		return current;
+	}
+
+	public void setCurrent(String current) {
+		this.current = current;
+	}
+
+	public String getBatteryCurrent() {
+		return batteryCurrent;
+	}
+
+	public void setBatteryCurrent(String batteryCurrent) {
+		this.batteryCurrent = batteryCurrent;
+	}
+
+	public String getClockStatus() {
+		return clockStatus;
+	}
+
+	public void setClockStatus(String clockStatus) {
+		this.clockStatus = clockStatus;
+	}
+
+	public String getTrasnferTypeProtection() {
+		return trasnferTypeProtection;
+	}
+
+	public void setTrasnferTypeProtection(String trasnferTypeProtection) {
+		this.trasnferTypeProtection = trasnferTypeProtection;
+	}
+
+	public String getGeneratorTypeProtection() {
+		return generatorTypeProtection;
+	}
+
+	public void setGeneratorTypeProtection(String generatorTypeProtection) {
+		this.generatorTypeProtection = generatorTypeProtection;
+	}
+
+	public String getReceivedByEmail() {
+		return receivedByEmail;
+	}
+
+	public void setReceivedByEmail(String receivedByEmail) {
+		this.receivedByEmail = receivedByEmail;
+	}
+
+	public String getOilChangeDisplay() {
+		if(oilChange != null){
+			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+			return sdf.format(oilChange);
+		}
+		else{
+			return "";
+		}
+	}
+
+	public void setOilChangeDisplay(String oilChangeDisplay) {
+		this.oilChangeDisplay = oilChangeDisplay;
+	}
+
+	public String getTuningDateDisplay() {
+		if(tuningDate != null){
+			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+			return sdf.format(tuningDate);
+		}
+		else{
+			return "";
+		}
+	}
+
+	public void setTuningDateDisplay(String tuningDateDisplay) {
+		this.tuningDateDisplay = tuningDateDisplay;
+	}
+
+	public String getServiceCorrectiveDisplay() {
+		if(serviceCorrective != null){
+			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+			return sdf.format(serviceCorrective);
+		}
+		else{
+			return "";
+		}
+	}
+
+	public void setServiceCorrectiveDisplay(String serviceCorrectiveDisplay) {
+		this.serviceCorrectiveDisplay = serviceCorrectiveDisplay;
+	}
+	
+	
+	
 }

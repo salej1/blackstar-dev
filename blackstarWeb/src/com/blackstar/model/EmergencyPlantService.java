@@ -10,8 +10,8 @@ public class EmergencyPlantService {
 			String modelCharger, Date oilChange, String brandMotor,
 			String modelMotor, String serialMotor, String cplMotor,
 			String brandGenerator, String modelGenerator,
-			String serialGenerator, Integer powerWattGenerator,
-			Integer tensionGenerator, Date tuningDate, Integer tankCapacity,
+			String serialGenerator, String powerWattGenerator,
+			String tensionGenerator, Date tuningDate, String tankCapacity,
 			String pumpFuelModel, Boolean filterFuelFlag,
 			Boolean filterOilFlag, Boolean filterWaterFlag,
 			Boolean filterAirFlag, String brandGear, String brandBattery,
@@ -78,10 +78,10 @@ public class EmergencyPlantService {
 	private String brandGenerator;
 	private String modelGenerator;
 	private String serialGenerator;
-	private Integer powerWattGenerator;
-	private Integer tensionGenerator;
+	private String powerWattGenerator;
+	private String tensionGenerator;
 	private Date tuningDate;
-	private Integer tankCapacity;
+	private String tankCapacity;
 	private String pumpFuelModel;
 	private Boolean filterFuelFlag;
 	private Boolean filterOilFlag;
@@ -110,6 +110,24 @@ public class EmergencyPlantService {
 	}
 	public void setServiceOrderId(Integer serviceOrderId) {
 		this.serviceOrderId = serviceOrderId;
+	}
+	public String getBrandPE() {
+		return brandPE;
+	}
+	public void setBrandPE(String brandPE) {
+		this.brandPE = brandPE;
+	}
+	public String getModelPE() {
+		return modelPE;
+	}
+	public void setModelPE(String modelPE) {
+		this.modelPE = modelPE;
+	}
+	public String getSerialPE() {
+		return serialPE;
+	}
+	public void setSerialPE(String serialPE) {
+		this.serialPE = serialPE;
 	}
 	public String getTransferType() {
 		return transferType;
@@ -195,16 +213,16 @@ public class EmergencyPlantService {
 	public void setSerialGenerator(String serialGenerator) {
 		this.serialGenerator = serialGenerator;
 	}
-	public Integer getPowerWattGenerator() {
+	public String getPowerWattGenerator() {
 		return powerWattGenerator;
 	}
-	public void setPowerWattGenerator(Integer powerWattGenerator) {
+	public void setPowerWattGenerator(String powerWattGenerator) {
 		this.powerWattGenerator = powerWattGenerator;
 	}
-	public Integer getTensionGenerator() {
+	public String getTensionGenerator() {
 		return tensionGenerator;
 	}
-	public void setTensionGenerator(Integer tensionGenerator) {
+	public void setTensionGenerator(String tensionGenerator) {
 		this.tensionGenerator = tensionGenerator;
 	}
 	public Date getTuningDate() {
@@ -213,10 +231,10 @@ public class EmergencyPlantService {
 	public void setTuningDate(Date tuningDate) {
 		this.tuningDate = tuningDate;
 	}
-	public Integer getTankCapacity() {
+	public String getTankCapacity() {
 		return tankCapacity;
 	}
-	public void setTankCapacity(Integer tankCapacity) {
+	public void setTankCapacity(String tankCapacity) {
 		this.tankCapacity = tankCapacity;
 	}
 	public String getPumpFuelModel() {
@@ -315,22 +333,5 @@ public class EmergencyPlantService {
 	public void setModifiedByUsr(String modifiedByUsr) {
 		this.modifiedByUsr = modifiedByUsr;
 	}
-	public String getBrandPE() {
-		return brandPE;
-	}
-	public void setBrandPE(String brandPE) {
-		this.brandPE = brandPE;
-	}
-	public String getModelPE() {
-		return modelPE;
-	}
-	public void setModelPE(String modelPE) {
-		this.modelPE = modelPE;
-	}
-	public String getSerialPE() {
-		return serialPE;
-	}
-	public void setSerialPE(String serialPE) {
-		this.serialPE = serialPE;
-	}
+	
 }

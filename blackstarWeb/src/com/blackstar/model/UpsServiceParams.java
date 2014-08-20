@@ -3,10 +3,10 @@ package com.blackstar.model;
 public class UpsServiceParams {
 	
 	public UpsServiceParams(Integer upsServiceParamsId, Integer upsServiceId,
-			Double inputVoltagePhase, Double inputVoltageNeutro,
-			Double inputVoltageNeutroGround, Double percentCharge,
-			Double outputVoltagePhase, Double outputVoltageNeutro,
-			Double inOutFrecuency, Double busVoltage) {
+			String inputVoltagePhase, String inputVoltageNeutro,
+			String inputVoltageNeutroGround, String percentCharge,
+			String outputVoltagePhase, String outputVoltageNeutro,
+			String inOutFrecuency, String busVoltage) {
 		this.upsServiceParamsId = upsServiceParamsId;
 		this.upsServiceId = upsServiceId;
 		this.inputVoltagePhase = inputVoltagePhase;
@@ -21,14 +21,14 @@ public class UpsServiceParams {
 	
 	private Integer upsServiceParamsId;
 	private Integer upsServiceId;
-	private Double inputVoltagePhase;
-	private Double inputVoltageNeutro;
-	private Double inputVoltageNeutroGround;
-	private Double percentCharge;
-	private Double outputVoltagePhase;
-	private Double outputVoltageNeutro;
-	private Double inOutFrecuency;
-	private Double busVoltage;
+	private String inputVoltagePhase;
+	private String inputVoltageNeutro;
+	private String inputVoltageNeutroGround;
+	private String percentCharge;
+	private String outputVoltagePhase;
+	private String outputVoltageNeutro;
+	private String inOutFrecuency;
+	private String busVoltage;
 	
 	public Integer getUpsServiceParamsId() {
 		return upsServiceParamsId;
@@ -42,55 +42,54 @@ public class UpsServiceParams {
 	public void setUpsServiceId(Integer upsServiceId) {
 		this.upsServiceId = upsServiceId;
 	}
-	public Double getInputVoltagePhase() {
+	public String getInputVoltagePhase() {
 		return inputVoltagePhase;
 	}
-	public void setInputVoltagePhase(Double inputVoltagePhase) {
+	public void setInputVoltagePhase(String inputVoltagePhase) {
 		this.inputVoltagePhase = inputVoltagePhase;
 	}
-	public Double getInputVoltageNeutro() {
+	public String getInputVoltageNeutro() {
 		return inputVoltageNeutro;
 	}
-	public void setInputVoltageNeutro(Double inputVoltageNeutro) {
+	public void setInputVoltageNeutro(String inputVoltageNeutro) {
 		this.inputVoltageNeutro = inputVoltageNeutro;
 	}
-	public Double getInputVoltageNeutroGround() {
+	public String getInputVoltageNeutroGround() {
 		return inputVoltageNeutroGround;
 	}
-	public void setInputVoltageNeutroGround(Double inputVoltageNeutroGround) {
+	public void setInputVoltageNeutroGround(String inputVoltageNeutroGround) {
 		this.inputVoltageNeutroGround = inputVoltageNeutroGround;
 	}
-	public Double getPercentCharge() {
+	public String getPercentCharge() {
 		return percentCharge;
 	}
-	public void setPercentCharge(Double percentCharge) {
+	public void setPercentCharge(String percentCharge) {
 		this.percentCharge = percentCharge;
 	}
-	public Double getOutputVoltagePhase() {
+	public String getOutputVoltagePhase() {
 		return outputVoltagePhase;
 	}
-	public void setOutputVoltagePhase(Double outputVoltagePhase) {
+	public void setOutputVoltagePhase(String outputVoltagePhase) {
 		this.outputVoltagePhase = outputVoltagePhase;
 	}
-	public Double getOutputVoltageNeutro() {
+	public String getOutputVoltageNeutro() {
 		return outputVoltageNeutro;
 	}
-	public void setOutputVoltageNeutro(Double outputVoltageNeutro) {
+	public void setOutputVoltageNeutro(String outputVoltageNeutro) {
 		this.outputVoltageNeutro = outputVoltageNeutro;
 	}
-	public Double getInOutFrecuency() {
+	public String getInOutFrecuency() {
 		return inOutFrecuency;
 	}
-	public void setInOutFrecuency(Double inOutFrecuency) {
+	public void setInOutFrecuency(String inOutFrecuency) {
 		this.inOutFrecuency = inOutFrecuency;
 	}
-	public Double getBusVoltage() {
+	public String getBusVoltage() {
 		return busVoltage;
 	}
-	public void setBusVoltage(Double busVoltage) {
+	public void setBusVoltage(String busVoltage) {
 		this.busVoltage = busVoltage;
 	}
 	
 	
-
 }

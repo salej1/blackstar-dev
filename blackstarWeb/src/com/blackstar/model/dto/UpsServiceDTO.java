@@ -108,14 +108,14 @@ public class UpsServiceDTO {
 			Integer upsServiceBatteryBankId, Boolean checkConnectors,
 			Boolean cverifyOutflow, Integer numberBatteries,
 			String manufacturedDateSerial, String damageBatteries,
-			String other, Double temp, Boolean chargeTest, String brandModel,
-			Double batteryVoltage, Integer upsServiceGeneralTestId,
+			String other, String temp, Boolean chargeTest, String brandModel,
+			String batteryVoltage, Integer upsServiceGeneralTestId,
 			Boolean trasferLine, Boolean transferEmergencyPlant,
 			Boolean backupBatteries, Boolean verifyVoltage,
-			Integer upsServiceParamsId, Double inputVoltagePhase,
-			Double inputVoltageNeutro, Double inputVoltageNeutroGround,
-			Double percentCharge, Double outputVoltagePhase,
-			Double outputVoltageNeutro, Double inOutFrecuency, Double busVoltage, String observations) {
+			Integer upsServiceParamsId, String inputVoltagePhase,
+			String inputVoltageNeutro, String inputVoltageNeutroGround,
+			String percentCharge, String outputVoltagePhase,
+			String outputVoltageNeutro, String inOutFrecuency, String busVoltage, String observations) {
 		this.upsServiceId = upsServiceId;
 		this.serviceOrderId = serviceOrderId;
 		this.estatusEquipment = estatusEquipment;
@@ -174,10 +174,10 @@ public class UpsServiceDTO {
 	private String manufacturedDateSerial;
 	private String damageBatteries;
 	private String other;
-	private Double temp;
+	private String temp;
 	private Boolean chargeTest;
 	private String brandModel;
-	private Double batteryVoltage;
+	private String batteryVoltage;
 
 	private Integer upsServiceGeneralTestId;
 	private Boolean trasferLine;
@@ -186,224 +186,92 @@ public class UpsServiceDTO {
 	private Boolean verifyVoltage;
 
 	private Integer upsServiceParamsId;
-	private Double inputVoltagePhase;
-	private Double inputVoltageNeutro;
-	private Double inputVoltageNeutroGround;
-	private Double percentCharge;
-	private Double outputVoltagePhase;
-	private Double outputVoltageNeutro;
-	private Double inOutFrecuency;
-	private Double busVoltage;
-	
+	private String inputVoltagePhase;
+	private String inputVoltageNeutro;
+	private String inputVoltageNeutroGround;
+	private String percentCharge;
+	private String outputVoltagePhase;
+	private String outputVoltageNeutro;
+	private String inOutFrecuency;
+	private String busVoltage;
 	public Integer getUpsServiceId() {
 		return upsServiceId;
 	}
+
 	public void setUpsServiceId(Integer upsServiceId) {
 		this.upsServiceId = upsServiceId;
 	}
+
 	public Integer getServiceOrderId() {
 		return serviceOrderId;
 	}
+
 	public void setServiceOrderId(Integer serviceOrderId) {
 		this.serviceOrderId = serviceOrderId;
 	}
+
 	public String getEstatusEquipment() {
 		return estatusEquipment;
 	}
+
 	public void setEstatusEquipment(String estatusEquipment) {
 		this.estatusEquipment = estatusEquipment;
 	}
+
 	public Boolean getCleaned() {
 		return cleaned;
 	}
+
 	public void setCleaned(Boolean cleaned) {
 		this.cleaned = cleaned;
 	}
+
 	public Boolean getHooverClean() {
 		return hooverClean;
 	}
+
 	public void setHooverClean(Boolean hooverClean) {
 		this.hooverClean = hooverClean;
 	}
+
 	public Boolean getVerifyConnections() {
 		return verifyConnections;
 	}
+
 	public void setVerifyConnections(Boolean verifyConnections) {
 		this.verifyConnections = verifyConnections;
 	}
+
 	public String getCapacitorStatus() {
 		return capacitorStatus;
 	}
+
 	public void setCapacitorStatus(String capacitorStatus) {
 		this.capacitorStatus = capacitorStatus;
 	}
+
 	public Boolean getVerifyFuzz() {
 		return verifyFuzz;
 	}
+
 	public void setVerifyFuzz(Boolean verifyFuzz) {
 		this.verifyFuzz = verifyFuzz;
 	}
+
 	public Boolean getChargerReview() {
 		return chargerReview;
 	}
+
 	public void setChargerReview(Boolean chargerReview) {
 		this.chargerReview = chargerReview;
 	}
+
 	public String getFanStatus() {
 		return fanStatus;
 	}
+
 	public void setFanStatus(String fanStatus) {
 		this.fanStatus = fanStatus;
-	}
-	public Integer getUpsServiceBatteryBankId() {
-		return upsServiceBatteryBankId;
-	}
-	public void setUpsServiceBatteryBankId(Integer upsServiceBatteryBankId) {
-		this.upsServiceBatteryBankId = upsServiceBatteryBankId;
-	}
-	public Boolean getCheckConnectors() {
-		return checkConnectors;
-	}
-	public void setCheckConnectors(Boolean checkConnectors) {
-		this.checkConnectors = checkConnectors;
-	}
-	public Boolean getCverifyOutflow() {
-		return cverifyOutflow;
-	}
-	public void setCverifyOutflow(Boolean cverifyOutflow) {
-		this.cverifyOutflow = cverifyOutflow;
-	}
-	public Integer getNumberBatteries() {
-		return numberBatteries;
-	}
-	public void setNumberBatteries(Integer numberBatteries) {
-		this.numberBatteries = numberBatteries;
-	}
-	public String getManufacturedDateSerial() {
-		return manufacturedDateSerial;
-	}
-	public void setManufacturedDateSerial(String manufacturedDateSerial) {
-		this.manufacturedDateSerial = manufacturedDateSerial;
-	}
-	public String getDamageBatteries() {
-		return damageBatteries;
-	}
-	public void setDamageBatteries(String damageBatteries) {
-		this.damageBatteries = damageBatteries;
-	}
-	public String getOther() {
-		return other;
-	}
-	public void setOther(String other) {
-		this.other = other;
-	}
-	public Double getTemp() {
-		return temp;
-	}
-	public void setTemp(Double temp) {
-		this.temp = temp;
-	}
-	public Boolean getChargeTest() {
-		return chargeTest;
-	}
-	public void setChargeTest(Boolean chargeTest) {
-		this.chargeTest = chargeTest;
-	}
-	public String getBrandModel() {
-		return brandModel;
-	}
-	public void setBrandModel(String brandModel) {
-		this.brandModel = brandModel;
-	}
-	public Double getBatteryVoltage() {
-		return batteryVoltage;
-	}
-	public void setBatteryVoltage(Double batteryVoltage) {
-		this.batteryVoltage = batteryVoltage;
-	}
-	public Integer getUpsServiceGeneralTestId() {
-		return upsServiceGeneralTestId;
-	}
-	public void setUpsServiceGeneralTestId(Integer upsServiceGeneralTestId) {
-		this.upsServiceGeneralTestId = upsServiceGeneralTestId;
-	}
-	public Boolean getTrasferLine() {
-		return trasferLine;
-	}
-	public void setTrasferLine(Boolean trasferLine) {
-		this.trasferLine = trasferLine;
-	}
-	public Boolean getTransferEmergencyPlant() {
-		return transferEmergencyPlant;
-	}
-	public void setTransferEmergencyPlant(Boolean transferEmergencyPlant) {
-		this.transferEmergencyPlant = transferEmergencyPlant;
-	}
-	public Boolean getBackupBatteries() {
-		return backupBatteries;
-	}
-	public void setBackupBatteries(Boolean backupBatteries) {
-		this.backupBatteries = backupBatteries;
-	}
-	public Boolean getVerifyVoltage() {
-		return verifyVoltage;
-	}
-	public void setVerifyVoltage(Boolean verifyVoltage) {
-		this.verifyVoltage = verifyVoltage;
-	}
-	public Integer getUpsServiceParamsId() {
-		return upsServiceParamsId;
-	}
-	public void setUpsServiceParamsId(Integer upsServiceParamsId) {
-		this.upsServiceParamsId = upsServiceParamsId;
-	}
-	public Double getInputVoltagePhase() {
-		return inputVoltagePhase;
-	}
-	public void setInputVoltagePhase(Double inputVoltagePhase) {
-		this.inputVoltagePhase = inputVoltagePhase;
-	}
-	public Double getInputVoltageNeutro() {
-		return inputVoltageNeutro;
-	}
-	public void setInputVoltageNeutro(Double inputVoltageNeutro) {
-		this.inputVoltageNeutro = inputVoltageNeutro;
-	}
-	public Double getInputVoltageNeutroGround() {
-		return inputVoltageNeutroGround;
-	}
-	public void setInputVoltageNeutroGround(Double inputVoltageNeutroGround) {
-		this.inputVoltageNeutroGround = inputVoltageNeutroGround;
-	}
-	public Double getPercentCharge() {
-		return percentCharge;
-	}
-	public void setPercentCharge(Double percentCharge) {
-		this.percentCharge = percentCharge;
-	}
-	public Double getOutputVoltagePhase() {
-		return outputVoltagePhase;
-	}
-	public void setOutputVoltagePhase(Double outputVoltagePhase) {
-		this.outputVoltagePhase = outputVoltagePhase;
-	}
-	public Double getOutputVoltageNeutro() {
-		return outputVoltageNeutro;
-	}
-	public void setOutputVoltageNeutro(Double outputVoltageNeutro) {
-		this.outputVoltageNeutro = outputVoltageNeutro;
-	}
-	public Double getInOutFrecuency() {
-		return inOutFrecuency;
-	}
-	public void setInOutFrecuency(Double inOutFrecuency) {
-		this.inOutFrecuency = inOutFrecuency;
-	}
-	public Double getBusVoltage() {
-		return busVoltage;
-	}
-	public void setBusVoltage(Double busVoltage) {
-		this.busVoltage = busVoltage;
 	}
 
 	public String getObservations() {
@@ -413,4 +281,205 @@ public class UpsServiceDTO {
 	public void setObservations(String observations) {
 		this.observations = observations;
 	}
+
+	public Integer getUpsServiceBatteryBankId() {
+		return upsServiceBatteryBankId;
+	}
+
+	public void setUpsServiceBatteryBankId(Integer upsServiceBatteryBankId) {
+		this.upsServiceBatteryBankId = upsServiceBatteryBankId;
+	}
+
+	public Boolean getCheckConnectors() {
+		return checkConnectors;
+	}
+
+	public void setCheckConnectors(Boolean checkConnectors) {
+		this.checkConnectors = checkConnectors;
+	}
+
+	public Boolean getCverifyOutflow() {
+		return cverifyOutflow;
+	}
+
+	public void setCverifyOutflow(Boolean cverifyOutflow) {
+		this.cverifyOutflow = cverifyOutflow;
+	}
+
+	public Integer getNumberBatteries() {
+		return numberBatteries;
+	}
+
+	public void setNumberBatteries(Integer numberBatteries) {
+		this.numberBatteries = numberBatteries;
+	}
+
+	public String getManufacturedDateSerial() {
+		return manufacturedDateSerial;
+	}
+
+	public void setManufacturedDateSerial(String manufacturedDateSerial) {
+		this.manufacturedDateSerial = manufacturedDateSerial;
+	}
+
+	public String getDamageBatteries() {
+		return damageBatteries;
+	}
+
+	public void setDamageBatteries(String damageBatteries) {
+		this.damageBatteries = damageBatteries;
+	}
+
+	public String getOther() {
+		return other;
+	}
+
+	public void setOther(String other) {
+		this.other = other;
+	}
+
+	public String getTemp() {
+		return temp;
+	}
+
+	public void setTemp(String temp) {
+		this.temp = temp;
+	}
+
+	public Boolean getChargeTest() {
+		return chargeTest;
+	}
+
+	public void setChargeTest(Boolean chargeTest) {
+		this.chargeTest = chargeTest;
+	}
+
+	public String getBrandModel() {
+		return brandModel;
+	}
+
+	public void setBrandModel(String brandModel) {
+		this.brandModel = brandModel;
+	}
+
+	public String getBatteryVoltage() {
+		return batteryVoltage;
+	}
+
+	public void setBatteryVoltage(String batteryVoltage) {
+		this.batteryVoltage = batteryVoltage;
+	}
+
+	public Integer getUpsServiceGeneralTestId() {
+		return upsServiceGeneralTestId;
+	}
+
+	public void setUpsServiceGeneralTestId(Integer upsServiceGeneralTestId) {
+		this.upsServiceGeneralTestId = upsServiceGeneralTestId;
+	}
+
+	public Boolean getTrasferLine() {
+		return trasferLine;
+	}
+
+	public void setTrasferLine(Boolean trasferLine) {
+		this.trasferLine = trasferLine;
+	}
+
+	public Boolean getTransferEmergencyPlant() {
+		return transferEmergencyPlant;
+	}
+
+	public void setTransferEmergencyPlant(Boolean transferEmergencyPlant) {
+		this.transferEmergencyPlant = transferEmergencyPlant;
+	}
+
+	public Boolean getBackupBatteries() {
+		return backupBatteries;
+	}
+
+	public void setBackupBatteries(Boolean backupBatteries) {
+		this.backupBatteries = backupBatteries;
+	}
+
+	public Boolean getVerifyVoltage() {
+		return verifyVoltage;
+	}
+
+	public void setVerifyVoltage(Boolean verifyVoltage) {
+		this.verifyVoltage = verifyVoltage;
+	}
+
+	public Integer getUpsServiceParamsId() {
+		return upsServiceParamsId;
+	}
+
+	public void setUpsServiceParamsId(Integer upsServiceParamsId) {
+		this.upsServiceParamsId = upsServiceParamsId;
+	}
+
+	public String getInputVoltagePhase() {
+		return inputVoltagePhase;
+	}
+
+	public void setInputVoltagePhase(String inputVoltagePhase) {
+		this.inputVoltagePhase = inputVoltagePhase;
+	}
+
+	public String getInputVoltageNeutro() {
+		return inputVoltageNeutro;
+	}
+
+	public void setInputVoltageNeutro(String inputVoltageNeutro) {
+		this.inputVoltageNeutro = inputVoltageNeutro;
+	}
+
+	public String getInputVoltageNeutroGround() {
+		return inputVoltageNeutroGround;
+	}
+
+	public void setInputVoltageNeutroGround(String inputVoltageNeutroGround) {
+		this.inputVoltageNeutroGround = inputVoltageNeutroGround;
+	}
+
+	public String getPercentCharge() {
+		return percentCharge;
+	}
+
+	public void setPercentCharge(String percentCharge) {
+		this.percentCharge = percentCharge;
+	}
+
+	public String getOutputVoltagePhase() {
+		return outputVoltagePhase;
+	}
+
+	public void setOutputVoltagePhase(String outputVoltagePhase) {
+		this.outputVoltagePhase = outputVoltagePhase;
+	}
+
+	public String getOutputVoltageNeutro() {
+		return outputVoltageNeutro;
+	}
+
+	public void setOutputVoltageNeutro(String outputVoltageNeutro) {
+		this.outputVoltageNeutro = outputVoltageNeutro;
+	}
+
+	public String getInOutFrecuency() {
+		return inOutFrecuency;
+	}
+
+	public void setInOutFrecuency(String inOutFrecuency) {
+		this.inOutFrecuency = inOutFrecuency;
+	}
+
+	public String getBusVoltage() {
+		return busVoltage;
+	}
+
+	public void setBusVoltage(String busVoltage) {
+		this.busVoltage = busVoltage;
+	}
+	
 }

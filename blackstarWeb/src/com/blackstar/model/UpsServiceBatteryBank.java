@@ -6,8 +6,8 @@ public class UpsServiceBatteryBank {
 			Integer upsServiceId, Boolean checkConnectors,
 			Boolean cverifyOutflow, Integer numberBatteries,
 			String manufacturedDateSerial, String damageBatteries,
-			String other, Double temp, Boolean chargeTest, String brandModel,
-			Double batteryVoltage) {
+			String other, String temp, Boolean chargeTest, String brandModel,
+			String batteryVoltage) {
 		this.upsServiceBatteryBankId = upsServiceBatteryBankId;
 		this.upsServiceId = upsServiceId;
 		this.checkConnectors = checkConnectors;
@@ -30,11 +30,10 @@ public class UpsServiceBatteryBank {
 	private String manufacturedDateSerial;
 	private String damageBatteries;
 	private String other;
-	private Double temp;
+	private String temp;
 	private Boolean chargeTest;
 	private String brandModel;
-	private Double batteryVoltage;
-	
+	private String batteryVoltage;
 	public Integer getUpsServiceBatteryBankId() {
 		return upsServiceBatteryBankId;
 	}
@@ -83,10 +82,10 @@ public class UpsServiceBatteryBank {
 	public void setOther(String other) {
 		this.other = other;
 	}
-	public Double getTemp() {
+	public String getTemp() {
 		return temp;
 	}
-	public void setTemp(Double temp) {
+	public void setTemp(String temp) {
 		this.temp = temp;
 	}
 	public Boolean getChargeTest() {
@@ -101,11 +100,10 @@ public class UpsServiceBatteryBank {
 	public void setBrandModel(String brandModel) {
 		this.brandModel = brandModel;
 	}
-	public Double getBatteryVoltage() {
+	public String getBatteryVoltage() {
 		return batteryVoltage;
 	}
-	public void setBatteryVoltage(Double batteryVoltage) {
+	public void setBatteryVoltage(String batteryVoltage) {
 		this.batteryVoltage = batteryVoltage;
 	}
-	
 }

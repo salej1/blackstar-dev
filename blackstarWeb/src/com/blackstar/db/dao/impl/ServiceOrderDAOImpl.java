@@ -393,9 +393,9 @@ public class ServiceOrderDAOImpl extends AbstractDAO implements ServiceOrderDAO 
 			if(cell.getCellNumber()!=null)
 			{
 				if(cell.getFloatVoltage()==null)
-					cell.setFloatVoltage(0);
+					cell.setFloatVoltage("");
 				if(cell.getChargeVoltage()==null)
-					cell.setChargeVoltage(0);
+					cell.setChargeVoltage("");
 				
 				sqlBuilder = new StringBuilder();
 				sqlBuilder.append("CALL AddBBcellservice(?,?,?,?)");

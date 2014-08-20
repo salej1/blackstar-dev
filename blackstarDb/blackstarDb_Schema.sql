@@ -33,6 +33,8 @@
 -- ---------------------------------------------------------------------------
 -- 25 	31/07/2014	SAG 	Se incremente tamaño de manufacturedDateSeria en upsServiceBatteryBank
 -- ---------------------------------------------------------------------------
+-- 26 	18/08/2014	SAG 	Se cambian campos numericos de OS por alfa-numericos
+-- ---------------------------------------------------------------------------
 
 use blackstarDb;
 
@@ -45,6 +47,99 @@ BEGIN
 -- -----------------------------------------------------------------------------
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
+
+-- CAMBIANDO NUMERICOS POR ALFA-NUMERICOS
+-- aaService;
+ALTER TABLE aaService MODIFY evaValTemp VARCHAR(50);
+ALTER TABLE aaService MODIFY evaValHum VARCHAR(50);
+ALTER TABLE aaService MODIFY evaSetpointTemp VARCHAR(50);
+ALTER TABLE aaService MODIFY evaSetpointHum VARCHAR(50);
+ALTER TABLE aaService MODIFY evaLectrurePreasureHigh VARCHAR(50);
+ALTER TABLE aaService MODIFY evaLectrurePreasureLow VARCHAR(50);
+ALTER TABLE aaService MODIFY evaLectureTemp VARCHAR(50);
+ALTER TABLE aaService MODIFY evaLectureOilLevel VARCHAR(50);
+ALTER TABLE aaService MODIFY evaLectureCoolerLevel VARCHAR(50);
+ALTER TABLE aaService MODIFY evaLectureVoltageGroud VARCHAR(50);
+ALTER TABLE aaService MODIFY evaLectureVoltagePhases VARCHAR(50);
+ALTER TABLE aaService MODIFY evaLectureVoltageControl VARCHAR(50);
+ALTER TABLE aaService MODIFY evaLectureCurrentMotor1 VARCHAR(50);
+ALTER TABLE aaService MODIFY evaLectureCurrentMotor2 VARCHAR(50);
+ALTER TABLE aaService MODIFY evaLectureCurrentMotor3 VARCHAR(50);
+ALTER TABLE aaService MODIFY evaLectureCurrentCompressor1 VARCHAR(50);
+ALTER TABLE aaService MODIFY evaLectureCurrentCompressor2 VARCHAR(50);
+ALTER TABLE aaService MODIFY evaLectureCurrentCompressor3 VARCHAR(50);
+ALTER TABLE aaService MODIFY evaLectureCurrentHumidifier1 VARCHAR(50);
+ALTER TABLE aaService MODIFY evaLectureCurrentHumidifier2 VARCHAR(50);
+ALTER TABLE aaService MODIFY evaLectureCurrentHumidifier3 VARCHAR(50);
+ALTER TABLE aaService MODIFY evaLectureCurrentHeater1 VARCHAR(50);
+ALTER TABLE aaService MODIFY evaLectureCurrentHeater2 VARCHAR(50);
+ALTER TABLE aaService MODIFY evaLectureCurrentHeater3 VARCHAR(50);
+ALTER TABLE aaService MODIFY condLectureVoltageGroud VARCHAR(50);
+ALTER TABLE aaService MODIFY condLectureVoltagePhases VARCHAR(50);
+ALTER TABLE aaService MODIFY condLectureVoltageControl VARCHAR(50);
+ALTER TABLE aaService MODIFY condLectureMotorCurrent VARCHAR(50);
+-- bbService;
+ALTER TABLE bbService MODIFY voltageBus VARCHAR(50) ;
+ALTER TABLE bbService MODIFY temperature VARCHAR(50);
+-- bbCellService;
+ALTER TABLE bbCellService MODIFY floatVoltage VARCHAR(50) ;
+ALTER TABLE bbCellService MODIFY chargeVoltage VARCHAR(50);
+-- epService;
+ALTER TABLE epService MODIFY powerWattGenerator VARCHAR(50) ;
+ALTER TABLE epService MODIFY tensionGenerator VARCHAR(50);
+ALTER TABLE epService MODIFY tankCapacity VARCHAR(50);
+ALTER TABLE epService MODIFY observations varchar(1000);
+-- epServiceDynamicTest;
+ALTER TABLE epServiceDynamicTest MODIFY vacuumFrequency VARCHAR(50);
+ALTER TABLE epServiceDynamicTest MODIFY chargeFrequency VARCHAR(50);
+ALTER TABLE epServiceDynamicTest MODIFY bootTryouts VARCHAR(50) ;
+ALTER TABLE epServiceDynamicTest MODIFY vacuumVoltage VARCHAR(50);
+ALTER TABLE epServiceDynamicTest MODIFY chargeVoltage VARCHAR(50);
+ALTER TABLE epServiceDynamicTest MODIFY qualitySmoke VARCHAR(50);
+ALTER TABLE epServiceDynamicTest MODIFY startTime VARCHAR(50) ;
+ALTER TABLE epServiceDynamicTest MODIFY transferTime VARCHAR(50) ;
+ALTER TABLE epServiceDynamicTest MODIFY stopTime VARCHAR(50);
+-- pservicelectures;
+ALTER TABLE epServiceLectures MODIFY voltageABAN VARCHAR(50) ;
+ALTER TABLE epServiceLectures MODIFY voltageACCN VARCHAR(50) ;
+ALTER TABLE epServiceLectures MODIFY voltageBCBN VARCHAR(50) ;
+ALTER TABLE epServiceLectures MODIFY voltageNT VARCHAR(50) ;
+ALTER TABLE epServiceLectures MODIFY currentA VARCHAR(50) ;
+ALTER TABLE epServiceLectures MODIFY currentB VARCHAR(50) ;
+ALTER TABLE epServiceLectures MODIFY currentC VARCHAR(50) ;
+ALTER TABLE epServiceLectures MODIFY frequency VARCHAR(50) ;
+ALTER TABLE epServiceLectures MODIFY oilPreassure VARCHAR(50) ;
+ALTER TABLE epServiceLectures MODIFY temp VARCHAR(50);
+-- epServiceSurvey;
+ALTER TABLE epServiceSurvey MODIFY levelBattery VARCHAR(50);
+ALTER TABLE epServiceSurvey MODIFY levelOil VARCHAR(50);
+-- epServiceTestProtection;
+ALTER TABLE epServiceTestProtection MODIFY tempSensor VARCHAR(50) ;
+ALTER TABLE epServiceTestProtection MODIFY oilSensor VARCHAR(50) ;
+ALTER TABLE epServiceTestProtection MODIFY voltageSensor VARCHAR(50) ;
+ALTER TABLE epServiceTestProtection MODIFY overSpeedSensor VARCHAR(50) ;
+ALTER TABLE epServiceTestProtection MODIFY oilPreasureSensor VARCHAR(50) ;
+ALTER TABLE epServiceTestProtection MODIFY waterLevelSensor VARCHAR(50);
+-- epServiceTransferSwitch;
+ALTER TABLE epServiceTransferSwitch MODIFY capacityAmp VARCHAR(50);
+-- upsServiceBatteryBank;
+ALTER TABLE upsServiceBatteryBank MODIFY numberBatteries INT;
+ALTER TABLE upsServiceBatteryBank MODIFY temp VARCHAR(50);
+ALTER TABLE upsServiceBatteryBank MODIFY batteryVoltage VARCHAR(50);
+-- upsServiceGeneralTest;
+ALTER TABLE upsServiceGeneralTest MODIFY trasferLine VARCHAR(50);
+ALTER TABLE upsServiceGeneralTest MODIFY transferEmergencyPlant VARCHAR(50);
+ALTER TABLE upsServiceGeneralTest MODIFY backupBatteries VARCHAR(50);
+ALTER TABLE upsServiceGeneralTest MODIFY verifyVoltage VARCHAR(50);
+-- upsServiceParams;
+ALTER TABLE upsServiceParams MODIFY inputVoltagePhase VARCHAR(50);
+ALTER TABLE upsServiceParams MODIFY inputVoltageNeutro VARCHAR(50);
+ALTER TABLE upsServiceParams MODIFY inputVoltageNeutroGround VARCHAR(50);
+ALTER TABLE upsServiceParams MODIFY percentCharge VARCHAR(50);
+ALTER TABLE upsServiceParams MODIFY outputVoltagePhase VARCHAR(50);
+ALTER TABLE upsServiceParams MODIFY outputVoltageNeutro VARCHAR(50);
+ALTER TABLE upsServiceParams MODIFY inOutFrecuency VARCHAR(50);
+ALTER TABLE upsServiceParams MODIFY busVoltage VARCHAR(50);
 
 -- INCREMENTANDO TAMAÑO DE manufacturedDateSerial EN upsService
 ALTER TABLE upsServiceBatteryBank MODIFY manufacturedDateSerial VARCHAR(200);

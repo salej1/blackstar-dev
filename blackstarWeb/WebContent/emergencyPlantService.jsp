@@ -44,9 +44,9 @@
 
 				// Habilitar datetime picker
 				$("#serviceDate").datetimepicker({format:'d/m/Y H:i:s', lang:'es'});
-				$( "#oilChange" ).datepicker({ dateFormat: 'dd/mm/yy'});
-				$( "#tuningDate" ).datepicker({ dateFormat: 'dd/mm/yy'});
-				$( "#serviceCorrective" ).datepicker({ dateFormat: 'dd/mm/yy'});
+				$( "#oilChangeDisplay" ).datepicker({ dateFormat: 'dd/mm/yy'});
+				$( "#tuningDateDisplay" ).datepicker({ dateFormat: 'dd/mm/yy'});
+				$( "#serviceCorrectiveDisplay" ).datepicker({ dateFormat: 'dd/mm/yy'});
 
 				// Habilitando campos de captura del cliente
 				if(hasPolicy == "true"){
@@ -91,21 +91,21 @@
 
 			// Dates verification
 			// Oil change
-			var startTimestamp = Date.parseExact($("#oilChange").val(), 'dd/MM/yyyy');
+			var startTimestamp = Date.parseExact($("#oilChangeDisplay").val(), 'dd/MM/yyyy');
 			if(startTimestamp == undefined || startTimestamp == null || startTimestamp == "Invalid Date"){
 				$("#InvalidMessage").html("Por favor revise la fecha del ultimo cambio de aceite");
 				return false;
 			}
 
 			// tunning date
-			startTimestamp = Date.parseExact($("#tuningDate").val(), 'dd/MM/yyyy');
+			startTimestamp = Date.parseExact($("#tuningDateDisplay").val(), 'dd/MM/yyyy');
 			if(startTimestamp == undefined || startTimestamp == null || startTimestamp == "Invalid Date"){
 				$("#InvalidMessage").html("Por favor revise la fecha de ultima afinacion");
 				return false;
 			}
 
 			// serviceCorrective
-			startTimestamp = Date.parseExact($("#serviceCorrective").val(), 'dd/MM/yyyy');
+			startTimestamp = Date.parseExact($("#serviceCorrectiveDisplay").val(), 'dd/MM/yyyy');
 			if(startTimestamp == undefined || startTimestamp == null || startTimestamp == "Invalid Date"){
 				$("#InvalidMessage").html("Por favor revise la fecha de ultimo servicio correctivo");
 				return false;
@@ -132,9 +132,9 @@
 				$("#signCreated").val($("#signCreatedCapture").val())
 				$("#signReceivedBy").val($("#signReceivedByCapture").val())
 				$("#serviceEndDate").val(dateNow());
-				$("#oilChange").val($("#oilChange").val() + " 00:00:00");
-				$("#tuningDate").val($("#tuningDate").val() + " 00:00:00");
-				$("#serviceCorrective").val($("#serviceCorrective").val() + " 00:00:00");
+				$("#oilChange").val($("#oilChangeDisplay").val() + " 00:00:00");
+				$("#tuningDate").val($("#tuningDateDisplay").val() + " 00:00:00");
+				$("#serviceCorrective").val($("#serviceCorrectiveDisplay").val() + " 00:00:00");
 			
 				return true;
 			}
@@ -302,11 +302,17 @@
 						</tr>
 						<tr>
 							<td>ULTIMO CAMBIO DE ACEITE:</td>
-							<td><form:input path="oilChange" type="text" style="width:95%;"  cssClass="lockOnDetail" required="true" readOnly="true"/></td>
+							<td><form:input path="oilChangeDisplay" type="text" style="width:95%;"  cssClass="lockOnDetail" required="true" readOnly="true"/>
+								<form:hidden path="oilChange"/>
+							</td>
 							<td>ULTIMA FECHA DE AFINACIÓN:</td>
-							<td><form:input path="tuningDate" type="text" style="width:95%;" cssClass="lockOnDetail" required="true" readOnly="true"/></td>
+							<td><form:input path="tuningDateDisplay" type="text" style="width:95%;" cssClass="lockOnDetail" required="true" readOnly="true"/>
+								<form:hidden path="tuningDate"/>
+							</td>
 							<td>ULTIMO SERVICIO CORRECTIVO:</td>
-							<td><form:input path="serviceCorrective" type="text" style="width:95%;"  cssClass="lockOnDetail" required="true" readOnly="true"/></td>
+							<td><form:input path="serviceCorrectiveDisplay" type="text" style="width:95%;"  cssClass="lockOnDetail" required="true" readOnly="true"/>
+								<form:hidden path="serviceCorrective"/>
+							</td>
 						</tr>
 					</table>
 					<table>
