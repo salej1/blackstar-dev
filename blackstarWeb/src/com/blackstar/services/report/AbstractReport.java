@@ -10,7 +10,8 @@ public abstract class AbstractReport {
 	
   protected PDFDrawer drawer = null;
   
-  private static final int MAX_ADDRES_LEN = 60;
+  protected final int MAX_ADDRESS_LEN = 60;
+  protected final int MAX_REQUESTEDBY_LEN = 70;
 	
   protected abstract void run(Object data) throws Exception;
 	
@@ -55,14 +56,18 @@ public abstract class AbstractReport {
 	drawer.vLine(670, 770, 555);
 		
 	drawer.text("FIRMA:", 5, 695);
-	drawer.drawSignature(signCreated, .4F, 40,687);
+	if(signCreated != null && !signCreated.equals("")){
+		drawer.drawSignature(signCreated, .4F, 40,687);
+	}
 	drawer.text("NOMBRE:", 5, 750);
 	drawer.text(noCommas(responsible), 45, 750, true);
 	drawer.text("FECHA Y HORA DE SALIDA:", 5, 765);
 	drawer.text(format(closed), 113, 765, true);
 		
 	drawer.text("FIRMA:", 281, 695);
-	drawer.drawSignature(signReceivedBy, .4F, 320,687);
+	if(signReceivedBy != null && !signReceivedBy.equals("")){
+		drawer.drawSignature(signReceivedBy, .4F, 320,687);
+	}
 	drawer.text("NOMBRE:", 281, 750);
 	drawer.text(receivedBy, 321, 750, true);
 	drawer.text("PUESTO:", 281, 765);	  
@@ -83,10 +88,10 @@ public abstract class AbstractReport {
 	 return  Utils.noCommas(string);
   }
   
-  protected String trimAddress(String address){
-	  if(address.length() > MAX_ADDRES_LEN){
-		  address = address.substring(0, MAX_ADDRES_LEN);
+  protected String trim(String value, int len){
+	  if(value.length() > len){
+		  value = value.substring(0, len);
 	  }
-	  return address;
+	  return value;
   }
 }

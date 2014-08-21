@@ -35,6 +35,8 @@
 -- ---------------------------------------------------------------------------
 -- 26 	18/08/2014	SAG 	Se cambian campos numericos de OS por alfa-numericos
 -- ---------------------------------------------------------------------------
+-- 27 	20/08/2014	SAG 	Se aumenta el tamaño de todos los campos alfanumericos de OS
+-- ---------------------------------------------------------------------------
 
 use blackstarDb;
 
@@ -49,97 +51,170 @@ BEGIN
 -- -----------------------------------------------------------------------------
 
 -- CAMBIANDO NUMERICOS POR ALFA-NUMERICOS
--- aaService;
-ALTER TABLE aaService MODIFY evaValTemp VARCHAR(50);
-ALTER TABLE aaService MODIFY evaValHum VARCHAR(50);
-ALTER TABLE aaService MODIFY evaSetpointTemp VARCHAR(50);
-ALTER TABLE aaService MODIFY evaSetpointHum VARCHAR(50);
-ALTER TABLE aaService MODIFY evaLectrurePreasureHigh VARCHAR(50);
-ALTER TABLE aaService MODIFY evaLectrurePreasureLow VARCHAR(50);
-ALTER TABLE aaService MODIFY evaLectureTemp VARCHAR(50);
-ALTER TABLE aaService MODIFY evaLectureOilLevel VARCHAR(50);
-ALTER TABLE aaService MODIFY evaLectureCoolerLevel VARCHAR(50);
-ALTER TABLE aaService MODIFY evaLectureVoltageGroud VARCHAR(50);
-ALTER TABLE aaService MODIFY evaLectureVoltagePhases VARCHAR(50);
-ALTER TABLE aaService MODIFY evaLectureVoltageControl VARCHAR(50);
-ALTER TABLE aaService MODIFY evaLectureCurrentMotor1 VARCHAR(50);
-ALTER TABLE aaService MODIFY evaLectureCurrentMotor2 VARCHAR(50);
-ALTER TABLE aaService MODIFY evaLectureCurrentMotor3 VARCHAR(50);
-ALTER TABLE aaService MODIFY evaLectureCurrentCompressor1 VARCHAR(50);
-ALTER TABLE aaService MODIFY evaLectureCurrentCompressor2 VARCHAR(50);
-ALTER TABLE aaService MODIFY evaLectureCurrentCompressor3 VARCHAR(50);
-ALTER TABLE aaService MODIFY evaLectureCurrentHumidifier1 VARCHAR(50);
-ALTER TABLE aaService MODIFY evaLectureCurrentHumidifier2 VARCHAR(50);
-ALTER TABLE aaService MODIFY evaLectureCurrentHumidifier3 VARCHAR(50);
-ALTER TABLE aaService MODIFY evaLectureCurrentHeater1 VARCHAR(50);
-ALTER TABLE aaService MODIFY evaLectureCurrentHeater2 VARCHAR(50);
-ALTER TABLE aaService MODIFY evaLectureCurrentHeater3 VARCHAR(50);
-ALTER TABLE aaService MODIFY condLectureVoltageGroud VARCHAR(50);
-ALTER TABLE aaService MODIFY condLectureVoltagePhases VARCHAR(50);
-ALTER TABLE aaService MODIFY condLectureVoltageControl VARCHAR(50);
-ALTER TABLE aaService MODIFY condLectureMotorCurrent VARCHAR(50);
--- bbService;
-ALTER TABLE bbService MODIFY voltageBus VARCHAR(50) ;
-ALTER TABLE bbService MODIFY temperature VARCHAR(50);
--- bbCellService;
-ALTER TABLE bbCellService MODIFY floatVoltage VARCHAR(50) ;
-ALTER TABLE bbCellService MODIFY chargeVoltage VARCHAR(50);
--- epService;
-ALTER TABLE epService MODIFY powerWattGenerator VARCHAR(50) ;
-ALTER TABLE epService MODIFY tensionGenerator VARCHAR(50);
-ALTER TABLE epService MODIFY tankCapacity VARCHAR(50);
-ALTER TABLE epService MODIFY observations varchar(1000);
--- epServiceDynamicTest;
-ALTER TABLE epServiceDynamicTest MODIFY vacuumFrequency VARCHAR(50);
-ALTER TABLE epServiceDynamicTest MODIFY chargeFrequency VARCHAR(50);
-ALTER TABLE epServiceDynamicTest MODIFY bootTryouts VARCHAR(50) ;
-ALTER TABLE epServiceDynamicTest MODIFY vacuumVoltage VARCHAR(50);
-ALTER TABLE epServiceDynamicTest MODIFY chargeVoltage VARCHAR(50);
-ALTER TABLE epServiceDynamicTest MODIFY qualitySmoke VARCHAR(50);
-ALTER TABLE epServiceDynamicTest MODIFY startTime VARCHAR(50) ;
-ALTER TABLE epServiceDynamicTest MODIFY transferTime VARCHAR(50) ;
-ALTER TABLE epServiceDynamicTest MODIFY stopTime VARCHAR(50);
--- pservicelectures;
-ALTER TABLE epServiceLectures MODIFY voltageABAN VARCHAR(50) ;
-ALTER TABLE epServiceLectures MODIFY voltageACCN VARCHAR(50) ;
-ALTER TABLE epServiceLectures MODIFY voltageBCBN VARCHAR(50) ;
-ALTER TABLE epServiceLectures MODIFY voltageNT VARCHAR(50) ;
-ALTER TABLE epServiceLectures MODIFY currentA VARCHAR(50) ;
-ALTER TABLE epServiceLectures MODIFY currentB VARCHAR(50) ;
-ALTER TABLE epServiceLectures MODIFY currentC VARCHAR(50) ;
-ALTER TABLE epServiceLectures MODIFY frequency VARCHAR(50) ;
-ALTER TABLE epServiceLectures MODIFY oilPreassure VARCHAR(50) ;
-ALTER TABLE epServiceLectures MODIFY temp VARCHAR(50);
--- epServiceSurvey;
-ALTER TABLE epServiceSurvey MODIFY levelBattery VARCHAR(50);
-ALTER TABLE epServiceSurvey MODIFY levelOil VARCHAR(50);
--- epServiceTestProtection;
-ALTER TABLE epServiceTestProtection MODIFY tempSensor VARCHAR(50) ;
-ALTER TABLE epServiceTestProtection MODIFY oilSensor VARCHAR(50) ;
-ALTER TABLE epServiceTestProtection MODIFY voltageSensor VARCHAR(50) ;
-ALTER TABLE epServiceTestProtection MODIFY overSpeedSensor VARCHAR(50) ;
-ALTER TABLE epServiceTestProtection MODIFY oilPreasureSensor VARCHAR(50) ;
-ALTER TABLE epServiceTestProtection MODIFY waterLevelSensor VARCHAR(50);
--- epServiceTransferSwitch;
-ALTER TABLE epServiceTransferSwitch MODIFY capacityAmp VARCHAR(50);
--- upsServiceBatteryBank;
-ALTER TABLE upsServiceBatteryBank MODIFY numberBatteries INT;
-ALTER TABLE upsServiceBatteryBank MODIFY temp VARCHAR(50);
-ALTER TABLE upsServiceBatteryBank MODIFY batteryVoltage VARCHAR(50);
--- upsServiceGeneralTest;
-ALTER TABLE upsServiceGeneralTest MODIFY trasferLine VARCHAR(50);
-ALTER TABLE upsServiceGeneralTest MODIFY transferEmergencyPlant VARCHAR(50);
-ALTER TABLE upsServiceGeneralTest MODIFY backupBatteries VARCHAR(50);
-ALTER TABLE upsServiceGeneralTest MODIFY verifyVoltage VARCHAR(50);
--- upsServiceParams;
-ALTER TABLE upsServiceParams MODIFY inputVoltagePhase VARCHAR(50);
-ALTER TABLE upsServiceParams MODIFY inputVoltageNeutro VARCHAR(50);
-ALTER TABLE upsServiceParams MODIFY inputVoltageNeutroGround VARCHAR(50);
-ALTER TABLE upsServiceParams MODIFY percentCharge VARCHAR(50);
-ALTER TABLE upsServiceParams MODIFY outputVoltagePhase VARCHAR(50);
-ALTER TABLE upsServiceParams MODIFY outputVoltageNeutro VARCHAR(50);
-ALTER TABLE upsServiceParams MODIFY inOutFrecuency VARCHAR(50);
-ALTER TABLE upsServiceParams MODIFY busVoltage VARCHAR(50);
+IF(SELECT character_maximum_length FROM information_schema.columns WHERE  table_schema = 'blackstarDb' AND table_name = 'aaService' AND column_name = 'observations') < 1000 THEN
+	-- aaService
+	ALTER TABLE aaService MODIFY evaDescription VARCHAR(2000) ;
+	ALTER TABLE aaService MODIFY evaValTemp VARCHAR(200) ;
+	ALTER TABLE aaService MODIFY evaValHum VARCHAR(200) ;
+	ALTER TABLE aaService MODIFY evaSetpointTemp VARCHAR(200) ;
+	ALTER TABLE aaService MODIFY evaSetpointHum VARCHAR(200) ;
+	ALTER TABLE aaService MODIFY evaLectrurePreasureHigh VARCHAR(200) ;
+	ALTER TABLE aaService MODIFY evaLectrurePreasureLow VARCHAR(200) ;
+	ALTER TABLE aaService MODIFY evaLectureTemp VARCHAR(200) ;
+	ALTER TABLE aaService MODIFY evaLectureOilColor VARCHAR(200) ;
+	ALTER TABLE aaService MODIFY evaLectureOilLevel VARCHAR(200) ;
+	ALTER TABLE aaService MODIFY evaLectureCoolerColor VARCHAR(200) ;
+	ALTER TABLE aaService MODIFY evaLectureCoolerLevel VARCHAR(200) ;
+	ALTER TABLE aaService MODIFY evaCheckOperatation VARCHAR(200) ;
+	ALTER TABLE aaService MODIFY evaCheckNoise VARCHAR(200) ;
+	ALTER TABLE aaService MODIFY evaCheckIsolated VARCHAR(200) ;
+	ALTER TABLE aaService MODIFY evaLectureVoltageGroud VARCHAR(200) ;
+	ALTER TABLE aaService MODIFY evaLectureVoltagePhases VARCHAR(200) ;
+	ALTER TABLE aaService MODIFY evaLectureVoltageControl VARCHAR(200) ;
+	ALTER TABLE aaService MODIFY evaLectureCurrentMotor1 VARCHAR(200) ;
+	ALTER TABLE aaService MODIFY evaLectureCurrentMotor2 VARCHAR(200) ;
+	ALTER TABLE aaService MODIFY evaLectureCurrentMotor3 VARCHAR(200) ;
+	ALTER TABLE aaService MODIFY evaLectureCurrentCompressor1 VARCHAR(200) ;
+	ALTER TABLE aaService MODIFY evaLectureCurrentCompressor2 VARCHAR(200) ;
+	ALTER TABLE aaService MODIFY evaLectureCurrentCompressor3 VARCHAR(200) ;
+	ALTER TABLE aaService MODIFY evaLectureCurrentHumidifier1 VARCHAR(200) ;
+	ALTER TABLE aaService MODIFY evaLectureCurrentHumidifier2 VARCHAR(200) ;
+	ALTER TABLE aaService MODIFY evaLectureCurrentHumidifier3 VARCHAR(200) ;
+	ALTER TABLE aaService MODIFY evaLectureCurrentHeater1 VARCHAR(200) ;
+	ALTER TABLE aaService MODIFY evaLectureCurrentHeater2 VARCHAR(200) ;
+	ALTER TABLE aaService MODIFY evaLectureCurrentHeater3 VARCHAR(200) ;
+	ALTER TABLE aaService MODIFY condReview VARCHAR(200) ;
+	ALTER TABLE aaService MODIFY condLectureVoltageGroud VARCHAR(200) ;
+	ALTER TABLE aaService MODIFY condLectureVoltagePhases VARCHAR(200) ;
+	ALTER TABLE aaService MODIFY condLectureVoltageControl VARCHAR(200) ;
+	ALTER TABLE aaService MODIFY condLectureMotorCurrent VARCHAR(200) ;
+	ALTER TABLE aaService MODIFY condReviewThermostat VARCHAR(200) ;
+	ALTER TABLE aaService MODIFY condModel VARCHAR(200) ;
+	ALTER TABLE aaService MODIFY condSerialNumber VARCHAR(200) ;
+	ALTER TABLE aaService MODIFY condBrand VARCHAR(200) ;
+	ALTER TABLE aaService MODIFY observations VARCHAR(2000);
+	-- bbCellService;
+	ALTER TABLE bbCellService MODIFY floatVoltage VARCHAR(200) ;
+	ALTER TABLE bbCellService MODIFY chargeVoltage VARCHAR(200) ;
+	-- bbService;
+	ALTER TABLE bbService MODIFY plugCleanStatus VARCHAR(200) ;
+	ALTER TABLE bbService MODIFY plugCleanComments VARCHAR(200) ;
+	ALTER TABLE bbService MODIFY coverCleanStatus VARCHAR(200) ;
+	ALTER TABLE bbService MODIFY coverCleanComments VARCHAR(200) ;
+	ALTER TABLE bbService MODIFY capCleanStatus VARCHAR(200) ;
+	ALTER TABLE bbService MODIFY capCleanComments VARCHAR(200) ;
+	ALTER TABLE bbService MODIFY groundCleanStatus VARCHAR(200) ;
+	ALTER TABLE bbService MODIFY groundCleanComments VARCHAR(200) ;
+	ALTER TABLE bbService MODIFY rackCleanStatus VARCHAR(200) ;
+	ALTER TABLE bbService MODIFY rackCleanComments VARCHAR(200) ;
+	ALTER TABLE bbService MODIFY serialNoDateManufact VARCHAR(200) ;
+	ALTER TABLE bbService MODIFY batteryTemperature VARCHAR(200) ;
+	ALTER TABLE bbService MODIFY voltageBus VARCHAR(200) ;
+	ALTER TABLE bbService MODIFY temperature VARCHAR(200) ;
+	-- epService;
+	ALTER TABLE epService MODIFY brandPE VARCHAR(200) ;
+	ALTER TABLE epService MODIFY modelPE VARCHAR(200) ;
+	ALTER TABLE epService MODIFY serialPE VARCHAR(200) ;
+	ALTER TABLE epService MODIFY transferType VARCHAR(200) ;
+	ALTER TABLE epService MODIFY modelTransfer VARCHAR(200) ;
+	ALTER TABLE epService MODIFY modelControl VARCHAR(200) ;
+	ALTER TABLE epService MODIFY modelRegVoltage VARCHAR(200) ;
+	ALTER TABLE epService MODIFY modelRegVelocity VARCHAR(200) ;
+	ALTER TABLE epService MODIFY modelCharger VARCHAR(200) ;
+	ALTER TABLE epService MODIFY brandMotor VARCHAR(200) ;
+	ALTER TABLE epService MODIFY modelMotor VARCHAR(200) ;
+	ALTER TABLE epService MODIFY serialMotor VARCHAR(200) ;
+	ALTER TABLE epService MODIFY cplMotor VARCHAR(200) ;
+	ALTER TABLE epService MODIFY brandGenerator VARCHAR(200) ;
+	ALTER TABLE epService MODIFY modelGenerator VARCHAR(200) ;
+	ALTER TABLE epService MODIFY serialGenerator VARCHAR(200) ;
+	ALTER TABLE epService MODIFY powerWattGenerator VARCHAR(200) ;
+	ALTER TABLE epService MODIFY tensionGenerator VARCHAR(200) ;
+	ALTER TABLE epService MODIFY tankCapacity VARCHAR(200) ;
+	ALTER TABLE epService MODIFY pumpFuelModel VARCHAR(200) ;
+	ALTER TABLE epService MODIFY brandGear VARCHAR(200) ;
+	ALTER TABLE epService MODIFY brandBattery VARCHAR(200) ;
+	ALTER TABLE epService MODIFY clockLecture VARCHAR(200) ;
+	ALTER TABLE epService MODIFY observations VARCHAR(2000);
+	-- epServiceDynamicTest;
+	ALTER TABLE epServiceDynamicTest MODIFY vacuumFrequency VARCHAR(200) ;
+	ALTER TABLE epServiceDynamicTest MODIFY chargeFrequency VARCHAR(200) ;
+	ALTER TABLE epServiceDynamicTest MODIFY bootTryouts VARCHAR(200) ;
+	ALTER TABLE epServiceDynamicTest MODIFY vacuumVoltage VARCHAR(200) ;
+	ALTER TABLE epServiceDynamicTest MODIFY chargeVoltage VARCHAR(200) ;
+	ALTER TABLE epServiceDynamicTest MODIFY qualitySmoke VARCHAR(200) ;
+	ALTER TABLE epServiceDynamicTest MODIFY startTime VARCHAR(200) ;
+	ALTER TABLE epServiceDynamicTest MODIFY transferTime VARCHAR(200) ;
+	ALTER TABLE epServiceDynamicTest MODIFY stopTime VARCHAR(200) ;
+	-- epServiceLectures;
+	ALTER TABLE epServiceLectures MODIFY voltageABAN VARCHAR(200) ;
+	ALTER TABLE epServiceLectures MODIFY voltageACCN VARCHAR(200) ;
+	ALTER TABLE epServiceLectures MODIFY voltageBCBN VARCHAR(200) ;
+	ALTER TABLE epServiceLectures MODIFY voltageNT VARCHAR(200) ;
+	ALTER TABLE epServiceLectures MODIFY currentA VARCHAR(200) ;
+	ALTER TABLE epServiceLectures MODIFY currentB VARCHAR(200) ;
+	ALTER TABLE epServiceLectures MODIFY currentC VARCHAR(200) ;
+	ALTER TABLE epServiceLectures MODIFY frequency VARCHAR(200) ;
+	ALTER TABLE epServiceLectures MODIFY oilPreassure VARCHAR(200) ;
+	ALTER TABLE epServiceLectures MODIFY temp VARCHAR(200) ;
+	-- epServiceParams;
+	ALTER TABLE epServiceParams MODIFY adjsutmentTherm VARCHAR(200) ;
+	ALTER TABLE epServiceParams MODIFY current VARCHAR(200) ;
+	ALTER TABLE epServiceParams MODIFY batteryCurrent VARCHAR(200) ;
+	ALTER TABLE epServiceParams MODIFY clockStatus VARCHAR(200) ;
+	ALTER TABLE epServiceParams MODIFY trasnferTypeProtection VARCHAR(200) ;
+	ALTER TABLE epServiceParams MODIFY generatorTypeProtection VARCHAR(200) ;
+	-- epServiceSurvey;
+	ALTER TABLE epServiceSurvey MODIFY levelBattery VARCHAR(200) ;
+	ALTER TABLE epServiceSurvey MODIFY batteryCap VARCHAR(200) ;
+	ALTER TABLE epServiceSurvey MODIFY batterySulfate VARCHAR(200) ;
+	ALTER TABLE epServiceSurvey MODIFY levelOil VARCHAR(200) ;
+	ALTER TABLE epServiceSurvey MODIFY heatEngine VARCHAR(200) ;
+	ALTER TABLE epServiceSurvey MODIFY hoseOil VARCHAR(200) ;
+	ALTER TABLE epServiceSurvey MODIFY hoseWater VARCHAR(200) ;
+	ALTER TABLE epServiceSurvey MODIFY tubeValve VARCHAR(200) ;
+	ALTER TABLE epServiceSurvey MODIFY stripBlades VARCHAR(200) ;
+	-- epServiceTestProtection;
+	ALTER TABLE epServiceTestProtection MODIFY tempSensor VARCHAR(200) ;
+	ALTER TABLE epServiceTestProtection MODIFY oilSensor VARCHAR(200) ;
+	ALTER TABLE epServiceTestProtection MODIFY voltageSensor VARCHAR(200) ;
+	ALTER TABLE epServiceTestProtection MODIFY overSpeedSensor VARCHAR(200) ;
+	ALTER TABLE epServiceTestProtection MODIFY oilPreasureSensor VARCHAR(200) ;
+	ALTER TABLE epServiceTestProtection MODIFY waterLevelSensor VARCHAR(200) ;
+	-- epServiceTransferSwitch;
+	ALTER TABLE epServiceTransferSwitch MODIFY mechanicalStatus VARCHAR(200) ;
+	ALTER TABLE epServiceTransferSwitch MODIFY systemMotors VARCHAR(200) ;
+	ALTER TABLE epServiceTransferSwitch MODIFY electricInterlock VARCHAR(200) ;
+	ALTER TABLE epServiceTransferSwitch MODIFY mechanicalInterlock VARCHAR(200) ;
+	ALTER TABLE epServiceTransferSwitch MODIFY capacityAmp VARCHAR(200) ;
+	-- upsService;
+	ALTER TABLE upsService MODIFY estatusEquipment VARCHAR(200) ;
+	ALTER TABLE upsService MODIFY capacitorStatus VARCHAR(200) ;
+	ALTER TABLE upsService MODIFY fanStatus VARCHAR(200) ;
+	ALTER TABLE upsService MODIFY observations VARCHAR(2000) ;
+	-- upsServiceBatteryBank;
+	ALTER TABLE upsServiceBatteryBank MODIFY manufacturedDateSerial VARCHAR(2000) ;
+	ALTER TABLE upsServiceBatteryBank MODIFY damageBatteries VARCHAR(200) ;
+	ALTER TABLE upsServiceBatteryBank MODIFY other VARCHAR(200) ;
+	ALTER TABLE upsServiceBatteryBank MODIFY temp VARCHAR(200) ;
+	ALTER TABLE upsServiceBatteryBank MODIFY brandModel VARCHAR(200) ;
+	ALTER TABLE upsServiceBatteryBank MODIFY batteryVoltage VARCHAR(200) ;
+	-- upsServiceGeneralTest;
+	ALTER TABLE upsServiceGeneralTest MODIFY trasferLine VARCHAR(200) ;
+	ALTER TABLE upsServiceGeneralTest MODIFY transferEmergencyPlant VARCHAR(200) ;
+	ALTER TABLE upsServiceGeneralTest MODIFY backupBatteries VARCHAR(200) ;
+	ALTER TABLE upsServiceGeneralTest MODIFY verifyVoltage VARCHAR(200) ;
+	-- upsServiceParams;
+	ALTER TABLE upsServiceParams MODIFY inputVoltagePhase VARCHAR(200) ;
+	ALTER TABLE upsServiceParams MODIFY inputVoltageNeutro VARCHAR(200) ;
+	ALTER TABLE upsServiceParams MODIFY inputVoltageNeutroGround VARCHAR(200) ;
+	ALTER TABLE upsServiceParams MODIFY percentCharge VARCHAR(200) ;
+	ALTER TABLE upsServiceParams MODIFY outputVoltagePhase VARCHAR(200) ;
+	ALTER TABLE upsServiceParams MODIFY outputVoltageNeutro VARCHAR(200) ;
+	ALTER TABLE upsServiceParams MODIFY inOutFrecuency VARCHAR(200) ;
+	ALTER TABLE upsServiceParams MODIFY busVoltage VARCHAR(200) ;
+
+END IF;
 
 -- INCREMENTANDO TAMAÑO DE manufacturedDateSerial EN upsService
 ALTER TABLE upsServiceBatteryBank MODIFY manufacturedDateSerial VARCHAR(200);
@@ -566,22 +641,22 @@ IF (SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackst
 		bbServiceId INTEGER NOT NULL AUTO_INCREMENT,
 		serviceOrderId Integer not null,
 		plugClean BIT NOT NULL,
-		plugCleanStatus nvarchar(50) null,
-		plugCleanComments nvarchar(50) null,
+		plugCleanStatus nVARCHAR(50) null,
+		plugCleanComments nVARCHAR(50) null,
 		coverClean BIT NOT NULL,
-		coverCleanStatus nvarchar(50) null,
-		coverCleanComments nvarchar(50) null,
+		coverCleanStatus nVARCHAR(50) null,
+		coverCleanComments nVARCHAR(50) null,
 		capClean BIT NOT NULL,
-		capCleanStatus nvarchar(50) null,
-		capCleanComments nvarchar(50) null,
+		capCleanStatus nVARCHAR(50) null,
+		capCleanComments nVARCHAR(50) null,
 		groundClean BIT NOT NULL,
-		groundCleanStatus nvarchar(50) null,
-		groundCleanComments nvarchar(50) null,
+		groundCleanStatus nVARCHAR(50) null,
+		groundCleanComments nVARCHAR(50) null,
 		rackClean BIT NOT NULL,
-		rackCleanStatus nvarchar(50) null,
-		rackCleanComments nvarchar(50) null,
-		serialNoDateManufact nvarchar(50) null,
-		batteryTemperature nvarchar(50) null,
+		rackCleanStatus nVARCHAR(50) null,
+		rackCleanComments nVARCHAR(50) null,
+		serialNoDateManufact nVARCHAR(50) null,
+		batteryTemperature nVARCHAR(50) null,
 		voltageBus integer not null,
 		temperature integer not null,
 		created DATETIME NULL,
@@ -619,37 +694,37 @@ IF (SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackst
 	(
 		epServiceId INTEGER NOT NULL AUTO_INCREMENT,
 		serviceOrderId Integer not null,
-		brandPE nvarchar (50) null,
-		modelPE nvarchar (50) null,
-		serialPE nvarchar (50) null,
-		transferType nvarchar(50) null,
-		modelTransfer nvarchar(50) null,
-		modelControl nvarchar(50) null,
-		modelRegVoltage nvarchar(50) null,
-		modelRegVelocity nvarchar(50) null,
-		modelCharger nvarchar(50) null,
+		brandPE nVARCHAR (50) null,
+		modelPE nVARCHAR (50) null,
+		serialPE nVARCHAR (50) null,
+		transferType nVARCHAR(50) null,
+		modelTransfer nVARCHAR(50) null,
+		modelControl nVARCHAR(50) null,
+		modelRegVoltage nVARCHAR(50) null,
+		modelRegVelocity nVARCHAR(50) null,
+		modelCharger nVARCHAR(50) null,
 		oilChange date null,
-		brandMotor nvarchar(50) null,
-		modelMotor nvarchar(50) null,
-		serialMotor nvarchar(50) null,
-		cplMotor nvarchar(50) null,
-		brandGenerator nvarchar(50) null,
-		modelGenerator nvarchar(50) null,
-		serialGenerator nvarchar(50) null,
+		brandMotor nVARCHAR(50) null,
+		modelMotor nVARCHAR(50) null,
+		serialMotor nVARCHAR(50) null,
+		cplMotor nVARCHAR(50) null,
+		brandGenerator nVARCHAR(50) null,
+		modelGenerator nVARCHAR(50) null,
+		serialGenerator nVARCHAR(50) null,
 		powerWattGenerator integer null,
 		tensionGenerator integer null,
 		tuningDate date null,
 		tankCapacity integer null,
-		pumpFuelModel nvarchar(50) null,
+		pumpFuelModel nVARCHAR(50) null,
 		filterFuelFlag bit not null,
 		filterOilFlag bit not null,
 		filterWaterFlag bit not null,
 		filterAirFlag bit not null,
-		brandGear nvarchar(50) null,
-		brandBattery nvarchar(50) null,
-		clockLecture nvarchar(50) null,
+		brandGear nVARCHAR(50) null,
+		brandBattery nVARCHAR(50) null,
+		clockLecture nVARCHAR(50) null,
 		serviceCorrective date null,
-		observations nvarchar(50) null,
+		observations nVARCHAR(50) null,
 		created DATETIME NULL,
 		createdBy NVARCHAR(50) NULL,
 		createdByUsr NVARCHAR(50) NULL,
@@ -673,14 +748,14 @@ IF (SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackst
 		levelWaterFlag bit not null,
 		levelBattery integer not null,
 		tubeLeak bit not null,
-		batteryCap nvarchar(50) null,
-		batterySulfate nvarchar(50) null,
+		batteryCap nVARCHAR(50) null,
+		batterySulfate nVARCHAR(50) null,
 		levelOil integer null,
-		heatEngine nvarchar(50) null,
-		hoseOil nvarchar(50) null,
-		hoseWater nvarchar(50) null,
-		tubeValve nvarchar(50) null,
-		stripBlades nvarchar(50) null,
+		heatEngine nVARCHAR(50) null,
+		hoseOil nVARCHAR(50) null,
+		hoseWater nVARCHAR(50) null,
+		tubeValve nVARCHAR(50) null,
+		stripBlades nVARCHAR(50) null,
 		PRIMARY KEY (epServiceSurveyId),
 		UNIQUE UQ_epServiceSurvey_epServiceSurveyId(epServiceSurveyId),
 		KEY (epServiceId),
@@ -760,14 +835,14 @@ IF (SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackst
 	(
 		epServiceTransferSwitchId INTEGER NOT NULL AUTO_INCREMENT,
 		epServiceId INTEGER NOT NULL ,
-		mechanicalStatus nvarchar(10) not null,
+		mechanicalStatus nVARCHAR(10) not null,
 		boardClean bit not null,
 		screwAdjust bit not null,
 		lampTest bit not null,
 		conectionAdjust bit not null,
-		systemMotors nvarchar(10) not null,
-		electricInterlock nvarchar(10) not null,
-		mechanicalInterlock nvarchar(10) not null,
+		systemMotors nVARCHAR(10) not null,
+		electricInterlock nVARCHAR(10) not null,
+		mechanicalInterlock nVARCHAR(10) not null,
 		capacityAmp integer not null,
 		PRIMARY KEY (epServiceTransferSwitchId),
 		UNIQUE UQ_epServiceTransferSwitch_epServiceTransferSwitchId(epServiceTransferSwitchId),
@@ -805,12 +880,12 @@ IF (SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackst
 	(
 		epServiceParamsId INTEGER NOT NULL AUTO_INCREMENT,
 		epServiceId INTEGER NOT NULL ,
-		adjsutmentTherm nvarchar(10) not null,
-		current nvarchar(10) not null,
-		batteryCurrent nvarchar(10) not null,
-		clockStatus nvarchar(10) not null,
-		trasnferTypeProtection nvarchar(10) not null,
-		generatorTypeProtection nvarchar(10) not null,
+		adjsutmentTherm nVARCHAR(10) not null,
+		current nVARCHAR(10) not null,
+		batteryCurrent nVARCHAR(10) not null,
+		clockStatus nVARCHAR(10) not null,
+		trasnferTypeProtection nVARCHAR(10) not null,
+		generatorTypeProtection nVARCHAR(10) not null,
 		PRIMARY KEY (epServiceParamsId),
 		UNIQUE UQ_epServiceParams_epServiceParamsId(epServiceParamsId),
 		KEY (epServiceId),
@@ -824,15 +899,15 @@ IF (SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackst
 	(
 		upsServiceId INTEGER NOT NULL AUTO_INCREMENT,
 		serviceOrderId Integer not null,
-		estatusEquipment nvarchar(50) not null,
+		estatusEquipment nVARCHAR(50) not null,
 		cleaned bit not null,
 		hooverClean bit not null,
 		verifyConnections bit not null,
-		capacitorStatus nvarchar(50) not null,
+		capacitorStatus nVARCHAR(50) not null,
 		verifyFuzz bit not null,
 		chargerReview bit not null,
-		fanStatus nvarchar(50) not null,
-		observations nvarchar(250) not null,
+		fanStatus nVARCHAR(50) not null,
+		observations nVARCHAR(250) not null,
 		created DATETIME NULL,
 		createdBy NVARCHAR(50) NULL,
 		createdByUsr NVARCHAR(50) NULL,
@@ -855,12 +930,12 @@ IF (SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackst
 		checkConnectors bit not null,
 		cverifyOutflow bit not null,
 		numberBatteries integer not null,
-		manufacturedDateSerial nvarchar(10) not null,
-		damageBatteries nvarchar(50) not null,
-		other nvarchar(250) not null,
+		manufacturedDateSerial nVARCHAR(10) not null,
+		damageBatteries nVARCHAR(50) not null,
+		other nVARCHAR(250) not null,
 		temp decimal not null,
 		chargeTest bit not null,
-		brandModel nvarchar(250) not null,
+		brandModel nVARCHAR(250) not null,
 		batteryVoltage decimal not null,
 		PRIMARY KEY (upsServiceBatteryBankId),
 		UNIQUE UQ_upsServiceBatteryBank_upsServiceBatteryBankId(upsServiceBatteryBankId),
@@ -913,7 +988,7 @@ IF (SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackst
 	(
 		aaServiceId INTEGER NOT NULL AUTO_INCREMENT,
 		serviceOrderId Integer not null,
-		evaDescription nvarchar(250) not null,
+		evaDescription nVARCHAR(250) not null,
 		evaValTemp decimal not null,
 		evaValHum decimal not null,
 		evaSetpointTemp decimal not null,
@@ -927,13 +1002,13 @@ IF (SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackst
 		evaLectrurePreasureHigh decimal not null,
 		evaLectrurePreasureLow decimal not null,
 		evaLectureTemp decimal not null,
-		evaLectureOilColor nvarchar(10) not null,
+		evaLectureOilColor nVARCHAR(10) not null,
 		evaLectureOilLevel decimal not null,
-		evaLectureCoolerColor nvarchar(10) not null,
+		evaLectureCoolerColor nVARCHAR(10) not null,
 		evaLectureCoolerLevel decimal not null,
-		evaCheckOperatation nvarchar(10) not null,
-		evaCheckNoise nvarchar(10) not null,
-		evaCheckIsolated nvarchar(10)not null,
+		evaCheckOperatation nVARCHAR(10) not null,
+		evaCheckNoise nVARCHAR(10) not null,
+		evaCheckIsolated nVARCHAR(10)not null,
 		evaLectureVoltageGroud decimal not null,
 		evaLectureVoltagePhases decimal not null,
 		evaLectureVoltageControl decimal not null,
@@ -951,18 +1026,18 @@ IF (SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackst
 		evaLectureCurrentHeater3 decimal not null,
 		evaCheckFluidSensor  bit not null,
 		evaRequirMaintenance  bit not null,
-		condReview varchar(50) not null,
+		condReview VARCHAR(50) not null,
 		condCleanElectricSystem bit not null,
 		condClean bit not null,
 		condLectureVoltageGroud decimal not null,
 		condLectureVoltagePhases decimal not null,
 		condLectureVoltageControl decimal not null,
 		condLectureMotorCurrent decimal not null,
-		condReviewThermostat nvarchar(50) not null,
-		condModel nvarchar(50) not null,
-		condSerialNumber nvarchar(50) not null,
-		condBrand nvarchar(50) not null,
-		observations nvarchar(255) not null,
+		condReviewThermostat nVARCHAR(50) not null,
+		condModel nVARCHAR(50) not null,
+		condSerialNumber nVARCHAR(50) not null,
+		condBrand nVARCHAR(50) not null,
+		observations nVARCHAR(255) not null,
 		created DATETIME NULL,
 		createdBy NVARCHAR(50) NULL,
 		createdByUsr NVARCHAR(50) NULL,
@@ -982,7 +1057,7 @@ IF (SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackst
 	CREATE TABLE blackstarDb.surveyService (
 		surveyServiceId INT NOT NULL AUTO_INCREMENT,
 		surveyServiceNumber VARCHAR(50),
-		company varchar(255),
+		company VARCHAR(255),
 		namePerson VARCHAR(45) NULL,
 		email VARCHAR(45) NULL,
 		phone VARCHAR(45) NULL,

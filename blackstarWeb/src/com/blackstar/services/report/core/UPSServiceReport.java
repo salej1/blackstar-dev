@@ -33,7 +33,7 @@ public class UPSServiceReport extends AbstractReport {
 	drawer.text(data.getProject(), 436, 98, true);
 	drawer.hLine(0, 555, 102);
 	drawer.text("DOMICILIO: ", 5, 113, false);
-	drawer.text(trimAddress(data.getEquipmentAddress()), 52, 113, true);
+	drawer.text(trim(data.getEquipmentAddress(), MAX_ADDRESS_LEN), 52, 113, true);
 	drawer.text("TELÉFONO: ", 390, 113, false);
 	drawer.text(data.getContactPhone(), 436, 113, true);
 	drawer.hLine(0, 555, 117);

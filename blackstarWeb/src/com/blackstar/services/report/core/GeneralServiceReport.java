@@ -32,12 +32,12 @@ public class GeneralServiceReport extends AbstractReport {
 	drawer.text(data.getTicketNumber(), 438, 98, true);
 	drawer.hLine(0, 555, 102);
 	drawer.text("DOMICILIO : ", 5, 113, false);
-	drawer.text(trimAddress(data.getEquipmentAddress()), 55, 113, true);
+	drawer.text(trim(data.getEquipmentAddress(), MAX_ADDRESS_LEN), 55, 113, true);
 	drawer.text("FECHA Y HORA DE LLEGADA : ", 317, 113, false);
 	drawer.text(format(data.getServiceDate()), 438, 113, true);
 	drawer.hLine(0, 555, 117);
 	drawer.text("SOLICITANTE : ", 5, 128, false);
-	drawer.text(data.getRequestedBy(), 64, 128, true);
+	drawer.text(trim(data.getRequestedBy(), MAX_REQUESTEDBY_LEN), 64, 128, true);
 	drawer.text("TELÉFONO : ", 387, 128, false);
 	drawer.text(data.getContactPhone(), 438, 128, true);
 	drawer.hLine(0, 555, 132);

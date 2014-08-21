@@ -370,4 +370,55 @@ public class PlainServiceController extends AbstractController {
 	    {
 	    	return "";
 	    }
+	    
+	    @RequestMapping(value = "/remake.do", method = RequestMethod.GET)
+	    public @ResponseBody String remake( 
+	    		@RequestParam(required = true) int idObject,
+	    		@ModelAttribute(Globals.SESSION_KEY_PARAM)  UserSession userSession,
+              ModelMap model, HttpServletRequest req, HttpServletResponse resp) throws Exception
+	    {
+	    	PlainServicePolicyDTO plainServicePolicyDTO =null;
+	    	if(userSession.getUser().getUserEmail().equals("portal-servicios@gposac.com.mx")){
+	    		try{
+	    			Integer idOrderService = idObject;
+	    			PlainServiceDTO plainServiceDTO = service.getPlainService(idOrderService);
+	    			if(plainServiceDTO == null){
+	    				plainServiceDTO = new PlainServiceDTO();
+	    				plainServiceDTO.setServiceOrderId(idOrderService);
+	    			}
+	    			Serviceorder serviceOrder = this.daoFactory.getServiceOrderDAO().getServiceOrderById(idOrderService);
+	    			Policy policy = this.daoFactory.getPolicyDAO().getPolicyById(serviceOrder.getPolicyId());
+	    			Equipmenttype equipType;
+	    			if(policy != null && policy.getPolicyId() > 0){
+	    				equipType = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
+	    				plainServicePolicyDTO = new PlainServicePolicyDTO(policy, equipType.getEquipmentType(), serviceOrder,  plainServiceDTO);
+	    				model.addAttribute("hasPolicy", true);
+	    			}
+	    			else if(serviceOrder.getOpenCustomerId() > 0){
+	    				OpenCustomer oc = ocService.GetOpenCustomerById(serviceOrder.getOpenCustomerId());
+	    				plainServicePolicyDTO = new PlainServicePolicyDTO(oc, serviceOrder, plainServiceDTO);
+	    				model.addAttribute("hasPolicy", false);
+	    			}
+	    			// seleccion del solicitante
+	    			if(serviceOrder.getTicketId() != null && serviceOrder.getTicketId() > 0){
+	    				Ticket ticket = daoFactory.getTicketDAO().getTicketById(serviceOrder.getTicketId());
+	    				plainServicePolicyDTO.setRequestedBy(ticket.getContact());
+	    				plainServicePolicyDTO.setTicketNumber(ticket.getTicketNumber());
+	    			}
+
+	    			byte [] report = rpService.getGeneralReport(plainServicePolicyDTO);
+	    			saveReport(serviceOrder.getServiceOrderId(), report);
+
+	    			return "OK";
+	    		}
+	    		catch(Exception e){
+	    			Logger.Log(LogLevel.FATAL, e.getStackTrace()[0].toString(), e);
+	    			model.addAttribute("errorDetails", e.getMessage() + " - " + e.getStackTrace()[0].toString());
+	    			return "Fail";
+	    		}
+	    	}
+	    	else{
+	    		return "Not allowed";
+	    	}
+	    }
 	}
