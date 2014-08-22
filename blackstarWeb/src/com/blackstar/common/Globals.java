@@ -51,7 +51,9 @@ public class Globals {
 	  public static final String GROUP_CALL_CENTER = "Call Center";
 	  public static final String GROUP_COORDINATOR = "Coordinador";
 	  public static final String GROUP_CUSTOMER = "Cliente";
-	  
+	  public static final String GROUP_HR = "Capital Humano";
+	  public static final String GROUP_CEO = "Direccion";
+
 	  // time format
 	  public static final String DEFAULT_TIME_ZONE = "America/Mexico_City";
 	  public static final String DATE_FORMAT_PATTERN = "dd/MM/yyyy hh:mm:ss a";

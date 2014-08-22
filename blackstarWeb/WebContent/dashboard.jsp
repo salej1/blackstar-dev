@@ -128,6 +128,30 @@
 			});
 		</script>
 <!-- Fin Tabla De Ordenes De Servicio Con Pendientes -->
+
+
+	<!-- Link para crear nuevo ticket interno - Disponible para todos menos para el cliente -->
+	<c:set var="sysCliente" scope="request" value="${user.belongsToGroup['Cliente']}" />
+	<c:if test="${sysCliente == null || sysCliente == false}">
+		<c:import url="bloom/newInternalTicketLink.jsp"></c:import>
+	</c:if>
+	<!-- FIN Link para crear nuevo ticket interno  -->
+
+	<!-- Requisiciones por cerrar - Disponible solo apra usuarios responsables de Req -->
+	<c:set var="reqViewer" scope="session" value="${user.belongsToGroup['Lider de Ingenieria'] || user.belongsToGroup['Ingeniero de Soporte'] || user.belongsToGroup['Gerente de Implementación y Servicio'] || user.belongsToGroup['Ingeniero de Redes y Monitoreo'] || user.belongsToGroup['Jefe de Compras'] || user.belongsToGroup['Compras'] || user.belongsToGroup['Jefe de Capital Humano'] || user.belongsToGroup['Gerente de Calidad']}"/> 
+	<c:if test="${reqViewer == true}">
+		
+		<!-- Tabla De Tickets internos pendientes - bloomPendingInternalTickets.jsp -->
+		<c:import url="/bloom/bloomPendingInternalTickets.jsp"></c:import>
+		<script type="text/javascript">
+			$(function(){
+				pendingInternalTicketsInit();
+			});
+		</script>
+		
+	</c:if>
+	<!-- FIN Requisiciones por cerrar - Disponible solo apra usuarios responsables de Req -->
+
 <!-- Contenido para todo grupo sac Excepto cientes -->
 	</c:if>
 
@@ -155,4 +179,3 @@
 
 </div>
 </body>
-</html>

@@ -62,6 +62,7 @@ public class FollowUp extends HttpServlet {
 		catch (Exception e)
 		{
 			 Logger.Log(LogLevel.FATAL, e.getStackTrace()[0].toString(), e);
+			 e.printStackTrace();
 		}
 		
 	}
@@ -107,6 +108,7 @@ public class FollowUp extends HttpServlet {
 				da.executeQuery(sql);
 			} catch (Exception e) {
 				Logger.Log(LogLevel.FATAL, e.getStackTrace()[0].toString(), e);
+				e.printStackTrace();
 			}
 		}
 		
@@ -193,6 +195,7 @@ public class FollowUp extends HttpServlet {
 		}
 		catch(Exception e){
 			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
+			e.printStackTrace();
 		}
 		return list;
 	}

@@ -2,6 +2,7 @@ package com.blackstar.web.controller;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.TimeZone;
 
 import org.springframework.stereotype.Controller;
@@ -29,6 +30,9 @@ import com.blackstar.model.dto.IssueDTO;
 import com.blackstar.services.EmailServiceFactory;
 import com.blackstar.services.interfaces.IssueService;
 import com.blackstar.web.AbstractController;
+import com.bloom.common.bean.InternalTicketBean;
+import com.bloom.db.dao.InternalTicketsDao;
+import com.bloom.model.dto.TicketDetailDTO;
 
 @Controller
 @RequestMapping("/addFollowUp")
@@ -36,9 +40,14 @@ import com.blackstar.web.AbstractController;
 public class AddFollowUpController extends AbstractController{
 	
 	private static IssueService iServ;
+	private static InternalTicketsDao internalTicketsDao;
 	
 	public void setiServ(IssueService iServ) {
 		AddFollowUpController.iServ = iServ;
+	}
+
+	public void setInternalTicketsDao(InternalTicketsDao internalTicketsDao) {
+		AddFollowUpController.internalTicketsDao = internalTicketsDao;
 	}
 
 	@RequestMapping(value = "/add.do", method = RequestMethod.POST)
@@ -217,36 +226,66 @@ public static void AssignIssue(Integer issueId, String asignee, String sender){
 }
 
 private static void SendAssignationEmail(String to, String sender, String createdBy, String timestamp, String comment, String issueTypeId, Integer referenceId, String referenceNumber){
+	SendAssignationEmail(to, sender, createdBy, timestamp, comment, issueTypeId, referenceId, referenceNumber, AssignType.Assign);
+}
+private static void SendAssignationEmail(String to, String sender, String createdBy, String timestamp, String comment, String issueTypeId, Integer referenceId, String referenceNumber, AssignType type){
 	String link = "Link no disponible";
 	StringBuilder bodySb = new StringBuilder();
+	String objectType = null;
 	
 	if(issueTypeId.equalsIgnoreCase("O")){
 		link = String.format("<a href='" + Globals.GOOGLE_CONTEXT_URL + "/osDetail/show.do?serviceOrderId=%s'>%s</a>", referenceId, referenceNumber);
+		objectType = "Orden de servicio";
 	}
 	else if(issueTypeId.equalsIgnoreCase("T")){
 		link = String.format("<a href='" + Globals.GOOGLE_CONTEXT_URL + "/ticketDetail?ticketId=%s'>%s</a>", referenceId, referenceNumber);
+		objectType = "Ticket";
 	}
 	else if(issueTypeId.equalsIgnoreCase("I")){
 		link = String.format("<a href='" + Globals.GOOGLE_CONTEXT_URL + "/issues/show.do?issueId=%s'>%s</a>", referenceId, referenceNumber);
+		objectType = "Tarea asignada";
+	}
+	else if(issueTypeId.equalsIgnoreCase("R")){
+		link = String.format("<a href='" + Globals.GOOGLE_CONTEXT_URL + "/bloom/ticketDetail/show.do?ticketId=%s'>%s</a>", referenceId, referenceNumber);
+		objectType = "Requisición";
 	}
 	
-	bodySb.append("<img src='" + Globals.GPOSAC_LOGO_DEFAULT_URL + "'>");
-	bodySb.append("<div style='font-family:sans-serif;margin-left:50px;'>");
-	bodySb.append("<h3 >Acci&oacute;n requerida</h3>");
-	bodySb.append("<p>Se ha registrado una acci&oacute;n requerida de su parte.</p>");
-	bodySb.append("<br>Asignado por: " + createdBy);
-	bodySb.append("<br>Fecha: " + timestamp);
-	bodySb.append("<br>Comentario: " + comment);
-	bodySb.append("<br>");
-	bodySb.append("<p>Haga click en el siguiente link para revisar los detalles y dar el seguimiento correspondiente</p>");
-	bodySb.append(link);
-	bodySb.append("</div>");
-	bodySb.append("<hr>");
-	bodySb.append("<small>Favor de no responder a este email. En caso de duda p&oacute;ngase en contacto con la persona que le asign&oacute; la tarea</small>");
-
+	String subject = "Accion requerida por " + createdBy;
+	
+	if(type.equals("Assign")){
+		bodySb.append("<img src='" + Globals.GPOSAC_LOGO_DEFAULT_URL + "'>");
+		bodySb.append("<div style='font-family:sans-serif;margin-left:50px;'>");
+		bodySb.append("<h3 >Acci&oacute;n requerida</h3>");
+		bodySb.append("<p>Se ha registrado una acci&oacute;n requerida de su parte.</p>");
+		bodySb.append("<br>Asignado por: " + createdBy);
+		bodySb.append("<br>Fecha: " + timestamp);
+		bodySb.append("<br>Comentario: " + comment);
+		bodySb.append("<br>");
+		bodySb.append("<p>Haga click en el siguiente link para revisar los detalles y dar el seguimiento correspondiente</p>");
+		bodySb.append(link);
+		bodySb.append("</div>");
+		bodySb.append("<hr>");
+		bodySb.append("<small>Favor de no responder a este email. En caso de duda p&oacute;ngase en contacto con la persona que le asign&oacute; la tarea</small>");
+	}
+	else if(type.equals("Notify")){
+		subject = "Notificación de " + objectType;
+		bodySb.append("<img src='" + Globals.GPOSAC_LOGO_DEFAULT_URL + "'>");
+		bodySb.append("<div style='font-family:sans-serif;margin-left:50px;'>");
+		bodySb.append("<h3 >Notificaci&oacute;n de " + objectType + "</h3>");
+		bodySb.append("<p>Para su informacion:</p>");
+		bodySb.append("<p>Se ha registrado la " + objectType + " " + referenceNumber + "</p>");
+		bodySb.append("<br>Registrado por: " + createdBy);
+		bodySb.append("<br>Fecha: " + timestamp);
+		bodySb.append("<br>Comentario: " + comment);
+		bodySb.append("<br>");
+		bodySb.append("<p>En el siguiente Link podra revisar los detalles. Por el momento no se requiere ninguna acci&oacute;n de su parte</p>");
+		bodySb.append(link);
+		bodySb.append("</div>");
+		bodySb.append("<hr>");
+		bodySb.append("<small>Favor de no responder a este email. En caso de duda p&oacute;ngase en contacto con la persona que registr&oacute;</small>");
+	}
 	// Enviar el email
 	IEmailService mail = EmailServiceFactory.getEmailService();
-	String subject = "Accion requerida por " + createdBy;
 	mail.sendEmail(sender, to, subject, bodySb.toString());
 }
 
@@ -265,5 +304,58 @@ private static void SendIssueAssignationEmail(Integer issueId, String asignee, S
 	}
 
 	SendAssignationEmail(asignee, sender, createdBy, timestamp, comment, "I", issue.getReferenceId(), issue.getReferenceNumber());
+}
+
+private static void SendBloomTicketAssignationEmail(Integer ticketId, String asignee, String sender, AssignType type){
+	// Recuperar el ticket
+	List<TicketDetailDTO> rawDetail = internalTicketsDao.getTicketDetail(ticketId);
+	if(rawDetail != null && rawDetail.size() > 0){
+		TicketDetailDTO ticket = rawDetail.get(0);
+		SimpleDateFormat sdf = new SimpleDateFormat(Globals.DATE_FORMAT_PATTERN);
+		String createdBy = ticket.getCreatedByUsrName();
+		Date created = ticket.getCreated();
+		
+		SendAssignationEmail(asignee, sender, createdBy, sdf.format(created), ticket.getDescription(), "R", ticketId, ticket.getTicketNumber(), type);
+	}
+	else
+	{
+		Logger.Log(LogLevel.ERROR, "SendBloomTicketAssignationEmail", "No se encontro ticket " + ticketId.toString(), "SendBloomTicketAssignationEmail");
+	}
+}
+
+public static void AssignBloomTicket(Integer ticketId, String asignee, String sender){
+BlackstarDataAccess da = new BlackstarDataAccess();
+	
+	try {
+
+		da.executeUpdate(String.format("CALL AssignBloomTicket('%s', '%s', '%s')", ticketId, asignee, sender));
+		
+		SendBloomTicketAssignationEmail(ticketId, asignee, sender, AssignType.Assign);
+	} catch (Exception e) {
+		Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
+	}
+	finally{
+		da.closeConnection();
+	}
+}
+
+
+public static void NotifyBloomTicket(Integer ticketId, String who, String sender){
+BlackstarDataAccess da = new BlackstarDataAccess();
+	
+	try {
+
+		SendBloomTicketAssignationEmail(ticketId, who, sender, AssignType.Notify);
+	} catch (Exception e) {
+		Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
+	}
+	finally{
+		da.closeConnection();
+	}
+}
+
+public static enum AssignType{
+	Assign,
+	Notify
 }
 }

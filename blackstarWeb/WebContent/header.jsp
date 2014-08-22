@@ -46,85 +46,71 @@
 				<li><span class="active" onclick="window.location = '/dashboard/show.do'">Inicio</span></li>
 				<li><a href="${pageContext.request.contextPath}/tickets">Tickets</a></li>
 				<li><a href="${pageContext.request.contextPath}/serviceOrders/show.do">Ordenes de servicio</a></li>
-				<c:if test="${sysCallCenter == true}">
-				  <li><a href="${pageContext.request.contextPath}/seguimiento">Seguimiento</a></li>
-				</c:if>
 				<c:if test="${!user.belongsToGroup['Cliente']}">
+					<li><a href="${pageContext.request.contextPath}/bloom/bloomTicketPage/show.do">Requisiciones</a></li>
 					<li><a href="${pageContext.request.contextPath}/surveyServices/show.do">Encuestas de servicio</a></li>
 				</c:if>
-				<li><a href="${pageContext.request.contextPath}/indServicios/show.do">Indicadores Serv.</a></li>
+				<li><a href="${pageContext.request.contextPath}/indServicios/show.do">Indicadores</a></li>
 			</c:when>
 			<c:when test="${pageSection == 'tickets'}">
 				<li><a href="${pageContext.request.contextPath}/dashboard/show.do">Inicio</a></li>
 				<li><span class="active" onclick="window.location = '/tickets'">Tickets</span></li>
 				<li><a href="${pageContext.request.contextPath}/serviceOrders/show.do">Ordenes de servicio</a></li>
-				<c:if test="${sysCallCenter == true}">
-					<li><a href="${pageContext.request.contextPath}/seguimiento">Seguimiento</a></li>
-				</c:if>
 				<c:if test="${!user.belongsToGroup['Cliente']}">
+					<li><a href="${pageContext.request.contextPath}/bloom/bloomTicketPage/show.do">Requisiciones</a></li>
 					<li><a href="${pageContext.request.contextPath}/surveyServices/show.do">Encuestas de servicio</a></li>
 				</c:if>
-				<li><a href="${pageContext.request.contextPath}/indServicios/show.do">Indicadores Serv.</a></li>
+				<li><a href="${pageContext.request.contextPath}/indServicios/show.do">Indicadores</a></li>
 			</c:when>
 			<c:when test="${pageSection == 'ordenesServicio'}">  
 				<li><a href="${pageContext.request.contextPath}/dashboard/show.do">Inicio</a></li>
 				<li><a href="${pageContext.request.contextPath}/tickets">Tickets</a></li>
 				<li><span class="active" onclick="window.location = '/serviceOrders/show.do'">Ordenes de servicio</span></li>
-				<c:if test="${sysCallCenter == true}">
-				  <li><a href="${pageContext.request.contextPath}/seguimiento">Seguimiento</a></li>
-				</c:if>
 				<c:if test="${!user.belongsToGroup['Cliente']}">
+					<li><a href="${pageContext.request.contextPath}/bloom/bloomTicketPage/show.do">Requisiciones</a></li>
 					<li><a href="${pageContext.request.contextPath}/surveyServices/show.do">Encuestas de servicio</a></li>
 				</c:if>
-				<li><a href="${pageContext.request.contextPath}/indServicios/show.do">Indicadores Serv.</a></li>
+				<li><a href="${pageContext.request.contextPath}/indServicios/show.do">Indicadores</a></li>
 			</c:when>
-			<c:when test="${pageSection == 'seguimiento'}">
+			<c:when test="${pageSection == 'requisiciones'}">
 				<li><a href="${pageContext.request.contextPath}/dashboard/show.do">Inicio</a></li>
 				<li><a href="${pageContext.request.contextPath}/tickets">Tickets</a></li>
 				<li><a href="${pageContext.request.contextPath}/serviceOrders/show.do">Ordenes de servicio</a></li>
-				<c:if test="${sysCallCenter == true}">
-				  <li><span class="active" onclick="window.location = '/seguimiento'">Seguimiento</span></li>
-				</c:if>
 				<c:if test="${!user.belongsToGroup['Cliente']}">
+					<li><span class="active" onclick="window.location = '/bloom/bloomTicketPage/show.do'">Requisiciones</span></li>
 					<li><a href="${pageContext.request.contextPath}/surveyServices/show.do">Encuestas de servicio</a></li>
 				</c:if>
-				<li><a href="${pageContext.request.contextPath}/indServicios/show.do">Indicadores Serv.</a></li>
+				<li><a href="${pageContext.request.contextPath}/indServicios/show.do">Indicadores</a></li>
 			</c:when>			
 			<c:when test="${pageSection == 'encuestas'}">
 				<li><a href="${pageContext.request.contextPath}/dashboard/show.do">Inicio</a></li>
 				<li><a href="${pageContext.request.contextPath}/tickets">Tickets</a></li>
 				<li><a href="${pageContext.request.contextPath}/serviceOrders/show.do">Ordenes de servicio</a></li>
-				<c:if test="${sysCallCenter == true}">
-				  <li><a href="${pageContext.request.contextPath}/seguimiento">Seguimiento</a></li>
-				</c:if>
 				<c:if test="${!user.belongsToGroup['Cliente']}">
+					<li><a href="${pageContext.request.contextPath}/bloom/bloomTicketPage/show.do">Requisiciones</a></li>
 					<li><span class="active" onclick="window.location = '/surveyServices/show.do'">Encuestas de servicio</span></li>
 				</c:if>
-				<li><a href="${pageContext.request.contextPath}/indServicios/show.do">Indicadores Serv.</a></li>
+				<li><a href="${pageContext.request.contextPath}/indServicios/show.do">Indicadores</a></li>
 			</c:when>			
 			<c:when test="${pageSection == 'indicadores'}">
 				<li><a href="${pageContext.request.contextPath}/dashboard/show.do">Inicio</a></li>
 				<li><a href="${pageContext.request.contextPath}/tickets">Tickets</a></li>
 				<li><a href="${pageContext.request.contextPath}/serviceOrders/show.do">Ordenes de servicio</a></li>
-				<c:if test="${sysCallCenter == true}">
-				  <li><a href="${pageContext.request.contextPath}/seguimiento">Seguimiento</a></li>
-				</c:if>
 				<c:if test="${!user.belongsToGroup['Cliente']}">
+					<li><a href="${pageContext.request.contextPath}/bloom/bloomTicketPage/show.do">Requisiciones</a></li>
 					<li><a href="${pageContext.request.contextPath}/surveyServices/show.do">Encuestas de servicio</a></li>
 				</c:if>
-				<li><span class="active" onclick="window.location = '/indServicios/show.do'">Indicadores Serv.</span></li>
+				<li><span class="active" onclick="window.location = '/indServicios/show.do'">Indicadores</span></li>
 			</c:when>		
 			<c:otherwise>
 				<li><a href="${pageContext.request.contextPath}/dashboard/show.do">Inicio</a></li>
 				<li><a href="${pageContext.request.contextPath}/tickets">Tickets</a></li>
 				<li><a href="${pageContext.request.contextPath}/serviceOrders/show.do">Ordenes de servicio</a></li>
-				<c:if test="${sysCallCenter == true}">
-				  <li><a href="${pageContext.request.contextPath}/seguimiento">Seguimiento</a></li>
-				</c:if>
 				<c:if test="${!user.belongsToGroup['Cliente']}">
+					<li><a href="${pageContext.request.contextPath}/bloom/bloomTicketPage/show.do">Requisiciones</a></li>
 					<li><a href="${pageContext.request.contextPath}/surveyServices/show.do">Encuestas de servicio</a></li>
 				</c:if>
-				<li><a href="${pageContext.request.contextPath}/indServicios/show.do">Indicadores Serv.</a></li>
+				<li><a href="${pageContext.request.contextPath}/indServicios/show.do">Indicadores</a></li>
 			</c:otherwise>
 		</c:choose>
 			<li><span style="width:15px;"></span></li>

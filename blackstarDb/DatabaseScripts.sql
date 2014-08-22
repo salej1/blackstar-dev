@@ -1522,18 +1522,19 @@ BEGIN
 	SELECT 
 		f.followUpReferenceTypeId AS referenceTypeId, 
 		r.followupreferencetype AS referenceType,
-		coalesce(t.ticketId, s.serviceOrderId, i.issueId) AS referenceId, 
-		coalesce(t.ticketNumber, s.serviceOrderNumber, i.issueNumber) AS referenceNumber,
-		coalesce(p.project, c.project, i.project) AS project,
-		coalesce(p.customer, c.customerName, i.customer) AS customer,
+		coalesce(t.ticketId, s.serviceOrderId, i.issueId, bt._id) AS referenceId, 
+		coalesce(t.ticketNumber, s.serviceOrderNumber, i.issueNumber, bt.ticketNumber) AS referenceNumber,
+		coalesce(p.project, c.project, i.project, bt.project) AS project,
+		coalesce(p.customer, c.customerName, i.customer, '') AS customer,
 		f.created AS created,
 		CASE 
 			WHEN f.followUpReferenceTypeId = 'T' THEN 'Seguimiento a Ticket'
 			WHEN f.followUpReferenceTypeId = 'O' THEN 'Seguimiento a Orden de Servicio'
 			WHEN f.followUpReferenceTypeId = 'I' THEN 'Asignacion SAC'
+			WHEN f.followUpReferenceTypeId = 'R' THEN 'Requisicon'
 		END AS title,
 		followUp AS detail,
-		coalesce(ts.ticketStatus, ist.issueStatus, '') as status,
+		coalesce(ts.ticketStatus, ist.issueStatus, '', bts.name) as status,
 		ifnull(u1.name, '') AS createdByUsr,
 		u2.name AS asignee
 	FROM (
@@ -1544,7 +1545,7 @@ BEGIN
 			FROM followUp f
 			ORDER BY followUpReferenceTypeId, coalesce(ticketId, serviceOrderId, issueId), created DESC
 		) a WHERE a.RowNum = 1  -- a: todos los followUps asignados por usuario, numerados por id de (ticket, so, issue)
-	) f -- f: el ultimo comentario de cada (ticket, so, issue) y que esta asignado al usuario
+	) f -- f: el ultimo comentario de cada (ticket, so, issue, requisicion) y que esta asignado al usuario
 		INNER JOIN followUpReferenceType r ON f.followUpReferenceTypeId = r.followUpReferenceTypeId
 		LEFT OUTER JOIN ticket t ON f.ticketId = t.ticketId
 		LEFT OUTER JOIN serviceOrder s ON s.serviceOrderId = f.serviceOrderId
@@ -1554,6 +1555,8 @@ BEGIN
 		LEFT OUTER JOIN ticketStatus ts ON ts.ticketStatusId = t.ticketStatusId
 		LEFT OUTER JOIN serviceStatus ss ON ss.serviceStatusId = s.serviceStatusId
 		LEFT OUTER JOIN issueStatus ist ON ist.issueStatusId = i.issueStatusId
+		LEFT OUTER JOIN bloomTicket bt ON f.bloomTicketId = bt._id
+		LEFT OUTER JOIN bloomStatusType bts ON bts._id = bt.statusId
 		LEFT OUTER JOIN blackstarUser u1 ON f.createdByUsr = u1.email
 		LEFT OUTER JOIN blackstarUser u2 ON f.asignee = u2.email
 	WHERE (coalesce(t.createdByUsr, s.createdByUsr, i.createdByUsr) = pUser
@@ -1576,16 +1579,17 @@ BEGIN
 	SELECT 
 		f.followUpReferenceTypeId AS referenceTypeId, 
 		r.followupreferencetype AS referenceType,
-		coalesce(t.ticketId, s.serviceOrderId, i.issueId) AS referenceId, 
-		coalesce(t.ticketNumber, s.serviceOrderNumber, i.issueNumber) AS referenceNumber,
-		coalesce(p.project, c.project, i.project) AS project,
-		coalesce(p.customer, c.customerName, i.customer) AS customer,
+		coalesce(t.ticketId, s.serviceOrderId, i.issueId, bt._id) AS referenceId, 
+		coalesce(t.ticketNumber, s.serviceOrderNumber, i.issueNumber, bt.ticketNumber) AS referenceNumber,
+		coalesce(p.project, c.project, i.project, bt.project) AS project,
+		coalesce(p.customer, c.customerName, i.customer, '') AS customer,
 		f.created AS created,
 		i.dueDate AS dueDate,
 		CASE 
 			WHEN f.followUpReferenceTypeId = 'T' THEN 'Seguimiento a Ticket'
 			WHEN f.followUpReferenceTypeId = 'O' THEN 'Seguimiento a Orden de Servicio'
 			WHEN f.followUpReferenceTypeId = 'I' THEN 'Asignacion SAC'
+			WHEN f.followUpReferenceTypeId = 'R' THEN 'Requisicon'
 		END AS title,
 		followUp AS detail,
 		coalesce(ts.ticketStatus, ist.issueStatus, '') as status,
@@ -1609,6 +1613,8 @@ BEGIN
 		LEFT OUTER JOIN ticketStatus ts ON ts.ticketStatusId = t.ticketStatusId
 		LEFT OUTER JOIN serviceStatus ss ON ss.serviceStatusId = s.serviceStatusId
 		LEFT OUTER JOIN issueStatus ist ON ist.issueStatusId = i.issueStatusId
+		LEFT OUTER JOIN bloomTicket bt ON f.bloomTicketId = bt._id
+		LEFT OUTER JOIN bloomStatusType bts ON bts._id = bt.statusId
 		INNER JOIN blackstarUser u1 ON f.createdByUsr = u1.email
 		INNER JOIN blackstarUser u2 ON f.asignee = u2.email
 	WHERE coalesce(t.asignee, s.asignee, i.asignee) = pUser
@@ -4180,7 +4186,7 @@ DROP PROCEDURE IF EXISTS blackstarDb.GetDomainEmployees$$
 CREATE PROCEDURE blackstarDb.GetDomainEmployees()
 BEGIN
 
-	SELECT DISTINCT u.email AS email, u.name AS name
+	SELECT DISTINCT u.blackstarUserId AS id, u.email AS email, u.name AS name
 	FROM blackstarUser u 	
 		LEFT OUTER JOIN blackstarUser_userGroup ug ON u.blackstarUserId = ug.blackstarUserId
 		LEFT OUTER JOIN userGroup g ON g.userGroupId = ug.userGroupId
@@ -4197,7 +4203,7 @@ DROP PROCEDURE IF EXISTS blackstarDb.GetUserData$$
 CREATE PROCEDURE blackstarDb.GetUserData(pEmail VARCHAR(100))
 BEGIN
 
-        SELECT u.email AS userEmail, u.name AS userName, g.name AS groupName
+        SELECT u.email AS userEmail, u.name AS userName, g.name AS groupName, u.blackstarUserId AS blackstarUserId
         FROM blackstarUser_userGroup ug
                 INNER JOIN blackstarUser u ON u.blackstarUserId = ug.blackstarUserId
                 LEFT OUTER JOIN userGroup g ON g.userGroupId = ug.userGroupId
@@ -5396,6 +5402,8 @@ DROP PROCEDURE blackstarDbTransfer.upgradeSchema;
 -- -----------------------------------------------------------------------------
 -- 9 	30/07/2014	SAG 	Se implementa UpsertServiceOrder
 -- -----------------------------------------------------------------------------
+-- 10 	20/08/2014	SAG 	Se incorpora proyecto Bloom
+-- -----------------------------------------------------------------------------
 
 use blackstarDbTransfer;
 
@@ -5906,6 +5914,237 @@ BEGIN
 	-- FIN 
 -- -----------------------------------------------------------------------------
 END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDbTransfer.BloomUpdateTickets
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDbTransfer.BloomUpdateTickets$$
+CREATE PROCEDURE blackstarDbTransfer.BloomUpdateTickets() 
+BEGIN
+
+  DECLARE counter INTEGER;
+  DECLARE done BOOLEAN DEFAULT 0;
+
+  DECLARE applicantUserId Int(11);
+  DECLARE officeL Char(1);
+  DECLARE serviceTypeId Int(3);
+  DECLARE applicantAreaId Int(11);
+  DECLARE createdByUsrId Int(11);
+  DECLARE bolResponseInTime Tinyint;
+
+  DECLARE created Varchar(100);
+  DECLARE createdByUsr Varchar(100);
+  DECLARE applicantArea Varchar(100);
+  DECLARE serviceType Varchar(200);
+  DECLARE serviceTypeSS Varchar(200);
+  DECLARE serviceTypeGeneral Varchar(100);
+  DECLARE dueDateStr Varchar(100);
+  DECLARE description Text;
+  DECLARE serviceTypeManager Varchar(100);
+  DECLARE project Varchar(100);
+  DECLARE officeStr Varchar(20);
+  DECLARE ticketNumber Varchar(20);
+  DECLARE responseDateStr Varchar(100);
+  DECLARE responseInTime Varchar(100);
+  DECLARE evaluation Varchar(2);
+  DECLARE responseInHours Varchar(50);
+  DECLARE desviation Varchar(50);
+  DECLARE observations Text;
+
+  DECLARE dueDate DateTime;
+  DECLARE responseDate DateTime;
+  DECLARE status Int;
+
+  DECLARE transfer_cursor CURSOR FOR 
+    SELECT * FROM bloomTransferTicket;
+    
+  DECLARE CONTINUE HANDLER FOR SQLSTATE '02000' SET done=1;
+
+  SET counter = 0;
+  OPEN transfer_cursor;
+
+  loop_lbl: LOOP
+      FETCH transfer_cursor INTO created, createdByUsr, applicantArea, serviceType, serviceTypeSS
+                               , serviceTypeGeneral, dueDateStr, description, serviceTypeManager, project
+                               , officeStr, ticketNumber, responseDateStr, responseInTime, evaluation
+                               , responseInHours, desviation, observations;
+      IF done = 1 THEN 
+			   LEAVE loop_lbl;
+		  END IF;                           
+      SET bolResponseInTime = 0;
+      SET createdByUsrId = IFNULL((SELECT blackStarUserId from blackstarDb.blackstaruser where email = 'portal-servicios@gposac.com.mx'), -1);                               
+      SET applicantUserId = IFNULL((SELECT blackStarUserId from blackstarDb.blackstaruser where email = createdByUsr), -1);
+      SET officeL = IFNULL((SELECT officeId from blackstarDb.office where officeName = officeStr), '?');
+      SET serviceTypeId = IFNULL((SELECT _id from blackstarDb.bloomServiceType where name = serviceType), -1);
+      SET applicantAreaId = IFNULL((SELECT _id from blackstarDb.bloomApplicantArea where name = applicantArea), -1);
+      IF project IS NULL THEN
+        SET project = 'UNKNOWN';
+      END IF;
+      IF responseInTime = 'SI' THEN
+        SET bolResponseInTime = 1;
+        SET status = 5;
+      ELSEIF responseInTime IS NULL THEN
+        SET bolResponseInTime = null;
+        SET status = 2;
+      ELSE SET status = 2;
+      END IF;
+      IF dueDateStr IS NULL THEN
+         SET dueDate = NOW();
+      ELSE SET dueDate = STR_TO_DATE(dueDateStr, '%Y-%m-%d %T');
+      END IF;
+      IF responseDateStr IS NULL THEN
+         SET responseDate = NULL;
+      ELSE SET responseDate = STR_TO_DATE(responseDateStr, '%Y-%m-%d %T');
+      END IF;
+      IF evaluation = '' THEN
+         SET evaluation = '0';
+      END IF;   
+      IF desviation = '' THEN
+         SET desviation = '0';
+      END IF;
+      INSERT INTO blackstarDb.bloomticket(applicantUserId, officeId, serviceTypeId, statusId, applicantAreaId
+                  , dueDate, project, ticketNumber, description, reponseInTime, evaluation, desviation
+                  , responseDate, created, createdBy, createdByUsr, modified, modifiedBy, modifiedByUsr) 
+             VALUES(applicantUserId, officeL, serviceTypeId, status, applicantAreaId, dueDate, project
+                    , ticketNumber, description, bolResponseInTime, CAST(evaluation AS UNSIGNED INTEGER) , desviation, responseDate
+                    , STR_TO_DATE(created, '%Y-%m-%d %T'), 'BloomDataLoader', createdByUsrId, null, null, null);
+      SET counter = counter + 1;
+  END LOOP loop_lbl;
+
+  CLOSE transfer_cursor;    
+  
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDbTransfer.BloomUpdateTransferFollow
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDbTransfer.BloomUpdateTransferFollow$$
+CREATE PROCEDURE blackstarDbTransfer.BloomUpdateTransferFollow()
+BEGIN
+
+  DECLARE counter INTEGER;
+  DECLARE ticketId Int(11);
+  DECLARE ticket Varchar(20);
+  DECLARE createdStr Varchar(100);
+  DECLARE comment Text;
+  DECLARE done BOOLEAN DEFAULT 0;
+ 
+  DECLARE transfer_cursor CURSOR FOR 
+    SELECT * FROM bloomTransferFollow;
+    
+  DECLARE CONTINUE HANDLER FOR SQLSTATE '02000' SET done=1;
+
+  SET counter = 0;
+  OPEN transfer_cursor;
+  loop_lbl: LOOP
+      FETCH transfer_cursor INTO ticket, createdStr, comment;
+      IF done = 1 THEN 
+			   LEAVE loop_lbl;
+		  END IF;  
+      SET ticketId =(SELECT _id from blackstarDb.bloomTicket where ticketNumber = ticket);
+      INSERT INTO blackstarDb.followUp(bloomTicketId,followup, created, createdBy, createdByUsr) 
+             VALUES(ticketId, comment, STR_TO_DATE(createdStr, '%y/%m/%d'), 'BloomDataLoader', 'portal-servicios@gposac.com.mx');
+      SET counter = counter + 1;
+  END LOOP loop_lbl;
+
+  CLOSE transfer_cursor;    
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDbTransfer.BloomUpdateTransferTeam
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDbTransfer.BloomUpdateTransferTeam$$
+CREATE PROCEDURE blackstarDbTransfer.BloomUpdateTransferTeam()
+BEGIN
+
+  DECLARE counter INTEGER;
+  DECLARE ticketId Int(11);
+  DECLARE ticket Varchar(20);
+  DECLARE userName Varchar(100);
+  DECLARE userId Varchar(100);
+  DECLARE done BOOLEAN DEFAULT 0;
+
+  DECLARE transfer_cursor CURSOR FOR 
+    SELECT * FROM bloomTransferTicketTeam;
+    
+  DECLARE CONTINUE HANDLER FOR SQLSTATE '02000' SET done=1;
+
+  SET counter = 0;
+  OPEN transfer_cursor;
+  loop_lbl: LOOP
+      FETCH transfer_cursor INTO ticket, userName;
+      IF done = 1 THEN 
+			   LEAVE loop_lbl;
+		  END IF;
+      SET ticketId =(SELECT _id from blackstarDb.bloomTicket where ticketNumber = ticket);
+      SET userId = IFNULL((SELECT blackStarUserId from blackstarDb.blackstaruser where name LIKE CONCAT(userName,'%')), -1);
+      INSERT INTO blackstarDb.bloomTicketTeam(ticketId,workerRoleTypeId, blackstarUserId, assignedDate) 
+             VALUES(ticketId,1, userId, NOW());
+      SET counter = counter + 1;
+  END LOOP loop_lbl;
+
+  CLOSE transfer_cursor;    
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDbTransfer.BloomUpdateTransferUsers
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDbTransfer.BloomUpdateTransferUsers$$
+CREATE PROCEDURE blackstarDbTransfer.BloomUpdateTransferUsers()
+BEGIN
+
+  DECLARE done BOOLEAN DEFAULT 0;
+
+  DECLARE bloomCreatedByUsrMail Varchar(100);
+  DECLARE bloomCreatedByUsrName Varchar(100);
+  DECLARE bloomCreatedByUsrLastName Varchar(100);
+  DECLARE iniSplitPos INTEGER;
+  DECLARE endSplitPos INTEGER;
+  DECLARE splitValue VARCHAR(100);
+  DECLARE counter INTEGER;
+    
+  DECLARE user_cursor CURSOR FOR 
+     SELECT DISTINCT createdByUsr FROM bloomTransferTicket
+     WHERE createdByUsr NOT IN (SELECT email FROM blackstarDb.blackstaruser);
+
+  DECLARE CONTINUE HANDLER FOR SQLSTATE '02000' SET done=1;
+
+  OPEN user_cursor;
+
+  SET counter = 0;
+  fill_users: LOOP
+      FETCH user_cursor INTO bloomCreatedByUsrMail; 
+      IF done = 1 THEN 
+			   LEAVE fill_users;
+		  END IF;  
+      SET endSplitPos = LOCATE('\@', bloomCreatedByUsrMail, 1);
+      SET splitValue = SUBSTR(bloomCreatedByUsrMail, 1, endSplitPos -1);
+      SET endSplitPos = LOCATE('\.', splitValue, 1);
+      SET bloomCreatedByUsrName = SUBSTR(splitValue, 1, endSplitPos -1);
+      SET bloomCreatedByUsrName = CONCAT(UCASE(LEFT(bloomCreatedByUsrName, 1)), 
+                                         SUBSTRING(bloomCreatedByUsrName, 2));
+      SET bloomCreatedByUsrLastName = SUBSTR(splitValue, endSplitPos +1);
+      SET bloomCreatedByUsrLastName = CONCAT(UCASE(LEFT(bloomCreatedByUsrLastName, 1)), 
+                                              SUBSTRING(bloomCreatedByUsrLastName, 2));                                         
+      INSERT INTO blackstarDb.blackstarUser (email, name) VALUES (bloomCreatedByUsrMail, CONCAT(bloomCreatedByUsrName, ' ', bloomCreatedByUsrLastName));
+      SET counter = counter + 1;
+  END LOOP fill_users;
+  CLOSE user_cursor;
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDbTransfer.BloomTransfer
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDbTransfer.BloomTransfer$$
+CREATE PROCEDURE blackstarDbTransfer.BloomTransfer()
+BEGIN
+	CALL BloomUpdateTransferUsers();
+  	CALL BloomUpdateTickets();
+  	CALL BloomUpdateTransferTeam();
+  	CALL BloomUpdateTransferFollow();
+END$$
+
+
 DELIMITER ;
 
 -- -----------------------------------------------------------------------------
@@ -5956,6 +6195,1592 @@ END$$
 	-- FIN DE LOS STORED PROCEDURES
 -- -----------------------------------------------------------------------------
 DELIMITER ;
+
+-- -----------------------------------------------------------------------------
+-- Desc:	Cambia el esquema de la bd
+-- Auth:	Daniel Castillo B.
+-- Date:	19/05/2014
+-- -----------------------------------------------------------------------------
+-- Change History
+-- -----------------------------------------------------------------------------
+-- PR   Date    	Author	Description
+-- --   --------   -------  ------------------------------------
+-- 1    19/05/2014  DCB  	Carga de esquema Bloom
+--                              * bloomServiceType
+--                              * bloomWorkerRoleType
+--                              * bloomStatusType
+--                              * bloomApplicantArea
+--                              * bloomDeliverableType
+--                              * bloomRequiredDeliverable
+--                              * bloomTicket
+--                              * bloomTicketTeam
+--                              * bloomDeliverableTrace
+-- ---------------------------------------------------------------------------
+-- 2    22/06/2014  OMA  	Cambios adicionales para el nuevo manejo de tickets internos
+--                              * bloomAdvisedGroup Nueva tabla
+--                              * bloomServiceType Actualizacion de campos
+--                              * bloomDeliverableType Actualizacion de campos
+--                              * bloomTicket Actualizacion de campos
+-- ---------------------------------------------------------------------------
+-- 3 	10/07/2014	SAG 	Se agrega desiredDate a bloomTicket
+--							Se agrega hidden a bloomServiceType
+--							Se agrega docId a bloomDeliverableTrace
+-- ---------------------------------------------------------------------------
+-- 4 	23/07/2014	SAG 	Se agrega autoClose a bloomServiceType
+--							Se agrega workerRoleTypeId a bloomAdvisedGroup
+--							Se agrega bloomServiceArea
+--							Se agrega bloomServiceAreaId a bloomServiceType
+-- ---------------------------------------------------------------------------
+
+use blackstarDb;
+
+DELIMITER $$
+
+DROP PROCEDURE IF EXISTS blackstarDb.upgradeBloomSchema$$
+CREATE PROCEDURE blackstarDb.upgradeBloomSchema()
+BEGIN
+
+-- -----------------------------------------------------------------------------
+-- INICIO SECCION DE CAMBIOS
+-- -----------------------------------------------------------------------------
+
+-- AGREGANDO TABLA bloomServiceArea
+	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'bloomServiceArea') = 0 THEN
+		 CREATE TABLE blackstarDb.bloomServiceArea(
+            bloomServiceAreaId CHAR(1) NOT NULL,
+            bloomServiceArea VARCHAR(200) NOT NULL,
+			PRIMARY KEY (bloomServiceAreaId)
+         ) ENGINE=INNODB;
+	END IF;
+
+-- AGREGANDO TABLA bloomServiceType
+	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'bloomServiceType') = 0 THEN
+		 CREATE TABLE blackstarDb.bloomServiceType(
+            _id INT(3) NOT NULL,
+            name VARCHAR(150) NOT NULL,
+            description VARCHAR(400) NOT NULL,
+            responseTime INT(2) NOT NULL,
+			applicantAreaId INT(11) NOT NULL,
+			PRIMARY KEY (_id)
+         ) ENGINE=INNODB;
+	END IF;
+
+	
+-- Agregando hidden a bloomServiceType
+	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'bloomServiceType' AND COLUMN_NAME = 'hidden') = 0  THEN
+		ALTER TABLE bloomServiceType ADD hidden INT NULL;
+	END IF;
+	
+-- Agregando autoclose a bloomServiceType
+	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'bloomServiceType' AND COLUMN_NAME = 'autoClose') = 0  THEN
+		ALTER TABLE bloomServiceType ADD autoClose INT NULL;
+	END IF;
+
+-- Agregando bloomServiceAreaId a bloomServiceType
+	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'bloomServiceType' AND COLUMN_NAME = 'bloomServiceAreaId') = 0  THEN
+		ALTER TABLE bloomServiceType ADD bloomServiceAreaId CHAR(1) NOT NULL DEFAULT 'I';
+		ALTER TABLE bloomServiceType ADD CONSTRAINT bloomServiceType_bloomServiceArea FOREIGN KEY (bloomServiceAreaId) REFERENCES bloomServiceArea(bloomServiceAreaId);
+		UPDATE bloomServiceType SET bloomServiceAreaId = 'I' WHERE _id >= 1 AND _id <= 14;
+		UPDATE bloomServiceType SET bloomServiceAreaId = 'C' WHERE _id = 15;
+		UPDATE bloomServiceType SET bloomServiceAreaId = 'H' WHERE _id >= 16 AND _id <= 20;
+		UPDATE bloomServiceType SET bloomServiceAreaId = 'A' WHERE _id >= 16 AND _id <= 21;
+		UPDATE bloomServiceType SET bloomServiceAreaId = 'R' WHERE _id = 24;
+	END IF;
+
+-- AGREGANDO TABLA bloomWorkerRoleType
+	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'bloomWorkerRoleType') = 0 THEN
+		 CREATE TABLE blackstarDb.bloomWorkerRoleType(
+           _id INT(11) NOT NULL,
+           name VARCHAR(150) NOT NULL,
+           description VARCHAR(400) NOT NULL,
+		   PRIMARY KEY (_id),
+		   UNIQUE UQ_bloomWorkerRoleType(name)
+         )ENGINE=INNODB;
+	END IF;	
+
+-- AGREGANDO TABLA bloomStatusType
+	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'bloomStatusType') = 0 THEN
+		 CREATE TABLE blackstarDb.bloomStatusType(
+           _id INT(11) NOT NULL,
+           name VARCHAR(150) NOT NULL,
+           description VARCHAR(400) NOT NULL,
+		   PRIMARY KEY (_id),
+		   UNIQUE UQ_bloomStatusType(name)
+         )ENGINE=INNODB;
+	END IF;	
+
+ -- AGREGANDO TABLA bloomApplicantArea
+	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'bloomApplicantArea') = 0 THEN
+		 CREATE TABLE blackstarDb.bloomApplicantArea(
+           _id INT(11) NOT NULL,
+           name VARCHAR(150) NOT NULL,
+           description VARCHAR(400) NOT NULL,
+		   PRIMARY KEY (_id),
+		   UNIQUE UQ_bloomApplicantArea(name)
+         )ENGINE=INNODB;
+	END IF;	
+
+ -- AGREGANDO TABLA bloomDeliverableType
+	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'bloomDeliverableType') = 0 THEN
+		 CREATE TABLE blackstarDb.bloomDeliverableType(
+           _id INT(11) NOT NULL,
+           name VARCHAR(150) NOT NULL,
+           description VARCHAR(400) NOT NULL,
+		   serviceTypeId INT(3) NOT NULL,
+		   PRIMARY KEY (_id),
+		   FOREIGN KEY (serviceTypeId) REFERENCES bloomServiceType (_id)
+         )ENGINE=INNODB;
+	END IF;	
+
+ -- AGREGANDO TABLA bloomRequiredDeliverable
+	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'bloomRequiredDeliverable') = 0 THEN
+		 CREATE TABLE blackstarDb.bloomRequiredDeliverable(
+           _id INT(11) NOT NULL,
+           serviceTypeId INT(3) NOT NULL,
+           deliverableTypeId INT(11) NOT NULL,
+		   PRIMARY KEY (_id),
+		   UNIQUE UQ_bloomRequiredDeliverable(serviceTypeId, deliverableTypeId),
+		   FOREIGN KEY (serviceTypeId) REFERENCES bloomServiceType (_id),
+           FOREIGN KEY (deliverableTypeId) REFERENCES bloomDeliverableType (_id)
+         )ENGINE=INNODB;
+	END IF;	
+
+ -- AGREGANDO TABLA bloomTicket
+	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'bloomTicket') = 0 THEN
+		 CREATE TABLE blackstarDb.bloomTicket(
+           _id INT(11) NOT NULL AUTO_INCREMENT,
+           applicantUserId INT(11) NOT NULL,
+           officeId char(1) NOT NULL,
+           serviceTypeId INT(3) NOT NULL,
+           statusId INT(11) NOT NULL,
+           applicantAreaId INT(11) NOT NULL,
+           dueDate Date NOT NULL,
+           project VARCHAR(50) NOT NULL,
+           ticketNumber VARCHAR(15) NOT NULL,
+           description Text NOT NULL,
+           reponseInTime Tinyint,
+           evaluation INT(2),
+           desviation Float(30,20),
+           responseDate Datetime,
+           asignee VARCHAR(100),
+           created Datetime NOT NULL,
+           createdBy VARCHAR(50) NOT NULL,
+           createdByUsr VARCHAR(50) NOT NULL,
+           modified Datetime,
+           modifiedBy VARCHAR(50),
+           modifiedByUsr VARCHAR(50),
+			purposeVisitVL TEXT,
+			purposeVisitVISAS TEXT,
+			draftCopyDiagramVED TEXT,
+			formProjectVED TEXT,
+			observationsVEPI TEXT,
+			draftCopyPlanVEPI TEXT,
+			formProjectVEPI TEXT,
+			observationsVRCC TEXT,
+			checkListVRCC TEXT,
+			formProjectVRCC TEXT,
+			questionVPT TEXT,
+			observationsVSA TEXT,
+			formProjectVSA TEXT,
+			productInformationVSP TEXT,
+			observationsISED TEXT,
+			draftCopyPlanISED TEXT,
+			observationsISRC TEXT,
+			attachmentsISRC TEXT,
+			apparatusTraceISSM TEXT,
+			observationsISSM TEXT,
+			questionISSM TEXT,
+			ticketISRPR TEXT,
+			modelPartISRPR TEXT,
+			observationsISRPR TEXT,
+			productInformationISSPC TEXT,
+			positionPGCAS TEXT,
+			collaboratorPGCAS TEXT,
+			justificationPGCAS TEXT,
+			salaryPGCAS TEXT,
+			positionPGCCP TEXT,
+			commentsPGCCP TEXT,
+			developmentPlanPGCCP TEXT,
+			targetPGCCP TEXT,
+			salaryPGCCP TEXT,
+			positionPGCNC TEXT,
+			developmentPlanPGCNC TEXT,
+			targetPGCNC TEXT,
+			salaryPGCNC TEXT,
+			justificationPGCNC TEXT,
+			positionPGCF TEXT,
+			collaboratorPGCF TEXT,
+			justificationPGCF TEXT,
+			positionPGCAA TEXT,
+			collaboratorPGCAA TEXT,
+			justificationPGCAA TEXT,
+			requisitionFormatGRC TEXT,
+			linkDocumentGM TEXT,
+			suggestionGSM TEXT,
+			documentCodeGSM TEXT,
+			justificationGSM TEXT,
+			problemDescriptionGPTR TEXT,	
+			resolvedOnTime INT,	   
+	   
+           PRIMARY KEY (_id),
+           FOREIGN KEY (serviceTypeId) REFERENCES bloomServiceType (_id),
+           FOREIGN KEY (statusId) REFERENCES bloomStatusType (_id),
+           FOREIGN KEY (applicantUserId) REFERENCES blackstarUser (blackstarUserId),
+           FOREIGN KEY (applicantAreaId) REFERENCES bloomApplicantArea (_id),
+		   UNIQUE UQ_bloomTicket(ticketNumber)
+         )ENGINE=INNODB;
+
+		
+	END IF;	
+
+-- Agregando desiredDate a bloomTicket
+	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'bloomTicket' AND COLUMN_NAME = 'desiredDate') = 0  THEN
+		ALTER TABLE bloomTicket ADD desiredDate DATETIME NULL;
+	END IF;
+
+-- AGREGANDO TABLA bloomSurvey
+IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'bloomSurvey') = 0 THEN
+		 CREATE TABLE blackstarDb.bloomSurvey(
+           _id INT(11) NOT NULL AUTO_INCREMENT,
+           bloomTicketId INT(11) NOT NULL,
+           evaluation Tinyint NOT NULL,
+           comments Text NOT NULL,
+           created Date NOT NULL,
+		   PRIMARY KEY (_id),
+		   FOREIGN KEY (bloomTicketId) REFERENCES bloomTicket (_id)
+         )ENGINE=INNODB;
+	END IF;	
+	
+ -- AGREGANDO TABLA bloomTicketTeam
+	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'bloomTicketTeam') = 0 THEN
+		 CREATE TABLE blackstarDb.bloomTicketTeam(
+           _id INT(11) NOT NULL AUTO_INCREMENT,
+           ticketId INT(11) NOT NULL,
+           workerRoleTypeId INT(11) NOT NULL,
+           blackstarUserId INT(11) NOT NULL,
+           userGroup VARCHAR(50) NOT NULL,
+		   assignedDate Datetime NOT NULL,
+           PRIMARY KEY (`_id`),
+		   FOREIGN KEY (ticketId) REFERENCES bloomTicket (_id),
+           FOREIGN KEY (workerRoleTypeId) REFERENCES bloomWorkerRoleType (_id),
+           FOREIGN KEY (blackstarUserId) REFERENCES blackstarUser (blackstarUserId)
+         )ENGINE=INNODB;
+	END IF;
+
+ -- AGREGANDO TABLA bloomDeliverableTrace
+	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'bloomDeliverableTrace') = 0 THEN
+		 CREATE TABLE blackstarDb.bloomDeliverableTrace(
+           _id INT(11) NOT NULL AUTO_INCREMENT,
+           bloomTicketId INT(11) NOT NULL,
+           deliverableTypeId INT(11) NOT NULL,
+           delivered INT(11) DEFAULT 0,
+           date Datetime NOT NULL,
+		   PRIMARY KEY (_id),
+		   UNIQUE UQ_bloomDeliverableTrace(bloomTicketId,deliverableTypeId),
+		   FOREIGN KEY (bloomTicketId) REFERENCES bloomTicket (_id),
+           FOREIGN KEY (deliverableTypeId) REFERENCES bloomDeliverableType (_id)
+         )ENGINE=INNODB;
+	END IF;		
+
+-- Agregando docId a bloomDeliverableTrace
+	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'bloomDeliverableTrace' AND COLUMN_NAME = 'docId') = 0  THEN
+		ALTER TABLE bloomDeliverableTrace ADD docId VARCHAR(400) NULL;
+	END IF;
+
+-- AGREGANDO COLUMNA bloomTicketId A followUp
+	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'followUp' AND COLUMN_NAME = 'bloomTicketId') =0  THEN
+		 ALTER TABLE blackstarDb.followUp ADD bloomTicketId INT(11);
+		 ALTER TABLE blackstarDb.followUp ADD CONSTRAINT R11 FOREIGN KEY (bloomTicketId) REFERENCES bloomTicket (_id) ON DELETE NO ACTION ON UPDATE NO ACTION;
+	END IF;
+
+
+-- AGREGANDO TABLA bloomAdvisedGroup
+	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'bloomAdvisedGroup') = 0 THEN
+			CREATE TABLE blackstarDb.bloomAdvisedGroup
+			(
+			  advicedGroupId INT(11) NOT NULL AUTO_INCREMENT,
+			  applicantAreaId INT(3) NOT NULL,
+			  serviceTypeId INT(3) NOT NULL,
+			  userGroup VARCHAR(150) NOT NULL,
+			  PRIMARY KEY (advicedGroupId)
+			);
+			ALTER TABLE blackstarDb.bloomAdvisedGroup ADD CONSTRAINT bloomRelationAdvisedGroup UNIQUE(applicantAreaId,serviceTypeId,userGroup);
+
+	END IF;
+
+-- Agregando docId a bloomDeliverableTrace
+	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'bloomAdvisedGroup' AND COLUMN_NAME = 'workerRoleTypeId') = 0  THEN
+		ALTER TABLE bloomAdvisedGroup ADD workerRoleTypeId INT NULL;
+		ALTER TABLE blackstarDb.bloomAdvisedGroup ADD CONSTRAINT bloomAdvisedGroup_workerRoleType FOREIGN KEY (workerRoleTypeId) REFERENCES bloomWorkerRoleType (_id) ON DELETE NO ACTION ON UPDATE NO ACTION;
+	END IF;
+	
+-- -----------------------------------------------------------------------------
+-- FIN SECCION DE CAMBIOS - NO CAMBIAR CODIGO FUERA DE ESTA SECCION
+-- -----------------------------------------------------------------------------
+
+END$$
+
+DELIMITER ;
+
+CALL blackstarDb.upgradeBloomSchema();
+
+DROP PROCEDURE blackstarDb.upgradeBloomSchema;
+
+-- -----------------------------------------------------------------------------
+-- File:	bloomDb_StoredProcedures.sql   
+-- Name:	bloomDb_StoredProcedures
+-- Desc:	Crea o actualiza los Stored procedures operativos de la aplicacion
+-- Auth:	Oscar Martinez
+-- Date:	08/04/2014
+-- -----------------------------------------------------------------------------
+-- Change History
+-- -----------------------------------------------------------------------------
+-- PR   Date    	Author	Description
+-- --   --------   -------  ----------------------------------------------------
+-- 1    20/03/2014	DCB		Se Integran los SP iniciales:
+--								blackstarDb.BloomUpdateTickets
+--								blackstarDb.BloomUpdateTransferFollow
+--								blackstarDb.BloomUpdateTransferTeam
+-- 								blackstarDb.BloomUpdateTransferUsers
+-- 								blackstarDb.BloomTransfer
+-- 2    24/03/2014	DCB		Se Integra blackstarDb.GetbloomTicketDetail
+-- 3    24/03/2014	DCB		Se Integra blackstarDb.GetbloomTicketTeam
+-- 4    28/03/2014	DCB		Se Integra blackstarDb.AddFollowUpTobloomTicket
+--                          Se Integra blackstarDb.UpsertbloomTicketTeam
+--                          Se Integra blackstarDb.GetBloomFollowUpByTicket
+-- 5    31/03/2014  DCB     Se integra blackstarDb.GetBloomDeliverableType  
+--                  DCB     Se integra blackstarDb.AddBloomDelivarable  
+-- 5    02/04/2014  DCB     Se integra blackstarDb.GetbloomTicketResponsible
+--                  DCB     Se integra blackstarDb.GetUserById
+-- 6    03/04/2014  DCB     Se integra blackstarDb.ClosebloomTicket
+
+-- 7     08/05/2014  OMA	blackstarDb.getBloomPendingTickets
+-- 8     08/05/2014  OMA	blackstarDb.getbloomTickets
+-- 9     08/05/2014  OMA	blackstarDb.getBloomDocumentsByService
+-- 10    08/05/2014  OMA 	blackstarDb.getBloomProjects
+-- 11    08/05/2014  OMA 	blackstarDb.getbloomApplicantArea
+-- 12    08/05/2014  OMA 	blackstarDb.getBloomServiceType
+-- 13    08/05/2014  OMA 	blackstarDb.getBloomOffice
+-- 14    08/05/2014  OMA 	blackstarDb.GetNextInternalTicketNumber
+-- 15    08/05/2014  OMA 	blackstarDb.AddInternalTicket
+-- 16    08/05/2014  OMA 	blackstarDb.AddMemberTicketTeam
+-- 17    08/05/2014  OMA 	blackstarDb.AddDeliverableTrace
+-- 18    08/05/2014  OMA	blackstarDb.GetUserData (MODIFICADO:Sobrescribimos la version anterior)
+-- 19    08/05/2014  OMA	blackstarDb.getBloomEstatusTickets
+
+-- 19    16/05/2014  OMA	blackstarDb.GetBloomSupportAreasWithTickets
+-- 20    16/05/2014  OMA	blackstarDb.GetBloomStatisticsByAreaSupport
+-- 21    16/05/2014  OMA	blackstarDb.GetBloomPercentageTimeClosedTickets
+-- 22    16/05/2014  OMA	blackstarDb.GetBloomPercentageEvaluationTickets
+-- 23    16/05/2014  OMA	blackstarDb.GetBloomNumberTicketsByArea
+-- 24    16/05/2014  OMA	blackstarDb.GetBloomUnsatisfactoryTicketsByUserByArea
+-- 25    16/05/2014  OMA	blackstarDb.GetBloomHistoricalTickets
+-- 26    22/06/2014  OMA	blackstarDb.getBloomAdvisedUsers
+--
+-- ------------------------------------------------------------------------------
+-- 27   29/06/2014  SAG   Correcciones de integracion:
+--                          blackstarDb.AddMemberTicketTeam
+-- ------------------------------------------------------------------------------
+-- 28   10/07/2014  SAG   Se modifica:
+--                          blackstarDb.AddInternalTicket
+-- ------------------------------------------------------------------------------
+-- 29   20/08/2014  SAG   Se integra proyecto bloom 
+--                        Se agrega AssignBloomTicket
+--                        Se agrega UserCanAssignBloomTicket
+-- ------------------------------------------------------------------------------
+
+use blackstarDb;
+
+
+DELIMITER $$
+
+
+-- -----------------------------------------------------------------------------
+  -- blackstarDb.UserCanAssignBloomTicket
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.UserCanAssignBloomTicket$$
+CREATE PROCEDURE blackstarDb.UserCanAssignBloomTicket(pTicketId INT, pUser VARCHAR(100))
+BEGIN
+  SELECT count(*) FROM blackstarDb.blackstarUser bu
+    INNER JOIN blackstarDb.blackstarUser_userGroup j ON bu.blackstarUserId = j.blackstarUserId
+    INNER JOIN blackstarDb.userGroup g ON g.userGroupId = g.userGroupId
+    INNER JOIN bloomTicketTeam tt ON tt.userGroup = g.externalId
+  WHERE bu.email = pUser
+    AND tt.ticketId = pTicketId
+  AND tt.workerRoleTypeId = 1;
+
+END$$
+
+-- -----------------------------------------------------------------------------
+  -- blackstarDb.AssignBloomTicket
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.AssignBloomTicket$$
+CREATE PROCEDURE blackstarDb.AssignBloomTicket(pTicketId INT, pAsignee VARCHAR(100), pUser VARCHAR(100))
+BEGIN
+  UPDATE bloomTicket SET 
+    asignee = pAsignee,
+    modified = NOW(),
+    modifiedBy = 'AssignBloomTicket',
+    modifiedByUsr = pUser
+  WHERE _id = pTicketId;
+END$$
+
+-- -----------------------------------------------------------------------------
+  -- blackstarDb.GetBloomTicketId
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetBloomTicketId$$
+CREATE PROCEDURE blackstarDb.GetBloomTicketId(pTicketNumber VARCHAR(100))
+BEGIN
+  SELECT _id FROM bloomTicket WHERE ticketNumber = pTicketNumber;
+END$$
+
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetbloomTicketDetail
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetbloomTicketDetail$$
+CREATE PROCEDURE blackstarDb.`GetbloomTicketDetail`(ticketId INTEGER)
+BEGIN
+
+SELECT *
+FROM ((SELECT *
+       FROM bloomTicket WHERE _ID = ticketId) AS ticketDetail
+       LEFT JOIN (SELECT bu.blackstarUserId refId, bu.name applicantUserName
+           FROM blackstarUser bu) AS j1
+           ON ticketDetail.applicantUserId = j1.refId
+       LEFT JOIN (SELECT of.officeId refId, of.officeName as officeName 
+           FROM office of) AS j2
+           ON ticketDetail.officeId = j2.refId
+       LEFT JOIN (SELECT st._id refId, st.name as serviceTypeName 
+           FROM bloomServiceType st) AS j3
+           ON ticketDetail.serviceTypeId = j3.refId           
+       LEFT JOIN (SELECT sp._id refId, sp.name as statusName 
+           FROM bloomStatusType sp) AS j4
+           ON ticketDetail.statusId = j4.refId           
+       LEFT JOIN (SELECT aa._id refId, aa.name as applicantAreaName 
+           FROM bloomApplicantArea aa) AS j5
+           ON ticketDetail.applicantAreaId = j5.refId            
+       LEFT JOIN (SELECT bu.email refId, bu.name createdByUsrName
+           FROM blackstarUser bu) AS j6
+           ON ticketDetail.createdByUsr = j6.refId
+       LEFT JOIN (SELECT bu.email refId, bu.name modifiedByUsrName
+           FROM blackstarUser bu) AS j7
+           ON ticketDetail.modifiedByUsr = j7.refId);
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetbloomTicketTeam
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetbloomTicketTeam$$
+CREATE PROCEDURE blackstarDb.`GetbloomTicketTeam`(ticket INTEGER)
+BEGIN
+
+SELECT 
+  t._id AS id,
+  ticketId AS ticketId,
+  workerRoleTypeId AS workerRoleTypeId,
+  t.blackstarUserId AS blackstarUserId,
+  assignedDate AS assignedDate
+FROM bloomTicketTeam t
+  INNER JOIN blackstarUser u ON t.blackstarUserId = u.blackstarUserId
+  INNER JOIN bloomWorkerRoleType w ON t.workerRoleTypeId = w._id
+WHERE t.ticketId = ticket;
+
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.AddFollowUpTobloomTicket
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.AddFollowUpTobloomTicket$$
+CREATE PROCEDURE blackstarDb.`AddFollowUpTobloomTicket`(pTicketId INTEGER, asignee VARCHAR(50), pCreatedByUsrMail VARCHAR(50), pMessage TEXT)
+BEGIN
+  
+	INSERT INTO blackstarDb.followUp(bloomTicketId, followup, followUpReferenceTypeId, asignee, created, createdBy, createdByUsr)
+	VALUES(pTicketId, pMessage, 'R', asignee, NOW(), 'AddFollowUpTobloomTicket', pCreatedByUsrMail);
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.UpsertbloomTicketTeam
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.UpsertbloomTicketTeam$$
+DROP PROCEDURE IF EXISTS blackstarDb.AddMemberTicketTeam$$
+CREATE PROCEDURE blackstarDb.`AddMemberTicketTeam`(pTicketId INTEGER, pWorkerRoleTypeId INTEGER, pblackstarUser VARCHAR(50), pUserGroup VARCHAR(50))
+BEGIN
+
+SELECT @blackstarUserId:= blackstarUserId FROM blackstarDb.blackstarUser WHERE email = pblackstarUser;
+
+IF NOT EXISTS (SELECT * FROM bloomTicketTeam WHERE ticketId = pTicketId AND blackstarUserId = @blackstarUserId) THEN
+    INSERT INTO blackstarDb.bloomTicketTeam(ticketId, workerRoleTypeId, blackstarUserId, userGroup, assignedDate)
+    VALUES(pTicketId, pWorkerRoleTypeId, @blackstarUserId, pUserGroup, NOW());   
+ELSE
+   UPDATE blackstarDb.bloomTicketTeam SET 
+      assignedDate = NOW(), 
+      workerRoleTypeId = pWorkerRoleTypeId
+   WHERE ticketId = pTicketId 
+    AND blackstarUserId = @blackstarUserId;
+END IF;
+    
+END$$
+
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetBloomFollowUpByTicket
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetBloomFollowUpByTicket$$
+CREATE PROCEDURE blackstarDb.`GetBloomFollowUpByTicket`(pTicketId INTEGER)
+BEGIN
+	SELECT 
+    created AS created, 
+    u2.name AS createdByUsr, 
+    u2.email AS createdByUsrEmail,
+    u.name AS asignee, 
+    followup AS followup
+	FROM followUp f
+		   LEFT OUTER JOIN blackstarUser u ON f.asignee = u.email
+		   LEFT OUTER JOIN blackstarUser u2 ON f.createdByUsr = u2.email
+	WHERE bloomTicketId = pTicketId
+	ORDER BY created;
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetBloomDeliverableType
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetBloomDeliverableType$$
+CREATE PROCEDURE blackstarDb.`GetBloomDeliverableType`(pServiceTypeId INTEGER)
+BEGIN
+	SELECT 
+    _id id, name name, description description 
+  FROM bloomDeliverableType
+  WHERE serviceTypeId = pServiceTypeId;
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.AddBloomDelivarable
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.AddBloomDelivarable$$
+CREATE PROCEDURE blackstarDb.`AddBloomDelivarable`(pTicketId INTEGER, pDeliverableTypeId INTEGER, docId VARCHAR(200))
+BEGIN
+DECLARE counter INTEGER;
+
+  SET counter = (SELECT count(*) 
+                 FROM bloomDeliverableTrace 
+                 WHERE bloomTicketId = pTicketId AND deliverableTypeId = pDeliverableTypeId);
+  IF (counter > 0) THEN
+    UPDATE bloomDeliverableTrace SET delivered = 1, date = NOW();
+  ELSE 
+	  INSERT INTO bloomDeliverableTrace (bloomTicketId, deliverableTypeId, delivered, date, docId)
+    VALUES (pTicketId, pDeliverableTypeId, 1, NOW(), docId);
+  END IF;  
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetbloomTicketResponsible
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetbloomTicketResponsible$$
+CREATE PROCEDURE blackstarDb.`GetbloomTicketResponsible`(pTicketId INTEGER)
+BEGIN
+
+DECLARE responsableId INTEGER;
+
+SET responsableId = (SELECT blackstarUserId 
+                     FROM bloomTicketTeam 
+                     WHERE ticketId = pTicketId
+                           AND workerRoleTypeId = 1
+                     LIMIT 1);
+SELECT * 
+FROM blackstarUser
+WHERE blackstarUserId = responsableId;
+
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetbloomTicketResponsible
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetbloomTicketUserForResponse$$
+CREATE PROCEDURE blackstarDb.`GetbloomTicketUserForResponse`(pTicketId INTEGER)
+BEGIN
+
+DECLARE responseUserId INTEGER;
+
+SET responseUserId = (SELECT blackstarUserId 
+                     FROM bloomTicketTeam 
+                     WHERE ticketId = pTicketId
+                           AND workerRoleTypeId = 2
+                     ORDER BY assignedDate DESC
+                     LIMIT 1);
+SELECT * 
+FROM blackstarUser
+WHERE blackstarUserId = responseUserId;
+
+END$$
+
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetbloomTicketResponsible
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetUserById$$
+CREATE PROCEDURE blackstarDb.`GetUserById`(pId INTEGER)
+BEGIN
+
+        SELECT u.blackstarUserId blackstarUserId, u.email userEmail, u.name userName
+        FROM blackstarUser u
+        WHERE u.blackstarUserId = pId;
+        
+END$$
+
+
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.getBloomPendingTickets
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.getBloomPendingTickets$$
+CREATE PROCEDURE blackstarDb.`getBloomPendingTickets`(UserId INTEGER)
+BEGIN
+  SELECT DISTINCT
+    ti._id as id,
+    ti.ticketNumber,
+    ti.created,
+    ti.applicantAreaId, 
+    ti.dueDate, 
+    ti.desiredDate, 
+    ba.name as areaName,
+    ti.serviceTypeId,
+    st.name as serviceName,
+    st.responseTime,
+    ti.project,
+    ti.officeId, 
+    o.officeName,
+    ti.statusId,
+    s.name as statusTicket,
+    a.bloomServiceArea as serviceArea
+  FROM bloomTicket ti
+       INNER JOIN bloomTicketTeam tm on (ti._id = tm.ticketId)
+       INNER JOIN bloomApplicantArea ba on (ba._id = ti.applicantAreaId)
+       INNER JOIN bloomServiceType st on (st._id = ti.serviceTypeId)
+       INNER JOIN office o on (o.officeId = ti.officeId)
+       INNER JOIN bloomStatusType s on (s._id = ti.statusId)
+       INNER JOIN bloomServiceArea a ON a.bloomServiceAreaId = st.bloomServiceAreaId
+  WHERE tm.blackstarUserId = UserId 
+      AND tm.workerRoleTypeId = 1
+      AND ti.statusId < 6 
+      AND ti.statusId != 4
+  ORDER BY ti.statusId, ti.created;
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.getbloomTickets vista para el coordinador.
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.getbloomTickets$$
+CREATE PROCEDURE blackstarDb.getbloomTickets(UserId INTEGER)
+BEGIN
+
+SELECT 
+	ti._id as id,
+	ti.ticketNumber,
+	ti.created,
+	ti.applicantAreaId, 
+	ba.name as areaName,
+	ti.serviceTypeId,
+	st.name as serviceName,
+	st.responseTime,
+	ti.project,
+	ti.officeId, 
+	o.officeName,
+	ti.statusId,
+	s.name as statusTicket
+FROM bloomTicket ti
+INNER JOIN bloomTicketTeam tm on (ti._id = tm.ticketId)
+INNER JOIN bloomApplicantArea ba on (ba._id = ti.applicantAreaId)
+INNER JOIN bloomServiceType st on (st._id = ti.serviceTypeId)
+INNER JOIN office o on (o.officeId = ti.officeId)
+INNER JOIN bloomStatusType s on (s._id = ti.statusId)
+WHERE tm.blackstarUserId=UserId
+ORDER BY ti.statusId,ti.created;
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.getCatalogEmployeeByGroup
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.getCatalogEmployeeByGroup$$
+CREATE PROCEDURE blackstarDb.getCatalogEmployeeByGroup(pUserGroup VARCHAR(100))
+BEGIN
+
+	SELECT 
+		u.blackstarUserId AS id,
+		u.name AS name, 
+		u.email AS email
+	FROM blackstarUser_userGroup ug
+		INNER JOIN blackstarUser u ON u.blackstarUserId = ug.blackstarUserId
+		INNER JOIN userGroup g ON g.userGroupId = ug.userGroupId
+	WHERE g.externalId = pUserGroup
+	ORDER BY u.name;
+	
+END$$
+
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.getBloomDocumentsByService, lista de documentos por tipo de servicio
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.getBloomDocumentsByService$$
+CREATE PROCEDURE blackstarDb.getBloomDocumentsByService(paramServiceTypeId INTEGER)
+BEGIN
+
+select a.deliverableTypeId as id, b.name as label from bloomRequiredDeliverable a
+INNER JOIN bloomDeliverableType b on (b._id =a.deliverableTypeId)
+WHERE a.serviceTypeId =paramServiceTypeId
+AND a.deliverableTypeId != -1
+ORDER BY a.deliverableTypeId;
+
+END$$
+
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.getBloomProjects
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.getBloomProjects$$
+CREATE PROCEDURE blackstarDb.getBloomProjects()
+BEGIN
+
+	SELECT DISTINCT project AS id,project label
+	FROM blackstarDb.policy
+		WHERE startDate <= NOW() AND NOW() <= endDate
+	ORDER BY project;
+
+END$$
+
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.getbloomApplicantArea
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.getbloomApplicantArea$$
+CREATE PROCEDURE blackstarDb.getbloomApplicantArea()
+BEGIN
+SELECT _ID as id ,NAME AS label FROM bloomApplicantArea
+WHERE _ID != -1
+ORDER BY _ID;
+END$$
+
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.getBloomServiceType       SE MODIFICO PARA LA FASE 2
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.getBloomServiceType$$
+CREATE PROCEDURE blackstarDb.getBloomServiceType(applicantAreaIdParam INTEGER)
+BEGIN
+SELECT _ID as id ,NAME AS label, responseTime FROM bloomServiceType
+WHERE _ID != -1
+AND applicantAreaId = applicantAreaIdParam
+ORDER BY _ID;
+
+END$$
+
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.getBloomOffice
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.getBloomOffice$$
+CREATE PROCEDURE blackstarDb.getBloomOffice()
+BEGIN
+SELECT officeId as id, officeName AS label from office
+WHERE officeId != '?'
+ORDER BY officeId;
+END$$
+
+
+-- -----------------------------------------------------------------------------
+        -- blackstarDb.GetUserData
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetUserData$$
+CREATE PROCEDURE blackstarDb.GetUserData(pEmail VARCHAR(100))
+BEGIN
+
+        SELECT u.email AS userEmail, u.name AS userName, u.blackstarUserId , g.name AS groupName
+        FROM blackstarUser_userGroup ug
+                INNER JOIN blackstarUser u ON u.blackstarUserId = ug.blackstarUserId
+                LEFT OUTER JOIN userGroup g ON g.userGroupId = ug.userGroupId
+        WHERE u.email = pEmail;
+        
+END$$
+
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetNextInternalTicketNumber
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetNextInternalTicketNumber$$
+CREATE PROCEDURE blackstarDb.GetNextInternalTicketNumber()
+BEGIN
+
+	DECLARE newNumber INTEGER;
+
+	-- Obteniendo el numero de folio
+	CALL blackstarDb.GetNextServiceOrderNumber('I', newNumber);
+
+	-- Regresando el numero de folio completo
+	SELECT CONCAT('SAC', cast(newNumber AS CHAR(50))) AS ServiceNumber;
+END$$
+
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.AddInternalTicket   SE MODIFICO PARA LA FASE 2
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.AddInternalTicket$$
+CREATE PROCEDURE blackstarDb.AddInternalTicket (  
+
+  applicantUserId Int(11),
+  officeId Char(1),
+  serviceTypeId Int(3),
+  statusId Int(11),
+  applicantAreaId Int(11),
+  dueDate Date,
+  project Varchar(50),
+  ticketNumber Varchar(15),
+  description Text,
+  created Datetime,
+  createdBy Varchar(50),
+  createdByUsr VARCHAR(50),
+  reponseInTime Tinyint,
+	purposeVisitVL Varchar(2500),
+	purposeVisitVISAS Varchar(2500),
+	draftCopyDiagramVED Varchar(2500),
+	formProjectVED Varchar(2500),
+	observationsVEPI Varchar(2500),
+	draftCopyPlanVEPI Varchar(2500),
+	formProjectVEPI Varchar(2500),
+	observationsVRCC Varchar(2500),
+	checkListVRCC Varchar(2500),
+	formProjectVRCC Varchar(2500),
+	questionVPT Varchar(2500),
+	observationsVSA Varchar(2500),
+	formProjectVSA Varchar(2500),
+	productInformationVSP Varchar(2500),
+	observationsISED Varchar(2500),
+	draftCopyPlanISED Varchar(2500),
+	observationsISRC Varchar(2500),
+	attachmentsISRC Varchar(2500),
+	apparatusTraceISSM Varchar(2500),
+	observationsISSM Varchar(2500),
+	questionISSM Varchar(2500),
+	ticketISRPR Varchar(2500),
+	modelPartISRPR Varchar(2500),
+	observationsISRPR Varchar(2500),
+	productInformationISSPC Varchar(2500),
+	positionPGCAS Varchar(2500),
+	collaboratorPGCAS Varchar(2500),
+	justificationPGCAS Varchar(2500),
+	salaryPGCAS Varchar(2500),
+	positionPGCCP Varchar(2500),
+	commentsPGCCP Varchar(2500),
+	developmentPlanPGCCP Varchar(2500),
+	targetPGCCP Varchar(2500),
+	salaryPGCCP Varchar(2500),
+	positionPGCNC Varchar(2500),
+	developmentPlanPGCNC Varchar(2500),
+	targetPGCNC Varchar(2500),
+	salaryPGCNC Varchar(2500),
+	justificationPGCNC Varchar(2500),
+	positionPGCF Varchar(2500),
+	collaboratorPGCF Varchar(2500),
+	justificationPGCF Varchar(2500),
+	positionPGCAA Varchar(2500),
+	collaboratorPGCAA Varchar(2500),
+	justificationPGCAA Varchar(2500),
+	requisitionFormatGRC Varchar(2500),
+	linkDocumentGM Varchar(2500),
+	suggestionGSM Varchar(2500),
+	documentCodeGSM Varchar(2500),
+	justificationGSM Varchar(2500),
+	problemDescriptionGPTR Varchar(2500),
+  desiredDate DATETIME
+  )
+BEGIN
+	INSERT INTO bloomTicket
+(applicantUserId,officeId,serviceTypeId,statusId,
+applicantAreaId,dueDate,project,ticketNumber,
+description,created,createdBy,createdByUsr,reponseInTime,
+purposeVisitVL,purposeVisitVISAS,draftCopyDiagramVED,formProjectVED,observationsVEPI,
+draftCopyPlanVEPI,formProjectVEPI,observationsVRCC,checkListVRCC,formProjectVRCC,
+questionVPT,observationsVSA,formProjectVSA,productInformationVSP,observationsISED,
+draftCopyPlanISED,observationsISRC,attachmentsISRC,apparatusTraceISSM,observationsISSM,
+questionISSM,ticketISRPR,modelPartISRPR,observationsISRPR,productInformationISSPC,
+positionPGCAS,collaboratorPGCAS,justificationPGCAS,salaryPGCAS,positionPGCCP,
+commentsPGCCP,developmentPlanPGCCP,targetPGCCP,salaryPGCCP,positionPGCNC,
+developmentPlanPGCNC,targetPGCNC,salaryPGCNC,justificationPGCNC,positionPGCF,
+collaboratorPGCF,justificationPGCF,positionPGCAA,collaboratorPGCAA,justificationPGCAA,
+requisitionFormatGRC,linkDocumentGM,suggestionGSM,documentCodeGSM,justificationGSM,
+problemDescriptionGPTR, desiredDate)
+VALUES
+(applicantUserId,officeId,serviceTypeId,statusId,
+applicantAreaId,dueDate,project,ticketNumber,
+description,created,createdBy,createdByUsr,reponseInTime,
+purposeVisitVL,purposeVisitVISAS,draftCopyDiagramVED,formProjectVED,observationsVEPI,
+draftCopyPlanVEPI,formProjectVEPI,observationsVRCC,checkListVRCC,formProjectVRCC,
+questionVPT,observationsVSA,formProjectVSA,productInformationVSP,observationsISED,
+draftCopyPlanISED,observationsISRC,attachmentsISRC,apparatusTraceISSM,observationsISSM,
+questionISSM,ticketISRPR,modelPartISRPR,observationsISRPR,productInformationISSPC,
+positionPGCAS,collaboratorPGCAS,justificationPGCAS,salaryPGCAS,positionPGCCP,
+commentsPGCCP,developmentPlanPGCCP,targetPGCCP,salaryPGCCP,positionPGCNC,
+developmentPlanPGCNC,targetPGCNC,salaryPGCNC,justificationPGCNC,positionPGCF,
+collaboratorPGCF,justificationPGCF,positionPGCAA,collaboratorPGCAA,justificationPGCAA,
+requisitionFormatGRC,linkDocumentGM,suggestionGSM,documentCodeGSM,justificationGSM,
+problemDescriptionGPTR, desiredDate);
+select LAST_INSERT_ID();
+END$$
+
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.getBloomEstatusTickets
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.getBloomEstatusTickets$$
+CREATE PROCEDURE blackstarDb.getBloomEstatusTickets()
+BEGIN
+SELECT _ID as id ,NAME AS label FROM bloomStatusType
+WHERE _ID != -1
+ORDER BY _ID;
+END$$
+
+
+
+-- -----------------------------------------------------------------------------
+  -- blackstarDb.ClosebloomTicket
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.ClosebloomTicket$$
+CREATE PROCEDURE blackstarDb.`ClosebloomTicket`(pTicketId INTEGER, pUserId INTEGER, pStatusId INTEGER)
+BEGIN
+
+DECLARE inTime TINYINT DEFAULT 1;
+DECLARE elapsed FLOAT (30,20);
+DECLARE createdDate DATETIME;
+DECLARE today DATETIME DEFAULT NOW();
+DECLARE required INT;
+
+SET createdDate = (SELECT created FROM bloomTicket WHERE _id = pTicketId);
+SET elapsed =  TO_DAYS(today) - TO_DAYS(createdDate);
+SET required = (SELECT bst.responseTime 
+                FROM bloomTicket bt, bloomServiceType bst
+                WHERE bt.serviceTypeId = bst._id 
+                       AND bt._id = pTicketId);
+
+IF(elapsed > required) THEN
+   SET inTime = 0;
+END IF;
+
+UPDATE bloomTicket 
+SET statusId = pStatusId, reponseInTime = inTime, desviation = (elapsed - required), modified = today
+  , responseDate = today, modifiedBy = "ClosebloomTicket", modifiedByUsr = (SELECT email FROM blackstarUser WHERE blackstarUserId = pUserId)
+WHERE _ID = pTicketId;
+
+END$$
+
+DROP PROCEDURE IF EXISTS blackstarDb.GetbloomTicketByUserKPI$$
+CREATE PROCEDURE blackstarDb.`GetbloomTicketByUserKPI`()
+BEGIN
+
+SELECT bu.name name, bu.email email, aa.name applicantArea, count(*) counter
+FROM bloomTicket bt, blackstarUser bu, bloomApplicantArea aa
+WHERE bt.applicantUserId = bu.blackstarUserId
+      AND bt.applicantAreaId = aa._id
+GROUP BY bt.applicantUserId
+ORDER BY counter desc;
+
+END$$
+
+
+DROP PROCEDURE IF EXISTS blackstarDb.GetbloomTicketByOfficeKPI$$
+CREATE PROCEDURE blackstarDb.`GetbloomTicketByOfficeKPI`()
+BEGIN
+
+SELECT of.officeName officeName, count(*) counter
+FROM bloomTicket bt, office of
+WHERE bt.officeId = of.officeId
+GROUP BY bt.officeId
+ORDER BY counter desc;
+
+END$$
+
+DROP PROCEDURE IF EXISTS blackstarDb.GetbloomTicketByAreaKPI$$
+CREATE PROCEDURE blackstarDb.`GetbloomTicketByAreaKPI`()
+BEGIN
+SELECT aa.name applicantArea, count(*) counter
+FROM bloomTicket bt, bloomApplicantArea aa
+WHERE  bt.applicantAreaId = aa._id
+GROUP BY bt.applicantAreaId
+ORDER BY counter desc;
+END$$
+
+
+DROP PROCEDURE IF EXISTS blackstarDb.GetbloomTicketByDayKPI$$
+CREATE PROCEDURE blackstarDb.`GetbloomTicketByDayKPI`()
+BEGIN
+  SELECT DATE_FORMAT(created,'%d/%m/%Y') created, count(*) counter
+  FROM bloomTicket
+GROUP BY DATE_FORMAT(created,'%d/%m/%Y');
+END$$
+
+DROP PROCEDURE IF EXISTS blackstarDb.GetbloomTicketByProjectKPI$$
+CREATE PROCEDURE blackstarDb.`GetbloomTicketByProjectKPI`()
+BEGIN
+SELECT bt.project project, count(*) counter
+FROM bloomTicket bt
+WHERE bt.project IS NOT NULL
+      AND bt.project <> ''
+      AND bt.project <> 'NA'
+      AND bt.project <> 'N/A'
+GROUP BY bt.project
+ORDER BY counter DESC
+LIMIT 5;
+END$$
+
+DROP PROCEDURE IF EXISTS blackstarDb.GetbloomTicketByServiceAreaKPI$$
+CREATE PROCEDURE blackstarDb.`GetbloomTicketByServiceAreaKPI`()
+BEGIN
+SELECT aa.name applicantArea, st.name serviceType , count(*) counter
+FROM bloomTicket bt, bloomApplicantArea aa, bloomServiceType st
+WHERE bt.serviceTypeId = st._id
+      AND bt.applicantAreaId = aa._id
+GROUP BY bt.applicantAreaId, bt.serviceTypeId;
+END$$
+
+DROP PROCEDURE IF EXISTS blackstarDb.GetbloomTicketDeliverable$$
+CREATE PROCEDURE blackstarDb.`GetbloomTicketDeliverable`(pTicketId INTEGER)
+BEGIN
+
+  SELECT 
+    bdt._id id, 
+    bdt.name name, 
+    IF(bd._id IS NOT NULL, true, false) AS delivered,
+    bd.docId docId
+  FROM bloomTicket bt
+    INNER JOIN bloomDeliverableType bdt ON bt.serviceTypeId = bdt.serviceTypeId
+    LEFT OUTER JOIN  bloomDeliverableTrace bd ON bd.bloomTicketId = bt._id AND bd.deliverableTypeId = bdt._id
+  WHERE bt._id = pTicketId;
+
+END$$ 
+
+DROP PROCEDURE IF EXISTS blackstarDb.GetbloomSurveyTable$$
+CREATE PROCEDURE blackstarDb.`GetbloomSurveyTable`(userId INTEGER)
+BEGIN
+  SELECT 
+    bs._id id, 
+    bt.ticketNumber ticketNumber, 
+    baa.name applicantArea, 
+    bt.project project, 
+    bs.created created, 
+    bs.evaluation evaluation
+  FROM bloomTicket bt
+    INNER JOIN bloomSurvey bs ON bt._id = bs.bloomTicketId
+    INNER JOIN bloomApplicantArea baa ON baa.baa._id = bt.applicantAreaId
+    INNER JOIN blackstarUser bu ON bu.email = bt.createdByUsr
+  WHERE bu.blackstarUserId = userId;
+END$$
+
+DROP PROCEDURE IF EXISTS blackstarDb.GetBloomPendingSurveyTable$$
+CREATE PROCEDURE blackstarDb.`GetBloomPendingSurveyTable`(userId INTEGER)
+BEGIN
+SELECT DISTINCT 
+  bt.ticketNumber ticketNumber, 
+  baa.name applicantArea, 
+  bt.project project,
+  GROUP_CONCAT(DISTINCT bu.name ORDER BY bu.name SEPARATOR ', ') AS risponsableName
+FROM bloomTicket bt
+  INNER JOIN bloomApplicantArea baa ON bt.applicantAreaId = baa._id
+  INNER JOIN bloomTicketTeam btt ON btt.ticketId = bt._id
+  INNER JOIN blackstarUser bu ON btt.blackstarUserId = bu.blackstarUserId
+  INNER JOIN blackstarUser bu2 ON bu2.email = bt.createdByUsr
+  LEFT OUTER JOIN bloomSurvey bs ON bs.bloomTicketId = bt._id
+WHERE bu2.blackstarUserId = userId
+      AND btt.workerRoleTypeId = 1
+      AND bs._id IS NULL
+GROUP BY bt._id;
+END$$
+
+DROP PROCEDURE IF EXISTS blackstarDb.InsertbloomSurvey$$
+CREATE PROCEDURE blackstarDb.`InsertbloomSurvey`(pTicketId INTEGER, pEvaluation INTEGER, pComments TEXT, pCreated DATE)
+BEGIN
+  INSERT INTO bloomSurvey (bloomTicketId, evaluation, comments, created ) 
+  VALUES(pTicketId, pEvaluation, pComments, pCreated);
+END$$
+
+DROP PROCEDURE IF EXISTS blackstarDb.GetBloomPendingSurveys$$
+CREATE PROCEDURE blackstarDb.`GetBloomPendingSurveys`()
+BEGIN
+
+SELECT bt._id id, bt.ticketNumber ticketNumber, bt.description description,
+       bt.responseDate responseDate, bu.email email, bu.name name
+FROM bloomTicket bt, blackstarUser bu
+WHERE bt.statusId = 6
+     AND bt.applicantUserId = bu.blackstarUserId
+     AND bt.responseDate < DATE_ADD(NOW(), INTERVAL -2 DAY);
+END$$ 
+
+
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetBloomSupportAreasWithTickets
+	-- list of areas with Tickets
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetBloomSupportAreasWithTickets$$
+CREATE PROCEDURE blackstarDb.GetBloomSupportAreasWithTickets(startCreationDate Datetime,endCreationDate Datetime)
+BEGIN
+	SELECT ug.userGroupId,ug.name FROM followUp f
+					INNER JOIN blackstarUser bu ON (f.asignee=bu.email)
+					INNER JOIN blackstarUser_userGroup bug ON (bu.blackstarUserId=bug.blackstarUserId)
+					INNER JOIN userGroup ug ON (ug.userGroupId=bug.userGroupId)
+					INNER JOIN bloomTicket t ON (t._id=f.bloomTicketId)
+					INNER JOIN bloomTicketTeam tt ON (tt.ticketId = f.bloomTicketId and tt.blackstarUserId=bu.blackstarUserId) -- que el follow exista en bloomTicketTeam
+					WHERE f.bloomTicketId IS NOT NULL
+					AND t.statusId=6
+					AND bu.email <> t.createdByUsr -- que no sea el creador
+					AND t.created>= startCreationDate
+					AND t.created <= endCreationDate
+					GROUP BY ug.userGroupId;
+
+END$$
+
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetBloomStatisticsByAreaSupport
+	-- Statistics by area support
+	-- average, maximum and minimum from time attention	
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetBloomStatisticsByAreaSupport$$
+CREATE PROCEDURE blackstarDb.GetBloomStatisticsByAreaSupport(userGroupIdParam INT, groupName VARCHAR(100),startCreationDate Datetime,endCreationDate Datetime)
+BEGIN
+
+  DECLARE maxTimeRes DECIMAL(12,2) DEFAULT 0;
+  DECLARE minTimeRes DECIMAL(12,2) DEFAULT 0;
+  DECLARE promTimeRes DECIMAL(12,2) DEFAULT 0;
+  DECLARE sumaTotalTimeResp DECIMAL(12,2) DEFAULT 0;
+  DECLARE totalTicket INT DEFAULT 0;
+  DECLARE exit_flag INT DEFAULT 0;
+  DECLARE bloomTicketIdParam INT;
+  -- DECLARE tmpLog Varchar(50000);
+	
+	
+  -- lista de tickets del followUp de una area de apoyo especifica	
+  DECLARE listTicketsCursor CURSOR FOR   SELECT f.bloomTicketId FROM followUp f
+								INNER JOIN blackstarUser bu ON (f.asignee=bu.email)
+								INNER JOIN blackstarUser_userGroup bug ON (bu.blackstarUserId=bug.blackstarUserId)
+								INNER JOIN userGroup ug ON (ug.userGroupId=bug.userGroupId)
+								INNER JOIN bloomTicket t ON (t._id=f.bloomTicketId)
+								WHERE f.bloomTicketId IS NOT NULL
+								AND t.statusId=6 -- ticktes cerrados
+								AND ug.userGroupId= userGroupIdParam -- id perfil groupId
+								AND t.created>= startCreationDate
+								AND t.created <= endCreationDate
+								GROUP BY f.bloomTicketId;
+
+  DECLARE CONTINUE HANDLER FOR SQLSTATE '02000' SET exit_flag = 1;
+
+
+-- SET tmpLog='';
+
+-- SET tmpLog= CONCAT(tmpLog, 'userGroupIdParam:');	
+-- SET tmpLog= CONCAT(tmpLog, userGroupIdParam);	
+
+
+OPEN listTicketsCursor;	
+
+               timeRespLoop:  LOOP
+
+				FETCH listTicketsCursor INTO bloomTicketIdParam;
+
+				IF exit_flag = 1 THEN LEAVE timeRespLoop; END IF;
+				
+				-- SET tmpLog= CONCAT(tmpLog, ' * TicketID:');	
+				-- SET tmpLog= CONCAT(tmpLog, bloomTicketIdParam);	
+
+				 BLOCK2: begin
+
+					DECLARE detailTicketId INT;
+					DECLARE detailEmailUser VARCHAR(100);
+					DECLARE detailCreateDate DATETIME;
+					DECLARE detailUserGroupId INT;
+					
+					DECLARE beforeDetailTicketId INT;
+					DECLARE beforeDetailEmailUser VARCHAR(100);
+					DECLARE beforeDetailCreateDate DATETIME;
+					DECLARE beforeDetailUserGroupId INT;
+
+					DECLARE existRows INT DEFAULT 0;
+					
+					DECLARE sumaDetailFollowTimeResp DECIMAL(12,2) DEFAULT 0;
+					
+					DECLARE difMinutes INT;
+
+					DECLARE exit_flag2 INT DEFAULT 0;
+
+					-- lista de seguimiento de un tickets especifico para sumar tiempos
+					DECLARE ticketFollowDetailCursor CURSOR FOR  SELECT f.bloomTicketId, f.asignee, f.created, ug.userGroupId FROM followUp f 
+								INNER JOIN blackstarUser bu ON (f.asignee=bu.email)
+								INNER JOIN blackstarUser_userGroup bug ON (bu.blackstarUserId=bug.blackstarUserId)
+								INNER JOIN userGroup ug ON (ug.userGroupId=bug.userGroupId)
+								WHERE f.bloomTicketId=bloomTicketIdParam
+								ORDER BY f.bloomTicketId, f.created; 	
+
+					DECLARE CONTINUE HANDLER FOR SQLSTATE '02000' SET exit_flag2 = 1;
+					
+					 OPEN ticketFollowDetailCursor;	
+
+					 detailFollowLoop: LOOP
+					
+						 
+						FETCH ticketFollowDetailCursor INTO detailTicketId,detailEmailUser,detailCreateDate,detailUserGroupId;
+						IF exit_flag2 = 1 THEN LEAVE detailFollowLoop; END IF;				
+					
+						 -- SET tmpLog= CONCAT(tmpLog, ' *[ BloomID:');
+						 -- SET tmpLog= CONCAT(tmpLog, detailTicketId);	
+						 -- SET tmpLog= CONCAT(tmpLog, ' Email:');	
+						 -- SET tmpLog= CONCAT(tmpLog, detailEmailUser);	
+						 -- SET tmpLog= CONCAT(tmpLog, ' Fecha:');	
+						 -- SET tmpLog= CONCAT(tmpLog, detailCreateDate);	
+						 -- SET tmpLog= CONCAT(tmpLog, ' Grupo:');	
+						 -- SET tmpLog= CONCAT(tmpLog, detailUserGroupId);	
+						 -- SET tmpLog= CONCAT(tmpLog, ' ]');
+
+							
+
+						IF(detailUserGroupId = userGroupIdParam) THEN
+							
+							-- SET tmpLog= CONCAT(tmpLog, '* -F Set Before items');
+
+							SET beforeDetailTicketId = detailTicketId;
+							SET beforeDetailEmailUser = detailEmailUser;
+							SET beforeDetailCreateDate = detailCreateDate;
+							SET beforeDetailUserGroupId = detailUserGroupId;
+
+							SET existRows = existRows +1;
+
+						 -- SET tmpLog= CONCAT(tmpLog, ' * (BB BloomID:');
+						 -- SET tmpLog= CONCAT(tmpLog, beforeDetailTicketId);	
+						 -- SET tmpLog= CONCAT(tmpLog, ' BB Email:');	
+						 -- SET tmpLog= CONCAT(tmpLog, beforeDetailEmailUser);	
+						 -- SET tmpLog= CONCAT(tmpLog, ' BB Fecha:');	
+						 -- SET tmpLog= CONCAT(tmpLog, beforeDetailCreateDate);	
+						 -- SET tmpLog= CONCAT(tmpLog, ' BB Grupo:');	
+						 -- SET tmpLog= CONCAT(tmpLog, beforeDetailUserGroupId);	
+						 -- SET tmpLog= CONCAT(tmpLog, ' )');
+
+
+						ELSE
+							
+
+							IF(existRows > 0) THEN
+							
+							-- sacar la diferencia 
+							SET difMinutes = TIMESTAMPDIFF(MINUTE,beforeDetailCreateDate,detailCreateDate);
+						
+							-- sumarla a sumaDetailFollowTimeResp
+							SET sumaDetailFollowTimeResp = sumaDetailFollowTimeResp + difMinutes;
+
+							 -- SET tmpLog= CONCAT(tmpLog, ' *-F sacar la diferencia y sum ');
+							 -- SET tmpLog= CONCAT(tmpLog, ' *-F ');
+							 -- SET tmpLog= CONCAT(tmpLog, beforeDetailCreateDate);
+							 -- SET tmpLog= CONCAT(tmpLog, ' *-F ');
+							 -- SET tmpLog= CONCAT(tmpLog, detailCreateDate);
+							 -- SET tmpLog= CONCAT(tmpLog, ' *-F difMinutes:');
+							 -- SET tmpLog= CONCAT(tmpLog, difMinutes);
+							 -- SET tmpLog= CONCAT(tmpLog, ' *-F sumaDetailFollowTimeResp:');
+							 -- SET tmpLog= CONCAT(tmpLog, sumaDetailFollowTimeResp);
+
+							END IF;
+
+						END IF;
+
+						 
+
+					 END LOOP detailFollowLoop;
+
+					CLOSE ticketFollowDetailCursor;
+
+					-- Se actualiza maximo
+					IF(sumaDetailFollowTimeResp > maxTimeRes) THEN
+						SET maxTimeRes=sumaDetailFollowTimeResp;
+					END IF;
+					
+					-- Se actualiza minimo
+					IF(sumaDetailFollowTimeResp < minTimeRes) THEN
+						SET minTimeRes=sumaDetailFollowTimeResp;
+					END IF;
+
+					-- si hace falta se corrige el valor minimo
+					IF(minTimeRes = 0) THEN
+						SET minTimeRes=maxTimeRes;
+					END IF;
+
+
+					-- suma para el promedio y contador
+					SET sumaTotalTimeResp = sumaTotalTimeResp + sumaDetailFollowTimeResp;
+					SET totalTicket = totalTicket + 1;
+
+					-- SET tmpLog= CONCAT(tmpLog, ' *-F maxTimeRes:');
+					-- SET tmpLog= CONCAT(tmpLog, maxTimeRes);
+					-- SET tmpLog= CONCAT(tmpLog, ' *-F minTimeRes:');
+					-- SET tmpLog= CONCAT(tmpLog, minTimeRes);
+					-- SET tmpLog= CONCAT(tmpLog, ' *-F sumaTotalTimeResp:');
+					-- SET tmpLog= CONCAT(tmpLog, sumaTotalTimeResp);
+					-- SET tmpLog= CONCAT(tmpLog, ' *-F totalTicket:');
+					-- SET tmpLog= CONCAT(tmpLog, totalTicket);
+					
+				
+				END BLOCK2;
+
+
+ 
+               END LOOP timeRespLoop;  
+
+	 CLOSE listTicketsCursor;	
+
+
+		-- sacamos promedio
+		IF(sumaTotalTimeResp > 0) THEN
+			SET promTimeRes = sumaTotalTimeResp/totalTicket;
+		ELSE
+			SET promTimeRes = 0;
+		END IF;
+
+		-- SET tmpLog= CONCAT(tmpLog, ' *-F promTimeRes:');
+		-- SET tmpLog= CONCAT(tmpLog, promTimeRes);
+
+
+		-- select tmpLog as log;
+		
+		-- resultado por area
+		SELECT groupName,(maxTimeRes/60) AS maxTime, (minTimeRes/60) minTime,  (promTimeRes/60) promTime; 
+
+
+     END$$
+
+	 
+	 
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetBloomPercentageTimeClosedTickets
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetBloomPercentageTimeClosedTickets$$
+CREATE PROCEDURE blackstarDb.GetBloomPercentageTimeClosedTickets(startCreationDate Datetime,endCreationDate Datetime)
+BEGIN
+
+
+	DECLARE satisfactoryPercentage DECIMAL(8,2) DEFAULT 0;
+	DECLARE unsatisfactoryPercentage DECIMAL(8,2) DEFAULT 0;
+	DECLARE noTicketsSatisfactory INT DEFAULT 0;
+	DECLARE noTicketsUnsatisfactory INT DEFAULT 0;
+	DECLARE noTicketsTotal INT DEFAULT 0;
+
+
+
+	SET noTicketsSatisfactory = (select count(id) from (
+		select t._id as id, t.created ,t.dueDate,t.responseDate,date(t.responseDate),t.statusId from bloomTicket t
+		WHERE t.statusId=6 -- tickets cerrados
+		AND t.created>= startCreationDate
+		AND t.created <= endCreationDate
+		and date(t.responseDate) <= t.dueDate) as satisfactory);
+
+	SET noTicketsUnsatisfactory = (select count(id) from (
+		select t._id as id, t.created ,t.dueDate,t.responseDate,date(t.responseDate),t.statusId from bloomTicket t
+		WHERE t.statusId=6 -- tickets cerrados 
+		AND t.created>= startCreationDate
+		AND t.created <= endCreationDate
+		and date(t.responseDate) > t.dueDate) as unatisfactory);
+
+	SET noTicketsTotal=noTicketsSatisfactory+noTicketsUnsatisfactory;
+
+	SET satisfactoryPercentage = (100/noTicketsTotal)*noTicketsSatisfactory;
+	SET unsatisfactoryPercentage = (100/noTicketsTotal)*noTicketsUnsatisfactory;
+
+	select satisfactoryPercentage,unsatisfactoryPercentage;
+
+
+END$$
+	 
+	 
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetBloomPercentageEvaluationTickets
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetBloomPercentageEvaluationTickets$$
+CREATE PROCEDURE blackstarDb.GetBloomPercentageEvaluationTickets(initEvaluationValue INT,startCreationDate Datetime,endCreationDate Datetime)
+BEGIN
+
+
+	DECLARE satisfactoryPercentage DECIMAL(8,2) DEFAULT 0;
+	DECLARE unsatisfactoryPercentage DECIMAL(8,2) DEFAULT 0;
+	DECLARE noTicketsEvaluationSatisfactory INT DEFAULT 0;
+	DECLARE noTicketsEvaluationUnsatisfactory INT DEFAULT 0;
+	DECLARE noTicketsTotal INT DEFAULT 0;
+
+
+	SET noTicketsEvaluationSatisfactory = (select count(id) from (
+		select t._id as id, t.evaluation, t.created ,t.dueDate,t.responseDate,date(t.responseDate),t.statusId from bloomTicket t
+		WHERE t.evaluation>=initEvaluationValue
+		AND t.statusId=6 -- tickets cerrados
+		AND t.created>= startCreationDate
+		AND t.created <= endCreationDate
+		) as evaluation);
+
+	SET noTicketsEvaluationUnsatisfactory = (select count(id) from (
+		select t._id as id, t.evaluation, t.created ,t.dueDate,t.responseDate,date(t.responseDate),t.statusId from bloomTicket t
+		WHERE t.evaluation<initEvaluationValue
+		AND t.statusId=6 -- tickets cerrados
+		AND t.created>= startCreationDate
+		AND t.created <= endCreationDate
+		) as evaluation);
+
+	SET noTicketsTotal=noTicketsEvaluationSatisfactory+noTicketsEvaluationUnsatisfactory;
+
+	SET satisfactoryPercentage = (100/noTicketsTotal)*noTicketsEvaluationSatisfactory;
+	SET unsatisfactoryPercentage = (100/noTicketsTotal)*noTicketsEvaluationUnsatisfactory;
+
+	select satisfactoryPercentage,unsatisfactoryPercentage;
+
+
+END$$	 
+
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetBloomNumberTicketsByArea
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetBloomNumberTicketsByArea$$
+CREATE PROCEDURE blackstarDb.GetBloomNumberTicketsByArea(startCreationDate Datetime,endCreationDate Datetime)
+BEGIN
+
+	SELECT userGroup, COUNT(ticketId) noTickets FROM(
+		SELECT f.bloomTicketId AS ticketId, ug.name AS userGroup FROM followUp f
+						INNER JOIN blackstarUser bu ON (f.asignee=bu.email)
+						INNER JOIN blackstarUser_userGroup bug ON (bu.blackstarUserId=bug.blackstarUserId)
+						INNER JOIN userGroup ug ON (ug.userGroupId=bug.userGroupId)
+						INNER JOIN bloomTicket t ON (t._id=f.bloomTicketId)
+						WHERE f.bloomTicketId IS NOT NULL
+						AND t.statusId=6 -- tickets cerrados
+						AND t.created>= startCreationDate
+						AND t.created <= endCreationDate
+						AND bu.email <> t.createdByUsr -- que no sea el creador
+						GROUP BY f.bloomTicketId
+	) AS ticketsByArea
+	GROUP BY userGroup;
+
+END$$
+
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetBloomUnsatisfactoryTicketsByUserByArea
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetBloomUnsatisfactoryTicketsByUserByArea$$
+CREATE PROCEDURE blackstarDb.GetBloomUnsatisfactoryTicketsByUserByArea(initEvaluationValue INT,userGroupId INT,startCreationDate Datetime,endCreationDate Datetime)
+
+BEGIN
+
+	SELECT userName, COUNT(ticketId) as noTickets FROM( 
+	SELECT f.bloomTicketId AS ticketId, bu.blackstarUserId AS userId, bu.name AS userName FROM followUp f
+									INNER JOIN blackstarUser bu ON (f.asignee=bu.email)
+									INNER JOIN blackstarUser_userGroup bug ON (bu.blackstarUserId=bug.blackstarUserId)
+									INNER JOIN userGroup ug ON (ug.userGroupId=bug.userGroupId)
+									INNER JOIN bloomTicket t ON (t._id=f.bloomTicketId)
+									WHERE f.bloomTicketId IS NOT NULL
+									AND t.evaluation < initEvaluationValue -- limite inicial para evaluacion satisfactoria
+									AND t.statusId=6     -- tickets cerrados
+									AND t.created>= startCreationDate
+									AND t.created <= endCreationDate
+									AND ug.userGroupId= userGroupId -- ingenieria de servicio(5) o otra area
+									GROUP BY f.bloomTicketId,bu.blackstarUserId,bu.name
+	  ) AS report
+	GROUP BY userName;
+
+END$$
+
+
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetBloomHistoricalTickets
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetBloomHistoricalTickets$$
+CREATE PROCEDURE blackstarDb.GetBloomHistoricalTickets(statusTicket INT, startCreationDate DATETIME, endCreationDate DATETIME, showHidden INT)
+BEGIN
+
+  IF(statusTicket <= 0) THEN
+    SELECT 
+      ti._id AS id, 
+      ti.ticketNumber, 
+      ti.created AS created,
+      ti.applicantAreaId, 
+      ba.name AS areaName, 
+      ti.serviceTypeId, 
+      st.name AS serviceName, 
+      st.responseTime, 
+      ti.project, 
+      ti.officeId, 
+      o.officeName,
+      ti.statusId, 
+      s.name AS statusTicket,
+      ti.dueDate AS dueDate,
+      ti.desiredDate AS desiredDate,
+      a.bloomServiceArea AS serviceArea
+    FROM bloomTicket ti 
+      INNER JOIN bloomApplicantArea ba on (ba._id = ti.applicantAreaId) 
+      INNER JOIN bloomServiceType st on (st._id = ti.serviceTypeId) 
+      INNER JOIN office o on (o.officeId = ti.officeId) 
+      INNER JOIN bloomStatusType s on (s._id = ti.statusId)
+      INNER JOIN bloomServiceArea a ON st.bloomServiceAreaId = a.bloomServiceAreaId 
+    WHERE ti.created >= startCreationDate -- AND ti.created <= endCreationDate
+      AND IFNULL(st.hidden, 0) <= showHidden
+    ORDER BY ti.created DESC;
+  ELSE
+    SELECT 
+      ti._id AS id, 
+      ti.ticketNumber, 
+      ti.created AS created,
+      ti.applicantAreaId, 
+      ba.name AS areaName, 
+      ti.serviceTypeId, 
+      st.name AS serviceName, 
+      st.responseTime, 
+      ti.project, 
+      ti.officeId, 
+      o.officeName,
+      ti.statusId, 
+      s.name AS statusTicket,
+      ti.dueDate AS dueDate,
+      ti.desiredDate AS desiredDate,
+      a.bloomServiceArea AS serviceArea
+    FROM bloomTicket ti 
+      INNER JOIN bloomApplicantArea ba on (ba._id = ti.applicantAreaId) 
+      INNER JOIN bloomServiceType st on (st._id = ti.serviceTypeId) 
+      INNER JOIN office o on (o.officeId = ti.officeId) 
+      INNER JOIN bloomStatusType s on (s._id = ti.statusId) 
+      INNER JOIN bloomServiceArea a ON st.bloomServiceAreaId = a.bloomServiceAreaId 
+    WHERE ti.created >= startCreationDate -- AND ti.created <= endCreationDate
+      AND IFNULL(st.hidden, 0) <= showHidden
+      AND ti.statusId = statusTicket
+    ORDER BY ti.created DESC;
+  END IF;
+
+END$$
+
+-- ---------------------------------------------------------------------------------------------------------------------------------------------
+	-- FASE DOS DE TICKETS INTERNOS CAMBIO D ESQUEMA A MANEJO DE 4 CORDIANDORES DONDE SE INCLUYE MESA DE AYUDA.
+-- ---------------------------------------------------------------------------------------------------------------------------------------------
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.getBloomAdvisedUsers
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.getBloomAdvisedUsers$$
+CREATE PROCEDURE blackstarDb.getBloomAdvisedUsers(applicantAreaIdParam INTEGER,serviceTypeIdParam INTEGER)
+BEGIN
+
+SELECT DISTINCT 
+    u.blackstarUserId as id,
+    u.name name,
+    u.email email,
+    workerRoleTypeId workerRoleTypeId,
+    ag.userGroup 
+FROM blackstarUser u
+  INNER JOIN blackstarUser_userGroup ug on (u.blackstarUserId=ug.blackstarUserId)
+  INNER JOIN userGroup g on (g.userGroupId=ug.userGroupId)
+  INNER JOIN bloomAdvisedGroup ag on (ag.userGroup=g.externalId)
+WHERE ag.applicantAreaId=applicantAreaIdParam
+  AND ag.serviceTypeId=serviceTypeIdParam;
+	
+END$$
+
+DELIMITER ;
+
 
 -- -----------------------------------------------------------------------------
 -- File:blackstarDbTransfer_startupData.sql
@@ -6134,6 +7959,269 @@ CALL ExecuteTransfer();
 -- FIN - ACTUALIZACION DE DATOS
 -- -----------------------------------------------------------------------------
 
+
+-- -----------------------------------------------------------------------------
+-- Desc:Carga de datos inicial
+-- Auth:oscar martinez
+-- Date:22/06/2014
+-- -----------------------------------------------------------------------------
+-- Change History
+-- -----------------------------------------------------------------------------
+-- PR   Date    AuthorDescription
+-- --   --------   -------  ------------------------------------
+-- 1    20/03/2014  DCB  	Version inicial. 
+-- 2    08/05/2014  OMA  	ID secuencia tickets internos 
+-- 3    08/05/2014  OMA  	Perfil Mesa de ayuda
+-- 4    22/06/2014  OMA  	nueva actualizacion de perfiles y catalogos
+-- 5 	11/07/2014	SAG 	Script para poblar hidden en bloomServiceType
+-- ---------------------------------------------------------------------------
+use blackstarDb;
+
+
+DELIMITER $$
+
+DROP PROCEDURE IF EXISTS blackstarDb.updateDataBloom$$
+CREATE PROCEDURE blackstarDb.updateDataBloom()
+BEGIN
+-- Agregando FollowUpReferenceType
+IF(SELECT count(*) FROM blackstarDb.followUpReferenceType WHERE followUpReferenceTypeId = 'R') = 0 THEN
+	INSERT INTO blackstarDb.followUpReferenceType(followUpReferenceTypeId, followUpReferenceType)
+	SELECT 'R', 'Requisicion';
+END IF;
+
+-- Poblando bloomServiceType.hidden
+UPDATE bloomServiceType 
+SET
+	hidden = 1 
+WHERE _id in(16,17,18,19,20,21);
+
+-- -----------------------------------------------------------------------------
+	-- SECUENCIA
+-- -----------------------------------------------------------------------------
+IF(SELECT COUNT(*) FROM blackstarDb.sequence WHERE sequenceTypeId='I') = 0 THEN
+	INSERT INTO blackstarDb.sequence (sequenceTypeId,sequenceNumber) values('I',1);	
+END IF;	
+
+-- -----------------------------------------------------------------------------
+	-- CATALOGOS
+-- -----------------------------------------------------------------------------
+
+IF(SELECT count(*) FROM bloomWorkerRoleType) = 0 THEN
+	INSERT INTO bloomWorkerRoleType VALUES (1,'Responsable', 'Responsable de dar seguimiento al Ticket');
+	INSERT INTO bloomWorkerRoleType VALUES (2,'Colaborador', 'Personal de apoyo');
+END IF;
+
+IF(SELECT count(*) FROM bloomStatusType) = 0 THEN
+	INSERT INTO bloomStatusType VALUES (1,'Abierto', 'Ingreso de solicitud');
+	INSERT INTO bloomStatusType VALUES (2,'En proceso', 'Asignado, en proceso de solucion');
+	INSERT INTO bloomStatusType VALUES (3,'Retrasado', 'Retrasado');
+	INSERT INTO bloomStatusType VALUES (4,'Cancelado', 'Cancelado');
+	INSERT INTO bloomStatusType VALUES (5,'Resuelto', 'Resuelto');
+	INSERT INTO bloomStatusType VALUES (6,'Cerrado', 'Cerrado');
+END IF;
+
+-- lista solicitantes
+IF(SELECT count(*) FROM bloomApplicantArea) = 0 THEN
+	INSERT INTO blackstarDb.bloomApplicantArea VALUES (1,'Ventas', 'Ventas');
+	INSERT INTO blackstarDb.bloomApplicantArea VALUES (2,'Implementacion y Servicio', 'Implementacion y Servicio');
+	INSERT INTO blackstarDb.bloomApplicantArea VALUES (3,'Gerentes o Coordinadoras al Area de Compras', 'Gerentes o Coordinadoras al Area de Compras');
+	INSERT INTO blackstarDb.bloomApplicantArea VALUES (4,'Personal con gente a su cargo', 'Personal con gente a su cargo');
+	INSERT INTO blackstarDb.bloomApplicantArea VALUES (5,'General', 'General');
+END IF;
+ 
+-- Lista de Areas de servicio
+IF(SELECT count(*) FROM bloomServiceArea) = 0 THEN
+	INSERT INTO blackstarDb.bloomServiceArea(bloomServiceAreaId, bloomServiceArea) VALUES('I','Ingenieria');
+	INSERT INTO blackstarDb.bloomServiceArea(bloomServiceAreaId, bloomServiceArea) VALUES('C','Compras');
+	INSERT INTO blackstarDb.bloomServiceArea(bloomServiceAreaId, bloomServiceArea) VALUES('R','Redes');
+	INSERT INTO blackstarDb.bloomServiceArea(bloomServiceAreaId, bloomServiceArea) VALUES('H','Capital Humano');
+	INSERT INTO blackstarDb.bloomServiceArea(bloomServiceAreaId, bloomServiceArea) VALUES('A','Calidad');
+END IF;   
+
+-- Solicitante:Ventas, Lista de tipo de servicios
+IF(SELECT count(*) FROM bloomServiceType) = 0 THEN
+	INSERT INTO blackstarDb.bloomServiceType (_id,applicantAreaId,responseTime,name,description,bloomServiceAreaId) VALUES (1,1,7,'Levantamiento', 'Levantamiento','I');
+	INSERT INTO blackstarDb.bloomServiceType (_id,applicantAreaId,responseTime,name,description,bloomServiceAreaId) VALUES (2,1,7,'Apoyo de Ingeniero de Soprte o Apoyo de Servicio', 'Apoyo de Ingeniero de Soprte o Apoyo de Servicio','I');
+	INSERT INTO blackstarDb.bloomServiceType (_id,applicantAreaId,responseTime,name,description,bloomServiceAreaId) VALUES (3,1,4,'Elaboracion de Diagrama CAD', 'Elaboracion de Diagrama CAD','I');
+	INSERT INTO blackstarDb.bloomServiceType (_id,applicantAreaId,responseTime,name,description,bloomServiceAreaId) VALUES (4,1,4,'Elaboracion de Plano e Imagenes 3D del SITE', 'Elaboracion de Plano e Imagenes 3D del SITE','I');
+	INSERT INTO blackstarDb.bloomServiceType (_id,applicantAreaId,responseTime,name,description,bloomServiceAreaId) VALUES (5,1,4,'Realizacion de Cedula de Costos', 'Realizacion de Cedula de Costos','I');
+	INSERT INTO blackstarDb.bloomServiceType (_id,applicantAreaId,responseTime,name,description,bloomServiceAreaId) VALUES (6,1,2,'Pregunta tecnica', 'Pregunta tecnica','I');
+	INSERT INTO blackstarDb.bloomServiceType (_id,applicantAreaId,responseTime,name,description,bloomServiceAreaId) VALUES (7,1,4,'Solicitud de Aprobacion de Proyectos Mayores a 50KUSD y con minimo 3 lineas diferentes', 'Solicitud de Aprobacion de Proyectos Mayores a 50KUSD y con minimo 3 lineas diferentes','I');
+	INSERT INTO blackstarDb.bloomServiceType (_id,applicantAreaId,responseTime,name,description,bloomServiceAreaId) VALUES (8,1,4,'Solicitud de Precio de Lista de algun producto que no se encuentre en lista de precio', 'Solicitud de Precio de Lista de algun producto que no se encuentre en lista de precio','I');
+
+                                                                   
+-- Solicitante:Implementacion y Servicio, Lista de tipo de servicios                                  
+	INSERT INTO blackstarDb.bloomServiceType (_id,applicantAreaId,responseTime,name,description,bloomServiceAreaId) VALUES (9, 2,4,'Elaboracion de Diagrama CAD o de Plano en 3D', 'Elaboracion de Diagrama CAD o de Plano en 3D','I');
+	INSERT INTO blackstarDb.bloomServiceType (_id,applicantAreaId,responseTime,name,description,bloomServiceAreaId) VALUES (10,2,4,'Reporte de Calidad de Energia', 'Reporte de Calidad de Energia','I');
+	INSERT INTO blackstarDb.bloomServiceType (_id,applicantAreaId,responseTime,name,description,bloomServiceAreaId) VALUES (11,2,8,'Soporte en Monitoreo y/o desarrollo de mapeo', 'Soporte en Monitoreo y/o desarrollo de mapeo','I');
+	INSERT INTO blackstarDb.bloomServiceType (_id,applicantAreaId,responseTime,name,description,bloomServiceAreaId) VALUES (12,2,2,'Pregunta tecnica', 'Pregunta tecnica','I');
+	INSERT INTO blackstarDb.bloomServiceType (_id,applicantAreaId,responseTime,name,description,bloomServiceAreaId) VALUES (13,2,8,'Requisicion de Parte o Refaccion', 'Requisicion de Parte o Refaccion','I');
+	INSERT INTO blackstarDb.bloomServiceType (_id,applicantAreaId,responseTime,name,description,bloomServiceAreaId) VALUES (14,2,4,'Solicitud de Precio de Costo', 'Solicitud de Precio de Costo','I');
+                                                  
+                                                  
+-- Solicitante:Gerentes o Coordinadoras al Area de Compras, Lista de tipo de servicios                                                   
+	INSERT INTO blackstarDb.bloomServiceType (_id,applicantAreaId,responseTime,name,description,bloomServiceAreaId) VALUES (15,3,15,'Requerimiento de Compra de Activos', 'Requerimiento de Compra de Activos','C');
+                                                      
+-- Solicitante:Personal con gente a su cargo, Lista de tipo de servicios                                                
+	INSERT INTO blackstarDb.bloomServiceType (_id,applicantAreaId,responseTime,name,description,bloomServiceAreaId) VALUES (16,4,5,'Aumento de sueldo', 'Aumento de sueldo','H');
+	INSERT INTO blackstarDb.bloomServiceType (_id,applicantAreaId,responseTime,name,description,bloomServiceAreaId) VALUES (17,4,30,'Contratacion de personal', 'Contratacion de personal','H');
+	INSERT INTO blackstarDb.bloomServiceType (_id,applicantAreaId,responseTime,name,description,bloomServiceAreaId) VALUES (18,4,5,'Nueva Creacion', 'Nueva Creacion','H');
+	INSERT INTO blackstarDb.bloomServiceType (_id,applicantAreaId,responseTime,name,description,bloomServiceAreaId) VALUES (19,4,3,'Finiquito', 'Finiquito','H');
+	INSERT INTO blackstarDb.bloomServiceType (_id,applicantAreaId,responseTime,name,description,bloomServiceAreaId) VALUES (20,4,2,'Acta Adminsitrativa', 'Acta Adminsitrativa','H');
+                                                      
+                                                      
+-- Solicitante:General, Lista de tipo de servicios                                                    
+	INSERT INTO blackstarDb.bloomServiceType  (_id,applicantAreaId,responseTime,name,description,bloomServiceAreaId) VALUES (21,5,5,'Req. de Curso', 'Req. de Curso','H');
+	INSERT INTO blackstarDb.bloomServiceType  (_id,applicantAreaId,responseTime,name,description,bloomServiceAreaId) VALUES (22,5,5,'Modificacion del SGC', 'Modificacion del SGC','A');
+	INSERT INTO blackstarDb.bloomServiceType  (_id,applicantAreaId,responseTime,name,description,bloomServiceAreaId) VALUES (23,5,5,'Sugerencia de Modificacion', 'Sugerencia de Modificacion','A');
+	INSERT INTO blackstarDb.bloomServiceType  (_id,applicantAreaId,responseTime,name,description,bloomServiceAreaId) VALUES (24,5,1,'Problemas con telefonia o con la red', 'Problemas con telefonia o con la red','R');
+END IF;
+
+IF(SELECT count(*) FROM bloomDeliverableType) = 0 THEN
+	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (1,1,'CheckList de levantamiento', 'CheckList de levantamiento');
+	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (4,3,'Diagrama en CAD', 'Diagrama en CAD');
+	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (5,3,'Diagrama en PDF', 'Diagrama en PDF');
+	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (7,4,'Imagenes de Plano en 3D', 'Imagenes de Plano en 3D');
+	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (9,5,'Cedula de Costos', 'Cedula de Costos');
+	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (11,6,'Respuesta', 'Respuesta');
+	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (13,7,'Aprobacion o retroalimentacion', 'Aprobacion o retroalimentacion');
+	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (15,8,'Precio de Lista y Condiciones comerciales', 'Precio de Lista y Condiciones comerciales');
+	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (17,9,'Diagrama en CAD o Imagenes de Plano en 3D', 'Diagrama en CAD o Imagenes de Plano en 3D');
+	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (18,9,'Diagrama en PDF', 'Diagrama en PDF');
+	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (20,10,'Reporte de Calidad', 'Reporte de Calidad');
+	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (22,11,'Respuesta o desarrollo', 'Respuesta o desarrollo');
+	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (24,12,'Respuesta', 'Respuesta');
+	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (26,13,'Entrega de la parte', 'Entrega de la parte');
+	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (27,13,'Orden de Compra', 'Orden de Compra');
+	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (29,14,'Precio de Costo', 'Precio de Costo');
+	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (31,15,'Entrega de Activos', 'Entrega de Activos');
+	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (33,16,'Respuesta del incremento', 'Respuesta del incremento');
+	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (35,17,'Nuevo personal', 'Nuevo personal');
+	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (37,18,'Respuesta', 'Respuesta');
+	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (39,19,'Baja del colaborador', 'Baja del colaborador');
+	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (41,20,'Acta Administrativa personalizada', 'Acta Administrativa personalizada');
+	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (42,21,'RESPUESTA DEL REQ.', 'RESPUESTA DEL REQ.');
+	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (43,22,'RESPUESTA DEL REQ.', 'RESPUESTA DEL REQ.');
+	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (44,23,'RESPUESTA DEL REQ.', 'RESPUESTA DEL REQ.');
+	INSERT INTO blackstarDb.bloomDeliverableType(_id,serviceTypeId,name,description) VALUES (45,24,'Respuesta', 'Respuesta');
+END IF;
+
+IF(SELECT count(*) FROM bloomAdvisedGroup) = 0 THEN
+	-- Levantamiento
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(1,1,'sysSupportEng',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(1,1,'sysEngLead',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(1,1,'sysHelpDeskGroup',2);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(1,1,'sysSalesManager',2);
+	-- Apoyo de Ingeniero de Soprte o Apoyo de Servicio
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(1,2,'sysSupportEng',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(1,2,'sysEngLead',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(1,2,'sysHelpDeskGroup',2);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(1,2,'sysSalesManager',2);
+	-- Elaboración de Diagrama CAD
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(1,3,'sysSupportEng',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(1,3,'sysEngLead',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(1,3,'sysHelpDeskGroup',2);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(1,3,'sysSalesManager',2);
+	-- Elaboración de Plano e Imágenes 3D del SITE
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(1,4,'sysSupportEng',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(1,4,'sysEngLead',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(1,4,'sysHelpDeskGroup',2);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(1,4,'sysSalesManager',2);
+	-- Realización de Cédula de Costos
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(1,5,'sysSupportEng',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(1,5,'sysEngLead',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(1,5,'sysHelpDeskGroup',2);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(1,5,'sysSalesManager',2);
+	-- Pregunta técnica
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(1,6,'sysSupportEng',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(1,6,'sysEngLead',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(1,6,'sysHelpDeskGroup',2);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(1,6,'sysSalesManager',2);
+	-- Solicitud de Aprobación de Proyectos Mayores a 50KUSD y con mínimo 3 líneas diferentes
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(1,7,'sysEngManager',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(1,7,'sysEngLead',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(1,7,'sysHelpDeskGroup',2);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(1,7,'sysSalesManager',2);
+	-- Solicitud de Precio de Lista de algún producto que no se encuentre en lista de precio 
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(1,8,'sysSupportEng',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(1,8,'sysEngLead',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(1,8,'sysHelpDeskGroup',2);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(1,8,'sysSalesManager',2);
+	-- Elaboración de Diagrama CAD o de Plano en 3D
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(2,9,'sysSupportEng',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(2,9,'sysEngLead',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(2,9,'sysHelpDeskGroup',2);
+	-- Reporte de Calidad de Energía
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(2,10,'sysSupportEng',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(2,10,'sysEngLead',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(2,10,'sysHelpDeskGroup',2);
+	-- Soporte en Monitoreo y/o desarrollo de mapeo
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(2,11,'sysNetworkManager',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(2,11,'sysHelpDeskGroup',2);
+	-- Pregunta técnica
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(2,12,'sysSupportEng',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(2,12,'sysEngLead',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(2,12,'sysHelpDeskGroup',2);
+	-- Requisición de Parte o Refacción
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(2,13,'sysPurchaseManager',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(2,13,'sysPurchase',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(2,13,'sysHelpDeskGroup',2);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(2,13,'sysCallCenter',2);
+	-- Solicitud de Precio de Costo
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(2,14,'sysSupportEng',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(2,14,'sysEngLead',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(2,14,'sysHelpDeskGroup',2);
+	-- Requerimiento de Compra de Activos
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(4,15,'sysPurchaseManager',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(4,15,'sysPurchase',1);
+	-- Aumento de sueldo
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(4,16,'sysHRManager',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(4,16,'sysCeo',2);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(4,16,'sysHR',2);
+	-- Contratación de personal
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(4,17,'sysHRManager',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(4,17,'sysCeo',2);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(4,17,'sysHR',2);
+	-- Nueva Creación
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(4,18,'sysHRManager',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(4,18,'sysCeo',2);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(4,18,'sysHR',2);
+	-- Finiquito
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(4,19,'sysHRManager',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(4,19,'sysCeo',2);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(4,19,'sysHR',2);
+	-- Acta Adminsitrativa
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(5,20,'sysHRManager',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(5,20,'sysCeo',2);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(5,20,'sysHR',2);
+	-- Req. de Curso
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(5,21,'sysHRManager',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(5,21,'sysCeo',2);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(5,21,'sysHR',2);
+	-- Modificación del SGC
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(5,22,'sysQAManager',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(5,22,'sysCeo',2);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(5,22,'sysQA',2);
+	-- Sugerencia de Modificación
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(5,23,'sysQAManager',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(5,23,'sysCeo',2);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(5,23,'sysQA',2);
+	-- Problemas con telefonía o con la red
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(5,24,'sysPurchaseManager',1);
+	insert into blackstarDb.bloomAdvisedGroup(applicantAreaId,serviceTypeId,userGroup,workerRoleTypeId) values(5,24,'sysNetworkManager',1);
+END IF;
+
+-- Eliminando Encuesta de satisfaccion de salidas requeridas
+DELETE FROM bloomDeliverableType WHERE name = 'Encuesta de Satisfaccion';
+
+
+END$$
+
+DELIMITER ;
+
+CALL blackstarDb.updateDataBloom();
+
+DROP PROCEDURE blackstarDb.updateDataBloom;
 
 
 

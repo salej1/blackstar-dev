@@ -9,9 +9,12 @@
 		<file name ="blackstarDbTransfer_Schema.sql"/>
 		<file name ="blackstarDbTransfer_StoredProcedures.sql"/>
 		<file name ="blackstarManage_StoredProcedures.sql"/>
+		<file name ="bloomDb_Schema.sql"/>
+		<file name ="bloomDb_StoredProcedures.sql"/>
 		
 		<file name ="blackstarDbTransfer_Data.sql"/>
 		<file name ="blackstarDb_Data.sql"/>
+		<file name ="bloomDb_Data.sql"/>
 	</files>
 	<outputs>
 		<output prefix="" suffix="" name="DatabaseScripts.sql"/>

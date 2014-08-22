@@ -411,18 +411,19 @@ BEGIN
 	SELECT 
 		f.followUpReferenceTypeId AS referenceTypeId, 
 		r.followupreferencetype AS referenceType,
-		coalesce(t.ticketId, s.serviceOrderId, i.issueId) AS referenceId, 
-		coalesce(t.ticketNumber, s.serviceOrderNumber, i.issueNumber) AS referenceNumber,
-		coalesce(p.project, c.project, i.project) AS project,
-		coalesce(p.customer, c.customerName, i.customer) AS customer,
+		coalesce(t.ticketId, s.serviceOrderId, i.issueId, bt._id) AS referenceId, 
+		coalesce(t.ticketNumber, s.serviceOrderNumber, i.issueNumber, bt.ticketNumber) AS referenceNumber,
+		coalesce(p.project, c.project, i.project, bt.project) AS project,
+		coalesce(p.customer, c.customerName, i.customer, '') AS customer,
 		f.created AS created,
 		CASE 
 			WHEN f.followUpReferenceTypeId = 'T' THEN 'Seguimiento a Ticket'
 			WHEN f.followUpReferenceTypeId = 'O' THEN 'Seguimiento a Orden de Servicio'
 			WHEN f.followUpReferenceTypeId = 'I' THEN 'Asignacion SAC'
+			WHEN f.followUpReferenceTypeId = 'R' THEN 'Requisicon'
 		END AS title,
 		followUp AS detail,
-		coalesce(ts.ticketStatus, ist.issueStatus, '') as status,
+		coalesce(ts.ticketStatus, ist.issueStatus, '', bts.name) as status,
 		ifnull(u1.name, '') AS createdByUsr,
 		u2.name AS asignee
 	FROM (
@@ -433,7 +434,7 @@ BEGIN
 			FROM followUp f
 			ORDER BY followUpReferenceTypeId, coalesce(ticketId, serviceOrderId, issueId), created DESC
 		) a WHERE a.RowNum = 1  -- a: todos los followUps asignados por usuario, numerados por id de (ticket, so, issue)
-	) f -- f: el ultimo comentario de cada (ticket, so, issue) y que esta asignado al usuario
+	) f -- f: el ultimo comentario de cada (ticket, so, issue, requisicion) y que esta asignado al usuario
 		INNER JOIN followUpReferenceType r ON f.followUpReferenceTypeId = r.followUpReferenceTypeId
 		LEFT OUTER JOIN ticket t ON f.ticketId = t.ticketId
 		LEFT OUTER JOIN serviceOrder s ON s.serviceOrderId = f.serviceOrderId
@@ -443,6 +444,8 @@ BEGIN
 		LEFT OUTER JOIN ticketStatus ts ON ts.ticketStatusId = t.ticketStatusId
 		LEFT OUTER JOIN serviceStatus ss ON ss.serviceStatusId = s.serviceStatusId
 		LEFT OUTER JOIN issueStatus ist ON ist.issueStatusId = i.issueStatusId
+		LEFT OUTER JOIN bloomTicket bt ON f.bloomTicketId = bt._id
+		LEFT OUTER JOIN bloomStatusType bts ON bts._id = bt.statusId
 		LEFT OUTER JOIN blackstarUser u1 ON f.createdByUsr = u1.email
 		LEFT OUTER JOIN blackstarUser u2 ON f.asignee = u2.email
 	WHERE (coalesce(t.createdByUsr, s.createdByUsr, i.createdByUsr) = pUser
@@ -465,16 +468,17 @@ BEGIN
 	SELECT 
 		f.followUpReferenceTypeId AS referenceTypeId, 
 		r.followupreferencetype AS referenceType,
-		coalesce(t.ticketId, s.serviceOrderId, i.issueId) AS referenceId, 
-		coalesce(t.ticketNumber, s.serviceOrderNumber, i.issueNumber) AS referenceNumber,
-		coalesce(p.project, c.project, i.project) AS project,
-		coalesce(p.customer, c.customerName, i.customer) AS customer,
+		coalesce(t.ticketId, s.serviceOrderId, i.issueId, bt._id) AS referenceId, 
+		coalesce(t.ticketNumber, s.serviceOrderNumber, i.issueNumber, bt.ticketNumber) AS referenceNumber,
+		coalesce(p.project, c.project, i.project, bt.project) AS project,
+		coalesce(p.customer, c.customerName, i.customer, '') AS customer,
 		f.created AS created,
 		i.dueDate AS dueDate,
 		CASE 
 			WHEN f.followUpReferenceTypeId = 'T' THEN 'Seguimiento a Ticket'
 			WHEN f.followUpReferenceTypeId = 'O' THEN 'Seguimiento a Orden de Servicio'
 			WHEN f.followUpReferenceTypeId = 'I' THEN 'Asignacion SAC'
+			WHEN f.followUpReferenceTypeId = 'R' THEN 'Requisicon'
 		END AS title,
 		followUp AS detail,
 		coalesce(ts.ticketStatus, ist.issueStatus, '') as status,
@@ -498,6 +502,8 @@ BEGIN
 		LEFT OUTER JOIN ticketStatus ts ON ts.ticketStatusId = t.ticketStatusId
 		LEFT OUTER JOIN serviceStatus ss ON ss.serviceStatusId = s.serviceStatusId
 		LEFT OUTER JOIN issueStatus ist ON ist.issueStatusId = i.issueStatusId
+		LEFT OUTER JOIN bloomTicket bt ON f.bloomTicketId = bt._id
+		LEFT OUTER JOIN bloomStatusType bts ON bts._id = bt.statusId
 		INNER JOIN blackstarUser u1 ON f.createdByUsr = u1.email
 		INNER JOIN blackstarUser u2 ON f.asignee = u2.email
 	WHERE coalesce(t.asignee, s.asignee, i.asignee) = pUser
@@ -3069,7 +3075,7 @@ DROP PROCEDURE IF EXISTS blackstarDb.GetDomainEmployees$$
 CREATE PROCEDURE blackstarDb.GetDomainEmployees()
 BEGIN
 
-	SELECT DISTINCT u.email AS email, u.name AS name
+	SELECT DISTINCT u.blackstarUserId AS id, u.email AS email, u.name AS name
 	FROM blackstarUser u 	
 		LEFT OUTER JOIN blackstarUser_userGroup ug ON u.blackstarUserId = ug.blackstarUserId
 		LEFT OUTER JOIN userGroup g ON g.userGroupId = ug.userGroupId
@@ -3086,7 +3092,7 @@ DROP PROCEDURE IF EXISTS blackstarDb.GetUserData$$
 CREATE PROCEDURE blackstarDb.GetUserData(pEmail VARCHAR(100))
 BEGIN
 
-        SELECT u.email AS userEmail, u.name AS userName, g.name AS groupName
+        SELECT u.email AS userEmail, u.name AS userName, g.name AS groupName, u.blackstarUserId AS blackstarUserId
         FROM blackstarUser_userGroup ug
                 INNER JOIN blackstarUser u ON u.blackstarUserId = ug.blackstarUserId
                 LEFT OUTER JOIN userGroup g ON g.userGroupId = ug.userGroupId

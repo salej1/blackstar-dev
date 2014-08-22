@@ -108,9 +108,30 @@
    </bean>
    <bean class="com.blackstar.web.controller.AddFollowUpController" parent="abstractController">
        <property name="iServ" ref="issueService" />
+       <property name="internalTicketsDao" ref="internalTicketsDao" />
    </bean>
    <bean class="com.blackstar.web.controller.UserDomainController" parent="abstractController">
        
    </bean>
- 
+   
+   <bean class="com.bloom.web.controller.InternalTicketsController" parent="abstractController">
+      <property name="internalTicketsService" ref="internalTicketsService" />
+   </bean>
+   
+   <bean class="com.bloom.web.controller.InternalTicketsKPIController" parent="abstractController">
+      <property name="service" ref="internatTicketsKPIService" />
+   </bean>
+   
+   <bean class="com.bloom.web.controller.CatalogController" parent="abstractController">
+      <property name="catalogService" ref="catalogService" />
+   </bean>
+   
+   <bean class="com.bloom.web.controller.ReportsInternalTicketsController" parent="abstractController">
+      <property name="reportsTicketsService" ref="reportsTicketsService" />
+   </bean>
+   
+   <bean class="com.bloom.web.controller.InternalTicketSurveyController" parent="abstractController">
+      <property name="service" ref="internalTicketSurveyService" />
+      <property name="internalTicketsService" ref="internalTicketsService" />
+   </bean>
 </beans>

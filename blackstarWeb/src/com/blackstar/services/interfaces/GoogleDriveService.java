@@ -11,4 +11,5 @@ public interface GoogleDriveService {
                                                           throws Exception;
   public void LoadOSFile(String osFileId, Integer serviceOrderId) throws Exception;
   public String getRootFolderId() throws Exception;
+  String importFile(String srcId, String title, String parentId) throws Exception;
 }

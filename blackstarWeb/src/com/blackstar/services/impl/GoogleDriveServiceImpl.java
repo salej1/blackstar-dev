@@ -219,4 +219,22 @@ public class GoogleDriveServiceImpl extends AbstractService
 		  throw e;
 	  }
   }
+  
+  public String importFile(String srcId, String title, String parentId) throws Exception{
+	  File osFile = new File();
+	  osFile.setTitle(title);
+	  osFile.setParents(Arrays.asList(new ParentReference()
+	  		.setId(parentId)));
+	  osFile.setMimeType( "application/pdf");
+	  
+	  try{
+		  osFile = drive.files().copy(srcId, osFile).execute();		  
+	  }
+	  catch(Exception e){
+		  Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
+		  throw e;
+	  }
+	  
+	  return osFile.getId();
+  }
 }

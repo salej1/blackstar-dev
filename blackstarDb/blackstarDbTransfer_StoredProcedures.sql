@@ -27,6 +27,8 @@
 -- -----------------------------------------------------------------------------
 -- 9 	30/07/2014	SAG 	Se implementa UpsertServiceOrder
 -- -----------------------------------------------------------------------------
+-- 10 	20/08/2014	SAG 	Se incorpora proyecto Bloom
+-- -----------------------------------------------------------------------------
 
 use blackstarDbTransfer;
 
@@ -537,4 +539,235 @@ BEGIN
 	-- FIN 
 -- -----------------------------------------------------------------------------
 END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDbTransfer.BloomUpdateTickets
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDbTransfer.BloomUpdateTickets$$
+CREATE PROCEDURE blackstarDbTransfer.BloomUpdateTickets() 
+BEGIN
+
+  DECLARE counter INTEGER;
+  DECLARE done BOOLEAN DEFAULT 0;
+
+  DECLARE applicantUserId Int(11);
+  DECLARE officeL Char(1);
+  DECLARE serviceTypeId Int(3);
+  DECLARE applicantAreaId Int(11);
+  DECLARE createdByUsrId Int(11);
+  DECLARE bolResponseInTime Tinyint;
+
+  DECLARE created Varchar(100);
+  DECLARE createdByUsr Varchar(100);
+  DECLARE applicantArea Varchar(100);
+  DECLARE serviceType Varchar(200);
+  DECLARE serviceTypeSS Varchar(200);
+  DECLARE serviceTypeGeneral Varchar(100);
+  DECLARE dueDateStr Varchar(100);
+  DECLARE description Text;
+  DECLARE serviceTypeManager Varchar(100);
+  DECLARE project Varchar(100);
+  DECLARE officeStr Varchar(20);
+  DECLARE ticketNumber Varchar(20);
+  DECLARE responseDateStr Varchar(100);
+  DECLARE responseInTime Varchar(100);
+  DECLARE evaluation Varchar(2);
+  DECLARE responseInHours Varchar(50);
+  DECLARE desviation Varchar(50);
+  DECLARE observations Text;
+
+  DECLARE dueDate DateTime;
+  DECLARE responseDate DateTime;
+  DECLARE status Int;
+
+  DECLARE transfer_cursor CURSOR FOR 
+    SELECT * FROM bloomTransferTicket;
+    
+  DECLARE CONTINUE HANDLER FOR SQLSTATE '02000' SET done=1;
+
+  SET counter = 0;
+  OPEN transfer_cursor;
+
+  loop_lbl: LOOP
+      FETCH transfer_cursor INTO created, createdByUsr, applicantArea, serviceType, serviceTypeSS
+                               , serviceTypeGeneral, dueDateStr, description, serviceTypeManager, project
+                               , officeStr, ticketNumber, responseDateStr, responseInTime, evaluation
+                               , responseInHours, desviation, observations;
+      IF done = 1 THEN 
+			   LEAVE loop_lbl;
+		  END IF;                           
+      SET bolResponseInTime = 0;
+      SET createdByUsrId = IFNULL((SELECT blackStarUserId from blackstarDb.blackstaruser where email = 'portal-servicios@gposac.com.mx'), -1);                               
+      SET applicantUserId = IFNULL((SELECT blackStarUserId from blackstarDb.blackstaruser where email = createdByUsr), -1);
+      SET officeL = IFNULL((SELECT officeId from blackstarDb.office where officeName = officeStr), '?');
+      SET serviceTypeId = IFNULL((SELECT _id from blackstarDb.bloomServiceType where name = serviceType), -1);
+      SET applicantAreaId = IFNULL((SELECT _id from blackstarDb.bloomApplicantArea where name = applicantArea), -1);
+      IF project IS NULL THEN
+        SET project = 'UNKNOWN';
+      END IF;
+      IF responseInTime = 'SI' THEN
+        SET bolResponseInTime = 1;
+        SET status = 5;
+      ELSEIF responseInTime IS NULL THEN
+        SET bolResponseInTime = null;
+        SET status = 2;
+      ELSE SET status = 2;
+      END IF;
+      IF dueDateStr IS NULL THEN
+         SET dueDate = NOW();
+      ELSE SET dueDate = STR_TO_DATE(dueDateStr, '%Y-%m-%d %T');
+      END IF;
+      IF responseDateStr IS NULL THEN
+         SET responseDate = NULL;
+      ELSE SET responseDate = STR_TO_DATE(responseDateStr, '%Y-%m-%d %T');
+      END IF;
+      IF evaluation = '' THEN
+         SET evaluation = '0';
+      END IF;   
+      IF desviation = '' THEN
+         SET desviation = '0';
+      END IF;
+      INSERT INTO blackstarDb.bloomticket(applicantUserId, officeId, serviceTypeId, statusId, applicantAreaId
+                  , dueDate, project, ticketNumber, description, reponseInTime, evaluation, desviation
+                  , responseDate, created, createdBy, createdByUsr, modified, modifiedBy, modifiedByUsr) 
+             VALUES(applicantUserId, officeL, serviceTypeId, status, applicantAreaId, dueDate, project
+                    , ticketNumber, description, bolResponseInTime, CAST(evaluation AS UNSIGNED INTEGER) , desviation, responseDate
+                    , STR_TO_DATE(created, '%Y-%m-%d %T'), 'BloomDataLoader', createdByUsrId, null, null, null);
+      SET counter = counter + 1;
+  END LOOP loop_lbl;
+
+  CLOSE transfer_cursor;    
+  
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDbTransfer.BloomUpdateTransferFollow
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDbTransfer.BloomUpdateTransferFollow$$
+CREATE PROCEDURE blackstarDbTransfer.BloomUpdateTransferFollow()
+BEGIN
+
+  DECLARE counter INTEGER;
+  DECLARE ticketId Int(11);
+  DECLARE ticket Varchar(20);
+  DECLARE createdStr Varchar(100);
+  DECLARE comment Text;
+  DECLARE done BOOLEAN DEFAULT 0;
+ 
+  DECLARE transfer_cursor CURSOR FOR 
+    SELECT * FROM bloomTransferFollow;
+    
+  DECLARE CONTINUE HANDLER FOR SQLSTATE '02000' SET done=1;
+
+  SET counter = 0;
+  OPEN transfer_cursor;
+  loop_lbl: LOOP
+      FETCH transfer_cursor INTO ticket, createdStr, comment;
+      IF done = 1 THEN 
+			   LEAVE loop_lbl;
+		  END IF;  
+      SET ticketId =(SELECT _id from blackstarDb.bloomTicket where ticketNumber = ticket);
+      INSERT INTO blackstarDb.followUp(bloomTicketId,followup, created, createdBy, createdByUsr) 
+             VALUES(ticketId, comment, STR_TO_DATE(createdStr, '%y/%m/%d'), 'BloomDataLoader', 'portal-servicios@gposac.com.mx');
+      SET counter = counter + 1;
+  END LOOP loop_lbl;
+
+  CLOSE transfer_cursor;    
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDbTransfer.BloomUpdateTransferTeam
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDbTransfer.BloomUpdateTransferTeam$$
+CREATE PROCEDURE blackstarDbTransfer.BloomUpdateTransferTeam()
+BEGIN
+
+  DECLARE counter INTEGER;
+  DECLARE ticketId Int(11);
+  DECLARE ticket Varchar(20);
+  DECLARE userName Varchar(100);
+  DECLARE userId Varchar(100);
+  DECLARE done BOOLEAN DEFAULT 0;
+
+  DECLARE transfer_cursor CURSOR FOR 
+    SELECT * FROM bloomTransferTicketTeam;
+    
+  DECLARE CONTINUE HANDLER FOR SQLSTATE '02000' SET done=1;
+
+  SET counter = 0;
+  OPEN transfer_cursor;
+  loop_lbl: LOOP
+      FETCH transfer_cursor INTO ticket, userName;
+      IF done = 1 THEN 
+			   LEAVE loop_lbl;
+		  END IF;
+      SET ticketId =(SELECT _id from blackstarDb.bloomTicket where ticketNumber = ticket);
+      SET userId = IFNULL((SELECT blackStarUserId from blackstarDb.blackstaruser where name LIKE CONCAT(userName,'%')), -1);
+      INSERT INTO blackstarDb.bloomTicketTeam(ticketId,workerRoleTypeId, blackstarUserId, assignedDate) 
+             VALUES(ticketId,1, userId, NOW());
+      SET counter = counter + 1;
+  END LOOP loop_lbl;
+
+  CLOSE transfer_cursor;    
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDbTransfer.BloomUpdateTransferUsers
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDbTransfer.BloomUpdateTransferUsers$$
+CREATE PROCEDURE blackstarDbTransfer.BloomUpdateTransferUsers()
+BEGIN
+
+  DECLARE done BOOLEAN DEFAULT 0;
+
+  DECLARE bloomCreatedByUsrMail Varchar(100);
+  DECLARE bloomCreatedByUsrName Varchar(100);
+  DECLARE bloomCreatedByUsrLastName Varchar(100);
+  DECLARE iniSplitPos INTEGER;
+  DECLARE endSplitPos INTEGER;
+  DECLARE splitValue VARCHAR(100);
+  DECLARE counter INTEGER;
+    
+  DECLARE user_cursor CURSOR FOR 
+     SELECT DISTINCT createdByUsr FROM bloomTransferTicket
+     WHERE createdByUsr NOT IN (SELECT email FROM blackstarDb.blackstaruser);
+
+  DECLARE CONTINUE HANDLER FOR SQLSTATE '02000' SET done=1;
+
+  OPEN user_cursor;
+
+  SET counter = 0;
+  fill_users: LOOP
+      FETCH user_cursor INTO bloomCreatedByUsrMail; 
+      IF done = 1 THEN 
+			   LEAVE fill_users;
+		  END IF;  
+      SET endSplitPos = LOCATE('\@', bloomCreatedByUsrMail, 1);
+      SET splitValue = SUBSTR(bloomCreatedByUsrMail, 1, endSplitPos -1);
+      SET endSplitPos = LOCATE('\.', splitValue, 1);
+      SET bloomCreatedByUsrName = SUBSTR(splitValue, 1, endSplitPos -1);
+      SET bloomCreatedByUsrName = CONCAT(UCASE(LEFT(bloomCreatedByUsrName, 1)), 
+                                         SUBSTRING(bloomCreatedByUsrName, 2));
+      SET bloomCreatedByUsrLastName = SUBSTR(splitValue, endSplitPos +1);
+      SET bloomCreatedByUsrLastName = CONCAT(UCASE(LEFT(bloomCreatedByUsrLastName, 1)), 
+                                              SUBSTRING(bloomCreatedByUsrLastName, 2));                                         
+      INSERT INTO blackstarDb.blackstarUser (email, name) VALUES (bloomCreatedByUsrMail, CONCAT(bloomCreatedByUsrName, ' ', bloomCreatedByUsrLastName));
+      SET counter = counter + 1;
+  END LOOP fill_users;
+  CLOSE user_cursor;
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDbTransfer.BloomTransfer
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDbTransfer.BloomTransfer$$
+CREATE PROCEDURE blackstarDbTransfer.BloomTransfer()
+BEGIN
+	CALL BloomUpdateTransferUsers();
+  	CALL BloomUpdateTickets();
+  	CALL BloomUpdateTransferTeam();
+  	CALL BloomUpdateTransferFollow();
+END$$
+
+
 DELIMITER ;

@@ -28,6 +28,7 @@ public class Followup implements java.io.Serializable {
 	private Date created;
 	private String createdBy;
 	private String createdByUsr;
+	private String createdByUsrEmail;
 	private Date modified;
 	private String modifiedBy;
 	private String modifiedByUsr;
@@ -155,6 +156,14 @@ public class Followup implements java.io.Serializable {
 
 	public void setAsignee(String asignee) {
 		this.asignee = asignee;
+	}
+
+	public String getCreatedByUsrEmail() {
+		return createdByUsrEmail;
+	}
+
+	public void setCreatedByUsrEmail(String createdByUsrEmail) {
+		this.createdByUsrEmail = createdByUsrEmail;
 	}
 
 }

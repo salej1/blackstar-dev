@@ -93,5 +93,29 @@
   <bean id="issueService" class="com.blackstar.services.impl.IssueServiceImpl" parent="abstractService">
      <property name="dao" ref="issueDAO" />
   </bean>
-
+  
+  <!-- Implementacion BLOOM -->  
+  <bean id="internalTicketsService" class="com.bloom.services.InternalTicketsServiceImpl" parent="abstractService">
+      <property name="internalTicketsDao" ref="internalTicketsDao" />
+      <property name="uDAO" ref="userDAO" />
+      <property name="catalogInternalTicketsDao" ref="catalogInternalTicketsDao" />
+  </bean>
+  
+  <bean id="internatTicketsKPIService" class="com.bloom.services.InternatTicketsKPIServiceImpl" parent="abstractService">
+      <property name="dao" ref="internatTicketsKPIDao" />
+  </bean>
+   
+  <bean id="catalogService" class="com.bloom.services.CatalogServiceImpl" parent="abstractService">
+      <property name="catalogInternalTicketsDao" ref="catalogInternalTicketsDao" />
+  </bean>
+  
+  
+  <bean id="reportsTicketsService" class="com.bloom.services.ReportsTicketsServiceImpl" parent="abstractService">
+      <property name="reportsTicketsDao" ref="reportsTicketsDao" />
+  </bean>
+  
+  <bean id="internalTicketSurveyService" class="com.bloom.services.InternalTicketsSurveyServiceImpl" parent="abstractService">
+      <property name="dao" ref="internalTicketsSurveyDao" />
+  </bean>
+  
 </beans>
