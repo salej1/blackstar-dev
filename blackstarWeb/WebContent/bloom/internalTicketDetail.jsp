@@ -133,7 +133,7 @@
 		} else if(followType == 2){
 			who = "-2";
 		}else { 
-			who = "${followUps[fn:length(followUps)-1].createdByUsrEmail}";
+			who = "${fn:length(followUps) > 0? followUps[fn:length(followUps)-1].createdByUsrEmail : ""}";
 		}
 
 		$("#followDetail").load("${pageContext.request.contextPath}/bloom/ticketDetail/addFollowUp.do?ticketId=${ticketDetail._id}&userId=${ user.blackstarUserId }" + "&userToAssign=" + who + "&comment=" + $("#seguimientoText").val().replace(/ /g, '%20'));

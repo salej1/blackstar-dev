@@ -189,7 +189,7 @@ public class InternalTicketsServiceImpl extends AbstractService
             	for(TicketTeamBean miembro:miembros){
             		//enviar correos a los involucrados.
             		if(miembro.getWorkerRoleId() == 1){
-            			AddFollowUpController.AssignBloomTicket(idTicket.intValue(), miembro.getEmail(), ticket.getCreatedUserEmail());
+            			//AddFollowUpController.AssignBloomTicket(idTicket.intValue(), miembro.getEmail(), ticket.getCreatedUserEmail());
             		}
             		else{
             			AddFollowUpController.NotifyBloomTicket(idTicket.intValue(), miembro.getEmail(), ticket.getCreatedUserEmail());

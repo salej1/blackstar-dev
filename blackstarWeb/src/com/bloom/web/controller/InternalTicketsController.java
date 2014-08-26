@@ -543,8 +543,7 @@ public class InternalTicketsController extends AbstractController {
 			internalTicketsService.registrarNuevoTicket(ticket);
 
 			response.setEstatus("ok");
-			response
-					.setMensaje("La solicitud de ticket se guard&oacute; con &eacute;xito");
+			response.setMensaje("La requisici&oacute;n se guard&oacute; con &eacute;xito");
 
 		} catch (ServiceException se) {
 			response.setEstatus("error");
