@@ -11,7 +11,7 @@ public class ProjectEntryVO {
 	private String entryTypeDescription;
 	private String description;
 	private Float discount;
-	private Float totalPrice;
+	private Double totalPrice;
 	private String comments;
 	private List<ProjectEntryItemVO> items = new ArrayList<ProjectEntryItemVO>();
 	
@@ -22,7 +22,7 @@ public class ProjectEntryVO {
 
     public ProjectEntryVO (Integer id, Integer projectId, Integer entryTypeId
     		   , String entryTypeDescription, String description, Float discount
-    		                               , Float totalPrice, String comments){
+    		                               , Double totalPrice, String comments){
 		this.id = id;
 		this.projectId = projectId;
 		this.entryTypeId = entryTypeId;
@@ -63,10 +63,10 @@ public class ProjectEntryVO {
 	public void setDiscount(Float discount) {
 		this.discount = discount;
 	}
-	public Float getTotalPrice() {
+	public Double getTotalPrice() {
 		return totalPrice;
 	}
-	public void setTotalPrice(Float totalPrice) {
+	public void setTotalPrice(Double totalPrice) {
 		this.totalPrice = totalPrice;
 	}
 	public String getComments() {

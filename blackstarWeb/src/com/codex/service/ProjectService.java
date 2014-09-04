@@ -30,7 +30,7 @@ public interface ProjectService {
   public void addProjectTeam(Integer projectId, Integer roleId, Integer userId);
   public void sendNotification(Integer fromUserId, Integer toUserId 
 		                       , Integer projectId, String detail);
-  public Integer getNewProjectId();
+  public Integer getNewProjectId(String type);
   public List<DeliverableTypesVO> getDeliverableTypes();
   public void addDeliverableTrace(Integer projectId, Integer deliverableTypeId
                                                             , Integer userId);
@@ -45,4 +45,6 @@ public interface ProjectService {
   public void updateEntries(ProjectVO project);
   public List<CostCenterDTO> getCostCenterList();
   public String getCSTOffice(String cst);
+  public List<String> getIncotermList();
+  public String getPriceList();
 }

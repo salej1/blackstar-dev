@@ -108,18 +108,11 @@ public class ProjectDAOImpl extends AbstractDAO
   
   @SuppressWarnings("deprecation")
   @Override
-  public Integer getNewProjectId() {
-	StringBuilder sqlBuilder = new StringBuilder("CALL GetNextProjectId()");
-	return getJdbcTemplate().queryForInt(sqlBuilder.toString());
+  public Integer getNewProjectId(String type) {
+	StringBuilder sqlBuilder = new StringBuilder("CALL GetNextProjectId(?)");
+	return getJdbcTemplate().queryForInt(sqlBuilder.toString(), new Object[]{type});
   }
-  
-  @SuppressWarnings("deprecation")
-  @Override
-  public Integer getNewEntryId() {
-	StringBuilder sqlBuilder = new StringBuilder("CALL GetNextEntryId()");
-	return getJdbcTemplate().queryForInt(sqlBuilder.toString());
-  }
-  
+    
   @Override
   public List<DeliverableTypesVO> getDeliverableTypes() {
 	StringBuilder sqlBuilder = new StringBuilder("CALL CodexGetDeliverableTypes()");
@@ -157,9 +150,9 @@ public class ProjectDAOImpl extends AbstractDAO
   }
   
   @Override 
-  public void upsertProject(ProjectVO project){
+  public Integer upsertProject(ProjectVO project){
 	String sqlQuery = "CALL CodexUpsertProject(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-	getJdbcTemplate().update(sqlQuery, new Object[]{project.getId(), project.getClientId()
+	Integer projectId = (Integer)getJdbcTemplate().queryForObject(sqlQuery, new Object[]{project.getId(), project.getClientId()
 			            , project.getTaxesTypeId(), project.getStatusId()
 			            , project.getPaymentTypeId(), project.getCurrencyTypeId()
 			            , project.getProjectNumber(), project.getCostCenter()
@@ -170,17 +163,22 @@ public class ProjectDAOImpl extends AbstractDAO
 			            , project.getIncoterm(), project.getProductsNumber()
 			            , project.getFinancesNumber(), project.getServicesNumber()
 			            , project.getTotalProjectNumber(), project.getCreatedByUsr()
-			                                         , project.getModifiedByUsr()});
+			                                         , project.getModifiedByUsr()}, Integer.class);
+	project.setId(projectId);
+	
+	return projectId;
   }
   
   @Override
-  public void upsertProjectEntry(Integer entryId, Integer projectId
+  public Integer upsertProjectEntry(Integer entryId, Integer projectId
 		                         , Integer entryTypeId, String description 
 		                         , Float discount, Float totalPrice
 		                         , String comments) {
 	 String sqlQuery = "CALL CodexUpsertProjectEntry(?, ?, ?, ?, ?, ?, ?)";
-	 getJdbcTemplate().update(sqlQuery, new Object[]{entryId, projectId
-	      , entryTypeId, description, discount, totalPrice, comments});
+	 entryId = (Integer)getJdbcTemplate().queryForObject(sqlQuery, new Object[]{entryId, projectId
+	      , entryTypeId, description, discount, totalPrice, comments}, Integer.class);
+	 
+	 return entryId;
   }
   
   @Override
@@ -254,6 +252,13 @@ public String getCSTOffice(String cst) {
 	String office = getJdbcTemplate().queryForObject(sql, new Object[]{cst}, String.class);
 	
 	return office;
+}
+
+@Override
+public List<JSONObject> getPriceList() {
+	String sql = "CALL GetCodexPriceList;";
+	List<JSONObject> list = (List<JSONObject>) getJdbcTemplate().query(sql, new JSONRowMapper());
+	return list;
 }
 
 }

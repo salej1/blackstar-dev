@@ -10,6 +10,8 @@
 -- 1    20/06/2014  DCB   	Version inicial
 -- --   --------   -------  ------------------------------------
 -- 2    13/08/2014  SAG     Se agrega blackstarDb.cstOffice
+-- --   --------   -------  ------------------------------------
+-- 3    01/10/2014  SAG     Se agrega blackstarDb.codexIncoterm
 -- ---------------------------------------------------------------------------
 
 USE blackstarDb;
@@ -28,7 +30,7 @@ CREATE TABLE IF NOT EXISTS blackstarDb.location(
 )ENGINE=INNODB;
 
 CREATE TABLE IF NOT EXISTS blackstarDb.codexClientType(
-  _id INT NOT NULL AUTO_INCREMENT,
+  _id INT NOT NULL,
   name VARCHAR(100) NOT NULL,
   description VARCHAR(100) NOT NULL,
   PRIMARY KEY (_id)
@@ -46,11 +48,12 @@ CREATE TABLE IF NOT EXISTS blackstarDb.codexClient(
   clientTypeId INT,
   clientOriginId INT,
   sellerId INT(100),
+  sellerName VARCHAR(200),
   isProspect Tinyint,
   rfc VARCHAR(100),
   corporateName TEXT,
   tradeName TEXT,
-  phoneArea VARCHAR(3),
+  phoneArea VARCHAR(50),
   phoneNumber VARCHAR(100),
   phoneExtension VARCHAR(50),
   phoneAreaAlt VARCHAR(50),
@@ -59,17 +62,17 @@ CREATE TABLE IF NOT EXISTS blackstarDb.codexClient(
   email VARCHAR(200),
   emailAlt VARCHAR(200),
   street TEXT,
-  intNumber VARCHAR(20),
-  extNumber VARCHAR(20),
-  zipCode INT(20),
+  intNumber VARCHAR(100),
+  extNumber VARCHAR(100),
+  zipCode INT(100),
   country TEXT,
-  state VARCHAR(20),
+  state VARCHAR(100),
   municipality TEXT,
   city TEXT,
   neighborhood TEXT,
   contactName TEXT,
-  curp VARCHAR(50),
-  retention VARCHAR(20),
+  curp VARCHAR(100),
+  retention VARCHAR(100),
   PRIMARY KEY (_id),
   FOREIGN KEY (clientTypeId) REFERENCES codexClientType (_id),
   FOREIGN KEY (clientOriginId) REFERENCES codexClientOrigin (_id),
@@ -84,24 +87,24 @@ CREATE TABLE IF NOT EXISTS blackstarDb.codexStatusType(
 )ENGINE=INNODB;
 
 CREATE TABLE IF NOT EXISTS blackstarDb.codexPaymentType(
-  _id INT NOT NULL AUTO_INCREMENT,
+  _id INT NOT NULL,
   name VARCHAR(100) NOT NULL,
   description VARCHAR(100) NOT NULL,
   PRIMARY KEY (_id)
 )ENGINE=INNODB;
 
 CREATE TABLE IF NOT EXISTS blackstarDb.codexCurrencyType(
-  _id INT NOT NULL AUTO_INCREMENT,
+  _id INT NOT NULL,
   name VARCHAR(100) NOT NULL,
   description VARCHAR(100) NOT NULL,
   PRIMARY KEY (_id)
 )ENGINE=INNODB;
 
 CREATE TABLE IF NOT EXISTS blackstarDb.codexTaxesTypes(
-  _id INT NOT NULL AUTO_INCREMENT,
+  _id INT NOT NULL,
   name VARCHAR(100) NOT NULL,
   description VARCHAR(100) NOT NULL,
-  value Float(2,2) NOT NULL,
+  value DECIMAL(4,2) NOT NULL,
   PRIMARY KEY (_id)
 )ENGINE=INNODB;
 
@@ -124,16 +127,16 @@ CREATE TABLE IF NOT EXISTS blackstarDb.codexProject(
   statusId INT NOT NULL,
   paymentTypeId INT NOT NULL,
   currencyTypeId INT NOT NULL,
-  projectNumber VARCHAR(20) NOT NULL,
+  projectNumber VARCHAR(100) NOT NULL,
   costCenterId INT NOT NULL,
   changeType Float NOT NULL,
   contactName TEXT NOT NULL,
-  location VARCHAR(100),
+  location VARCHAR(400),
   advance Float(7,2),
   timeLimit INT,
   settlementTimeLimit INT,
   deliveryTime INT,
-  incoterms VARCHAR(20),
+  incoterm VARCHAR(50),
   productsNumber INT,
   financesNumber INT,
   servicesNumber INT,
@@ -157,14 +160,14 @@ CREATE TABLE IF NOT EXISTS blackstarDb.codexProject(
 
 
 CREATE TABLE IF NOT EXISTS blackstarDb.codexProjectEntryTypes(
-  _id INT NOT NULL AUTO_INCREMENT,
+  _id INT NOT NULL,
   name VARCHAR(200) NOT NULL,
-  description VARCHAR(200) NOT NULL,
+  productType CHAR(1) NOT NULL,
   PRIMARY KEY (_id)
 )ENGINE=INNODB;
 
 CREATE TABLE IF NOT EXISTS blackstarDb.codexProjectEntry(
-  _id INT NOT NULL,
+  _id INT NOT NULL AUTO_INCREMENT,
   projectId INT NOT NULL,
   entryTypeId INT NOT NULL,
   description TEXT NOT NULL,
@@ -180,7 +183,6 @@ CREATE TABLE IF NOT EXISTS blackstarDb.codexProjectEntry(
 CREATE TABLE IF NOT EXISTS blackstarDb.codexProjectItemTypes(
   _id INT NOT NULL AUTO_INCREMENT,
   name VARCHAR(200) NOT NULL,
-  description VARCHAR(200) NOT NULL,
   PRIMARY KEY (_id)
 )ENGINE=INNODB;
 
@@ -191,8 +193,8 @@ CREATE TABLE IF NOT EXISTS blackstarDb.codexEntryItem(
   reference TEXT ,
   description TEXT NOT NULL,
   quantity INT NOT NULL,
-  priceByUnit Float(8,2) NOT NULL,
-  discount Float(6,2) NOT NULL,
+  priceByUnit Float(10,2) NOT NULL,
+  discount Float(10,2) NOT NULL,
   totalPrice Float(10,2) NOT NULL,
   comments TEXT,
   PRIMARY KEY (_id),
@@ -203,9 +205,9 @@ CREATE TABLE IF NOT EXISTS blackstarDb.codexEntryItem(
 
 CREATE TABLE IF NOT EXISTS blackstarDb.codexPriceList(
   _id INT NOT NULL AUTO_INCREMENT,
-  name VARCHAR(200) NOT NULL,
-  description VARCHAR(60) NOT NULL,
-  price Float(7,2) NOT NULL,
+  code VARCHAR(200) NOT NULL,
+  name VARCHAR(400) NOT NULL,
+  price Float(10,2) NOT NULL,
   PRIMARY KEY (_id)
 )ENGINE=INNODB;
 
@@ -249,11 +251,11 @@ CREATE TABLE IF NOT EXISTS blackstarDb.codexPriceProposal(
   taxesTypeId INT NOT NULL,
   paymentTypeId INT NOT NULL,
   currencyTypeId INT NOT NULL,
-  costCenter VARCHAR(8) NOT NULL,
+  costCenter VARCHAR(50) NOT NULL,
   changeType Float NOT NULL,
   contactName TEXT NOT NULL,
-  location VARCHAR(20) NOT NULL,
-  advance Float(7,2) NOT NULL,
+  location VARCHAR(400) NOT NULL,
+  advance Float(10,2) NOT NULL,
   timeLimit INT NOT NULL,
   settlementTimeLimit INT NOT NULL,
   deliveryTime INT NOT NULL,

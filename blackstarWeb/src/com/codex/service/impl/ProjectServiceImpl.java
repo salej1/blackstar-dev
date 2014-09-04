@@ -1,5 +1,6 @@
 package com.codex.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.json.JSONObject;
@@ -159,8 +160,8 @@ public class ProjectServiceImpl extends AbstractService
   
   
   @Override
-  public Integer getNewProjectId(){
-	return dao.getNewProjectId();
+  public Integer getNewProjectId(String type){
+	return dao.getNewProjectId(type);
   }
   
   @Override
@@ -195,13 +196,13 @@ public class ProjectServiceImpl extends AbstractService
   public void insertProject(ProjectVO project, User user){
 	String [] entries = project.getStrEntries().split("~");
 	String [] items, values;
-	Integer entryId;
+	Integer entryId = 0;
 	project.setCreatedByUsr(user.getBlackstarUserId());
 	dao.upsertProject(project);
 	for(String entry : entries){
 		values = entry.split("\\|");
-		entryId = dao.getNewEntryId();
-		dao.upsertProjectEntry(entryId, project.getId(), Integer.valueOf(values[0])
+
+		entryId = dao.upsertProjectEntry(entryId, project.getId(), Integer.valueOf(values[0])
 				, values[1], Float.valueOf(values[2]), Float.valueOf(values[3])
 				                                                  , values[4]);
 		items = values[6].split("\\^");
@@ -219,14 +220,14 @@ public class ProjectServiceImpl extends AbstractService
   public void updateProject(ProjectVO project, User user){
 	String [] entries = project.getStrEntries().split("~");
 	String [] items, values;
-	Integer entryId;
+	Integer entryId = 0;
 	project.setModifiedByUsr(user.getBlackstarUserId());
 	dao.upsertProject(project);
 	dao.cleanProjectDependencies(project.getId());
 	for(String entry : entries){
 		values = entry.split("\\|");
-		entryId = dao.getNewEntryId();
-		dao.upsertProjectEntry(entryId, project.getId(), Integer.valueOf(values[0])
+
+		entryId = dao.upsertProjectEntry(entryId, project.getId(), Integer.valueOf(values[0])
 				, values[1], Float.valueOf(values[2]), Float.valueOf(values[3])
 				                                                  , values[4]);
 		items = values[6].split("\\^");
@@ -331,6 +332,31 @@ public class ProjectServiceImpl extends AbstractService
 @Override
 public String getCSTOffice(String cst) {
 	return dao.getCSTOffice(cst);
+}
+
+@Override
+public List<String> getIncotermList() {
+	List<String> incs = new ArrayList<String>();
+	incs.add("CFR");
+	incs.add("CIF");
+	incs.add("CIP");
+	incs.add("CPT");
+	incs.add("DAF");
+	incs.add("DDP");
+	incs.add("DDU");
+	incs.add("DEQ");
+	incs.add("DES");
+	incs.add("EXW");
+	incs.add("FAS");
+	incs.add("FCA");
+	incs.add("FBO");
+	
+	return incs;
+}
+
+@Override
+public String getPriceList() {
+	return dao.getPriceList().toString();
 }
 
 }

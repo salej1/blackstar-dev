@@ -18,9 +18,17 @@
 ** 4    19/11/2013  SAG  	Correccion de AutoComit
 ** --   --------   -------  ------------------------------------
 ** 5    17/12/2013  SAG  	Soporte para lineas en blanco
+** --   --------   -------  ------------------------------------
+** 6    13/03/2014  SAG  	Adaptaciones
+** --   --------   -------  ------------------------------------
+** 7    19/03/2014  SAG  	Se agrega Project a inserciones
+** --   --------   -------  ------------------------------------
+** 8    01/04/2014  SAG  	Se agrega modelo STTP
+** --   --------   -------  ------------------------------------
+** 9	09/04/2014	SAG 	Se corrige asignacion de sync seed
 *****************************************************************************/
 
-function main() {
+function ticketMain() {
 	// Log init and timestamp
 	var formattedDate = Utilities.formatDate(new Date(), "CST", "yyyy-MM-dd HH:mm:ss");
 	Logger.log("Iniciando carga de tickets a base de datos: %s", formattedDate);
@@ -52,7 +60,7 @@ function main() {
 }
 
 function getDbConnection(){
-	var conn = Jdbc.getCloudSqlConnection("jdbc:google:rdbms://salej1-blackstar-dev:salej1-blackstar-dev/blackstarDbTransfer");
+	var conn = Jdbc.getCloudSqlConnection("jdbc:google:rdbms://gposac-blackstar-pro:gposac-blackstar-pro/blackstarDbTransfer");
 	return conn;
 }
 
@@ -79,9 +87,15 @@ function startLoadJob(conn, sqlLog) {
 	}  
 }
 
-function sendToDatabase(ticket, conn, policies, sqlLog){
+// Transfer
+function sendToDatabase(ticket, conn, policies, sqlLog, range){
 	// sql string initialization
-	var sql = "INSERT INTO `blackstarDbTransfer`.`ticket` \
+	var sql = Utilities.formatString("DELETE FROM blackstarDbTransfer.ticket WHERE ticketNumber = '%s';", ticket[22]);
+	sqlLog = saveSql(sqlLog, sql);
+	var stmt = conn.createStatement();
+	stmt.execute(sql);
+
+	sql = "INSERT INTO `blackstarDbTransfer`.`ticket` \
 			( \
 			 `policyId`, \
 			 `created`, \
@@ -98,31 +112,39 @@ function sendToDatabase(ticket, conn, policies, sqlLog){
 			 `arrival`, \
 			 `serviceOrderNumber`, \
 			 `employee`, \
+			 `project`, \
 			 `createdBy`, \
-			 `createdByUsr`) \
+			 `createdByUsr`, \
+			 `processed`) \
 			VALUES(";
 				
 	// reading the values
-	var created = ticket[ 0 ];
-	var user = ticket[ 1 ];
-	var contact = ticket[ 2 ];
-	var contactPhone = ticket[ 3 ];
-	var contactEmail = ticket[ 4 ];
-	var serialNumber = ticket[ 5 ];
-	var observations = ticket[ 6 ];
-	var ticketNumber = ticket[ 21 ];
-	var rawPhoneResolved = ticket[ 22 ];
+	var ix = 0;
+	var created = ticket[ ix ]; ix++;
+	var user = ticket[ ix ]; ix++;
+	var contact = ticket[ ix ]; ix++;
+	var contactPhone = ticket[ ix ]; ix++;
+	var contactEmail = ticket[ ix ]; ix++;
+	var serialNumber = ticket[ ix ]; ix++;
+	var observations = ticket[ ix ]; ix++;
+	ix = 20;
+	var project = ticket[ix]; ix++;
+	ix++; 
+	var ticketNumber = ticket[ ix ]; ix++;
+	var rawPhoneResolved = ticket[ ix ]; ix++;
 	var phoneResolved = 0;
 	if(rawPhoneResolved == "SI"){
 		phoneResolved = 1;
 	}
-	var arrival = ticket[ 23 ];
-	var followUp = ticket[ 25 ];
-	var closed = ticket[ 26 ];
-	var serviceOrderNumber = ticket[ 27 ];
-	var employee = ticket[ 28 ];
+	var arrival = ticket[ ix ]; ix++;
+	ix = 26;
+	var followUp = ticket[ ix ]; ix++;
+	var closed = ticket[ ix ]; ix++;
+	var serviceOrderNumber = ticket[ ix ]; ix++;
+	var employee = ticket[ ix ]; ix++;
 	var createdBy = "TicketMigrationScript";
 	var createdByUsr = "sergio.aga";
+	var processed = 0;
 
 	if(created == ""){
 		Logger.log(Utilities.formatString("Ticket %s ignorado. Sin marca temporal", ticketNumber));
@@ -163,14 +185,19 @@ function sendToDatabase(ticket, conn, policies, sqlLog){
 	}
 	sql = sql + Utilities.formatString("'%s',",serviceOrderNumber);
 	sql = sql + Utilities.formatString("'%s',",employee);
+	sql = sql + Utilities.formatString("'%s',",project);
 	sql = sql + Utilities.formatString("'%s',",createdBy);
-	sql = sql + Utilities.formatString("'%s');",createdByUsr);
+	sql = sql + Utilities.formatString("'%s',",createdByUsr);
+	sql = sql + Utilities.formatString("'%s');",processed);
 	
-	Logger.log(Utilities.formatString("Inserting Ticket %s", ticketNumber));
+	Logger.log(Utilities.formatString("Insertando Ticket %s", ticketNumber));
 	
 	sqlLog = saveSql(sqlLog, sql);
-	var stmt = conn.createStatement();
+	stmt = conn.createStatement();
 	stmt.execute(sql);
+
+	// remove seed
+	range.setValue(2); // sent
 	
 	return sqlLog;
 }
@@ -181,7 +208,7 @@ function loadPolicies(conn){
 	var rs = stmt.execute("use blackstarDbTransfer;");
 	var policies = { };
 	
-	rs = stmt.executeQuery("select policyId, serialNumber from policy");
+	rs = stmt.executeQuery("select policyId, serialNumber from policy where NOW() > startDate AND NOW() < DATE_ADD(endDate, interval 3 MONTH);");
 	while(rs.next()){
 		policies[rs.getString(2)] = rs.getInt(1);
 	}
@@ -211,7 +238,7 @@ function saveLog(timestamp, sqlLog){
 	var sqlFile = folderSql.createFile(fileName, sqlLog);
 }
 
-
+// Trigger
 function ticketSync(){
 	// Log init and timestamp
 	var formattedDate = Utilities.formatDate(new Date(), "CST", "yyyy-MM-dd HH:mm:ss");
@@ -219,14 +246,9 @@ function ticketSync(){
 	// sqlLog
 	var sqlLog = "";
 	
-	// verify connection & load
 	try{
-		// get the database connection
-		var conn = getDbConnection();
-		
 		// start syncing
-		sqlLog = startSyncJob(conn, sqlLog);
-		closeDbConnection(conn);
+		sqlLog = startSyncJob(sqlLog);
 		
 		// Log out
 		formattedDate = Utilities.formatDate(new Date(), "CST", "yyyy-MM-dd HH:mm:ss");
@@ -244,95 +266,73 @@ function ticketSync(){
 
 }
 
-function startSyncJob(conn, sqlLog){
-
-	// Load the equipment type Ids
-	var policies = loadPolicies(conn);
-	
-	// start point at the spreadsheet
+function startSyncJob(sqlLog){
 	const offset = 3;
-	
-	var lastTicketNumber = getLastTicketNumber(conn);
 	var startRec = offset;
-	var range = "A" + startRec.toString() + ":AF" + startRec.toString();
+	var range = "A" + startRec.toString() + ":AS" + startRec.toString();
 	var ss = SpreadsheetApp.getActiveSpreadsheet();
-	var sheet = ss.getSheets()[4];
+	var sheet = ss.getSheets()[2];
 	var data = sheet.getRange(range).getValues();
 	var currTicket = data[0];
-	var found = 0;
 	var blanks = 0;
-	var fuBuffer = [];
-	
-	while(found == 0 && blanks < 5){
-		var thisTktNum = currTicket[21];
-		var thisFollowUp = currTicket[25];
+	var seedFound = false;
+	var gotConnection = false;
+	var policiesLoaded = false;
+	var conn;
+	var policies;
 
-		if(thisTktNum != null && thisTktNum != ""){
-			fuBuffer = accumulateFollowUpUdate(thisTktNum, thisFollowUp, fuBuffer);
-			blanks = 0;
-		}
-		else{
+	while(blanks < 5){
+		// is blank?
+		var thisTktNum = currTicket[22];
+		if(thisTktNum == null || thisTktNum == ""){
 			blanks++;
 		}
-		if(thisTktNum == lastTicketNumber){
-			found = 1;
-			break;
+		else{
+			// is ticket
+			blanks = 0;
+			var seed = currTicket[44];
+
+			// has seed?
+			if(seed == 1){
+				seedFound = true;
+
+				// db connection
+				if(!gotConnection){
+					conn = getDbConnection();
+					gotConnection = true;
+				}
+
+				// policies
+				if(!policiesLoaded){
+					policies = loadPolicies(conn);
+					policiesLoaded = true;
+				}
+
+				sqlLog = sendToDatabase(currTicket, conn, policies, sqlLog, sheet.getRange("AS" + startRec.toString()));
+			}
 		}
-		startRec++;
-		range = "A" + startRec.toString() + ":AF" + startRec.toString();
-		data = sheet.getRange(range).getValues();
-		currTicket = data[0];
-	}	
-	
-	// updating the follow up data
-	executeFollowUpUpdate(conn, fuBuffer);
-	
-	// if we have new tickets
-	if(found){
-		startRec++;
-	
-		// iterate looking for new tickets
-		range = "A" + startRec.toString() + ":AF" + startRec.toString();
-		data = sheet.getRange(range).getValues();
-		currTicket = data[0];
-	
-		while(blanks < 5){
-			if(currTicket == null || currTicket[0] == null || currTicket[0].toString() == ""){
-				blanks++;
-			}
-			else{
-				sqlLog = sendToDatabase(currTicket, conn, policies, sqlLog);
-				blanks = 0;
-			}
-			
-			startRec++;
-			range = "A" + startRec.toString() + ":AF" + startRec.toString();
-			data = sheet.getRange(range).getValues();
-			currTicket = data[0];
-		}	
 		
+		// next ticket please
+		startRec++;
+		range = "A" + startRec.toString() + ":AS" + startRec.toString();
+		data = sheet.getRange(range).getValues();
+		currTicket = data[0];
+	}
+
+	// process tickets
+	if(seedFound){
 		sqlLog = executeTransfer(conn, sqlLog);
 	}
-	
+
+	// close DB connection
+	if(gotConnection){
+		closeDbConnection(conn);
+	}
+
 	return sqlLog;
 }
 
-function getLastTicketNumber(conn){
-	var stmt = conn.createStatement();
-	var rs = stmt.execute("use blackstarDbTransfer;");
-	rs = stmt.executeQuery("select ticketNumber from ticket order by ticketId desc limit 1;");
-	var lastTicketNumber = "";
-
-	while(rs.next()){
-		lastTicketNumber = rs.getString(1);
-	}
-	
-	rs.close();
-	stmt.close();
-	
-	return lastTicketNumber;
-}
-
+// Process
 function executeTransfer(conn, sqlLog){
 	var stmt = conn.createStatement();
 	var sql = "call executeTransfer();";
@@ -347,35 +347,24 @@ function executeTransfer(conn, sqlLog){
 	return sqlLog;
 }
 
-function executeFollowUpUpdate(conn, buffer){
-	var stmt = conn.createStatement();
-	stmt.execute("use blackstarDbTransfer;");
+// Seed
+function onEdit(event)
+{
+	try{
+		var s = SpreadsheetApp.getActiveSheet();
+		if( s.getName() == "Seguimiento" ) { 
+		    var actSht = event.source.getActiveSheet();
+		    var actRng = event.source.getActiveRange();
 
-	conn.setAutoCommit(false);
-	stmt = conn.prepareStatement("update ticket set followUp = ? where ticketNumber = ?;");
-	
-	var item = buffer.shift();
-	while(item != null){
-		Logger.log(Utilities.formatString("Updating Ticket FollowUp %s", item[1]));
-		stmt.setObject(1, item[0]);
-		stmt.setObject(2, item[1]);
-		stmt.addBatch();
-		item = buffer.shift();
+		    var index = actRng.getRowIndex();
+		    var seedCell = actSht.getRange(index,44);
+		    var ticketNumber = actSht.getRange(index,22).getValue();
+		    if(ticketNumber != ""){
+			    lastCell.setValue(1);
+		    }
+		}
 	}
-	
-	var res = stmt.executeBatch();
-	conn.commit();
-	conn.setAutoCommit(true);
-	Logger.log("Ticket followUps updated");
-}
-
-function accumulateFollowUpUdate(ticketNum, followUp, buffer){
-	if(followUp == null){
-		followUp = "";
+	catch(err){
+		Logger.log(err);
 	}
-	
-	var fuSet = [followUp, ticketNum];
-	buffer.push(fuSet);
-	
-	return buffer;
 }

@@ -3114,6 +3114,8 @@ CALL ExecuteTransfer();
 -- 1    20/06/2014  DCB   	Version inicial
 -- --   --------   -------  ------------------------------------
 -- 2    13/08/2014  SAG     Se agrega blackstarDb.cstOffice
+-- --   --------   -------  ------------------------------------
+-- 3    01/10/2014  SAG     Se agrega blackstarDb.codexIncoterm
 -- ---------------------------------------------------------------------------
 
 USE blackstarDb;
@@ -3132,7 +3134,7 @@ CREATE TABLE IF NOT EXISTS blackstarDb.location(
 )ENGINE=INNODB;
 
 CREATE TABLE IF NOT EXISTS blackstarDb.codexClientType(
-  _id INT NOT NULL AUTO_INCREMENT,
+  _id INT NOT NULL,
   name VARCHAR(100) NOT NULL,
   description VARCHAR(100) NOT NULL,
   PRIMARY KEY (_id)
@@ -3150,11 +3152,12 @@ CREATE TABLE IF NOT EXISTS blackstarDb.codexClient(
   clientTypeId INT,
   clientOriginId INT,
   sellerId INT(100),
+  sellerName VARCHAR(200),
   isProspect Tinyint,
   rfc VARCHAR(100),
   corporateName TEXT,
   tradeName TEXT,
-  phoneArea VARCHAR(3),
+  phoneArea VARCHAR(50),
   phoneNumber VARCHAR(100),
   phoneExtension VARCHAR(50),
   phoneAreaAlt VARCHAR(50),
@@ -3163,17 +3166,17 @@ CREATE TABLE IF NOT EXISTS blackstarDb.codexClient(
   email VARCHAR(200),
   emailAlt VARCHAR(200),
   street TEXT,
-  intNumber VARCHAR(20),
-  extNumber VARCHAR(20),
-  zipCode INT(20),
+  intNumber VARCHAR(100),
+  extNumber VARCHAR(100),
+  zipCode INT(100),
   country TEXT,
-  state VARCHAR(20),
+  state VARCHAR(100),
   municipality TEXT,
   city TEXT,
   neighborhood TEXT,
   contactName TEXT,
-  curp VARCHAR(50),
-  retention VARCHAR(20),
+  curp VARCHAR(100),
+  retention VARCHAR(100),
   PRIMARY KEY (_id),
   FOREIGN KEY (clientTypeId) REFERENCES codexClientType (_id),
   FOREIGN KEY (clientOriginId) REFERENCES codexClientOrigin (_id),
@@ -3188,24 +3191,24 @@ CREATE TABLE IF NOT EXISTS blackstarDb.codexStatusType(
 )ENGINE=INNODB;
 
 CREATE TABLE IF NOT EXISTS blackstarDb.codexPaymentType(
-  _id INT NOT NULL AUTO_INCREMENT,
+  _id INT NOT NULL,
   name VARCHAR(100) NOT NULL,
   description VARCHAR(100) NOT NULL,
   PRIMARY KEY (_id)
 )ENGINE=INNODB;
 
 CREATE TABLE IF NOT EXISTS blackstarDb.codexCurrencyType(
-  _id INT NOT NULL AUTO_INCREMENT,
+  _id INT NOT NULL,
   name VARCHAR(100) NOT NULL,
   description VARCHAR(100) NOT NULL,
   PRIMARY KEY (_id)
 )ENGINE=INNODB;
 
 CREATE TABLE IF NOT EXISTS blackstarDb.codexTaxesTypes(
-  _id INT NOT NULL AUTO_INCREMENT,
+  _id INT NOT NULL,
   name VARCHAR(100) NOT NULL,
   description VARCHAR(100) NOT NULL,
-  value Float(2,2) NOT NULL,
+  value DECIMAL(4,2) NOT NULL,
   PRIMARY KEY (_id)
 )ENGINE=INNODB;
 
@@ -3228,16 +3231,16 @@ CREATE TABLE IF NOT EXISTS blackstarDb.codexProject(
   statusId INT NOT NULL,
   paymentTypeId INT NOT NULL,
   currencyTypeId INT NOT NULL,
-  projectNumber VARCHAR(20) NOT NULL,
+  projectNumber VARCHAR(100) NOT NULL,
   costCenterId INT NOT NULL,
   changeType Float NOT NULL,
   contactName TEXT NOT NULL,
-  location VARCHAR(100),
+  location VARCHAR(400),
   advance Float(7,2),
   timeLimit INT,
   settlementTimeLimit INT,
   deliveryTime INT,
-  incoterms VARCHAR(20),
+  incoterm VARCHAR(50),
   productsNumber INT,
   financesNumber INT,
   servicesNumber INT,
@@ -3261,14 +3264,14 @@ CREATE TABLE IF NOT EXISTS blackstarDb.codexProject(
 
 
 CREATE TABLE IF NOT EXISTS blackstarDb.codexProjectEntryTypes(
-  _id INT NOT NULL AUTO_INCREMENT,
+  _id INT NOT NULL,
   name VARCHAR(200) NOT NULL,
-  description VARCHAR(200) NOT NULL,
+  productType CHAR(1) NOT NULL,
   PRIMARY KEY (_id)
 )ENGINE=INNODB;
 
 CREATE TABLE IF NOT EXISTS blackstarDb.codexProjectEntry(
-  _id INT NOT NULL,
+  _id INT NOT NULL AUTO_INCREMENT,
   projectId INT NOT NULL,
   entryTypeId INT NOT NULL,
   description TEXT NOT NULL,
@@ -3284,7 +3287,6 @@ CREATE TABLE IF NOT EXISTS blackstarDb.codexProjectEntry(
 CREATE TABLE IF NOT EXISTS blackstarDb.codexProjectItemTypes(
   _id INT NOT NULL AUTO_INCREMENT,
   name VARCHAR(200) NOT NULL,
-  description VARCHAR(200) NOT NULL,
   PRIMARY KEY (_id)
 )ENGINE=INNODB;
 
@@ -3295,8 +3297,8 @@ CREATE TABLE IF NOT EXISTS blackstarDb.codexEntryItem(
   reference TEXT ,
   description TEXT NOT NULL,
   quantity INT NOT NULL,
-  priceByUnit Float(8,2) NOT NULL,
-  discount Float(6,2) NOT NULL,
+  priceByUnit Float(10,2) NOT NULL,
+  discount Float(10,2) NOT NULL,
   totalPrice Float(10,2) NOT NULL,
   comments TEXT,
   PRIMARY KEY (_id),
@@ -3307,9 +3309,9 @@ CREATE TABLE IF NOT EXISTS blackstarDb.codexEntryItem(
 
 CREATE TABLE IF NOT EXISTS blackstarDb.codexPriceList(
   _id INT NOT NULL AUTO_INCREMENT,
-  name VARCHAR(200) NOT NULL,
-  description VARCHAR(60) NOT NULL,
-  price Float(7,2) NOT NULL,
+  code VARCHAR(200) NOT NULL,
+  name VARCHAR(400) NOT NULL,
+  price Float(10,2) NOT NULL,
   PRIMARY KEY (_id)
 )ENGINE=INNODB;
 
@@ -3353,11 +3355,11 @@ CREATE TABLE IF NOT EXISTS blackstarDb.codexPriceProposal(
   taxesTypeId INT NOT NULL,
   paymentTypeId INT NOT NULL,
   currencyTypeId INT NOT NULL,
-  costCenter VARCHAR(8) NOT NULL,
+  costCenter VARCHAR(50) NOT NULL,
   changeType Float NOT NULL,
   contactName TEXT NOT NULL,
-  location VARCHAR(20) NOT NULL,
-  advance Float(7,2) NOT NULL,
+  location VARCHAR(400) NOT NULL,
+  advance Float(10,2) NOT NULL,
   timeLimit INT NOT NULL,
   settlementTimeLimit INT NOT NULL,
   deliveryTime INT NOT NULL,
@@ -3444,7 +3446,7 @@ BEGIN
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
 		 
--- AGREGANDO COLUMNA receivedByEmail a ServiceOrder -- ESTA COLUMNA DETERMINA EL EMAIL AL QUE SE ENVIARA COPIA DE LA OS
+-- AGREGANDO COLUMNA codexProjectId a followUp
   IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'followUp' AND COLUMN_NAME = 'codexProjectId') = 0  THEN
     ALTER TABLE blackstarDb.followUp ADD codexProjectId INT(11) NULL;
     ALTER TABLE blackstarDb.followUp ADD CONSTRAINT R121 FOREIGN KEY (codexProjectId) REFERENCES codexProject (_id);
@@ -3479,13 +3481,57 @@ DROP PROCEDURE blackstarDb.upgradeCodexSchema;
 --                              blackstarDb.GetCostCenterList
 --                              blackstarDb.GetCSTOffice
 -- -----------------------------------------------------------------------------
+-- 3    01/09/2014  SAG     Se modifica:
+--                              blackstarDb.CodexGetProjectsByStatusAndUser
+--                              blackstarDb.CodexGetAllProjectsByUsr
+--                              blackstarDb.CodexGetProjectsByStatus
+--                              blackstarDb.CodexUpsertProject
+--                              blackstarDb.CodexUpsertProjectEntry
+--                          Se agrega: 
+--                              blackstarDb.UpsertCodexCostCenter
+--                              blackstarDb.GetCodexPriceList
+--                          Se elimina:
+--                              blackstarDb.GetNextEntryId
+-- -----------------------------------------------------------------------------
+
 use blackstarDb;
 
 DELIMITER $$
 
 
+
 -- -----------------------------------------------------------------------------
-  -- blackstarDb.GetCostCenterList
+  -- blackstarDb.GetCodexPriceList
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetCodexPriceList$$
+CREATE PROCEDURE blackstarDb.GetCodexPriceList()
+BEGIN
+
+  SELECT 
+    _id AS id,
+    code AS model,
+    name AS name,
+    price AS price
+  FROM blackstarDb.codexPriceList
+  ORDER BY id;
+  
+END$$
+-- -----------------------------------------------------------------------------
+  -- blackstarDb.UpsertCodexCostCenter
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.UpsertCodexCostCenter$$
+CREATE PROCEDURE blackstarDb.UpsertCodexCostCenter(pCostCenter VARCHAR(200), pUsrId INT)
+BEGIN
+
+  IF(SELECT count(*) FROM codexCostCenter WHERE costCenter = pCostCenter) = 0 THEN
+    INSERT INTO codexCostCenter(costCenter, created, createdBy, createdByUsr)
+    SELECT pCostCenter, now(), 'UpsertCodexCostCenter', pUsrId;
+  END IF;
+  
+END$$
+
+-- -----------------------------------------------------------------------------
+  -- blackstarDb.GetCSTOffice
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetCSTOffice$$
 CREATE PROCEDURE blackstarDb.GetCSTOffice(pCst VARCHAR(200))
@@ -3504,7 +3550,7 @@ BEGIN
 
   SELECT * 
   FROM codexCostCenter
-  ORDER BY codexCostCenter DESC;
+  ORDER BY costCenter DESC;
   
 END$$
 
@@ -3541,7 +3587,7 @@ CREATE PROCEDURE blackstarDb.CodexGetAllOriginTypes()
 BEGIN
 
   SELECT ccot._id AS id, ccot.name AS name, ccot.description AS description 
-  FROM codexClientOriginType ccot;
+  FROM codexClientOrigin ccot;
 	
 END$$
 
@@ -3619,10 +3665,11 @@ DROP PROCEDURE IF EXISTS blackstarDb.CodexGetClientList$$
 CREATE PROCEDURE blackstarDb.`CodexGetClientList`(pIsProspect tinyint(4))
 BEGIN
 
-  SELECT _id id, IFNULL(clientTypeId,0) clientTypeId ,
+  SELECT cc._id id, ct.name clientTypeId ,
          IFNULL(corporateName, '') corporateName, 
          IFNULL(city, '') city, IFNULL(contactName, '') contactName
-  FROM codexClient
+  FROM codexClient cc
+    INNER JOIN codexClientType ct ON cc.clientTypeId = ct._id
   WHERE isProspect = pIsProspect;
 	
 END$$
@@ -3634,7 +3681,9 @@ DROP PROCEDURE IF EXISTS blackstarDb.CodexGetEntryTypes$$
 CREATE PROCEDURE blackstarDb.`CodexGetEntryTypes`()
 BEGIN
 
-  SELECT _id id, name name, description description 
+  SELECT  _id AS id, 
+          name AS name, 
+          productType AS productType
   FROM codexProjectEntryTypes;
 	
 END$$
@@ -3646,7 +3695,8 @@ DROP PROCEDURE IF EXISTS blackstarDb.CodexGetEntryItemTypes$$
 CREATE PROCEDURE blackstarDb.`CodexGetEntryItemTypes`()
 BEGIN
 
-  SELECT _id id, name name, description description 
+  SELECT _id AS id, 
+         name AS name
   FROM codexProjectItemTypes;
 	
 END$$
@@ -3803,17 +3853,18 @@ CREATE PROCEDURE blackstarDb.`CodexGetProjectById`(pProjectId int(11))
 BEGIN
 SELECT cp._id id, cp.projectNumber projectNumber, cp.clientId clientId, cp.taxesTypeId taxesTypeId, cp.statusId statusId
       , cp.paymentTypeId paymentTypeId, cp.currencyTypeId currencyTypeId, cst.name statusDescription
-      , cc.tradeName clientDescription, cp.costCenter costCenter, cp.changeType changeType, cp.created created
+      , cc.tradeName clientDescription, ccc.costCenter costCenter, cp.changeType changeType, cp.created created
       , cp.contactName contactName, cp.location location, cp.advance advance, cp.timeLimit timeLimit
       , cp.settlementTimeLimit settlementTimeLimit, cp.deliveryTime deliveryTime, cp.incoterm incoterm
       , cp.productsNumber productsNumber, cp.financesNumber financesNumber, cp.servicesNumber servicesNumber
       , cp.totalProjectNumber totalProjectNumber, cp.createdBy createdBy, cp.createdByUsr createdByUsr
       , cp. modified modified, cp.modifiedBy modifiedBy, cp.modifiedByUsr modifiedByUsr
-FROM codexProject cp, codexClient cc, codexStatusType cst, codexPaymentType cpt, codexCurrencyType cct
+FROM codexProject cp, codexClient cc, codexStatusType cst, codexPaymentType cpt, codexCurrencyType cct, codexCostCenter ccc
 WHERE cp.statusId = cst._id
       AND cp.clientId = cc._id
       AND cp.paymentTypeId = cpt._id
       AND cp.currencyTypeId = cct._id
+      AND cp.costCenterId = ccc._id
       AND cp._id = pProjectId ;
 END$$
 
@@ -3821,10 +3872,10 @@ END$$
 	-- blackstarDb.GetNextProjectId
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetNextProjectId$$
-CREATE PROCEDURE blackstarDb.`GetNextProjectId`()
+CREATE PROCEDURE blackstarDb.`GetNextProjectId`(pType VARCHAR(10))
 BEGIN
 	DECLARE newNumber INTEGER;
-	CALL blackstarDb.GetNextServiceOrderNumber('C', newNumber);
+	CALL blackstarDb.GetNextServiceOrderNumber(pType, newNumber);
 	SELECT newNumber projectNumber;
 END$$
 
@@ -3848,6 +3899,7 @@ BEGIN
   VALUES (pProjectId, pDeliverableId, NOW(), pUserId);
 END$$
 
+
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.CodexGetReferenceTypes
 -- -----------------------------------------------------------------------------
@@ -3855,10 +3907,10 @@ DROP PROCEDURE IF EXISTS blackstarDb.CodexGetReferenceTypes$$
 CREATE PROCEDURE blackstarDb.`CodexGetReferenceTypes`(pItemTypeId int(2))
 BEGIN
   IF (pItemTypeId = 1) THEN
-      SELECT * FROM codexPriceList;
+      SELECT _id AS id, CONCAT_WS('-', code, name) AS name FROM codexPriceList;
   END IF;
   IF (pItemTypeId = 2) THEN
-     SELECT bt._id as _id, bt.ticketNumber as name FROM bloomTicket bt;
+     SELECT bt._id as id, bt.ticketNumber as name FROM bloomTicket bt;
   END IF;
 END$$
 
@@ -3880,12 +3932,17 @@ CREATE PROCEDURE blackstarDb.`CodexUpsertProjectEntry`(pEntryId int(11), pProjec
 BEGIN
   DECLARE isUpdate INTEGER;
   SET isUpdate = (SELECT COUNT(*) FROM codexProjectEntry WHERE _id = pEntryId);
+  
   IF(isUpdate = 0) THEN
-    INSERT INTO codexProjectEntry (_id, projectId, entryTypeId, description, discount, totalPrice, comments)
-    VALUES (pEntryId, pProjectId, pEntryTypeId, pDescription, pDiscount, pTotalPrice, pComments);
+    INSERT INTO codexProjectEntry (projectId, entryTypeId, description, discount, totalPrice, comments)
+    VALUES (pProjectId, pEntryTypeId, pDescription, pDiscount, pTotalPrice, pComments);
+    
+    SELECT LAST_INSERT_ID();
   ELSE
     UPDATE  codexProjectEntry SET comments = pComments
     WHERE _id = pEntryId;
+
+    SELECT pEntryId;
   END IF;
 END$$
 
@@ -3897,6 +3954,7 @@ CREATE PROCEDURE blackstarDb.`CodexUpsertProjectEntryItem`(pItemId int(11),pEntr
 BEGIN
   DECLARE isUpdate INTEGER;
   SET isUpdate = (SELECT COUNT(*) FROM codexEntryItem WHERE _id = pItemId);
+ 
   IF(isUpdate = 0) THEN
     INSERT INTO codexEntryItem (entryId, itemTypeId, reference, description, quantity, priceByUnit, discount, totalPrice, comments)
     VALUES (pEntryId, pItemTypeId, pReference, pDescription, pQuantity, pPriceByUnit, pDiscount, pTotalPrice, pComments);
@@ -3911,23 +3969,31 @@ END$$
 	-- blackstarDb.CodexUpsertProject
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.CodexUpsertProject$$
-CREATE PROCEDURE blackstarDb.`CodexUpsertProject`(pProjectId int(11), pClientId int(11), pTaxesTypeId int(1), pStatusId int(1), pPaymentTypeId int(1),pCurrencyTypeId int(2), pProjectNumber varchar(8), pCostCenter varchar(8), pChangeType float, pCreated varchar(40), pContactName text, pLocation varchar(20), pAdvance float(7,2), pTimeLimit int(3), pSettlementTimeLimit int(3), pDeliveryTime int(3), pincoterm varchar(5), pProductsNumber int(7), pFinancesNumber int(7), pServicesNumber int(7), pTotalProjectNumber int(8), pCreatedByUsr int(11), pModifiedByUsr int(11))
+CREATE PROCEDURE blackstarDb.`CodexUpsertProject`(pProjectId int(11), pClientId int(11), pTaxesTypeId int(1), pStatusId int(1), pPaymentTypeId int(1),pCurrencyTypeId int(2), pProjectNumber varchar(8), pCostCenter varchar(8), pChangeType float, pCreated varchar(40), pContactName text, pLocation varchar(400), pAdvance float(7,2), pTimeLimit int(3), pSettlementTimeLimit int(3), pDeliveryTime int(3), pincoterm varchar(5), pProductsNumber int(7), pFinancesNumber int(7), pServicesNumber int(7), pTotalProjectNumber int(8), pCreatedByUsr int(11), pModifiedByUsr int(11))
 BEGIN
   DECLARE isUpdate INTEGER;
   SET isUpdate = (SELECT COUNT(*) FROM codexProject WHERE _id = pProjectId);
+
   IF(isUpdate = 0) THEN
-     INSERT INTO codexProject (_id, clientId , taxesTypeId , statusId , paymentTypeId ,currencyTypeId , projectNumber , costCenter , changeType , created , contactName , location , advance , timeLimit , settlementTimeLimit , deliveryTime , incoterm , productsNumber , financesNumber , servicesNumber , totalProjectNumber, createdByUsr)
-     VALUES (pProjectId, pClientId , pTaxesTypeId , pStatusId , pPaymentTypeId ,pCurrencyTypeId , pProjectNumber , pCostCenter , pChangeType , pCreated , pContactName , pLocation , pAdvance , pTimeLimit , pSettlementTimeLimit , pDeliveryTime , pincoterm , pProductsNumber , pFinancesNumber , pServicesNumber , pTotalProjectNumber, pCreatedByUsr);
+     CALL UpsertCodexCostCenter(pCostCenter, pCreatedByUsr);
+     SET @ccId = (SELECT _id FROM codexCostCenter WHERE costCenter = pCostCenter);
+
+     INSERT INTO codexProject (clientId , taxesTypeId , statusId , paymentTypeId ,currencyTypeId , projectNumber , costCenterId , changeType , created , contactName , location , advance , timeLimit , settlementTimeLimit , deliveryTime , incoterm , productsNumber , financesNumber , servicesNumber , totalProjectNumber, createdByUsr)
+     VALUES (pClientId , pTaxesTypeId , pStatusId , pPaymentTypeId ,pCurrencyTypeId , pProjectNumber , @ccId , pChangeType , pCreated , pContactName , pLocation , pAdvance , pTimeLimit , pSettlementTimeLimit , pDeliveryTime , pincoterm , pProductsNumber , pFinancesNumber , pServicesNumber , pTotalProjectNumber, pCreatedByUsr);
+
+     SELECT LAST_INSERT_ID();
   ELSE
      UPDATE codexProject
      SET clientId = pClientId, taxesTypeId = pTaxesTypeId, statusId = pStatusId, paymentTypeId = pPaymentTypeId
-         , currencyTypeId = pCurrencyTypeId, projectNumber = pProjectNumber, costCenter = pCostCenter
+         , currencyTypeId = pCurrencyTypeId, projectNumber = pProjectNumber, costCenterId = @ccId
          , changeType = pChangeType, created = pCreated, contactName = pContactName, location = pLocation
          , advance = pAdvance, timeLimit = pTimeLimit, settlementTimeLimit = pSettlementTimeLimit
          , deliveryTime = pDeliveryTime, incoterm = pincoterm, productsNumber = pProductsNumber
          , financesNumber = pFinancesNumber, servicesNumber = pServicesNumber, totalProjectNumber = pTotalProjectNumber
 		 , modifiedByUsr = pModifiedByUsr, modified = NOW()
      WHERE _id = pProjectId;
+
+     SELECT pProjectId;
   END IF;
 END$$
 
@@ -3983,19 +4049,6 @@ BEGIN
 END$$
 
 -- -----------------------------------------------------------------------------
-	-- blackstarDb.GetNextEntryId
--- -----------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS blackstarDb.GetNextEntryId$$
-CREATE PROCEDURE blackstarDb.`GetNextEntryId`()
-BEGIN
-
-	DECLARE newNumber INTEGER;
-
-	CALL blackstarDb.GetNextServiceOrderNumber('D', newNumber);
-	SELECT newNumber projectNumber;
-END$$
-
--- -----------------------------------------------------------------------------
 	-- blackstarDb.CodexGetAllClients
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.CodexGetAllClients$$
@@ -4009,7 +4062,7 @@ BEGIN
          , zipCode zipCode, country country, state state, municipality municipality, city city
          , neighborhood neighborhood, contactName contactName, curp curp, retention retention
   FROM codexClient
-  WHERE isProspect = 0;
+  ORDER BY corporateName;
 END$$
 
 -- -----------------------------------------------------------------------------
@@ -4037,18 +4090,19 @@ CREATE PROCEDURE blackstarDb.`CodexGetAllProjectsByUsr`(pUserId int(11))
 BEGIN
 SELECT cp._id id, cp.projectNumber projectNumber, cp.clientId clientId, cp.taxesTypeId taxesTypeId, cp.statusId statusId
       , cp.paymentTypeId paymentTypeId, cp.currencyTypeId currencyTypeId, cst.name statusDescription
-      , cc.tradeName clientDescription, cp.costCenter costCenter, cp.changeType changeType, cp.created created
+      , cc.tradeName clientDescription, ccc.costCenter costCenter, cp.changeType changeType, cp.created created
       , cp.contactName contactName, cp.location location, cp.advance advance, cp.timeLimit timeLimit
       , cp.settlementTimeLimit settlementTimeLimit, cp.deliveryTime deliveryTime, cp.incoterm incoterm
       , cp.productsNumber productsNumber, cp.financesNumber financesNumber, cp.servicesNumber servicesNumber
       , cp.totalProjectNumber totalProjectNumber, cp.createdBy createdBy, cp.createdByUsr createdByUsr
       , cp. modified modified, cp.modifiedBy modifiedBy, cp.modifiedByUsr modifiedByUsr
-FROM codexProject cp, codexClient cc, codexStatusType cst, codexPaymentType cpt, codexCurrencyType cct
+FROM codexProject cp, codexClient cc, codexStatusType cst, codexPaymentType cpt, codexCurrencyType cct, codexCostCenter ccc
 WHERE cp.statusId = cst._id
       AND cp.clientId = cc._id
       AND cp.paymentTypeId = cpt._id
       AND cp.currencyTypeId = cct._id
-	  AND cp.createdByUsr = pUserId;
+      AND cp.costCenterId = ccc._id
+      AND cp.createdByUsr = pUserId;
 END$$
 
 -- -----------------------------------------------------------------------------
@@ -4059,17 +4113,18 @@ CREATE PROCEDURE blackstarDb.`CodexGetProjectsByStatus`(pStatusId INT(2))
 BEGIN
 SELECT cp._id id, cp.projectNumber projectNumber, cp.clientId clientId, cp.taxesTypeId taxesTypeId, cp.statusId statusId
       , cp.paymentTypeId paymentTypeId, cp.currencyTypeId currencyTypeId, cst.name statusDescription
-      , cc.tradeName clientDescription, cp.costCenter costCenter, cp.changeType changeType, cp.created created
+      , cc.tradeName clientDescription, ccc.costCenter costCenter, cp.changeType changeType, cp.created created
       , cp.contactName contactName, cp.location location, cp.advance advance, cp.timeLimit timeLimit
       , cp.settlementTimeLimit settlementTimeLimit, cp.deliveryTime deliveryTime, cp.incoterm incoterm
       , cp.productsNumber productsNumber, cp.financesNumber financesNumber, cp.servicesNumber servicesNumber
       , cp.totalProjectNumber totalProjectNumber, cp.createdBy createdBy, cp.createdByUsr createdByUsr
       , cp. modified modified, cp.modifiedBy modifiedBy, cp.modifiedByUsr modifiedByUsr
-FROM codexProject cp, codexClient cc, codexStatusType cst, codexPaymentType cpt, codexCurrencyType cct
+FROM codexProject cp, codexClient cc, codexStatusType cst, codexPaymentType cpt, codexCurrencyType cct, codexCostCenter ccc
 WHERE cp.statusId = cst._id
       AND cp.clientId = cc._id
       AND cp.paymentTypeId = cpt._id
       AND cp.currencyTypeId = cct._id
+      AND cp.costCenterId = ccc._id
       AND cp.statusId = pStatusId;
 END$$ 
 
@@ -4081,17 +4136,18 @@ CREATE PROCEDURE blackstarDb.`CodexGetProjectsByStatusAndUser`(pStatusId INT(2),
 BEGIN
 SELECT cp._id id, cp.projectNumber projectNumber, cp.clientId clientId, cp.taxesTypeId taxesTypeId, cp.statusId statusId
       , cp.paymentTypeId paymentTypeId, cp.currencyTypeId currencyTypeId, cst.name statusDescription
-      , cc.tradeName clientDescription, cp.costCenter costCenter, cp.changeType changeType, cp.created created
+      , cc.tradeName clientDescription, ccc.costCenter costCenter, cp.changeType changeType, cp.created created
       , cp.contactName contactName, cp.location location, cp.advance advance, cp.timeLimit timeLimit
       , cp.settlementTimeLimit settlementTimeLimit, cp.deliveryTime deliveryTime, cp.incoterm incoterm
       , cp.productsNumber productsNumber, cp.financesNumber financesNumber, cp.servicesNumber servicesNumber
       , cp.totalProjectNumber totalProjectNumber, cp.createdBy createdBy, cp.createdByUsr createdByUsr
       , cp. modified modified, cp.modifiedBy modifiedBy, cp.modifiedByUsr modifiedByUsr
-FROM codexProject cp, codexClient cc, codexStatusType cst, codexPaymentType cpt, codexCurrencyType cct
+FROM codexProject cp, codexClient cc, codexStatusType cst, codexPaymentType cpt, codexCurrencyType cct, codexCostCenter ccc
 WHERE cp.statusId = cst._id
       AND cp.clientId = cc._id
       AND cp.paymentTypeId = cpt._id
       AND cp.currencyTypeId = cct._id
+      AND cp.costCenterId = ccc._id
       AND cp.statusId = pStatusId
 	  AND cp.createdByUsr = pCreatedByUsr;
 END$$ 
@@ -4159,10 +4215,11 @@ CREATE PROCEDURE blackstarDb.`CodexGetSalesManger`()
 BEGIN
 
   SELECT bu.blackstarUserId blackstarUserId, bu.email userEmail, bu.name userName
-  FROM blackstarUser bu, userGroup ug, blackstarUser_userGroup bug
-  WHERE ug.externalId = 'sysSalesManger'
-        AND bug.userGroupId = ug.userGroupId
-        AND bug.blackstarUserId = bu.blackstarUserId;
+  FROM blackstarUser_userGroup bug
+    INNER JOIN userGroup ug ON  bug.userGroupId = ug.userGroupId
+    INNER JOIN blackstarUser bu ON bug.blackstarUserId = bu.blackstarUserId
+  WHERE ug.externalId = 'sysSalesManager';
+       
 END$$
 
 -- -----------------------------------------------------------------------------
@@ -4193,7 +4250,7 @@ END$$
 	-- blackstarDb.CodexInsertPriceProposal
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.CodexInsertPriceProposal$$
-CREATE PROCEDURE blackstarDb.`CodexInsertPriceProposal`(pProposalId int(11), pProjectId int(11),pPriceProposalNumber varchar(8), pClientId int(11), pTaxesTypeId int(1), pPaymentTypeId int(1),pCurrencyTypeId int(2), pCostCenter varchar(8), pChangeType float, pCreated varchar(40), pContactName text, pLocation varchar(20), pAdvance float(7,2), pTimeLimit int(3), pSettlementTimeLimit int(3), pDeliveryTime int(3), pincoterm varchar(5), pProductsNumber int(7), pFinancesNumber int(7), pServicesNumber int(7), pTotalProjectNumber int(8))
+CREATE PROCEDURE blackstarDb.`CodexInsertPriceProposal`(pProposalId int(11), pProjectId int(11),pPriceProposalNumber varchar(50), pClientId int(11), pTaxesTypeId int(1), pPaymentTypeId int(1),pCurrencyTypeId int(2), pCostCenter varchar(8), pChangeType float, pCreated varchar(40), pContactName text, pLocation varchar(400), pAdvance float(10,2), pTimeLimit int(3), pSettlementTimeLimit int(3), pDeliveryTime int(3), pincoterm varchar(5), pProductsNumber int(20), pFinancesNumber int(20), pServicesNumber int(20), pTotalProjectNumber int(20))
 BEGIN
      INSERT INTO codexPriceProposal (_id, projectId, priceProposalNumber, clientId , taxesTypeId , paymentTypeId ,currencyTypeId  , costCenter , changeType , created , contactName , location , advance , timeLimit , settlementTimeLimit , deliveryTime , incoterm , productsNumber , financesNumber , servicesNumber , totalProjectNumber)
      VALUES (pProposalId, pProjectId, pPriceProposalNumber, pClientId , pTaxesTypeId , pPaymentTypeId ,pCurrencyTypeId , pCostCenter , pChangeType , pCreated , pContactName , pLocation , pAdvance , pTimeLimit , pSettlementTimeLimit , pDeliveryTime , pincoterm , pProductsNumber , pFinancesNumber , pServicesNumber , pTotalProjectNumber);
@@ -4268,7 +4325,9 @@ DELIMITER ;
 -- -----------------------------------------------------------------------------
 -- PR   Date    	Author 	Description
 -- --   --------   -------  ------------------------------------
--- 1    13/08/2014  SAG  	Version inicial. 
+-- 1    13/08/2014  SAG  	Version inicial.
+-- --   --------   -------  ------------------------------------
+-- 2    01/10/2014  SAG  	Se agregan listas
 -- ---------------------------------------------------------------------------
 use blackstarDb;
 
@@ -4281,6 +4340,499 @@ DELIMITER $$
 DROP PROCEDURE IF EXISTS blackstarDb.updateCodexData$$
 CREATE PROCEDURE blackstarDb.updateCodexData()
 BEGIN
+
+	-- Lista de proyectos
+	IF(SELECT count(*) FROM blackstarDb.codexCostCenter) = 0 THEN
+		INSERT INTO blackstarDb.codexCostCenter(costCenter, created, createdBy)
+		SELECT 'CG170', NOW(), 'init' UNION
+		SELECT 'CG183', NOW(), 'init' UNION
+		SELECT 'CG187', NOW(), 'init' UNION
+		SELECT 'CG205', NOW(), 'init' UNION
+		SELECT 'CG209', NOW(), 'init' UNION
+		SELECT 'CG317', NOW(), 'init' UNION
+		SELECT 'CG343', NOW(), 'init' UNION
+		SELECT 'CG344', NOW(), 'init' UNION
+		SELECT 'CG350', NOW(), 'init' UNION
+		SELECT 'CG356', NOW(), 'init' UNION
+		SELECT 'CG358', NOW(), 'init' UNION
+		SELECT 'CG363', NOW(), 'init' UNION
+		SELECT 'CG382', NOW(), 'init' UNION
+		SELECT 'CG386', NOW(), 'init' UNION
+		SELECT 'CG390', NOW(), 'init' UNION
+		SELECT 'CG402', NOW(), 'init' UNION
+		SELECT 'CG404', NOW(), 'init' UNION
+		SELECT 'CG409', NOW(), 'init' UNION
+		SELECT 'CG425', NOW(), 'init' UNION
+		SELECT 'CG455', NOW(), 'init' UNION
+		SELECT 'CG471', NOW(), 'init' UNION
+		SELECT 'CG475', NOW(), 'init' UNION
+		SELECT 'CG478', NOW(), 'init' UNION
+		SELECT 'CG482', NOW(), 'init' UNION
+		SELECT 'CG483', NOW(), 'init' UNION
+		SELECT 'CG490', NOW(), 'init' UNION
+		SELECT 'CG495', NOW(), 'init' UNION
+		SELECT 'CG498', NOW(), 'init' UNION
+		SELECT 'CG499', NOW(), 'init' UNION
+		SELECT 'CG501', NOW(), 'init' UNION
+		SELECT 'CG503', NOW(), 'init' UNION
+		SELECT 'CG523', NOW(), 'init' UNION
+		SELECT 'CG525', NOW(), 'init' UNION
+		SELECT 'CG533', NOW(), 'init' UNION
+		SELECT 'CG558', NOW(), 'init' UNION
+		SELECT 'CM118', NOW(), 'init' UNION
+		SELECT 'CM122', NOW(), 'init' UNION
+		SELECT 'CM130', NOW(), 'init' UNION
+		SELECT 'CM150', NOW(), 'init' UNION
+		SELECT 'CM168', NOW(), 'init' UNION
+		SELECT 'CM179', NOW(), 'init' UNION
+		SELECT 'CM181', NOW(), 'init' UNION
+		SELECT 'CM183', NOW(), 'init' UNION
+		SELECT 'CM203', NOW(), 'init' UNION
+		SELECT 'CM206', NOW(), 'init' UNION
+		SELECT 'CM220', NOW(), 'init' UNION
+		SELECT 'CM224', NOW(), 'init' UNION
+		SELECT 'CM229', NOW(), 'init' UNION
+		SELECT 'CM23', NOW(), 'init' UNION
+		SELECT 'CM237', NOW(), 'init' UNION
+		SELECT 'CM239', NOW(), 'init' UNION
+		SELECT 'CM241', NOW(), 'init' UNION
+		SELECT 'CM242', NOW(), 'init' UNION
+		SELECT 'CM247', NOW(), 'init' UNION
+		SELECT 'CM253', NOW(), 'init' UNION
+		SELECT 'CM260', NOW(), 'init' UNION
+		SELECT 'CM264', NOW(), 'init' UNION
+		SELECT 'CM267', NOW(), 'init' UNION
+		SELECT 'CM292', NOW(), 'init' UNION
+		SELECT 'CM293', NOW(), 'init' UNION
+		SELECT 'CM294', NOW(), 'init' UNION
+		SELECT 'CM296', NOW(), 'init' UNION
+		SELECT 'CM310', NOW(), 'init' UNION
+		SELECT 'CM313', NOW(), 'init' UNION
+		SELECT 'CM318', NOW(), 'init' UNION
+		SELECT 'CM321', NOW(), 'init' UNION
+		SELECT 'CM351', NOW(), 'init' UNION
+		SELECT 'CM36', NOW(), 'init' UNION
+		SELECT 'CM361', NOW(), 'init' UNION
+		SELECT 'CM367', NOW(), 'init' UNION
+		SELECT 'CM376', NOW(), 'init' UNION
+		SELECT 'CM389', NOW(), 'init' UNION
+		SELECT 'CM390', NOW(), 'init' UNION
+		SELECT 'CM392', NOW(), 'init' UNION
+		SELECT 'CM395', NOW(), 'init' UNION
+		SELECT 'CM411', NOW(), 'init' UNION
+		SELECT 'CM422', NOW(), 'init' UNION
+		SELECT 'CM425', NOW(), 'init' UNION
+		SELECT 'CM435', NOW(), 'init' UNION
+		SELECT 'CM465', NOW(), 'init' UNION
+		SELECT 'CM476', NOW(), 'init' UNION
+		SELECT 'CM495', NOW(), 'init' UNION
+		SELECT 'CM50', NOW(), 'init' UNION
+		SELECT 'CM503', NOW(), 'init' UNION
+		SELECT 'CM505', NOW(), 'init' UNION
+		SELECT 'CM508', NOW(), 'init' UNION
+		SELECT 'CM519', NOW(), 'init' UNION
+		SELECT 'CM524', NOW(), 'init' UNION
+		SELECT 'CM542', NOW(), 'init' UNION
+		SELECT 'CM619', NOW(), 'init' UNION
+		SELECT 'CM633', NOW(), 'init' UNION
+		SELECT 'CM88', NOW(), 'init' UNION
+		SELECT 'CQ101', NOW(), 'init' UNION
+		SELECT 'CQ149', NOW(), 'init' UNION
+		SELECT 'CQ154', NOW(), 'init' UNION
+		SELECT 'CQ166', NOW(), 'init' UNION
+		SELECT 'CQ169', NOW(), 'init' UNION
+		SELECT 'CQ191', NOW(), 'init' UNION
+		SELECT 'CQ219', NOW(), 'init' UNION
+		SELECT 'CQ243', NOW(), 'init' UNION
+		SELECT 'CQ244', NOW(), 'init' UNION
+		SELECT 'CQ256', NOW(), 'init' UNION
+		SELECT 'CQ267', NOW(), 'init' UNION
+		SELECT 'CQ310', NOW(), 'init' UNION
+		SELECT 'CQ323', NOW(), 'init' UNION
+		SELECT 'CQ327', NOW(), 'init' UNION
+		SELECT 'CQ328', NOW(), 'init' UNION
+		SELECT 'CQ336', NOW(), 'init' UNION
+		SELECT 'CQ345', NOW(), 'init' UNION
+		SELECT 'CQ346', NOW(), 'init' UNION
+		SELECT 'CQ371', NOW(), 'init' UNION
+		SELECT 'CQ436', NOW(), 'init' UNION
+		SELECT 'CQ443', NOW(), 'init' UNION
+		SELECT 'CQ449', NOW(), 'init' UNION
+		SELECT 'CQ454', NOW(), 'init' UNION
+		SELECT 'CQ455', NOW(), 'init' UNION
+		SELECT 'CQ456', NOW(), 'init' UNION
+		SELECT 'CQ462', NOW(), 'init' UNION
+		SELECT 'CQ475', NOW(), 'init' UNION
+		SELECT 'CQ497', NOW(), 'init' UNION
+		SELECT 'CQ527', NOW(), 'init' UNION
+		SELECT 'CQ534', NOW(), 'init' UNION
+		SELECT 'CQ539', NOW(), 'init' UNION
+		SELECT 'CQ552', NOW(), 'init' UNION
+		SELECT 'CQ556', NOW(), 'init' UNION
+		SELECT 'CQ613', NOW(), 'init' UNION
+		SELECT 'CQ622', NOW(), 'init' UNION
+		SELECT 'CQ626', NOW(), 'init' UNION
+		SELECT 'CQ628', NOW(), 'init' UNION
+		SELECT 'CQ628-2014', NOW(), 'init' UNION
+		SELECT 'CQ638', NOW(), 'init' UNION
+		SELECT 'CQ652', NOW(), 'init' UNION
+		SELECT 'CQ655', NOW(), 'init' UNION
+		SELECT 'CQ660', NOW(), 'init' UNION
+		SELECT 'CQ665', NOW(), 'init' UNION
+		SELECT 'CQ704', NOW(), 'init' UNION
+		SELECT 'CQ707', NOW(), 'init' UNION
+		SELECT 'CQ708', NOW(), 'init' UNION
+		SELECT 'CQ709', NOW(), 'init' UNION
+		SELECT 'CQ710', NOW(), 'init' UNION
+		SELECT 'CQ726', NOW(), 'init' UNION
+		SELECT 'CQ760', NOW(), 'init' UNION
+		SELECT 'CQ764', NOW(), 'init' UNION
+		SELECT 'CQ81', NOW(), 'init' UNION
+		SELECT 'MX10-0035', NOW(), 'init' UNION
+		SELECT 'MX11-0026', NOW(), 'init' UNION
+		SELECT 'PG28', NOW(), 'init' UNION
+		SELECT 'PQ10', NOW(), 'init' ;
+
+	END IF;
+	-- Lista de status
+	IF(SELECT count(*) FROM blackstarDb.codexStatusType) = 0 THEN
+		INSERT INTO blackstarDb.codexStatusType(name, description)
+		SELECT 'Nuevo', 'Nuevo' UNION
+		SELECT 'Por autorizar', 'Por autorizar' UNION
+		SELECT 'Autorizada', 'Autorizada' UNION
+		SELECT 'En cotizacion', 'En cotizacion' ;
+	END IF;
+	
+	-- Lista de tipos de cliente
+	IF(SELECT count(*) FROM blackstarDb.codexClientType) = 0 THEN
+		INSERT INTO blackstarDb.codexClientType(_id, name, description)
+		SELECT 1, 'IP', 'IP' UNION
+		SELECT 2, 'Gobierno', 'Gobierno' UNION
+		SELECT 3, 'Integrador', 'Integrador' UNION
+		SELECT 4, 'No Definido', 'No Definido' ;
+	END IF;
+
+	-- Lista de origenes de clientes
+	IF(SELECT count(*) FROM blackstarDb.codexClientOrigin) = 0 THEN
+		INSERT INTO blackstarDb.codexClientOrigin(name, description)
+		SELECT 'Consultor', 'Consultor' UNION
+		SELECT 'Medios Electronicos', 'Medios Electronicos' UNION
+		SELECT 'Referidos', 'Referidos' UNION
+		SELECT 'Cliente', 'Cliente' UNION
+		SELECT 'Otros', 'Otros';
+	END IF;
+
+	-- Lista inicial de Clientes
+	IF(SELECT count(*) FROM blackstarDb.codexClient) = 0 THEN
+		INSERT INTO blackstarDb.codexClient(corporateName, tradeName, contactName, sellerName, clientTypeId, email, street, extNumber, neighborhood, city, state, country, zipCode, phoneArea, phoneNumber, rfc, isProspect )
+		SELECT 'ACTINVER CASA DE BOLSA SA DE CV', 'ACTINVER CASA DE BOLSA SA DE CV', '', 'JORGE ALBERTO MARTINEZ',1,'', 'GUILLERMO GONZALEZ CAMARENA', '1200', 'SANTA FE', 'MEXICO', 'Distrito Federal', 'México', '1210', '155', '11036600', 'ACB7609076M2', 1 UNION
+SELECT 'ACUBICA ARQUITECTURA SA DE CV', 'ACUBICA ARQUITECTURA SA DE CV', '', 'SAUL ANDRADE',3,'', 'INDEPENDENCIA', '17', 'TIZAPAN SAN ANGEL', 'MEXICO', 'DISTRITO FEDERAL', 'MEXICO', '1090', '55', '30993728', 'AAR100125F75', 1 UNION
+SELECT 'ADMINISTRADORA DE CAJA BIENESTAR SA DE CV SFP', 'ADMINISTRADORA DE CAJA BIENESTAR SA DE CV SFP', '', 'RUFINO MOCTEZUMA',1,'gcastillo@ahorrosbienestar.com', 'EZEQUIEL MONTES SUR', '50', 'CENTRO', 'QUERETARO', 'QUERÉTARO', 'MEXICO', '76000', '442', '2519300', 'ABC950109JZ9', 1 UNION
+SELECT 'AFORE XXI BANORTE SA DE CV', 'AFORE XXI BANORTE SA DE CV', 'MARCO ANTONIO GUTIERREZ', 'IVAN RAMIREZ',1,'', 'AV INSURGENTES SUR', '1228', 'DEL VALLE', 'MEXICO', 'DISTRITO FEDERAL', 'MEXICO', '3100', '155', '54885538', 'AXX970225GL0', 1 UNION
+SELECT 'AGUSTIN SALAS GALLEGOS', 'AGUSTIN SALAS GALLEGOS', '', 'DIRECTO',1,'', 'MONZA', '119', 'FRACC VILLAS DE SAN ANTONIO', 'AGUASCALIENTES', 'AGUASCALIENTES', 'MEXICO', '20286', '', '', '', 1 UNION
+SELECT 'ALEJANDRO EQUIHUA RAMIREZ', 'ALEJANDRO EQUIHUA RAMIREZ', '', 'DIRECTO',4,'', 'CAZAREZ', '171', 'CENTRO', 'ZAMORA', 'MICHOACÁN', 'MEXICO', '59600', '', '', 'EURA780518F5A', 1 UNION
+SELECT 'APIESA SA DE CV', 'APIESA SA DE CV', 'MARIANO RAFAEL JIMENEZ', 'JUAN JOSE ESPINOZA BRAVO',3,'apiesags@yahoo.com', 'AV INDEPENDENCIA', '814', 'CIRCUNVALACION NORTE', 'AGUASCALIENTES', 'AGUASCALIENTES', 'MEXICO', '20020', '449', '9147068', 'API010625F53', 1 UNION
+SELECT 'ARNESES ELECTRICOS AUTOMOTRICES S.A. DE C.V.', 'ARNESES ELECTRICOS AUTOMOTRICES S.A. DE C.V.', 'ULISES SALAZAR', 'JOSE IVAN MARTIN',1,'usalazar@condumex.com.mx', 'CARR. PANAMERICANA KM 146.5 TRAMO IRAPUATO-SILAO', '', '', 'SILAO', 'GUANAJUATO', 'MEXICO', '36100', '472', '7229400', 'AEA9111014S3', 1 UNION
+SELECT 'AUDITORIA SUPERIOR DE LA FEDERACION', 'AUDITORIA SUPERIOR DE LA FEDERACION', '', 'JORGE ALBERTO MARTINEZ',2,'', 'AV COYOACAN', '1501', 'DEL VALLE', 'MEXICO', 'DISTRITO FEDERAL', 'MEXICO', '0', '155', '52001500', 'ASF001230TS2', 1 UNION
+SELECT 'AXTEL SAB DE CV', 'AXTEL SAB DE CV', '', 'FRANCISCO UREÑA',3,'', 'BLVD DIAZ ORDAZ KM 3.33 L-1', '', 'UNIDAD SAN PEDRO', 'SAN PEDRO GARZA GARCIA', 'NUEVO LEON', 'MEXICO', '66215', '181', '81141231', 'AXT940727FP8', 1 UNION
+SELECT 'BANCO INVEX SA INSTITUCION DE BANCA MULTIPLE', 'BANCO INVEX SA INSTITUCION DE BANCA MULTIPLE', 'ARMANDO CORONA', 'MICHELLE GALICIA',1,'ACORONA@invex.com', 'BOULEVAD MANUEL AVILA CAMACHO', '40', 'LOMAS DE CHAPULTEPEC', 'MIGUEL HIDALGO', 'DISTRITO FEDERAL', 'MEXICO', '11000', '155', '53503346', 'BIN940223KE0', 1 UNION
+SELECT 'BAXTER SA DE CV', 'BAXTER SA DE CV', 'RUDYARD IVAN GUIZA', 'MICHELLE GALICIA',1,'Rudyard_Ivan_Guiza@baxter.com', 'AV DE LOS 50 METROS', '2', 'CIVAC JUITEPEC', 'CUERNAVACA', 'MORELOS', 'MEXICO', '62578', '1777', '3296000', 'BAX871207MN3', 1 UNION
+SELECT 'BESCO SERVICIO SA DE CV', 'BESCO SERVICIO SA DE CV', '', 'DIRECTO',3,'', 'DIAGONAL PATRIOTISMO', '4', 'HIPODROMO CONDESA', 'MEXICO', 'DISTRITO FEDERAL', 'MEXICO', '6170', '', '', 'BSE8704273W5', 1 UNION
+SELECT 'CABLEMAS TELECOMUNICACIONES SA DE CV', 'CABLEMAS TELECOMUNICACIONES SA DE CV', 'DANIEL MORALES Y/O JOSE LUIS GONZALEZ', 'JOSE IVAN MARTIN',1,'dmorales@cablemas.com.mx / jgonzalezr@cablemas.com.mx', 'SEVILLA', '4', 'JUAREZ', 'MEXICO', 'DISTRITO FEDERAL', 'MEXICO', '6600', '', '', 'TCI770922C22', 1 UNION
+SELECT 'CAJA DE AHORRO DE LOS TELEFONISTAS SC DE AP DE RL DE CV', 'CAJA DE AHORRO DE LOS TELEFONISTAS SC DE AP DE RL DE CV', 'HOMERO AMBRIZ', 'JOSE IVAN MARTIN',1,'homero.abriz@hotmail.com', 'MIGUEL E. SCHULTZ', '140', 'SAN RAFAEL', 'MEXICO', 'DISTRITO FEDERAL', 'MEXICO', '6470', '55', '51409688', 'CAT9505192V1', 1 UNION
+SELECT 'CAJA MORELIA VALLADOLID SC DE AP DE RL DE CV', 'CAJA MORELIA VALLADOLID SC DE AP DE RL DE CV', 'ROGER TUN ALDAN', 'JOSE IVAN MARTIN',1,'roger.tun@cajamorelia.com', 'ACATITA DE BAJAN', '222', 'LOMAS DE HIDALGO', 'MORELIA', 'MICHOACAN', 'MEXICO', '58240', '', '', 'CMV980925LQ7', 1 UNION
+SELECT 'CENEXIS SA DE CV', 'CENEXIS SA DE CV', 'RAMON SERNA', 'JUAN JOSE ESPINOZA BRAVO',1,'geraldo.gomez@gmodelo.com.mx', 'BOULEVARD A ZACATECAS', '701', 'LAS HADAS', 'AGUASCALIENTES', 'AGUASCALIENTES', 'MEXICO', '20140', '449', '139 3300', 'CEN0605083U9', 1 UNION
+SELECT 'CENTRO DE EVALUACION Y CONTROL DE CONFIANZA DEL ESTADO DE GUANAJUATO', 'CENTRO DE EVALUACION Y CONTROL DE CONFIANZA DEL ESTADO DE GUANAJUATO', 'SERGIO VELAZQUEZ URZUA', 'JOSE IVAN MARTIN',4,'svelazquezq@juanaguato.org.mx', 'BLVD. JUAN JOSE TORRES LANDA', '3005', 'SAN ISIDRO', 'LEON', 'GUANAJUATO', 'MEXICO', '37510', '', '', 'CEC090101MGA', 1 UNION
+SELECT 'CENTRO DE INVESTIGACIÓN Y DE ESTUDIOS AVANZADOS DEL INSTITUTO POLITECNICO NACIONAL', 'CENTRO DE INVESTIGACIÓN Y DE ESTUDIOS AVANZADOS DEL INSTITUTO POLITECNICO NACIONAL', 'ING ELVIA LOPEZ', 'JUAN JOSE ESPINOZA BRAVO',2,'elvial@cts-desing.com', 'AV. DEL BOSQUE', '1145', 'EL BAJIO', 'ZAPOPAN', 'JALISCO', 'MEXICO', '45019', '33', '37773600', 'CIE6010281U2', 1 UNION
+SELECT 'CENTRO REGIONAL DE COMPETITIVIDAD EMPRESARIAL SC', 'CENTRO REGIONAL DE COMPETITIVIDAD EMPRESARIAL SC', 'MARIA JOSE OLIVA', 'DIRECTO',1,'enlace@certificaciondepymes.org.mx', 'AVENIDA REPUBLICA', '44', 'SANTA ANA', 'CAMPECHE', 'CAMPECHE', 'MEXICO', '24050', '', '', 'CRC0702132N9', 1 UNION
+SELECT 'UNI', 'UNI', 'JESUS CAMPA', 'JUAN JOSE ESPINOZA BRAVO',1,'jesus.campa@gmodelo.com.mx', 'CALLE 37 NORTE', '300', 'NUEVO TORREON', 'TORREON', 'TORREON', 'COAHUILA', '27040', '55', '22660000', 'CMT801204CZ4', 1 UNION
+SELECT 'CEURAC SA DE CV', 'CEURAC SA DE CV', 'GERMINAL OCAÑA', 'MICHELLE GALICIA',1,'', 'OAXACA', '81', 'COL ROMA', 'MEXICO', 'DISTRITO FEDERAL', 'MEXICO', '6700', '', '', 'CEU980706GL7', 1 UNION
+SELECT 'CGGVERITAS SERVICES DE MEXICO SA DE CV', 'CGGVERITAS SERVICES DE MEXICO SA DE CV', '', 'PILAR PAZ',1,'', 'LAGO VICTORIA', '74', 'GRANADA', 'MEXICO', 'DISTRITO FEDERAL', 'MEXICO', '11520', '01 993', '31047570', 'CSM8803244U7', 1 UNION
+SELECT 'CLIMAS SA DE CV', 'CLIMAS SA DE CV', 'CESAR CHAVE', 'FRANCISCO UREÑA',3,'cchavez@climas.com', 'VALLE ESCONDIDO', '5700', 'JARDINES DEL SAUCITO', 'CHIHUAHUA', 'CHIHUAHUA', 'MEXICO', '31125', '614', '4393999', 'CLI580701CU9', 1 UNION
+SELECT 'COLEGIO DE EDUCACION PROFESIONAL TECNICA DEL ESTADO DE GUANAJUATO', 'COLEGIO DE EDUCACION PROFESIONAL TECNICA DEL ESTADO DE GUANAJUATO', 'RITO MACIAS NEGRETE', 'JOSE IVAN MARTIN',1,'jorge.alvarezt@conalepgto.edu.mx /', 'AV. MARQUEZ', 'S/N', 'REAL PROVIDENCIA', 'LEON', 'GUANAJUATO', 'MEXICO', '37234', '477', '7762622', 'CEP991019RR6', 1 UNION
+SELECT 'COMERCIALIZADORA DE VALOR AGREGADO SA DE CV', 'COMERCIALIZADORA DE VALOR AGREGADO SA DE CV', '', '',3,'eramirez@grupocva.com', 'MARIANO OTERO', '2489', 'JARDINES DE LA VICTORIA', 'GUADALAJARA', 'JALISCO', 'MEXICO', '44900', '33', '30121413', 'CVA9904266T9', 1 UNION
+SELECT 'COMERCIALIZADORA ELORO SA', 'COMERCIALIZADORA ELORO SA', '', 'MICHELLE GALICIA',1,'', 'KM 12.5 ANTIGUA CARRETERA MEXICO PACHUCA', '', 'RUSTICA XALOSTIC', '', 'ESTADO DE MEXICO', 'MEXICO', '55340', '', '', 'CEL470228G64', 1 UNION
+SELECT 'COMISION FEDERAL DE ELECTRICIDAD', 'COMISION FEDERAL DE ELECTRICIDAD', 'CARLOS CRUZ', 'JUAN JOSE ESPINOZA BRAVO',2,'carlos.cruz01@cfe.gob.mx', 'AV PASEO DE LA REFORMA', '164', 'JUAREZ', 'MEXICO', 'DISTRITO FEDERAL', 'MEXICO', '6600', '', '', 'CFE370814QI0', 1 UNION
+SELECT 'COMPAÑIA CERVECERA DE ZACATECAS S.A. DE C.V.', 'COMPAÑIA CERVECERA DE ZACATECAS S.A. DE C.V.', 'MARTHA MARINA GONZALEZ PEDRAZA', 'JUAN JOSE ESPINOZA BRAVO',1,'', 'BOULEVARD ANTONINO FERNANDEZ RODRIGUEZ', '100', 'CALERA DE VICTOR ROSALES', '', 'ZACATECAS', 'MEXICO', '98500', '478', '9854-040', 'CZA890112KS6', 1 UNION
+SELECT 'CONSEJO DE LA JUDICATURA FEDERAL', 'CONSEJO DE LA JUDICATURA FEDERAL', 'OSCAR ZAPATA', 'JUAN JOSE ESPINOZA BRAVO',2,'oscar.zapata.alvarez@correo.cjf.gob.mx', 'INSURGENTES SUR', '2417', 'SAN ANGEL', 'DF', 'DF', 'MEXICO', '1000', '44', '3312415264', 'CJF950204TL0', 1 UNION
+SELECT 'CONSTRUCTORA ARECHIGA SA DE CV', 'CONSTRUCTORA ARECHIGA SA DE CV', '', 'PILAR PAZ',3,'', 'KM 10 + 100 CARRETERA BOSQUES DE SALOYA- EL CEDRO', 'S/N', 'R/a EL CEDRO 3RA. SECCION', 'VILLAHERMOSA', 'TABASCO', 'MÉXICO', '86220', '', '', 'CAR851022AB6', 1 UNION
+SELECT 'CONTECON MANZANILLO SA DE CV', 'CONTECON MANZANILLO SA DE CV', '', 'JOSE IVAN MARTIN',4,'shernandez@contecon.mx', 'AV COYOACAN', '1878', 'DEL VALLE', 'MEXICO', 'DELEEGACION BENITO JUAREZ', 'DISTRITO FEDERAL', '3100', '314', '1382009', 'CMA100106AH8', 1 UNION
+SELECT 'COORDINACION DE SERVICIOS EN INFORMATICA SA DE CV', 'COORDINACION DE SERVICIOS EN INFORMATICA SA DE CV', 'EDUARDO NAVA', 'JORGE ALBERTO MARTINEZ',3,'enava@coservicios.com.mx', 'AUDITORES', '83', 'SIFON', 'DISTRITO FEDERAL', 'DISTRITO FEDERAL', 'MEXICO', '9400', '55', '56338282', 'CSI980907QN7', 1 UNION
+SELECT 'CORPORACION DE OCCIDENTE, S.A. DE C.V.', 'CORPORACION DE OCCIDENTE, S.A. DE C.V.', 'LIC. CHRISTIAN ALEJANDRO VALADEZ VARGAS', 'FRANCISCO UREÑA',1,'c.valadez@coocsa.com', 'KM 3.5 CARR. A EL SALTO VIA LA CAPILLA', 'S/N', 'LA RESERVA', 'EL SALTO', 'JALISCO', 'MEXICO', '45680', '33', '37935550', 'COC050126PI7', 1 UNION
+SELECT 'COTEMAR SA DE CV', 'COTEMAR SA DE CV', '', 'PILAR PAZ',3,'', 'PASEO DE LAS PALMAS', '735', 'LOMAS DE CHAPULTEPEC', 'MEXICO', 'DISTRITO FEDERAL', 'MEXICO', '11000', '', '', 'COT790201P28', 1 UNION
+SELECT 'DAIMLER VEHICULOS COMERCIALES MEXICO S DE RL DE CV', 'DAIMLER VEHICULOS COMERCIALES MEXICO S DE RL DE CV', 'LEONARDO GUTIERREZ', 'MICHELLE GALICIA',1,'juan.gutierrez@daimler.com', 'AV. PASEO DE LOS TAMARINDOS', '90', 'BOSQUES DE LAS LOMAS', 'DISTRITO FEDERAL', 'DISTRITO FEDERAL', 'MEXICO', '5120', '722', '2767530', 'DVC910102VDA', 1 UNION
+SELECT 'DATA AIR ELECTRIC SA DE CV', 'DATA AIR ELECTRIC SA DE CV', 'DANTE REYNOSO', 'DIRECTO GUADALAJARA',4,'dante.reynoso@dataairelectric.com', 'PASEO DE LAS GALIAS', '223', 'LOMAS ESTRELLA SEGUNDA SECCION', 'DELEGACION IZTAPALAPA', 'DITRITO FEDERAL', 'MEXICO', '9890', '', '', 'DAE060823RW0', 1 UNION
+SELECT 'DATA AIRE INC', 'DATA AIRE INC', '', 'DIRECTO',4,'asotelo@pqglobal.com', 'WEST BLUERIDGE AVENUE', '230', '', '', 'CA', 'ESTADOS UNIDOS DE AMERICA', '92865', '001 858', '2715996', 'WEXX010101000', 1 UNION
+SELECT 'DATA NETWORKS S.A. DE C.V.', 'DATA NETWORKS S.A. DE C.V.', '', 'JORGE ALBERTO MARTINEZ',3,'', 'ALONDRA', '46', 'EL ROSEDAL', 'MEXICO', 'DISTRITO FEDERAL', 'MÉXICO', '4330', '', '', 'DNE960819MM6', 1 UNION
+SELECT 'DATACENTER DYNAMICS SPAIN SLU', 'DATACENTER DYNAMICS SPAIN SLU', 'ANTONIO RODRIGUEZ', 'DIRECTO',4,'antonio.rodriguez@datacenterdynamics.com', 'ALCALA', '4', 'CIF B85733038 DUNS 462049563', '', 'MADRID', 'ESPAÑA', '28014', '34', '911332796', 'XEXX010101000', 1 UNION
+SELECT 'DEMOLOGISTICA SA DE CV', 'DEMOLOGISTICA SA DE CV', 'JUAN JOSE LOERA', 'JOSE IVAN MARTIN',3,'', 'BOULEVARD ANTONIO MADRAZO', '1025', 'LAS TROJES', 'LEON', 'GUANAJUATO', 'MEXICO', '37227', '477', '7134422', 'DEM040901T83', 1 UNION
+SELECT 'DESARROLLO CORPORATIVO IDESA SA DE CV', 'DESARROLLO CORPORATIVO IDESA SA DE CV', 'EDGAR SANVICENTE', 'JORGE ALBERTO MARTINEZ',1,'erico@idesa.com.mx', 'BOSQUE DE RADIATAS', '34', 'BOSQUES DE LAS LOMAS', 'MEXICO', 'DISTRITO FEDERAL', 'MEXICO', '5120', '', '', 'DCI8307266G6', 1 UNION
+SELECT 'DESARROLLOS Y SOLUCIONES EN TI SA DE CV', 'DESARROLLOS Y SOLUCIONES EN TI SA DE CV', 'SEBASTIAN VELAZQUEZ', 'JOSE IVAN MARTIN',1,'', 'BLVD MARIANO ESCOBEDO', '4218', 'SAN ISIDRO', 'LEON', 'GUANAJUATO', 'MEXICO', '0', '', '', 'DST1010185B7', 1 UNION
+SELECT 'DIAZ IGA EDIFICACIONES URBANAS E INDUSTRIALES SA DE CV', 'DIAZ IGA EDIFICACIONES URBANAS E INDUSTRIALES SA DE CV', '', 'PILAR PAZ',3,'', 'CARR COATZACOALCOS-MINATITLAN KM 7.5', '', 'TIERRA NUEVA', 'COATZACOALCOS', 'VERACRUZ', 'MEXICO', '96496', '', '', 'DIE850517B64', 1 UNION
+SELECT 'DIBLO CORPORATIVO SA DE CV', 'DIBLO CORPORATIVO SA DE CV', 'MARTHA MARINA GONZALEZ PEDRAZA', 'JORGE ALBERTO MARTINEZ',1,'rserna@gmodelo.com.mx', 'JAVIER BARROS SIERRA', '555', 'ZEDEC SANTA FE', 'MEXICO DF', 'MEXICO DF', 'MEXICO', '1210', '', '', 'DCO8009185Y9', 1 UNION
+SELECT 'DISTRIBUIDORA YAKULT GUADALAJARA SA DE CV', 'DISTRIBUIDORA YAKULT GUADALAJARA SA DE CV', 'JESUS ALBERTO URIBE', 'FRANCISCO UREÑA',1,'juribe@yakult.com.mx', 'AV PERIFERICO PONIENTE', '7425', 'FRACC VALLARTA PARQUE INDUSTRIAL', 'ZAPOPAN', 'JALISCO', 'MÉXICO', '45010', '33', '31345300', 'DYG840702JI1', 1 UNION
+SELECT 'DOWELL SCHLUMBERGER DE MEXICO SA DE CV', 'DOWELL SCHLUMBERGER DE MEXICO SA DE CV', '', 'PILAR PAZ',3,'', 'AV EJERCITO NACIONAL', '425', 'GRANADA', 'MEXICO', 'DISTRITO FEDERAL', 'MEXICO', '11520', '155', '52633224', 'DSM830824Y6', 1 UNION
+SELECT 'ELTEKENERGY INTERNATIONAL DE MEXICO S DE RL DE CV', 'ELTEKENERGY INTERNATIONAL DE MEXICO S DE RL DE CV', 'ALEJANDRO ALCALA', 'DIRECTO',4,'Alejandro.alcala@eltek.com', 'CIRCUITO DE CIRCUNVALACION ORIENTE', '10', 'CIUDAD SAELITE', 'NAUCALPAN', 'ESTADO DE MÉXICO', 'MEXICO', '53100', '55', '52206455', 'EIM970416HM1', 1 UNION
+SELECT 'ENERGIA REGULADA SA DE CV', 'ENERGIA REGULADA SA DE CV', 'CARLOS BORUNDA DÍAZ', 'DIRECTO',1,'cborunda@energiaregulada.com', 'PINO', '511', 'LAS GRANJAS', 'CHIHUAHUA', 'CHIHUAHUA', 'MEXICO', '31100', '614', '4171532', 'ERE060601798', 1 UNION
+SELECT 'EPSILON & GAMMA SA DE CV', 'EPSILON & GAMMA SA DE CV', '', 'DIRECTO',4,'', 'VIDRIO', '2335', 'AMERICANA', 'ZAPOPAN', 'JALISCO', 'MEXICO', '44160', '447', '2935050', 'EAG090907CF5', 1 UNION
+SELECT 'ERIC GUZMAN NAVARRO', 'ERIC GUZMAN NAVARRO', 'ERIC GUZMAN NAVARRO', 'DIRECTO',4,'eric_guzmannavarro@yahoo.com.mx', 'ISLA CANDIA', '3046', 'JARDINES DE LA CRUZ', 'GUADALAJARA', 'JALISCO', 'MEXICO', '44950', '', '38324215', 'GUNE741024PQA', 1 UNION
+SELECT 'ESTACIONES DE SERVICIO AUTO SA DE CV', 'ESTACIONES DE SERVICIO AUTO SA DE CV', 'Javier Silva', 'PILAR PAZ',4,'', 'AV. ADOLFO RUIZ CORTINES', '1418', 'ATASTA', 'VILLAHERMOSA', 'TABASCO', 'MEXICO', '86100', '993', '310 4505', 'ESA930602UV1', 1 UNION
+SELECT 'FERROSUR SA DE CV', 'FERROSUR SA DE CV', '', 'PILAR PAZ',2,'julorovzrm@ferrrosur.com.mx', 'MONTESINOS # 1 ESQ MARINA MERCANTE', '', 'CENTRO', 'VERACRUZ', 'VERACRUZ', 'MEXICO', '91700', '229', '9895964', 'FER980731NW5', 1 UNION
+SELECT 'FEZACON INGENIERIA Y CONSULTORIA EMPRESARIAL SA DE CV', 'FEZACON INGENIERIA Y CONSULTORIA EMPRESARIAL SA DE CV', 'OMAR BARRERA', 'IVAN RAMIREZ',1,'ingarqbaro@gmail.com', 'AV MIGUEL ALEMAN', '1304', 'ALVARO OBREGON', 'MEXICO', 'ESTADO DE MÉXICO', 'MEXICO', '52105', '55', '52641269', 'FIC1112016Q9', 1 UNION
+SELECT 'FLEZA, S.A. DE C.V.', 'FLEZA, S.A. DE C.V.', '', 'DIRECTO',1,'', 'BOULEVARD ANTONINO FERNANDEZ RODRIGUEZ', '115', 'CALERA DE VICTOR ROSALES', 'ZACATECAS', 'ZACATECAS', 'MEXICO', '98500', '', '', 'FLE951229IN2', 1 UNION
+SELECT 'FLOR DE KARINA RANGEL ROSAS', 'FLOR DE KARINA RANGEL ROSAS', '', 'DIRECTO',4,'', 'TORRES QUINTERO', '636', 'ALCALDE BARRANQUITAS', 'GUADALAJARA', 'JALISCO', 'MEXICO', '44270', '', '', 'RARF8112072W3', 1 UNION
+SELECT 'FONDO JALISCO DE FOMENTO EMPRESARIAL', 'FONDO JALISCO DE FOMENTO EMPRESARIAL', 'CECILIA DIAZ', 'JUAN JOSE ESPINOZA BRAVO',4,'cecilia.diaz@jalisco.gob.mx', 'ADOLFO LOPEZ MATEOS NORTE', '1135', 'ITALIA PROVIDENCIA', 'GUADALAJARA', 'GUADALAJARA', 'JALISCO', '44648', '33', '3652574', 'FJF850618K35', 1 UNION
+SELECT 'GOBIERNO DEL ESTADO DE GUANAJUATO', 'GOBIERNO DEL ESTADO DE GUANAJUATO', 'DAVID HUERTA', 'JOSE IVAN MARTIN',2,'david.huerta@guanajuato.gob.mx', 'PASEO DE LA PRESA', '103', 'ZONA CENTRO', 'GUANAJUATO', 'GUANAJUATO', 'MEXICO', '36000', '147', '37351500', 'GEG850101FQ2', 1 UNION
+SELECT 'GRACIELA ANDRADE CARRILLO', 'GRACIELA ANDRADE CARRILLO', '', 'DIRECTO',4,'', 'AV. MEXICO JAPON', '206', 'CD INDUSTRIAL', 'CELAYA', 'GUANAJUATO', 'MEXICO', '38010', '', '', 'AACG610502QN1', 1 UNION
+SELECT 'GRANITE CHIEF SA DE CV', 'GRANITE CHIEF SA DE CV', '', 'JUAN RAMOS',1,'', 'PASEO DE LA REFORMA', '389', 'CUAHUTEMOC', 'MEXICO', 'DISTRITO FEDERAL', 'MEXICO', '6500', '', '', 'GCI0707058Q7', 1 UNION
+SELECT 'GREEN CONTINUITY DATA CENTERS SA DE CV', 'GREEN CONTINUITY DATA CENTERS SA DE CV', 'MIGUEL ESCOBEDO', 'DIRECTO',1,'mescobedo@greencontinuity.com', 'FRANCISCO NEGRETE', 'B 1', 'AURIS', 'LERMA', 'MEXICO', 'MEXICO', '52004', '55', '12091791', 'GCD120706B91', 1 UNION
+SELECT 'GRUPO VKW INGENERIA SA DE CV', 'GRUPO VKW INGENERIA SA DE CV', 'Ing. Emma A Puebla Cruz', 'DIRECTO',1,'epuebla@vkw-ingenieria.com, compras@vkw-ingenieria', 'AMERICA', '81', 'PARQUE SAN ANDRES', 'MEXICO DF', 'DISTRITO FEDERAL', 'MEXICO', '4040', '55', '5336-4943', 'GVI021218RG4', 1 UNION
+SELECT 'GRUPO ANTOLIN-SILAO SA DE CV', 'GRUPO ANTOLIN-SILAO SA DE CV', '', 'JOSE IVAN MARTIN',1,'', 'AV INGENIEROS', '51', 'PARQUE INDUSTRIAL SILAO APDO 238', 'SILAO', 'GUANAJUATO', 'MEXICO', '36101', '472', '7227400', 'GAS9403186J1', 1 UNION
+SELECT 'GRUPO ASOCIADO DEL SURESTE INGENIERÍA Y SERVICIOS SA DE CV', 'GRUPO ASOCIADO DEL SURESTE INGENIERÍA Y SERVICIOS SA DE CV', 'Marcos Jimenez', 'DIRECTO',1,'fernando-1707@hotmail.com', 'CARRETERA ESTATAL ANACLETO CANABAL PRIMERA A ANACLETO CANABAL SEGUNDA KM 3.55', 'S/N', 'ANACLETO CANABAL 1ERA SECCIÓN CENTRO', 'VILLAHERMOSA', 'TABASCO', 'MÉXICO', '86280', '938', '153 1521', 'GAS050114BF7', 1 UNION
+SELECT 'GRUPO LAMESA SA DE CV', 'GRUPO LAMESA SA DE CV', 'MARTHA ANDRADE', 'JOSE IVAN MARTIN',1,'martha.andrade@grupolamesa.com', 'AV MEXICO JAPON', '206', 'CIUDAD INDUSTRIAL', 'CELAYA', 'GUANAJUATO', 'MEXICO', '38010', '461', '6118717', 'GLA011113LX4', 1 UNION
+SELECT 'GUSTAVO ROSAS CASTILLO', 'GUSTAVO ROSAS CASTILLO', 'GUSTAVO ROSAS', 'JUAN JOSE ESPINOZA BRAVO',3,'gustavo.rosas@arnet.com.mx', 'AV ALCALDE', '2344', 'SANTA MONICA', 'GUADALAJARA', 'JALISCO', 'MEXICO', '44220', '133', '35850120', 'ROCG620507FW4', 1 UNION
+SELECT 'HALLIBURTON DE MEXICO S DE RL DE CV', 'HALLIBURTON DE MEXICO S DE RL DE CV', '', 'JUAN RAMOS',3,'samantha.fuentes@halliburton.com', 'AV PASEO LA CHOCA', '5', 'FRACCIONAMIENTO LA CHOCA', 'VILLAHERMOSA', 'TABASCO', 'MEXICO', '86037', '993', '3151387', 'HME560113VAA', 1 UNION
+SELECT 'HDI SEGUROS SA DE CV', 'HDI SEGUROS SA DE CV', 'MARCELO RAMIREZ', 'JOSE IVAN MARTIN',1,'marcelo.ramirez@hdi.com.mx', 'AV PASEO DE LOS INSURGENTES', '1701', 'GRANADA INFONAVIT GUANAJUATO', 'LEON', 'GUANAJUATO', 'MEXICO', '0', '', '', 'HSE701218532', 1 UNION
+SELECT 'HECTOR ALEJANDRO DELGADO BARRERA', 'HECTOR ALEJANDRO DELGADO BARRERA', 'ALEJANDRO DELGADO', 'DIRECTO',3,'alexdelgado22@hotmail.com', 'AV. DE LA CULTURA', '81', 'FRACC. CIUDAD DEL VALLE', 'TEPIC', 'NAYARIT', 'MEXICO', '63157', '311', '1608182', 'DEBH770411PHA', 1 UNION
+SELECT 'HECTOR EFRAIN GONZALEZ ALVAREZ', 'HECTOR EFRAIN GONZALEZ ALVAREZ', '', 'DIRECTO',3,'', 'PRIVADA DE CORREGIDORA', '228', 'FRACCIONAMIENTO MORELOS', 'AGUASCALIENTES', 'AGUASCALIENTES', 'MEXICO', '20298', '', '', 'GOAH590330P66', 1 UNION
+SELECT 'HEWLETT-PACKARD MEXICO S DE RL DE CV', 'HEWLETT-PACKARD MEXICO S DE RL DE CV', '', 'DIRECTO',3,'', 'PROLONGACION REFORMA', '700', 'LOMAS DE SANTA FE', 'MEXICO', 'DISTRITO FEDERAL', 'MEXICO', '1210', '', '', 'HME871101RG3', 1 UNION
+SELECT 'IC VICTOR MANUEL POZO VAZQUEZ', 'IC VICTOR MANUEL POZO VAZQUEZ', 'VICTOR MANUEL POZO VAZQUEZ', 'DIRECTO',3,'icvictorpozo@gmail.com', 'PEDRO PARGA', '401', 'ZONA CENTRO', 'AGUASCALIENTES', 'AGUASCALIENTES', 'MEXICO', '20000', '449', '9185795', 'POVV570101K71', 1 UNION
+SELECT 'INDUSTRIAS DERIVADAS DEL ETILENO SA DE CV', 'INDUSTRIAS DERIVADAS DEL ETILENO SA DE CV', '', 'JORGE ALBERTO MARTINEZ',1,'', 'BOSQUE DE RADIATAS', '34', 'BOSQUES DE LAS LOMAS', 'MEXICO', 'DISTRITO FEDEERAL', 'MEXICO', '5120', '', '', 'IDE811214RH3', 1 UNION
+SELECT 'INDUSTRIAS TRICON DE MEXICO SA DE CV', 'INDUSTRIAS TRICON DE MEXICO SA DE CV', '', 'DIRECTO',1,'', 'AV ANZURES', '930', 'LOS FRESNOS', 'NUEVO LAREDO', 'TAMAULIPAS', 'MEXICO', '88290', '1867', '7111420', 'ITM8604119K7', 1 UNION
+SELECT 'INFRA SA DE CV', 'INFRA SA DE CV', 'ULISES TENORIO', 'JORGE ALBERTO MARTINEZ',1,'', 'FELIX GUZMAN', '16', 'EL PARQUE', 'NAUCALPAN DE JUAREZ', 'ESTADO DE MÉXICO', 'MEXICO', '53398', '01 55', '5484-4400', 'SER031016TF9', 1 UNION
+SELECT 'INGENIERIA ELECTRICA Y CONTROL INSTRUMENTAL S.A. DE C.V.', 'INGENIERIA ELECTRICA Y CONTROL INSTRUMENTAL S.A. DE C.V.', 'EDUARDO ZAPATA', 'JOSE IVAN MARTIN',3,'iecinstr@prodigy.net.mx / eduardo.zapata@iec-ptd.com', 'CONDESA', '325', 'REAL PROVIDENCIA II', 'LEON', 'GUANAJUATO', 'MEXICO', '37231', '1447', '7724600', 'IEC941110IT5', 1 UNION
+SELECT 'INGENIERIA Y DESARROLLO ELECTRONICO APLICADA AL LABORATORIO SA DE CV', 'INGENIERIA Y DESARROLLO ELECTRONICO APLICADA AL LABORATORIO SA DE CV', 'ALINE R', 'JORGE ALBERTO MARTINEZ',1,'coordinacion@idealsadecv.com', 'CALLE VERACRUZ', '3', 'COL BENITO JUAREZ', 'MINATITLAN', 'VERACRUZ', 'MEXICO', '96720', '', '', 'IDE100226QX4', 1 UNION
+SELECT 'INGENIERIA Y SERVICIOS ELECTRICOS ZAPATA SA DE CV', 'INGENIERIA Y SERVICIOS ELECTRICOS ZAPATA SA DE CV', '', 'DIRECTO',1,'', 'BLVD. EMILIANO ZAPATA PONIENTE', '1320', 'LOS PINOS', 'CULIACAN', 'SINALOA', 'MÉXICO', '80128', '', '', 'ISE070220BM9', 1 UNION
+SELECT 'INSTITUTO DE INVESTIGACIONES ELECTRICAS SA DE CV', 'INSTITUTO DE INVESTIGACIONES ELECTRICAS SA DE CV', 'GERARDO RUIZ', 'IVAN RAMIREZ',2,'', 'REFORMA', '13', 'PALMIRA', 'CUERNAVACA', 'MORELOS', 'MEXICO', '62490', '1777', '3623811', 'IIE751125JEA', 1 UNION
+SELECT 'INSTITUTO NACIONAL DE ESTADISTICA Y GEOGRAFIA', 'INSTITUTO NACIONAL DE ESTADISTICA Y GEOGRAFIA', '', 'JUAN JOSE ESPINOZA BRAVO',2,'', 'AV HEROE DE NACOZARI SUR', '2301', 'FRACCIONAMIENTO JARDINES DEL PARQUE', 'AGUASCALIENTES', 'AGUASCALIENTES', 'MEXICO', '20276', '449', '9105300', 'INE0804164Z7', 1 UNION
+SELECT 'INSTITUTO NACIONAL DE INVESTIGACIONES NUCLERAES', 'INSTITUTO NACIONAL DE INVESTIGACIONES NUCLERAES', 'JUAN MANUEL PEREZ', 'JORGE ALBERTO MARTINEZ',2,'juanmanuel.perez@inin.gob.mx', 'CARRETERA MÉXICO TOLUCA', 'S/N', 'LA MARQUESA', '', 'MEXICO', 'MEXICO', '52750', '', '', 'INI7901272S2', 1 UNION
+SELECT 'INTERCABLE SA DE CV', 'INTERCABLE SA DE CV', 'ING. VICTOR BELTRAN', 'JORGE ALBERTO MARTINEZ',1,'vbeltran@interkable.com', 'PRESA TEPUXTEPEC', '40', 'LOMAS HERMOSA', 'MIGUEL HIDALGO', 'DISTRITO FEDERAL', 'MEXICO', '11200', '155', '53501711', 'INT9703267Q4', 1 UNION
+SELECT 'JAVIER GARCIA CHAVEZ', 'JAVIER GARCIA CHAVEZ', '', 'SIN DEFINIR',4,'', 'C. ECONOMOS', '5675', 'ARCOS DE GUADALUPE', 'ZAPOPAN', 'JALISCO', 'MEXICO', '45030', '', '', 'CAGJ6508243Q7', 1 UNION
+SELECT 'JESUS MONTALVO RAMOS', 'JESUS MONTALVO RAMOS', '', 'DIRECTO',4,'', 'PRIV INDEPENDENCIA', '2323', 'MODERNA', 'MONTERREY', 'NUEVO LEÓN', 'MEXICO', '64530', '', '', 'MORJ720919MI1', 1 UNION
+SELECT 'JOHNSON CONTROLS AUTOMOTRIZ MEXICO S DE RL DE CV', 'JOHNSON CONTROLS AUTOMOTRIZ MEXICO S DE RL DE CV', 'JORGE LUIS TORT', 'MICHELLE GALICIA',1,'', 'DAVID ALFARO SIQUEIROS', '104', 'VALLE ORIENTE', 'SAN PEDRO GARZA', 'NUEVO LEON', 'MEXICO', '66269', '181', '81006199', 'JCA9402097Y6', 1 UNION
+SELECT 'JORGE LUIS RIOS', 'JORGE LUIS RIOS', '', 'DIRECTO',3,'', 'BLVD MARIANO ESCOBEDO', '4218', 'SAN ISIDRO II', 'LEON', 'GUANAJUATO', 'MEXICO', '37530', '', '', 'RIJO690508TC1', 1 UNION
+SELECT 'JOSE HECTOR LOERA QUEZADA', 'JOSE HECTOR LOERA QUEZADA', 'HECTOR LOERA', 'DIRECTO',3,'jhloera@prodigy.net.mx', 'FEDERICO CHOPIN', '5644', 'LA ESTANCIA', 'ZAPOPAN', 'JALISCO', 'MEXICO', '45030', '', '', 'LOQH520808430', 1 UNION
+SELECT 'JOSE LUIS BRAVO QUIROZ', 'JOSE LUIS BRAVO QUIROZ', '', 'DIRECTO',3,'', 'CIRCUITO DEL OBRADOR', '228', 'FCC VILLA DE NTRA SRA DE LA ASUNC', 'AGUASCALIENTES', 'AGUASCALIENTES', 'MEXICO', '20126', '', '', 'BAQL470324LD6', 1 UNION
+SELECT 'JOSE LUIS LEYVA ESPINOSA', 'JOSE LUIS LEYVA ESPINOSA', 'KARINA LIZBETH E', 'IVAN RAMIREZ',1,'karina.lizbeth@maintekch.com', 'AVENIDA PLAZAS DE ARAGON MANZZNA 5 LOTE 4', '19C 1', 'PLAZAS DE ARAGON MEXICO', 'NAUCALPAN', 'MEXICO', 'MEXICO', '57139', '55', '59483245', 'LEEL860706646', 1 UNION
+SELECT 'LAMPARAS GENERAL ELECTRIC S DE RL DE CV', 'LAMPARAS GENERAL ELECTRIC S DE RL DE CV', 'LIC.CINTHYA PINEDA GLZ', 'FRANCISCO UREÑA',3,'cinthya.gonzalez1@ge.com', 'AVENIDA VEINTE DE NOVIEMBRE', '1200', 'TLAXCALA', 'SAN LUIS POTOSI', 'SAN LUIS POTOSÍ', 'MEXICO', '78038', '33', '5000 7249', 'LGE8610247A0', 1 UNION
+SELECT 'LAS CERVEZAS MODELO EN MICHOACAN S.A. DE C.V.', 'LAS CERVEZAS MODELO EN MICHOACAN S.A. DE C.V.', '', 'DIRECTO',1,'', 'AV. MADERO PONIENTE', '3283', 'GUADALUPE MORELIA DECIMA Y DOCEAVA', 'MORELIA', 'MICHOACÁN', 'MEXICO', '58140', '', '', 'CMM850709522', 1 UNION
+SELECT 'LAURA ARVIZU ESTRADA', 'LAURA ARVIZU ESTRADA', '', 'DIRECTO',1,'', 'JOSE MARIA CANAL', '5144', 'LOMAS DEL PARAISO', 'GUADALAJARA', 'JALISCO', 'MEXICO', '44250', '', '', 'AIEL721205NL7', 1 UNION
+SELECT 'MABE SA DE CV', 'MABE SA DE CV', 'ALBINO GARCIA', 'JOSE IVAN MARTIN',1,'albino.garcia@mabe.com.mx', 'ACCESO B', '406', 'PARQUE INDUSTRIAL JURICA', 'PARQUE INDUSTRIAL JURICA', 'QUERETARO', 'MEXICO', '76100', '442', '2114800', 'MAB911203RR7', 1 UNION
+SELECT 'MANUFACTURA AVANZADA DE COLIMA SA DE CV', 'MANUFACTURA AVANZADA DE COLIMA SA DE CV', 'RODRIGO GARCIA', 'FRANCISCO UREÑA',1,'rodrigo.garcia@mx.yazaki.com', 'AVENIDA DE LA INDUSTRIA', '4250', 'PARQUE INDUSTRIAL', 'CD JUAREZ', 'CHIHUAHUA', 'MEXICO', '32630', '312', '3163007', 'MAC840626KA3', 1 UNION
+SELECT 'MAPFRE TEPEYAC SA DE CV', 'MAPFRE TEPEYAC SA DE CV', 'ROSALBA ALVAREZ ALVAREZ', 'DIRECTO',4,'roalvare@mapfre.com.mx', 'BLVD MANOCENTRO', '5', 'CENTRO URBANO INTERLOMAS', 'HUIXQUILUCAN', 'ESTADO DE MEXICO', 'MEXICO', '52760', '33', '36691948', 'MTE440316E54', 1 UNION
+SELECT 'MARIA DE LOS REMEDIOS RUBIO CAPETILLO', 'MARIA DE LOS REMEDIOS RUBIO CAPETILLO', '', 'DIRECTO',4,'', 'CALLE REAL', '11', 'SAN ANTONIO DE LA PUNTA', 'QUERETARO', 'QUERÉTARO', 'MEXICO', '76135', '', '', 'RUCR730714UC4', 1 UNION
+SELECT 'MEGACOMPUTER DE MEXICO SA DE CV', 'MEGACOMPUTER DE MEXICO SA DE CV', 'IRVING AGUIRRE', 'JUAN JOSE ESPINOZA BRAVO',3,'irving.systems@hotmail.com', 'AV. AVILA CAMACHO', '2382', 'JARDINES DEL COUNTRY', 'GUADALAJARA', 'JALISCO', 'MEXICO', '44210', '', '', 'MME041220957', 1 UNION
+SELECT 'MERIAL DE MEXICO SA DE CV', 'MERIAL DE MEXICO SA DE CV', 'HUGO DIAZ', 'JUAN RAMOS',1,'', 'AV. DE LAS FUENTES', '66', 'PARQUE INDUSTRIAL FINSA', 'EL MARQUEZ', 'QUERÉTARO', 'MEXICO', '76240', '442', '', 'MME9707311V5', 1 UNION
+SELECT 'MIDORI VALERIA AGUIRRE VILLA', 'MIDORI VALERIA AGUIRRE VILLA', 'IRVING AGUIRRE VILLA', 'JUAN JOSE ESPINOZA BRAVO',3,'irving.systems@hotmail.com', 'SAN NICOLAS DE BARI', '614', 'RESIDENCIAL SANTA MARGARITA', 'ZAPOPAN', 'JALISCO', 'MEXICO', '45130', '33', '31654509', 'AUVM8901224I7', 1 UNION
+SELECT 'MIGUEL GARDUÑO CORREA', 'MIGUEL GARDUÑO CORREA', 'MIGUEL GARDUÑO', 'DIRECTO',1,'manuel@brujulaestrategia.com', '20 DE NOVIEMBRE', '256', 'COL CENTRO', 'MORELIA', 'MICHOACÁN', 'MEXICO', '58000', '', '', 'GACM810129M61', 1 UNION
+SELECT 'MINERA FRESNILLO SA DE CV', 'MINERA FRESNILLO SA DE CV', 'HECTOR PEREZ', 'JUAN JOSE ESPINOZA BRAVO',1,'hector_perez@fresnilloplc.com', 'AV HIDALGO', '451', 'CENTRO', 'FRESNILLO', 'ZACATECAS', 'MEXICO', '99000', '1493', '9839000', 'MFR971117KU1', 1 UNION
+SELECT 'MOTOROLA SOLUTIONS DE MEXICO SA', 'MOTOROLA SOLUTIONS DE MEXICO SA', 'OLIVIA DELGADO', 'IVAN RAMIREZ',3,'Olivia.delgado@motorolasolutions.com', 'BOSQUE DE ALISOS', '125', 'BOSQUES DE LAS LOMAS', 'MEXICO', 'DISTRITO FEDERAL', 'MEXICO', '5120', '155', '55741359', 'MME781231A76', 1 UNION
+SELECT 'MUNICIPIO DE QUERETARO', 'MUNICIPIO DE QUERETARO', '', 'JOSE IVAN MARTIN',2,'', 'BLVD BERNARDO QUINTANA', '10000', 'FRACCIONAMIENTO CENTRO SUR', 'QUERETARO', 'QUERETARO', 'MEXICO', '76090', '.', '.', 'MQU220926DZA', 1 UNION
+SELECT 'MXES S DE RL DE CV', 'MXES S DE RL DE CV', '', 'DIRECTO',1,'', 'LAZARO CARDENAS', '3430', 'JARDINES DE SAN IGNACIO', 'ZAPOPAN', 'JALISCO', 'MEXICO', '45040', '33', '36474517', 'MXE010921473', 1 UNION
+SELECT 'NAVTEQ SOLUTIONS S DE RL DE CV', 'NAVTEQ SOLUTIONS S DE RL DE CV', 'NAYELI CAMPOS', 'JOSE IVAN MARTIN',1,'nayeli.campos@navteq.com', 'BOULEVARD MANUEL AVILA CAMACHO', '76', 'LOMAS DE CHAPULTEPEC', 'MEXICO', 'DISTRITO FEDERAL', 'MEXICO', '11000', '477', '7198703', 'NSO0511229KA', 1 UNION
+SELECT 'NESTLE SERVICIOS CORPORATIVOS SA DE CV', 'NESTLE SERVICIOS CORPORATIVOS SA DE CV', '', 'DIRECTO',1,'', 'AV EJERCITO NACIONAL', '453', 'GRANADA', 'MEXICO', 'DISTRITO FEDERAL', 'MEXICO', '11520', '155', '52625000', 'NSC040922598', 1 UNION
+SELECT 'NEW SYSTEMS DISEÑO Y CONSTRUCCION S.A. DE C.V.', 'NEW SYSTEMS DISEÑO Y CONSTRUCCION S.A. DE C.V.', 'GUSTAVO GARCIA', 'JORGE ALBERTO MARTINEZ',1,'compras@sicisa.net', 'GRAL.FRANCISCO MURGUIA', '120', 'SAN JUAN TLIHUACA', 'MEXICO', 'DISTRITO FEDERAL', 'MEXICO', '2400', '55', '5393 6592', 'NSD110106214', 1 UNION
+SELECT 'NIPOJAL SA DE CV', 'NIPOJAL SA DE CV', '', 'DIRECTO',1,'', 'CIRCUNVALACION AGUSTIN YAÑEZ', '2494', 'ARCOS SUR', 'GUADALAJARA', 'JALISCO', 'MEXICO', '44100', '', '', 'NIP890206RS3', 1 UNION
+SELECT 'NORGREN MANUFACTURING DE MEXICO SA DE CV', 'NORGREN MANUFACTURING DE MEXICO SA DE CV', 'OSCAR SANCHEZ', 'JUAN RAMOS',1,'osanchez@norgren-mexico.com', 'AVENIDA DE LA MONTAÑA', '120', 'PARQUE INDUSTRIAL QUERETARO SANTA ROSA DE JAUREGUI', 'SANTIAGO DE QUERETARO', 'QUERETARO', 'MEXICO', '76220', '442', '2295000', 'NMM0308145E9', 1 UNION
+SELECT 'OTTOMOTORES COMERCIALIZADORA SA DE CV', 'OTTOMOTORES COMERCIALIZADORA SA DE CV', 'Nayelli Zamora', 'DIRECTO',3,'', 'CALZADA SAN LORENZO', '1150', 'CERRO DE LA ESTRELLA', 'MEXICO', 'DISTRITO FEDERAL', 'MEXICO', '9860', '155', '56245676', 'OCO110315Q99', 1 UNION
+SELECT 'PEMEX EXPLORACION Y PRODUCCION', 'PEMEX EXPLORACION Y PRODUCCION', '', 'DIRECTO',2,'', 'AV MARINA NACIONAL', '324', 'HUASTECA', 'MEXICO', 'DISTRITO FEDERAL', 'MEXICO', '11311', '', '', 'PEP920716XPA', 1 UNION
+SELECT 'PEMEX GAS Y PETROQUIMICA BASICA', 'PEMEX GAS Y PETROQUIMICA BASICA', '', 'DIRECTO',2,'', 'AV MARINA NACIONAL', '329', 'PETROLEOS MEXICANOS', 'MEXICO', 'DISTRITO FEDERAL', 'MEXICO', '11311', '', '', 'PGP920716MT6', 1 UNION
+SELECT 'PEMEX REFINACION', 'PEMEX REFINACION', '', 'DIRECTO',2,'', 'AVENIDA MARINA NACIONAL', '329', 'PETROLEOS MEXICANOS', 'DISTRITO FEDERAL', 'DISTRITO FEDERAL', 'MEXICO', '11311', '', '', 'PRE9207163T7', 1 UNION
+SELECT 'PETROLEOS MEXICANOS', 'PETROLEOS MEXICANOS', '', 'DIRECTO',2,'', 'AV MARINA NACIONAL', '329', 'PETROLEOS MEXICANOS', 'MEXICO', 'DISTRITO FEDERAL', 'MEXICO', '11311', '', '', 'PME380607P35', 1 UNION
+SELECT 'PREMIER FRUTOS DE CALIDAD SA DE CV', 'PREMIER FRUTOS DE CALIDAD SA DE CV', 'EMANUEL UZUETA SALCEDO', 'JUAN JOSE ESPINOZA BRAVO',1,'euzueta@grupopremier.com.mx', 'PRIVADA DE CHICALOTE', '2625', 'MERCADO DE ABASTOS', 'GUADALAJARA', 'JALISCO', 'MEXICO', '44530', '667', '718-2333', 'PFC1101194K5', 1 UNION
+SELECT 'PROCESA ALIMENTOS SA DE CV', 'PROCESA ALIMENTOS SA DE CV', 'JESUS PORTOS', 'RUFINO MOCTEZUMA',1,'jportos@dgari.com.mx', 'AV LAS MISIONES', '7', 'PARQUE IND B QUINTANA', 'EL MARQUES', 'QUERETARO', 'MEXICO', '76246', '442', '1924300', 'PAL030325K92', 1 UNION
+SELECT 'Promocion de la Cultura y la Educacion Superior del Bajio A.C.', 'Promocion de la Cultura y la Educacion Superior del Bajio A.C.', 'JUAN PABLO AREAS', 'JOSE IVAN MARTIN',4,'', 'Blvd. Jorge Vertiz Campero', '1640', 'Cañada de Alfaro', 'Leon', 'GUANAJUATO', 'MEXICO', '37238', '', '', 'PCE-820712-PP4', 1 UNION
+SELECT 'PROSER EMPRESARIAL SA DE CV', 'PROSER EMPRESARIAL SA DE CV', 'MIGUEL GARCIA', 'DIRECTO',1,'frangelproser@gmail.com', 'SIERRA NEVADA', '308', 'LAS ARBOLEDAS 1A SECCION', 'CELAYA', 'GUANAJUATO', 'MEXICO', '38060', '133', '3330038069', 'PEM100910NM5', 1 UNION
+SELECT 'RA INGENIERIA Y SERVICIOS INTEGRALES SA DE CV', 'RA INGENIERIA Y SERVICIOS INTEGRALES SA DE CV', 'RUBEN RAMIREZ', 'JORGE ALBERTO MARTINEZ',3,'raingenieria@live.com.mx', 'SUR 67A', '3117', 'VIADUCTO PIEDAD', 'MEXICO', 'DISTRITO FEDERAL', 'MEXICO', '8200', '55', '1735 3189', 'RIS100610SJ5', 1 UNION
+SELECT 'RADIO RED FM, S.A. DE C.V.', 'RADIO RED FM, S.A. DE C.V.', 'HECTOR MARTINEZ', 'JORGE ALBERTO MARTINEZ',1,'hmartinz@grc.com.mx', 'AV. CONSTITUYENTES', '1154', 'LOMAS ALTAS C.', 'MEXICO', 'DISTRITO FEDERAL', 'MEXICO', '11950', '01 55', '5728-4827', 'RRF940627DR5', 1 UNION
+SELECT 'REINMEX SA DE CV', 'REINMEX SA DE CV', 'EDMUNDO HERNANDEZ', 'FRANCISCO UREÑA',3,'EHERNANDEZ@REINMEX.NET', 'INDUSTRIA GALLETERA', '129', 'INDUSTRIAL', 'ZAPOPAN NORTE', 'JALISCO', 'MEXICO', '45130', '33', '36991410', 'REI0311149H6', 1 UNION
+SELECT 'RESORT CONDOMINIUMS INTERNATIONAL DE MEXICO S DE RL DE CV', 'RESORT CONDOMINIUMS INTERNATIONAL DE MEXICO S DE RL DE CV', 'SALVADOR RODRIGUEZ', 'MICHELLE GALICIA',1,'salvador.rodriguez@latam.rci.com', 'HORACIO', '1855', 'MORALES POLANCO', 'MEXICO', 'DISTRITO FEDERAL', 'MEXICO', '11510', '155', '52831015', 'RCI930401GV1', 1 UNION
+SELECT 'SAC ENERGIA SA DE CV', 'SAC ENERGIA SA DE CV', '', 'DIRECTO',3,'', 'CIRCUITO EDUCADORES', '40', 'CIUDAD SATELITE', 'MEXICO', 'DISTRITO FEDERAL', 'MEXICO', '53100', '55', '53654821', 'SEN0012153V1', 1 UNION
+SELECT 'SANMINA-SCI SYSTEMS DE MEXICO SA DE CV', 'SANMINA-SCI SYSTEMS DE MEXICO SA DE CV', 'NESTOR LOMELI', 'JUAN JOSE ESPINOZA BRAVO',1,'nestor.lomeli@sanmina-sci.com', 'AV SOLIDARIDAD IBEROAMERICANA', '7020', 'CLUB DE GOLF ATLAS', 'GUADALAJARA', 'JALISCO', 'MEXICO', '45680', '', '', 'SSM950412Q42', 1 UNION
+SELECT 'SAUL CARMONA SANCHEZ', 'SAUL CARMONA SANCHEZ', 'SAUL CARMONA SANCHEZ', 'IVAN RAMIREZ',3,'saul.carmonasanchez@yahoo.com.mx', 'AV TAMAULIPAS', '53', 'SANTA LUCIA', 'MEXICO', 'DISTRITO FEDERAL', 'MEXICO', '1500', '55', '56378192', 'CASS730305Q17', 1 UNION
+SELECT 'SCHNEIDER ELECTRIC IT MEXICO SA DE CV', 'SCHNEIDER ELECTRIC IT MEXICO SA DE CV', '', 'DIRECTO',3,'', 'BLVD MANUEL AVILA CAMACHO', '40', 'LOMAS DE CHAPULTEPEC', 'MEXICO', 'DISTRITO FEDERAL', 'MEXICO', '11000', '155', '91380200', 'SEI980917M87', 1 UNION
+SELECT 'SECRETARIA DE COMUNICACIONES Y TRANSPORTES', 'SECRETARIA DE COMUNICACIONES Y TRANSPORTES', '', 'RUFINO MOCTEZUMA',1,'', 'KM 12 CARRETERA QUERETARO GALINDO', 'S/N', 'SANFANDILA', '', 'QUERÉTARO', 'MEXICO', '76703', '', '', 'SCT060601G50', 1 UNION
+SELECT 'SECRETARIADO EJECUTIVO DEL SISTEMA ESTATAL DE SEGURIDAD PUBLICA', 'SECRETARIADO EJECUTIVO DEL SISTEMA ESTATAL DE SEGURIDAD PUBLICA', '', 'JOSE IVAN MARTIN',2,'', 'SAN MATIAS', '18', 'SAN JAVIER', 'GUANAJUATO', 'GUANAJUATO', 'MEXICO', '36020', '', '', 'SES100713RF8', 1 UNION
+SELECT 'SEGUROS EL POTOSI SA', 'SEGUROS EL POTOSI SA', 'PEDRO LUIS TELLO GONZALEZ', 'JUAN RAMOS',1,'pltello@elpotosi.com.mx', 'AV V CARRANZA', '426', 'CENTRO', 'SAN LUIS POTOSI', 'SAN LUIS POTOSI', 'MEXICO', '78000', '444', '834 90 00', 'SPO830427DQ1', 1 UNION
+SELECT 'SERVICIO ARROS S.A. DE C.V.', 'SERVICIO ARROS S.A. DE C.V.', '', 'JUAN RAMOS',4,'', 'PASEO DE LA REFORMA', '389', 'CUAUHTEMOC', 'MEXICO D.F.', 'DISTRITO FEDERAL', 'MEXICO', '6500', '55', '5980 2933', 'SAR8407032U7', 1 UNION
+SELECT 'SERVICIO GEOLOGICO MEXICANO', 'SERVICIO GEOLOGICO MEXICANO', '', 'JUAN RAMOS',1,'emarquez@sgm.gob.mx', 'BLVD. FELIPE ANGELES', 'KM 93.50-4', 'VENTA PRIETA', 'PACHUCA', 'HIDALGO', 'MEXICO', '42080', '771', '7114266', 'SGM7602222H2', 1 UNION
+SELECT 'SERVICIOS VISTAMEX SA DE CV', 'SERVICIOS VISTAMEX SA DE CV', 'ADRIANA ORTEGA', 'JUAN RAMOS',1,'aortega@serviciosvistamex.com', 'AUTOPISTA QUERETARO IRAPUATO KM 36', 'S/N', 'ZONA INDUSTRIAL', 'APASEO EL GRANDE', 'GUANAJUATO', 'MEXICO', '38160', '461', '618 6193', 'SVI071129N14', 1 UNION
+SELECT 'SERVICIOS Y PROVEDURIA INDUSTRIAL SA DE CV', 'SERVICIOS Y PROVEDURIA INDUSTRIAL SA DE CV', 'ING. JAVIER PEREZ ESCOBAR', 'DIRECTO',3,'ventas@sepinsa.com.mx', 'CALLE 53 ENTRE 38-A Y 38-B', '414', 'CALETA', 'CD. DEL CARMEN', 'CAMPECHE', 'MEXICO', '24110', '938', '153 1082', 'SPI0905093C8', 1 UNION
+SELECT 'SIEMENS SERVICIOS SA DE CV', 'SIEMENS SERVICIOS SA DE CV', 'ANTONIO NUÑEZ', 'JOSE IVAN MARTIN',1,'inv.central.mx@siemens.com', 'EJERCITO NACIONAL', '350', 'POLANCO V SECCION', 'MIGUEL HIDALGO', 'DISTRITO FEDERAL', 'MEXICO', '11560', '', '', 'SIE931112PA1', 1 UNION
+SELECT 'SINERPOL ENERGIA S.A. de C.V.', 'SINERPOL ENERGIA S.A. de C.V.', '', 'DIRECTO',1,'sinerpol@gmail.com', 'PIRENEOS', '500', 'ZONA INDUSTRIAL BENITO JUAREZ', 'QUERETARO', 'QUERÉTARO', 'MEXICO', '76120', '442', '148-07-83', 'SIN060717GE7', 1 UNION
+SELECT 'SISTEMAS ELECTRONICOS Y DE RADIOCOMUNICACION SA DE CV', 'SISTEMAS ELECTRONICOS Y DE RADIOCOMUNICACION SA DE CV', 'OLGA CORTINA', 'JORGE ALBERTO MARTINEZ',3,'sersa1603@prodigy.net.mx', 'ARAGON', '87 PISO 1', 'ALAMOS', 'MEXICO', 'DISTRITO FEDERAL', 'MEXICO', '3400', '01 55', '55380565', 'SER031016TF9', 1 UNION
+SELECT 'SISTEMAS Y COMPUTADORES DEL SURESTE, S.A. DE C.V.', 'SISTEMAS Y COMPUTADORES DEL SURESTE, S.A. DE C.V.', '', 'DIRECTO',4,'', 'ALMENDROS', '320', 'FRACC. LAGO ILUSIONES', 'VILLAHERMOSA CENTRO', 'TABASCO', 'MEXICO', '86040', '', '', 'SCS9807287V8', 1 UNION
+SELECT 'SISTEMUNDO NEOTECNOLOGICO S.A. DE C.V.', 'SISTEMUNDO NEOTECNOLOGICO S.A. DE C.V.', '', 'JORGE ALBERTO MARTINEZ',4,'', 'GRAL. FRANCISCO MURGUIA', '120-A', 'SAN JUAN TLIHUACA', 'AZCAPOTZALCO', 'AZCAPOTZALCO', 'ESTADO DE MÉXICO', '2400', '', 'GOBIERNO', 'SNE080702GSA', 1 UNION
+SELECT 'SITE SERVICIO Y MANTENIMIENTO SA DE CV', 'SITE SERVICIO Y MANTENIMIENTO SA DE CV', 'ANA MARIA OLVERA', 'DIRECTO',1,'anamaria.olvera@site-servicio.com', 'CIRCUITO INTERIOR JOSE VASCONCELOS', '148', 'CONDESA', 'CUAUHTEMOC', 'DISTRITO FEDERAL', 'MEXICO', '6140', '', '', 'SSM0401221I0', 1 UNION
+SELECT 'SOLUCIONES EN CONTROL ELECTRICO SA DE CV', 'SOLUCIONES EN CONTROL ELECTRICO SA DE CV', 'LILIANA RENTERIA', 'JUAN RAMOS',1,'lrenteria@scesamexico.com.mx', 'EJE 8', '93', 'SAN RAFAEL', 'MEXICO', 'ESTADO DE MÉXICO', 'MEXICO', '55719', '55', '2644 0021', 'SCE0106221P3', 1 UNION
+SELECT 'SOPORTE TERMICO Y MECANICO SA DE CV', 'SOPORTE TERMICO Y MECANICO SA DE CV', 'CARLOS MARTINEZ', 'JUAN JOSE ESPINOZA BRAVO',3,'c.martinez@soportetermico.com', 'J ROMO', '1032', 'MODERNA', 'GUADALAJARA', 'JALISCO', 'MEXICO', '44190', '33', '3650 0911', 'STM0402125F4', 1 UNION
+SELECT 'ST SOLUCIONES EMPRESARIALES SA DE CV', 'ST SOLUCIONES EMPRESARIALES SA DE CV', 'JORGE SANCHEZ', 'JUAN JOSE ESPINOZA BRAVO',1,'soluciones@stse.com.mx', 'TUXPAN', '89', 'ROMA SUR', 'CUAUHTEMOC', 'DISTRITO FEDERAL', 'MEXICO', '6760', '55', '35 39 58 43', 'SSE0410296W6', 1 UNION
+SELECT 'STT SOLUCIONES TOTALES EN TELECOMUNICACIONES SA DE CV', 'STT SOLUCIONES TOTALES EN TELECOMUNICACIONES SA DE CV', 'OMAR MARTINEZ', 'IVAN RAMIREZ',3,'omartinez@sttsoluciones.com.mx', 'COPERNICO', '172', 'ANZURES', 'MEXICO', 'DISTRITO FEDERAL', 'MEXICO', '11590', '', '', 'SST961021DB2', 1 UNION
+SELECT 'TECNOLOGIA PARA AHORRO DE ENERGIA,S.A. DE C.V.', 'TECNOLOGIA PARA AHORRO DE ENERGIA,S.A. DE C.V.', 'LILIBET FRANCO', 'JUAN JOSE ESPINOZA BRAVO',1,'tec_ahorro_energia@prodigy.net.mx', 'AV. LOPEZ MATEOS SUR', '1290-4', 'CHAPALITA ORIENTE', 'GUADALAJARA', 'JALISCO', 'MEXICO', '44510', '33', '36 47 14 25', 'TAE9301144N6', 1 UNION
+SELECT 'TEL.IND.MEXICANA DE TELECOMUNICACIONES SA DE CV', 'TEL.IND.MEXICANA DE TELECOMUNICACIONES SA DE CV', 'AGUSTIN TOPETE', 'JUAN JOSE ESPINOZA BRAVO',1,'hpartida@mtnet.com.mx', 'PERIFERICO SUR', '7980', 'CAMINO REAL A SANTA ANITA', 'GUADALAJARA', 'JALISCO', 'MEXICO', '45600', '33', '3884-1553', 'TIM9006293D6', 1 UNION
+SELECT 'TELEFONIA Y CONECTIVIDAD EN INFORMATICA SA', 'TELEFONIA Y CONECTIVIDAD EN INFORMATICA SA', 'RODRIGO TOLENTINO', 'DIRECTO',3,'info@tycsa.info', 'AQUILES SERDAN', '1624', 'CENTRO', 'VERACRUZ', 'VERACRUZ', 'MEXICO', '91700', '229', '9310087', 'TCI000523DD6', 1 UNION
+SELECT 'TELVENT MEXICO SA DE CV', 'TELVENT MEXICO SA DE CV', '', 'DIRECTO',3,'', 'BAHIA DE SANTA BARBARA', '174', 'VERONICA ANZURES', 'MEXICO', 'DISTRITO FEDERAL', 'MEXICO', '11300', '155', '55260738', 'TME9006203Q6', 1 UNION
+SELECT 'TERMINAL INTERNACIONAL DE MANZANILLO SA DE CV', 'TERMINAL INTERNACIONAL DE MANZANILLO SA DE CV', '', 'DIRECTO',1,'', 'AV. TENIENTE AZUETA', '29', 'BUROCRATA', 'MANZANILLO', 'COLIMA', 'MEXICO', '28250', '314', '3312701', 'TIM980730NK3', 1 UNION
+SELECT 'TETRA PAK QUERETARO SA DE CV', 'TETRA PAK QUERETARO SA DE CV', 'JORGE RIVERA', 'JOSE IVAN MARTIN',1,'Jorge.Rivera@tetrapak.com', 'AV. EJERCITO NACIONAL', '843-B ACC', 'GRANADA', 'MEXICO DF', 'MEXICO DF', 'MEXICO', '11520', '', '', 'TPQ9112231K3', 1 UNION
+SELECT 'TETRA PAK SA DE CV', 'TETRA PAK SA DE CV', 'JORGE RIVERA', 'JOSE IVAN MARTIN',1,'Jorge.rivera@tetrapak.com', 'AV EJERCITO NACIONAL', '843-B ACC', 'GRANADA', 'MEXICO', 'DISTRITO FEDERAL', 'MEXICO', '11520', '442', '2112000', 'TPA920117QJ3', 1 UNION
+SELECT 'THE CAPITA CORPORATION DE MEXICO SA DE CV SOFOM ENR', 'THE CAPITA CORPORATION DE MEXICO SA DE CV SOFOM ENR', 'MARIA LOPEZ CAMPICHE', 'JOSE IVAN MARTIN',1,'Maria.LopezCampiche@cit.com', 'BOULEVARD ADOLFO LOPEZ MATEOS', '2009', 'LOS ALPES DELEGACION ALVARO OBREGON', 'MEXICO', 'DISTRITO FEDERAL', 'MEXICO', '1010', '', '', 'CCM9508284K3', 1 UNION
+SELECT 'THYSSENKRUPP SYSTEM ENGINEERING SA DE CV', 'THYSSENKRUPP SYSTEM ENGINEERING SA DE CV', 'DANIEL RAMIREZ', 'JUAN RAMOS',1,'daniel.ramirez@thyssenkrupp.com', 'AV DEL MARQUEZ', '36', 'PARQUE INDUSTRIAL BERNARDO QUINTANA', 'EL COLORADO', 'QUERETARO', 'MEXICO', '76246', '442', '1924000', 'TSE990609LW2', 1 UNION
+SELECT 'TIENDAS CHEDRAUI SA DE CV', 'TIENDAS CHEDRAUI SA DE CV', 'EULOJIO MEJIA', 'IVAN RAMIREZ',1,'emejia@chedraui.com.mx', 'AV CONSTITUYENTES', '1150', 'LOMAS ALTAS', 'MEXICO', 'DISTRITO FEDERAL', 'MEXICO', '11950', '228', '8 42 11 00', 'TCH850701RM1', 1 UNION
+SELECT 'TODITO CARD SA DE CV', 'TODITO CARD SA DE CV', '', 'DIRECTO',1,'', 'FRANCISCO FERNANDEZ TREVIÑO', '211', 'LEONES', 'MONTERREY', 'NUEVO LEÓN', 'MEXICO', '64600', '81', '82328096', 'TCA050929BM8', 1 UNION
+SELECT 'TRUPER SA DE CV', 'TRUPER SA DE CV', 'JAVIER REYES', 'MICHELLE GALICIA',1,'jreyes@truper.com', 'PARQUE INDUSTRIAL', '1', 'JILOTEPEC', 'JILOTEPEC', 'ESTADO DE MEXICO', 'MEXICO', '54240', '155', '53876691', 'THE791105HP2', 1 UNION
+SELECT 'TUBOS DE ACERO DE MEXICO SA', 'TUBOS DE ACERO DE MEXICO SA', '', 'JORGE ALBERTO MARTINEZ',1,'', 'CARRETERA MEXICO VERACRUZ', '', 'DELFINO VALENZUELA', 'VERACRUZ', 'VERACRUZ', 'MEXICO', '91697', '', '', 'TAM520130D49', 1 UNION
+SELECT 'UNIFRIO SA DE CV', 'UNIFRIO SA DE CV', 'ING. JORGE IVAN LUNA MARTINEZ', 'DIRECTO',3,'', 'CARRETERA GUADALAJARA A MORELIA', '7783', 'BONANZA RESIDENCIAL', 'ZAPOPAN', 'JALISCO', 'MEXICO', '45645', '', '', 'UNI070201N38', 1 UNION
+SELECT 'UNIVERSIDAD AUTONOMA DE QUERETARO', 'UNIVERSIDAD AUTONOMA DE QUERETARO', '', 'JUAN RAMOS',1,'', 'CERRO DE LAS CAMPANAS', '', 'LAS CAMPANAS', 'QUERETARO', 'QUERETARO', 'MEXICO', '76010', '', '', 'UAQ510111MQ9', 1 UNION
+SELECT 'UNIVERSIDAD DE GUADALAJARA', 'UNIVERSIDAD DE GUADALAJARA', '', 'JUAN JOSE ESPINOZA BRAVO',2,'jose.morales@cucei.udg.mx', 'AV JUAREZ', '975', 'CENTRO', 'GUADALAJARA', 'JALISCO', 'MEXICO', '44100', '33', '31342222', 'UGU250907MH5', 1 UNION
+SELECT 'UNIVERSIDAD JUAREZ AUTONOMA DE TABASCO', 'UNIVERSIDAD JUAREZ AUTONOMA DE TABASCO', '', 'MICHELLE GALICIA',1,'', 'AVENIDA UNIVERSIDAD ZONA DE LA CULTURA', '', 'MAGISTERIAL', 'VILLAHERMOSA', 'TABASCO', 'MEXICO', '86040', '993', '38581500', 'UJA5801014N3', 1 UNION
+SELECT 'UREBLOCK SA DE CV', 'UREBLOCK SA DE CV', 'ALEJANDRO VILLANUEVA', 'FRANCISCO UREÑA',1,'avillanueva@ureblock.com.mx', 'CALLE 4', '300', 'FRACC. LOS ROBLES', 'ZAPOPAN', 'JALISCO', 'MEXICO', '45134', '33', '3836 4000', 'URE780612C48', 1 UNION
+SELECT 'VALSI AGRICOLA INDUSTRIAL SA DE CV', 'VALSI AGRICOLA INDUSTRIAL SA DE CV', 'MOISES VALENCIA', 'DIRECTO',1,'mvalencia@valsi.mx', 'CALLE 22', '2795', 'ZONA INDUSTRIAL', 'GUADALAJARA', 'JALISCO', 'MEXICO', '0', '33', '3001 1038', 'VAI 991008 KW1', 1 UNION
+SELECT 'VANGUARDIA AUTOMOTRIZ SA DE CV', 'VANGUARDIA AUTOMOTRIZ SA DE CV', '', 'DIRECTO',1,'', 'AV VALLARTA', '5424', 'JARDINES VALLARTA', 'ZAPOPAN', 'JALISCO', 'MEXICO', '45027', '', '', 'VAU970623SS3', 1 UNION
+SELECT 'VENTA DE BOLETOS POR COMPUTADORA S.A. DE C.V.', 'VENTA DE BOLETOS POR COMPUTADORA S.A. DE C.V.', 'ING. JUAN MANUEL OROZCO', 'JORGE ALBERTO MARTINEZ',1,'jmorozco@ticketmaster.com', 'LEIBNITZ', '1', 'ANZURES', 'MEXICO', 'DISTRITO FEDERAL', 'MEXICO', '11590', '55', '53259050', 'VBC910617SR1', 1 UNION
+SELECT 'VENTILACION Y AIRE ACONDICIONADO S.A.', 'VENTILACION Y AIRE ACONDICIONADO S.A.', '', 'DIRECTO',3,'ventair@hotmail.com', 'AV. ORGANIZACION', '1038', 'TEPEYAC CASINO', 'GUADALAJARA', 'JALISCO', 'MEXICO', '45050', '', '', 'VAA810306FNA', 1 UNION
+SELECT 'XEDKR AM SA DE CV', 'XEDKR AM SA DE CV', 'ING. HECTOR MARTINEZ', 'JORGE ALBERTO MARTINEZ',1,'hmartinz@grc.com.mx', 'AV CONSTITUYENTES', '1154', 'LOMAS ALTAS', 'MEXICO', 'DISTRITO FEDERAL', 'MEXICO', '11950', '01 55', '57-28-48-27', 'XAM841205KY4', 1 UNION
+SELECT 'XEQR-FM SA DE CV', 'XEQR-FM SA DE CV', '', 'JORGE ALBERTO MARTINEZ',1,'', 'AV CONSTITUYENTES', '1154', 'LOMAS ALTAS', 'MEXICO', 'DISTRITO FEDERAL', 'MEXICO', '11950', '155', '57284827', 'XFM901003397', 1 UNION
+SELECT 'XERC-FM S.A. DE C.V.', 'XERC-FM S.A. DE C.V.', '', 'JORGE ALBERTO MARTINEZ',1,'', 'AV. CONSTITUYENTES', '1154', 'LOMAS ALTAS', 'MEXICO', 'DISTRITO FEDERAL', 'MEXICO', '11950', '', '', 'XFM901003Q32', 1 UNION
+SELECT 'YAMADA-VISTAMEX SA DE CV', 'YAMADA-VISTAMEX SA DE CV', 'JESUS TORRES RICO', 'JUAN RAMOS',1,'jtorres@yvmex.com', 'AUTOPISTA QUERETARO IRAPUATO KM 36', '', 'ZONA INDUSTRIAL', 'APASEO EL GRANDE', 'GUANAJUATO', 'MEXICO', '38160', '461', '175 1011', 'YAM111101AZ8', 1 ;
+
+	END IF;
+
+	-- Lista de precions - Inicial'
+	IF(SELECT count(*) FROM blackstarDb.codexPriceList) = 0 THEN
+		INSERT INTO blackstarDb.codexPriceList(code, name, price)
+		SELECT 'M1100A-B-10-208-208','UPS MODULAR 1100 MARCA MITSUBISHI 10KVA EXP. 50KVA (SIN BATERIAS)',16725 UNION
+		SELECT 'M1100A-B-20-208-208','UPS MODULAR 1100 MARCA MITSUBISHI 20KVA EXP. 50KVA (SIN BATERIAS)',20412 UNION
+		SELECT 'M1100A-B-30-208-208','UPS MODULAR 1100 MARCA MITSUBISHI 30KVA EXP. 50KVA (SIN BATERIAS)',23150 UNION
+		SELECT 'M1100A-B-40-208-208','UPS MODULAR 1100 MARCA MITSUBISHI 40KVA EXP. 50KVA (SIN BATERIAS)',27588 UNION
+		SELECT 'M1100A-B-50-208-208','UPS MODULAR 1100 MARCA MITSUBISHI 50KVA EXP. 50KVA (SIN BATERIAS)',30978 UNION
+		SELECT 'M1100A-A-10-208-208-1B','UPS MODULAR 1100 MARCA MITSUBISHI 10KVA EXP. 20KVA (CON BATERIAS PARA 18 MIN)',16661 UNION
+		SELECT 'M1100A-A-20-208-208-1B','UPS MODULAR 1100 MARCA MITSUBISHI 20KVA EXP. 20KVA (CON BATERIAS PARA 5 MIN)',20484 UNION
+		SELECT 'NETCOM-1100','TARJETA DE MONITOREO',1403 UNION
+		SELECT 'PMAU-02','MODULO DE PODER PARA EQUIPOS MITSUBISHI (10KVA)',8961 UNION
+		SELECT 'BB1217-1100-01','BANCO DE BATERIAS EXTERNO PARA EQUIPOS 1100 (UN ANILLO) Marca:CSB Dimensión: ',3566 UNION
+		SELECT 'BB1217-1100-02','BANCO DE BATERIAS EXTERNO PARA EQUIPOS 1100 (DOS ANILLOS en el mismo gabinete)',5781 UNION
+		SELECT 'BB1217-1100-03','BANCO DE BATERIAS EXTERNO PARA EQUIPOS 1100 (TRES ANILLOS en el mismo gabinete)',7996 UNION
+		SELECT 'BB1217-1100-04','BANCO DE BATERIAS EXTERNO PARA EQUIPOS 1100 (CUATRO ANILLOS en el mismo gabinete)',10545 UNION
+		SELECT 'M1100B-A-10-208-208','UPS MODULAR 1100 MARCA MITSUBISHI 10KVA EXP. 80KVA (SIN BATERIAS)',23329 UNION
+		SELECT 'M1100B-A-20-208-208','UPS MODULAR 1100 MARCA MITSUBISHI 20KVA EXP. 80KVA (SIN BATERIAS)',28109 UNION
+		SELECT 'M1100B-A-30-208-208','UPS MODULAR 1100 MARCA MITSUBISHI 30KVA EXP. 80KVA (SIN BATERIAS)',32889 UNION
+		SELECT 'M1100B-A-40-208-208','UPS MODULAR 1100 MARCA MITSUBISHI 40KVA EXP. 80KVA (SIN BATERIAS)',37669 UNION
+		SELECT 'M1100B-A-50-208-208','UPS MODULAR 1100 MARCA MITSUBISHI 50KVA EXP. 80KVA (SIN BATERIAS)',42449 UNION
+		SELECT 'M1100B-A-60-208-208','UPS MODULAR 1100 MARCA MITSUBISHI 60KVA EXP. 80KVA (SIN BATERIAS)',45899 UNION
+		SELECT 'M1100B-A-70-208-208','UPS MODULAR 1100 MARCA MITSUBISHI 70KVA EXP. 80KVA (SIN BATERIAS)',50541 UNION
+		SELECT 'M1100B-A-80-208-208','UPS MODULAR 1100 MARCA MITSUBISHI 80KVA EXP. 80KVA (SIN BATERIAS)',55182 UNION
+		SELECT 'NETCOM-1100','TARJETA DE MONITOREO',1447 UNION
+		SELECT 'PMAU-02','MODULO DE PODER PARA EQUIPOS MITSUBISHI (10KVA)',10698 UNION
+		SELECT 'BB-80-1217-1100-01','BANCO DE BATERIAS EXTERNO PARA EQUIPOS 1100 DE HASTA 80KVA (UN ANILLO)',4188 UNION
+		SELECT 'BB-80-1217-1100-02','BANCO DE BATERIAS EXTERNO PARA EQUIPOS 1100 DE HASTA 80KVA (DOS ANILLO)',6498 UNION
+		SELECT 'BB-80-1217-1100-03','BANCO DE BATERIAS EXTERNO PARA EQUIPOS 1100 DE HASTA 80KVA (TRES ANILLO)',8809 UNION
+		SELECT 'BB-80-1217-1100-04','BANCO DE BATERIAS EXTERNO PARA EQUIPOS 1100 DE HASTA 80KVA (CUATRO ANILLO)',11119 UNION
+		SELECT 'BB-80-1217-1100-05','BANCO DE BATERIAS EXTERNO PARA EQUIPOS 1100 DE HASTA 80KVA (CINCO ANILLO)',13430 UNION
+		SELECT 'M9900A-A-080-480-480','UPS MARCA MITSUBISHI 9900A 80KVA (SIN BATERIAS)',43207 UNION
+		SELECT 'M9900A-A-100-480-480 ','UPS MARCA MITSUBISHI 9900A 100KVA (SIN BATERIAS)',44583 UNION
+		SELECT 'M9900A-A-150-480-480 ','UPS MARCA MITSUBISHI 9900A 150KVA (SIN BATERIAS)',52429 UNION
+		SELECT 'M9900A-A-225-480-480 ','UPS MARCA MITSUBISHI 9900A 225KVA (SIN BATERIAS)',69279 UNION
+		SELECT 'M9900B-A-300-480-480-MSC','UPS MARCA MITSUBISHI 9900B 300KVA (SIN BATERIAS)',89682 UNION
+		SELECT 'M9900B-A-500-480-480-4','UPS MARCA MITSUBISHI 9900B 500KVA (SIN BATERIAS)',122786 UNION
+		SELECT 'M9900B-A-750-480-480-4','UPS MARCA MITSUBISHI 9900B 750KVA (SIN BATERIAS)',176844 UNION
+		SELECT 'BB1255-9900','BANCO DE BATERIAS EXTERNO PARA EQUIPOS 9900 Marca: Dynasty 12V 55AH',10694 UNION
+		SELECT 'BB1275-9900','BANCO DE BATERIAS EXTERNO PARA EQUIPOS 9900 Marca: Dynasty 12V 75AH',11506 UNION
+		SELECT 'BB1285-9900','BANCO DE BATERIAS EXTERNO PARA EQUIPOS 9900 Marca: Dynasty 12V 85AH',12562 UNION
+		SELECT 'BB12100-9900','BANCO DE BATERIAS EXTERNO PARA EQUIPOS 9900 Marca: Dynasty 12V 100AH',17728 UNION
+		SELECT 'LINKS-INT-80','LINKS E INTERRUPTORES DE BATERIAS PARA UN UPS DE 80KVA',508 UNION
+		SELECT 'LINKS-INT-100','LINKS E INTERRUPTORES DE BATERIAS PARA UN UPS DE 100KVA',508 UNION
+		SELECT 'LINKS-INT-150','LINKS E INTERRUPTORES DE BATERIAS PARA UN UPS DE 150KVA',761 UNION
+		SELECT 'LINKS-INT-225','LINKS E INTERRUPTORES DE BATERIAS PARA UN UPS DE 225KVA POR ANILLO',888 UNION
+		SELECT 'LINKS-INT-300','LINKS E INTERRUPTORES DE BATERIAS PARA UN UPS DE 300KVA',1142 UNION
+		SELECT 'LINKS-INT-500','LINKS E INTERRUPTORES DE BATERIAS PARA UN UPS DE 500KVA',2030 UNION
+		SELECT 'LINKS-INT-750','LINKS E INTERRUPTORES DE BATERIAS PARA UN UPS DE 750KVA',2157 UNION
+		SELECT '7011A-60','7011A UPS MODULES 6KVA',10227 UNION
+		SELECT '7011A-80','7011A UPS MODULES 8KVA',16034 UNION
+		SELECT '7011A-100','7011A UPS MODULES 10KVA',16388 UNION
+		SELECT '7011A-12.0','7011A UPS MODULES 12KVA',16830 UNION
+		SELECT 'MBS-7011A-3','7011A Maintenance Bypass Switches 6 8 or 10kva',1299 UNION
+		SELECT 'MBS-7011A-4','7011A Maintenance Bypass Switches 12kva',1743 UNION
+		SELECT 'BC7-18/2P007-006-40','7011A Battery Cabinets (17.9"x32.8"x27.7") con un tiempo de respaldo de 38 minutos para un UPS de 6kVA',3242 UNION
+		SELECT 'BC7-18P007-006-40','7011A Battery Cabinets (17.9"x32.8"x27.7") con un tiempo de respaldo de 22 minutos para un UPS de 6kVA',2151 UNION
+		SELECT 'BC7-18P080-006-40','7011A Battery Cabinets (17.9"x32.8"x27.7") con un tiempo de respaldo de 53 minutos para un UPS de 6kVA',2758 UNION
+		SELECT 'BC11-18/2P007-008-60','7011A Battery Cabinets (17.9"x29.9"x40.6") con un tiempo de respaldo de 38 minutos para un UPS de 6kVA y 39 para un UPS de 8kVA',3748 UNION
+		SELECT 'BC11-18/2P007-010-60','7011A Battery Cabinets (17.9"x29.9"x40.6") con un tiempo de respaldo de 28 minutos para un UPS de 10kVA',3748 UNION
+		SELECT 'BC11-18/2P007-012-60','7011A Battery Cabinets (17.9"x29.9"x40.6") con un tiempo de respaldo de 22 minutos para un UPS de 12kVA',3748 UNION
+		SELECT 'BC11-18/2P080-010-60','7011A Battery Cabinets (17.9"x29.9"x40.6") con un tiempo de respaldo de 65 minutos para un UPS de 10kVA',4967 UNION
+		SELECT 'BC11-18/2P080-012-60','7011A Battery Cabinets (17.9"x29.9"x40.6") con un tiempo de respaldo de 53 minutos para un UPS de 12kVA',4967 UNION
+		SELECT 'BC11-18/3P007-008-60','7011A Battery Cabinets (17.9"x29.9"x40.6") con un tiempo de respaldo de 55 minutos para un UPS de 6kVA y 53 para un UPS de 8kVA',4840 UNION
+		SELECT 'BC11-18/3P007-010-60','7011A Battery Cabinets (17.9"x29.9"x40.6") con un tiempo de respaldo de 38 minutos para un UPS de 10kVA',4840 UNION
+		SELECT 'BC11-18/3P007-012-60','7011A Battery Cabinets (17.9"x29.9"x40.6") con un tiempo de respaldo de 29 minutos para un UPS de 12kVA',4840 UNION
+		SELECT 'BC11-18P007-008-60','7011A Battery Cabinets (17.9"x29.9"x40.6") con un tiempo de respaldo de 22 minutos para un UPS de 6kVA y 27 para un UPS de 8kVA',2660 UNION
+		SELECT 'BC11-18P007-010-60','7011A Battery Cabinets (17.9"x29.9"x40.6") con un tiempo de respaldo de 19 minutos para un UPS de 10kVA',2660 UNION
+		SELECT 'BC11-18P007-012-60','7011A Battery Cabinets (17.9"x29.9"x40.6") con un tiempo de respaldo de 15 minutos para un UPS de 12kVA',2660 UNION
+		SELECT 'BC11-18P080-008-60','7011A Battery Cabinets (17.9"x29.9"x40.6") con un tiempo de respaldo de 53 minutos para un UPS de 6kVA y 51 minutos para un UPS de 8kVA',3268 UNION
+		SELECT 'BC11-18P080-010-60','7011A Battery Cabinets (17.9"x29.9"x40.6") con un tiempo de respaldo de 36 minutos para un UPS de 10kVA',3268 UNION
+		SELECT 'BC11-18P080-012-60','7011A Battery Cabinets (17.9"x29.9"x40.6") con un tiempo de respaldo de 28 minutos para un UPS de 12kVA',3268 UNION
+		SELECT 'BC11-18P100-008-60','7011A Battery Cabinets (17.9"x29.9"x40.6") con un tiempo de respaldo de 58 minutos para un UPS de 8kVA',4098 UNION
+		SELECT 'BC11-18P100-010-60','7011A Battery Cabinets (17.9"x29.9"x40.6") con un tiempo de respaldo de 42 minutos para un UPS de 10kVA',4098 UNION
+		SELECT 'BC11-18P100-012-60','7011A Battery Cabinets (17.9"x29.9"x40.6") con un tiempo de respaldo de 33 minutos para un UPS de 12kVA',4098 UNION
+		SELECT 'BC25-U200-6UL','Battery Cabinets 6kva battery cabinet',8270 UNION
+		SELECT 'BC25-U200-8UL','Battery Cabinets 8kva battery cabinet',8270 UNION
+		SELECT 'BC25-U300-10UL','Battery Cabinets 10kva battery cabinet',9239 UNION
+		SELECT 'BC25-U350-12UL','Battery Cabinets 12kva battery cabinet',9977 UNION
+		SELECT 'MCP-104-S','MUCM without DC power supply',1718 UNION
+		SELECT 'MCP-104-10004-S','MUCM with DC power supply',2289 UNION
+		SELECT 'NETCOM2-SEC-10004-S','Netcom with DC power supply',1353 UNION
+		SELECT 'NETCOM-SD','Netcom shutdown codes (price per code) MUST be purchased in increments of (10)',19;
+
+	END IF;
+
+	-- Tipos de formas de pago
+	IF(SELECT count(*) FROM blackstarDb.codexPaymentType) = 0 THEN
+		INSERT INTO blackstarDb.codexPaymentType(_id, name, description)
+		SELECT 1, 'Contado', 'Pago de contado' UNION
+		SELECT 2, 'Credito', 'Credito';
+	END IF;
+
+	-- Tipos de moneda
+	IF(SELECT count(*) FROM blackstarDb.codexCurrencyType) = 0 THEN
+		INSERT INTO blackstarDb.codexCurrencyType(_id, name, description)
+		SELECT 1, 'USD', 'Dolares' UNION
+		SELECT 2, 'MXN', 'Pesos mexicanos';
+	END IF;
+
+	-- Tipos de IVA
+	IF(SELECT count(*) FROM blackstarDb.codexTaxesTypes) = 0 THEN
+		INSERT INTO blackstarDb.codexTaxesTypes(_id, name, description, value)
+		SELECT 1, 'IVA Generalizado', 'IVA Generalizado', 16.00;
+	END IF;
+
+	-- Tipos de proyecto (partidas)
+	IF(SELECT count(*) FROM blackstarDb.codexProjectEntryTypes) = 0 THEN
+		INSERT INTO blackstarDb.codexProjectEntryTypes(_id, name, productType)
+		SELECT 9005, 'INSTALACIONES DIVERSAS', 'S' UNION
+		SELECT 9023, 'SERVICIOS DE ESTUDIO DE CALIDAD ELECTRICA', 'S' UNION
+		SELECT 9016, 'SERVICIOS DE ESTUDIO TERMOGRAFICO', 'S' UNION
+		SELECT 9011, 'SERVICIOS EVENTUALES', 'S' UNION
+		SELECT 40001, 'POLIZA DE MANTENIMIENTO PREVENTIVO/CORRECTIVO P/UPS', 'S' UNION
+		SELECT 40002, 'POLIZA DE MANTENIMIENTO PREVENTIVO/CORRECTIVO P/AIRE', 'S' UNION
+		SELECT 40003, 'POLIZA DE MANTENIMIENTO PREVENTIVO/CORRECTIVO P/PLANTA', 'S' UNION
+		SELECT 40010, 'POLIZA MANTTO PREVENTIVO/CORRECTIVO P/CA Y VV', 'S' UNION
+		SELECT 9006, 'POLIZA DE MANTENIMIENTOS VARIOS', 'S' UNION
+		SELECT 9090, 'POLIZA DE MANTENIMIENTO PREVENTIVO/CORRECTIVO P/DETECCION Y SUPRESION DE INCENDIOS', 'S' UNION
+		SELECT 9032, 'PROYECTO DE UPS', 'P' UNION
+		SELECT 9033, 'PROYECTO DE PLANTA', 'P' UNION
+		SELECT 9034, 'PROYECTO DE MONITOREO', 'S' UNION
+		SELECT 9035, 'PROYECTO DE AIRE', 'P' UNION
+		SELECT 9037, 'PROYECTO DE CALIDAD DE ENERGIA', 'S' UNION
+		SELECT 9038, 'PROYECTO DE BATERIAS', 'P' UNION
+		SELECT 9041, 'PROYECTO DE RACK', 'P' UNION
+		SELECT 9049, 'PROYECTO DE SEGURIDAD FISICA', 'S';
+	END IF;
+
+	-- Tipos de item (detalle partida)
+	IF(SELECT count(*) FROM blackstarDb.codexProjectItemTypes) = 0 THEN
+		INSERT INTO blackstarDb.codexProjectItemTypes(name)
+		SELECT 'Lista de precios' UNION	
+		SELECT 'Requisicion' UNION
+		SELECT 'Abierto';
+	END IF;
 
 	IF(SELECT count(*) FROM blackstarDb.cstOffice) = 0 THEN
 		INSERT INTO blackstarDb.cstOffice(cstId, officeId)
@@ -4299,6 +4851,9 @@ BEGIN
 	UPDATE blackstarDb.sequence SET description = 'Cedulas de proyecto QRO' WHERE sequenceTypeId = 'Q' AND description IS NULL;
 	UPDATE blackstarDb.sequence SET description = 'Cedulas de proyecto MXO' WHERE sequenceTypeId = 'M' AND description IS NULL;
 	UPDATE blackstarDb.sequence SET description = 'Cedulas de proyecto GDL' WHERE sequenceTypeId = 'G' AND description IS NULL;
+
+	Call blackstarDb.UpsertUser('saul.andrade@gposac.com.mx','Saul Andrade');
+	Call blackstarDb.CreateuserGroup('sysSalesManager','Gerente comercial','saul.andrade@gposac.com.mx');
 
 -- -----------------------------------------------------------------------------
 -- FIN SECCION DE DATPS - NO CAMBIAR CODIGO FUERA DE ESTA SECCION

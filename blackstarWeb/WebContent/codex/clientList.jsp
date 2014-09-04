@@ -44,7 +44,7 @@
 							  { "mData": null }
 						  ],
 				"aoColumnDefs" : [{"mRender" : function(data, type, row){return "<div align=center style='width:75px;'><a href=${pageContext.request.contextPath}/codex/project/create.do?clientId=" + row.id + ">" + "Crear Cedula" + "</a></div>";}, "aTargets" : [5]},
-				                  {"mRender" : function(data, type, row){return "<div align=center style='width:75px;'><a href=${pageContext.request.contextPath}/codex/client/edit.do?clientId=" + row.id + ">" + data + "</a></div>";}, "aTargets" : [0]}]}
+				                  {"mRender" : function(data, type, row){return "<div><a href=${pageContext.request.contextPath}/codex/client/edit.do?clientId=" + row.id + ">" + data + "</a></div>";}, "aTargets" : [2]}]}
 			);
 		 
 		 $('#clientList').dataTable({
@@ -65,7 +65,8 @@
 							  { "mData": null}
 							  
 						  ],
-				"aoColumnDefs" : [{"mRender" : function(data, type, row){return "<div align=center style='width:75px;'><a href=/ticketDetail?ticketId=" + row.DT_RowId + ">" + "Crear Cedula" + "</a></div>";}, "aTargets" : [5]}]}
+				"aoColumnDefs" : [{"mRender" : function(data, type, row){return "<div align=center style='width:75px;'><a href=${pageContext.request.contextPath}/codex/project/create.do?clientId=" + row.id + ">" + "Crear Cedula" + "</a></div>";}, "aTargets" : [5]},
+				                  {"mRender" : function(data, type, row){return "<div><a href=${pageContext.request.contextPath}/codex/client/edit.do?clientId=" + row.id + ">" + data + "</a></div>";}, "aTargets" : [2]}]}
 			);
 		
 	} );
@@ -94,12 +95,12 @@
 			<table cellpadding="0" cellspacing="0" border="0" class="display" id="propectList">
 				<thead>
 					<tr>
-						<th>Numero</th>
-						<th>Tipo</th>
+						<th style="width:30px">Numero</th>
+						<th style="width:60px">Tipo</th>
 						<th>Cliente</th>
-						<th>Ciudad</th>
-						<th>Contacto</th>
-						<th>Crear CP</th>
+						<th style="width:100px">Ciudad</th>
+						<th style="width:150px">Contacto</th>
+						<th style="width:80px">Crear CP</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -118,12 +119,12 @@
 			<table cellpadding="0" cellspacing="0" border="0" class="display" id="clientList">
 				<thead>
 					<tr>
-						<th>Numero</th>
-						<th>Tipo</th>
+						<th style="width:30px">Numero</th>
+						<th style="width:60px">Tipo</th>
 						<th>Cliente</th>
-						<th>Ciudad</th>
-						<th>Contacto</th>
-						<th>Crear CP</th>
+						<th style="width:100px">Ciudad</th>
+						<th style="width:150px">Contacto</th>
+						<th style="width:80px">Crear CP</th>
 					</tr>
 				</thead>
 				<tbody>

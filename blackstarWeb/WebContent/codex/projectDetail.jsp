@@ -23,7 +23,10 @@
 	<script type="text/javascript">
 	    var entryNumber = 0;
 	    var itemNumber = 0;
-	    
+	    var totProducts = 0;
+	    var totServices = 0;
+	    var priceList = $.parseJSON('${priceListJson}');
+
 	    $(document).ready(function () {
 
 			//Attachment dialog
@@ -49,8 +52,28 @@
 			if('${enableEdition}' == 'true'){
 				$('#addItemButton').hide();
 			}
+
+			// Bloqueo de campos
+			if('${enableEdition}' == 'false')
+			{
+				$("#created").val(dateNow());				
+			}
+			else
+			{
+				$(".lockOnDetail").attr("readonly");
+				$("select .lockOnDetail").attr("disabled");
+			}
+
+			// Calc binding
+			bindCalc();
 	    });
 	    
+	    function bindCalc(){
+			$(".calc").bind("change", function(){
+				calc();
+			});
+	    }
+
 	    function setButtonStatusText(){
 	      var projectStatus = '${project.statusId}';
 		  if(projectStatus == '1'){
@@ -62,14 +85,56 @@
 	    
 	    function addEntry(){
 	    	entryNumber++;
-	    	$('#entryTable').append('<tr class="part" id="entry_' + entryNumber + '" name="' + entryNumber + '"><td>' + entryNumber + '</td><td colspan="2"><select name="" id="entryTypeId_' + entryNumber + '" style="width:350px" class="required" ><option value="">Seleccione</option><c:forEach var="ss" items="${entryTypes}"><option value="${ss.id}">${ss.name}</option></c:forEach></select></td><td colspan="3"><input type="text" id="description_' + entryNumber + '" style="width:280px" class="required"/></td><td><input type="number" id="discount_' + entryNumber + '" style="width:50px" class="required"/></td><td><input type="number" id="totalPrice_' + entryNumber + '" style="width:50px" class="required"/></td><td><input type="text" id="comments_' + entryNumber + '" style="width:80px" class="required"/></td> </tr> <tr class="item_part' + entryNumber + '"><td colspan="9"><table class="items" id="items_'+ entryNumber + '" style="width:100%"></table></td></tr><tr><td></td><td><button class="searchButton" onclick="addItem(' + entryNumber +');" id="addItemButton">+ Item</button></td></tr>');
+	    	$('#entryTable').append('\
+	    		<tr class="part" id="entry_' + entryNumber + '" name="' + entryNumber + '"><td>' + entryNumber + '</td>\
+		    		<td colspan="2"><select name="" id="entryTypeId_' + entryNumber + '" style="width:350px" class="required" >\
+		    			<option value="">Seleccione</option>\
+		    			<c:forEach var="ss" items="${entryTypes}">\
+		    				<option value="${ss.id}">${ss.name}</option>\
+		    			</c:forEach></select>\
+		    		</td>\
+		    		<td colspan="3"><input type="text" id="description_' + entryNumber + '" style="width:280px" class="required"/></td>\
+		    		<td><input type="text" id="discount_' + entryNumber + '" style="width:20px" class="calc" value="0"/>%</td>\
+		    		<td><input type="text" id="totalPrice_' + entryNumber + '" style="width:50px" readonly/></td>\
+		    		<td><input type="text" id="comments_' + entryNumber + '" style="width:80px" /><hidden id="productType_' + entryNumber + '"/></td>\
+	    		</tr>\
+	    		<tr class="item_part' + entryNumber + '">\
+	    			<td colspan="9"><table class="items" id="items_'+ entryNumber + '" style="width:100%"></table></td>\
+	    		</tr>\
+	    		<tr>\
+	    			<td></td>\
+	    			<td><button class="searchButton" onclick="addItem(' + entryNumber +');" id="addItemButton">+ Item</button></td>\
+	    		</tr>');
+			
+			bindCalc();
 	    } 
+
 	    function addItem(entryNumber){
 	    	itemNumber++;
-	    	$('#items_' + entryNumber).append('<tr id="item_' + itemNumber + '" name="' + itemNumber + '"><td><button class="searchButton" onclick="removeItem(\'item_' + itemNumber +'\')" style="width:10px" id="removeItemButton_' + itemNumber +'">-</button></td><td><select onchange="setReferenceTypes(this.value, referenceId_' + itemNumber + ', reference_' + itemNumber + ')" id="entryItemTypeId_' + itemNumber + '" style="width:157px" class="required"><option value="">Seleccione</option><c:forEach var="ss" items="${entryItemTypes}"><option value="${ss.id}">${ss.name}</option></c:forEach></select></td><td><select id="referenceId_' + itemNumber + '" disabled="true" style="width:155px" class="required"><option value="-1">Seleccione</option></select><input type="text" id="reference_' + itemNumber + '" style="display: none;width:145px" class="required"/></td><td><input type="text" id="itemDescription_' + itemNumber + '" style="width:180px" class="required"/></td><td><input type="number" id="itemQuantity_' + itemNumber + '" style="width:40px" class="required"/></td><td><input type="number" id="itemPriceByUnit_' + itemNumber + '" style="width:40px" class="required"/></td><td><input type="number" id="itemDiscount_' + itemNumber + '" style="width:40px" class="required"/></td><td><input type="number" id="itemTotalPrice_' + itemNumber + '" style="width:40px" class="required"/></td><td><input type="text" id="itemComments_' + itemNumber + '" style="width:80px" class="required"/></td></tr>');
+	    	$('#items_' + entryNumber).append('\
+	    		<tr id="item_' + itemNumber + '" name="' + itemNumber + '">\
+	    			<td><button class="searchButton" onclick="removeItem(\'item_' + itemNumber +'\')" style="width:10px" id="removeItemButton_' + itemNumber +'">-</button>\</td>\
+	    			<td><select onchange="setReferenceTypes(this.value, referenceId_' + itemNumber + ', reference_' + itemNumber + ', ' + itemNumber + ')" id="entryItemTypeId_' + itemNumber + '" style="width:157px" class="required">\
+	    				<option value="">Seleccione</option>\
+	    				<c:forEach var="ss" items="${entryItemTypes}"><option value="${ss.id}">${ss.name}</option>\
+	    				</c:forEach></select>\
+	    			</td>\
+	    			<td colspan="2"><select id="referenceId_' + itemNumber + '" disabled="true" style="width:355px" class="required" onchange="setPrice(' + itemNumber + ', this.value);">\
+	    				<option value="-1">Seleccione</option>\
+	    				</select><input type="text" id="reference_' + itemNumber + '" style="display: none;width:145px" class="required"/>\
+	    			</td>\
+	    			<td><input type="text" id="itemQuantity_' + itemNumber + '" style="width:40px" class="required" value="1" onchange="calcItem(' + itemNumber + ');"/></td>\
+	    			<td><input type="text" id="itemPriceByUnit_' + itemNumber + '" style="width:40px" class="required" readonly onchange="calcItem(' + itemNumber + ');"/></td>\
+	    			<td><input type="text" id="itemDiscount_' + itemNumber + '" style="width:20px" class="required" value="0" onchange="calcItem(' + itemNumber + ');"/>%</td>\
+	    			<td><input type="text" id="itemTotalPrice_' + itemNumber + '" style="width:40px" class="required" readonly/></td>\
+	    			<td><input type="text" id="itemComments_' + itemNumber + '" style="width:80px" /></td>\
+	    		</tr>');
+
 	    	if('${enableEdition}' == 'true'){
 	    		$("#removeItemButton_" + itemNumber).hide();
 	    	}
+
+	    	bindCalc();
 	    }
 	    
 	    function removeItem(itemId){
@@ -157,7 +222,7 @@
 	      }
 	    }
 	    
-	    function setReferenceTypes(value, selectObj, inputObj){
+	    function setReferenceTypes(value, selectObj, inputObj, itemNumber){
 	    	var selectObjId = selectObj.id;
 	    	var inputObjId = inputObj.id;
 	    	if(selectObjId == undefined){
@@ -182,7 +247,7 @@
 				       success: function(data){
 					         for (var i = 0; i < data.length; i++) {
 					            d = data[i];
-					        	$('#' + selectObjId).append('<option value="' + d.name + '">' + d.name + '</option>');
+					        	$('#' + selectObjId).append('<option value="' + d.id + '">' + d.name + '</option>');
 					         }
                        } 
 				});
@@ -192,6 +257,90 @@
 	    function advanceStatus(){
 	      $('#mainForm').attr('action', '/codex/project/advanceStatus.do?projectId=' +  $("#projectId").val());
 	      $("#mainForm").submit();
+	    }
+
+	    function calcItem(itemNumber){
+	    	var rawQty = $("#itemQuantity_" + itemNumber).val();
+	    	var rawPrice = $("#itemPriceByUnit_" + itemNumber).val();
+	    	var rawDiscount = $("#itemDiscount_" + itemNumber).val();
+	    	if(isNaN(rawQty) || isNaN(rawPrice) || isNaN(rawDiscount)){
+	    		alert("Por favor verifique las cantidades");
+	    	}
+	    	else{
+	    		var qty = Number(rawQty);
+	    		var price = Number(rawPrice);
+	    		var discount = (100 - Number(rawDiscount))/100;
+
+	    		var tot = (qty * price);
+	    		tot = tot * discount;
+	    		$("#itemTotalPrice_" + itemNumber).val(tot);
+	    	}
+
+	    	calc();
+	    }
+
+	    function calcEntry(entryNumber){
+	    	var entryTotPrice = 0;
+	    	$("input[id^='itemTotalPrice_']", "table#items_" + entryNumber).each(function(index, value){
+	    		entryTotPrice = entryTotPrice + Number($(value).val());
+	    	});
+
+	    	// aplicar descuento por partida
+	    	var discount = 0;
+	    	discount = Number($("#discount_" + entryNumber).val());
+
+	    	entryTotPrice = ((100 - discount)/100) * entryTotPrice;
+
+	    	$("#totalPrice_" + entryNumber).val(entryTotPrice);
+
+	    	// sumarizar partidas de productos y servicios
+	    	if($("#productType_" + entryNumber).val() == 'S'){
+	    		totServices = totServices + entryTotPrice;
+	    		$("#servicesNumber").val(totServices);
+	    	}
+	    	else{
+	    		totProducts = totProducts + entryTotPrice;
+	    		$("#productsNumber").val(totProducts);
+	    	}
+	    }
+
+	    function calc(){
+	    	totProducts = 0;
+	    	totServices = 0;
+
+	    	// sumarizar items por partida
+	    	for(entryNum = 1; entryNum <= entryNumber; entryNum ++){
+	    		calcEntry(entryNum);
+	    	}
+
+	    	// fianza
+	    	var projectFine = 0;
+	    	if(!isNaN($("#financesNumber").val())){
+	    		projectFine = Number($("#financesNumber").val());
+	    	}
+
+	    	// total del proyecto
+	    	var projectTotal = totServices + totProducts + projectFine;
+	    	$("#totalProjectNumber").val(projectTotal);
+	    }
+
+	    function setPrice(itemNumber, priceId){
+	    	var myPrice = getPrice(priceId);
+
+	    	$("#itemPriceByUnit_" + itemNumber).val(myPrice);
+
+	    	calcItem(itemNumber);
+	    }
+
+	    function getPrice(itemId){
+
+	    	for(var item in priceList){
+	    		if(priceList[item].id == itemId){
+	    			return priceList[item].price;
+	    		}
+	    	}
+
+	    	return 0;
 	    }
 	    
 	</script>
@@ -223,11 +372,11 @@
 								<td  style="width:140px">No. Cedula</td>
 								<td><form:input type="text" path="projectNumber" readOnly="true" style="width:100%"/></td>
 								<td style="width:120px">Estatus</td>
-								<td><form:input type="text" path="statusDescription" readOnly="true" style="width:100%"/></td>
+								<td><form:input type="text" path="statusDescription" readOnly="true" style="width:95%"/></td>
 							  </tr>
 							  <tr>
 								<td>Cliente</td>
-								<td colspan="4"><form:select name="" id="clientId" path="clientId" style="width:100%" disabled="${enableEdition}">
+								<td colspan="4"><form:select name="" id="clientId" path="clientId" style="width:100%" >
 								            <option value="">Seleccione</option>
 											<c:forEach var="ss" items="${clients}">
 												<option value="${ss.id}"
@@ -242,24 +391,23 @@
 							  </tr>
 								<td>Proyecto:</td>
 								<td>
-									<form:select items="costCenterList" itemLabel="costCenter" itemValue="_id" path="costCenterId" class="required" readOnly="${enableEdition}"/>
+									<form:select items="${costCenterList}" itemLabel="costCenter" itemValue="costCenter" path="costCenter" class="lockOnDetail"/>
 								</td>
 							  </tr>
 							  <tr>
 								<td>Tipo de cambio:</td>
-								<td><form:input type="text" id="changeType" path="changeType" style="width:100%" class="required" maxlength="5" readOnly="${enableEdition}"/></td>
+								<td><form:input type="text" id="changeType" path="changeType" style="width:100%" class="required lockOnDetail" maxlength="5"/></td>
 								<td>Fecha:</td>
-								<td><form:input type="text" id="created" path="created" style="width:100%" class="required" readOnly="${enableEdition}"/></td>
+								<td><form:input type="text" id="created" path="created" style="width:95%" class="required" readOnly="true"/></td>
 							  <tr>
 								<td>Nombre del Contacto:</td>
-								<td><form:input type="text" id="contactName" path="contactName"  style="width:100%" class="required" readOnly="${enableEdition}"/></td>
+								<td><form:input type="text" id="contactName" path="contactName"  style="width:100%" class="required lockOnDetail"/></td>
 							  </tr>
 							  <tr>
 								<td>Ubicación(es) del Proyecto:</td>
-								<td><form:input type="text" id="location" path="location"  style="width:100%" class="required" readOnly="${enableEdition}"/></td>
+								<td><form:input type="text" id="location" path="location"  style="width:100%" class="required lockOnDetail"/></td>
 								<td>Forma de pago:</td>
-								<td><form:select name="" id="paymentTypeId" path="paymentTypeId" style="width:100%" disabled="${enableEdition}" class="required">
-								            <option value="">Seleccione</option>
+								<td><form:select name="" id="paymentTypeId" path="paymentTypeId" style="width:95%" class="required lockOnDetail">
 											<c:forEach var="ss" items="${paymentTypes}">
 												<option value="${ss.id}"
 												<c:if test="${ss.id == project.paymentTypeId}">
@@ -270,20 +418,19 @@
 											
 										</form:select>
 							  </tr>
-							  <tr>
+							  <tr id="creditInputLine">
 								<td>Anticipo:</td>
-								<td><form:input type="text" id="advance" path="advance" style="width:100%" class="required" maxlength="10" readOnly="${enableEdition}"/></td>
+								<td><form:input type="text" id="advance" path="advance" style="width:100%" class="lockOnDetail" maxlength="10" /></td>
 								<td>Plazo:</td>
-								<td><form:input type="text" id="timeLimit" path="timeLimit" style="width:100%" class="required" maxlength="3" readOnly="${enableEdition}"/></td>
+								<td><form:input type="text" id="timeLimit" path="timeLimit" style="width:85%" class="lockOnDetail" maxlength="3" /> Días</td>
 							  <tr>
 							  <tr>
 								<td>Plazo finiquito:</td>
-								<td><form:input type="text" id="settlementTimeLimit" path="settlementTimeLimit"  style="width:100%" class="required" maxlength="3" readOnly="${enableEdition}"/></td>
+								<td><form:input type="text" id="settlementTimeLimit" path="settlementTimeLimit"  style="width:85%" class="required lockOnDetail" maxlength="3" /> Días</td>
 							  </tr>
 							  <tr>
 								<td>Moneda:</td>
-								<td><form:select name="" id="currencyTypeId" path="currencyTypeId" style="width:100%" class="required" disabled="${enableEdition}">
-								            <option value="">Seleccione</option>
+								<td><form:select name="" id="currencyTypeId" path="currencyTypeId" style="width:100%" class="required lockOnDetail" >
 											<c:forEach var="ss" items="${currencyTypes}">
 												<option value="${ss.id}"
 												<c:if test="${ss.id == project.currencyTypeId}">
@@ -294,8 +441,7 @@
 											
 										</form:select></td>
 								<td>IVA:</td>
-								<td><form:select name="" id="taxesTypeId" path="taxesTypeId" style="width:100%" class="required" disabled="${enableEdition}">
-								            <option value="">Seleccione</option>
+								<td><form:select name="" id="taxesTypeId" path="taxesTypeId" style="width:100%" class="required lockOnDetail" >
 											<c:forEach var="ss" items="${taxesTypes}">
 												<option value="${ss.id}"
 												<c:if test="${ss.id == project.taxesTypeId}">
@@ -308,21 +454,21 @@
 							  </tr>
 							  <tr>
 								<td>Tiempo de entrega:</td>
-								<td><form:input type="text" id="deliveryTime" path="deliveryTime" style="width:100%" class="required" maxlength="3" readOnly="${enableEdition}"/></td>
+								<td><form:input type="text" id="deliveryTime" path="deliveryTime" style="width:85%" class="required lockOnDetail" maxlength="3" /> Días</td>
 								<td>Incoterm:</td>
-								<td><form:input type="text" id="incoterm" path="incoterm" style="width:100%" class="required" maxlength="5" readOnly="${enableEdition}"/></td>
+								<td><form:select items="${incotermList}" path="incoterm" style="width:100%" class="required lockOnDetail" maxlength="5" /></td>
 							  </tr>
 							  <tr>
 								<td>TOTAL DE PRODUCTOS</td>
-								<td><form:input type="text" path="productsNumber" style="width:100%" class="required" maxlength="7" readOnly="true"/></td>
+								<td><form:input type="text" path="productsNumber" style="width:100%" maxlength="7" readOnly="true"/></td>
 								<td>FIANZA(S)</td>
-								<td><form:input type="text" path="financesNumber" style="width:100%" class="required" maxlength="7" readOnly="true"/></td>
+								<td><form:input type="text" path="financesNumber" style="width:95%" maxlength="7" class="calc"/></td>
 							  </tr>
 							  <tr>
 								<td>TOTAL DE SERVICIOS</td>
-								<td><form:input type="text" path="servicesNumber" style="width:100%" class="required" maxlength="7" readOnly="true"/></td>
+								<td><form:input type="text" path="servicesNumber" style="width:100%" maxlength="7" readOnly="true"/></td>
 								<td>TOTAL DEL PROYECTO</td>
-								<td><form:input type="text" path="totalProjectNumber" style="width:100%" class="required" maxlength="7" readOnly="true"/></td>
+								<td><form:input type="text" path="totalProjectNumber" style="width:95%" maxlength="7" readOnly="true"/></td>
 							  </tr>
 						   </table>
 						   <form:input type="hidden" path="strEntries"/>
@@ -370,7 +516,7 @@
                                            <script type="text/javascript">
                                                  addItem(entryNumber);
                                                  $("#entryItemTypeId_" + itemNumber).val('${item.itemTypeId}');
-                                                 setReferenceTypes('${item.itemTypeId}', $('#referenceId_' + itemNumber) , $('#reference_' + itemNumber));
+                                                 setReferenceTypes('${item.itemTypeId}', $('#referenceId_' + itemNumber) , $('#reference_' + itemNumber), itemNumber);
                                                  if('${item.itemTypeId}' == "3"){
                                                 	 $("#reference_" + itemNumber).val('${item.reference}');
                                                 	 $("#reference_" + itemNumber).show();

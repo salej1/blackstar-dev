@@ -86,7 +86,10 @@ public class ProjectController extends AbstractController {
 		 model.addAttribute("clients", cService.getAllClients());
 		 model.addAttribute("osAttachmentFolder", gdService.getAttachmentFolderId(project.getProjectNumber()));
 		 model.addAttribute("deliverables", service.getDeliverables(projectId));
+		 model.addAttribute("costCenterList", getCostCenterList(project.getProjectNumber()));
 		 model.addAttribute("followUps", service.getFollowUps(projectId));
+		 model.addAttribute("incotermList", service.getIncotermList());
+		 model.addAttribute("priceListJson", service.getPriceList());
 		} catch (Exception e) {
 			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 			e.printStackTrace();
@@ -100,20 +103,21 @@ public class ProjectController extends AbstractController {
 		  @ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession){
 	ProjectVO project = new ProjectVO();
 	ClientVO client= null;
-	Integer projectId = null;
+	Integer projectNum = null;
 	String officeId = null;
 	try {
-		 projectId = service.getNewProjectId();
 		 officeId = service.getCSTOffice(userSession.getUser().getUserEmail());
+		 projectNum = service.getNewProjectId(officeId);
 		 if(clientId != null && ((client = cService.getClientById(clientId)) != null)){
 			 project.setClientId(client.getId());
 			 project.setLocation(client.getState());
 			 project.setContactName(client.getContactName());
 		 }
-	     project.setId(projectId);
+	     project.setId(0);
 	     project.setStatusId(1);
 	     project.setStatusDescription("Nuevo");
-	     project.setProjectNumber("C" + officeId + projectId);
+	     project.setProjectNumber("C" + officeId + projectNum);
+	     project.setCostCenter(project.getProjectNumber());
 	     project.setCreated(new Date());
 	     project.setChangeType(xrService.getExchangeRate());
 	     model.addAttribute("project", project);
@@ -128,6 +132,8 @@ public class ProjectController extends AbstractController {
 	     model.addAttribute("isUpdate", false);
 	     model.addAttribute("clients", cService.getAllClients());
 	     model.addAttribute("costCenterList", getCostCenterList(project.getProjectNumber()));
+	     model.addAttribute("incotermList", service.getIncotermList());
+	     model.addAttribute("priceListJson", service.getPriceList());
 	     
 	} catch (Exception e) {
 		Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
@@ -258,4 +264,5 @@ public class ProjectController extends AbstractController {
 	  
 	  return ccList;
   }
+  
 }

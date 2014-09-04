@@ -49,9 +49,9 @@ public class PriceProposalServiceImpl extends AbstractService
      priceProposal.setSettlementTimeLimit(project.getSettlementTimeLimit());
      priceProposal.setDeliveryTime(project.getDeliveryTime());
      priceProposal.setIncoterm(project.getIncoterm());
-     priceProposal.setProductsNumber(project.getProductsNumber());
-     priceProposal.setFinancesNumber(project.getFinancesNumber());
-     priceProposal.setServicesNumber(project.getServicesNumber());
+     priceProposal.setProductsNumber(project.getProductsNumber() != null? project.getProductsNumber() : 0);
+     priceProposal.setFinancesNumber(project.getFinancesNumber() != null? project.getFinancesNumber() : 0);
+     priceProposal.setServicesNumber(project.getServicesNumber() != null? project.getServicesNumber() : 0);
      priceProposal.setTotalProjectNumber(project.getTotalProjectNumber());
      entries = new ArrayList<PriceProposalEntryVO>();
      for(ProjectEntryVO projectEntry :  project.getEntries()){

@@ -29,10 +29,10 @@ public class ProjectVO {
 	private Integer settlementTimeLimit;
 	private Integer deliveryTime;
 	private String incoterm;
-	private Integer productsNumber;
-	private Integer financesNumber;
-	private Integer servicesNumber;
-	private Integer totalProjectNumber; 
+	private Double productsNumber;
+	private Double financesNumber;
+	private Double servicesNumber;
+	private Double totalProjectNumber; 
 	private List<ProjectEntryVO> entries = new ArrayList<ProjectEntryVO>();
 	private String strEntries;
 	private DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
@@ -149,28 +149,28 @@ public class ProjectVO {
 	public void setIncoterm(String incoterm) {
 		this.incoterm = incoterm;
 	}
-	public Integer getProductsNumber() {
+	public Double getProductsNumber() {
 		return productsNumber;
 	}
-	public void setProductsNumber(Integer productsNumber) {
+	public void setProductsNumber(Double productsNumber) {
 		this.productsNumber = productsNumber;
 	}
-	public Integer getFinancesNumber() {
+	public Double getFinancesNumber() {
 		return financesNumber;
 	}
-	public void setFinancesNumber(Integer financesNumber) {
+	public void setFinancesNumber(Double financesNumber) {
 		this.financesNumber = financesNumber;
 	}
-	public Integer getServicesNumber() {
+	public Double getServicesNumber() {
 		return servicesNumber;
 	}
-	public void setServicesNumber(Integer servicesNumber) {
+	public void setServicesNumber(Double servicesNumber) {
 		this.servicesNumber = servicesNumber;
 	}
-	public Integer getTotalProjectNumber() {
+	public Double getTotalProjectNumber() {
 		return totalProjectNumber;
 	}
-	public void setTotalProjectNumber(Integer totalProjectNumber) {
+	public void setTotalProjectNumber(Double totalProjectNumber) {
 		this.totalProjectNumber = totalProjectNumber;
 	}
 	public List<ProjectEntryVO> getEntries() {

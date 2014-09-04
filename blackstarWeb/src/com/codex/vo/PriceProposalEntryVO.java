@@ -10,7 +10,7 @@ public class PriceProposalEntryVO {
   private Integer entryTypeId;
   private String description;
   private Float discount;
-  private Float totalPrice;
+  private Double totalPrice;
   private String comments;
   private List<PriceProposalItemVO> items = new ArrayList<PriceProposalItemVO>();
   
@@ -44,10 +44,10 @@ public class PriceProposalEntryVO {
   public void setDiscount(Float discount) {
 	this.discount = discount;
   }
-  public Float getTotalPrice() {
+  public Double getTotalPrice() {
 	return totalPrice;
   }
-  public void setTotalPrice(Float totalPrice) {
+  public void setTotalPrice(Double totalPrice) {
 	this.totalPrice = totalPrice;
   }
   public String getComments() {

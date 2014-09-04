@@ -35,14 +35,14 @@
 				"aaData": projects,
 				"sDom": '<"top"i>rt<"bottom"flp><"clear">',
 				"aoColumns": [
-							  { "mData": "id"},
+							  { "mData": "projectNumber"},
 							  { "mData": "clientDescription" },
 							  { "mData": "location" },
 							  { "mData": "created" },
 							  { "mData": "totalProjectNumber" },
 							  { "mData": "statusDescription" }
 						  ],
-				"aoColumnDefs" : [{"mRender" : function(data, type, row){return "<div align=center style='width:75px;'><a href=${pageContext.request.contextPath}/codex/project/edit.do?projectId=" + data + ">CQ" + data + "</a></div>";}, "aTargets" : [0]}]}
+				"aoColumnDefs" : [{"mRender" : function(data, type, row){return "<div align=center style='width:75px;'><a href=${pageContext.request.contextPath}/codex/project/edit.do?projectId=" + row.id + ">" + data + "</a></div>";}, "aTargets" : [0]}]}
 			);
 		
 	} );
@@ -64,7 +64,7 @@
 
 			<div class="grid_16">
 		<div class="box">
-			<h2>Projectos</h2>
+			<h2>Cedulas de proyecto</h2>
 			<div class="utils">
 				
 			</div>

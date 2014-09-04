@@ -21,10 +21,10 @@ public class PriceProposalVO {
 	private Integer deliveryTime;
 	private String incoterm;
 	private String contactName;
-	private Integer productsNumber;
-	private Integer financesNumber;
-	private Integer servicesNumber;
-	private Integer totalProjectNumber;
+	private Double productsNumber;
+	private Double financesNumber;
+	private Double servicesNumber;
+	private Double totalProjectNumber;
 	private Date created;
 	private String priceProposalNumber;
 	private List<PriceProposalEntryVO> entries = new ArrayList<PriceProposalEntryVO>();
@@ -113,28 +113,28 @@ public class PriceProposalVO {
 	public void setIncoterm(String incoterm) {
 		this.incoterm = incoterm;
 	}
-	public Integer getProductsNumber() {
+	public Double getProductsNumber() {
 		return productsNumber;
 	}
-	public void setProductsNumber(Integer productsNumber) {
+	public void setProductsNumber(Double productsNumber) {
 		this.productsNumber = productsNumber;
 	}
-	public Integer getFinancesNumber() {
+	public Double getFinancesNumber() {
 		return financesNumber;
 	}
-	public void setFinancesNumber(Integer financesNumber) {
+	public void setFinancesNumber(Double financesNumber) {
 		this.financesNumber = financesNumber;
 	}
-	public Integer getServicesNumber() {
+	public Double getServicesNumber() {
 		return servicesNumber;
 	}
-	public void setServicesNumber(Integer servicesNumber) {
+	public void setServicesNumber(Double servicesNumber) {
 		this.servicesNumber = servicesNumber;
 	}
-	public Integer getTotalProjectNumber() {
+	public Double getTotalProjectNumber() {
 		return totalProjectNumber;
 	}
-	public void setTotalProjectNumber(Integer totalProjectNumber) {
+	public void setTotalProjectNumber(Double totalProjectNumber) {
 		this.totalProjectNumber = totalProjectNumber;
 	}
 	public Date getCreated() {

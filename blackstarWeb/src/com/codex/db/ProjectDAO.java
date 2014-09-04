@@ -33,13 +33,13 @@ public interface ProjectDAO {
                                                                 , String comment);
 	public void addProjectTeam(Integer projectId, Integer roleId, Integer userId);
 	public List<ProjectVO> getProjectDetail(Integer projectId);
-	public Integer getNewProjectId();
+	public Integer getNewProjectId(String type);
 	public List<DeliverableTypesVO> getDeliverableTypes();
 	public void addDeliverableTrace(Integer projectId, Integer deliverableTypeId
                                                               , Integer userId);
 	public List<JSONObject> getReferenceTypes(Integer itemTypeId);
 	public List<PaymentTypeVO> getAllPaymentTypes(); 
-	public void upsertProjectEntry(Integer entryId, Integer projectId
+	public Integer upsertProjectEntry(Integer entryId, Integer projectId
             , Integer entryTypeId, String description 
             , Float discount, Float totalPrice
             , String comments);
@@ -47,8 +47,7 @@ public interface ProjectDAO {
                       , String reference, String description , Integer  quantity
                       , Float priceByUnit, Float discount, Float totalPrice
                       , String comments);
-	public void upsertProject(ProjectVO project);
-	public Integer getNewEntryId();
+	public Integer upsertProject(ProjectVO project);
 	public List<ProjectEntryVO> getEntriesByProject(Integer projectId);
 	public List<ProjectEntryItemVO> getItemsByEntry(Integer entryId);
 	public List<DeliverableVO> getDeliverables(Integer projectId);
@@ -59,4 +58,5 @@ public interface ProjectDAO {
 	public List<JSONObject> getAllProjectsByUsrJson(Integer userId);
 	public List<CostCenterDTO> getCostCenterList();
 	public String getCSTOffice(String cst);
+	public List<JSONObject> getPriceList();
 }
