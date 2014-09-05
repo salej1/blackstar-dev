@@ -16,7 +16,7 @@
 
 USE blackstarDb;
 
-DELIMITER $$
+DELIMITER ;
 
 CREATE TABLE IF NOT EXISTS blackstarDb.location(
   _id INT NOT NULL AUTO_INCREMENT,
@@ -76,7 +76,7 @@ CREATE TABLE IF NOT EXISTS blackstarDb.codexClient(
   PRIMARY KEY (_id),
   FOREIGN KEY (clientTypeId) REFERENCES codexClientType (_id),
   FOREIGN KEY (clientOriginId) REFERENCES codexClientOrigin (_id),
-  FOREIGN KEY (sellerId) REFERENCES blackstaruser (blackstarUserId)
+  FOREIGN KEY (sellerId) REFERENCES blackstarUser (blackstarUserId)
 )ENGINE=INNODB;
 
 CREATE TABLE IF NOT EXISTS blackstarDb.codexStatusType( 
@@ -311,6 +311,3 @@ CREATE TABLE IF NOT EXISTS blackstarDb.cstOffice(
   -- FOREIGN KEY (officeId) REFERENCES office (officeId)
 )ENGINE=INNODB;
 
-$$
-
-DELIMITER ;
