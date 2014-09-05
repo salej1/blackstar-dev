@@ -129,7 +129,7 @@ public class UpsServiceController extends AbstractController {
 		  } 
 		  catch (Exception e) 
 		  {
-			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
+			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[0].toString(), e);
 			e.printStackTrace();
 			model.addAttribute("errorDetails", e.getMessage() + " - " + e.getStackTrace()[0].toString());
 			return "error";
@@ -226,7 +226,7 @@ public class UpsServiceController extends AbstractController {
 			}
 			catch (Exception e) 
 			{
-				Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
+				Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[0].toString(), e);
 				e.printStackTrace();
 				model.addAttribute("errorDetails", e.getMessage() + " - " + e.getStackTrace()[0].toString());
 				throw e;

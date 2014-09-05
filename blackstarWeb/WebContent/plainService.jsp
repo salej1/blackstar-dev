@@ -189,6 +189,10 @@
 
 		if(isEng == "true"){
 			$("#serviceEndDate").val(dateNow());
+			if($("#signCreatedCapture").val().trim().length == 0 || $("#signReceivedByCapture").val().trim().length == 0){
+				$("#InvalidMessage").html("Por favor firme la OS");
+				return false;
+			}
 		}
 
 		if($('#serviceOrder')[0].checkValidity()){

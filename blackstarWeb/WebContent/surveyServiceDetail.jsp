@@ -21,7 +21,7 @@
        // ocultando el mensaje de error
        $(".info").hide();
 
-       // Sincronizando los campos de firma
+        // Sincronizando los campos de firma
         $("#surveyService").submit(function(){
           $("#sign").val($("#signReceivedByCapture").val())
         });
@@ -65,7 +65,42 @@
             init_autoComplete(data, "serviceOrderList", "serviceOrderIdList");           
           }
         });
+
+        // Mensaje de error
+        $( "#InvalidMessage" ).dialog({
+          modal: true,
+          autoOpen: false,
+          width: 350,
+          buttons: {
+            Aceptar: function() {
+              $( this ).dialog( "close" );
+            }
+          }
+        });
     });
+
+    function validate(){
+        var timeStamp = Date.parseExact($("#date").val(), 'dd/MM/yyyy HH:mm:ss');
+        if(timeStamp == undefined || timeStamp == null){
+          $("#InvalidMessage").html("Por favor revise la fecha y hora de la encuesta");
+          return false;
+        }
+        else{
+          if($('#surveyService')[0].checkValidity()){
+           
+            return true;
+          }
+        }
+    }
+
+    function saveSurvey(){
+        if(validate()){
+           $("#surveyService").submit();
+        }
+        else{
+          $( "#InvalidMessage" ).dialog('open');
+        }
+    }
 </script>
 <title>Encuesta de servicio</title>
 </head>
@@ -77,7 +112,7 @@
 				  <p>Llenar por persona responsable del departamento</p>
           <div>
              Ordenes de servicio:
-             <form:input path="serviceOrderList" type="text" style="width:50%;" cssClass="lockOnDetail"/>
+             <form:input path="serviceOrderList" type="text" style="width:50%;" cssClass="lockOnDetail" required="true"/>
              <input type="hidden" id="serviceOrderIdList"/>
              <div class="info" style="width:200px;margin-left:116px;">Por favor verifique la Orden de servicio</div>
           </div>
@@ -85,19 +120,19 @@
 				  <table>
                 <tr>
                   <td style="width:90px">Empresa</td>
-                  <td><form:input path="company" type="text" style="width:95%;" cssClass="lockOnDetail" readOnly="true"/></td>
+                  <td><form:input path="company" type="text" style="width:95%;" cssClass="lockOnDetail" readOnly="true" required="true"/></td>
 		            </tr>
                 <tr>
                   <td>Nombre</td>
-                  <td><form:input path="name" type="text" style="width:95%;" cssClass="lockOnDetail" readOnly="true"/></td>
+                  <td><form:input path="name" type="text" style="width:95%;" cssClass="lockOnDetail" readOnly="true" required="true"/></td>
 			            <td>Telefono</td>
-                  <td><form:input path="phone" type="text" style="width:95%;" cssClass="lockOnDetail" readOnly="true"/></td>
+                  <td><form:input path="phone" type="text" style="width:95%;" cssClass="lockOnDetail" readOnly="true" required="true"/></td>
                 </tr>
                 <tr>
                   <td>Correo electronico </td>
-                  <td><form:input path="email" type="text" style="width:95%;" cssClass="lockOnDetail" readOnly="true"/></td>
+                  <td><form:input path="email" type="text" style="width:95%;" cssClass="lockOnDetail" readOnly="true" required="true"/></td>
                   <td>Fecha </td>
-                  <td><form:input path="date" type="text" style="width:95%;" cssClass="lockOnDetail"/>
+                  <td><form:input path="date" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/>
 			            </td>
                 </tr>
               </table>
@@ -171,7 +206,7 @@
 				  <p>
               <form:textarea path="suggestion" cols="150" rows="8" cssClass="lockOnDetail"></form:textarea>
 
-				 <div align="left"><input class="searchButton lockOnDetail" type="submit" value="Guardar Encuesta" id="guardar"/></div>
+				 <div align="left"><input class="searchButton lockOnDetail" type="submit" onclick="saveSurvey(); return false;" value="Guardar Encuesta" id="guardar"/></div>
 	  		</div>
         <!-- Campos de firma -->
           <form:hidden path="sign"/>
@@ -181,5 +216,8 @@
       <c:import url="signatureFragment.jsp"></c:import>
 
 		</div>
+    <div id="InvalidMessage" title="Revise los datos de la OS">
+      Por favor revise que todos los campos hayan sido llenados.
+    </div>
 </body>
 </html>
