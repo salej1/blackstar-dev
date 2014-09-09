@@ -257,12 +257,15 @@ public class BatteryMaintenanceReport extends AbstractReport {
 		drawer.text((j + (i*22)) + "", 18 + (i * 137), 425 + ((j - 1) * 11)
 				                                            , false, 0, 6);
 		if(data.getCells().size() >= (j + (i*22))){
-		  drawer.text(data.getCells().get(j + (i*22) - 1).getFloatVoltage() 
-			      + "", 18 + (i * 137) + 47, 425 + ((j - 1) * 11), false, 0, 6);
-		  drawer.text(data.getCells().get(j + (i*22) - 1).getChargeVoltage() 
-				  + "", 18 + (i * 137) + 94, 425 + ((j - 1) * 11), false, 0, 6);
+			String floatVolt = data.getCells().get(j + (i*22) - 1).getFloatVoltage();
+			if(floatVolt != null && !floatVolt.isEmpty()){
+				drawer.text(floatVolt, 18 + (i * 137) + 47, 425 + ((j - 1) * 11), false, 0, 6);
+			}
+			String chargeVolt = data.getCells().get(j + (i*22) - 1).getChargeVoltage();
+			if(chargeVolt != null && !chargeVolt.isEmpty()){
+				drawer.text(chargeVolt, 18 + (i * 137) + 94, 425 + ((j - 1) * 11), false, 0, 6);
+			}
 		}
-			 
 	  }  
 	}  
   }

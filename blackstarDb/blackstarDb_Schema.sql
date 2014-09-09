@@ -37,6 +37,8 @@
 -- ---------------------------------------------------------------------------
 -- 27 	20/08/2014	SAG 	Se aumenta el tamaño de todos los campos alfanumericos de OS
 -- ---------------------------------------------------------------------------
+-- 28	09/09/2014	SAG 	Se permiten nulos en boleanos de OS - todos los formatos
+-- ---------------------------------------------------------------------------
 
 use blackstarDb;
 
@@ -49,6 +51,20 @@ BEGIN
 -- -----------------------------------------------------------------------------
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
+
+-- AGREGANDO NULLS A BOLEANOS DE OS
+IF(SELECT IS_NULLABLE FROM information_schema.columns WHERE  table_schema = 'blackstarDb' AND table_name = 'aaService' AND column_name = 'evaFlagCalibration') = 'NO' THEN
+	ALTER TABLE blackstarDb.aaService MODIFY evaFlagCalibration bit(1) NULL;
+	ALTER TABLE blackstarDb.aaService MODIFY evaReviewFilter bit(1) NULL;
+	ALTER TABLE blackstarDb.aaService MODIFY evaReviewStrip bit(1) NULL;
+	ALTER TABLE blackstarDb.aaService MODIFY evaCleanElectricSystem bit(1) NULL;
+	ALTER TABLE blackstarDb.aaService MODIFY evaCleanControlCard bit(1) NULL;
+	ALTER TABLE blackstarDb.aaService MODIFY evaCleanTray bit(1) NULL;
+	ALTER TABLE blackstarDb.aaService MODIFY evaCheckFluidSensor bit(1) NULL;
+	ALTER TABLE blackstarDb.aaService MODIFY evaRequirMaintenance bit(1) NULL;
+	ALTER TABLE blackstarDb.aaService MODIFY condCleanElectricSystem bit(1)  NULL;
+	ALTER TABLE blackstarDb.aaService MODIFY condClean bit(1) NULL;
+END IF;
 
 -- CAMBIANDO NUMERICOS POR ALFA-NUMERICOS
 IF(SELECT character_maximum_length FROM information_schema.columns WHERE  table_schema = 'blackstarDb' AND table_name = 'aaService' AND column_name = 'observations') < 1000 THEN

@@ -73,7 +73,7 @@ public class AirConditioningReport extends AbstractReport {
 	 drawer.text(data.getEvaSetpointHum().toString(), 505, 211, true);
 	 drawer.hLine(0, 555, 214, 0x0155A5) ;
 	 drawer.text("1.3 SE REALIZO COMPARACION Y CALIBRACION T/H MEDIO", 5, 225, false, 0, 6);
-	 drawer.text(data.getEvaFlagCalibration() ? "Sí" : "No", 418, 225, true);
+	 drawer.text(serviceCheckEval(data.getEvaFlagCalibration()), 418, 225, true);
 	 drawer.hLine(0, 555, 228, 0x0155A5) ;
 	 drawer.text("1.4 REVISION Y LIMPIEZA DE FILTROS, EVAPORADOR Y EQUIPO EN GRAL.", 5, 239, false, 0, 6);
 	 drawer.text(data.getEvaReviewFilter() ? "Sí" : "No", 418, 239, true);

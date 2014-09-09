@@ -43,6 +43,9 @@
 -- -----------------------------------------------------------------------------
 -- 52 	24/07/2014	SAG 	Se implementa relacion 1-n entre polizas y usuarios cliente
 -- -----------------------------------------------------------------------------
+-- 53	09/09/2014	SAG 	Se modifica:
+--								blackstarDb.AddupsService
+-- -----------------------------------------------------------------------------
 
 use blackstarDb;
 
@@ -3530,56 +3533,56 @@ END$$
 DROP PROCEDURE IF EXISTS blackstarDb.AddAAservice$$
 CREATE PROCEDURE blackstarDb.AddAAservice (  
 	serviceOrderId int(11),
-	evaDescription varchar(250),
-	evaValTemp varchar(50),
-	evaValHum varchar(50),
-	evaSetpointTemp varchar(50),
-	evaSetpointHum varchar(50),
+	evaDescription VARCHAR(2000),
+	evaValTemp VARCHAR(200),
+	evaValHum VARCHAR(200),
+	evaSetpointTemp VARCHAR(200),
+	evaSetpointHum VARCHAR(200),
 	evaFlagCalibration bit(1),
 	evaReviewFilter bit(1),
 	evaReviewStrip bit(1),
 	evaCleanElectricSystem bit(1),
 	evaCleanControlCard bit(1),
 	evaCleanTray bit(1),
-	evaLectrurePreasureHigh varchar(50),
-	evaLectrurePreasureLow varchar(50),
-	evaLectureTemp varchar(50),
-	evaLectureOilColor varchar(50),
-	evaLectureOilLevel varchar(50),
-	evaLectureCoolerColor varchar(50),
-	evaLectureCoolerLevel varchar(50),
-	evaCheckOperatation varchar(50),
-	evaCheckNoise varchar(50),
-	evaCheckIsolated varchar(50),
-	evaLectureVoltageGroud varchar(50),
-	evaLectureVoltagePhases varchar(50),
-	evaLectureVoltageControl varchar(50),
-	evaLectureCurrentMotor1 varchar(50),
-	evaLectureCurrentMotor2 varchar(50),
-	evaLectureCurrentMotor3 varchar(50),
-	evaLectureCurrentCompressor1 varchar(50),
-	evaLectureCurrentCompressor2 varchar(50),
-	evaLectureCurrentCompressor3 varchar(50),
-	evaLectureCurrentHumidifier1 varchar(50),
-	evaLectureCurrentHumidifier2 varchar(50),
-	evaLectureCurrentHumidifier3 varchar(50),
-	evaLectureCurrentHeater1 varchar(50),
-	evaLectureCurrentHeater2 varchar(50),
-	evaLectureCurrentHeater3 varchar(50),
+	evaLectrurePreasureHigh VARCHAR(200),
+	evaLectrurePreasureLow VARCHAR(200),
+	evaLectureTemp VARCHAR(200),
+	evaLectureOilColor VARCHAR(200),
+	evaLectureOilLevel VARCHAR(200),
+	evaLectureCoolerColor VARCHAR(200),
+	evaLectureCoolerLevel VARCHAR(200),
+	evaCheckOperatation VARCHAR(200),
+	evaCheckNoise VARCHAR(200),
+	evaCheckIsolated VARCHAR(200),
+	evaLectureVoltageGroud VARCHAR(200),
+	evaLectureVoltagePhases VARCHAR(200),
+	evaLectureVoltageControl VARCHAR(200),
+	evaLectureCurrentMotor1 VARCHAR(200),
+	evaLectureCurrentMotor2 VARCHAR(200),
+	evaLectureCurrentMotor3 VARCHAR(200),
+	evaLectureCurrentCompressor1 VARCHAR(200),
+	evaLectureCurrentCompressor2 VARCHAR(200),
+	evaLectureCurrentCompressor3 VARCHAR(200),
+	evaLectureCurrentHumidifier1 VARCHAR(200),
+	evaLectureCurrentHumidifier2 VARCHAR(200),
+	evaLectureCurrentHumidifier3 VARCHAR(200),
+	evaLectureCurrentHeater1 VARCHAR(200),
+	evaLectureCurrentHeater2 VARCHAR(200),
+	evaLectureCurrentHeater3 VARCHAR(200),
 	evaCheckFluidSensor bit(1),
 	evaRequirMaintenance bit(1),
-	condReview varchar(50),
+	condReview VARCHAR(200),
 	condCleanElectricSystem bit(1),
 	condClean bit(1),
-	condLectureVoltageGroud varchar(50),
-	condLectureVoltagePhases varchar(50),
-	condLectureVoltageControl varchar(50),
-	condLectureMotorCurrent varchar(50),
-	condReviewThermostat varchar(50),
-	condModel varchar(50),
-	condSerialNumber varchar(50),
-	condBrand varchar(50),
-	observations varchar(255),
+	condLectureVoltageGroud VARCHAR(200),
+	condLectureVoltagePhases VARCHAR(200),
+	condLectureVoltageControl VARCHAR(200),
+	condLectureMotorCurrent VARCHAR(200),
+	condReviewThermostat VARCHAR(200),
+	condModel VARCHAR(200),
+	condSerialNumber VARCHAR(200),
+	condBrand VARCHAR(200),
+	observations varchar(2000),
 	created datetime ,
 	createdBy varchar(50),
 	createdByUsr varchar(50))
@@ -3620,7 +3623,7 @@ END$$
 	-- blackstarDb.AddBBcellservice
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.AddBBcellservice$$
-CREATE PROCEDURE blackstarDb.AddBBcellservice (bbServiceId int(11) , cellNumber int(11) , floatVoltage varchar(50) , chargeVoltage varchar(50))
+CREATE PROCEDURE blackstarDb.AddBBcellservice (bbServiceId int(11) , cellNumber int(11) , floatVoltage VARCHAR(200) , chargeVoltage VARCHAR(200))
 BEGIN
 INSERT INTO bbCellService
 (bbServiceId,cellNumber,floatVoltage,chargeVoltage)
@@ -3634,24 +3637,24 @@ DROP PROCEDURE IF EXISTS blackstarDb.AddBBservice$$
 CREATE PROCEDURE blackstarDb.AddBBservice (
    serviceOrderId  int(11)  ,
    plugClean  bit(1)  ,
-   plugCleanStatus  varchar(50) , 
-   plugCleanComments  varchar(50) , 
+   plugCleanStatus  VARCHAR(200), 
+   plugCleanComments  VARCHAR(200), 
    coverClean  bit(1)  ,
-   coverCleanStatus  varchar(50)  ,
-   coverCleanComments  varchar(50) , 
+   coverCleanStatus  VARCHAR(200) ,
+   coverCleanComments  VARCHAR(200), 
    capClean  bit(1)  ,
-   capCleanStatus  varchar(50)  ,
-   capCleanComments  varchar(50) , 
+   capCleanStatus  VARCHAR(200) ,
+   capCleanComments  VARCHAR(200), 
    groundClean  bit(1)  ,
-   groundCleanStatus  varchar(50) , 
-   groundCleanComments  varchar(50) , 
+   groundCleanStatus  VARCHAR(200), 
+   groundCleanComments  VARCHAR(200), 
    rackClean  bit(1)  ,
-   rackCleanStatus  varchar(50) , 
-   rackCleanComments  varchar(50) , 
-   serialNoDateManufact  varchar(50)  ,
-   batteryTemperature  varchar(50)  ,
-   voltageBus  varchar(50)  ,
-   temperature  varchar(50)  ,
+   rackCleanStatus  VARCHAR(200), 
+   rackCleanComments  VARCHAR(200), 
+   serialNoDateManufact  VARCHAR(200) ,
+   batteryTemperature  VARCHAR(200) ,
+   voltageBus  VARCHAR(200) ,
+   temperature  VARCHAR(200) ,
    created  datetime , 
    createdBy  varchar(50)  ,
    createdByUsr  varchar(50)
@@ -3675,40 +3678,40 @@ END$$
 DROP PROCEDURE IF EXISTS blackstarDb.AddepService$$
 CREATE PROCEDURE blackstarDb.AddepService (
    serviceOrderId  int(11)  ,
-   brandPE varchar(50) ,
-   modelPE varchar(50) ,
-   serialPE varchar(50) ,
-   transferType  varchar(50),
-   modelTransfer  varchar(50),
-   modelControl  varchar(50),
-   modelRegVoltage  varchar(50),
-   modelRegVelocity  varchar(50),
-   modelCharger  varchar(50),
+   brandPE VARCHAR(200) ,
+   modelPE VARCHAR(200) ,
+   serialPE VARCHAR(200) ,
+   transferType  VARCHAR(200),
+   modelTransfer  VARCHAR(200),
+   modelControl  VARCHAR(200),
+   modelRegVoltage  VARCHAR(200),
+   modelRegVelocity  VARCHAR(200),
+   modelCharger  VARCHAR(200),
    oilChange  date,
-   brandMotor  varchar(50),
-   modelMotor  varchar(50),
-   serialMotor  varchar(50),
-   cplMotor  varchar(50),
-   brandGenerator  varchar(50),
-   modelGenerator  varchar(50),
-   serialGenerator  varchar(50),
-   powerWattGenerator  varchar(50),
-   tensionGenerator  varchar(50),
+   brandMotor  VARCHAR(200),
+   modelMotor  VARCHAR(200),
+   serialMotor  VARCHAR(200),
+   cplMotor  VARCHAR(200),
+   brandGenerator  VARCHAR(200),
+   modelGenerator  VARCHAR(200),
+   serialGenerator  VARCHAR(200),
+   powerWattGenerator  VARCHAR(200),
+   tensionGenerator  VARCHAR(200),
    tuningDate  date,
-   tankCapacity  varchar(50),
-   pumpFuelModel  varchar(50),
+   tankCapacity  VARCHAR(200),
+   pumpFuelModel  VARCHAR(200),
    filterFuelFlag  bit(1),
    filterOilFlag  bit(1),
    filterWaterFlag  bit(1),
    filterAirFlag  bit(1),
-   brandGear  varchar(50),
-   brandBattery  varchar(50),
-   clockLecture  varchar(50),
+   brandGear  VARCHAR(200),
+   brandBattery  VARCHAR(200),
+   clockLecture  VARCHAR(200),
    serviceCorrective  date,
-   observations  varchar(1000),
+   observations  VARCHAR(2000),
    created  datetime,
-   createdBy  varchar(50),
-   createdByUsr  varchar(50)
+   createdBy  VARCHAR(50),
+   createdByUsr  VARCHAR(50)
 )
 BEGIN
 
@@ -3726,16 +3729,16 @@ CREATE PROCEDURE blackstarDb.AddepServiceSurvey (
 	epServiceId  int(11)  ,
    levelOilFlag  bit(1)  ,
    levelWaterFlag  bit(1)  ,
-   levelBattery  varchar(50)  ,
+   levelBattery  VARCHAR(200),
    tubeLeak  bit(1)  ,
-   batteryCap  varchar(50)  ,
-   batterySulfate  varchar(50)  ,
-   levelOil varchar(50)  ,
-   heatEngine  varchar(50)  ,
-   hoseOil  varchar(50)  ,
-   hoseWater  varchar(50)  ,
-   tubeValve  varchar(50)  ,
-   stripBlades  varchar(50) 
+   batteryCap  VARCHAR(200),
+   batterySulfate  VARCHAR(200),
+   levelOil VARCHAR(200),
+   heatEngine  VARCHAR(200),
+   hoseOil  VARCHAR(200),
+   hoseWater  VARCHAR(200),
+   tubeValve  VARCHAR(200),
+   stripBlades  VARCHAR(200)
 )
 BEGIN
 insert into epServiceSurvey
@@ -3775,15 +3778,15 @@ END$$
 DROP PROCEDURE IF EXISTS blackstarDb.AddepServiceDynamicTest$$
 CREATE PROCEDURE blackstarDb.AddepServiceDynamicTest (
    epServiceId  int(11)  ,
-   vacuumFrequency  varchar(50),
-   chargeFrequency  varchar(50),
-   bootTryouts  varchar(50),
-   vacuumVoltage  varchar(50),
-   chargeVoltage  varchar(50),
-   qualitySmoke  varchar(50),
-   startTime  varchar(50),
-   transferTime  varchar(50),
-   stopTime  varchar(50) 
+   vacuumFrequency  VARCHAR(200),
+   chargeFrequency  VARCHAR(200),
+   bootTryouts  VARCHAR(200),
+   vacuumVoltage  VARCHAR(200),
+   chargeVoltage  VARCHAR(200),
+   qualitySmoke  VARCHAR(200),
+   startTime  VARCHAR(200),
+   transferTime  VARCHAR(200),
+   stopTime  VARCHAR(200) 
 )
 BEGIN
 insert into epServiceDynamicTest
@@ -3797,12 +3800,12 @@ END$$
 DROP PROCEDURE IF EXISTS blackstarDb.AddepServiceTestProtection$$
 CREATE PROCEDURE blackstarDb.AddepServiceTestProtection (
    epServiceId  int(11)  ,
-   tempSensor  varchar(50),
-   oilSensor  varchar(50),
-   voltageSensor  varchar(50),
-   overSpeedSensor  varchar(50),
-   oilPreasureSensor  varchar(50),
-    waterLevelSensor  varchar(50) 
+   tempSensor VARCHAR(200),
+   oilSensor VARCHAR(200),
+   voltageSensor VARCHAR(200),
+   overSpeedSensor VARCHAR(200),
+   oilPreasureSensor VARCHAR(200),
+    waterLevelSensor VARCHAR(200) 
 )
 BEGIN
 insert into epServiceTestProtection
@@ -3816,15 +3819,15 @@ END$$
 DROP PROCEDURE IF EXISTS blackstarDb.AddepServiceTransferSwitch$$
 CREATE PROCEDURE blackstarDb.AddepServiceTransferSwitch (
    epServiceId  int(11)  ,
-   mechanicalStatus  varchar(10),
+   mechanicalStatus  VARCHAR(200),
    boardClean  bit(1),
-	lampTest  bit(1),
+   lampTest  bit(1),
    screwAdjust  bit(1),
    conectionAdjust  bit(1),
-   systemMotors  varchar(10),
-   electricInterlock  varchar(10),
-   mechanicalInterlock  varchar(10),
-   capacityAmp  varchar(50)  
+   systemMotors  VARCHAR(200),
+   electricInterlock  VARCHAR(200),
+   mechanicalInterlock  VARCHAR(200),
+   capacityAmp   VARCHAR(200)
 )
 BEGIN
 insert into epServiceTransferSwitch
@@ -3838,16 +3841,16 @@ END$$
 DROP PROCEDURE IF EXISTS blackstarDb.AddepServiceLectures$$
 CREATE PROCEDURE blackstarDb.AddepServiceLectures (
    epServiceId  int(11)  ,
-   voltageABAN  varchar(50),
-   voltageACCN  varchar(50),
-   voltageBCBN  varchar(50),
-   voltageNT  varchar(50),
-   currentA  varchar(50),
-   currentB  varchar(50),
-   currentC  varchar(50),
-   frequency  varchar(50),
-   oilPreassure  varchar(50),
-   temp  varchar(50)  
+   voltageABAN  VARCHAR(200),
+   voltageACCN  VARCHAR(200),
+   voltageBCBN  VARCHAR(200),
+   voltageNT  VARCHAR(200),
+   currentA  VARCHAR(200),
+   currentB  VARCHAR(200),
+   currentC  VARCHAR(200),
+   frequency  VARCHAR(200),
+   oilPreassure  VARCHAR(200),
+   temp  VARCHAR(200) 
 )
 BEGIN
 insert into epServiceLectures
@@ -3861,12 +3864,12 @@ END$$
 DROP PROCEDURE IF EXISTS blackstarDb.AddepServiceParams$$
 CREATE PROCEDURE blackstarDb.AddepServiceParams (
    epServiceId  int(11)  ,
-   adjsutmentTherm  varchar(10)  ,
-   current  varchar(10)  ,
-   batteryCurrent  varchar(10)  ,
-   clockStatus  varchar(10)  ,
-   trasnferTypeProtection  varchar(10)  ,
-   generatorTypeProtection  varchar(10)  
+   adjsutmentTherm  VARCHAR(200),
+   current  VARCHAR(200),
+   batteryCurrent  VARCHAR(200),
+   clockStatus  VARCHAR(200),
+   trasnferTypeProtection  VARCHAR(200),
+   generatorTypeProtection  VARCHAR(200) 
 )
 BEGIN
 insert into epServiceParams
@@ -3904,15 +3907,15 @@ END$$
 DROP PROCEDURE IF EXISTS blackstarDb.AddupsService$$
 CREATE PROCEDURE blackstarDb.AddupsService (
   serviceOrderId int(11) ,
-  estatusEquipment varchar(50) ,
+  estatusEquipment varchar(200) ,
   cleaned bit(1) ,
   hooverClean bit(1) ,
   verifyConnections bit(1) ,
-  capacitorStatus varchar(50) ,
+  capacitorStatus varchar(200) ,
   verifyFuzz bit(1) ,
   chargerReview bit(1) ,
-  fanStatus varchar(50) ,
-  observations nvarchar(250),
+  fanStatus varchar(200) ,
+  observations nvarchar(2000),
   created datetime ,
   createdBy varchar(50) ,
   createdByUsr varchar(50) 

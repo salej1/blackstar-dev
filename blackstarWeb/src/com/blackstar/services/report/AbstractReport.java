@@ -94,4 +94,18 @@ public abstract class AbstractReport {
 	  }
 	  return value;
   }
+  
+  protected String serviceCheckEval(Boolean opt){
+	  if(opt == null){
+		  return "N/A";
+	  }
+	  else{
+		  if(opt){
+			  return "SI";
+		  }
+		  else{
+			  return "NO";
+		  }
+	  }
+  }
 }

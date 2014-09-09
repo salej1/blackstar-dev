@@ -215,7 +215,7 @@
 								</tr>
 								<tr>
 									<td colspan="5">1.3 SE REALIZÓ COMPARACION Y CALIBRACION T/H MEDIDO</td>
-									<td colspan="4"><form:checkbox path="evaFlagCalibration"  style="width:99%;" cssClass="lockOnDetail" /></td>
+									<td colspan="4"><c:forEach var="item" items="${checkOptions}"><form:radiobutton path="evaFlagCalibration" value="${item.value}" required="true" cssClass="lockOnDetail"/>${item.label}</c:forEach>
 								</tr>
 								<tr>
 									<td colspan="5">1.4 REVISIÓN Y LIMPIEZA DE FILTROS, EVAPORADOR Y EQUIPO EN GRAL.</td>

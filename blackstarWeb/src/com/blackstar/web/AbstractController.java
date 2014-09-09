@@ -3,7 +3,9 @@ package com.blackstar.web;
 import java.text.SimpleDateFormat;
 
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,6 +16,7 @@ import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 
+import com.blackstar.model.ServiceCheckOption;
 import com.blackstar.services.interfaces.GoogleDriveService;
 import com.blackstar.services.interfaces.SecurityService;
 import com.blackstar.services.interfaces.UserDomainService;
@@ -26,6 +29,8 @@ public class AbstractController {
   protected GoogleDriveService gdService = null;
   
   protected SecurityService secService = null;
+  
+  protected List<ServiceCheckOption> checkOptions;
 
   public void setUdService(UserDomainService udService) {
 	this.udService = udService;
@@ -67,7 +72,18 @@ public class AbstractController {
       
       return jsonObj;
   }
-  
-  
-  
+
+  public List<ServiceCheckOption> getCheckOptions() {
+	  if(checkOptions == null){
+		  ServiceCheckOption si = new ServiceCheckOption("1", "SI");
+		  ServiceCheckOption no = new ServiceCheckOption("2", "NO");
+		  ServiceCheckOption na = new ServiceCheckOption("", "N/A");
+		  
+		  checkOptions = new ArrayList<ServiceCheckOption>();
+		  checkOptions.add(si);
+		  checkOptions.add(no);
+		  checkOptions.add(na);
+	  }
+	  return checkOptions;
+  }
 }
