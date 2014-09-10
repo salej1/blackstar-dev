@@ -63,7 +63,7 @@ public class UPSServiceReport extends AbstractReport {
     drawer.text(data.getCapacitorStatus(), 381, 183, true);
     drawer.hLine(381, 550, 185, 0x0155A5) ;
     drawer.text("Sopleteado", 5, 200);
-    if(data.getCleaned()){
+    if(data.getCleaned() == 1){
     	drawer.line(263, 188, 256, 198, 0, 2);
     	drawer.line(257, 198, 253, 193, 0, 2);
     } else{
@@ -72,7 +72,7 @@ public class UPSServiceReport extends AbstractReport {
     }
     
     drawer.text("Verificación de fusibles y protecciones eléctricas", 285, 200);
-    if(data.getVerifyFuzz()){
+    if(data.getVerifyFuzz() == 1){
     	drawer.line(538, 188, 531, 198, 0, 2);
     	drawer.line(532, 198, 528, 193, 0, 2);
     } else{
@@ -110,7 +110,7 @@ public class UPSServiceReport extends AbstractReport {
     drawer.vLine(204, 217, 526);
     drawer.vLine(204, 217, 539);
     drawer.text("Limpieza por aspirado y brocha:", 5, 215);
-    if(data.getHooverClean()){
+    if(data.getHooverClean() == 1){
     	drawer.line(263, 205, 256, 215, 0, 2);
     	drawer.line(257, 215, 253, 210, 0, 2);
     } else{
@@ -119,7 +119,7 @@ public class UPSServiceReport extends AbstractReport {
     }
     
     drawer.text("Revisión y verificación del rectificador / cargador", 285, 215);
-    if(data.getChargerReview()){
+    if(data.getChargerReview() == 1){
     	drawer.line(538, 205, 531, 215, 0, 2);
     	drawer.line(532, 215, 528, 210, 0, 2);
     } else{
@@ -128,7 +128,7 @@ public class UPSServiceReport extends AbstractReport {
     }
     
     drawer.text("Verificación de conexiones y reapriete tonillería(puntos calientes):", 5, 230);
-    if(data.getVerifyConnections()){
+    if(data.getVerifyConnections() == 1){
     	drawer.line(263, 222, 256, 232, 0, 2);
     	drawer.line(257, 232, 253, 227, 0, 2);
     } else{
@@ -140,7 +140,7 @@ public class UPSServiceReport extends AbstractReport {
     drawer.hLine(370, 550, 230, 0x0155A5) ;
     drawer.text("BANCO DE BATERIAS:", 5, 260, true);
     drawer.text("Reapriete de puentes / conectores", 5, 275);
-    if(data.getCheckConnectors()){
+    if(data.getCheckConnectors() == 1){
     	drawer.line(263, 265, 256, 275, 0, 2);
     	drawer.line(257, 275, 253, 270, 0, 2);
     } else{
@@ -152,7 +152,7 @@ public class UPSServiceReport extends AbstractReport {
     drawer.text(data.getTemp().toString(), 372, 273, true);
     drawer.hLine(370, 550, 275, 0x0155A5);
     drawer.text("Verificación de fugas y sulfataciones", 5, 290);
-    if(data.getCverifyOutflow()){
+    if(data.getCverifyOutflow() == 1){
     	drawer.line(263, 282, 256, 292, 0, 2);
     	drawer.line(257, 292, 253, 287, 0, 2);
     } else{
@@ -161,7 +161,7 @@ public class UPSServiceReport extends AbstractReport {
     }
     
     drawer.text("Pruebas de carga y descarga", 285, 290);
-    if(data.getCverifyOutflow()){
+    if(data.getCverifyOutflow() == 1){
     	drawer.line(539, 278, 532, 288, 0, 2);
     	drawer.line(533, 288, 529, 283, 0, 2);
     } else{
@@ -210,7 +210,7 @@ public class UPSServiceReport extends AbstractReport {
     drawer.text("PRUEBAS GENERALES:", 5, 380, true);
     drawer.text("(solicitar autorización para pruebas)", 100, 380);
     drawer.text("Transferencia y retransferencia a linea comercial (Bypass)", 5, 395);
-    if(data.getTrasferLine()){
+    if(data.getTrasferLine() == 1){
     	drawer.line(263, 385, 256, 395, 0, 2);
     	drawer.line(257, 395, 253, 390, 0, 2);
     } else{
@@ -219,7 +219,7 @@ public class UPSServiceReport extends AbstractReport {
     }
     
     drawer.text("Transferencia y retransferencia con planta de emergencia", 5, 410);
-    if(data.getTransferEmergencyPlant()){
+    if(data.getTransferEmergencyPlant() == 1){
     	drawer.line(263, 402, 256, 412, 0, 2);
     	drawer.line(257, 412, 253, 407, 0, 2);
     } else{
@@ -241,7 +241,7 @@ public class UPSServiceReport extends AbstractReport {
     drawer.vLine(401, 414, 251);
     drawer.vLine(401, 414, 264);
     drawer.text("Respaldo en baterias con falla en linea", 285, 395);
-    if(data.getBackupBatteries()){
+    if(data.getBackupBatteries() == 1){
     	drawer.line(539, 385, 532, 395, 0, 2);
     	drawer.line(533, 395, 529, 390, 0, 2);
     } else{
@@ -250,7 +250,7 @@ public class UPSServiceReport extends AbstractReport {
     }
     
     drawer.text("Verificacion de voltaje de baterias y de salida durante la prueba", 285, 410);
-    if(data.getBackupBatteries()){
+    if(data.getBackupBatteries() == 1){
     	drawer.line(539, 402, 532, 412, 0, 2);
     	drawer.line(533, 412, 529, 407, 0, 2);
     } else{
@@ -362,30 +362,30 @@ public class UPSServiceReport extends AbstractReport {
 	
 	upsService.setUpsServiceId(1254);
 	upsService.setEstatusEquipment("EstatusEquipment");
-	upsService.setCleaned(true);
-	upsService.setHooverClean(true);
-	upsService.setVerifyConnections(true);
+	upsService.setCleaned(1);
+	upsService.setHooverClean(1);
+	upsService.setVerifyConnections(1);
 	upsService.setCapacitorStatus("CapacitorStatus");
-	upsService.setVerifyFuzz(true);
-	upsService.setChargerReview(true);
+	upsService.setVerifyFuzz(1);
+	upsService.setChargerReview(1);
 	upsService.setFanStatus("FanStatus");
 	upsService.setObservations("Observations Observations Observations Observations Observations Observations Observations Observations Observations Observations Observations Observations Observations Observations ");
 	upsService.setUpsServiceBatteryBankId(3251);
-	upsService.setCheckConnectors(true);
-	upsService.setCverifyOutflow(true);
+	upsService.setCheckConnectors(1);
+	upsService.setCverifyOutflow(1);
 	upsService.setNumberBatteries(15);
 	upsService.setManufacturedDateSerial("ManufacturedDateSerial");
 	upsService.setDamageBatteries("DamageBatteries");
 	upsService.setOther("Other");
 	upsService.setTemp("18");
-	upsService.setChargeTest(true);
+	upsService.setChargeTest(1);
 	upsService.setBrandModel("BrandModel");
 	upsService.setBatteryVoltage("15");
 	upsService.setUpsServiceGeneralTestId(5685);
-	upsService.setTrasferLine(true);
-	upsService.setTransferEmergencyPlant(true);
-	upsService.setBackupBatteries(true);
-	upsService.setVerifyVoltage(true);
+	upsService.setTrasferLine(1);
+	upsService.setTransferEmergencyPlant(1);
+	upsService.setBackupBatteries(1);
+	upsService.setVerifyVoltage(1);
 	upsService.setUpsServiceParamsId(6523);
 	upsService.setInputVoltagePhase("1");
 	upsService.setInputVoltageNeutro("2");

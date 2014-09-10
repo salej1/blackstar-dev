@@ -6,13 +6,19 @@
 -- Change History
 -- -----------------------------------------------------------------------------
 -- PR   Date    AuthorDescription
--- --   --------   -------  ------------------------------------
+-- --   --------   -------  ----------------------------------------------------
 -- 1    20/03/2014  DCB  	Version inicial. 
+-- --   --------   -------  ----------------------------------------------------
 -- 2    08/05/2014  OMA  	ID secuencia tickets internos 
+-- --   --------   -------  ----------------------------------------------------
 -- 3    08/05/2014  OMA  	Perfil Mesa de ayuda
+-- --   --------   -------  ----------------------------------------------------
 -- 4    22/06/2014  OMA  	nueva actualizacion de perfiles y catalogos
+-- --   --------   -------  ----------------------------------------------------
 -- 5 	11/07/2014	SAG 	Script para poblar hidden en bloomServiceType
--- ---------------------------------------------------------------------------
+-- --   --------   -------  ----------------------------------------------------
+-- 6	09/09/2014	SAG 	Se establece SAC600 como inicio secuencia de requisiciones
+-- -----------------------------------------------------------------------------
 use blackstarDb;
 
 
@@ -21,6 +27,11 @@ DELIMITER $$
 DROP PROCEDURE IF EXISTS blackstarDb.updateDataBloom$$
 CREATE PROCEDURE blackstarDb.updateDataBloom()
 BEGIN
+-- Estableciendo contador inicial para Requisiciones
+IF(SELECT sequenceNumber FROM blackstarDb.sequence WHERE sequenceTypeId='I') < 600 THEN
+	UPDATE blackstarDb.sequence SET sequenceNumber = 600 WHERE sequenceTypeId='I';
+END IF;
+
 -- Agregando FollowUpReferenceType
 IF(SELECT count(*) FROM blackstarDb.followUpReferenceType WHERE followUpReferenceTypeId = 'R') = 0 THEN
 	INSERT INTO blackstarDb.followUpReferenceType(followUpReferenceTypeId, followUpReferenceType)

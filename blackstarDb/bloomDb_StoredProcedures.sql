@@ -167,6 +167,9 @@ DROP PROCEDURE IF EXISTS blackstarDb.AddFollowUpTobloomTicket$$
 CREATE PROCEDURE blackstarDb.`AddFollowUpTobloomTicket`(pTicketId INTEGER, asignee VARCHAR(50), pCreatedByUsrMail VARCHAR(50), pMessage TEXT)
 BEGIN
   
+  IF asignee = '' THEN
+    SET asignee = pCreatedByUsrMail;
+  END IF;
 	INSERT INTO blackstarDb.followUp(bloomTicketId, followup, followUpReferenceTypeId, asignee, created, createdBy, createdByUsr)
 	VALUES(pTicketId, pMessage, 'R', asignee, NOW(), 'AddFollowUpTobloomTicket', pCreatedByUsrMail);
 END$$

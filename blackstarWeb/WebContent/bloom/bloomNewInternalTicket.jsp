@@ -66,8 +66,7 @@
 							<tr>
 								<td>Proyecto</td>
 								<td>
-									<select name="slProyecto" id="slProyecto" style="width:200px;">
-									</select>
+									<input type="text" name="slProyecto" id="slProyecto" style="width:200px;"/>
 								</td>
 							</tr>
 							<tr>
@@ -508,7 +507,7 @@
 			$('#tr_purposeVisitVL').show();
 
 			$('#sp_purposeVisitVL')
-					.text("Objetivo de visita y tipo de equipo que se pretende ofertar o revisar");
+					.text("Tipo de Equipo a ofertar o revisar o liga de Cédula de Proyectos");
 
 		}
 		if (serviceTypeId === 2) {
@@ -516,7 +515,7 @@
 			$('#tr_purposeVisitVISAS').show();
 
 			$('#sp_purposeVisitVISAS')
-					.text("Objetivo de visita y tipo de equipo que se pretende ofertar o revisar");
+					.text("Tipo de Equipo a ofertar o revisar o liga de Cédula de Proyectos");
 
 		}
 		if (serviceTypeId === 3) {
@@ -524,7 +523,7 @@
 			$('#tr_formProjectVED').show();
 
 			$('#sp_draftCopyDiagramVED').text("Diagrama en borrador");
-			$('#sp_formProjectVED').text("Ced\u00fala de Proyectos");
+			$('#sp_formProjectVED').text("Cédula de Proyectos");
 
 		}
 		if (serviceTypeId === 4) {
@@ -535,7 +534,7 @@
 
 			$('#sp_observationsVEPI').text("Observaciones y/o ligas de fotos");
 			$('#sp_draftCopyPlanVEPI').text("Plano en borrador");
-			$('#sp_formProjectVEPI').text("Ced\u00fala de Proyectos");
+			$('#sp_formProjectVEPI').text("Cédula de Proyectos");
 
 		}
 		if (serviceTypeId === 5) {
@@ -547,7 +546,7 @@
 			$('#sp_observationsVRCC').text("Observaciones y/o ligas de fotos");
 			$('#sp_checkListVRCC').text(
 					"Check-List de Levantamiento o lista de materiales a utilizar");
-			$('#sp_formProjectVRCC').text("Ced\u00fala de Proyectos");
+			$('#sp_formProjectVRCC').text("Cédula de Proyectos");
 
 		}
 		if (serviceTypeId === 6) {
@@ -563,7 +562,7 @@
 			$('#tr_formProjectVSA').show();
 
 			$('#sp_observationsVSA').text("Observaciones y/o ligas de mas anexos");
-			$('#sp_formProjectVSA').text("Ced\u00fala de Proyectos");
+			$('#sp_formProjectVSA').text("Cédula de Proyectos");
 
 		}
 		if (serviceTypeId === 8) {
@@ -632,12 +631,12 @@
 
 			$('#tr_positionPGCAS').show();
 			$('#tr_collaboratorPGCAS').show();
-			$('#tr_justificationPGCAS').show();
+			//$('#tr_justificationPGCAS').show();
 			$('#tr_salaryPGCAS').show();
 
 			$('#sp_positionPGCAS').text("Puesto");
 			$('#sp_collaboratorPGCAS').text("Nombre del colaborador");
-			$('#sp_justificationPGCAS').text("Justificación del Req.");
+			$('#descrLabel').text("Justificación del requerimiento");
 			$('#sp_salaryPGCAS').text("Sueldo");
 
 		}
@@ -662,35 +661,35 @@
 			$('#tr_developmentPlanPGCNC').show();
 			$('#tr_targetPGCNC').show();
 			$('#tr_salaryPGCNC').show();
-			$('#tr_justificationPGCNC').show();
+			//$('#tr_justificationPGCNC').show();
 
 			$('#sp_positionPGCNC').text("Puesto");
 			$('#sp_developmentPlanPGCNC').text("Plan de desarrollo");
 			$('#sp_targetPGCNC').text("Objetivos");
 			$('#sp_salaryPGCNC').text("Sueldo");
-			$('#sp_justificationPGCNC').text("Justificación del Req.");
+			$('#descrLabel').text("Justificación del requerimiento");
 
 		}
 		if (serviceTypeId === 19) {
 
 			$('#tr_positionPGCF').show();
 			$('#tr_collaboratorPGCF').show();
-			$('#tr_justificationPGCF').show();
+			//$('#tr_justificationPGCF').show();
 
 			$('#sp_positionPGCF').text("Puesto");
 			$('#sp_collaboratorPGCF').text("Nombre del colaborador");
-			$('#sp_justificationPGCF').text("Justificación del Req.");
+			$('#descrLabel').text("Justificación del requerimiento");
 
 		}
 		if (serviceTypeId === 20) {
 
 			$('#tr_positionPGCAA').show();
 			$('#tr_collaboratorPGCAA').show();
-			$('#tr_justificationPGCAA').show();
+			//$('#tr_justificationPGCAA').show();
 
 			$('#sp_positionPGCAA').text("Puesto");
 			$('#sp_collaboratorPGCAA').text("Nombre del colaborador");
-			$('#sp_justificationPGCAA').text("Justificación del Req.");
+			$('#descrLabel').text("Justificación del requerimiento");
 
 		}
 		if (serviceTypeId === 21) {
@@ -711,11 +710,11 @@
 
 			$('#tr_suggestionGSM').show();
 			$('#tr_documentCodeGSM').show();
-			$('#tr_justificationGSM').show();
+			//$('#tr_justificationGSM').show();
 
 			$('#sp_suggestionGSM').text("Sugerencia");
 			$('#sp_documentCodeGSM').text("Código del documento");
-			$('#sp_justificationGSM').text("Justificación del Requisición");
+			$('#descrLabel').text("Justificación del requerimiento");
 
 		}
 		if (serviceTypeId === 24) {
@@ -847,20 +846,15 @@
 					new Option(listaAreas[i].descripcion, listaAreas[i].id));
 		}
 
-		/*for (var i = 0; i < listaServicios.length; i++) {
-			$("#slTipoServicio")
-					.append(
-							new Option(listaServicios[i].descripcion,
-									listaServicios[i].id));
-		}*/
-		// Proyecto vacio
-		$("#slProyecto").append(new Option('N/A', 'N/A'));
-		for (var i = 0; i < listaProyectos.length; i++) {
-			$("#slProyecto")
-					.append(
-							new Option(listaProyectos[i].descripcion,
-									listaProyectos[i].id));
-		}
+		// SELECCION DE PROYECTO DESDE LISTA DESHABILITADA HASTA IMPLEMENTACION DE PROYECTO CODEX
+		// // Proyecto vacio
+		// $("#slProyecto").append(new Option('N/A', 'N/A'));
+		// for (var i = 0; i < listaProyectos.length; i++) {
+		// 	$("#slProyecto")
+		// 			.append(
+		// 					new Option(listaProyectos[i].descripcion,
+		// 							listaProyectos[i].id));
+		// }
 
 		for (var i = 0; i < listaOficinas.length; i++) {
 			$("#slOficina").append(

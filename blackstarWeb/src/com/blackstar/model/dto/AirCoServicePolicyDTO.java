@@ -315,12 +315,12 @@ public class AirCoServicePolicyDTO {
 	private String evaValHum;
 	private String evaSetpointTemp;
 	private String evaSetpointHum;
-	private Boolean evaFlagCalibration;
-	private Boolean evaReviewFilter;
-	private Boolean evaReviewStrip;
-	private Boolean evaCleanElectricSystem;
-	private Boolean evaCleanControlCard;
-	private Boolean evaCleanTray;
+	private Integer evaFlagCalibration;
+	private Integer evaReviewFilter;
+	private Integer evaReviewStrip;
+	private Integer evaCleanElectricSystem;
+	private Integer evaCleanControlCard;
+	private Integer evaCleanTray;
 	private String evaLectrurePreasureHigh;
 	private String evaLectrurePreasureLow;
 	private String evaLectureTemp;
@@ -346,11 +346,11 @@ public class AirCoServicePolicyDTO {
 	private String evaLectureCurrentHeater1;
 	private String evaLectureCurrentHeater2;
 	private String evaLectureCurrentHeater3;
-	private Boolean evaCheckFluidSensor;
-	private Boolean evaRequirMaintenance;
+	private Integer evaCheckFluidSensor;
+	private Integer evaRequirMaintenance;
 	private String condReview;
-	private Boolean condCleanElectricSystem;
-	private Boolean condClean;
+	private Integer condCleanElectricSystem;
+	private Integer condClean;
 	private String condLectureVoltageGroud;
 	private String condLectureVoltagePhases;
 	private String condLectureVoltageControl;
@@ -362,6 +362,7 @@ public class AirCoServicePolicyDTO {
 	private String observations;
 	private String receivedByEmail;
 	private String responsibleName;
+	
 	public Integer getPolicyId() {
 		return policyId;
 	}
@@ -674,51 +675,51 @@ public class AirCoServicePolicyDTO {
 		this.evaSetpointHum = evaSetpointHum;
 	}
 
-	public Boolean getEvaFlagCalibration() {
+	public Integer getEvaFlagCalibration() {
 		return evaFlagCalibration;
 	}
 
-	public void setEvaFlagCalibration(Boolean evaFlagCalibration) {
+	public void setEvaFlagCalibration(Integer evaFlagCalibration) {
 		this.evaFlagCalibration = evaFlagCalibration;
 	}
 
-	public Boolean getEvaReviewFilter() {
+	public Integer getEvaReviewFilter() {
 		return evaReviewFilter;
 	}
 
-	public void setEvaReviewFilter(Boolean evaReviewFilter) {
+	public void setEvaReviewFilter(Integer evaReviewFilter) {
 		this.evaReviewFilter = evaReviewFilter;
 	}
 
-	public Boolean getEvaReviewStrip() {
+	public Integer getEvaReviewStrip() {
 		return evaReviewStrip;
 	}
 
-	public void setEvaReviewStrip(Boolean evaReviewStrip) {
+	public void setEvaReviewStrip(Integer evaReviewStrip) {
 		this.evaReviewStrip = evaReviewStrip;
 	}
 
-	public Boolean getEvaCleanElectricSystem() {
+	public Integer getEvaCleanElectricSystem() {
 		return evaCleanElectricSystem;
 	}
 
-	public void setEvaCleanElectricSystem(Boolean evaCleanElectricSystem) {
+	public void setEvaCleanElectricSystem(Integer evaCleanElectricSystem) {
 		this.evaCleanElectricSystem = evaCleanElectricSystem;
 	}
 
-	public Boolean getEvaCleanControlCard() {
+	public Integer getEvaCleanControlCard() {
 		return evaCleanControlCard;
 	}
 
-	public void setEvaCleanControlCard(Boolean evaCleanControlCard) {
+	public void setEvaCleanControlCard(Integer evaCleanControlCard) {
 		this.evaCleanControlCard = evaCleanControlCard;
 	}
 
-	public Boolean getEvaCleanTray() {
+	public Integer getEvaCleanTray() {
 		return evaCleanTray;
 	}
 
-	public void setEvaCleanTray(Boolean evaCleanTray) {
+	public void setEvaCleanTray(Integer evaCleanTray) {
 		this.evaCleanTray = evaCleanTray;
 	}
 
@@ -922,19 +923,19 @@ public class AirCoServicePolicyDTO {
 		this.evaLectureCurrentHeater3 = evaLectureCurrentHeater3;
 	}
 
-	public Boolean getEvaCheckFluidSensor() {
+	public Integer getEvaCheckFluidSensor() {
 		return evaCheckFluidSensor;
 	}
 
-	public void setEvaCheckFluidSensor(Boolean evaCheckFluidSensor) {
+	public void setEvaCheckFluidSensor(Integer evaCheckFluidSensor) {
 		this.evaCheckFluidSensor = evaCheckFluidSensor;
 	}
 
-	public Boolean getEvaRequirMaintenance() {
+	public Integer getEvaRequirMaintenance() {
 		return evaRequirMaintenance;
 	}
 
-	public void setEvaRequirMaintenance(Boolean evaRequirMaintenance) {
+	public void setEvaRequirMaintenance(Integer evaRequirMaintenance) {
 		this.evaRequirMaintenance = evaRequirMaintenance;
 	}
 
@@ -946,19 +947,19 @@ public class AirCoServicePolicyDTO {
 		this.condReview = condReview;
 	}
 
-	public Boolean getCondCleanElectricSystem() {
+	public Integer getCondCleanElectricSystem() {
 		return condCleanElectricSystem;
 	}
 
-	public void setCondCleanElectricSystem(Boolean condCleanElectricSystem) {
+	public void setCondCleanElectricSystem(Integer condCleanElectricSystem) {
 		this.condCleanElectricSystem = condCleanElectricSystem;
 	}
 
-	public Boolean getCondClean() {
+	public Integer getCondClean() {
 		return condClean;
 	}
 
-	public void setCondClean(Boolean condClean) {
+	public void setCondClean(Integer condClean) {
 		this.condClean = condClean;
 	}
 

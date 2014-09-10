@@ -210,6 +210,7 @@ public class InternalTicketsController extends AbstractController {
 		if(userToAssign.equals("-2")){
 			// Nada no se cambia el asignatario
 			sendNotification = false;
+			userToAssign = "";
 		}
 		internalTicketsService.addFollowUp(ticketId, userToAssign, userSession.getUser().getUserEmail(), comment);
 		if(userToAssign != null && userToAssign != null && !userToAssign.equals("")){

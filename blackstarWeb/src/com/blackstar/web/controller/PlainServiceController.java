@@ -330,9 +330,10 @@ public class PlainServiceController extends AbstractController {
 	    	gdService.LoadOSFile(fileId, serviceOrderId);
 	    }
 	    
-	    private void sendNotification(String to, byte [] report){
+	    private void sendNotification(String to, byte [] report, String osNumber){
+	    	String content = "Buen dia. Por este medio se anexan las siguientes ordenes de servicio. Gracias por su preferencia.";
 	    	// envio de la OS en PDF
-	    	gmService.sendEmail(to, "Orden de Servicio", "Orden de Servicio", "ServiceOrder.pdf", report);
+	    	gmService.sendEmail(to, osNumber, content, "ServiceOrder.pdf", report);
 	    	
 	    	// copia a call center
 	    	List<EmployeeDTO> callCtr = udService.getStaff(Globals.GROUP_CALL_CENTER);
@@ -355,7 +356,7 @@ public class PlainServiceController extends AbstractController {
 	    private void commit(PlainServicePolicyDTO serviceOrder) throws Exception {
 	      byte [] report = rpService.getGeneralReport(serviceOrder);
 	      saveReport(serviceOrder.getServiceOrderId(), report);
-	      sendNotification(serviceOrder.getReceivedByEmail(), report);
+	      sendNotification(serviceOrder.getReceivedByEmail(), report, serviceOrder.getServiceOrderNumber());
 	      // enviar email a Call Center en caso de tener ticket asociado
 	      if(serviceOrder.getTicketNumber() != null && !serviceOrder.getTicketNumber().equals("")){
 	    	  callCenterLink(serviceOrder);

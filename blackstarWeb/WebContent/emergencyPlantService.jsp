@@ -226,12 +226,12 @@
 							</tr>
 						</thead>
 						<tr>
-							<td>PE MARCA:</td>
+							<td style="width:120px;">PE MARCA:</td>
 							<td><form:input path="brand" type="text" style="width:95%;" cssClass="lockOnDetail lockOnPolicy" required="true"/></td>
 							<form:hidden path="brandPE"/>
 							<td>MOTOR DIESEL MARCA:</td>
 							<td><form:input path="brandMotor" type="text" style="width:95%;"  cssClass="lockOnDetail" required="true"/></td>
-							<td>CAPACIDAD TANQUE DIESEL:</td>
+							<td style="width:120px">CAPACIDAD TANQUE DIESEL:</td>
 							<td><form:input path="tankCapacity" type="text" style="width:95%;" cssClass="lockOnDetail" required="true" /></td>
 						</tr>
 						<tr>
@@ -250,7 +250,7 @@
 							<td>No. DE SERIE MOTOR:</td>
 							<td><form:input path="serialMotor" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
 							<td>FILTRO DE COMBUSTIBLE. SE CAMBIÓ?:</td>
-							<td><form:checkbox path="filterFuelFlag"  style="width:95%;" cssClass="lockOnDetail"/></td>
+							<td><c:forEach var="item" items="${checkOptions}"><form:radiobutton path="filterFuelFlag" value="${item.value}" required="true" cssClass="lockOnDetail"/>${item.label}</c:forEach></td>
 						</tr>
 						<tr>
 							<td>TIPO DE TRANSFERENCIA:</td>
@@ -258,7 +258,7 @@
 							<td>CPL MOTOR:</td>
 							<td><form:input path="cplMotor" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
 							<td>FILTRO DE ACEITE. SE CAMBIÓ?</td>
-							<td><form:checkbox path="filterOilFlag" style="width:95%;" cssClass="lockOnDetail" /></td>
+							<td><c:forEach var="item" items="${checkOptions}"><form:radiobutton path="filterOilFlag" value="${item.value}" required="true" cssClass="lockOnDetail"/>${item.label}</c:forEach></td>
 						</tr>
 						<tr>
 							<td>MCA/MODELO TRANSF:</td>
@@ -266,7 +266,7 @@
 							<td>GENERADOR MCA:</td>
 							<td><form:input path="brandGenerator" type="text" style="width:95%;"  cssClass="lockOnDetail" required="true"/></td>
 							<td>FILTRO DE AGUA. SE CAMBIÓ?:</td>
-							<td><form:checkbox path="filterWaterFlag"  style="width:95%;"  cssClass="lockOnDetail" /></td>
+							<td><c:forEach var="item" items="${checkOptions}"><form:radiobutton path="filterWaterFlag" value="${item.value}" required="true" cssClass="lockOnDetail"/>${item.label}</c:forEach></td>
 						</tr>
 						<tr>
 							<td>MCA/MODELO CONTROL:</td>
@@ -274,7 +274,7 @@
 							<td>MODELO GENERADOR:</td>
 							<td><form:input path="modelGenerator" type="text" style="width:95%;"  cssClass="lockOnDetail" required="true"/></td>
 							<td>FILTRO DE AIRE. SE CAMBIÓ?:</td>
-							<td><form:checkbox path="filterAirFlag"  style="width:95%;"  cssClass="lockOnDetail" /></td>
+							<td><c:forEach var="item" items="${checkOptions}"><form:radiobutton path="filterAirFlag" value="${item.value}" required="true" cssClass="lockOnDetail"/>${item.label}</c:forEach></td>
 						</tr>
 						<tr>
 							<td>MCA/MODELO REGULADOR DE VOLTAJE:</td>
@@ -323,7 +323,7 @@
 						</thead>
 						<tr>
 							<td>NIVEL/LIMP/CAMBIO DE ACEITE LUBRICANTE. SE CAMBIÓ?</td>
-							<td><form:checkbox path="levelOilFlag"  style="width:95%;"  cssClass="lockOnDetail"/></td>
+							<td style="width:120px;"><c:forEach var="item" items="${checkOptions}"><form:radiobutton path="levelOilFlag" value="${item.value}" required="true" cssClass="lockOnDetail"/>${item.label}</c:forEach></td>
 							<td>ZAPATAS DE BATERÍA:</td>
 							<td><form:input path="batteryCap" type="text" style="width:95%;"  cssClass="lockOnDetail" required="true"/></td>
 							<td>MANGUERAS COMBUSTIBLE:</td>
@@ -331,7 +331,7 @@
 						</tr>
 						<tr>
 							<td>NIVEL DE AGUA/ANTICONGELANTE. SE CAMBIÓ?:</td>
-							<td><form:checkbox path="levelWaterFlag" style="width:95%;" cssClass="lockOnDetail" /></td>
+							<td><c:forEach var="item" items="${checkOptions}"><form:radiobutton path="levelWaterFlag" value="${item.value}" required="true" cssClass="lockOnDetail"/>${item.label}</c:forEach></td>
 							<td>SULFATACIÓN BATERÍA:</td>
 							<td><form:input path="batterySulfate" type="text" style="width:95%;" cssClass="lockOnDetail" required="true" /></td>
 							<td>MANGUERAS AGUA:</td>
@@ -347,7 +347,7 @@
 						</tr>
 						<tr>
 							<td>FUGA EN TUBO DE ESCAPE:</td>
-							<td><form:checkbox path="tubeLeak" style="width:95%;"  cssClass="lockOnDetail"/></td>
+							<td><c:forEach var="item" items="${checkOptions}"><form:radiobutton path="tubeLeak" value="${item.value}" required="true" cssClass="lockOnDetail"/>${item.label}</c:forEach></td>
 							<td>PRECALENTADO DE LA MÁQUINA. TEMPERATURA (MIN 60°):</td>
 							<td><form:input path="heatEngine" type="text" style="width:95%;"  cssClass="lockOnDetail" required="true"/></td>
 							<td>TENSIÓN DE BANDAS/ESTADO DE ASPAS:</td>
@@ -362,35 +362,35 @@
 						</thead>
 						<tr>
 							<td>LAVADO DE MOTOR/TANQUE (FUGA):</td>
-							<td><form:checkbox path="washEngine" style="width:20px;"  cssClass="lockOnDetail" /></td>
+							<td style="width:120px;"><c:forEach var="item" items="${checkOptions}"><form:radiobutton path="washEngine" value="${item.value}" required="true" cssClass="lockOnDetail"/>${item.label}</c:forEach></td>
 							<td>SOPLETEADO DE TRANSFER:</td>
-							<td><form:checkbox path="cleanTransfer" style="width:20px;" cssClass="lockOnDetail" /></td>
+							<td style="width:120px;"><c:forEach var="item" items="${checkOptions}"><form:radiobutton path="cleanTransfer" value="${item.value}" required="true" cssClass="lockOnDetail"/>${item.label}</c:forEach></td>
 							<td>PRUEBAS DE BATERÍAS:</td>
-							<td><form:checkbox path="batteryTests" style="width:20px;" cssClass="lockOnDetail" /></td>
+							<td style="width:120px;"><c:forEach var="item" items="${checkOptions}"><form:radiobutton path="batteryTests" value="${item.value}" required="true" cssClass="lockOnDetail"/>${item.label}</c:forEach></td>
 						</tr>
 						<tr>
 							<td>LAVADO DE RADIADOR:</td>
-							<td><form:checkbox path="washRadiator" style="width:20px;" cssClass="lockOnDetail"  /></td>
+							<td><c:forEach var="item" items="${checkOptions}"><form:radiobutton path="washRadiator" value="${item.value}" required="true" cssClass="lockOnDetail"/>${item.label}</c:forEach></td>
 							<td>LIMPIEZA TARJETAS DE CONTROL:</td>
-							<td><form:checkbox path="cleanCardControl" style="width:20px;" cssClass="lockOnDetail" /></td>
+							<td><c:forEach var="item" items="${checkOptions}"><form:radiobutton path="cleanCardControl" value="${item.value}" required="true" cssClass="lockOnDetail"/>${item.label}</c:forEach></td>
 							<td>REVISIÓN CARGADOR DE BATERÍA/ALTERNADOR:</td>
-							<td><form:checkbox path="checkCharger" style="width:20px;" cssClass="lockOnDetail" /></td>
+							<td><c:forEach var="item" items="${checkOptions}"><form:radiobutton path="checkCharger" value="${item.value}" required="true" cssClass="lockOnDetail"/>${item.label}</c:forEach></td>
 						</tr>
 						<tr>
 							<td>LIMPIEZA ÁREA DE TRABAJO:</td>
-							<td><form:checkbox path="cleanWorkArea" style="width:20px; "cssClass="lockOnDetail"/></td>
+							<td><c:forEach var="item" items="${checkOptions}"><form:radiobutton path="cleanWorkArea" value="${item.value}" required="true" cssClass="lockOnDetail"/>${item.label}</c:forEach></td>
 							<td>AJUSTE DE CONEXIONES DE CONTROL:</td>
-							<td><form:checkbox path="checkConectionControl" style="width:20px;" cssClass="lockOnDetail" /></td>
+							<td><c:forEach var="item" items="${checkOptions}"><form:radiobutton path="checkConectionControl" value="${item.value}" required="true" cssClass="lockOnDetail"/>${item.label}</c:forEach></td>
 							<td>PINTURA Y CONSERVACIÓN:</td>
-							<td><form:checkbox path="checkPaint" style="width:20px;" cssClass="lockOnDetail" /></td>
+							<td><c:forEach var="item" items="${checkOptions}"><form:radiobutton path="checkPaint" value="${item.value}" required="true" cssClass="lockOnDetail"/>${item.label}</c:forEach></td>
 						</tr>
 						<tr>
 							<td>REVISIÓN DE CABLEADO  Y CONEXIONES:</td>
-							<td><form:checkbox path="conectionCheck" style="width:20px;" cssClass="lockOnDetail" /></td>
+							<td><c:forEach var="item" items="${checkOptions}"><form:radiobutton path="conectionCheck" value="${item.value}" required="true" cssClass="lockOnDetail"/>${item.label}</c:forEach></td>
 							<td>REVISIÓN DE EXT/EMBOBINADOS:</td>
-							<td><form:checkbox path="checkWinding" style="width:20px;" cssClass="lockOnDetail" /></td>
+							<td><c:forEach var="item" items="${checkOptions}"><form:radiobutton path="checkWinding" value="${item.value}" required="true" cssClass="lockOnDetail"/>${item.label}</c:forEach></td>
 							<td>SOPLETEADO TAB GENERADOR:</td>
-							<td><form:checkbox path="cleanGenerator" style="width:20px;" cssClass="lockOnDetail" /></td>
+							<td><c:forEach var="item" items="${checkOptions}"><form:radiobutton path="cleanGenerator" value="${item.value}" required="true" cssClass="lockOnDetail"/>${item.label}</c:forEach></td>
 						</tr>
 					</table>
 					<table>
@@ -457,21 +457,21 @@
 							<td>ESTADO MECÁNICO:</td>
 							<td><form:input path="mechanicalStatus" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
 							<td>AJUSTE DE TORNILLERÍA:</td>
-							<td><form:checkbox path="screwAdjust"  style="width:95%;" cssClass="lockOnDetail"/></td>
+							<td><c:forEach var="item" items="${checkOptions}"><form:radiobutton path="screwAdjust" value="${item.value}" required="true" cssClass="lockOnDetail"/>${item.label}</c:forEach></td>
 							<td>INTERLOCK ELÉCTRICO:</td>
 							<td><form:input path="electricInterlock" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
 						</tr>
 						<tr>
 							<td>LIMPIEZA DEL TABLERO:</td>
-							<td><form:checkbox path="boardClean" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
+							<td><c:forEach var="item" items="${checkOptions}"><form:radiobutton path="boardClean" value="${item.value}" required="true" cssClass="lockOnDetail"/>${item.label}</c:forEach></td>
 							<td>AJUSTE DE CONEXIONES:</td>
-							<td><form:checkbox path="conectionAdjust"  style="width:95%;" cssClass="lockOnDetail"/></td>
+							<td><c:forEach var="item" items="${checkOptions}"><form:radiobutton path="conectionAdjust" value="${item.value}" required="true" cssClass="lockOnDetail"/>${item.label}</c:forEach></td>
 							<td>INTERLOCK MECÁNICO:</td>
 							<td><form:input path="mechanicalInterlock" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
 						</tr>
 						<tr>
 							<td>PRUEBA DE LÁMPARAS:</td>
-							<td><form:checkbox path="lampTest" style="width:95%;" cssClass="lockOnDetail" /></td>
+							<td><c:forEach var="item" items="${checkOptions}"><form:radiobutton path="lampTest" value="${item.value}" required="true" cssClass="lockOnDetail"/>${item.label}</c:forEach></td>
 							<td>MOTORES DEL SISTEMA:</td>
 							<td><form:input path="systemMotors" type="text" style="width:95%;"  cssClass="lockOnDetail" required="true"/></td>
 							<td>CAPACIDAD EN AMPERES:</td>

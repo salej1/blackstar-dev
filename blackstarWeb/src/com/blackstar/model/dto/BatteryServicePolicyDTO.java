@@ -255,19 +255,19 @@ public class BatteryServicePolicyDTO {
 	private String serviceTypeId;
 	
 	private Integer bbServiceId;	
-	private Boolean plugClean;
+	private Integer plugClean;
 	private String plugCleanStatus;
 	private String plugCleanComments;
-	private Boolean coverClean;
+	private Integer coverClean;
 	private String coverCleanStatus;
 	private String coverCleanComments;
-	private Boolean capClean;
+	private Integer capClean;
 	private String capCleanStatus;
 	private String capCleanComments;
-	private Boolean groundClean;
+	private Integer groundClean;
 	private String groundCleanStatus;
 	private String groundCleanComments;
-	private Boolean rackClean;
+	private Integer rackClean;
 	private String rackCleanStatus;
 	private String rackCleanComments;
 	private String serialNoDateManufact;
@@ -522,11 +522,11 @@ public class BatteryServicePolicyDTO {
 		this.bbServiceId = bbServiceId;
 	}
 
-	public Boolean getPlugClean() {
+	public Integer getPlugClean() {
 		return plugClean;
 	}
 
-	public void setPlugClean(Boolean plugClean) {
+	public void setPlugClean(Integer plugClean) {
 		this.plugClean = plugClean;
 	}
 
@@ -546,11 +546,11 @@ public class BatteryServicePolicyDTO {
 		this.plugCleanComments = plugCleanComments;
 	}
 
-	public Boolean getCoverClean() {
+	public Integer getCoverClean() {
 		return coverClean;
 	}
 
-	public void setCoverClean(Boolean coverClean) {
+	public void setCoverClean(Integer coverClean) {
 		this.coverClean = coverClean;
 	}
 
@@ -570,11 +570,11 @@ public class BatteryServicePolicyDTO {
 		this.coverCleanComments = coverCleanComments;
 	}
 
-	public Boolean getCapClean() {
+	public Integer getCapClean() {
 		return capClean;
 	}
 
-	public void setCapClean(Boolean capClean) {
+	public void setCapClean(Integer capClean) {
 		this.capClean = capClean;
 	}
 
@@ -594,11 +594,11 @@ public class BatteryServicePolicyDTO {
 		this.capCleanComments = capCleanComments;
 	}
 
-	public Boolean getGroundClean() {
+	public Integer getGroundClean() {
 		return groundClean;
 	}
 
-	public void setGroundClean(Boolean groundClean) {
+	public void setGroundClean(Integer groundClean) {
 		this.groundClean = groundClean;
 	}
 
@@ -618,11 +618,11 @@ public class BatteryServicePolicyDTO {
 		this.groundCleanComments = groundCleanComments;
 	}
 
-	public Boolean getRackClean() {
+	public Integer getRackClean() {
 		return rackClean;
 	}
 
-	public void setRackClean(Boolean rackClean) {
+	public void setRackClean(Integer rackClean) {
 		this.rackClean = rackClean;
 	}
 

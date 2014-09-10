@@ -3,10 +3,10 @@ package com.blackstar.model;
 public class UpsServiceBatteryBank {
 
 	public UpsServiceBatteryBank(Integer upsServiceBatteryBankId,
-			Integer upsServiceId, Boolean checkConnectors,
-			Boolean cverifyOutflow, Integer numberBatteries,
+			Integer upsServiceId, Integer checkConnectors,
+			Integer cverifyOutflow, Integer numberBatteries,
 			String manufacturedDateSerial, String damageBatteries,
-			String other, String temp, Boolean chargeTest, String brandModel,
+			String other, String temp, Integer chargeTest, String brandModel,
 			String batteryVoltage) {
 		this.upsServiceBatteryBankId = upsServiceBatteryBankId;
 		this.upsServiceId = upsServiceId;
@@ -24,14 +24,14 @@ public class UpsServiceBatteryBank {
 	
 	private Integer upsServiceBatteryBankId;
 	private Integer upsServiceId;
-	private Boolean checkConnectors;
-	private Boolean cverifyOutflow;
+	private Integer checkConnectors;
+	private Integer cverifyOutflow;
 	private Integer numberBatteries;
 	private String manufacturedDateSerial;
 	private String damageBatteries;
 	private String other;
 	private String temp;
-	private Boolean chargeTest;
+	private Integer chargeTest;
 	private String brandModel;
 	private String batteryVoltage;
 	public Integer getUpsServiceBatteryBankId() {
@@ -46,16 +46,16 @@ public class UpsServiceBatteryBank {
 	public void setUpsServiceId(Integer upsServiceId) {
 		this.upsServiceId = upsServiceId;
 	}
-	public Boolean getCheckConnectors() {
+	public Integer getCheckConnectors() {
 		return checkConnectors;
 	}
-	public void setCheckConnectors(Boolean checkConnectors) {
+	public void setCheckConnectors(Integer checkConnectors) {
 		this.checkConnectors = checkConnectors;
 	}
-	public Boolean getCverifyOutflow() {
+	public Integer getCverifyOutflow() {
 		return cverifyOutflow;
 	}
-	public void setCverifyOutflow(Boolean cverifyOutflow) {
+	public void setCverifyOutflow(Integer cverifyOutflow) {
 		this.cverifyOutflow = cverifyOutflow;
 	}
 	public Integer getNumberBatteries() {
@@ -88,10 +88,10 @@ public class UpsServiceBatteryBank {
 	public void setTemp(String temp) {
 		this.temp = temp;
 	}
-	public Boolean getChargeTest() {
+	public Integer getChargeTest() {
 		return chargeTest;
 	}
-	public void setChargeTest(Boolean chargeTest) {
+	public void setChargeTest(Integer chargeTest) {
 		this.chargeTest = chargeTest;
 	}
 	public String getBrandModel() {

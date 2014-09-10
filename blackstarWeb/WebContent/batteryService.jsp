@@ -203,31 +203,31 @@
 						</thead>
 						<tr>
 							<td>CONECTORES / TERMINALES</td>
-							<td><form:checkbox path="plugClean"  style="width:95%;" /></td>
+							<td><c:forEach var="item" items="${checkOptions}"><form:radiobutton path="plugClean" value="${item.value}" required="true" cssClass="lockOnDetail"/>${item.label}</c:forEach></td>
 							<td><form:input path="plugCleanStatus" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
 							<td><form:input path="plugCleanComments" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
 						</tr>
 						<tr>
 							<td>CUBIERTA</td>
-							<td><form:checkbox path="coverClean"  style="width:95%;" /></td>
+							<td><c:forEach var="item" items="${checkOptions}"><form:radiobutton path="coverClean" value="${item.value}" required="true" cssClass="lockOnDetail"/>${item.label}</c:forEach></td>
 							<td><form:input path="coverCleanStatus" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
 							<td><form:input path="coverCleanComments" type="text" style="width:95%;"  cssClass="lockOnDetail" required="true"/></td>
 						</tr>
 						<tr>
 							<td>TAPONES</td>
-							<td><form:checkbox path="capClean"  style="width:95%;" /></td>
+							<td><c:forEach var="item" items="${checkOptions}"><form:radiobutton path="capClean" value="${item.value}" required="true" cssClass="lockOnDetail"/>${item.label}</c:forEach></td>
 							<td><form:input path="capCleanStatus" type="text" style="width:95%;"  cssClass="lockOnDetail" required="true"/></td>
 							<td><form:input path="capCleanComments" type="text" style="width:95%;" cssClass="lockOnDetail" required="true" /></td>
 						</tr>
 						<tr>
 							<td>TIERRA FÍSICA</td>
-							<td><form:checkbox path="groundClean"  style="width:95%;" /></td>
+							<td><c:forEach var="item" items="${checkOptions}"><form:radiobutton path="groundClean" value="${item.value}" required="true" cssClass="lockOnDetail"/>${item.label}</c:forEach></td>
 							<td><form:input path="groundCleanStatus" type="text" style="width:95%;" cssClass="lockOnDetail" required="true" /></td>
 							<td><form:input path="groundCleanComments" type="text" style="width:95%;"  cssClass="lockOnDetail" required="true"/></td>
 						</tr>
 						<tr>
 							<td>ESTANTE/GABINETE/RACK</td>
-							<td><form:checkbox path="rackClean"  style="width:95%;" /></td>
+							<td><c:forEach var="item" items="${checkOptions}"><form:radiobutton path="rackClean" value="${item.value}" required="true" cssClass="lockOnDetail"/>${item.label}</c:forEach></td>
 							<td><form:input path="rackCleanStatus" type="text" style="width:95%;"  cssClass="lockOnDetail" required="true"/></td>
 							<td><form:input path="rackCleanComments" type="text" style="width:95%;" cssClass="lockOnDetail" required="true" /></td>
 						</tr>

@@ -5,9 +5,9 @@ import java.util.Date;
 public class UpsService {
 	
 	public UpsService(Integer upsServiceId, Integer serviceOrderId,
-			String estatusEquipment, Boolean cleaned, Boolean hooverClean,
-			Boolean verifyConnections, String capacitorStatus,
-			Boolean verifyFuzz, Boolean chargerReview, String fanStatus,
+			String estatusEquipment, Integer cleaned, Integer hooverClean,
+			Integer verifyConnections, String capacitorStatus,
+			Integer verifyFuzz, Integer chargerReview, String fanStatus,
 			Date created, String createdBy, String createdByUsr, Date modified,
 			String modifiedBy, String modifiedByUsr, String observations) {
 		this.upsServiceId = upsServiceId;
@@ -32,12 +32,12 @@ public class UpsService {
 	private Integer upsServiceId;
 	private Integer serviceOrderId;
 	private String estatusEquipment;
-	private Boolean cleaned;
-	private Boolean hooverClean;
-	private Boolean verifyConnections;
+	private Integer cleaned;
+	private Integer hooverClean;
+	private Integer verifyConnections;
 	private String capacitorStatus;
-	private Boolean verifyFuzz;
-	private Boolean chargerReview;
+	private Integer verifyFuzz;
+	private Integer chargerReview;
 	private String fanStatus;
 	private String observations;
 	private Date created;
@@ -65,22 +65,22 @@ public class UpsService {
 	public void setEstatusEquipment(String estatusEquipment) {
 		this.estatusEquipment = estatusEquipment;
 	}
-	public Boolean getCleaned() {
+	public Integer getCleaned() {
 		return cleaned;
 	}
-	public void setCleaned(Boolean cleaned) {
+	public void setCleaned(Integer cleaned) {
 		this.cleaned = cleaned;
 	}
-	public Boolean getHooverClean() {
+	public Integer getHooverClean() {
 		return hooverClean;
 	}
-	public void setHooverClean(Boolean hooverClean) {
+	public void setHooverClean(Integer hooverClean) {
 		this.hooverClean = hooverClean;
 	}
-	public Boolean getVerifyConnections() {
+	public Integer getVerifyConnections() {
 		return verifyConnections;
 	}
-	public void setVerifyConnections(Boolean verifyConnections) {
+	public void setVerifyConnections(Integer verifyConnections) {
 		this.verifyConnections = verifyConnections;
 	}
 	public String getCapacitorStatus() {
@@ -89,16 +89,16 @@ public class UpsService {
 	public void setCapacitorStatus(String capacitorStatus) {
 		this.capacitorStatus = capacitorStatus;
 	}
-	public Boolean getVerifyFuzz() {
+	public Integer getVerifyFuzz() {
 		return verifyFuzz;
 	}
-	public void setVerifyFuzz(Boolean verifyFuzz) {
+	public void setVerifyFuzz(Integer verifyFuzz) {
 		this.verifyFuzz = verifyFuzz;
 	}
-	public Boolean getChargerReview() {
+	public Integer getChargerReview() {
 		return chargerReview;
 	}
-	public void setChargerReview(Boolean chargerReview) {
+	public void setChargerReview(Integer chargerReview) {
 		this.chargerReview = chargerReview;
 	}
 	public String getFanStatus() {

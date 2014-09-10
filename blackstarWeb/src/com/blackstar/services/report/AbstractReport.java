@@ -95,12 +95,12 @@ public abstract class AbstractReport {
 	  return value;
   }
   
-  protected String serviceCheckEval(Boolean opt){
-	  if(opt == null){
+  protected String serviceCheckEval(Integer opt){
+	  if(opt == 2){
 		  return "N/A";
 	  }
 	  else{
-		  if(opt){
+		  if(opt == 1){
 			  return "SI";
 		  }
 		  else{

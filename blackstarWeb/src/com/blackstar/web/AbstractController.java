@@ -75,14 +75,14 @@ public class AbstractController {
 
   public List<ServiceCheckOption> getCheckOptions() {
 	  if(checkOptions == null){
-		  ServiceCheckOption si = new ServiceCheckOption("1", "SI");
-		  ServiceCheckOption no = new ServiceCheckOption("2", "NO");
-		  ServiceCheckOption na = new ServiceCheckOption("", "N/A");
+		  ServiceCheckOption o1 = new ServiceCheckOption("1", "SI");
+		  ServiceCheckOption o2 = new ServiceCheckOption("0", "NO");
+		  ServiceCheckOption o3 = new ServiceCheckOption("2", "N/A");
 		  
 		  checkOptions = new ArrayList<ServiceCheckOption>();
-		  checkOptions.add(si);
-		  checkOptions.add(no);
-		  checkOptions.add(na);
+		  checkOptions.add(o1);
+		  checkOptions.add(o2);
+		  checkOptions.add(o3);
 	  }
 	  return checkOptions;
   }

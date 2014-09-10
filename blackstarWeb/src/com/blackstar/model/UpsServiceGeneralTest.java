@@ -3,9 +3,9 @@ package com.blackstar.model;
 public class UpsServiceGeneralTest {
 	
 	public UpsServiceGeneralTest(Integer upsServiceGeneralTestId,
-			Integer upsServiceId, Boolean trasferLine,
-			Boolean transferEmergencyPlant, Boolean backupBatteries,
-			Boolean verifyVoltage) {
+			Integer upsServiceId, Integer trasferLine,
+			Integer transferEmergencyPlant, Integer backupBatteries,
+			Integer verifyVoltage) {
 		this.upsServiceGeneralTestId = upsServiceGeneralTestId;
 		this.upsServiceId = upsServiceId;
 		this.trasferLine = trasferLine;
@@ -16,10 +16,10 @@ public class UpsServiceGeneralTest {
 	
 	private Integer upsServiceGeneralTestId;
 	private Integer upsServiceId;
-	private Boolean trasferLine;
-	private Boolean transferEmergencyPlant;
-	private Boolean backupBatteries;
-	private Boolean verifyVoltage;
+	private Integer trasferLine;
+	private Integer transferEmergencyPlant;
+	private Integer backupBatteries;
+	private Integer verifyVoltage;
 	
 	public Integer getUpsServiceGeneralTestId() {
 		return upsServiceGeneralTestId;
@@ -33,28 +33,28 @@ public class UpsServiceGeneralTest {
 	public void setUpsServiceId(Integer upsServiceId) {
 		this.upsServiceId = upsServiceId;
 	}
-	public Boolean getTrasferLine() {
+	public Integer getTrasferLine() {
 		return trasferLine;
 	}
-	public void setTrasferLine(Boolean trasferLine) {
+	public void setTrasferLine(Integer trasferLine) {
 		this.trasferLine = trasferLine;
 	}
-	public Boolean getTransferEmergencyPlant() {
+	public Integer getTransferEmergencyPlant() {
 		return transferEmergencyPlant;
 	}
-	public void setTransferEmergencyPlant(Boolean transferEmergencyPlant) {
+	public void setTransferEmergencyPlant(Integer transferEmergencyPlant) {
 		this.transferEmergencyPlant = transferEmergencyPlant;
 	}
-	public Boolean getBackupBatteries() {
+	public Integer getBackupBatteries() {
 		return backupBatteries;
 	}
-	public void setBackupBatteries(Boolean backupBatteries) {
+	public void setBackupBatteries(Integer backupBatteries) {
 		this.backupBatteries = backupBatteries;
 	}
-	public Boolean getVerifyVoltage() {
+	public Integer getVerifyVoltage() {
 		return verifyVoltage;
 	}
-	public void setVerifyVoltage(Boolean verifyVoltage) {
+	public void setVerifyVoltage(Integer verifyVoltage) {
 		this.verifyVoltage = verifyVoltage;
 	}
 

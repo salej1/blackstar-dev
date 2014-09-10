@@ -53,17 +53,82 @@ BEGIN
 -- -----------------------------------------------------------------------------
 
 -- AGREGANDO NULLS A BOLEANOS DE OS
-IF(SELECT IS_NULLABLE FROM information_schema.columns WHERE  table_schema = 'blackstarDb' AND table_name = 'aaService' AND column_name = 'evaFlagCalibration') = 'NO' THEN
-	ALTER TABLE blackstarDb.aaService MODIFY evaFlagCalibration bit(1) NULL;
-	ALTER TABLE blackstarDb.aaService MODIFY evaReviewFilter bit(1) NULL;
-	ALTER TABLE blackstarDb.aaService MODIFY evaReviewStrip bit(1) NULL;
-	ALTER TABLE blackstarDb.aaService MODIFY evaCleanElectricSystem bit(1) NULL;
-	ALTER TABLE blackstarDb.aaService MODIFY evaCleanControlCard bit(1) NULL;
-	ALTER TABLE blackstarDb.aaService MODIFY evaCleanTray bit(1) NULL;
-	ALTER TABLE blackstarDb.aaService MODIFY evaCheckFluidSensor bit(1) NULL;
-	ALTER TABLE blackstarDb.aaService MODIFY evaRequirMaintenance bit(1) NULL;
-	ALTER TABLE blackstarDb.aaService MODIFY condCleanElectricSystem bit(1)  NULL;
-	ALTER TABLE blackstarDb.aaService MODIFY condClean bit(1) NULL;
+-- AA
+IF(SELECT DATA_TYPE FROM information_schema.columns WHERE  table_schema = 'blackstarDb' AND table_name = 'aaService' AND column_name = 'evaFlagCalibration') != 'INT' THEN
+	ALTER TABLE blackstarDb.aaService MODIFY evaFlagCalibration INT;
+	ALTER TABLE blackstarDb.aaService MODIFY evaReviewFilter INT;
+	ALTER TABLE blackstarDb.aaService MODIFY evaReviewStrip INT;
+	ALTER TABLE blackstarDb.aaService MODIFY evaCleanElectricSystem INT;
+	ALTER TABLE blackstarDb.aaService MODIFY evaCleanControlCard INT;
+	ALTER TABLE blackstarDb.aaService MODIFY evaCleanTray INT;
+	ALTER TABLE blackstarDb.aaService MODIFY evaCheckFluidSensor INT;
+	ALTER TABLE blackstarDb.aaService MODIFY evaRequirMaintenance INT;
+	ALTER TABLE blackstarDb.aaService MODIFY condCleanElectricSystem INT;
+	ALTER TABLE blackstarDb.aaService MODIFY condClean INT;
+END IF;
+
+-- BB
+IF(SELECT DATA_TYPE FROM information_schema.columns WHERE  table_schema = 'blackstarDb' AND table_name = 'bbService' AND column_name = 'plugClean') != 'INT' THEN
+	ALTER TABLE blackstarDb.bbService MODIFY plugClean INT; 
+	ALTER TABLE blackstarDb.bbService MODIFY coverClean INT; 
+	ALTER TABLE blackstarDb.bbService MODIFY capClean INT; 
+	ALTER TABLE blackstarDb.bbService MODIFY groundClean INT; 
+	ALTER TABLE blackstarDb.bbService MODIFY rackClean INT;
+END IF;
+
+-- EP - SERVICE
+IF(SELECT DATA_TYPE FROM information_schema.columns WHERE  table_schema = 'blackstarDb' AND table_name = 'epService' AND column_name = 'filterFuelFlag') != 'INT' THEN
+	ALTER TABLE blackstarDb.epService MODIFY filterFuelFlag INT;
+	ALTER TABLE blackstarDb.epService MODIFY filterOilFlag INT;
+	ALTER TABLE blackstarDb.epService MODIFY filterWaterFlag INT;
+	ALTER TABLE blackstarDb.epService MODIFY filterAirFlag INT;
+END IF;
+
+-- EP - SURVEY
+IF(SELECT DATA_TYPE FROM information_schema.columns WHERE  table_schema = 'blackstarDb' AND table_name = 'epServiceSurvey' AND column_name = 'levelOilFlag') != 'INT' THEN
+	ALTER TABLE blackstarDb.epServiceSurvey MODIFY levelOilFlag INT; 
+	ALTER TABLE blackstarDb.epServiceSurvey MODIFY levelWaterFlag INT; 
+	ALTER TABLE blackstarDb.epServiceSurvey MODIFY tubeLeak INT;
+END IF;
+
+-- EP - TRANSFER SWITCH
+IF(SELECT DATA_TYPE FROM information_schema.columns WHERE  table_schema = 'blackstarDb' AND table_name = 'epServiceTransferSwitch' AND column_name = 'boardClean') != 'INT' THEN
+	ALTER TABLE blackstarDb.epServiceTransferSwitch MODIFY boardClean INT; 
+	ALTER TABLE blackstarDb.epServiceTransferSwitch MODIFY screwAdjust INT; 
+	ALTER TABLE blackstarDb.epServiceTransferSwitch MODIFY lampTest INT; 
+	ALTER TABLE blackstarDb.epServiceTransferSwitch MODIFY conectionAdjust INT;
+END IF;
+
+-- EP - WORKBASIC
+IF(SELECT DATA_TYPE FROM information_schema.columns WHERE  table_schema = 'blackstarDb' AND table_name = 'epServiceWorkBasic' AND column_name = 'washEngine') != 'INT' THEN
+	ALTER TABLE blackstarDb.epServiceWorkBasic MODIFY washEngine INT; 
+	ALTER TABLE blackstarDb.epServiceWorkBasic MODIFY washRadiator INT; 
+	ALTER TABLE blackstarDb.epServiceWorkBasic MODIFY cleanWorkArea INT; 
+	ALTER TABLE blackstarDb.epServiceWorkBasic MODIFY conectionCheck INT; 
+	ALTER TABLE blackstarDb.epServiceWorkBasic MODIFY cleanTransfer INT; 
+	ALTER TABLE blackstarDb.epServiceWorkBasic MODIFY cleanCardControl INT; 
+	ALTER TABLE blackstarDb.epServiceWorkBasic MODIFY checkConectionControl INT; 
+	ALTER TABLE blackstarDb.epServiceWorkBasic MODIFY checkWinding INT; 
+	ALTER TABLE blackstarDb.epServiceWorkBasic MODIFY batteryTests INT; 
+	ALTER TABLE blackstarDb.epServiceWorkBasic MODIFY checkCharger INT; 
+	ALTER TABLE blackstarDb.epServiceWorkBasic MODIFY checkPaint INT; 
+	ALTER TABLE blackstarDb.epServiceWorkBasic MODIFY cleanGenerator INT;
+END IF;
+
+-- UPS - SERVICE
+IF(SELECT DATA_TYPE FROM information_schema.columns WHERE  table_schema = 'blackstarDb' AND table_name = 'upsService' AND column_name = 'cleaned') != 'INT' THEN
+	ALTER TABLE blackstarDb.upsService MODIFY cleaned INT; 
+	ALTER TABLE blackstarDb.upsService MODIFY hooverClean INT; 
+	ALTER TABLE blackstarDb.upsService MODIFY verifyConnections INT; 
+	ALTER TABLE blackstarDb.upsService MODIFY verifyFuzz INT; 
+	ALTER TABLE blackstarDb.upsService MODIFY chargerReview INT;
+END IF;
+
+-- UPS - BATTERY BANK
+IF(SELECT DATA_TYPE FROM information_schema.columns WHERE  table_schema = 'blackstarDb' AND table_name = 'upsServiceBatteryBank' AND column_name = 'checkConnectors') != 'INT' THEN
+	ALTER TABLE blackstarDb.upsServiceBatteryBank MODIFY checkConnectors INT; 
+	ALTER TABLE blackstarDb.upsServiceBatteryBank MODIFY cverifyOutflow INT; 
+	ALTER TABLE blackstarDb.upsServiceBatteryBank MODIFY chargeTest INT;
 END IF;
 
 -- CAMBIANDO NUMERICOS POR ALFA-NUMERICOS
@@ -4665,12 +4730,12 @@ CREATE PROCEDURE blackstarDb.AddAAservice (
 	evaValHum VARCHAR(200),
 	evaSetpointTemp VARCHAR(200),
 	evaSetpointHum VARCHAR(200),
-	evaFlagCalibration bit(1),
-	evaReviewFilter bit(1),
-	evaReviewStrip bit(1),
-	evaCleanElectricSystem bit(1),
-	evaCleanControlCard bit(1),
-	evaCleanTray bit(1),
+	evaFlagCalibration BIT(2),
+	evaReviewFilter BIT(2),
+	evaReviewStrip BIT(2),
+	evaCleanElectricSystem BIT(2),
+	evaCleanControlCard BIT(2),
+	evaCleanTray BIT(2),
 	evaLectrurePreasureHigh VARCHAR(200),
 	evaLectrurePreasureLow VARCHAR(200),
 	evaLectureTemp VARCHAR(200),
@@ -4696,11 +4761,11 @@ CREATE PROCEDURE blackstarDb.AddAAservice (
 	evaLectureCurrentHeater1 VARCHAR(200),
 	evaLectureCurrentHeater2 VARCHAR(200),
 	evaLectureCurrentHeater3 VARCHAR(200),
-	evaCheckFluidSensor bit(1),
-	evaRequirMaintenance bit(1),
+	evaCheckFluidSensor BIT(2),
+	evaRequirMaintenance BIT(2),
 	condReview VARCHAR(200),
-	condCleanElectricSystem bit(1),
-	condClean bit(1),
+	condCleanElectricSystem BIT(2),
+	condClean BIT(2),
 	condLectureVoltageGroud VARCHAR(200),
 	condLectureVoltagePhases VARCHAR(200),
 	condLectureVoltageControl VARCHAR(200),
@@ -4763,19 +4828,19 @@ END$$
 DROP PROCEDURE IF EXISTS blackstarDb.AddBBservice$$
 CREATE PROCEDURE blackstarDb.AddBBservice (
    serviceOrderId  int(11)  ,
-   plugClean  bit(1)  ,
+   plugClean  BIT(2)  ,
    plugCleanStatus  VARCHAR(200), 
    plugCleanComments  VARCHAR(200), 
-   coverClean  bit(1)  ,
+   coverClean  BIT(2)  ,
    coverCleanStatus  VARCHAR(200) ,
    coverCleanComments  VARCHAR(200), 
-   capClean  bit(1)  ,
+   capClean  BIT(2)  ,
    capCleanStatus  VARCHAR(200) ,
    capCleanComments  VARCHAR(200), 
-   groundClean  bit(1)  ,
+   groundClean  BIT(2)  ,
    groundCleanStatus  VARCHAR(200), 
    groundCleanComments  VARCHAR(200), 
-   rackClean  bit(1)  ,
+   rackClean  BIT(2)  ,
    rackCleanStatus  VARCHAR(200), 
    rackCleanComments  VARCHAR(200), 
    serialNoDateManufact  VARCHAR(200) ,
@@ -4827,10 +4892,10 @@ CREATE PROCEDURE blackstarDb.AddepService (
    tuningDate  date,
    tankCapacity  VARCHAR(200),
    pumpFuelModel  VARCHAR(200),
-   filterFuelFlag  bit(1),
-   filterOilFlag  bit(1),
-   filterWaterFlag  bit(1),
-   filterAirFlag  bit(1),
+   filterFuelFlag  BIT(2),
+   filterOilFlag  BIT(2),
+   filterWaterFlag  BIT(2),
+   filterAirFlag  BIT(2),
    brandGear  VARCHAR(200),
    brandBattery  VARCHAR(200),
    clockLecture  VARCHAR(200),
@@ -4853,11 +4918,11 @@ END$$
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.AddepServiceSurvey$$
 CREATE PROCEDURE blackstarDb.AddepServiceSurvey (
-	epServiceId  int(11)  ,
-   levelOilFlag  bit(1)  ,
-   levelWaterFlag  bit(1)  ,
+   epServiceId  int(11)  ,
+   levelOilFlag  BIT(2)  ,
+   levelWaterFlag  BIT(2)  ,
    levelBattery  VARCHAR(200),
-   tubeLeak  bit(1)  ,
+   tubeLeak  BIT(2)  ,
    batteryCap  VARCHAR(200),
    batterySulfate  VARCHAR(200),
    levelOil VARCHAR(200),
@@ -4880,18 +4945,18 @@ END$$
 DROP PROCEDURE IF EXISTS blackstarDb.AddepServiceWorkBasic$$
 CREATE PROCEDURE blackstarDb.AddepServiceWorkBasic (
    epServiceId  int(11)  ,
-   washEngine  bit(1)  ,
-   washRadiator  bit(1)  ,
-   cleanWorkArea  bit(1)  ,
-   conectionCheck  bit(1)  ,
-   cleanTransfer  bit(1)  ,
-   cleanCardControl  bit(1)  ,
-   checkConectionControl  bit(1)  ,
-   checkWinding  bit(1)  ,
-   batteryTests  bit(1)  ,
-   checkCharger  bit(1)  ,
-   checkPaint  bit(1)  ,
-   cleanGenerator  bit(1) 
+   washEngine  BIT(2)  ,
+   washRadiator  BIT(2)  ,
+   cleanWorkArea  BIT(2)  ,
+   conectionCheck  BIT(2)  ,
+   cleanTransfer  BIT(2)  ,
+   cleanCardControl  BIT(2)  ,
+   checkConectionControl  BIT(2)  ,
+   checkWinding  BIT(2)  ,
+   batteryTests  BIT(2)  ,
+   checkCharger  BIT(2)  ,
+   checkPaint  BIT(2)  ,
+   cleanGenerator  BIT(2) 
 )
 BEGIN
 insert into epServiceWorkBasic
@@ -4947,10 +5012,10 @@ DROP PROCEDURE IF EXISTS blackstarDb.AddepServiceTransferSwitch$$
 CREATE PROCEDURE blackstarDb.AddepServiceTransferSwitch (
    epServiceId  int(11)  ,
    mechanicalStatus  VARCHAR(200),
-   boardClean  bit(1),
-   lampTest  bit(1),
-   screwAdjust  bit(1),
-   conectionAdjust  bit(1),
+   boardClean  BIT(2),
+   lampTest  BIT(2),
+   screwAdjust  BIT(2),
+   conectionAdjust  BIT(2),
    systemMotors  VARCHAR(200),
    electricInterlock  VARCHAR(200),
    mechanicalInterlock  VARCHAR(200),
@@ -5035,12 +5100,12 @@ DROP PROCEDURE IF EXISTS blackstarDb.AddupsService$$
 CREATE PROCEDURE blackstarDb.AddupsService (
   serviceOrderId int(11) ,
   estatusEquipment varchar(200) ,
-  cleaned bit(1) ,
-  hooverClean bit(1) ,
-  verifyConnections bit(1) ,
+  cleaned BIT(2) ,
+  hooverClean BIT(2) ,
+  verifyConnections BIT(2) ,
   capacitorStatus varchar(200) ,
-  verifyFuzz bit(1) ,
-  chargerReview bit(1) ,
+  verifyFuzz BIT(2) ,
+  chargerReview BIT(2) ,
   fanStatus varchar(200) ,
   observations nvarchar(2000),
   created datetime ,
@@ -5061,14 +5126,14 @@ END$$
 DROP PROCEDURE IF EXISTS blackstarDb.AddupsServiceBatteryBank$$
 CREATE PROCEDURE blackstarDb.AddupsServiceBatteryBank (
   upsServiceId int(11) ,
-  checkConnectors bit(1) ,
-  cverifyOutflow bit(1) ,
+  checkConnectors BIT(2) ,
+  cverifyOutflow BIT(2) ,
   numberBatteries int(11) ,
   manufacturedDateSerial varchar(200) ,
   damageBatteries varchar(50) ,
   other varchar(250) ,
   temp varchar(50) ,
-  chargeTest bit(1) ,
+  chargeTest BIT(2) ,
   brandModel varchar(250) ,
   batteryVoltage varchar(50)
 )
@@ -5529,6 +5594,7 @@ BEGIN
 			contactEmail = pContactEmail,
 			contactPhone = pContactPhone,
 			modified = now(),
+			capacity = pCapacity,
 			modifiedBy = 'UpsertPolicy'
 		WHERE serialNumber = pSerialNumber AND project = pProject;
 	END IF;
@@ -6714,6 +6780,9 @@ DROP PROCEDURE IF EXISTS blackstarDb.AddFollowUpTobloomTicket$$
 CREATE PROCEDURE blackstarDb.`AddFollowUpTobloomTicket`(pTicketId INTEGER, asignee VARCHAR(50), pCreatedByUsrMail VARCHAR(50), pMessage TEXT)
 BEGIN
   
+  IF asignee = '' THEN
+    SET asignee = pCreatedByUsrMail;
+  END IF;
 	INSERT INTO blackstarDb.followUp(bloomTicketId, followup, followUpReferenceTypeId, asignee, created, createdBy, createdByUsr)
 	VALUES(pTicketId, pMessage, 'R', asignee, NOW(), 'AddFollowUpTobloomTicket', pCreatedByUsrMail);
 END$$
@@ -7987,13 +8056,19 @@ CALL ExecuteTransfer();
 -- Change History
 -- -----------------------------------------------------------------------------
 -- PR   Date    AuthorDescription
--- --   --------   -------  ------------------------------------
+-- --   --------   -------  ----------------------------------------------------
 -- 1    20/03/2014  DCB  	Version inicial. 
+-- --   --------   -------  ----------------------------------------------------
 -- 2    08/05/2014  OMA  	ID secuencia tickets internos 
+-- --   --------   -------  ----------------------------------------------------
 -- 3    08/05/2014  OMA  	Perfil Mesa de ayuda
+-- --   --------   -------  ----------------------------------------------------
 -- 4    22/06/2014  OMA  	nueva actualizacion de perfiles y catalogos
+-- --   --------   -------  ----------------------------------------------------
 -- 5 	11/07/2014	SAG 	Script para poblar hidden en bloomServiceType
--- ---------------------------------------------------------------------------
+-- --   --------   -------  ----------------------------------------------------
+-- 6	09/09/2014	SAG 	Se establece SAC600 como inicio secuencia de requisiciones
+-- -----------------------------------------------------------------------------
 use blackstarDb;
 
 
@@ -8002,6 +8077,11 @@ DELIMITER $$
 DROP PROCEDURE IF EXISTS blackstarDb.updateDataBloom$$
 CREATE PROCEDURE blackstarDb.updateDataBloom()
 BEGIN
+-- Estableciendo contador inicial para Requisiciones
+IF(SELECT sequenceNumber FROM blackstarDb.sequence WHERE sequenceTypeId='I') < 600 THEN
+	UPDATE blackstarDb.sequence SET sequenceNumber = 600 WHERE sequenceTypeId='I';
+END IF;
+
 -- Agregando FollowUpReferenceType
 IF(SELECT count(*) FROM blackstarDb.followUpReferenceType WHERE followUpReferenceTypeId = 'R') = 0 THEN
 	INSERT INTO blackstarDb.followUpReferenceType(followUpReferenceTypeId, followUpReferenceType)

@@ -135,6 +135,7 @@ BEGIN
 			contactEmail = pContactEmail,
 			contactPhone = pContactPhone,
 			modified = now(),
+			capacity = pCapacity,
 			modifiedBy = 'UpsertPolicy'
 		WHERE serialNumber = pSerialNumber AND project = pProject;
 	END IF;

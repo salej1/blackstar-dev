@@ -3,8 +3,8 @@ package com.blackstar.model;
 public class EmergencyPlantServiceSurvey {
 
 	public EmergencyPlantServiceSurvey(Integer epServiceId,
-			Integer epServiceSurveyId, Boolean levelOilFlag,
-			Boolean levelWaterFlag, String levelBattery, Boolean tubeLeak,
+			Integer epServiceSurveyId, Integer levelOilFlag,
+			Integer levelWaterFlag, String levelBattery, Integer tubeLeak,
 			String batteryCap, String batterySulfate, String levelOil,
 			String heatEngine, String hoseOil, String hoseWater,
 			String tubeValve, String stripBlades) {
@@ -26,10 +26,10 @@ public class EmergencyPlantServiceSurvey {
 	
 	private Integer epServiceId;
 	private Integer epServiceSurveyId;
-	private Boolean levelOilFlag;
-	private Boolean levelWaterFlag;
+	private Integer levelOilFlag;
+	private Integer levelWaterFlag;
 	private String levelBattery;
-	private Boolean tubeLeak;
+	private Integer tubeLeak;
 	private String batteryCap;
 	private String batterySulfate;
 	private String levelOil;
@@ -51,16 +51,16 @@ public class EmergencyPlantServiceSurvey {
 	public void setEpServiceSurveyId(Integer epServiceSurveyId) {
 		this.epServiceSurveyId = epServiceSurveyId;
 	}
-	public Boolean getLevelOilFlag() {
+	public Integer getLevelOilFlag() {
 		return levelOilFlag;
 	}
-	public void setLevelOilFlag(Boolean levelOilFlag) {
+	public void setLevelOilFlag(Integer levelOilFlag) {
 		this.levelOilFlag = levelOilFlag;
 	}
-	public Boolean getLevelWaterFlag() {
+	public Integer getLevelWaterFlag() {
 		return levelWaterFlag;
 	}
-	public void setLevelWaterFlag(Boolean levelWaterFlag) {
+	public void setLevelWaterFlag(Integer levelWaterFlag) {
 		this.levelWaterFlag = levelWaterFlag;
 	}
 	public String getLevelBattery() {
@@ -69,10 +69,10 @@ public class EmergencyPlantServiceSurvey {
 	public void setLevelBattery(String levelBattery) {
 		this.levelBattery = levelBattery;
 	}
-	public Boolean getTubeLeak() {
+	public Integer getTubeLeak() {
 		return tubeLeak;
 	}
-	public void setTubeLeak(Boolean tubeLeak) {
+	public void setTubeLeak(Integer tubeLeak) {
 		this.tubeLeak = tubeLeak;
 	}
 	public String getBatteryCap() {

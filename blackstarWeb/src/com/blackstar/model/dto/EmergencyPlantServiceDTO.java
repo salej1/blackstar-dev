@@ -263,20 +263,20 @@ public class EmergencyPlantServiceDTO {
 			String brandGenerator, String modelGenerator,
 			String serialGenerator, String powerWattGenerator,
 			String tensionGenerator, Date tuningDate, String tankCapacity,
-			String pumpFuelModel, Boolean filterFuelFlag,
-			Boolean filterOilFlag, Boolean filterWaterFlag,
-			Boolean filterAirFlag, String brandGear, String brandBattery,
+			String pumpFuelModel, Integer filterFuelFlag,
+			Integer filterOilFlag, Integer filterWaterFlag,
+			Integer filterAirFlag, String brandGear, String brandBattery,
 			String clockLecture, Date serviceCorrective, String observations,
-			Integer epServiceSurveyId, Boolean levelOilFlag,
-			Boolean levelWaterFlag, String levelBattery, Boolean tubeLeak,
+			Integer epServiceSurveyId, Integer levelOilFlag,
+			Integer levelWaterFlag, String levelBattery, Integer tubeLeak,
 			String batteryCap, String batterySulfate, String levelOil,
 			String heatEngine, String hoseOil, String hoseWater,
 			String tubeValve, String stripBlades, Integer epServiceWorkBasicId,
-			Boolean washEngine, Boolean washRadiator, Boolean cleanWorkArea,
-			Boolean conectionCheck, Boolean cleanTransfer,
-			Boolean cleanCardControl, Boolean checkConectionControl,
-			Boolean checkWinding, Boolean batteryTests, Boolean checkCharger,
-			Boolean checkPaint, Boolean cleanGenerator,
+			Integer washEngine, Integer washRadiator, Integer cleanWorkArea,
+			Integer conectionCheck, Integer cleanTransfer,
+			Integer cleanCardControl, Integer checkConectionControl,
+			Integer checkWinding, Integer batteryTests, Integer checkCharger,
+			Integer checkPaint, Integer cleanGenerator,
 			Integer epServiceDynamicTestId, String vacuumFrequency,
 			String chargeFrequency, String bootTryouts, String vacuumVoltage,
 			String chargeVoltage, String qualitySmoke, String startTime,
@@ -285,7 +285,7 @@ public class EmergencyPlantServiceDTO {
 			String oilSensor, String voltageSensor, String overSpeedSensor,
 			String oilPreasureSensor, String waterLevelSensor,
 			Integer epServiceTransferSwitchId, String mechanicalStatus,
-			Boolean boardClean, Boolean screwAdjust, Boolean conectionAdjust,
+			Integer boardClean, Integer screwAdjust, Integer conectionAdjust,
 			String systemMotors, String electricInterlock,
 			String mechanicalInterlock, String capacityAmp,
 			Integer epServiceLecturesId, String voltageABAN,
@@ -294,7 +294,7 @@ public class EmergencyPlantServiceDTO {
 			String frequency, String oilPreassure, String temp,
 			Integer epServiceParamsId, String adjsutmentTherm, String current,
 			String batteryCurrent, String clockStatus,
-			String trasnferTypeProtection, String generatorTypeProtection, String brandPE, String modelPE , String serialPE , Boolean lampTest) {
+			String trasnferTypeProtection, String generatorTypeProtection, String brandPE, String modelPE , String serialPE , Integer lampTest) {
 		this.epServiceId = epServiceId;
 		this.serviceOrderId = serviceOrderId;
 		this.transferType = transferType;
@@ -429,10 +429,10 @@ public class EmergencyPlantServiceDTO {
 	private Date tuningDate;
 	private String tankCapacity;
 	private String pumpFuelModel;
-	private Boolean filterFuelFlag;
-	private Boolean filterOilFlag;
-	private Boolean filterWaterFlag;
-	private Boolean filterAirFlag;
+	private Integer filterFuelFlag;
+	private Integer filterOilFlag;
+	private Integer filterWaterFlag;
+	private Integer filterAirFlag;
 	private String brandGear;
 	private String brandBattery;
 	private String clockLecture;
@@ -440,10 +440,10 @@ public class EmergencyPlantServiceDTO {
 	private String observations;
 	
 	private Integer epServiceSurveyId;
-	private Boolean levelOilFlag;
-	private Boolean levelWaterFlag;
+	private Integer levelOilFlag;
+	private Integer levelWaterFlag;
 	private String levelBattery;
-	private Boolean tubeLeak;
+	private Integer tubeLeak;
 	private String batteryCap;
 	private String batterySulfate;
 	private String levelOil;
@@ -454,18 +454,18 @@ public class EmergencyPlantServiceDTO {
 	private String stripBlades;
 
 	private Integer epServiceWorkBasicId;
-	private Boolean washEngine;
-	private Boolean washRadiator;
-	private Boolean cleanWorkArea;
-	private Boolean conectionCheck;
-	private Boolean cleanTransfer;
-	private Boolean cleanCardControl;
-	private Boolean checkConectionControl;
-	private Boolean checkWinding;
-	private Boolean batteryTests;
-	private Boolean checkCharger;
-	private Boolean checkPaint;
-	private Boolean cleanGenerator;
+	private Integer washEngine;
+	private Integer washRadiator;
+	private Integer cleanWorkArea;
+	private Integer conectionCheck;
+	private Integer cleanTransfer;
+	private Integer cleanCardControl;
+	private Integer checkConectionControl;
+	private Integer checkWinding;
+	private Integer batteryTests;
+	private Integer checkCharger;
+	private Integer checkPaint;
+	private Integer cleanGenerator;
 
 	private Integer epServiceDynamicTestId;
 	private String vacuumFrequency;
@@ -488,10 +488,10 @@ public class EmergencyPlantServiceDTO {
 
 	private Integer epServiceTransferSwitchId;
 	private String mechanicalStatus;
-	private Boolean boardClean;
-	private Boolean lampTest;
-	private Boolean screwAdjust;
-	private Boolean conectionAdjust;
+	private Integer boardClean;
+	private Integer lampTest;
+	private Integer screwAdjust;
+	private Integer conectionAdjust;
 	private String systemMotors;
 	private String electricInterlock;
 	private String mechanicalInterlock;
@@ -804,49 +804,49 @@ public class EmergencyPlantServiceDTO {
 
 
 
-	public Boolean getFilterFuelFlag() {
+	public Integer getFilterFuelFlag() {
 		return filterFuelFlag;
 	}
 
 
 
-	public void setFilterFuelFlag(Boolean filterFuelFlag) {
+	public void setFilterFuelFlag(Integer filterFuelFlag) {
 		this.filterFuelFlag = filterFuelFlag;
 	}
 
 
 
-	public Boolean getFilterOilFlag() {
+	public Integer getFilterOilFlag() {
 		return filterOilFlag;
 	}
 
 
 
-	public void setFilterOilFlag(Boolean filterOilFlag) {
+	public void setFilterOilFlag(Integer filterOilFlag) {
 		this.filterOilFlag = filterOilFlag;
 	}
 
 
 
-	public Boolean getFilterWaterFlag() {
+	public Integer getFilterWaterFlag() {
 		return filterWaterFlag;
 	}
 
 
 
-	public void setFilterWaterFlag(Boolean filterWaterFlag) {
+	public void setFilterWaterFlag(Integer filterWaterFlag) {
 		this.filterWaterFlag = filterWaterFlag;
 	}
 
 
 
-	public Boolean getFilterAirFlag() {
+	public Integer getFilterAirFlag() {
 		return filterAirFlag;
 	}
 
 
 
-	public void setFilterAirFlag(Boolean filterAirFlag) {
+	public void setFilterAirFlag(Integer filterAirFlag) {
 		this.filterAirFlag = filterAirFlag;
 	}
 
@@ -924,25 +924,25 @@ public class EmergencyPlantServiceDTO {
 
 
 
-	public Boolean getLevelOilFlag() {
+	public Integer getLevelOilFlag() {
 		return levelOilFlag;
 	}
 
 
 
-	public void setLevelOilFlag(Boolean levelOilFlag) {
+	public void setLevelOilFlag(Integer levelOilFlag) {
 		this.levelOilFlag = levelOilFlag;
 	}
 
 
 
-	public Boolean getLevelWaterFlag() {
+	public Integer getLevelWaterFlag() {
 		return levelWaterFlag;
 	}
 
 
 
-	public void setLevelWaterFlag(Boolean levelWaterFlag) {
+	public void setLevelWaterFlag(Integer levelWaterFlag) {
 		this.levelWaterFlag = levelWaterFlag;
 	}
 
@@ -960,13 +960,13 @@ public class EmergencyPlantServiceDTO {
 
 
 
-	public Boolean getTubeLeak() {
+	public Integer getTubeLeak() {
 		return tubeLeak;
 	}
 
 
 
-	public void setTubeLeak(Boolean tubeLeak) {
+	public void setTubeLeak(Integer tubeLeak) {
 		this.tubeLeak = tubeLeak;
 	}
 
@@ -1080,145 +1080,145 @@ public class EmergencyPlantServiceDTO {
 
 
 
-	public Boolean getWashEngine() {
+	public Integer getWashEngine() {
 		return washEngine;
 	}
 
 
 
-	public void setWashEngine(Boolean washEngine) {
+	public void setWashEngine(Integer washEngine) {
 		this.washEngine = washEngine;
 	}
 
 
 
-	public Boolean getWashRadiator() {
+	public Integer getWashRadiator() {
 		return washRadiator;
 	}
 
 
 
-	public void setWashRadiator(Boolean washRadiator) {
+	public void setWashRadiator(Integer washRadiator) {
 		this.washRadiator = washRadiator;
 	}
 
 
 
-	public Boolean getCleanWorkArea() {
+	public Integer getCleanWorkArea() {
 		return cleanWorkArea;
 	}
 
 
 
-	public void setCleanWorkArea(Boolean cleanWorkArea) {
+	public void setCleanWorkArea(Integer cleanWorkArea) {
 		this.cleanWorkArea = cleanWorkArea;
 	}
 
 
 
-	public Boolean getConectionCheck() {
+	public Integer getConectionCheck() {
 		return conectionCheck;
 	}
 
 
 
-	public void setConectionCheck(Boolean conectionCheck) {
+	public void setConectionCheck(Integer conectionCheck) {
 		this.conectionCheck = conectionCheck;
 	}
 
 
 
-	public Boolean getCleanTransfer() {
+	public Integer getCleanTransfer() {
 		return cleanTransfer;
 	}
 
 
 
-	public void setCleanTransfer(Boolean cleanTransfer) {
+	public void setCleanTransfer(Integer cleanTransfer) {
 		this.cleanTransfer = cleanTransfer;
 	}
 
 
 
-	public Boolean getCleanCardControl() {
+	public Integer getCleanCardControl() {
 		return cleanCardControl;
 	}
 
 
 
-	public void setCleanCardControl(Boolean cleanCardControl) {
+	public void setCleanCardControl(Integer cleanCardControl) {
 		this.cleanCardControl = cleanCardControl;
 	}
 
 
 
-	public Boolean getCheckConectionControl() {
+	public Integer getCheckConectionControl() {
 		return checkConectionControl;
 	}
 
 
 
-	public void setCheckConectionControl(Boolean checkConectionControl) {
+	public void setCheckConectionControl(Integer checkConectionControl) {
 		this.checkConectionControl = checkConectionControl;
 	}
 
 
 
-	public Boolean getCheckWinding() {
+	public Integer getCheckWinding() {
 		return checkWinding;
 	}
 
 
 
-	public void setCheckWinding(Boolean checkWinding) {
+	public void setCheckWinding(Integer checkWinding) {
 		this.checkWinding = checkWinding;
 	}
 
 
 
-	public Boolean getBatteryTests() {
+	public Integer getBatteryTests() {
 		return batteryTests;
 	}
 
 
 
-	public void setBatteryTests(Boolean batteryTests) {
+	public void setBatteryTests(Integer batteryTests) {
 		this.batteryTests = batteryTests;
 	}
 
 
 
-	public Boolean getCheckCharger() {
+	public Integer getCheckCharger() {
 		return checkCharger;
 	}
 
 
 
-	public void setCheckCharger(Boolean checkCharger) {
+	public void setCheckCharger(Integer checkCharger) {
 		this.checkCharger = checkCharger;
 	}
 
 
 
-	public Boolean getCheckPaint() {
+	public Integer getCheckPaint() {
 		return checkPaint;
 	}
 
 
 
-	public void setCheckPaint(Boolean checkPaint) {
+	public void setCheckPaint(Integer checkPaint) {
 		this.checkPaint = checkPaint;
 	}
 
 
 
-	public Boolean getCleanGenerator() {
+	public Integer getCleanGenerator() {
 		return cleanGenerator;
 	}
 
 
 
-	public void setCleanGenerator(Boolean cleanGenerator) {
+	public void setCleanGenerator(Integer cleanGenerator) {
 		this.cleanGenerator = cleanGenerator;
 	}
 
@@ -1452,49 +1452,49 @@ public class EmergencyPlantServiceDTO {
 
 
 
-	public Boolean getBoardClean() {
+	public Integer getBoardClean() {
 		return boardClean;
 	}
 
 
 
-	public void setBoardClean(Boolean boardClean) {
+	public void setBoardClean(Integer boardClean) {
 		this.boardClean = boardClean;
 	}
 
 
 
-	public Boolean getLampTest() {
+	public Integer getLampTest() {
 		return lampTest;
 	}
 
 
 
-	public void setLampTest(Boolean lampTest) {
+	public void setLampTest(Integer lampTest) {
 		this.lampTest = lampTest;
 	}
 
 
 
-	public Boolean getScrewAdjust() {
+	public Integer getScrewAdjust() {
 		return screwAdjust;
 	}
 
 
 
-	public void setScrewAdjust(Boolean screwAdjust) {
+	public void setScrewAdjust(Integer screwAdjust) {
 		this.screwAdjust = screwAdjust;
 	}
 
 
 
-	public Boolean getConectionAdjust() {
+	public Integer getConectionAdjust() {
 		return conectionAdjust;
 	}
 
 
 
-	public void setConectionAdjust(Boolean conectionAdjust) {
+	public void setConectionAdjust(Integer conectionAdjust) {
 		this.conectionAdjust = conectionAdjust;
 	}
 

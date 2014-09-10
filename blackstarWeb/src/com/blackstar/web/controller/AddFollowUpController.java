@@ -247,10 +247,10 @@ private static void SendAssignationEmail(String to, String sender, String create
 	}
 	else if(issueTypeId.equalsIgnoreCase("R")){
 		link = String.format("<a href='" + Globals.GOOGLE_CONTEXT_URL + "/bloom/ticketDetail/show.do?ticketId=%s'>%s</a>", referenceId, referenceNumber);
-		objectType = "Requisición";
+		objectType = "Requisici&oacute;n";
 	}
 	
-	String subject = "Accion requerida por " + createdBy;
+	String subject = "Acci&oacute;n requerida por " + createdBy;
 	
 	if(type == AssignType.Assign){
 		bodySb.append("<img src='" + Globals.GPOSAC_LOGO_DEFAULT_URL + "'>");
@@ -268,7 +268,7 @@ private static void SendAssignationEmail(String to, String sender, String create
 		bodySb.append("<small>Favor de no responder a este email. En caso de duda p&oacute;ngase en contacto con la persona que le asign&oacute; la tarea</small>");
 	}
 	else if(type == AssignType.Notify){
-		subject = "Notificación de " + objectType;
+		subject = "Notificaci&oacute;n de " + objectType;
 		bodySb.append("<img src='" + Globals.GPOSAC_LOGO_DEFAULT_URL + "'>");
 		bodySb.append("<div style='font-family:sans-serif;margin-left:50px;'>");
 		bodySb.append("<h3 >Notificaci&oacute;n de " + objectType + "</h3>");

@@ -66,7 +66,7 @@ public class BatteryMaintenanceReport extends AbstractReport {
 	 
 	 drawer.text("CONECTORES/TERMINALES", 5, 208);
 	 drawer.text("(APRIETE Y SULFATACION)", 5, 216);
-	 if(data.getPlugClean()){
+	 if(data.getPlugClean() == 1){
 		 drawer.line(207, 203, 197, 213, 0, 2);
 		 drawer.line(198, 213, 193, 210, 0, 2);
 	 } else {
@@ -77,7 +77,7 @@ public class BatteryMaintenanceReport extends AbstractReport {
 	 drawer.text(data.getPlugCleanComments(), 343, 213, true);
 	 
 	 drawer.text("CUBIERTA", 5, 241);
-	 if(data.getCoverClean()){
+	 if(data.getCoverClean() == 1){
 		 drawer.line(207, 228, 197, 238, 0, 2);
 		 drawer.line(198, 238, 193, 235, 0, 2);
 	 } else {
@@ -89,7 +89,7 @@ public class BatteryMaintenanceReport extends AbstractReport {
 	 
 	 
 	 drawer.text("TAPONES", 5, 266);
-	 if(data.getCapClean()){
+	 if(data.getCapClean() == 1){
 		 drawer.line(207, 253, 197, 263, 0, 2);
 		 drawer.line(198, 263, 193, 260, 0, 2);
 	 } else {
@@ -101,7 +101,7 @@ public class BatteryMaintenanceReport extends AbstractReport {
 	 
 	 
 	 drawer.text("TIERRA FISICA", 5, 291);
-	 if(data.getGroundClean()){
+	 if(data.getGroundClean() == 1){
 		 drawer.line(207, 278, 197, 288, 0, 2);
 		 drawer.line(198, 288, 193, 285, 0, 2);
 	 } else {
@@ -112,7 +112,7 @@ public class BatteryMaintenanceReport extends AbstractReport {
 	 drawer.text(data.getGroundCleanComments(), 343, 288, true);
 	 
 	 drawer.text("ESTANTE/GABINETE/RACK", 5, 316);
-	 if(data.getRackClean()){
+	 if(data.getRackClean() == 1){
 		 drawer.line(207, 303, 197, 313, 0, 2);
 		 drawer.line(198, 313, 193, 310, 0, 2);
 	 } else {
@@ -306,19 +306,19 @@ public class BatteryMaintenanceReport extends AbstractReport {
 	
 	batteryServiceDTO.setBbServiceId(12345);
 	batteryServiceDTO.setServiceOrderId(54321);
-	batteryServiceDTO.setPlugClean(true);
+	batteryServiceDTO.setPlugClean(1);
 	batteryServiceDTO.setPlugCleanStatus("plugCleanStatus");
 	batteryServiceDTO.setPlugCleanComments("plugCleanComments");
-	batteryServiceDTO.setCoverClean(false);
+	batteryServiceDTO.setCoverClean(0);
 	batteryServiceDTO.setCoverCleanStatus("coverCleanStatus");
 	batteryServiceDTO.setCoverCleanComments("coverCleanComments");
-	batteryServiceDTO.setCapClean(true);
+	batteryServiceDTO.setCapClean(1);
 	batteryServiceDTO.setCapCleanStatus("capCleanStatus");
 	batteryServiceDTO.setCapCleanComments("capCleanComments");
-	batteryServiceDTO.setGroundClean(true);
+	batteryServiceDTO.setGroundClean(1);
 	batteryServiceDTO.setGroundCleanStatus("groundCleanStatus");
 	batteryServiceDTO.setGroundCleanComments("groundCleanComments");
-	batteryServiceDTO.setRackClean(true);
+	batteryServiceDTO.setRackClean(1);
 	batteryServiceDTO.setRackCleanStatus("rackCleanStatus");
 	batteryServiceDTO.setRackCleanComments("rackCleanComments");
 	batteryServiceDTO.setSerialNoDateManufact("serialNoDateManufact");

@@ -215,27 +215,27 @@
 								</tr>
 								<tr>
 									<td colspan="5">1.3 SE REALIZÓ COMPARACION Y CALIBRACION T/H MEDIDO</td>
-									<td colspan="4"><c:forEach var="item" items="${checkOptions}"><form:radiobutton path="evaFlagCalibration" value="${item.value}" required="true" cssClass="lockOnDetail"/>${item.label}</c:forEach>
+									<td colspan="4"><c:forEach var="item" items="${checkOptions}"><form:radiobutton path="evaFlagCalibration" value="${item.value}" required="true" cssClass="lockOnDetail"/>${item.label}</c:forEach></td>
 								</tr>
 								<tr>
 									<td colspan="5">1.4 REVISIÓN Y LIMPIEZA DE FILTROS, EVAPORADOR Y EQUIPO EN GRAL.</td>
-									<td colspan="4"><form:checkbox path="evaReviewFilter"  style="width:99%;" cssClass="lockOnDetail" /></td>
+									<td colspan="4"><c:forEach var="item" items="${checkOptions}"><form:radiobutton path="evaReviewFilter" value="${item.value}" required="true" cssClass="lockOnDetail"/>${item.label}</c:forEach></td>
 								</tr>
 								<tr>
 									<td colspan="5">1.5 REVISIÓN Y AJUSTE DE BANDAS, ALINEACIÓN Y BALANCEO DE TURBINAS</td>
-									<td colspan="4"><form:checkbox path="evaReviewStrip" style="width:99%;" cssClass="lockOnDetail" /></td>
+									<td colspan="4"><c:forEach var="item" items="${checkOptions}"><form:radiobutton path="evaReviewStrip" value="${item.value}" required="true" cssClass="lockOnDetail"/>${item.label}</c:forEach></td>
 								</tr>
 								<tr>
 									<td colspan="5">1.6 INSPECCIÓN Y LIMPIEZADEL SISTEMA ELECTRICO, PROTECCIONES, CABLEADO, TERMINALES Y CONTACTORES (PLATINOS)</td>
-									<td colspan="4"><form:checkbox path="evaCleanElectricSystem" style="width:99%;" cssClass="lockOnDetail"/></td>
+									<td colspan="4"><c:forEach var="item" items="${checkOptions}"><form:radiobutton path="evaCleanElectricSystem" value="${item.value}" required="true" cssClass="lockOnDetail"/>${item.label}</c:forEach></td>
 								</tr>
 								<tr>
 									<td colspan="5">1.7	REVISIÓN Y LIMPIEZA DE TARJETA DE CONTROL Y SENSOR DE TEMP/HUMEDAD</td>
-									<td colspan="4"><form:checkbox path="evaCleanControlCard"  style="width:99%;" cssClass="lockOnDetail" /></td>
+									<td colspan="4"><c:forEach var="item" items="${checkOptions}"><form:radiobutton path="evaCleanControlCard" value="${item.value}" required="true" cssClass="lockOnDetail"/>${item.label}</c:forEach></td>
 								</tr>
 								<tr>
 									<td colspan="5">1.8	REVISIÓN Y LIMPIEZA DE CHAROLA Y DRENAJE DE CONDENSADOS Y HUMIDIFICADOR</td>
-									<td colspan="4"><form:checkbox path="evaCleanTray" style="width:99%;" cssClass="lockOnDetail" /></td>
+									<td colspan="4"><c:forEach var="item" items="${checkOptions}"><form:radiobutton path="evaCleanTray" value="${item.value}" required="true" cssClass="lockOnDetail"/>${item.label}</c:forEach></td>
 								</tr>
 								<tr>
 									<td colspan="5">1.9	LECTURA DE PRESIÓN DE COMPRESIÓN EN OPERACIÓN NORMAL</td>
@@ -307,11 +307,11 @@
 								</tr>
 								<tr>
 									<td colspan="5">1.18 PRUEBA DE SENSOR DE AIRE Y FILTRO SUCIO</td>
-									<td colspan="4"><form:checkbox path="evaCheckFluidSensor"  style="width:99%;" cssClass="lockOnDetail"  required="true"/></td>
+									<td colspan="4"><c:forEach var="item" items="${checkOptions}"><form:radiobutton path="evaCheckFluidSensor" value="${item.value}" required="true" cssClass="lockOnDetail"/>${item.label}</c:forEach></td>
 								</tr>	
 								<tr>
 									<td colspan="5">1.19 REQUERIMIENTO DE LAMINADO Y PINTURA EN EL EQUIPO</td>
-									<td colspan="4"><form:checkbox path="evaRequirMaintenance" style="width:99%;" cssClass="lockOnDetail"  required="true"/></td>
+									<td colspan="4"><c:forEach var="item" items="${checkOptions}"><form:radiobutton path="evaRequirMaintenance" value="${item.value}" required="true" cssClass="lockOnDetail"/>${item.label}</c:forEach></td>
 								</tr>	
 							</table>
 							<table>
@@ -326,11 +326,11 @@
 								</tr>
 								<tr>
 									<td>2.2	INSPECCIÓN Y LIMPIEZA DEL SISTEMA ELÉCTRICO, PROTECCIONES, CABLEADO, TERMINALES Y CONTACTORES</td>
-									<td colspan="6"><form:checkbox path="condCleanElectricSystem"  style="width:99%;" cssClass="lockOnDetail" required="true" /></td>
+									<td colspan="6"><c:forEach var="item" items="${checkOptions}"><form:radiobutton path="condCleanElectricSystem" value="${item.value}" required="true" cssClass="lockOnDetail"/>${item.label}</c:forEach></td>
 								</tr>
 								<tr>
 									<td>2.3	LAVADO DE CONDENSADOR (DRY FLUID COOLER) CON LIQUIDO DESINCRUSTANTE Y AGUA A PRESIÓN</td>
-									<td colspan="6"><form:checkbox path="condClean" style="width:99%;" cssClass="lockOnDetail" required="true" /></td>
+									<td colspan="6"><c:forEach var="item" items="${checkOptions}"><form:radiobutton path="condClean" value="${item.value}" required="true" cssClass="lockOnDetail"/>${item.label}</c:forEach></td>
 								</tr>
 								<tr>
 									<td>2.4	TOMA DE LECTURAS DE VOLTAJE</td>
@@ -406,12 +406,12 @@
 									<td></td>
 									<td><form:hidden cssClass="lockOnDetail" path="serviceEndDate"/></td>
 									<td>Puesto</td>
-									<td><form:input path="receivedByPosition"  style="width:95%;"/></td>
+									<td><form:input path="receivedByPosition"  style="width:95%;" cssClass="lockOnDetail" required="true" /></td>
 								</tr>		
 								<tr>
 									<td colspan="2"></td>
 									<td>Email</td>
-									<td><form:input path="receivedByEmail"  style="width:95%;" /></td>
+									<td><form:input path="receivedByEmail"  style="width:95%;" cssClass="lockOnDetail" /></td>
 								</tr>	
 								<c:if test="${!user.belongsToGroup['Cliente']}">
 									<tr class="hideOnNew">

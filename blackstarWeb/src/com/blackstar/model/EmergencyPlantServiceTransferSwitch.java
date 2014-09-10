@@ -4,7 +4,7 @@ public class EmergencyPlantServiceTransferSwitch {
 
 	public EmergencyPlantServiceTransferSwitch(Integer epServiceId,
 			Integer epServiceTransferSwitchId, String mechanicalStatus,
-			Boolean boardClean, Boolean screwAdjust,Boolean lampTest, Boolean conectionAdjust,
+			Integer boardClean, Integer screwAdjust,Integer lampTest, Integer conectionAdjust,
 			String systemMotors, String electricInterlock,
 			String mechanicalInterlock, String capacityAmp) {
 		this.epServiceId = epServiceId;
@@ -23,10 +23,10 @@ public class EmergencyPlantServiceTransferSwitch {
 	private Integer epServiceId;
 	private Integer epServiceTransferSwitchId;
 	private String mechanicalStatus;
-	private Boolean boardClean;
-	private Boolean screwAdjust;
-	private Boolean lampTest;
-	private Boolean conectionAdjust;
+	private Integer boardClean;
+	private Integer screwAdjust;
+	private Integer lampTest;
+	private Integer conectionAdjust;
 	private String systemMotors;
 	private String electricInterlock;
 	private String mechanicalInterlock;
@@ -50,22 +50,22 @@ public class EmergencyPlantServiceTransferSwitch {
 	public void setMechanicalStatus(String mechanicalStatus) {
 		this.mechanicalStatus = mechanicalStatus;
 	}
-	public Boolean getBoardClean() {
+	public Integer getBoardClean() {
 		return boardClean;
 	}
-	public void setBoardClean(Boolean boardClean) {
+	public void setBoardClean(Integer boardClean) {
 		this.boardClean = boardClean;
 	}
-	public Boolean getScrewAdjust() {
+	public Integer getScrewAdjust() {
 		return screwAdjust;
 	}
-	public void setScrewAdjust(Boolean screwAdjust) {
+	public void setScrewAdjust(Integer screwAdjust) {
 		this.screwAdjust = screwAdjust;
 	}
-	public Boolean getConectionAdjust() {
+	public Integer getConectionAdjust() {
 		return conectionAdjust;
 	}
-	public void setConectionAdjust(Boolean conectionAdjust) {
+	public void setConectionAdjust(Integer conectionAdjust) {
 		this.conectionAdjust = conectionAdjust;
 	}
 	public String getSystemMotors() {
@@ -92,10 +92,10 @@ public class EmergencyPlantServiceTransferSwitch {
 	public void setCapacityAmp(String capacityAmp) {
 		this.capacityAmp = capacityAmp;
 	}
-	public Boolean getLampTest() {
+	public Integer getLampTest() {
 		return lampTest;
 	}
-	public void setLampTest(Boolean lampTest) {
+	public void setLampTest(Integer lampTest) {
 		this.lampTest = lampTest;
 	}	
 }

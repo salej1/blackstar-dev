@@ -66,12 +66,12 @@ public class BatteryServiceDTO {
 	}
 	
 	public BatteryServiceDTO(Integer bbServiceId, Integer serviceOrderId,
-			Boolean plugClean, String plugCleanStatus,
-			String plugCleanComments, Boolean coverClean,
+			Integer plugClean, String plugCleanStatus,
+			String plugCleanComments, Integer coverClean,
 			String coverCleanStatus, String coverCleanComments,
-			Boolean capClean, String capCleanStatus, String capCleanComments,
-			Boolean groundClean, String groundCleanStatus,
-			String groundCleanComments, Boolean rackClean,
+			Integer capClean, String capCleanStatus, String capCleanComments,
+			Integer groundClean, String groundCleanStatus,
+			String groundCleanComments, Integer rackClean,
 			String rackCleanStatus, String rackCleanComments,
 			String serialNoDateManufact, String batteryTemperature,
 			String voltageBus, String temperature,
@@ -101,12 +101,12 @@ public class BatteryServiceDTO {
 	}
 	
 	public BatteryServiceDTO(Integer bbServiceId, Integer serviceOrderId,
-			Boolean plugClean, String plugCleanStatus,
-			String plugCleanComments, Boolean coverClean,
+			Integer plugClean, String plugCleanStatus,
+			String plugCleanComments, Integer coverClean,
 			String coverCleanStatus, String coverCleanComments,
-			Boolean capClean, String capCleanStatus, String capCleanComments,
-			Boolean groundClean, String groundCleanStatus,
-			String groundCleanComments, Boolean rackClean,
+			Integer capClean, String capCleanStatus, String capCleanComments,
+			Integer groundClean, String groundCleanStatus,
+			String groundCleanComments, Integer rackClean,
 			String rackCleanStatus, String rackCleanComments,
 			String serialNoDateManufact, String batteryTemperature,
 			String voltageBus, String temperature) {
@@ -135,19 +135,19 @@ public class BatteryServiceDTO {
 
 	private Integer bbServiceId;
 	private Integer serviceOrderId;	
-	private Boolean plugClean;
+	private Integer plugClean;
 	private String plugCleanStatus;
 	private String plugCleanComments;
-	private Boolean coverClean;
+	private Integer coverClean;
 	private String coverCleanStatus;
 	private String coverCleanComments;
-	private Boolean capClean;
+	private Integer capClean;
 	private String capCleanStatus;
 	private String capCleanComments;
-	private Boolean groundClean;
+	private Integer groundClean;
 	private String groundCleanStatus;
 	private String groundCleanComments;
-	private Boolean rackClean;
+	private Integer rackClean;
 	private String rackCleanStatus;
 	private String rackCleanComments;
 	private String serialNoDateManufact;
@@ -177,12 +177,12 @@ public class BatteryServiceDTO {
 	}
 
 
-	public Boolean getPlugClean() {
+	public Integer getPlugClean() {
 		return plugClean;
 	}
 
 
-	public void setPlugClean(Boolean plugClean) {
+	public void setPlugClean(Integer plugClean) {
 		this.plugClean = plugClean;
 	}
 
@@ -207,12 +207,12 @@ public class BatteryServiceDTO {
 	}
 
 
-	public Boolean getCoverClean() {
+	public Integer getCoverClean() {
 		return coverClean;
 	}
 
 
-	public void setCoverClean(Boolean coverClean) {
+	public void setCoverClean(Integer coverClean) {
 		this.coverClean = coverClean;
 	}
 
@@ -237,12 +237,12 @@ public class BatteryServiceDTO {
 	}
 
 
-	public Boolean getCapClean() {
+	public Integer getCapClean() {
 		return capClean;
 	}
 
 
-	public void setCapClean(Boolean capClean) {
+	public void setCapClean(Integer capClean) {
 		this.capClean = capClean;
 	}
 
@@ -267,12 +267,12 @@ public class BatteryServiceDTO {
 	}
 
 
-	public Boolean getGroundClean() {
+	public Integer getGroundClean() {
 		return groundClean;
 	}
 
 
-	public void setGroundClean(Boolean groundClean) {
+	public void setGroundClean(Integer groundClean) {
 		this.groundClean = groundClean;
 	}
 
@@ -297,12 +297,12 @@ public class BatteryServiceDTO {
 	}
 
 
-	public Boolean getRackClean() {
+	public Integer getRackClean() {
 		return rackClean;
 	}
 
 
-	public void setRackClean(Boolean rackClean) {
+	public void setRackClean(Integer rackClean) {
 		this.rackClean = rackClean;
 	}
 

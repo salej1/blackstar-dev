@@ -12,9 +12,9 @@ public class EmergencyPlantService {
 			String brandGenerator, String modelGenerator,
 			String serialGenerator, String powerWattGenerator,
 			String tensionGenerator, Date tuningDate, String tankCapacity,
-			String pumpFuelModel, Boolean filterFuelFlag,
-			Boolean filterOilFlag, Boolean filterWaterFlag,
-			Boolean filterAirFlag, String brandGear, String brandBattery,
+			String pumpFuelModel, Integer filterFuelFlag,
+			Integer filterOilFlag, Integer filterWaterFlag,
+			Integer filterAirFlag, String brandGear, String brandBattery,
 			String clockLecture, Date serviceCorrective, String observations,
 			Date created, String createdBy, String createdByUsr, Date modified,
 			String modifiedBy, String modifiedByUsr, String brandPE, String modelPE , String serialPE) {
@@ -83,10 +83,10 @@ public class EmergencyPlantService {
 	private Date tuningDate;
 	private String tankCapacity;
 	private String pumpFuelModel;
-	private Boolean filterFuelFlag;
-	private Boolean filterOilFlag;
-	private Boolean filterWaterFlag;
-	private Boolean filterAirFlag;
+	private Integer filterFuelFlag;
+	private Integer filterOilFlag;
+	private Integer filterWaterFlag;
+	private Integer filterAirFlag;
 	private String brandGear;
 	private String brandBattery;
 	private String clockLecture;
@@ -243,28 +243,28 @@ public class EmergencyPlantService {
 	public void setPumpFuelModel(String pumpFuelModel) {
 		this.pumpFuelModel = pumpFuelModel;
 	}
-	public Boolean getFilterFuelFlag() {
+	public Integer getFilterFuelFlag() {
 		return filterFuelFlag;
 	}
-	public void setFilterFuelFlag(Boolean filterFuelFlag) {
+	public void setFilterFuelFlag(Integer filterFuelFlag) {
 		this.filterFuelFlag = filterFuelFlag;
 	}
-	public Boolean getFilterOilFlag() {
+	public Integer getFilterOilFlag() {
 		return filterOilFlag;
 	}
-	public void setFilterOilFlag(Boolean filterOilFlag) {
+	public void setFilterOilFlag(Integer filterOilFlag) {
 		this.filterOilFlag = filterOilFlag;
 	}
-	public Boolean getFilterWaterFlag() {
+	public Integer getFilterWaterFlag() {
 		return filterWaterFlag;
 	}
-	public void setFilterWaterFlag(Boolean filterWaterFlag) {
+	public void setFilterWaterFlag(Integer filterWaterFlag) {
 		this.filterWaterFlag = filterWaterFlag;
 	}
-	public Boolean getFilterAirFlag() {
+	public Integer getFilterAirFlag() {
 		return filterAirFlag;
 	}
-	public void setFilterAirFlag(Boolean filterAirFlag) {
+	public void setFilterAirFlag(Integer filterAirFlag) {
 		this.filterAirFlag = filterAirFlag;
 	}
 	public String getBrandGear() {

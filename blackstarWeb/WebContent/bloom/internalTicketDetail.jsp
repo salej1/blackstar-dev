@@ -153,7 +153,7 @@
 
 	function iniHideAdditionalFields(){
 		
-		$('#descrLabel').text("Descripci\u00f3n de la solicitud");
+		$('#descrLabel').text("Descripción de la solicitud");
 		
 		$('#tr_purposeVisitVL').hide();
 		$('#tr_purposeVisitVISAS').hide();
@@ -327,7 +327,7 @@
 			$('#tr_purposeVisitVL').show();
 
 			$('#sp_purposeVisitVL')
-					.text("Objetivo de Visita y Tipo de Equipo que se pretende ofertar o revisar");
+					.text("Tipo de Equipo a ofertar o revisar o liga de Cédula de Proyectos");
 
 		}
 		if (serviceTypeId === 2) {
@@ -335,7 +335,7 @@
 			$('#tr_purposeVisitVISAS').show();
 
 			$('#sp_purposeVisitVISAS')
-					.text("Objetivo de Visita y Tipo de Equipo que se pretende ofertar o revisar");
+					.text("Tipo de Equipo a ofertar o revisar o liga de Cédula de Proyectos");
 
 		}
 		if (serviceTypeId === 3) {
@@ -343,7 +343,7 @@
 			$('#tr_formProjectVED').show();
 
 			$('#sp_draftCopyDiagramVED').text("Diagrama en borrador");
-			$('#sp_formProjectVED').text("Ced\u00fala de Proyectos");
+			$('#sp_formProjectVED').text("Cédula de Proyectos");
 
 		}
 		if (serviceTypeId === 4) {
@@ -354,7 +354,7 @@
 
 			$('#sp_observationsVEPI').text("Observaciones y/o ligas de fotos");
 			$('#sp_draftCopyPlanVEPI').text("Plano en borrador");
-			$('#sp_formProjectVEPI').text("Ced\u00fala de Proyectos");
+			$('#sp_formProjectVEPI').text("Cédula de Proyectos");
 
 		}
 		if (serviceTypeId === 5) {
@@ -366,7 +366,7 @@
 			$('#sp_observationsVRCC').text("Observaciones y/o ligas de fotos");
 			$('#sp_checkListVRCC').text(
 					"Check-List de Levantamiento o lista de materiales a utilizar");
-			$('#sp_formProjectVRCC').text("Ced\u00fala de Proyectos");
+			$('#sp_formProjectVRCC').text("Cédula de Proyectos");
 
 		}
 		if (serviceTypeId === 6) {
@@ -382,14 +382,14 @@
 			$('#tr_formProjectVSA').show();
 
 			$('#sp_observationsVSA').text("Observaciones y/o ligas de mas anexos");
-			$('#sp_formProjectVSA').text("Ced\u00fala de Proyectos");
+			$('#sp_formProjectVSA').text("Cédula de Proyectos");
 
 		}
 		if (serviceTypeId === 8) {
 
 			$('#tr_productInformationVSP').show();
 
-			$('#sp_productInformationVSP').text("Producto a solicitar Precio (Marca, modelo, descripci\u00f3n)");
+			$('#sp_productInformationVSP').text("Producto a solicitar Precio (Marca, modelo, descripción)");
 
 		}
 		if (serviceTypeId === 9) {
@@ -442,7 +442,7 @@
 
 			$('#tr_productInformationISSPC').show();
 
-			$('#sp_productInformationISSPC').text("Producto a solicitar Precio (Marca, modelo, descripci\u00f3n)");
+			$('#sp_productInformationISSPC').text("Producto a solicitar Precio (Marca, modelo, descripción)");
 
 		}
 		if (serviceTypeId === 15) {
@@ -451,12 +451,12 @@
 
 			$('#tr_positionPGCAS').show();
 			$('#tr_collaboratorPGCAS').show();
-			$('#tr_justificationPGCAS').show();
+			//$('#tr_justificationPGCAS').show();
 			$('#tr_salaryPGCAS').show();
 
 			$('#sp_positionPGCAS').text("Puesto");
 			$('#sp_collaboratorPGCAS').text("Nombre del colaborador");
-			$('#sp_justificationPGCAS').text("Justificaci\u00f3n del Req.");
+			$('#descrLabel').text("Justificación del requerimiento");
 			$('#sp_salaryPGCAS').text("Sueldo");
 
 		}
@@ -481,42 +481,42 @@
 			$('#tr_developmentPlanPGCNC').show();
 			$('#tr_targetPGCNC').show();
 			$('#tr_salaryPGCNC').show();
-			$('#tr_justificationPGCNC').show();
+			//$('#tr_justificationPGCNC').show();
 
 			$('#sp_positionPGCNC').text("Puesto");
 			$('#sp_developmentPlanPGCNC').text("Plan de desarrollo");
 			$('#sp_targetPGCNC').text("Objetivos");
 			$('#sp_salaryPGCNC').text("Sueldo");
-			$('#sp_justificationPGCNC').text("Justificaci\u00f3n del Req.");
+			$('#descrLabel').text("Justificación del requerimiento");
 
 		}
 		if (serviceTypeId === 19) {
 
 			$('#tr_positionPGCF').show();
 			$('#tr_collaboratorPGCF').show();
-			$('#tr_justificationPGCF').show();
+			//$('#tr_justificationPGCF').show();
 
 			$('#sp_positionPGCF').text("Puesto");
 			$('#sp_collaboratorPGCF').text("Nombre del colaborador");
-			$('#sp_justificationPGCF').text("Justificaci\u00f3n del Req.");
+			$('#descrLabel').text("Justificación del requerimiento");
 
 		}
 		if (serviceTypeId === 20) {
 
 			$('#tr_positionPGCAA').show();
 			$('#tr_collaboratorPGCAA').show();
-			$('#tr_justificationPGCAA').show();
+			// $('#tr_justificationPGCAA').show();
 
 			$('#sp_positionPGCAA').text("Puesto");
 			$('#sp_collaboratorPGCAA').text("Nombre del colaborador");
-			$('#sp_justificationPGCAA').text("Justificaci\u00f3n del Req.");
+			$('#descrLabel').text("Justificación del requerimiento");
 
 		}
 		if (serviceTypeId === 21) {
 
 			$('#tr_requisitionFormatGRC').show();
 
-			$('#sp_requisitionFormatGRC').text("Formato de requisici\u00f3n de curso de capacitaci\u00f3n");
+			$('#sp_requisitionFormatGRC').text("Formato de requisición de curso de capacitación");
 
 		}
 		if (serviceTypeId === 22) {
@@ -530,17 +530,17 @@
 
 			$('#tr_suggestionGSM').show();
 			$('#tr_documentCodeGSM').show();
-			$('#tr_justificationGSM').show();
+			// $('#tr_justificationGSM').show();
 
 			$('#sp_suggestionGSM').text("Sugerencia");
-			$('#sp_documentCodeGSM').text("C\u00f3digo del documento");
-			$('#sp_justificationGSM').text("Justificaci\u00f3n del Requisici\u00f3n");
+			$('#sp_documentCodeGSM').text("Código del documento");
+			$('#descrLabel').text("Justificación del requerimiento");
 
 		}
 		if (serviceTypeId === 24) {
 
 			$('#tr_problemDescriptionGPTR').show();
-			$('#sp_problemDescriptionGPTR').text("Descripci\u00f3n del Problema");
+			$('#sp_problemDescriptionGPTR').text("Descripción del Problema");
 
 		}
 	}
@@ -687,7 +687,7 @@
 							<input type="hidden" id="slTipoServicio" value="${ticketDetail.serviceTypeId}"/>
 							<tr id='tr_purposeVisitVL'>
 								<td><span id='sp_purposeVisitVL'>Datos Adicionales 1</span></td>
-								<td><textarea id='txt_purposeVisitVL' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
+								<td colspan="5"><textarea id='txt_purposeVisitVL' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
 							</tr>
 							<tr id='tr_purposeVisitVISAS'>
 								<td><span id='sp_purposeVisitVISAS'>Datos Adicionales 1</span></td>
@@ -719,7 +719,7 @@
 							</tr>
 							<tr id='tr_checkListVRCC'>
 								<td><span id='sp_checkListVRCC'>Datos Adicionales 1</span></td>
-								<td><textarea id='txt_checkListVRCC' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
+								<td colspan="5"><textarea id='txt_checkListVRCC' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
 							</tr>
 							<tr id='tr_formProjectVRCC'>
 								<td><span id='sp_formProjectVRCC'>Datos Adicionales 1</span></td>

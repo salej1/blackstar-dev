@@ -3,12 +3,12 @@ package com.blackstar.model;
 public class EmergencyPlantServiceWorkBasic {
 
 	public EmergencyPlantServiceWorkBasic(Integer epServiceId,
-			Integer epServiceWorkBasicId, Boolean washEngine,
-			Boolean washRadiator, Boolean cleanWorkArea,
-			Boolean conectionCheck, Boolean cleanTransfer,
-			Boolean cleanCardControl, Boolean checkConectionControl,
-			Boolean checkWinding, Boolean batteryTests, Boolean checkCharger,
-			Boolean checkPaint, Boolean cleanGenerator) {
+			Integer epServiceWorkBasicId, Integer washEngine,
+			Integer washRadiator, Integer cleanWorkArea,
+			Integer conectionCheck, Integer cleanTransfer,
+			Integer cleanCardControl, Integer checkConectionControl,
+			Integer checkWinding, Integer batteryTests, Integer checkCharger,
+			Integer checkPaint, Integer cleanGenerator) {
 		this.epServiceId = epServiceId;
 		this.epServiceWorkBasicId = epServiceWorkBasicId;
 		this.washEngine = washEngine;
@@ -27,18 +27,18 @@ public class EmergencyPlantServiceWorkBasic {
 	
 	private Integer epServiceId;
 	private Integer epServiceWorkBasicId;
-	private Boolean washEngine;
-	private Boolean washRadiator;
-	private Boolean cleanWorkArea;
-	private Boolean conectionCheck;
-	private Boolean cleanTransfer;
-	private Boolean cleanCardControl;
-	private Boolean checkConectionControl;
-	private Boolean checkWinding;
-	private Boolean batteryTests;
-	private Boolean checkCharger;
-	private Boolean checkPaint;
-	private Boolean cleanGenerator;
+	private Integer washEngine;
+	private Integer washRadiator;
+	private Integer cleanWorkArea;
+	private Integer conectionCheck;
+	private Integer cleanTransfer;
+	private Integer cleanCardControl;
+	private Integer checkConectionControl;
+	private Integer checkWinding;
+	private Integer batteryTests;
+	private Integer checkCharger;
+	private Integer checkPaint;
+	private Integer cleanGenerator;
 	
 	public Integer getEpServiceId() {
 		return epServiceId;
@@ -52,76 +52,76 @@ public class EmergencyPlantServiceWorkBasic {
 	public void setEpServiceWorkBasicId(Integer epServiceWorkBasicId) {
 		this.epServiceWorkBasicId = epServiceWorkBasicId;
 	}
-	public Boolean getWashEngine() {
+	public Integer getWashEngine() {
 		return washEngine;
 	}
-	public void setWashEngine(Boolean washEngine) {
+	public void setWashEngine(Integer washEngine) {
 		this.washEngine = washEngine;
 	}
-	public Boolean getWashRadiator() {
+	public Integer getWashRadiator() {
 		return washRadiator;
 	}
-	public void setWashRadiator(Boolean washRadiator) {
+	public void setWashRadiator(Integer washRadiator) {
 		this.washRadiator = washRadiator;
 	}
-	public Boolean getCleanWorkArea() {
+	public Integer getCleanWorkArea() {
 		return cleanWorkArea;
 	}
-	public void setCleanWorkArea(Boolean cleanWorkArea) {
+	public void setCleanWorkArea(Integer cleanWorkArea) {
 		this.cleanWorkArea = cleanWorkArea;
 	}
-	public Boolean getConectionCheck() {
+	public Integer getConectionCheck() {
 		return conectionCheck;
 	}
-	public void setConectionCheck(Boolean conectionCheck) {
+	public void setConectionCheck(Integer conectionCheck) {
 		this.conectionCheck = conectionCheck;
 	}
-	public Boolean getCleanTransfer() {
+	public Integer getCleanTransfer() {
 		return cleanTransfer;
 	}
-	public void setCleanTransfer(Boolean cleanTransfer) {
+	public void setCleanTransfer(Integer cleanTransfer) {
 		this.cleanTransfer = cleanTransfer;
 	}
-	public Boolean getCleanCardControl() {
+	public Integer getCleanCardControl() {
 		return cleanCardControl;
 	}
-	public void setCleanCardControl(Boolean cleanCardControl) {
+	public void setCleanCardControl(Integer cleanCardControl) {
 		this.cleanCardControl = cleanCardControl;
 	}
-	public Boolean getCheckConectionControl() {
+	public Integer getCheckConectionControl() {
 		return checkConectionControl;
 	}
-	public void setCheckConectionControl(Boolean checkConectionControl) {
+	public void setCheckConectionControl(Integer checkConectionControl) {
 		this.checkConectionControl = checkConectionControl;
 	}
-	public Boolean getCheckWinding() {
+	public Integer getCheckWinding() {
 		return checkWinding;
 	}
-	public void setCheckWinding(Boolean checkWinding) {
+	public void setCheckWinding(Integer checkWinding) {
 		this.checkWinding = checkWinding;
 	}
-	public Boolean getBatteryTests() {
+	public Integer getBatteryTests() {
 		return batteryTests;
 	}
-	public void setBatteryTests(Boolean batteryTests) {
+	public void setBatteryTests(Integer batteryTests) {
 		this.batteryTests = batteryTests;
 	}
-	public Boolean getCheckCharger() {
+	public Integer getCheckCharger() {
 		return checkCharger;
 	}
-	public void setCheckCharger(Boolean checkCharger) {
+	public void setCheckCharger(Integer checkCharger) {
 		this.checkCharger = checkCharger;
 	}
-	public Boolean getCheckPaint() {
+	public Integer getCheckPaint() {
 		return checkPaint;
 	}
-	public void setCheckPaint(Boolean checkPaint) {
+	public void setCheckPaint(Integer checkPaint) {
 		this.checkPaint = checkPaint;
 	}
-	public Boolean getCleanGenerator() {
+	public Integer getCleanGenerator() {
 		return cleanGenerator;
 	}
-	public void setCleanGenerator(Boolean cleanGenerator) {
+	public void setCleanGenerator(Integer cleanGenerator) {
 		this.cleanGenerator = cleanGenerator;
 	}
 	

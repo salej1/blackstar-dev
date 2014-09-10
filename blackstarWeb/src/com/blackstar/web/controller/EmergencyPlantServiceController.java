@@ -119,6 +119,7 @@ public class EmergencyPlantServiceController extends AbstractController {
 				  model.addAttribute("rootFolder", gdService.getRootFolderId());
 				  model.addAttribute("accessToken", gdService.getAccessToken());
 				  model.addAttribute("equipmentTypeList", service.getEquipmentTypeList());
+				  model.addAttribute("checkOptions", this.getCheckOptions());
 	  		  }
 			  else
 			  {

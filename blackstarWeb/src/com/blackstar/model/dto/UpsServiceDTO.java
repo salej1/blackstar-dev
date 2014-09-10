@@ -102,16 +102,16 @@ public class UpsServiceDTO {
 	}
 			
 	public UpsServiceDTO(Integer upsServiceId, Integer serviceOrderId,
-			String estatusEquipment, Boolean cleaned, Boolean hooverClean,
-			Boolean verifyConnections, String capacitorStatus,
-			Boolean verifyFuzz, Boolean chargerReview, String fanStatus,
-			Integer upsServiceBatteryBankId, Boolean checkConnectors,
-			Boolean cverifyOutflow, Integer numberBatteries,
+			String estatusEquipment, Integer cleaned, Integer hooverClean,
+			Integer verifyConnections, String capacitorStatus,
+			Integer verifyFuzz, Integer chargerReview, String fanStatus,
+			Integer upsServiceBatteryBankId, Integer checkConnectors,
+			Integer cverifyOutflow, Integer numberBatteries,
 			String manufacturedDateSerial, String damageBatteries,
-			String other, String temp, Boolean chargeTest, String brandModel,
+			String other, String temp, Integer chargeTest, String brandModel,
 			String batteryVoltage, Integer upsServiceGeneralTestId,
-			Boolean trasferLine, Boolean transferEmergencyPlant,
-			Boolean backupBatteries, Boolean verifyVoltage,
+			Integer trasferLine, Integer transferEmergencyPlant,
+			Integer backupBatteries, Integer verifyVoltage,
 			Integer upsServiceParamsId, String inputVoltagePhase,
 			String inputVoltageNeutro, String inputVoltageNeutroGround,
 			String percentCharge, String outputVoltagePhase,
@@ -158,32 +158,32 @@ public class UpsServiceDTO {
 	private Integer serviceOrderId;
 	
 	private String estatusEquipment;
-	private Boolean cleaned;
-	private Boolean hooverClean;
-	private Boolean verifyConnections;
+	private Integer cleaned;
+	private Integer hooverClean;
+	private Integer verifyConnections;
 	private String capacitorStatus;
-	private Boolean verifyFuzz;
-	private Boolean chargerReview;
+	private Integer verifyFuzz;
+	private Integer chargerReview;
 	private String fanStatus;
 	private String observations;
 
 	private Integer upsServiceBatteryBankId;
-	private Boolean checkConnectors;
-	private Boolean cverifyOutflow;
+	private Integer checkConnectors;
+	private Integer cverifyOutflow;
 	private Integer numberBatteries;
 	private String manufacturedDateSerial;
 	private String damageBatteries;
 	private String other;
 	private String temp;
-	private Boolean chargeTest;
+	private Integer chargeTest;
 	private String brandModel;
 	private String batteryVoltage;
 
 	private Integer upsServiceGeneralTestId;
-	private Boolean trasferLine;
-	private Boolean transferEmergencyPlant;
-	private Boolean backupBatteries;
-	private Boolean verifyVoltage;
+	private Integer trasferLine;
+	private Integer transferEmergencyPlant;
+	private Integer backupBatteries;
+	private Integer verifyVoltage;
 
 	private Integer upsServiceParamsId;
 	private String inputVoltagePhase;
@@ -218,27 +218,27 @@ public class UpsServiceDTO {
 		this.estatusEquipment = estatusEquipment;
 	}
 
-	public Boolean getCleaned() {
+	public Integer getCleaned() {
 		return cleaned;
 	}
 
-	public void setCleaned(Boolean cleaned) {
+	public void setCleaned(Integer cleaned) {
 		this.cleaned = cleaned;
 	}
 
-	public Boolean getHooverClean() {
+	public Integer getHooverClean() {
 		return hooverClean;
 	}
 
-	public void setHooverClean(Boolean hooverClean) {
+	public void setHooverClean(Integer hooverClean) {
 		this.hooverClean = hooverClean;
 	}
 
-	public Boolean getVerifyConnections() {
+	public Integer getVerifyConnections() {
 		return verifyConnections;
 	}
 
-	public void setVerifyConnections(Boolean verifyConnections) {
+	public void setVerifyConnections(Integer verifyConnections) {
 		this.verifyConnections = verifyConnections;
 	}
 
@@ -250,19 +250,19 @@ public class UpsServiceDTO {
 		this.capacitorStatus = capacitorStatus;
 	}
 
-	public Boolean getVerifyFuzz() {
+	public Integer getVerifyFuzz() {
 		return verifyFuzz;
 	}
 
-	public void setVerifyFuzz(Boolean verifyFuzz) {
+	public void setVerifyFuzz(Integer verifyFuzz) {
 		this.verifyFuzz = verifyFuzz;
 	}
 
-	public Boolean getChargerReview() {
+	public Integer getChargerReview() {
 		return chargerReview;
 	}
 
-	public void setChargerReview(Boolean chargerReview) {
+	public void setChargerReview(Integer chargerReview) {
 		this.chargerReview = chargerReview;
 	}
 
@@ -290,19 +290,19 @@ public class UpsServiceDTO {
 		this.upsServiceBatteryBankId = upsServiceBatteryBankId;
 	}
 
-	public Boolean getCheckConnectors() {
+	public Integer getCheckConnectors() {
 		return checkConnectors;
 	}
 
-	public void setCheckConnectors(Boolean checkConnectors) {
+	public void setCheckConnectors(Integer checkConnectors) {
 		this.checkConnectors = checkConnectors;
 	}
 
-	public Boolean getCverifyOutflow() {
+	public Integer getCverifyOutflow() {
 		return cverifyOutflow;
 	}
 
-	public void setCverifyOutflow(Boolean cverifyOutflow) {
+	public void setCverifyOutflow(Integer cverifyOutflow) {
 		this.cverifyOutflow = cverifyOutflow;
 	}
 
@@ -346,11 +346,11 @@ public class UpsServiceDTO {
 		this.temp = temp;
 	}
 
-	public Boolean getChargeTest() {
+	public Integer getChargeTest() {
 		return chargeTest;
 	}
 
-	public void setChargeTest(Boolean chargeTest) {
+	public void setChargeTest(Integer chargeTest) {
 		this.chargeTest = chargeTest;
 	}
 
@@ -378,35 +378,35 @@ public class UpsServiceDTO {
 		this.upsServiceGeneralTestId = upsServiceGeneralTestId;
 	}
 
-	public Boolean getTrasferLine() {
+	public Integer getTrasferLine() {
 		return trasferLine;
 	}
 
-	public void setTrasferLine(Boolean trasferLine) {
+	public void setTrasferLine(Integer trasferLine) {
 		this.trasferLine = trasferLine;
 	}
 
-	public Boolean getTransferEmergencyPlant() {
+	public Integer getTransferEmergencyPlant() {
 		return transferEmergencyPlant;
 	}
 
-	public void setTransferEmergencyPlant(Boolean transferEmergencyPlant) {
+	public void setTransferEmergencyPlant(Integer transferEmergencyPlant) {
 		this.transferEmergencyPlant = transferEmergencyPlant;
 	}
 
-	public Boolean getBackupBatteries() {
+	public Integer getBackupBatteries() {
 		return backupBatteries;
 	}
 
-	public void setBackupBatteries(Boolean backupBatteries) {
+	public void setBackupBatteries(Integer backupBatteries) {
 		this.backupBatteries = backupBatteries;
 	}
 
-	public Boolean getVerifyVoltage() {
+	public Integer getVerifyVoltage() {
 		return verifyVoltage;
 	}
 
-	public void setVerifyVoltage(Boolean verifyVoltage) {
+	public void setVerifyVoltage(Integer verifyVoltage) {
 		this.verifyVoltage = verifyVoltage;
 	}
 

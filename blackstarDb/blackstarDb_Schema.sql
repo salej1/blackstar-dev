@@ -53,17 +53,82 @@ BEGIN
 -- -----------------------------------------------------------------------------
 
 -- AGREGANDO NULLS A BOLEANOS DE OS
-IF(SELECT IS_NULLABLE FROM information_schema.columns WHERE  table_schema = 'blackstarDb' AND table_name = 'aaService' AND column_name = 'evaFlagCalibration') = 'NO' THEN
-	ALTER TABLE blackstarDb.aaService MODIFY evaFlagCalibration bit(1) NULL;
-	ALTER TABLE blackstarDb.aaService MODIFY evaReviewFilter bit(1) NULL;
-	ALTER TABLE blackstarDb.aaService MODIFY evaReviewStrip bit(1) NULL;
-	ALTER TABLE blackstarDb.aaService MODIFY evaCleanElectricSystem bit(1) NULL;
-	ALTER TABLE blackstarDb.aaService MODIFY evaCleanControlCard bit(1) NULL;
-	ALTER TABLE blackstarDb.aaService MODIFY evaCleanTray bit(1) NULL;
-	ALTER TABLE blackstarDb.aaService MODIFY evaCheckFluidSensor bit(1) NULL;
-	ALTER TABLE blackstarDb.aaService MODIFY evaRequirMaintenance bit(1) NULL;
-	ALTER TABLE blackstarDb.aaService MODIFY condCleanElectricSystem bit(1)  NULL;
-	ALTER TABLE blackstarDb.aaService MODIFY condClean bit(1) NULL;
+-- AA
+IF(SELECT DATA_TYPE FROM information_schema.columns WHERE  table_schema = 'blackstarDb' AND table_name = 'aaService' AND column_name = 'evaFlagCalibration') != 'INT' THEN
+	ALTER TABLE blackstarDb.aaService MODIFY evaFlagCalibration INT;
+	ALTER TABLE blackstarDb.aaService MODIFY evaReviewFilter INT;
+	ALTER TABLE blackstarDb.aaService MODIFY evaReviewStrip INT;
+	ALTER TABLE blackstarDb.aaService MODIFY evaCleanElectricSystem INT;
+	ALTER TABLE blackstarDb.aaService MODIFY evaCleanControlCard INT;
+	ALTER TABLE blackstarDb.aaService MODIFY evaCleanTray INT;
+	ALTER TABLE blackstarDb.aaService MODIFY evaCheckFluidSensor INT;
+	ALTER TABLE blackstarDb.aaService MODIFY evaRequirMaintenance INT;
+	ALTER TABLE blackstarDb.aaService MODIFY condCleanElectricSystem INT;
+	ALTER TABLE blackstarDb.aaService MODIFY condClean INT;
+END IF;
+
+-- BB
+IF(SELECT DATA_TYPE FROM information_schema.columns WHERE  table_schema = 'blackstarDb' AND table_name = 'bbService' AND column_name = 'plugClean') != 'INT' THEN
+	ALTER TABLE blackstarDb.bbService MODIFY plugClean INT; 
+	ALTER TABLE blackstarDb.bbService MODIFY coverClean INT; 
+	ALTER TABLE blackstarDb.bbService MODIFY capClean INT; 
+	ALTER TABLE blackstarDb.bbService MODIFY groundClean INT; 
+	ALTER TABLE blackstarDb.bbService MODIFY rackClean INT;
+END IF;
+
+-- EP - SERVICE
+IF(SELECT DATA_TYPE FROM information_schema.columns WHERE  table_schema = 'blackstarDb' AND table_name = 'epService' AND column_name = 'filterFuelFlag') != 'INT' THEN
+	ALTER TABLE blackstarDb.epService MODIFY filterFuelFlag INT;
+	ALTER TABLE blackstarDb.epService MODIFY filterOilFlag INT;
+	ALTER TABLE blackstarDb.epService MODIFY filterWaterFlag INT;
+	ALTER TABLE blackstarDb.epService MODIFY filterAirFlag INT;
+END IF;
+
+-- EP - SURVEY
+IF(SELECT DATA_TYPE FROM information_schema.columns WHERE  table_schema = 'blackstarDb' AND table_name = 'epServiceSurvey' AND column_name = 'levelOilFlag') != 'INT' THEN
+	ALTER TABLE blackstarDb.epServiceSurvey MODIFY levelOilFlag INT; 
+	ALTER TABLE blackstarDb.epServiceSurvey MODIFY levelWaterFlag INT; 
+	ALTER TABLE blackstarDb.epServiceSurvey MODIFY tubeLeak INT;
+END IF;
+
+-- EP - TRANSFER SWITCH
+IF(SELECT DATA_TYPE FROM information_schema.columns WHERE  table_schema = 'blackstarDb' AND table_name = 'epServiceTransferSwitch' AND column_name = 'boardClean') != 'INT' THEN
+	ALTER TABLE blackstarDb.epServiceTransferSwitch MODIFY boardClean INT; 
+	ALTER TABLE blackstarDb.epServiceTransferSwitch MODIFY screwAdjust INT; 
+	ALTER TABLE blackstarDb.epServiceTransferSwitch MODIFY lampTest INT; 
+	ALTER TABLE blackstarDb.epServiceTransferSwitch MODIFY conectionAdjust INT;
+END IF;
+
+-- EP - WORKBASIC
+IF(SELECT DATA_TYPE FROM information_schema.columns WHERE  table_schema = 'blackstarDb' AND table_name = 'epServiceWorkBasic' AND column_name = 'washEngine') != 'INT' THEN
+	ALTER TABLE blackstarDb.epServiceWorkBasic MODIFY washEngine INT; 
+	ALTER TABLE blackstarDb.epServiceWorkBasic MODIFY washRadiator INT; 
+	ALTER TABLE blackstarDb.epServiceWorkBasic MODIFY cleanWorkArea INT; 
+	ALTER TABLE blackstarDb.epServiceWorkBasic MODIFY conectionCheck INT; 
+	ALTER TABLE blackstarDb.epServiceWorkBasic MODIFY cleanTransfer INT; 
+	ALTER TABLE blackstarDb.epServiceWorkBasic MODIFY cleanCardControl INT; 
+	ALTER TABLE blackstarDb.epServiceWorkBasic MODIFY checkConectionControl INT; 
+	ALTER TABLE blackstarDb.epServiceWorkBasic MODIFY checkWinding INT; 
+	ALTER TABLE blackstarDb.epServiceWorkBasic MODIFY batteryTests INT; 
+	ALTER TABLE blackstarDb.epServiceWorkBasic MODIFY checkCharger INT; 
+	ALTER TABLE blackstarDb.epServiceWorkBasic MODIFY checkPaint INT; 
+	ALTER TABLE blackstarDb.epServiceWorkBasic MODIFY cleanGenerator INT;
+END IF;
+
+-- UPS - SERVICE
+IF(SELECT DATA_TYPE FROM information_schema.columns WHERE  table_schema = 'blackstarDb' AND table_name = 'upsService' AND column_name = 'cleaned') != 'INT' THEN
+	ALTER TABLE blackstarDb.upsService MODIFY cleaned INT; 
+	ALTER TABLE blackstarDb.upsService MODIFY hooverClean INT; 
+	ALTER TABLE blackstarDb.upsService MODIFY verifyConnections INT; 
+	ALTER TABLE blackstarDb.upsService MODIFY verifyFuzz INT; 
+	ALTER TABLE blackstarDb.upsService MODIFY chargerReview INT;
+END IF;
+
+-- UPS - BATTERY BANK
+IF(SELECT DATA_TYPE FROM information_schema.columns WHERE  table_schema = 'blackstarDb' AND table_name = 'upsServiceBatteryBank' AND column_name = 'checkConnectors') != 'INT' THEN
+	ALTER TABLE blackstarDb.upsServiceBatteryBank MODIFY checkConnectors INT; 
+	ALTER TABLE blackstarDb.upsServiceBatteryBank MODIFY cverifyOutflow INT; 
+	ALTER TABLE blackstarDb.upsServiceBatteryBank MODIFY chargeTest INT;
 END IF;
 
 -- CAMBIANDO NUMERICOS POR ALFA-NUMERICOS

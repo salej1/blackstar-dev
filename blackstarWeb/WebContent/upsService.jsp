@@ -209,19 +209,19 @@
 						</tr>
 						<tr>
 							<td>Sopleteado:</td>
-							<td><form:checkbox path="cleaned"  style="width:95%;" cssClass="lockOnDetail" /></td>
+							<td><c:forEach var="item" items="${checkOptions}"><form:radiobutton path="cleaned" value="${item.value}" required="true" cssClass="lockOnDetail"/>${item.label}</c:forEach></td>
 							<td>Verificación de fusibles y conexiones eléctricas:</td>
-							<td><form:checkbox path="verifyFuzz"  style="width:95%;" cssClass="lockOnDetail" /></td>
+							<td><c:forEach var="item" items="${checkOptions}"><form:radiobutton path="verifyFuzz" value="${item.value}" required="true" cssClass="lockOnDetail"/>${item.label}</c:forEach></td>
 						</tr>
 						<tr>
 							<td>Limpieza por aspirado y brocha:</td>
-							<td><form:checkbox path="hooverClean"  style="width:95%;" cssClass="lockOnDetail"/></td>
+							<td><c:forEach var="item" items="${checkOptions}"><form:radiobutton path="hooverClean" value="${item.value}" required="true" cssClass="lockOnDetail"/>${item.label}</c:forEach></td>
 							<td>Revisión y verificación del rectificador/cargador:</td>
-							<td><form:checkbox path="chargerReview"  style="width:95%;" cssClass="lockOnDetail"/></td>
+							<td><c:forEach var="item" items="${checkOptions}"><form:radiobutton path="chargerReview" value="${item.value}" required="true" cssClass="lockOnDetail"/>${item.label}</c:forEach></td>
 						</tr>
 						<tr>
 							<td>Verificación de conexiones y reapriete tornillería:</td>
-							<td><form:checkbox path="verifyConnections"  style="width:95%;" cssClass="lockOnDetail"/></td>
+							<td><c:forEach var="item" items="${checkOptions}"><form:radiobutton path="verifyConnections" value="${item.value}" required="true" cssClass="lockOnDetail"/>${item.label}</c:forEach></td>
 							<td>Estado de ventiladores:</td>
 							<td><form:input path="fanStatus" type="text" style="width:95%;" cssClass="lockOnDetail"/></td>
 						</tr>
@@ -230,15 +230,15 @@
 						</tr>
 						<tr>
 							<td>Reapriete de puentes/conectores:</td>
-							<td><form:checkbox path="checkConnectors"  style="width:95%;" cssClass="lockOnDetail"/></td>
+							<td><c:forEach var="item" items="${checkOptions}"><form:radiobutton path="checkConnectors" value="${item.value}" required="true" cssClass="lockOnDetail"/>${item.label}</c:forEach></td>
 							<td>Temperatura ambiente:</td>
 							<td><form:input path="temp" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
 						</tr>
 						<tr>
 							<td>Verificación de fugas/sulfataciones:</td>
-							<td><form:checkbox path="cverifyOutflow"  style="width:95%;" cssClass="lockOnDetail"/></td>
+							<td><c:forEach var="item" items="${checkOptions}"><form:radiobutton path="cverifyOutflow" value="${item.value}" required="true" cssClass="lockOnDetail"/>${item.label}</c:forEach></td>
 							<td>Pruebas de carga y descarga:</td>
-							<td><form:checkbox path="chargeTest" style="width:95%;" cssClass="lockOnDetail"/></td>
+							<td><c:forEach var="item" items="${checkOptions}"><form:radiobutton path="chargeTest" value="${item.value}" required="true" cssClass="lockOnDetail"/>${item.label}</c:forEach></td>
 						</tr>
 						<tr>
 							<td>No de baterías:</td>
@@ -265,22 +265,22 @@
 						</tr>
 						<tr>
 							<td>Transferencia  y re-transferencia a línea comercial:</td>
-							<td><form:checkbox path="trasferLine" style="width:95%;" cssClass="lockOnDetail"/></td>
+							<td><c:forEach var="item" items="${checkOptions}"><form:radiobutton path="trasferLine" value="${item.value}" required="true" cssClass="lockOnDetail"/>${item.label}</c:forEach></td>
 							<td>Respaldo de baterías con falla en línea:</td>
-							<td><form:checkbox path="backupBatteries" style="width:95%;" cssClass="lockOnDetail"/></td>
+							<td><c:forEach var="item" items="${checkOptions}"><form:radiobutton path="backupBatteries" value="${item.value}" required="true" cssClass="lockOnDetail"/>${item.label}</c:forEach></td>
 						</tr>
 						<tr>
 							<td>Transferencia y re-transferencia con planta de emergencia:</td>
-							<td><form:checkbox path="transferEmergencyPlant" style="width:95%;" cssClass="lockOnDetail"/></td>
+							<td><c:forEach var="item" items="${checkOptions}"><form:radiobutton path="transferEmergencyPlant" value="${item.value}" required="true" cssClass="lockOnDetail"/>${item.label}</c:forEach></td>
 							<td>Verificación de voltaje de baterías y de salida durante las pruebas:</td>
-							<td><form:checkbox path="verifyVoltage" style="width:95%;" cssClass="lockOnDetail"/></td>
+							<td><c:forEach var="item" items="${checkOptions}"><form:radiobutton path="verifyVoltage" value="${item.value}" required="true" cssClass="lockOnDetail"/>${item.label}</c:forEach></td>
 						</tr>
 						<tr>
 							<td><b>PARÁMETROS DE OPERACIÓN:</b></td>
 						</tr>
 						<tr>
 							<td>Voltaje entrada fase a fase:</td>
-							<td><form:input path="inputVoltagePhase" type="text" style="width:95%;" /></td>
+							<td><form:input path="inputVoltagePhase" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
 							<td>Voltaje salida fase a fase:</td>
 							<td><form:input path="outputVoltagePhase" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
 						</tr>
@@ -298,8 +298,8 @@
 						</tr>
 						<tr>
 							<td>Porcentaje de carga o corriente:</td>
-							<td><form:input path="percentCharge" type="text" style="width:95%;" /></td>
-							<td>Frec. entrada/salida:</td>
+							<td><form:input path="percentCharge" type="text" style="width:95%;" cssClass="lockOnDetail" required="true"/></td>
+							<td>Voltaje Bus CD:</td>
 							<td><form:input path="busVoltage" type="text" style="width:95%;"  cssClass="lockOnDetail" required="true"/></td>
 						</tr>
 					</table>
@@ -342,16 +342,16 @@
 						</tr>
 						<tr>
 							<td>Nombre</td>
-							<td><form:input path="responsibleName" type="text" style="width:95%;"/></td>
+							<td><form:input path="responsibleName" type="text" style="width:95%;" cssClass="lockOnEngDetail" required="true" /></td>
 							<form:hidden path="responsible" style="width:95%;"/>
 							<td>Nombre</td>
-							<td><form:input path="receivedBy" type="text" style="width:95%;" required="true"/></td>
+							<td><form:input path="receivedBy" type="text" style="width:95%;" cssClass="lockOnEngDetail" required="true" /></td>
 						</tr>
 						<tr>
 							<td></td>
 							<td><form:hidden cssClass="lockOnDetail" path="serviceEndDate"/></td>
 							<td>Puesto</td>
-							<td><form:input path="receivedByPosition"  style="width:95%;"  /></td>
+							<td><form:input path="receivedByPosition"  style="width:95%;" cssClass="lockOnEngDetail" required="true" /></td>
 						</tr>		
 						<tr>
 							<td colspan="2"></td>
