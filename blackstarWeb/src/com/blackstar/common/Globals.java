@@ -2,6 +2,10 @@ package com.blackstar.common;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 import com.google.api.client.extensions.appengine.datastore.AppEngineDataStoreFactory;
 import com.google.api.client.extensions.appengine.http.UrlFetchTransport;
@@ -57,6 +61,14 @@ public class Globals {
 	  // time format
 	  public static final String DEFAULT_TIME_ZONE = "America/Mexico_City";
 	  public static final String DATE_FORMAT_PATTERN = "dd/MM/yyyy hh:mm:ss a";
+	  public static Date getLocalTime(){
+		  Calendar c = Calendar.getInstance(new Locale(DEFAULT_TIME_ZONE));
+		  return c.getTime();
+	  }
+	  public static String getLocalTimeString(){
+		  SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT_PATTERN);
+		  return sdf.format(getLocalTime());
+	  }
 	  
 	  // Google 
 	  public static final String GOOGLE_DRIVE_URL_PREFIX = "https://docs.google.com/a/gposac.com.mx/viewer?a=v&pid=explorer&srcid=";

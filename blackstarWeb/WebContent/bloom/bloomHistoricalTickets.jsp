@@ -153,6 +153,7 @@
 							"sPaginationType" : "full_numbers",
 							"aaData" : listaHistoricos,
 							"sDom" : '<"top"i>rt<"bottom"flp><"clear">',
+							"aaSorting": [],
 							"aoColumns" : [ 
 							{"mData" : "ticketNumber"}, 
 							{"mData" : "statusDescr"}, 

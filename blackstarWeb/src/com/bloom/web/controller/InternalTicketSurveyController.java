@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.blackstar.common.Globals;
@@ -39,20 +40,36 @@ public class InternalTicketSurveyController extends AbstractController {
 	this.service = service;
   }
 	
-  @RequestMapping(value = "/show.do", method = RequestMethod.GET)
-  public String show(@ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession
+  @RequestMapping(value = "/getSurveyTable.do", method = RequestMethod.GET)
+  public @ResponseBody String getSurveyTable(@ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession
 		                                                            , ModelMap model) {
 	Integer userId = userSession.getUser().getBlackstarUserId();
+	String resp = "";
 	try {
-		 model.addAttribute("surveyTable", service.getSurveyTable(userId));
-		 model.addAttribute("pendingSurveyTable", service.getPendingSurveyTable(userId));
+		 resp = service.getSurveyTable(userId);
 	} catch (Exception e) {
 		 Logger.Log(LogLevel.ERROR,e.getStackTrace()[0].toString(), e);
 		 e.printStackTrace();
 		 model.addAttribute("errorDetails", e.getStackTrace()[0].toString());
 		 return "error";
 	}
-	return "bloom/bloomSurvey";
+	return resp;
+  }
+  
+  @RequestMapping(value = "/pendingSurveyTable.do", method = RequestMethod.GET)
+  public @ResponseBody String pendingSurveyTable(@ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession
+		                                                            , ModelMap model) {
+	Integer userId = userSession.getUser().getBlackstarUserId();
+	String resp = "";
+	try {
+		 resp = service.getPendingSurveyTable(userId);
+	} catch (Exception e) {
+		 Logger.Log(LogLevel.ERROR,e.getStackTrace()[0].toString(), e);
+		 e.printStackTrace();
+		 model.addAttribute("errorDetails", e.getStackTrace()[0].toString());
+		 return "error";
+	}
+	return resp;
   }
   
   @RequestMapping(value = "/create.do", method = RequestMethod.GET)
@@ -94,7 +111,7 @@ public class InternalTicketSurveyController extends AbstractController {
 		 model.addAttribute("errorDetails", e.getStackTrace()[0].toString());
 		 return "error";
 	}
-	return show(userSession, model);
+	return "redirect:/surveyServices.jsp";
   }
 
 

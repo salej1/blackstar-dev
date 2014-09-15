@@ -6688,7 +6688,7 @@ CREATE PROCEDURE blackstarDb.UserCanAssignBloomTicket(pTicketId INT, pUser VARCH
 BEGIN
   SELECT count(*) FROM blackstarDb.blackstarUser bu
     INNER JOIN blackstarDb.blackstarUser_userGroup j ON bu.blackstarUserId = j.blackstarUserId
-    INNER JOIN blackstarDb.userGroup g ON g.userGroupId = g.userGroupId
+    INNER JOIN blackstarDb.userGroup g ON j.userGroupId = g.userGroupId
     INNER JOIN bloomTicketTeam tt ON tt.userGroup = g.externalId
   WHERE bu.email = pUser
     AND tt.ticketId = pTicketId
@@ -6704,7 +6704,7 @@ CREATE PROCEDURE blackstarDb.AssignBloomTicket(pTicketId INT, pAsignee VARCHAR(1
 BEGIN
   UPDATE bloomTicket SET 
     asignee = pAsignee,
-    modified = NOW(),
+    modified = CONVERT_TZ(now(),'+00:00','-5:00'),
     modifiedBy = 'AssignBloomTicket',
     modifiedByUsr = pUser
   WHERE _id = pTicketId;
@@ -6783,8 +6783,9 @@ BEGIN
   IF asignee = '' THEN
     SET asignee = pCreatedByUsrMail;
   END IF;
+
 	INSERT INTO blackstarDb.followUp(bloomTicketId, followup, followUpReferenceTypeId, asignee, created, createdBy, createdByUsr)
-	VALUES(pTicketId, pMessage, 'R', asignee, NOW(), 'AddFollowUpTobloomTicket', pCreatedByUsrMail);
+	VALUES(pTicketId, pMessage, 'R', asignee, CONVERT_TZ(now(),'+00:00','-5:00'), 'AddFollowUpTobloomTicket', pCreatedByUsrMail);
 END$$
 
 -- -----------------------------------------------------------------------------
@@ -6799,10 +6800,10 @@ SELECT @blackstarUserId:= blackstarUserId FROM blackstarDb.blackstarUser WHERE e
 
 IF NOT EXISTS (SELECT * FROM bloomTicketTeam WHERE ticketId = pTicketId AND blackstarUserId = @blackstarUserId) THEN
     INSERT INTO blackstarDb.bloomTicketTeam(ticketId, workerRoleTypeId, blackstarUserId, userGroup, assignedDate)
-    VALUES(pTicketId, pWorkerRoleTypeId, @blackstarUserId, pUserGroup, NOW());   
+    VALUES(pTicketId, pWorkerRoleTypeId, @blackstarUserId, pUserGroup, CONVERT_TZ(now(),'+00:00','-5:00'));   
 ELSE
    UPDATE blackstarDb.bloomTicketTeam SET 
-      assignedDate = NOW(), 
+      assignedDate = CONVERT_TZ(now(),'+00:00','-5:00'), 
       workerRoleTypeId = pWorkerRoleTypeId
    WHERE ticketId = pTicketId 
     AND blackstarUserId = @blackstarUserId;
@@ -6854,10 +6855,10 @@ DECLARE counter INTEGER;
                  FROM bloomDeliverableTrace 
                  WHERE bloomTicketId = pTicketId AND deliverableTypeId = pDeliverableTypeId);
   IF (counter > 0) THEN
-    UPDATE bloomDeliverableTrace SET delivered = 1, date = NOW();
+    UPDATE bloomDeliverableTrace SET delivered = 1, date = CONVERT_TZ(now(),'+00:00','-5:00');
   ELSE 
 	  INSERT INTO bloomDeliverableTrace (bloomTicketId, deliverableTypeId, delivered, date, docId)
-    VALUES (pTicketId, pDeliverableTypeId, 1, NOW(), docId);
+    VALUES (pTicketId, pDeliverableTypeId, 1, CONVERT_TZ(now(),'+00:00','-5:00'), docId);
   END IF;  
 END$$
 
@@ -7031,7 +7032,7 @@ BEGIN
 
 	SELECT DISTINCT project AS id,project label
 	FROM blackstarDb.policy
-		WHERE startDate <= NOW() AND NOW() <= endDate
+		WHERE startDate <= CONVERT_TZ(now(),'+00:00','-5:00') AND CONVERT_TZ(now(),'+00:00','-5:00') <= endDate
 	ORDER BY project;
 
 END$$
@@ -7238,7 +7239,7 @@ BEGIN
 DECLARE inTime TINYINT DEFAULT 1;
 DECLARE elapsed FLOAT (30,20);
 DECLARE createdDate DATETIME;
-DECLARE today DATETIME DEFAULT NOW();
+DECLARE today DATETIME DEFAULT CONVERT_TZ(now(),'+00:00','-5:00');
 DECLARE required INT;
 
 SET createdDate = (SELECT created FROM bloomTicket WHERE _id = pTicketId);
@@ -7354,11 +7355,14 @@ BEGIN
     bt.project project, 
     bs.created created, 
     bs.evaluation evaluation
-  FROM bloomTicket bt
-    INNER JOIN bloomSurvey bs ON bt._id = bs.bloomTicketId
-    INNER JOIN bloomApplicantArea baa ON baa.baa._id = bt.applicantAreaId
-    INNER JOIN blackstarUser bu ON bu.email = bt.createdByUsr
-  WHERE bu.blackstarUserId = userId;
+  FROM bloomSurvey bs
+    INNER JOIN bloomTicket bt ON bloomTicketId = bt._id
+    INNER JOIN bloomTicketTeam btt ON btt.ticketId = bt._id
+    INNER JOIN blackstarUser bu ON bu.blackstarUserId = btt.blackstarUserId
+    INNER JOIN bloomApplicantArea baa ON bt.applicantAreaId = baa._id
+  WHERE 
+    btt.blackstarUserId = userId
+    AND workerRoleTypeId = 1;
 END$$
 
 DROP PROCEDURE IF EXISTS blackstarDb.GetBloomPendingSurveyTable$$
@@ -7368,7 +7372,8 @@ SELECT DISTINCT
   bt.ticketNumber ticketNumber, 
   baa.name applicantArea, 
   bt.project project,
-  GROUP_CONCAT(DISTINCT bu.name ORDER BY bu.name SEPARATOR ', ') AS risponsableName
+  GROUP_CONCAT(DISTINCT bu.name ORDER BY bu.name SEPARATOR ', ') AS risponsableName,
+  bt.createdByUsr as createdByUsr
 FROM bloomTicket bt
   INNER JOIN bloomApplicantArea baa ON bt.applicantAreaId = baa._id
   INNER JOIN bloomTicketTeam btt ON btt.ticketId = bt._id
@@ -7397,7 +7402,7 @@ SELECT bt._id id, bt.ticketNumber ticketNumber, bt.description description,
 FROM bloomTicket bt, blackstarUser bu
 WHERE bt.statusId = 6
      AND bt.applicantUserId = bu.blackstarUserId
-     AND bt.responseDate < DATE_ADD(NOW(), INTERVAL -2 DAY);
+     AND bt.responseDate < DATE_ADD(CONVERT_TZ(now(),'+00:00','-5:00'), INTERVAL -2 DAY);
 END$$ 
 
 
@@ -7780,7 +7785,7 @@ END$$
 	-- blackstarDb.GetBloomHistoricalTickets
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetBloomHistoricalTickets$$
-CREATE PROCEDURE blackstarDb.GetBloomHistoricalTickets(statusTicket INT, startCreationDate DATETIME, endCreationDate DATETIME, showHidden INT)
+CREATE PROCEDURE blackstarDb.GetBloomHistoricalTickets(statusTicket INT, startCreationDate DATETIME, endCreationDate DATETIME, showHidden INT, pUser VARCHAR(100))
 BEGIN
 
   IF(statusTicket <= 0) THEN
@@ -7808,7 +7813,7 @@ BEGIN
       INNER JOIN bloomStatusType s on (s._id = ti.statusId)
       INNER JOIN bloomServiceArea a ON st.bloomServiceAreaId = a.bloomServiceAreaId 
     WHERE ti.created >= startCreationDate -- AND ti.created <= endCreationDate
-      AND IFNULL(st.hidden, 0) <= showHidden
+      AND (IFNULL(st.hidden, 0) <= showHidden  OR ti.createdBy = pUser)
     ORDER BY ti.created DESC;
   ELSE
     SELECT 
@@ -7835,7 +7840,7 @@ BEGIN
       INNER JOIN bloomStatusType s on (s._id = ti.statusId) 
       INNER JOIN bloomServiceArea a ON st.bloomServiceAreaId = a.bloomServiceAreaId 
     WHERE ti.created >= startCreationDate -- AND ti.created <= endCreationDate
-      AND IFNULL(st.hidden, 0) <= showHidden
+      AND (IFNULL(st.hidden, 0) <= showHidden  OR ti.createdBy = pUser)
       AND ti.statusId = statusTicket
     ORDER BY ti.created DESC;
   END IF;

@@ -247,16 +247,16 @@ private static void SendAssignationEmail(String to, String sender, String create
 	}
 	else if(issueTypeId.equalsIgnoreCase("R")){
 		link = String.format("<a href='" + Globals.GOOGLE_CONTEXT_URL + "/bloom/ticketDetail/show.do?ticketId=%s'>%s</a>", referenceId, referenceNumber);
-		objectType = "Requisici&oacute;n";
+		objectType = "Requisición";
 	}
 	
-	String subject = "Acci&oacute;n requerida por " + createdBy;
+	String subject = "Acción requerida por " + createdBy;
 	
 	if(type == AssignType.Assign){
 		bodySb.append("<img src='" + Globals.GPOSAC_LOGO_DEFAULT_URL + "'>");
 		bodySb.append("<div style='font-family:sans-serif;margin-left:50px;'>");
-		bodySb.append("<h3 >Acci&oacute;n requerida</h3>");
-		bodySb.append("<p>Se ha registrado una acci&oacute;n requerida de su parte.</p>");
+		bodySb.append("<h3 >Acción requerida</h3>");
+		bodySb.append("<p>Se ha registrado una acción requerida de su parte.</p>");
 		bodySb.append("<br>Asignado por: " + createdBy);
 		bodySb.append("<br>Fecha: " + timestamp);
 		bodySb.append("<br>Comentario: " + comment);
@@ -265,24 +265,24 @@ private static void SendAssignationEmail(String to, String sender, String create
 		bodySb.append(link);
 		bodySb.append("</div>");
 		bodySb.append("<hr>");
-		bodySb.append("<small>Favor de no responder a este email. En caso de duda p&oacute;ngase en contacto con la persona que le asign&oacute; la tarea</small>");
+		bodySb.append("<small>Favor de no responder a este email. En caso de duda póngase en contacto con la persona que le asignó la tarea</small>");
 	}
 	else if(type == AssignType.Notify){
-		subject = "Notificaci&oacute;n de " + objectType;
+		subject = "Notificación de " + objectType;
 		bodySb.append("<img src='" + Globals.GPOSAC_LOGO_DEFAULT_URL + "'>");
 		bodySb.append("<div style='font-family:sans-serif;margin-left:50px;'>");
-		bodySb.append("<h3 >Notificaci&oacute;n de " + objectType + "</h3>");
+		bodySb.append("<h3 >Notificación de " + objectType + "</h3>");
 		bodySb.append("<p>Para su informacion:</p>");
 		bodySb.append("<p>Se ha registrado la " + objectType + " " + referenceNumber + "</p>");
 		bodySb.append("<br>Registrado por: " + createdBy);
 		bodySb.append("<br>Fecha: " + timestamp);
 		bodySb.append("<br>Comentario: " + comment);
 		bodySb.append("<br>");
-		bodySb.append("<p>En el siguiente Link podra revisar los detalles. Por el momento no se requiere ninguna acci&oacute;n de su parte</p>");
+		bodySb.append("<p>En el siguiente Link podra revisar los detalles. Por el momento no se requiere ninguna acción de su parte</p>");
 		bodySb.append(link);
 		bodySb.append("</div>");
 		bodySb.append("<hr>");
-		bodySb.append("<small>Favor de no responder a este email. En caso de duda p&oacute;ngase en contacto con la persona que registr&oacute;</small>");
+		bodySb.append("<small>Favor de no responder a este email. En caso de duda póngase en contacto con la persona que registró</small>");
 	}
 	// Enviar el email
 	IEmailService mail = EmailServiceFactory.getEmailService();
@@ -313,7 +313,7 @@ private static void SendBloomTicketAssignationEmail(Integer ticketId, String asi
 		TicketDetailDTO ticket = rawDetail.get(0);
 		SimpleDateFormat sdf = new SimpleDateFormat(Globals.DATE_FORMAT_PATTERN);
 		String createdBy = ticket.getCreatedByUsrName();
-		Date created = ticket.getCreated();
+		Date created = Globals.getLocalTime();
 		
 		SendAssignationEmail(asignee, sender, createdBy, sdf.format(created), ticket.getDescription(), "R", ticketId, ticket.getTicketNumber(), type);
 	}

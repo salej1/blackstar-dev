@@ -25,7 +25,7 @@ public interface InternalTicketsService {
 	public User getAsigneed(Integer ticketId);
 	public User getResponseUser(Integer ticketId);
 	public void sendNotification(String from, String to , Integer ticketId, String detail, String fromName);
-	public void closeTicket(Integer ticketId, Integer userId, Integer statusId);
+	public void closeTicket(Integer ticketId, Integer userId, Integer statusId, String sender);
 	public List<InternalTicketBean> getPendingTickets(Long userId) throws ServiceException;	
 	public List<DeliverableFileDTO> getTicketDeliverable(Integer ticketId);
 	
@@ -38,7 +38,7 @@ public interface InternalTicketsService {
 	public void validarNuevoTicket(InternalTicketBean ticket) throws ServiceException;
 	public Integer getTicketId(String ticketNumber);
 	public void sendPendingAppointments();
-	public List<InternalTicketBean> getHistoricalTickets(String startCreationDateTicket, String endCreationDateTicket, Integer idStatusTicket, Integer showHidden) throws ServiceException;
+	public List<InternalTicketBean> getHistoricalTickets(String startCreationDateTicket, String endCreationDateTicket, Integer idStatusTicket, Integer showHidden, String user) throws ServiceException;
 	public void sendPendingSurveys();
 
 }

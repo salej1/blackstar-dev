@@ -11,6 +11,8 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeUtility;
+
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -42,10 +44,10 @@ public class GmailService implements IEmailService{
 		try {
  
 			Message message = new MimeMessage(session);
-			message.setFrom(new InternetAddress(from));
+			message.setFrom(new InternetAddress(defaultFrom));
 			message.setRecipients(Message.RecipientType.TO,
 				InternetAddress.parse(to));
-			message.setSubject(subject);
+			message.setSubject(MimeUtility.encodeText(subject, "UTF-8", "Q"));
 			message.setContent(body, "text/html; charset=utf-8");
 			
 			Transport.send(message);
@@ -64,7 +66,7 @@ public class GmailService implements IEmailService{
 		try {
 			mailSender.send(new MimeMessagePreparator() {
 				public void prepare(MimeMessage mimeMessage) throws Exception {
-					MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
+					MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
 					if(attachmentName != null && file != null){
 						helper.addAttachment(attachmentName, new ByteArrayResource(file));
 					}

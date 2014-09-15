@@ -102,7 +102,7 @@ public interface InternalTicketsDao {
 	 * @return
 	 * @throws DAOException
 	 */
-	public List<InternalTicketBean> getHistoricalTickets(String startCreationDate, String endCreationDate, Integer idStatusTicket, Integer showHidden) throws DAOException;	
+	public List<InternalTicketBean> getHistoricalTickets(String startCreationDate, String endCreationDate, Integer idStatusTicket, Integer showHidden, String user) throws DAOException;	
 
 	public Integer userCanAssign(Integer ticketId, String currentUser);
 }

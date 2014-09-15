@@ -115,7 +115,7 @@
 	function addSeguimiento(type){
 		var d = new Date(); 
 		$("#seguimientoCapture").show();	
-		$("#seguimientoStamp").html(d.format('dd/MM/yyyy h:mm:ss') + ' ${ user.userName }');
+		$("#seguimientoStamp").html(d.format('dd/MM/yyyy hh:mm:ss') + ' ${ user.userName }');
 		$("#seguimientoText").val('');
 		$("#who").val("-1");
 		followType = type;
@@ -131,7 +131,7 @@
 		if(followType == 1){
 			who = $("#who").val();
 		} else if(followType == 2){
-			who = "-2";
+			who = "";
 		}else { 
 			who = "${fn:length(followUps) > 0? followUps[fn:length(followUps)-1].createdByUsrEmail : ""}";
 		}
@@ -616,7 +616,7 @@
 								<td style="width:180px;">Folio:</td>
 								<td colspan="3" style="width:200px;"><input type="text" id="fldFolio" style="width:95%;" readOnly="true" value="${ticketDetail.ticketNumber}"/></td>
 								<td>Marca temporal:</td>
-								<td><input type="text" id="fldFolio" style="width:95%;" readOnly="true" value="${ticketDetail.created}"/></td>
+								<td><input type="text" id="fldFolio" style="width:95%;" readOnly="true" value="${ticketDetail.createdDisplay}"/></td>
 							</tr>
 							<tr>
 								<td>Usuario</td>
@@ -630,9 +630,10 @@
 							</tr>
 							<tr>	
 								<td>Fecha Compromiso</td>
-								<td><input id="myDate" type="text" style="width:95%;" readOnly="true" value="${ticketDetail.dueDate}"/></td>
+								<td><input id="myDate" type="text" style="width:95%;" readOnly="true" value="${ticketDetail.dueDateDisplay}"/></td>
+								<td colspan="2"></td>
 								<td>Fecha Deseada</td>
-								<td><input id="myDesiredDate" type="text" style="width:95%;" readOnly="true" value="${ticketDetail.desiredDate}"/></td>
+								<td><input id="myDesiredDate" type="text" style="width:95%;" readOnly="true" value="${ticketDetail.desiredDateDisplay}"/></td>
 							</tr>
 							<tr>
 								<td>Proyecto</td>
@@ -645,24 +646,31 @@
 								<td>Persona asignada
 								</td>
 								<td colspan="7">
-								    <input type="text" style="width:95%;" readOnly="true"
-                                             <c:forEach var="current" items="${ticketTeam}">
-												    <c:if test="${current.workerRoleTypeId == 1}">
-													  value="${current.blackstarUserName}"
-												    </c:if>
-												  </c:forEach>
-                                     />
+								    <select id="selectAsignee"  style="width:78%;" disabled>
+										<option value="0"></option>
+											<c:forEach var="employee" items="${employees}">
+												<option value="${employee.userEmail}"
+												<c:if test="${ employee.userEmail == ticketDetail.asignee }">
+													selected = "true"
+												</c:if>
+												>${ employee.userName }</option>
+											</c:forEach>
+										</select>
 								 </td>
 							</tr>
 							<tr>
 								<td>Fecha y hora de respuesta</td>
-								<td colspan="3"><input type="text" style="width:95%;" readOnly="true" value="${ticketDetail.responseDate}"/></td>
-								<td>Desv. fecha solicitada</td>
-								<td><input type="text" style="width:95%;" readOnly="true" value="${ticketDetail.desviation}"/></td>
+								<td colspan="3"><input type="text" style="width:95%;" readOnly="true" value="${ticketDetail.responseDateDisplay}"/></td>
+								<td>Desv. fecha compromiso</td>
+								<td><input type="text" style="width:95%;" readOnly="true" 
+									<c:if test="${ticketDetail.desviation > 0}">
+										value="${ticketDetail.desviation}"/>
+									</c:if>
+								</td>
 							</tr>		
 							<tr>
 								<td>Entrega en tiempo</td>
-								<td><input type="checkbox" style="width:95%;" 
+								<td style="text-align:left;"><input type="checkbox" style="width:95%;" 
 									<c:if test="${ticketDetail.resolvedOnTime > 0}">
 										checked
 									</c:if>
@@ -988,7 +996,7 @@
 							<table>
 								<tbody>
 									<tr>
-										<c:if test="${ticketDetail.statusId < 4}">
+										<c:if test="${ticketDetail.statusId < 4 && ticketDetail.userCanAssign}">
 											<td>
 												<button class="searchButton" onclick="$('#resolveConfirm').dialog('open');">Resolver Requisicion</button>
 											</td>

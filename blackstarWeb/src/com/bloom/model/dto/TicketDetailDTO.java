@@ -1,5 +1,7 @@
 package com.bloom.model.dto;
 
+import java.text.SimpleDateFormat;
+import com.blackstar.common.Globals;
 import java.util.Date;
 
 public class TicketDetailDTO {
@@ -35,6 +37,7 @@ public class TicketDetailDTO {
     private Date desiredDate;
     private boolean userCanClose;
     private boolean userCanAssign;
+    private String asignee;
     
 
 	private String purposeVisitVL;
@@ -579,6 +582,53 @@ public class TicketDetailDTO {
 	}
 	public void setProblemDescriptionGPTR(String problemDescriptionGPTR) {
 		this.problemDescriptionGPTR = problemDescriptionGPTR;
+	}
+	public String getAsignee() {
+		return asignee;
+	}
+	public void setAsignee(String asignee) {
+		this.asignee = asignee;
+	}
+	public String getDueDateDisplay() {
+		SimpleDateFormat sdf = new SimpleDateFormat(Globals.DATE_FORMAT_PATTERN);
+		
+		if(dueDate != null){
+			return sdf.format(dueDate);	
+		}
+		else{
+			return "";
+		}
+		
+	}
+	public String getResponseDateDisplay() {
+		SimpleDateFormat sdf = new SimpleDateFormat(Globals.DATE_FORMAT_PATTERN);
+		
+		if(responseDate != null){
+			return sdf.format(responseDate);	
+		}
+		else{
+			return "";
+		}
+	}
+	public String getCreatedDisplay() {
+		SimpleDateFormat sdf = new SimpleDateFormat(Globals.DATE_FORMAT_PATTERN);
+		
+		if(created != null){
+			return sdf.format(created);	
+		}
+		else{
+			return "";
+		}
+	}
+	public String getDesiredDateDisplay() {
+		SimpleDateFormat sdf = new SimpleDateFormat(Globals.DATE_FORMAT_PATTERN);
+		
+		if(desiredDate != null){
+			return sdf.format(desiredDate);	
+		}
+		else{
+			return "";
+		}
 	}
 	
 

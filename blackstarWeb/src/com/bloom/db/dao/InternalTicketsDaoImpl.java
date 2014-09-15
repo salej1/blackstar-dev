@@ -40,7 +40,7 @@ public class InternalTicketsDaoImpl extends AbstractDAO implements InternalTicke
 	private static final String QUERY_TICKETS_PENDIENTES = "CALL getBloomPendingTickets(%d)";
 	private static final String QUERY_TICKETS = "CALL getBloomTickets(%d)";
 
-	private static final String QUERY_HISTORICAL_TICKETS = "CALL GetBloomHistoricalTickets(%d,'%s','%s',%d)";
+	private static final String QUERY_HISTORICAL_TICKETS = "CALL GetBloomHistoricalTickets(%d,'%s','%s',%d, '%s')";
 
 	private static final String QUERY_TICKET_NUMBER = "CALL GetNextInternalTicketNumber()";
 
@@ -265,7 +265,7 @@ public class InternalTicketsDaoImpl extends AbstractDAO implements InternalTicke
 	@Override
 	public List<InternalTicketBean> getHistoricalTickets(
 			String createDateStart, String createDateEnd,
-			Integer idStatusTicket, Integer showHidden) throws DAOException {
+			Integer idStatusTicket, Integer showHidden, String user) throws DAOException {
 
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		List<InternalTicketBean> listaRegistros = new ArrayList<InternalTicketBean>();
@@ -274,7 +274,7 @@ public class InternalTicketsDaoImpl extends AbstractDAO implements InternalTicke
 
 			listaRegistros.addAll(getJdbcTemplate().query(
 					String.format(QUERY_HISTORICAL_TICKETS, idStatusTicket,
-							createDateStart, createDateEnd, showHidden),
+							createDateStart, createDateEnd, showHidden, user),
 					new InternalTicketMapper()));
 			// listaRegistros.addAll(getJdbcTemplate().query(sq.toString(),new
 			// InternalTicketMapper()));

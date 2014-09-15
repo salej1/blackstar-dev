@@ -363,7 +363,7 @@
 
 						fechaLimite = new Date();
 
-						$("#fldFechaRegsitro").val(dateNow());
+						//$("#fldFechaRegsitro").val("${horaTicket}");
 
 						$("#fldDesiredDate").datepicker({ dateFormat: 'dd/mm/yy' });
 						$("#fldDesiredDate").datepicker("setDate", new Date());

@@ -13,6 +13,7 @@ import com.blackstar.model.User;
 import com.blackstar.services.AbstractService;
 import com.blackstar.services.EmailServiceFactory;
 import com.blackstar.web.controller.AddFollowUpController;
+import com.blackstar.web.controller.AddFollowUpController.AssignType;
 import com.bloom.common.bean.CatalogoBean;
 import com.bloom.common.bean.DeliverableTraceBean;
 import com.bloom.common.bean.InternalTicketBean;
@@ -35,7 +36,6 @@ public class InternalTicketsServiceImpl extends AbstractService
 
   private InternalTicketsDao internalTicketsDao = null;
   private UserDAO uDAO = null;
-  String sysMailer = "mesa-de-ayuda@gposac.com.mx";
   
   public void setInternalTicketsDao(InternalTicketsDao internalTicketsDao) {
 	this.internalTicketsDao = internalTicketsDao;
@@ -78,13 +78,13 @@ public class InternalTicketsServiceImpl extends AbstractService
     }
 
     @Override
-    public List<InternalTicketBean> getHistoricalTickets(String startCreationDateTicket, String endCreationDateTicket, Integer idStatusTicket, Integer showHidden) throws ServiceException {
+    public List<InternalTicketBean> getHistoricalTickets(String startCreationDateTicket, String endCreationDateTicket, Integer idStatusTicket, Integer showHidden, String user) throws ServiceException {
     	
     	//startCreationDateTicket = DataTypeUtil.transformDateFormat(startCreationDateTicket,DataTypeUtil.MIN_TIME);
     	//endCreationDateTicket = DataTypeUtil.transformDateFormat(endCreationDateTicket,DataTypeUtil.MAX_TIME);
     	
         try {
-        	return getInternalTicketsDao().getHistoricalTickets(startCreationDateTicket,endCreationDateTicket,idStatusTicket, showHidden);
+        	return getInternalTicketsDao().getHistoricalTickets(startCreationDateTicket,endCreationDateTicket,idStatusTicket, showHidden, user);
             
         } catch (DAOException e) {
             
@@ -224,6 +224,10 @@ public class InternalTicketsServiceImpl extends AbstractService
 		
 		detail.setUserCanClose(detail.getCreatedByUsr().equals(user));
 		detail.setUserCanAssign(internalTicketsDao.userCanAssign(ticketId, user) > 0);
+		if(detail.getResponseDate() != null && detail.getDueDate() != null){
+			detail.setResolvedOnTime(detail.getDueDate().compareTo(detail.getResponseDate()));
+		}
+		
 		
 		return detail;
 	}
@@ -235,7 +239,13 @@ public class InternalTicketsServiceImpl extends AbstractService
   }
   
   public void addFollowUp(Integer ticketId, String asignee, String sender, String comment){
-	internalTicketsDao.addFollowUp(ticketId, asignee, sender, comment);
+	  
+	  internalTicketsDao.addFollowUp(ticketId, asignee, sender, comment);
+
+	  if(asignee != null && asignee != null && !asignee.equals("")){
+		  addTicketTeam(ticketId, 2, asignee, "followUp");
+		  AddFollowUpController.AssignBloomTicket(ticketId, asignee, sender);
+	  }
   }
   
   public void addTicketTeam(Integer ticketId, Integer roleId, String userId, String userGroup){
@@ -287,37 +297,49 @@ public class InternalTicketsServiceImpl extends AbstractService
 		message.append(String.format("\r\n\r\n"));
 		message.append(String.format("\r\n\r\n Usuario que asignó: %s", fromName));
 		message.append(String.format("\r\n\r\n Mensaje: %s", detail));
-		mail.sendEmail(from, to, "Asignación de Ticket Interno " + ticket.getTicketNumber(), message.toString());
+		mail.sendEmail(Globals.GPOSAC_DEFAULT_SENDER, to, "Asignacion de Requisicion " + ticket.getTicketNumber(), message.toString());
 	  }
   }
 
-  public void closeTicket(Integer ticketId, Integer userId, Integer statusId){
+  public void closeTicket(Integer ticketId, Integer userId, Integer statusId, String sender){
 	  if(statusId == 5){
-		List<TicketDetailDTO> ticketDetail = internalTicketsDao.getTicketDetail(ticketId);
-		String to = null;
-		StringBuilder message = null;
-		TicketDetailDTO ticket = null;
-		IEmailService mail = null;
-		if(ticketDetail.size() > 0){
-		  ticket = ticketDetail.get(0);
-		  to = ticket.getCreatedByUsr();
-		  if(to != null){
-			 mail = EmailServiceFactory.getEmailService();
-			 message = new StringBuilder();
-		     message.append("La requisicion " + ticket.getTicketNumber()  + " ha sido atendida y resuelta.")
-		            .append("\r\n\r\n")
-		            .append("Requisicion : " + ticket.getTicketNumber())
-	                .append("\r\n")
-	                .append("Fecha de creación: " + ticket.getCreated())
-	                .append("\r\n")
-	                .append("Descripción: " + ticket.getDescription());
-		     mail.sendEmail(sysMailer, to, "Requisicion atendida: " 
-	                                   + ticket.getTicketNumber(), message.toString());
+		  List<TicketDetailDTO> ticketDetail = internalTicketsDao.getTicketDetail(ticketId);
+		  String to = null;
+		  StringBuilder message = null;
+		  TicketDetailDTO ticket = null;
+		  IEmailService mail = EmailServiceFactory.getEmailService();
+		  String timeStamp = Globals.getLocalTimeString();
+
+		  if(ticketDetail.size() > 0){
+			  ticket = ticketDetail.get(0);
+			  to = ticket.getCreatedByUsr();
+			  if(to != null){
+
+				  String subject = "Requisición " + ticket.getTicketNumber() + " atendida";
+				  StringBuilder bodySb = new StringBuilder();
+				  String ticketLink = String.format("/bloom/ticketDetail/show.do?ticketId=%s'>%s</a>", ticket.get_id(), ticket.getTicketNumber());
+				  String surveyLink = String.format("", ticket.get_id());
+
+				  bodySb.append("<img src='" + Globals.GPOSAC_LOGO_DEFAULT_URL + "'>");
+				  bodySb.append("<div style='font-family:sans-serif;margin-left:50px;'>");
+				  bodySb.append("<h3 >Requisución atendida</h3>");
+				  bodySb.append("<p>La requisición  ha sido marcada como resuelta</p>");
+				  bodySb.append("<br>Resuelto por: " + sender);
+				  bodySb.append("<br>Fecha: " + timeStamp);
+				  bodySb.append("<br>");
+				  bodySb.append("<p>Haga click en el siguiente link para revisar la respuesta y cerrar la requisición</p>");
+				  bodySb.append(ticketLink);
+				  bodySb.append("<p>Por favor resoponda la encuesta de servicio de la requisición usando el siguiente link</p>");
+				  bodySb.append(surveyLink);
+				  bodySb.append("</div>");
+				  bodySb.append("<hr>");
+				  bodySb.append("<small>Favor de no responder a este email. En caso de duda póngase en contacto con la persona que le asignó la tarea</small>");
+
+				  mail.sendEmail(Globals.GPOSAC_DEFAULT_SENDER, to, subject, bodySb.toString());
+			  }
 		  }
-	
-		}
 	  }
-	  
+
 	  internalTicketsDao.closeTicket(ticketId, userId, statusId);
   }
 
@@ -360,7 +382,7 @@ public class InternalTicketsServiceImpl extends AbstractService
 		       .append("\r\n")
 		       .append("Descripción: " + pendingAppointment.getDescription())
 		       .append("\r\n");
-		mail.sendEmail(sysMailer, pendingAppointment.getResponsibleMail(), "Ticket interno por vencer: " 
+		mail.sendEmail(Globals.GPOSAC_DEFAULT_SENDER, pendingAppointment.getResponsibleMail(), "Ticket interno por vencer: " 
 		                                   + pendingAppointment.getTicketNumber(), message.toString());
 	  }
 	}
@@ -377,7 +399,7 @@ public class InternalTicketsServiceImpl extends AbstractService
 		       .append("\r\n")
 			   .append("Descripción: " + pendingSurvey.getDescription())
 			   .append("\r\n");
-	    mail.sendEmail(sysMailer, pendingSurvey.getEmail(), "Favor de completar al encuesta de servicio"
+	    mail.sendEmail(Globals.GPOSAC_DEFAULT_SENDER, pendingSurvey.getEmail(), "Favor de completar al encuesta de servicio"
 	    		                                          , message.toString());
     }
   }

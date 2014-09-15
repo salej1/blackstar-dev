@@ -35,7 +35,7 @@
 				<img alt="Grupo Sac" src="${pageContext.request.contextPath}/img/grupo-sac-logo.png" border="0"/>
 			</div>
 			<span class="slogan">Portal de servicios</span>
-			<span style="display:inline-block;width:180px;"><small>v2.347</small></span>
+			<span style="display:inline-block;width:180px;"><small>v2.350</small></span>
 			<span><small><a href="${pageContext.request.contextPath}/dashboard/logout.do">Salir</a></small></span>
 		</h1>
 
@@ -48,7 +48,7 @@
 				<li><a href="${pageContext.request.contextPath}/serviceOrders/show.do">Ordenes de servicio</a></li>
 				<c:if test="${!user.belongsToGroup['Cliente']}">
 					<li><a href="${pageContext.request.contextPath}/bloom/bloomTicketPage/show.do">Requisiciones</a></li>
-					<li><a href="${pageContext.request.contextPath}/surveyServices/show.do">Encuestas de servicio</a></li>
+					<li><a href="${pageContext.request.contextPath}/surveyServices/show.do">Encuestas</a></li>
 				</c:if>
 				<li><a href="${pageContext.request.contextPath}/indServicios/show.do">Indicadores</a></li>
 			</c:when>
@@ -58,7 +58,7 @@
 				<li><a href="${pageContext.request.contextPath}/serviceOrders/show.do">Ordenes de servicio</a></li>
 				<c:if test="${!user.belongsToGroup['Cliente']}">
 					<li><a href="${pageContext.request.contextPath}/bloom/bloomTicketPage/show.do">Requisiciones</a></li>
-					<li><a href="${pageContext.request.contextPath}/surveyServices/show.do">Encuestas de servicio</a></li>
+					<li><a href="${pageContext.request.contextPath}/surveyServices/show.do">Encuestas</a></li>
 				</c:if>
 				<li><a href="${pageContext.request.contextPath}/indServicios/show.do">Indicadores</a></li>
 			</c:when>
@@ -68,7 +68,7 @@
 				<li><span class="active" onclick="window.location = '/serviceOrders/show.do'">Ordenes de servicio</span></li>
 				<c:if test="${!user.belongsToGroup['Cliente']}">
 					<li><a href="${pageContext.request.contextPath}/bloom/bloomTicketPage/show.do">Requisiciones</a></li>
-					<li><a href="${pageContext.request.contextPath}/surveyServices/show.do">Encuestas de servicio</a></li>
+					<li><a href="${pageContext.request.contextPath}/surveyServices/show.do">Encuestas</a></li>
 				</c:if>
 				<li><a href="${pageContext.request.contextPath}/indServicios/show.do">Indicadores</a></li>
 			</c:when>
@@ -78,7 +78,7 @@
 				<li><a href="${pageContext.request.contextPath}/serviceOrders/show.do">Ordenes de servicio</a></li>
 				<c:if test="${!user.belongsToGroup['Cliente']}">
 					<li><span class="active" onclick="window.location = '/bloom/bloomTicketPage/show.do'">Requisiciones</span></li>
-					<li><a href="${pageContext.request.contextPath}/surveyServices/show.do">Encuestas de servicio</a></li>
+					<li><a href="${pageContext.request.contextPath}/surveyServices/show.do">Encuestas</a></li>
 				</c:if>
 				<li><a href="${pageContext.request.contextPath}/indServicios/show.do">Indicadores</a></li>
 			</c:when>			
@@ -88,7 +88,7 @@
 				<li><a href="${pageContext.request.contextPath}/serviceOrders/show.do">Ordenes de servicio</a></li>
 				<c:if test="${!user.belongsToGroup['Cliente']}">
 					<li><a href="${pageContext.request.contextPath}/bloom/bloomTicketPage/show.do">Requisiciones</a></li>
-					<li><span class="active" onclick="window.location = '/surveyServices/show.do'">Encuestas de servicio</span></li>
+					<li><span class="active" onclick="window.location = '/surveyServices/show.do'">Encuestas</span></li>
 				</c:if>
 				<li><a href="${pageContext.request.contextPath}/indServicios/show.do">Indicadores</a></li>
 			</c:when>			
@@ -98,7 +98,7 @@
 				<li><a href="${pageContext.request.contextPath}/serviceOrders/show.do">Ordenes de servicio</a></li>
 				<c:if test="${!user.belongsToGroup['Cliente']}">
 					<li><a href="${pageContext.request.contextPath}/bloom/bloomTicketPage/show.do">Requisiciones</a></li>
-					<li><a href="${pageContext.request.contextPath}/surveyServices/show.do">Encuestas de servicio</a></li>
+					<li><a href="${pageContext.request.contextPath}/surveyServices/show.do">Encuestas</a></li>
 				</c:if>
 				<li><span class="active" onclick="window.location = '/indServicios/show.do'">Indicadores</span></li>
 			</c:when>		
@@ -108,7 +108,7 @@
 				<li><a href="${pageContext.request.contextPath}/serviceOrders/show.do">Ordenes de servicio</a></li>
 				<c:if test="${!user.belongsToGroup['Cliente']}">
 					<li><a href="${pageContext.request.contextPath}/bloom/bloomTicketPage/show.do">Requisiciones</a></li>
-					<li><a href="${pageContext.request.contextPath}/surveyServices/show.do">Encuestas de servicio</a></li>
+					<li><a href="${pageContext.request.contextPath}/surveyServices/show.do">Encuestas</a></li>
 				</c:if>
 				<li><a href="${pageContext.request.contextPath}/indServicios/show.do">Indicadores</a></li>
 			</c:otherwise>

@@ -58,6 +58,14 @@
 						surveyServicesHistory_init();
 					});
 				</script>
+
+				<!-- Encuestas de requisiciones -->
+				<c:import url="/bloom/bloomSurvey.jsp"></c:import>
+				<script type="text/javascript">
+					$(function(){
+						bloomSurvey_init();
+					});
+				</script>
 			</c:otherwise>
 		</c:choose>	
 	</div>

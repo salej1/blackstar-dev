@@ -1,7 +1,9 @@
 package com.bloom.web.controller;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -100,13 +102,13 @@ public class InternalTicketsController extends AbstractController {
 			}
 
 		} catch (ServiceException e) {
-			System.out.println("Error => " + e);
+			e.printStackTrace();
 			Logger.Log(LogLevel.ERROR, e.getMessage(), e);
 
 			response.setEstatus("error");
 			response.setMensaje(e.getMessage());
 		} catch (Exception e) {
-            System.out.println("Error => " + e);
+            e.printStackTrace();
 			Logger.Log(LogLevel.ERROR, e.getMessage(), e);
 
 			response.setEstatus("error");
@@ -151,13 +153,13 @@ public class InternalTicketsController extends AbstractController {
 			}
 
 		} catch (ServiceException e) {
-
+			e.printStackTrace();
 			Logger.Log(LogLevel.ERROR, e.getMessage(), e);
 
 			response.setEstatus("error");
 			response.setMensaje(e.getMessage());
 		} catch (Exception e) {
-
+			e.printStackTrace();
 			Logger.Log(LogLevel.ERROR, e.getMessage(), e);
 
 			response.setEstatus("error");
@@ -188,7 +190,7 @@ public class InternalTicketsController extends AbstractController {
 		   model.addAttribute("deliverableTrace", internalTicketsService.getTicketDeliverable(ticketDetail.get_id()));
 		 }
 	} catch (Exception e) {
-		System.out.println("Error => " + e);
+		
 		Logger.Log(LogLevel.ERROR,e.getStackTrace()[0].toString(), e);
 		e.printStackTrace();
 		model.addAttribute("errorDetails", e.getStackTrace()[0].toString());
@@ -204,22 +206,8 @@ public class InternalTicketsController extends AbstractController {
 		                @RequestParam(required = true) String userToAssign,
 				        ModelMap model,
 				        @ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession) {
-	boolean sendNotification = true;
 	try {
-		//Comment
-		if(userToAssign.equals("-2")){
-			// Nada no se cambia el asignatario
-			sendNotification = false;
-			userToAssign = "";
-		}
 		internalTicketsService.addFollowUp(ticketId, userToAssign, userSession.getUser().getUserEmail(), comment);
-		if(userToAssign != null && userToAssign != null && !userToAssign.equals("")){
-			internalTicketsService.addTicketTeam(ticketId, 2, userToAssign, "followUp");
-		}
-
-		if(sendNotification){
-		  internalTicketsService.sendNotification(userSession.getUser().getUserEmail(), userToAssign, ticketId, comment, userSession.getUser().getUserEmail());
-		}
 		model.addAttribute("followUps", internalTicketsService.getFollowUps(ticketId));
 	} catch (Exception e) {
 		Logger.Log(LogLevel.ERROR,e.getStackTrace()[0].toString(), e);
@@ -259,10 +247,10 @@ public class InternalTicketsController extends AbstractController {
   
   @RequestMapping(value = "/ticketDetail/resolve.do", method = RequestMethod.GET)
   public String resolveTicket(@RequestParam(required = true) Integer ticketId
-		                , @RequestParam(required = true) Integer userId
-				                                    , ModelMap model) {
+		                , @RequestParam(required = true) Integer userId, ModelMap model
+		                , @ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession) {
 	try {
-		internalTicketsService.closeTicket(ticketId, userId, RESOVLED_STATUS);
+		internalTicketsService.closeTicket(ticketId, userId, RESOVLED_STATUS, userSession.getUser().getUserName());
 	} catch (Exception e) {
 		Logger.Log(LogLevel.ERROR,e.getStackTrace()[0].toString(), e);
 		e.printStackTrace();
@@ -274,10 +262,10 @@ public class InternalTicketsController extends AbstractController {
 
   @RequestMapping(value = "/ticketDetail/close.do", method = RequestMethod.GET)
   public String closeTicket(@RequestParam(required = true) Integer ticketId
-		                , @RequestParam(required = true) Integer userId
-				                                    , ModelMap model) {
+		                , @RequestParam(required = true) Integer userId, ModelMap model
+		                , @ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession) {
 	try {
-		internalTicketsService.closeTicket(ticketId, userId, CLOSED_STATUS);
+		internalTicketsService.closeTicket(ticketId, userId, CLOSED_STATUS, userSession.getUser().getUserName());
 	} catch (Exception e) {
 		Logger.Log(LogLevel.ERROR,e.getStackTrace()[0].toString(), e);
 		e.printStackTrace();
@@ -316,7 +304,7 @@ public class InternalTicketsController extends AbstractController {
 		try {
 
 			List<InternalTicketBean> registros = internalTicketsService
-					.getHistoricalTickets(startCreationDateTicket, endCreationDateTicket, idStatusTicket, showHidden);
+					.getHistoricalTickets(startCreationDateTicket, endCreationDateTicket, idStatusTicket, showHidden, userSession.getUser().getUserEmail());
 
 			if (registros == null || registros.isEmpty()) {
 				response.setEstatus("preventivo");
@@ -331,13 +319,13 @@ public class InternalTicketsController extends AbstractController {
 			}
 
 		} catch (ServiceException e) {
-
+			e.printStackTrace();
 			Logger.Log(LogLevel.ERROR, e.getMessage(), e);
 
 			response.setEstatus("error");
 			response.setMensaje(e.getMessage());
 		} catch (Exception e) {
-
+			e.printStackTrace();
 			Logger.Log(LogLevel.ERROR, e.getMessage(), e);
 
 			response.setEstatus("error");
@@ -354,23 +342,20 @@ public class InternalTicketsController extends AbstractController {
 	public String newInternalTicket(ModelMap model,
 			@ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession) {
 
-		Date tiempoActual = new Date();
-
 		try {
 
 			String folio = internalTicketsService.generarTicketNumber();
 
 			String email = userSession.getUser().getUserEmail();
-			String horaTicket = DataTypeUtil.formatearFecha(tiempoActual,
-					"MM/dd/yyyy HH:mm:ss");
+			
+			String horaTicket = Globals.getLocalTimeString();
 
 			model.addAttribute("folioTicket", folio);
 			model.addAttribute("emailTicket", email);
 			model.addAttribute("horaTicket", horaTicket);
 
-		} catch (ServiceException se) {
-			Logger.Log(LogLevel.ERROR, se.getMessage(), se);
 		} catch (Exception e) {
+			e.printStackTrace();
 			Logger.Log(LogLevel.ERROR, e.getMessage(), e);
 		}
 
