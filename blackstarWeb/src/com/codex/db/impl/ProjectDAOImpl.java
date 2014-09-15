@@ -220,9 +220,9 @@ public class ProjectDAOImpl extends AbstractDAO
   }
   
   @Override
-  public User getSalesManger(){
+  public List<User> getSalesManger(){
 	String sqlQuery = "CALL CodexGetSalesManger()";
-    return (User) getJdbcTemplate().queryForObject(sqlQuery
+    return (List<User>) getJdbcTemplate().query(sqlQuery
     		                   , getMapperFor(User.class));
   }
   

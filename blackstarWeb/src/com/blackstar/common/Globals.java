@@ -50,4 +50,8 @@ public class Globals {
 	  public static final String GROUP_SERVICE = "sysServicio";
 	  public static final String GROUP_CALL_CENTER = "sysCallCenter";
 	  public static final String GROUP_COORDINATOR = "sysCoordinador";
+	  public static final String GROUP_SALES_MANAGER = "Gerente comercial";
+	  
+	  // Codex settings
+	  public static final Integer PROJECT_AUTH_LIMIT = 30000; // USD
 }

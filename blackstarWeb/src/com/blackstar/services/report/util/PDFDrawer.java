@@ -189,5 +189,14 @@ public class PDFDrawer {
 	return lines;
   } 
   
-
+  public void textBlock(String text, com.blackstar.services.report.util.Paragraph.Align alignment, int y, Boolean bold, int size) throws Exception{
+	  Font f = getFont(bold, size);
+	  Paragraph p = new Paragraph();
+	  
+	  p.setAlignment(alignment);
+	  p.setFont(f);
+	  p.add(text);
+	  p.setPosition(LEFT_MARGIN, y);
+	  p.drawOn(page);
+  }
 }

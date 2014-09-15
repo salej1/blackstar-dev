@@ -68,7 +68,8 @@ public class ProjectController extends AbstractController {
   }
   
   @RequestMapping(value = "/edit.do")
-  public String edit(ModelMap model, @RequestParam(required = true) Integer projectId){
+  public String edit(ModelMap model, @RequestParam(required = true) Integer projectId,
+		  @ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession){
 	ProjectVO project = null;
 	try {
 		 project = service.getProjectDetail(projectId);
@@ -81,7 +82,18 @@ public class ProjectController extends AbstractController {
 		 model.addAttribute("paymentTypes", service.getAllPaymentTypes());
 		 model.addAttribute("staff", udService.getStaff());
 		 model.addAttribute("accessToken", gdService.getAccessToken());
-		 model.addAttribute("enableEdition", project.getStatusId()== 1 ? false : true);
+		 Boolean enableEdition = false;
+		 if(project.getStatusId() == 1){
+			 if(project.getCreatedByUsr() == userSession.getUser().getBlackstarUserId()){
+				 enableEdition = true;
+			 }
+		 }
+		 else if(project.getStatusId() == 2){
+			 if(userSession.getUser().getBelongsToGroup().get(Globals.GROUP_SALES_MANAGER) != null && userSession.getUser().getBelongsToGroup().get(Globals.GROUP_SALES_MANAGER) == true){
+				 enableEdition = true;
+			 }
+		 }
+		 model.addAttribute("enableEdition", enableEdition);
 		 model.addAttribute("isUpdate", true);
 		 model.addAttribute("clients", cService.getAllClients());
 		 model.addAttribute("osAttachmentFolder", gdService.getAttachmentFolderId(project.getProjectNumber()));

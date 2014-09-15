@@ -6,11 +6,8 @@ import com.codex.vo.PriceProposalVO;
 
 public interface PriceProposalDAO {
 	
-  public void insertPriceProposal(PriceProposalVO priceProposal);
-  public void insertPriceProposalEntry(PriceProposalEntryVO priceProposalEntry);
-  public void insertPriceProposalEntryItem(PriceProposalItemVO priceProposalItem);
-  public Integer getNewPriceProposalId();
+  public Integer insertPriceProposal(PriceProposalVO priceProposal);
+  public Integer insertPriceProposalEntry(PriceProposalEntryVO priceProposalEntry);
+  public Integer insertPriceProposalEntryItem(PriceProposalItemVO priceProposalItem);
   public Integer getPriceProposalNumberForProject(Integer projectId);
-  public Integer getNewPriceProposalentryId() ;
-
 }

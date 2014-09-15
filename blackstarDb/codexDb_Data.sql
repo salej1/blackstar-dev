@@ -183,7 +183,7 @@ BEGIN
 		INSERT INTO blackstarDb.codexStatusType(name, description)
 		SELECT 'Nuevo', 'Nuevo' UNION
 		SELECT 'Por autorizar', 'Por autorizar' UNION
-		SELECT 'Autorizada', 'Autorizada' UNION
+		SELECT 'Autorizado', 'Autorizado' UNION
 		SELECT 'En cotizacion', 'En cotizacion' ;
 	END IF;
 	

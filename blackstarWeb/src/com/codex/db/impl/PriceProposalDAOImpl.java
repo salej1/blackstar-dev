@@ -10,10 +10,10 @@ public class PriceProposalDAOImpl extends AbstractDAO
                                   implements PriceProposalDAO{
 
   @Override 
-  public void insertPriceProposal(PriceProposalVO priceProposal){
-	String sqlQuery = "CALL CodexInsertPriceProposal(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-	getJdbcTemplate().update(sqlQuery, new Object[]{priceProposal.getId()
-			                , priceProposal.getProjectId(), priceProposal.getPriceProposalNumber()
+  public Integer insertPriceProposal(PriceProposalVO priceProposal){
+	String sqlQuery = "CALL CodexInsertPriceProposal(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	Integer propId = getJdbcTemplate().queryForObject(sqlQuery, new Object[]{
+			                  priceProposal.getProjectId(), priceProposal.getPriceProposalNumber()
 			                , priceProposal.getClientId(), priceProposal.getTaxesTypeId()
 				            , priceProposal.getPaymentTypeId(), priceProposal.getCurrencyTypeId()
 				            , priceProposal.getCostCenter(), priceProposal.getChangeType()
@@ -22,43 +22,40 @@ public class PriceProposalDAOImpl extends AbstractDAO
 				            , priceProposal.getTimeLimit(), priceProposal.getSettlementTimeLimit()
 				            , priceProposal.getDeliveryTime(), priceProposal.getIncoterm()
 				            , priceProposal.getProductsNumber(), priceProposal.getFinancesNumber()
-				            , priceProposal.getServicesNumber(), priceProposal.getTotalProjectNumber()});
+				            , priceProposal.getServicesNumber(), priceProposal.getTotalProjectNumber()}, Integer.class);
+	
+	priceProposal.setId(propId);
+	return propId;
   }
   
   @Override
-  public void insertPriceProposalEntry(PriceProposalEntryVO priceProposalEntry) {
-	 String sqlQuery = "CALL CodexInsertPriceProposalEntry(?, ?, ?, ?, ?, ?, ?)";
-	 getJdbcTemplate().update(sqlQuery, new Object[]{priceProposalEntry.getId()
-		  , priceProposalEntry.getPriceProposalId(), priceProposalEntry.getEntryTypeId()
+  public Integer insertPriceProposalEntry(PriceProposalEntryVO priceProposalEntry) {
+	 String sqlQuery = "CALL CodexInsertPriceProposalEntry(?, ?, ?, ?, ?, ?)";
+	 Integer propEntryId = getJdbcTemplate().queryForObject(sqlQuery, new Object[]{
+		    priceProposalEntry.getPriceProposalId(), priceProposalEntry.getEntryTypeId()
 		  , priceProposalEntry.getDescription(), priceProposalEntry.getDiscount()
-		  , priceProposalEntry.getTotalPrice(), priceProposalEntry.getComments()});
+		  , priceProposalEntry.getTotalPrice(), priceProposalEntry.getComments()}, Integer.class);
+	 
+	 priceProposalEntry.setId(propEntryId);
+	 return propEntryId;
   }
   
   @Override
-  public void insertPriceProposalEntryItem(PriceProposalItemVO priceProposalItem){
+  public Integer insertPriceProposalEntryItem(PriceProposalItemVO priceProposalItem){
     String sqlQuery = "CALL CodexInsertPriceProposalEntryItem(?, ?, ?, ?, ?, ?, ?, ? ,?)";
-	getJdbcTemplate().update(sqlQuery, new Object[]{priceProposalItem.getPriceProposalEntryId()
+	Integer propEntryItemId = getJdbcTemplate().queryForObject(sqlQuery, new Object[]{priceProposalItem.getPriceProposalEntryId()
 			              , priceProposalItem.getItemTypeId(), priceProposalItem.getReference()
 			              , priceProposalItem.getDescription(), priceProposalItem.getQuantity()
 			              , priceProposalItem.getPriceByUnit(), priceProposalItem.getDiscount()
-			              , priceProposalItem.getTotalPrice(), priceProposalItem.getComments()});
+			              , priceProposalItem.getTotalPrice(), priceProposalItem.getComments()}, Integer.class);
+	
+	priceProposalItem.setId(propEntryItemId);
+	return propEntryItemId;
   }
-  
-  @Override
-  public Integer getNewPriceProposalId() {
-	StringBuilder sqlBuilder = new StringBuilder("CALL GetNextPriceProposalId()");
-	return getJdbcTemplate().queryForInt(sqlBuilder.toString());
-  }
-  
+    
   @Override
   public Integer getPriceProposalNumberForProject(Integer projectId) {
 	StringBuilder sqlBuilder = new StringBuilder("CALL GetProposalNumberForProject(?)");
 	return getJdbcTemplate().queryForInt(sqlBuilder.toString(), new Object[]{projectId});
-  }
-  
-  @Override
-  public Integer getNewPriceProposalentryId() {
-	StringBuilder sqlBuilder = new StringBuilder("CALL GetNextProposalEntryId()");
-	return getJdbcTemplate().queryForInt(sqlBuilder.toString());
   }
 }

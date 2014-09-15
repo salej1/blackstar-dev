@@ -8,7 +8,9 @@ import com.blackstar.services.report.AbstractReport;
 import com.codex.vo.ProjectEntryItemVO;
 import com.codex.vo.ProjectEntryVO;
 import com.codex.vo.ProjectVO;
+import com.pdfjet.Align;
 import com.pdfjet.Color;
+import com.pdfjet.Font;
 
 public class PriceProposalReport extends AbstractReport {
 
@@ -18,13 +20,15 @@ public class PriceProposalReport extends AbstractReport {
 	data = (ProjectVO) fillData;
 	printHeader();
 	printCover();
+	printFooter(1);
 	drawer.newPage();
 	printHeader();
 	printProposal();
+	printFooter(2);
 	drawer.newPage();
 	printHeader();
 	printContract();
-	printFooter();
+	printFooter(4);
   }
 	
 	
@@ -33,29 +37,66 @@ public class PriceProposalReport extends AbstractReport {
   }
   
   private void printCover() throws Exception {
-	  drawer.text("Propuesta", 269, 200);
-	  String projectNumber = "         " + data.getProjectNumber() + "-1";
-	  drawer.text("Cotización No.", 267,250, true, 0 , 12);
-	  drawer.text(projectNumber, getCenterX(projectNumber),270, false, 0 , 12);
-	  drawer.text("Cliente:", 295,300);
-	  drawer.text(data.getClientDescription(), getCenterX(data.getClientDescription())
-			                                                     ,320, false, 0 , 12);
-	  drawer.text("Atención:", 294,350);
-	  drawer.text(data.getContactName(), getCenterX(data.getContactName())
-                                                     ,370, false, 0 , 12);
-	  drawer.text("Fecha de Creación:", 279,400, true);
-	  drawer.text("Aviso de Restricciones de Uso y Divulgación:", 40,600, true);
-	  drawer.text("La información contenida en la totalidad de esta Propuesta, constituye un secreto de marca y/o información comercial y/o financiera", 40,630);
-	  drawer.text("propiedad de SISTEMAS AVANZADOS EN COMPUTACIÓN DE MÉXICO, S.A. DE C.V., en lo sucesivo \"GRUPO SAC\", la cual, se encuentra", 40,645);
-	  drawer.text("clasificada como confidencial. Esta información es proporcionada con la restricción de que no podrá ser usada o divulgada sin el permiso", 40,660);
-	  drawer.text("de GRUPO SAC para otros propósitos que no sean para su evaluación, acordando con el Cliente, el protegerla con el mismo grado de cuidado", 40,675);
-	  drawer.text("que el mismo utilizaría para proteger su propia información.", 40,690);
+	  // guides
+//	  drawer.text("0",   0, 0, false, 0 , 10);
+//	  drawer.text("20",  20, 0, false, 0 , 10);
+//	  drawer.text("40",  40, 0, false, 0 , 10);
+//	  drawer.text("60",  60, 0, false, 0 , 10);
+//	  drawer.text("80",  80, 0, false, 0 , 10);
+//	  drawer.text("100", 100, 0, false, 0 , 10);
+//	  drawer.text("120", 120, 0, false, 0 , 10);
+//	  drawer.text("140", 140, 0, false, 0 , 10);
+//	  drawer.text("160", 160, 0, false, 0 , 10);
+//	  drawer.text("180", 180, 0, false, 0 , 10);
+//	  drawer.text("200", 200, 0, false, 0 , 10);
+//	  drawer.text("220", 220, 0, false, 0 , 10);
+//	  drawer.text("240", 240, 0, false, 0 , 10);
+//	  drawer.text("260", 260, 0, false, 0 , 10);
+//	  drawer.text("280", 280, 0, false, 0 , 10);
+//	  drawer.text("300", 300, 0, false, 0 , 10);
+//	  drawer.text("320", 320, 0, false, 0 , 10);
+//	  drawer.text("340", 340, 0, false, 0 , 10);
+//	  drawer.text("360", 360, 0, false, 0 , 10);
+//	  drawer.text("380", 380, 0, false, 0 , 10);
+//	  drawer.text("400", 400, 0, false, 0 , 10);
+//	  drawer.text("420", 420, 0, false, 0 , 10);
+//	  drawer.text("440", 440, 0, false, 0 , 10);
+//	  drawer.text("460", 460, 0, false, 0 , 10);
+//	  drawer.text("480", 480, 0, false, 0 , 10);
+//	  drawer.text("500", 500, 0, false, 0 , 10);
+//	  drawer.text("520", 520, 0, false, 0 , 10);
+//	  drawer.text("540", 540, 0, false, 0 , 10);
+//	  drawer.text("560", 560, 0, false, 0 , 10);
+//	  drawer.text("580", 580, 0, false, 0 , 10);
+//	  drawer.text("600", 600, 0, false, 0 , 10);
+//	  drawer.text("620", 620, 0, false, 0 , 10);
+//	  drawer.text("640", 640, 0, false, 0 , 10);
+//	  drawer.text("660", 660, 0, false, 0 , 10);
+	  //
+
+	  drawer.text("Propuesta", getCenterX("Propuesta"), 200, true, 0, 12);
+	  String projectNumber = data.getProjectNumber() + "-1";
+	  drawer.text("Cotización No.", getCenterX("Cotización No."), 250, true, 0, 12);
+	  drawer.text(projectNumber, getCenterX(projectNumber), 270, false, 0, 12);
+	  drawer.text("Cliente:", getCenterX("Cliente:"), 300, false, 0, 10);
+	  drawer.text(data.getClientDescription(), getCenterX(data.getClientDescription()), 320, false, 0, 12);
+	  drawer.text("Atención:", getCenterX("Atención:"), 350, false, 0, 10);
+	  drawer.text(data.getContactName(), getCenterX(data.getContactName()), 370, false, 0, 12);
+	  drawer.text("Fecha de Creación:", getCenterX("Fecha de Creación:"), 400, true, 0, 10);
+	  drawer.text("Aviso de Restricciones de Uso y Divulgación:", 0, 600, true, 0, 8);
+	  drawer.text("La información contenida en la totalidad de esta Propuesta, constituye un secreto de marca y/o información comercial y/o financiera", 0, 615, true, 0, 8);
+	  drawer.text("propiedad de SISTEMAS AVANZADOS EN COMPUTACIÓN DE MÉXICO, S.A. DE C.V., en lo sucesivo \"GRUPO SAC\", la cual, se encuentra", 0, 630, true, 0, 8);
+	  drawer.text("clasificada como confidencial. Esta información es proporcionada con la restricción de que no podrá ser usada o divulgada sin el permiso", 0, 645, true, 0, 8);
+	  drawer.text("de GRUPO SAC para otros propósitos que no sean para su evaluación, acordando con el Cliente, el protegerla con el mismo grado de cuidado", 0, 660, true, 0, 8);
+	  drawer.text("que el mismo utilizaría para proteger su propia información.", 0, 675, true, 0, 8);
+
   }
   
-  private void printFooter() throws Exception {
-	  drawer.text("La información contenida en la totalidad de este documento es clasificada como confidencial y se entrega bajo el entendido de que no será usada o", 40,785, false, Color.gray, 6);
-	  drawer.text("divulgada, sin el permiso de Sistemas Avanzados en Computación de México, S.A. de C.V.", 40,795, false, Color.gray, 6);
-	  drawer.text("4 - VE - 11                Rev. 0           31-08-2014                                                                TRA: Mientras este Activo   TRAM: 1 año", 40,805, false, Color.gray, 6);
+  private void printFooter(int page) throws Exception {
+	  drawer.text("La información contenida en la totalidad de este documento es clasificada como confidencial y se entrega bajo el entendido de que no será usada o", 40,785, false, Color.gray, 7);
+	  drawer.text("divulgada, sin el permiso de Sistemas Avanzados en Computación de México, S.A. de C.V.", 40,795, false, Color.gray, 7);
+	  drawer.text("4 - VE - 11                Rev. 0           31-08-2014                                                                TRA: Mientras este Activo   TRAM: 1 año", 40,805, false, Color.gray, 7);
+	  drawer.text("Pag. " + page + "/4", 500 , 805, false, Color.gray, 7);
   }
   
   private void printProposal() throws Exception {
@@ -130,10 +171,9 @@ public class PriceProposalReport extends AbstractReport {
 	  drawer.vLine(yFactor, yFactor + 60, 460);
 	  drawer.vLine(yFactor, yFactor + 60, 545);
 	  
-	  
-	  drawer.text("Subtotal", 395, yFactor + 13, true);
-	  drawer.text(totalPrice + "", 470, yFactor + 13, true);
 	  if(totalDiscount > 0){
+		  drawer.text("Subtotal", 395, yFactor + 13, true);
+		  drawer.text(totalPrice + "", 470, yFactor + 13, true);
 		  drawer.text("Descuento", 395, yFactor + 33, true);
 		  drawer.text(totalDiscount + "", 470, yFactor + 33, true);
 		  drawer.text("Total USD", 395, yFactor + 53, true);
@@ -153,9 +193,9 @@ public class PriceProposalReport extends AbstractReport {
 	  }
 	  
 	  drawer.box(35, yFactor + 30, 510, 15, Color.gray, true);
-	  drawer.vLine(yFactor + 40, yFactor + 210, 35);
-	  drawer.vLine(yFactor + 40, yFactor + 210, 545);
-	  drawer.hLine(35, 545, yFactor + 210);
+	  drawer.vLine(yFactor + 40, yFactor + 270, 35);
+	  drawer.vLine(yFactor + 40, yFactor + 270, 545);
+	  drawer.hLine(35, 545, yFactor + 270);
 	  
 	  yFactor += 40;
 	  
@@ -176,19 +216,19 @@ public class PriceProposalReport extends AbstractReport {
 	  drawer.text("Expertos en configuración, administración y monitoreo de su infraestructura.", 75, yFactor + 143);
 	  drawer.point(75, yFactor + 180, 1.5F, 0, true);
 	  drawer.text("Centro de Contacto multicanal:  lada gratuita nacional: 01 800 0830 203;  correo “call-center@gposac.com.mx” y", 75, yFactor + 163);
-	  drawer.point(75, yFactor + 180, 1.5F, 0, true);
+
 	  drawer.text("vía WEB.", 75, yFactor + 183);
-	  drawer.point(75, yFactor + 180, 1.5F, 0, true);
+	  drawer.point(75, yFactor + 220, 1.5F, 0, true);
 	  drawer.text("Portal personalizado a nuestros clientes para la administración y estadísticas de servicio", 75, yFactor + 203);
-	  drawer.point(75, yFactor + 180, 1.5F, 0, true);
-	  drawer.text("Atención  especializada en cualquiera de las modalidades de servicio 5x8 ó 7X24", 75, yFactor + 183);
+	  drawer.point(75, yFactor + 240, 1.5F, 0, true);
+	  drawer.text("Atención  especializada en cualquiera de las modalidades de servicio 5x8 ó 7X24", 75, yFactor + 223);
   }
   
   private void printContract() throws Exception {
 	  drawer.box(35, 120, 510, 20, Color.gray, true);
 	  drawer.text("Términos de Venta", 260, 134, true, 0, 10);
 	  drawer.text("1. Validez de Oferta", 40, 160, true);
-	  drawer.text("La presente cotización tiene vigencia hasta el día 20/MAY/14", 40, 170);
+	  drawer.text("La presente cotización tiene vigencia hasta el día 12/OCT/2014", 40, 170);
 	  drawer.text("2. Precio", 40, 190, true);
 	  drawer.text("Los precios están cotizados en USD y no incluyen el impuesto al valor agregado (IVA), el cual se cargará al momento de la facturación.", 40, 200);
 	  drawer.text("3. Condiciones de Pago", 40, 220, true);
@@ -197,7 +237,7 @@ public class PriceProposalReport extends AbstractReport {
 	  drawer.text("al dictamen de nuestro departamento correspondiente. Para las cotizaciones en dólares el pago podrá ser realizado en moneda nacional con", 40, 260);
 	  drawer.text("base al tipo de cambio publicado en el DOF del día en que se aplique en firme el deposito en nuestra cuenta bancaria.", 40, 270);
 	  drawer.text("4. Entrega", 40, 290, true);
-	  drawer.text("a) El tiempo de entrega es de 6 SEMANAS, el cual iniciará a partir de la recepción de su orden de compra y/o contrato y/o nuestra cotización", 40, 300);
+	  drawer.text("a) El tiempo de entrega es de " + data.getDeliveryTime() + " DIAS, el cual iniciará a partir de la recepción de su orden de compra y/o contrato y/o nuestra cotización", 40, 300);
 	  drawer.text("y del deposito en firme del anticipo correspondiente.", 40, 310);
 	  drawer.text("Los tiempos de entrega aquí mencionados están sujetos a la capacidad de la planta en el momento de recibir su orden de compra o pedido.", 40, 330);
 	  drawer.text("b) La entrega será " + data.getIncoterm() + " en " + data.getLocation() + " Incoterms 2010.", 40, 350);
@@ -235,7 +275,7 @@ public class PriceProposalReport extends AbstractReport {
 	  drawer.text("11. Garantía", 40, 750, true);
 	  drawer.text("La garantía de nuestros productos será de12 meses a partir de la puesta en marcha del equipo o 16 meses", 40, 760);
 	  drawer.text("después de la entrega del él. La garantía pudiera variar si así lo indica(n) la(s) partida(s)", 40, 770);
-	  printFooter();
+	  printFooter(3);
 	  drawer.newPage();
 	  printHeader();
 	  drawer.text("12. Causas de Fuerza Mayor", 40, 120, true);

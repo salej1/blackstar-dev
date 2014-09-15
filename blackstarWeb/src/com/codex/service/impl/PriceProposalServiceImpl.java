@@ -29,12 +29,11 @@ public class PriceProposalServiceImpl extends AbstractService
 	 List<PriceProposalItemVO> items;
 	 PriceProposalEntryVO entry = null;
 	 PriceProposalItemVO item = null;
-	 Integer proposalId = dao.getNewPriceProposalId();
+	 
 	 Integer entryId = null;
-	 priceProposal.setId(proposalId);
 	 priceProposal.setProjectId(project.getId());
-	 priceProposal.setPriceProposalNumber("CQ-" + project.getId() + "-" 
-	          + dao.getPriceProposalNumberForProject(project.getId()));
+	 String proposalNumber = "CQ-" + project.getProjectNumber() + "-" + dao.getPriceProposalNumberForProject(project.getId());
+	 priceProposal.setPriceProposalNumber(proposalNumber);
      priceProposal.setClientId(project.getClientId());
      priceProposal.setTaxesTypeId(project.getTaxesTypeId());
      priceProposal.setPaymentTypeId(project.getPaymentTypeId());
@@ -54,15 +53,15 @@ public class PriceProposalServiceImpl extends AbstractService
      priceProposal.setServicesNumber(project.getServicesNumber() != null? project.getServicesNumber() : 0);
      priceProposal.setTotalProjectNumber(project.getTotalProjectNumber());
      entries = new ArrayList<PriceProposalEntryVO>();
+     
      for(ProjectEntryVO projectEntry :  project.getEntries()){
        entry = new PriceProposalEntryVO();
-       entry.setId(entryId = dao.getNewPriceProposalentryId());
        entry.setComments(projectEntry.getComments());
        entry.setDescription(projectEntry.getDescription());
        entry.setDiscount(projectEntry.getDiscount());
        entry.setEntryTypeId(projectEntry.getEntryTypeId());
        entry.setTotalPrice(projectEntry.getTotalPrice());
-       entry.setPriceProposalId(proposalId);
+       
        items = new ArrayList<PriceProposalItemVO>();
        for(ProjectEntryItemVO projectItem :  projectEntry.getItems()){
     	   item = new PriceProposalItemVO();
@@ -88,11 +87,15 @@ public class PriceProposalServiceImpl extends AbstractService
   public void insertPriceProposal(PriceProposalVO priceProposal){
 	List<PriceProposalItemVO> items = null;
 	List<PriceProposalEntryVO> entries = priceProposal.getEntries();
+	
 	dao.insertPriceProposal(priceProposal);
 	for(PriceProposalEntryVO entry : entries){
 	  items = entry.getItems();
+	  entry.setPriceProposalId(priceProposal.getId());
 	  dao.insertPriceProposalEntry(entry);
+	  
 	  for(PriceProposalItemVO item : items){
+		item.setPriceProposalEntryId(entry.getId());  
 		dao.insertPriceProposalEntryItem(item);
 	  }
 	}  

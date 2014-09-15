@@ -75,5 +75,10 @@ public abstract class AbstractReport {
 	int lengthPix = input.length();
 	return ((555 - lengthPix) / 2) - (lengthPix/2);
   }
-
+  
+  protected double getCenterX(String input, com.pdfjet.Font f){
+	double lengthPix = f.stringWidth(input);
+	
+	return (560 - lengthPix) / 2;
+  }
 }

@@ -77,9 +77,9 @@
 	    function setButtonStatusText(){
 	      var projectStatus = '${project.statusId}';
 		  if(projectStatus == '1'){
-		  	$("#statusButton").html("Enviar a Autorización");
+		  	$(".statusButton").html("Enviar a Autorización");
 		  } else if(projectStatus == '2'){
-		  	$("#statusButton").html("Autorizar");
+		  	$(".statusButton").html("Autorizar");
 		  }
 	    }
 	    
@@ -355,8 +355,8 @@
 						<div>
 							<p></p>							
 							<c:if test="${enableEdition}">
-							  <button class="searchButton" onclick="window.location = 'intTicketDetail_new.html'">Agregar Req. Gral.</button>
-							  <button id="statusButton" class="searchButton" onclick="advanceStatus()"></button>
+	    					  	<button class="searchButton" onclick="window.location = 'intTicketDetail_new.html'">Agregar Req. Gral.</button>
+								<button class="searchButton statusButton" onclick="advanceStatus()"></button>
 							</c:if>
 							<c:if test="${not enableEdition}">
 							   <button class="searchButton" onclick="window.history.back();">Cancelar</button>
@@ -505,7 +505,7 @@
                  	     		       $("#discount_" + entryNumber).val('${entry.discount}');
                  	     		       $("#totalPrice_" + entryNumber).val('${entry.totalPrice}');
                  	     		       $("#comments_" + entryNumber).val('${entry.comments}');
-                 	     		       if('${enableEdition}' == 'true'){
+                 	     		       if('${enableEdition}' == 'false'){
                  	     		    	 $("#entryTypeId_" + entryNumber).prop( "disabled", true );
                    	     		         $("#description_" + entryNumber).prop( "disabled", true );
                    	     		         $("#discount_" + entryNumber).prop( "disabled", true );
@@ -532,7 +532,7 @@
                   	     			             $("#itemDiscount_" + itemNumber).val('${item.discount}');
                   	     			             $("#itemTotalPrice_" + itemNumber).val('${item.totalPrice}');
                   	     			             $("#itemComments_" + itemNumber).val('${item.comments}');
-                  	     			             if('${enableEdition}' == 'true'){
+                  	     			             if('${enableEdition}' == 'false'){
                   	     			            	$("#entryItemTypeId_" + itemNumber).prop( "disabled", true );
                   	     			            	$("#reference_" + itemNumber).prop( "disabled", true );
                   	     			            	$("#referenceId_" + itemNumber).prop( "disabled", true );
@@ -575,7 +575,7 @@
 							<hr>
 							<c:if test="${enableEdition}">
 							  <button class="searchButton" onclick="window.location = 'intTicketDetail_new.html'">Agregar Req. Gral.</button>
-							  <button class="searchButton" onclick="window.location = projectDetailAut.html">Autorizar</button>
+							  <button class="searchButton statusButton" onclick="advanceStatus();">Autorizar</button>
 							</c:if>
 							<c:if test="${not enableEdition}">
 							   <button class="searchButton" onclick="window.history.back();">Cancelar</button>
