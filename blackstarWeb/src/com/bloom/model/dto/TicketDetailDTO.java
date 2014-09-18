@@ -194,7 +194,12 @@ public class TicketDetailDTO {
 		this.evaluation = evaluation;
 	}
 	public Float getDesviation() {
-		return desviation;
+		if(desviation != null && desviation > 0){
+			return desviation;
+		}
+		else{
+			return null;
+		}
 	}
 	public void setDesviation(Float desviation) {
 		this.desviation = desviation;

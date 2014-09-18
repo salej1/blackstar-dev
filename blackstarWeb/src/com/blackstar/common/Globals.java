@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import com.google.api.client.extensions.appengine.datastore.AppEngineDataStoreFactory;
 import com.google.api.client.extensions.appengine.http.UrlFetchTransport;
@@ -62,11 +63,12 @@ public class Globals {
 	  public static final String DEFAULT_TIME_ZONE = "America/Mexico_City";
 	  public static final String DATE_FORMAT_PATTERN = "dd/MM/yyyy hh:mm:ss a";
 	  public static Date getLocalTime(){
-		  Calendar c = Calendar.getInstance(new Locale(DEFAULT_TIME_ZONE));
+		  Calendar c = Calendar.getInstance(TimeZone.getTimeZone(DEFAULT_TIME_ZONE));
 		  return c.getTime();
 	  }
 	  public static String getLocalTimeString(){
 		  SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT_PATTERN);
+		  sdf.setTimeZone(TimeZone.getTimeZone(DEFAULT_TIME_ZONE));
 		  return sdf.format(getLocalTime());
 	  }
 	  

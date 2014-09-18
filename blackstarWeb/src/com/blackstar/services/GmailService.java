@@ -1,5 +1,6 @@
 package com.blackstar.services;
 
+import com.blackstar.common.Globals;
 import com.blackstar.interfaces.IEmailService;
 import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
@@ -21,7 +22,7 @@ import org.springframework.mail.javamail.MimeMessagePreparator;
 public class GmailService implements IEmailService{
 
 	private JavaMailSenderImpl  mailSender;
-	private String defaultFrom;
+	private String defaultFrom = Globals.GPOSAC_DEFAULT_SENDER;
 	
 	public void setDefaultFrom(String defaultFrom) {
 		this.defaultFrom = defaultFrom;
@@ -56,6 +57,7 @@ public class GmailService implements IEmailService{
 		catch (Exception e) 
 		{
 			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
+			e.printStackTrace();
 			//throw new RuntimeException(e);
 		}
 	}
@@ -78,6 +80,7 @@ public class GmailService implements IEmailService{
 			});
 		} catch (Exception e) {
 			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
+			e.printStackTrace();
 			//throw new RuntimeException(e);
 		}
 	}

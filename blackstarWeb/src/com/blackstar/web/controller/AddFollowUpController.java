@@ -120,6 +120,7 @@ public class AddFollowUpController extends AbstractController{
 			
 			return "redirect:" + redirect;
 		} catch (Exception ex) {
+			ex.printStackTrace();
 			Logger.Log(LogLevel.ERROR,
 					Thread.currentThread().getStackTrace()[1].toString(), ex);
 			model.addAttribute("errorDetails", ex.getMessage());
@@ -138,6 +139,7 @@ public static void AssignServiceOrder(int osId, String asignee, String who, Stri
 		SendSOAssignationEmail(osId, asignee, who, message);
 	} catch (Exception e) {
 		Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
+		e.printStackTrace();
 	}
 	finally{
 		da.closeConnection();
@@ -170,6 +172,7 @@ public static void AssignTicket(int ticketId, String asignee, String who, String
 		SendTicketAssignationEmail(ticketId, asignee, who, message);
 	} catch (Exception e) {
 		Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
+		e.printStackTrace();
 	}
 	finally{
 		da.closeConnection();
@@ -204,6 +207,7 @@ private static void SendTicketAssignationEmail(int ticketId, String asignee, Str
 					
 		} catch (Exception e) {
 			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
+			e.printStackTrace();
 		}
 	}
 }
@@ -219,6 +223,7 @@ public static void AssignIssue(Integer issueId, String asignee, String sender){
 		SendIssueAssignationEmail(issueId, asignee, sender);
 	} catch (Exception e) {
 		Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
+		e.printStackTrace();
 	}
 	finally{
 		da.closeConnection();
@@ -306,7 +311,7 @@ private static void SendIssueAssignationEmail(Integer issueId, String asignee, S
 	SendAssignationEmail(asignee, sender, createdBy, timestamp, comment, "I", issue.getReferenceId(), issue.getReferenceNumber());
 }
 
-private static void SendBloomTicketAssignationEmail(Integer ticketId, String asignee, String sender, AssignType type){
+private static void SendBloomTicketAssignationEmail(Integer ticketId, String asignee, String sender, AssignType type, String comment){
 	// Recuperar el ticket
 	List<TicketDetailDTO> rawDetail = internalTicketsDao.getTicketDetail(ticketId);
 	if(rawDetail != null && rawDetail.size() > 0){
@@ -315,7 +320,7 @@ private static void SendBloomTicketAssignationEmail(Integer ticketId, String asi
 		String createdBy = ticket.getCreatedByUsrName();
 		Date created = Globals.getLocalTime();
 		
-		SendAssignationEmail(asignee, sender, createdBy, sdf.format(created), ticket.getDescription(), "R", ticketId, ticket.getTicketNumber(), type);
+		SendAssignationEmail(asignee, sender, createdBy, sdf.format(created), comment, "R", ticketId, ticket.getTicketNumber(), type);
 	}
 	else
 	{
@@ -323,16 +328,17 @@ private static void SendBloomTicketAssignationEmail(Integer ticketId, String asi
 	}
 }
 
-public static void AssignBloomTicket(Integer ticketId, String asignee, String sender){
+public static void AssignBloomTicket(Integer ticketId, String asignee, String sender, String comment){
 BlackstarDataAccess da = new BlackstarDataAccess();
 	
 	try {
 
 		da.executeUpdate(String.format("CALL AssignBloomTicket('%s', '%s', '%s')", ticketId, asignee, sender));
 		
-		SendBloomTicketAssignationEmail(ticketId, asignee, sender, AssignType.Assign);
+		SendBloomTicketAssignationEmail(ticketId, asignee, sender, AssignType.Assign, comment);
 	} catch (Exception e) {
 		Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
+		e.printStackTrace();
 	}
 	finally{
 		da.closeConnection();
@@ -340,14 +346,15 @@ BlackstarDataAccess da = new BlackstarDataAccess();
 }
 
 
-public static void NotifyBloomTicket(Integer ticketId, String who, String sender){
+public static void NotifyBloomTicket(Integer ticketId, String who, String sender, String comment){
 BlackstarDataAccess da = new BlackstarDataAccess();
 	
 	try {
 
-		SendBloomTicketAssignationEmail(ticketId, who, sender, AssignType.Notify);
+		SendBloomTicketAssignationEmail(ticketId, who, sender, AssignType.Notify, comment);
 	} catch (Exception e) {
 		Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
+		e.printStackTrace();
 	}
 	finally{
 		da.closeConnection();

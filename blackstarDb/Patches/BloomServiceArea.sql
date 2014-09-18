@@ -1,0 +1,1 @@
+UPDATE bloomServiceType SET bloomServiceAreaId = 'C' WHERE _id = 13;

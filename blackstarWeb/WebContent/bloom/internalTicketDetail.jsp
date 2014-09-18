@@ -662,11 +662,7 @@
 								<td>Fecha y hora de respuesta</td>
 								<td colspan="3"><input type="text" style="width:95%;" readOnly="true" value="${ticketDetail.responseDateDisplay}"/></td>
 								<td>Desv. fecha compromiso</td>
-								<td><input type="text" style="width:95%;" readOnly="true" 
-									<c:if test="${ticketDetail.desviation > 0}">
-										value="${ticketDetail.desviation}"/>
-									</c:if>
-								</td>
+								<td><input type="text" style="width:95%;" readOnly="true" value="${ticketDetail.desviation}"/></td>
 							</tr>		
 							<tr>
 								<td>Entrega en tiempo</td>
@@ -951,12 +947,12 @@
 							<table>
 								<tbody>
 									<tr>
-										<c:if test="${ticketDetail.userCanAssign ==  true}">
+										<c:if test="${ticketDetail.userCanAssign == true && ticketDetail.statusId < 6}">
 											<td style="width: 100px;">
 												<button class="searchButton" onclick="addSeguimiento(1);">Asignar</button>
 											</td>
 										</c:if>
-										<c:if test="${fn:length(followUps) > 0}">
+										<c:if test="${fn:length(followUps) > 0 && ticketDetail.statusId < 6}">
 											<td style="width: 100px;">
 												<button class="searchButton" onclick="addSeguimiento(3);">Responder</button>
 											</td>

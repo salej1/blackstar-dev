@@ -39,14 +39,8 @@ public class InternalTicketsDaoImpl extends AbstractDAO implements InternalTicke
 
 	private static final String QUERY_TICKETS_PENDIENTES = "CALL getBloomPendingTickets(%d)";
 	private static final String QUERY_TICKETS = "CALL getBloomTickets(%d)";
-
 	private static final String QUERY_HISTORICAL_TICKETS = "CALL GetBloomHistoricalTickets(%d,'%s','%s',%d, '%s')";
-
 	private static final String QUERY_TICKET_NUMBER = "CALL GetNextInternalTicketNumber()";
-
-	private static final String ERROR_CONSULTA = "Error al consultar el catálogo";
-
-	private static final String EMPTY_CONSULTA = "No se encontraron registros";
 
 	public List<TicketDetailDTO> getTicketDetail(Integer ticketId) {
 		StringBuilder sqlBuilder = new StringBuilder(
@@ -207,23 +201,11 @@ public class InternalTicketsDaoImpl extends AbstractDAO implements InternalTicke
 
 		List<InternalTicketBean> listaRegistros = new ArrayList<InternalTicketBean>();
 
-		try {
+		listaRegistros.addAll(getJdbcTemplate().query(
+				String.format(QUERY_TICKETS_PENDIENTES, userId),
+				new InternalTicketMapper()));
 
-			listaRegistros.addAll(getJdbcTemplate().query(
-					String.format(QUERY_TICKETS_PENDIENTES, userId),
-					new InternalTicketMapper()));
-
-			return listaRegistros;
-
-		} catch (EmptyResultDataAccessException e) {
-			Logger.Log(LogLevel.WARNING, EMPTY_CONSULTA, e);
-			listaRegistros = new ArrayList<InternalTicketBean>();
-			return listaRegistros;
-		} catch (DataAccessException e) {
-			System.out.println("Error => " + e);
-			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
-			throw new DAOException(ERROR_CONSULTA, e);
-		}
+		return listaRegistros;
 
 	}
 
@@ -239,23 +221,11 @@ public class InternalTicketsDaoImpl extends AbstractDAO implements InternalTicke
 
 		List<InternalTicketBean> listaRegistros = new ArrayList<InternalTicketBean>();
 
-		try {
+		listaRegistros.addAll(getJdbcTemplate().query(
+				String.format(QUERY_TICKETS, userId),
+				new InternalTicketMapper()));
 
-			listaRegistros.addAll(getJdbcTemplate().query(
-					String.format(QUERY_TICKETS, userId),
-					new InternalTicketMapper()));
-
-			return listaRegistros;
-
-		} catch (EmptyResultDataAccessException e) {
-			Logger.Log(LogLevel.WARNING, EMPTY_CONSULTA, e);
-			listaRegistros = new ArrayList<InternalTicketBean>();
-			return listaRegistros;
-
-		} catch (DataAccessException e) {
-			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
-			throw new DAOException(ERROR_CONSULTA, e);
-		}
+		return listaRegistros;
 
 	}
 
@@ -270,24 +240,13 @@ public class InternalTicketsDaoImpl extends AbstractDAO implements InternalTicke
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		List<InternalTicketBean> listaRegistros = new ArrayList<InternalTicketBean>();
 
-		try {
-
-			listaRegistros.addAll(getJdbcTemplate().query(
-					String.format(QUERY_HISTORICAL_TICKETS, idStatusTicket,
-							createDateStart, createDateEnd, showHidden, user),
-					new InternalTicketMapper()));
-			// listaRegistros.addAll(getJdbcTemplate().query(sq.toString(),new
-			// InternalTicketMapper()));
-			return listaRegistros;
-
-		} catch (EmptyResultDataAccessException e) {
-			Logger.Log(LogLevel.WARNING, EMPTY_CONSULTA, e);
-			listaRegistros = new ArrayList<InternalTicketBean>();
-			return listaRegistros;
-		} catch (DataAccessException e) {
-			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
-			throw new DAOException(ERROR_CONSULTA, e);
-		}
+		listaRegistros.addAll(getJdbcTemplate().query(
+				String.format(QUERY_HISTORICAL_TICKETS, idStatusTicket,
+						createDateStart, createDateEnd, showHidden, user),
+				new InternalTicketMapper()));
+		// listaRegistros.addAll(getJdbcTemplate().query(sq.toString(),new
+		// InternalTicketMapper()));
+		return listaRegistros;
 
 	}
 
@@ -307,78 +266,71 @@ public class InternalTicketsDaoImpl extends AbstractDAO implements InternalTicke
 
 		int idTicket = 0;
 
-		try {
+		Object[] args = new Object[] { ticket.getApplicantUserId(),
+				ticket.getOfficeId(), ticket.getServiceTypeId(),
+				ticket.getStatusId(), ticket.getApplicantAreaId(),
+				ticket.getDueDate(), ticket.getProject(),
+				ticket.getTicketNumber(), ticket.getDescription(),
+				ticket.getCreated(), ticket.getCreatedUserName(),
+				ticket.getCreatedUserEmail(), ticket.getReponseInTime(),
+				
+				
+				ticket.getPurposeVisitVL(),
+				ticket.getPurposeVisitVISAS(),
+				ticket.getDraftCopyDiagramVED(),
+				ticket.getFormProjectVED(),
+				ticket.getObservationsVEPI(),
+				ticket.getDraftCopyPlanVEPI(),
+				ticket.getFormProjectVEPI(),
+				ticket.getObservationsVRCC(),
+				ticket.getCheckListVRCC(),
+				ticket.getFormProjectVRCC(),
+				ticket.getQuestionVPT(),
+				ticket.getObservationsVSA(),
+				ticket.getFormProjectVSA(),
+				ticket.getProductInformationVSP(),
+				ticket.getObservationsISED(),
+				ticket.getDraftCopyPlanISED(),
+				ticket.getObservationsISRC(),
+				ticket.getAttachmentsISRC(),
+				ticket.getApparatusTraceISSM(),
+				ticket.getObservationsISSM(),
+				ticket.getQuestionISPT(),
+				ticket.getTicketISRPR(),
+				ticket.getModelPartISRPR(),
+				ticket.getObservationsISRPR(),
+				ticket.getProductInformationISSPC(),
+				ticket.getPositionPGCAS(),
+				ticket.getCollaboratorPGCAS(),
+				ticket.getJustificationPGCAS(),
+				ticket.getSalaryPGCAS(),
+				ticket.getPositionPGCCP(),
+				ticket.getCommentsPGCCP(),
+				ticket.getDevelopmentPlanPGCCP(),
+				ticket.getTargetPGCCP(),
+				ticket.getSalaryPGCCP(),
+				ticket.getPositionPGCNC(),
+				ticket.getDevelopmentPlanPGCNC(),
+				ticket.getTargetPGCNC(),
+				ticket.getSalaryPGCNC(),
+				ticket.getJustificationPGCNC(),
+				ticket.getPositionPGCF(),
+				ticket.getCollaboratorPGCF(),
+				ticket.getJustificationPGCF(),
+				ticket.getPositionPGCAA(),
+				ticket.getCollaboratorPGCAA(),
+				ticket.getJustificationPGCAA(),
+				ticket.getRequisitionFormatGRC(),
+				ticket.getLinkDocumentGM(),
+				ticket.getSuggestionGSM(),
+				ticket.getDocumentCodeGSM(),
+				ticket.getJustificationGSM(),
+				ticket.getProblemDescriptionGPTR(),
+				ticket.getDesiredDate()
+		};
 
-			Object[] args = new Object[] { ticket.getApplicantUserId(),
-					ticket.getOfficeId(), ticket.getServiceTypeId(),
-					ticket.getStatusId(), ticket.getApplicantAreaId(),
-					ticket.getDueDate(), ticket.getProject(),
-					ticket.getTicketNumber(), ticket.getDescription(),
-					ticket.getCreated(), ticket.getCreatedUserName(),
-					ticket.getCreatedUserEmail(), ticket.getReponseInTime(),
-					
-					
-					ticket.getPurposeVisitVL(),
-					ticket.getPurposeVisitVISAS(),
-					ticket.getDraftCopyDiagramVED(),
-					ticket.getFormProjectVED(),
-					ticket.getObservationsVEPI(),
-					ticket.getDraftCopyPlanVEPI(),
-					ticket.getFormProjectVEPI(),
-					ticket.getObservationsVRCC(),
-					ticket.getCheckListVRCC(),
-					ticket.getFormProjectVRCC(),
-					ticket.getQuestionVPT(),
-					ticket.getObservationsVSA(),
-					ticket.getFormProjectVSA(),
-					ticket.getProductInformationVSP(),
-					ticket.getObservationsISED(),
-					ticket.getDraftCopyPlanISED(),
-					ticket.getObservationsISRC(),
-					ticket.getAttachmentsISRC(),
-					ticket.getApparatusTraceISSM(),
-					ticket.getObservationsISSM(),
-					ticket.getQuestionISPT(),
-					ticket.getTicketISRPR(),
-					ticket.getModelPartISRPR(),
-					ticket.getObservationsISRPR(),
-					ticket.getProductInformationISSPC(),
-					ticket.getPositionPGCAS(),
-					ticket.getCollaboratorPGCAS(),
-					ticket.getJustificationPGCAS(),
-					ticket.getSalaryPGCAS(),
-					ticket.getPositionPGCCP(),
-					ticket.getCommentsPGCCP(),
-					ticket.getDevelopmentPlanPGCCP(),
-					ticket.getTargetPGCCP(),
-					ticket.getSalaryPGCCP(),
-					ticket.getPositionPGCNC(),
-					ticket.getDevelopmentPlanPGCNC(),
-					ticket.getTargetPGCNC(),
-					ticket.getSalaryPGCNC(),
-					ticket.getJustificationPGCNC(),
-					ticket.getPositionPGCF(),
-					ticket.getCollaboratorPGCF(),
-					ticket.getJustificationPGCF(),
-					ticket.getPositionPGCAA(),
-					ticket.getCollaboratorPGCAA(),
-					ticket.getJustificationPGCAA(),
-					ticket.getRequisitionFormatGRC(),
-					ticket.getLinkDocumentGM(),
-					ticket.getSuggestionGSM(),
-					ticket.getDocumentCodeGSM(),
-					ticket.getJustificationGSM(),
-					ticket.getProblemDescriptionGPTR(),
-					ticket.getDesiredDate()
-};
-
-			idTicket = getJdbcTemplate().queryForInt(sqlBuilder.toString(),
-					args);
-
-		} catch (Exception e) {
-			Logger.Log(LogLevel.WARNING, EMPTY_CONSULTA, e);
-			throw new DAOException("Error en DAO:"+e.getMessage());
-		}
+		idTicket = getJdbcTemplate().queryForInt(sqlBuilder.toString(),
+				args);
 
 		return (long) idTicket;
 	}
@@ -393,47 +345,16 @@ public class InternalTicketsDaoImpl extends AbstractDAO implements InternalTicke
 
 		int idTicket = 0;
 
-		try {
+		Object[] args = new Object[] { document.getTicketId(),
+				document.getDeliverableId(), document.getDelivered(),
+				document.getDeliverableDate() };
 
-			Object[] args = new Object[] { document.getTicketId(),
-					document.getDeliverableId(), document.getDelivered(),
-					document.getDeliverableDate() };
-
-			idTicket = getJdbcTemplate().queryForInt(sqlBuilder.toString(),
-					args);
-
-		} catch (Exception e) {
-			Logger.Log(LogLevel.WARNING, EMPTY_CONSULTA, e);
-			throw new DAOException("Error en DAO:"+e.getMessage());
-		}
+		idTicket = getJdbcTemplate().queryForInt(sqlBuilder.toString(),
+				args);
 
 		return (long) idTicket;
 	}
 
-	@Override
-	public Long registrarMiembroTicket(TicketTeamBean teamMember)
-			throws DAOException {
-
-		StringBuilder sqlBuilder = new StringBuilder();
-
-		sqlBuilder.append("CALL AddMemberTicketTeam(?,?,?,?)");
-
-		int idTeamMemberTicket = 0;
-
-		try {
-
-			Object[] args = new Object[] { teamMember.getIdTicket(), teamMember.getWorkerRoleId(), teamMember.getEmail(), teamMember.getUserGroup() };
-
-			idTeamMemberTicket = getJdbcTemplate().queryForInt(sqlBuilder.toString(), args);
-
-		} catch (Exception e) {
-			Logger.Log(LogLevel.WARNING, EMPTY_CONSULTA, e);
-			throw new DAOException("Error en DAO:"+e.getMessage());
-		}
-
-		return (long) idTeamMemberTicket;
-	}
-	
 	@Override
 	public Integer userCanAssign(Integer ticketId, String currentUser){
 		String sql = "CALL UserCanAssignBloomTicket(?,?)";

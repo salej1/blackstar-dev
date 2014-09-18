@@ -6271,7 +6271,7 @@ BEGIN
 		stackTrace
 	)
 	SELECT 
-		pLevel, NOW(), pError, pSender, pStackTrace;
+		pLevel, CONVERT_TZ(now(),'+00:00','-5:00'), pError, pSender, pStackTrace;
 	
 END$$
 
@@ -6673,12 +6673,33 @@ DROP PROCEDURE blackstarDb.upgradeBloomSchema;
 --                        Se agrega AssignBloomTicket
 --                        Se agrega UserCanAssignBloomTicket
 -- ------------------------------------------------------------------------------
+-- 30   16/09/2014  SAG   Se agrega:
+--                        Se agrega bloomTicketAutoclose
+-- ------------------------------------------------------------------------------
 
 use blackstarDb;
 
 
 DELIMITER $$
 
+
+-- -----------------------------------------------------------------------------
+  -- blackstarDb.bloomTicketAutoclose
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.bloomTicketAutoclose$$
+CREATE PROCEDURE blackstarDb.bloomTicketAutoclose()
+BEGIN
+  
+  UPDATE bloomTicket SET 
+    statusId = 6,
+    modified = CONVERT_TZ(now(),'+00:00','-5:00'),
+    modifiedBy = 'bloomTicketAutoclose',
+    modifiedByUsr = 'Jobs'
+  WHERE serviceTypeId NOT IN (13, 15)
+    AND statusId = 5
+    AND responseDate < DATE_ADD(now(), INTERVAL -2 DAY);
+
+END$$
 
 -- -----------------------------------------------------------------------------
   -- blackstarDb.UserCanAssignBloomTicket
@@ -6704,6 +6725,7 @@ CREATE PROCEDURE blackstarDb.AssignBloomTicket(pTicketId INT, pAsignee VARCHAR(1
 BEGIN
   UPDATE bloomTicket SET 
     asignee = pAsignee,
+    statusId = 1,
     modified = CONVERT_TZ(now(),'+00:00','-5:00'),
     modifiedBy = 'AssignBloomTicket',
     modifiedByUsr = pUser
@@ -6796,7 +6818,7 @@ DROP PROCEDURE IF EXISTS blackstarDb.AddMemberTicketTeam$$
 CREATE PROCEDURE blackstarDb.`AddMemberTicketTeam`(pTicketId INTEGER, pWorkerRoleTypeId INTEGER, pblackstarUser VARCHAR(50), pUserGroup VARCHAR(50))
 BEGIN
 
-SELECT @blackstarUserId:= blackstarUserId FROM blackstarDb.blackstarUser WHERE email = pblackstarUser;
+SET @blackstarUserId = (SELECT blackstarUserId FROM blackstarDb.blackstarUser WHERE email = pblackstarUser);
 
 IF NOT EXISTS (SELECT * FROM bloomTicketTeam WHERE ticketId = pTicketId AND blackstarUserId = @blackstarUserId) THEN
     INSERT INTO blackstarDb.bloomTicketTeam(ticketId, workerRoleTypeId, blackstarUserId, userGroup, assignedDate)

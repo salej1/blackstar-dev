@@ -37,7 +37,7 @@ BEGIN
 		stackTrace
 	)
 	SELECT 
-		pLevel, NOW(), pError, pSender, pStackTrace;
+		pLevel, CONVERT_TZ(now(),'+00:00','-5:00'), pError, pSender, pStackTrace;
 	
 END$$
 

@@ -75,16 +75,6 @@ public interface InternalTicketsDao {
   public List<PendingAppointmentsDTO> getPendingAppointments();
   public List<PendingSurveysDTO> getPendingSurveys();
 
-
-	/**
-	 * Guardar miembro del tickets
-	 * @param teamMember
-	 * @return
-	 * @throws DAOException
-	 */
-	public Long registrarMiembroTicket(TicketTeamBean teamMember) throws DAOException;
-
-
 	/**
 	 * guardar deliverable  trace
 	 * @param document

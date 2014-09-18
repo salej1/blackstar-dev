@@ -3,8 +3,8 @@ DELIMITER $$
 DROP PROCEDURE IF EXISTS blackstarDb.DeleteServiceOrder$$
 CREATE PROCEDURE blackstarDb.DeleteServiceOrder()
 BEGIN
-	SELECT @pServiceOrderNumber:= 'UPS-00061-e';
-	SELECT @id:= serviceOrderId FROM blackstarDb.serviceOrder WHERE serviceOrderNumber = @pServiceOrderNumber;
+	SET @pServiceOrderNumber = 'OS-05901';
+	SET @id = (SELECT serviceOrderId FROM blackstarDb.serviceOrder WHERE serviceOrderNumber = @pServiceOrderNumber);
 
 	IF(@id IS NOT NULL) THEN
 		-- ticket
@@ -24,7 +24,7 @@ BEGIN
 
 		-- bb
 		IF left(@pServiceOrderNumber, 2) = 'BB' THEN
-			SELECT @bbId:= bbServiceId FROM blackstarDb.bbService WHERE serviceOrderId = @id;
+			SET @bbId = (SELECT bbServiceId FROM blackstarDb.bbService WHERE serviceOrderId = @id);
 
 			DELETE FROM blackstarDb.bbCellService WHERE bbServiceId = @bbId;
 			DELETE FROM blackstarDb.bbService WHERE bbServiceId = @bbId;
@@ -32,7 +32,7 @@ BEGIN
 
 		-- ep
 		IF left(@pServiceOrderNumber, 2) = 'PE' THEN
-			SELECT @peId:= epServiceId FROM blackstarDb.epService WHERE serviceOrderId = @id;
+			SET @peId = (SELECT epServiceId FROM blackstarDb.epService WHERE serviceOrderId = @id);
 
 			DELETE FROM blackstarDb.epServiceDynamicTest WHERE epServiceId = @peId;
 			DELETE FROM blackstarDb.epServiceLectures WHERE epServiceId = @peId;
@@ -46,7 +46,7 @@ BEGIN
 
 		-- ups
 		IF left(@pServiceOrderNumber, 3) = 'UPS' THEN
-			SELECT @upsId:= upsServiceId FROM blackstarDb.upsService WHERE serviceOrderId = @id;
+			SET @upsId = (SELECT upsServiceId FROM blackstarDb.upsService WHERE serviceOrderId = @id);
 
 			DELETE FROM blackstarDb.upsServiceBatteryBank WHERE upsServiceId = @upsId;
 			DELETE FROM blackstarDb.upsServiceGeneralTest WHERE upsServiceId = @upsId;
@@ -54,6 +54,10 @@ BEGIN
 			DELETE FROM blackstarDb.upsService WHERE upsServiceId = @upsId;
 		END IF;
 
+		-- plain
+		IF left(@pServiceOrderNumber, 2) = 'OS' THEN
+			DELETE FROM blackstarDb.plainService WHERE serviceOrderId = @id;
+		END IF;
 		-- serviceOrder
 		DELETE FROM blackstarDb.serviceOrder WHERE serviceOrderId = @id;
 	END IF;

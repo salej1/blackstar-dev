@@ -101,19 +101,12 @@ public class InternalTicketsController extends AbstractController {
 				System.out.println("Registros => " + registros.size());
 			}
 
-		} catch (ServiceException e) {
-			e.printStackTrace();
-			Logger.Log(LogLevel.ERROR, e.getMessage(), e);
-
-			response.setEstatus("error");
-			response.setMensaje(e.getMessage());
 		} catch (Exception e) {
             e.printStackTrace();
-			Logger.Log(LogLevel.ERROR, e.getMessage(), e);
+			Logger.Log(LogLevel.ERROR,e.getStackTrace()[0].toString(), e);
 
 			response.setEstatus("error");
-			response
-					.setMensaje("Error al obtener tickets internos pendientes. Por favor intente m\u00e1s tarde.");
+			response.setMensaje("Error al obtener tickets internos pendientes. Por favor intente m\u00e1s tarde.");
 		}
 
 		return response;
@@ -152,19 +145,12 @@ public class InternalTicketsController extends AbstractController {
 				response.setMensaje(resumen);
 			}
 
-		} catch (ServiceException e) {
-			e.printStackTrace();
-			Logger.Log(LogLevel.ERROR, e.getMessage(), e);
-
-			response.setEstatus("error");
-			response.setMensaje(e.getMessage());
 		} catch (Exception e) {
 			e.printStackTrace();
-			Logger.Log(LogLevel.ERROR, e.getMessage(), e);
+			Logger.Log(LogLevel.ERROR,e.getStackTrace()[0].toString(), e);
 
 			response.setEstatus("error");
-			response
-					.setMensaje("Error al obtener tickets internos pendientes. Por favor intente m\u00e1s tarde.");
+			response.setMensaje("Error al obtener tickets internos pendientes. Por favor intente m\u00e1s tarde.");
 		}
 
 		return response;
@@ -318,19 +304,12 @@ public class InternalTicketsController extends AbstractController {
 				response.setMensaje(resumen);
 			}
 
-		} catch (ServiceException e) {
-			e.printStackTrace();
-			Logger.Log(LogLevel.ERROR, e.getMessage(), e);
-
-			response.setEstatus("error");
-			response.setMensaje(e.getMessage());
 		} catch (Exception e) {
 			e.printStackTrace();
-			Logger.Log(LogLevel.ERROR, e.getMessage(), e);
+			Logger.Log(LogLevel.ERROR,e.getStackTrace()[0].toString(), e);
 
 			response.setEstatus("error");
-			response
-					.setMensaje("Error al obtener historico tickets internos pendientes. Por favor intente m\u00e1s tarde.");
+			response.setMensaje("Error al obtener historico tickets internos pendientes. Por favor intente m\u00e1s tarde.");
 		}
 
 		return response;
@@ -356,7 +335,7 @@ public class InternalTicketsController extends AbstractController {
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			Logger.Log(LogLevel.ERROR, e.getMessage(), e);
+			Logger.Log(LogLevel.ERROR,e.getStackTrace()[0].toString(), e);
 		}
 
 		return "bloom/bloomNewInternalTicket";
@@ -531,14 +510,11 @@ public class InternalTicketsController extends AbstractController {
 			response.setEstatus("ok");
 			response.setMensaje("La requisici&oacute;n se guard&oacute; con &eacute;xito");
 
-		} catch (ServiceException se) {
-			response.setEstatus("error");
-			response.setMensaje(se.getMessage());
-			Logger.Log(LogLevel.ERROR, se.getMessage(), se);
 		} catch (Exception e) {
+			e.printStackTrace();
 			response.setEstatus("error");
-			response.setMensaje("Error al guardar atenci&oacute;n");
-			Logger.Log(LogLevel.ERROR, e.getMessage(), e);
+			response.setMensaje("Ocurrio un error al guardar la requisici&oacute;n");
+			Logger.Log(LogLevel.ERROR,e.getStackTrace()[0].toString(), e);
 		}
 
 		return response;

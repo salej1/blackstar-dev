@@ -19,6 +19,9 @@
 -- --   --------   -------  ----------------------------------------------------
 -- 6	09/09/2014	SAG 	Se establece SAC600 como inicio secuencia de requisiciones
 -- -----------------------------------------------------------------------------
+-- 7	17/09/2014	SAG 	Se establecen tiempos Auto-close
+-- -----------------------------------------------------------------------------
+
 use blackstarDb;
 
 
@@ -27,6 +30,12 @@ DELIMITER $$
 DROP PROCEDURE IF EXISTS blackstarDb.updateDataBloom$$
 CREATE PROCEDURE blackstarDb.updateDataBloom()
 BEGIN
+
+-- Tiempos auto-close
+UPDATE bloomServiceType SET
+	autoClose = 2
+WHERE _id NOT IN (13, 15);
+
 -- Estableciendo contador inicial para Requisiciones
 IF(SELECT sequenceNumber FROM blackstarDb.sequence WHERE sequenceTypeId='I') < 600 THEN
 	UPDATE blackstarDb.sequence SET sequenceNumber = 600 WHERE sequenceTypeId='I';

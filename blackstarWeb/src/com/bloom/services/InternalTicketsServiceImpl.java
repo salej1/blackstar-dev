@@ -50,70 +50,25 @@ public class InternalTicketsServiceImpl extends AbstractService
 
     @Override
     public List<InternalTicketBean> getPendingTickets(Long userId) throws ServiceException {
-    	
-        try {
-        	return getInternalTicketsDao().getPendingTickets(userId);
-            
-        } catch (DAOException e) {
-            
-        	//LOGGER.error(ERROR_CONSULTA_CAT, e);
-            
-            throw new ServiceException("Error al obtener tickets", e);
-        }
+    	return getInternalTicketsDao().getPendingTickets(userId);
     }
     
     
     @Override
     public List<InternalTicketBean> getTickets(Long userId) throws ServiceException {
-    	
-        try {
-        	return getInternalTicketsDao().getTickets(userId);
-            
-        } catch (DAOException e) {
-        	System.out.println("Error => " + e);
-        	//LOGGER.error(ERROR_CONSULTA_CAT, e);
-            
-            throw new ServiceException("Error al obtener tickets", e);
-        }
+    	return getInternalTicketsDao().getTickets(userId);
     }
 
     @Override
     public List<InternalTicketBean> getHistoricalTickets(String startCreationDateTicket, String endCreationDateTicket, Integer idStatusTicket, Integer showHidden, String user) throws ServiceException {
-    	
-    	//startCreationDateTicket = DataTypeUtil.transformDateFormat(startCreationDateTicket,DataTypeUtil.MIN_TIME);
-    	//endCreationDateTicket = DataTypeUtil.transformDateFormat(endCreationDateTicket,DataTypeUtil.MAX_TIME);
-    	
-        try {
-        	return getInternalTicketsDao().getHistoricalTickets(startCreationDateTicket,endCreationDateTicket,idStatusTicket, showHidden, user);
-            
-        } catch (DAOException e) {
-            
-        	//LOGGER.error(ERROR_CONSULTA_CAT, e);
-            
-            throw new ServiceException("Error al obtener el historico tickets", e);
-        }
+    	return getInternalTicketsDao().getHistoricalTickets(startCreationDateTicket,endCreationDateTicket,idStatusTicket, showHidden, user);
     }
-
-    
-
     
     @Override
     public String generarTicketNumber() throws ServiceException {
-    	
-        try {
-        	return getInternalTicketsDao().generarTicketNumber();
-            
-        } catch (DAOException e) {
-            
-        	//LOGGER.error(ERROR_CONSULTA_CAT, e);
-            
-            throw new ServiceException("Error al obtener tickets", e);
-        }
+    	return getInternalTicketsDao().generarTicketNumber();
     }
 
-
-    
-    
     @Override
     public void validarNuevoTicket(InternalTicketBean ticket) throws ServiceException {
     	
@@ -140,65 +95,61 @@ public class InternalTicketsServiceImpl extends AbstractService
     	
     	List<TicketTeamBean> miembros= new ArrayList<TicketTeamBean>();
     	
-        try {
-        	Long idTicket= getInternalTicketsDao().registrarNuevoTicket(ticket);
+    	Long idTicket= getInternalTicketsDao().registrarNuevoTicket(ticket);
 
-            if (idTicket > 0) {
-                
-            	//El creador del ticket entra con rol colaborador (2)
-            	miembros.add(
-            			new TicketTeamBean(idTicket, 2L, ticket.getCreatedUserId(),ticket.getCreatedUserEmail(),ticket.getCreatedUserName(), "creator"));
-            	
-            	//obtener coordinadores
-            	//miebrosDtos=catalogInternalTicketsDao.getEmployeesByGroup("sysCoordinador");
-            	
-            	//obtenemos la lista de usuarios de enterados para bloomTicketTeam
-            	teamDto = catalogInternalTicketsDao.getAdviceUsers(ticket.getApplicantAreaId(), ticket.getServiceTypeId());
-            	
-            	for(AdvisedUserDTO teamM : teamDto){
+    	if (idTicket > 0) {
 
-            		miembros.add(new TicketTeamBean(
-            				idTicket,
-            				(long)teamM.getWorkerRoleTypeId(), 
-            				(long)teamM.getId(),
-            				teamM.getEmail(),
-            				teamM.getName(),
-            				teamM.getUserGroup()));
-            		
-            	}
-            	
-            	
-            	for(TicketTeamBean miembro:miembros){
-                	//registrar bloomTicketTeam  Responsables
-                	getInternalTicketsDao().registrarMiembroTicket(miembro);
-            	}
-            	
-            	//registrar bloomDeliverableTrace. Documentos
-            	doctos=catalogInternalTicketsDao.consultarDocumentosPorServicio(ticket.getServiceTypeId());
-            	DeliverableTraceBean document;
-            	for(CatalogoBean<Integer> doc:doctos){
-            		
-            		document = new DeliverableTraceBean(idTicket,(long)doc.getId(),0,new Date());
-            		
-            		getInternalTicketsDao().registrarDocumentTrace(document);
-            	}
-            	
-            	
-            	//Funcionalidad para el envio de correo a los incolucrados:
-            	//Creador del ticket y usuarios coordiandores.
-            	for(TicketTeamBean miembro:miembros){
-            		//enviar correos a los involucrados.
-            		if(miembro.getWorkerRoleId() == 1){
-            			//AddFollowUpController.AssignBloomTicket(idTicket.intValue(), miembro.getEmail(), ticket.getCreatedUserEmail());
-            		}
-            		else{
-            			AddFollowUpController.NotifyBloomTicket(idTicket.intValue(), miembro.getEmail(), ticket.getCreatedUserEmail());
-            		}
-            	}
-            }
-        } catch (DAOException ex) {
-            throw new ServiceException("No se pudo registrar requisicion ");
-        }
+    		//El creador del ticket entra con rol colaborador (2)
+    		miembros.add(
+    				new TicketTeamBean(idTicket, 2L, ticket.getCreatedUserId(),ticket.getCreatedUserEmail(),ticket.getCreatedUserName(), "creator"));
+
+    		//obtener coordinadores
+    		//miebrosDtos=catalogInternalTicketsDao.getEmployeesByGroup("sysCoordinador");
+
+    		//obtenemos la lista de usuarios de enterados para bloomTicketTeam
+    		teamDto = catalogInternalTicketsDao.getAdviceUsers(ticket.getApplicantAreaId(), ticket.getServiceTypeId());
+
+    		for(AdvisedUserDTO teamM : teamDto){
+
+    			miembros.add(new TicketTeamBean(
+    					idTicket,
+    					(long)teamM.getWorkerRoleTypeId(), 
+    					(long)teamM.getId(),
+    					teamM.getEmail(),
+    					teamM.getName(),
+    					teamM.getUserGroup()));
+
+    		}
+
+
+    		for(TicketTeamBean miembro:miembros){
+    			//registrar bloomTicketTeam  Responsables
+    			getInternalTicketsDao().addTicketTeam(idTicket.intValue(), miembro.getWorkerRoleId().intValue(), miembro.getEmail(), miembro.getUserGroup());
+    		}
+
+    		//registrar bloomDeliverableTrace. Documentos
+    		doctos=catalogInternalTicketsDao.consultarDocumentosPorServicio(ticket.getServiceTypeId());
+    		DeliverableTraceBean document;
+    		for(CatalogoBean<Integer> doc:doctos){
+
+    			document = new DeliverableTraceBean(idTicket,(long)doc.getId(),0,new Date());
+
+    			getInternalTicketsDao().registrarDocumentTrace(document);
+    		}
+
+
+    		//Funcionalidad para el envio de correo a los incolucrados:
+    		//Creador del ticket y usuarios coordiandores.
+    		for(TicketTeamBean miembro:miembros){
+    			//enviar correos a los involucrados.
+    			if(miembro.getWorkerRoleId() == 1){
+    				//AddFollowUpController.AssignBloomTicket(idTicket.intValue(), miembro.getEmail(), ticket.getCreatedUserEmail());
+    			}
+    			else{
+    				AddFollowUpController.NotifyBloomTicket(idTicket.intValue(), miembro.getEmail(), ticket.getCreatedUserEmail(), ticket.getDescription());
+    			}
+    		}
+    	}
     }
    
  
@@ -244,7 +195,7 @@ public class InternalTicketsServiceImpl extends AbstractService
 
 	  if(asignee != null && asignee != null && !asignee.equals("")){
 		  addTicketTeam(ticketId, 2, asignee, "followUp");
-		  AddFollowUpController.AssignBloomTicket(ticketId, asignee, sender);
+		  AddFollowUpController.AssignBloomTicket(ticketId, asignee, sender, comment);
 	  }
   }
   
@@ -317,12 +268,12 @@ public class InternalTicketsServiceImpl extends AbstractService
 
 				  String subject = "Requisición " + ticket.getTicketNumber() + " atendida";
 				  StringBuilder bodySb = new StringBuilder();
-				  String ticketLink = String.format("/bloom/ticketDetail/show.do?ticketId=%s'>%s</a>", ticket.get_id(), ticket.getTicketNumber());
-				  String surveyLink = String.format("", ticket.get_id());
+				  String ticketLink = String.format("<a href='%s/bloom/ticketDetail/show.do?ticketId=%s'>%s</a>", Globals.GOOGLE_CONTEXT_URL, ticket.get_id(), ticket.getTicketNumber());
+				  String surveyLink = String.format("<a href='%s/bloom/survey/create.do?ticketNumber=%s'>Aplicar encuesta</a>", Globals.GOOGLE_CONTEXT_URL, ticket.getTicketNumber());
 
 				  bodySb.append("<img src='" + Globals.GPOSAC_LOGO_DEFAULT_URL + "'>");
 				  bodySb.append("<div style='font-family:sans-serif;margin-left:50px;'>");
-				  bodySb.append("<h3 >Requisución atendida</h3>");
+				  bodySb.append("<h3 >Requisición atendida</h3>");
 				  bodySb.append("<p>La requisición  ha sido marcada como resuelta</p>");
 				  bodySb.append("<br>Resuelto por: " + sender);
 				  bodySb.append("<br>Fecha: " + timeStamp);
