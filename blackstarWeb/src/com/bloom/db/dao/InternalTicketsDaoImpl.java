@@ -154,6 +154,7 @@ public class InternalTicketsDaoImpl extends AbstractDAO implements InternalTicke
 			ticket.setId(rs.getLong("id"));
 			ticket.setTicketNumber(rs.getString("ticketNumber"));
 			ticket.setCreated(rs.getDate("created"));
+			ticket.setCreatedUserName(rs.getString("createdUserName"));
 			ticket.setPetitionerArea(rs.getString("areaName"));
 			ticket.setPetitionerAreaId(rs.getInt("applicantAreaId"));
 			ticket.setServiceTypeDescr(rs.getString("serviceName"));

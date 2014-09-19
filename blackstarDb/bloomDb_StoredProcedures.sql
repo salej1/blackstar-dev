@@ -213,7 +213,7 @@ IF NOT EXISTS (SELECT * FROM bloomTicketTeam WHERE ticketId = pTicketId AND blac
 ELSE
    UPDATE blackstarDb.bloomTicketTeam SET 
       assignedDate = CONVERT_TZ(now(),'+00:00','-5:00'), 
-      workerRoleTypeId = pWorkerRoleTypeId
+      workerRoleTypeId = IF(workerRoleTypeId < pWorkerRoleTypeId, workerRoleTypeId, pWorkerRoleTypeId)
    WHERE ticketId = pTicketId 
     AND blackstarUserId = @blackstarUserId;
 END IF;
@@ -341,6 +341,7 @@ BEGIN
     ti.applicantAreaId, 
     ti.dueDate, 
     ti.desiredDate, 
+    bu.name AS createdUserName,
     ba.name as areaName,
     ti.serviceTypeId,
     st.name as serviceName,
@@ -358,6 +359,7 @@ BEGIN
        INNER JOIN office o on (o.officeId = ti.officeId)
        INNER JOIN bloomStatusType s on (s._id = ti.statusId)
        INNER JOIN bloomServiceArea a ON a.bloomServiceAreaId = st.bloomServiceAreaId
+       INNER JOIN blackstarUser bu ON ti.createdByUsr = bu.email
   WHERE tm.blackstarUserId = UserId 
       AND tm.workerRoleTypeId = 1
       AND ti.statusId < 6 
@@ -669,6 +671,10 @@ WHERE _ID = pTicketId;
 
 END$$
 
+
+-- -----------------------------------------------------------------------------
+  -- blackstarDb.GetbloomTicketByUserKPI
+-- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetbloomTicketByUserKPI$$
 CREATE PROCEDURE blackstarDb.`GetbloomTicketByUserKPI`()
 BEGIN
@@ -683,6 +689,9 @@ ORDER BY counter desc;
 END$$
 
 
+-- -----------------------------------------------------------------------------
+  -- blackstarDb.GetbloomTicketByOfficeKPI
+-- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetbloomTicketByOfficeKPI$$
 CREATE PROCEDURE blackstarDb.`GetbloomTicketByOfficeKPI`()
 BEGIN
@@ -695,6 +704,10 @@ ORDER BY counter desc;
 
 END$$
 
+
+-- -----------------------------------------------------------------------------
+  -- blackstarDb.GetbloomTicketByAreaKPI
+-- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetbloomTicketByAreaKPI$$
 CREATE PROCEDURE blackstarDb.`GetbloomTicketByAreaKPI`()
 BEGIN
@@ -706,6 +719,9 @@ ORDER BY counter desc;
 END$$
 
 
+-- -----------------------------------------------------------------------------
+  -- blackstarDb.GetbloomTicketByDayKPI
+-- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetbloomTicketByDayKPI$$
 CREATE PROCEDURE blackstarDb.`GetbloomTicketByDayKPI`()
 BEGIN
@@ -714,6 +730,10 @@ BEGIN
 GROUP BY DATE_FORMAT(created,'%d/%m/%Y');
 END$$
 
+
+-- -----------------------------------------------------------------------------
+  -- blackstarDb.GetbloomTicketByProjectKPI
+-- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetbloomTicketByProjectKPI$$
 CREATE PROCEDURE blackstarDb.`GetbloomTicketByProjectKPI`()
 BEGIN
@@ -728,6 +748,10 @@ ORDER BY counter DESC
 LIMIT 5;
 END$$
 
+
+-- -----------------------------------------------------------------------------
+  -- blackstarDb.GetbloomTicketByServiceAreaKPI
+-- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetbloomTicketByServiceAreaKPI$$
 CREATE PROCEDURE blackstarDb.`GetbloomTicketByServiceAreaKPI`()
 BEGIN
@@ -738,6 +762,10 @@ WHERE bt.serviceTypeId = st._id
 GROUP BY bt.applicantAreaId, bt.serviceTypeId;
 END$$
 
+
+-- -----------------------------------------------------------------------------
+  -- blackstarDb.GetbloomTicketDeliverable
+-- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetbloomTicketDeliverable$$
 CREATE PROCEDURE blackstarDb.`GetbloomTicketDeliverable`(pTicketId INTEGER)
 BEGIN
@@ -754,6 +782,10 @@ BEGIN
 
 END$$ 
 
+
+-- -----------------------------------------------------------------------------
+  -- blackstarDb.GetbloomSurveyTable
+-- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetbloomSurveyTable$$
 CREATE PROCEDURE blackstarDb.`GetbloomSurveyTable`(userId INTEGER)
 BEGIN
@@ -774,6 +806,10 @@ BEGIN
     AND workerRoleTypeId = 1;
 END$$
 
+
+-- -----------------------------------------------------------------------------
+  -- blackstarDb.GetBloomPendingSurveyTable
+-- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetBloomPendingSurveyTable$$
 CREATE PROCEDURE blackstarDb.`GetBloomPendingSurveyTable`(userId INTEGER)
 BEGIN
@@ -795,6 +831,10 @@ WHERE bu2.blackstarUserId = userId
 GROUP BY bt._id;
 END$$
 
+
+-- -----------------------------------------------------------------------------
+  -- blackstarDb.InsertbloomSurvey
+-- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.InsertbloomSurvey$$
 CREATE PROCEDURE blackstarDb.`InsertbloomSurvey`(pTicketId INTEGER, pEvaluation INTEGER, pComments TEXT, pCreated DATE)
 BEGIN
@@ -802,6 +842,10 @@ BEGIN
   VALUES(pTicketId, pEvaluation, pComments, pCreated);
 END$$
 
+
+-- -----------------------------------------------------------------------------
+  -- blackstarDb.GetBloomPendingSurveys
+-- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetBloomPendingSurveys$$
 CREATE PROCEDURE blackstarDb.`GetBloomPendingSurveys`()
 BEGIN
@@ -1202,6 +1246,7 @@ BEGIN
       ti._id AS id, 
       ti.ticketNumber, 
       ti.created AS created,
+      bu.name AS createdUserName,
       ti.applicantAreaId, 
       ba.name AS areaName, 
       ti.serviceTypeId, 
@@ -1221,6 +1266,7 @@ BEGIN
       INNER JOIN office o on (o.officeId = ti.officeId) 
       INNER JOIN bloomStatusType s on (s._id = ti.statusId)
       INNER JOIN bloomServiceArea a ON st.bloomServiceAreaId = a.bloomServiceAreaId 
+      INNER JOIN blackstarUser bu ON ti.createdByUsr = bu.email
     WHERE ti.created >= startCreationDate -- AND ti.created <= endCreationDate
       AND (IFNULL(st.hidden, 0) <= showHidden  OR ti.createdBy = pUser)
     ORDER BY ti.created DESC;
@@ -1229,6 +1275,7 @@ BEGIN
       ti._id AS id, 
       ti.ticketNumber, 
       ti.created AS created,
+      bu.name AS createdUserName,
       ti.applicantAreaId, 
       ba.name AS areaName, 
       ti.serviceTypeId, 
@@ -1248,6 +1295,7 @@ BEGIN
       INNER JOIN office o on (o.officeId = ti.officeId) 
       INNER JOIN bloomStatusType s on (s._id = ti.statusId) 
       INNER JOIN bloomServiceArea a ON st.bloomServiceAreaId = a.bloomServiceAreaId 
+      INNER JOIN blackstarUser bu ON ti.createdByUsr = bu.email
     WHERE ti.created >= startCreationDate -- AND ti.created <= endCreationDate
       AND (IFNULL(st.hidden, 0) <= showHidden  OR ti.createdBy = pUser)
       AND ti.statusId = statusTicket

@@ -1,39 +1,41 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@page isELIgnored="false"%>
 <!-- Seccion de links que permiten crear nueva orden de servicio : INGENIEROS DE SERVICIO -->
-<c:set var="sysServicio" scope="request" value="${user.belongsToGroup['Implementacion y Servicio']}" />
-<c:if test="${sysServicio == true}">
-	<div>
+<div class="grid_16">
+	<c:set var="sysServicio" scope="request" value="${user.belongsToGroup['Implementacion y Servicio']}" />
+	<c:if test="${sysServicio == true}">
 		<div>
-			<img src="/img/navigate-right.png"/><a href="" onclick="showEquipmentSelect('X'); return false;">Crear Orden de Servicio</a>
+			<div>
+				<img src="/img/navigate-right.png" style="vertical-align:middle"/><a href="" style="vertical-align:middle" onclick="showEquipmentSelect('X'); return false;">Crear Orden de Servicio</a>
+			</div>
+			<div>
+				<img src="/img/navigate-right.png" style="vertical-align:middle"/><a href="" style="vertical-align:middle" onclick="showEquipmentSelect('A'); return false;">Crear Reporte de Aire Acondicionado</a>
+			</div>
+			<div>
+				<img src="/img/navigate-right.png" style="vertical-align:middle"/><a href="" style="vertical-align:middle" onclick="showEquipmentSelect('B'); return false;">Crear Reporte de Baterias</a>
+			</div>
+			<div>
+				<img src="/img/navigate-right.png" style="vertical-align:middle"/><a href="" style="vertical-align:middle" onclick="showEquipmentSelect('P'); return false;">Crear Reporte de Planta de emergencia</a>
+			</div>
+			<div>
+				<img src="/img/navigate-right.png" style="vertical-align:middle"/><a href="" style="vertical-align:middle" onclick="showEquipmentSelect('U'); return false;">Crear Reporte de UPS</a>
+			</div>
+			<p><small>&nbsp;</small></p>
 		</div>
-		<div>
-			<img src="/img/navigate-right.png"/><a href="" onclick="showEquipmentSelect('A'); return false;">Crear Reporte de Aire Acondicionado</a>
-		</div>
-		<div>
-			<img src="/img/navigate-right.png"/><a href="" onclick="showEquipmentSelect('B'); return false;">Crear Reporte de Baterias</a>
-		</div>
-		<div>
-			<img src="/img/navigate-right.png"/><a href="" onclick="showEquipmentSelect('P'); return false;">Crear Reporte de Planta de emergencia</a>
-		</div>
-		<div>
-			<img src="/img/navigate-right.png"/><a href="" onclick="showEquipmentSelect('U'); return false;">Crear Reporte de UPS</a>
-		</div>
-		<p><small>&nbsp;</small></p>
-	</div>
-</c:if>
-<!-- FIN - Seccion de links que permiten crear nueva orden de servicio : INGENIEROS DE SERVICIO -->
+	</c:if>
+	<!-- FIN - Seccion de links que permiten crear nueva orden de servicio : INGENIEROS DE SERVICIO -->
 
-<!-- Seccion de links que permiten crear nueva orden de servicio : COORDINADOR -->
-<c:set var="sysCoordinador" scope="request" value="${user.belongsToGroup['Coordinador'] || user.belongsToGroup['Call Center']}" />
-<c:if test="${sysCoordinador == true}">
-	<div>
+	<!-- Seccion de links que permiten crear nueva orden de servicio : COORDINADOR -->
+	<c:set var="sysCoordinador" scope="request" value="${user.belongsToGroup['Coordinador'] || user.belongsToGroup['Call Center']}" />
+	<c:if test="${sysCoordinador == true}">
 		<div>
-			<img src="/img/navigate-right.png"/><a href="" onclick="showEquipmentSelect('T'); return false;">Crear Orden de Servicio</a>
+			<div>
+				<img src="/img/navigate-right.png" style="vertical-align:middle"/><a href="" style="vertical-align:middle" onclick="showEquipmentSelect('T'); return false;">Crear Orden de Servicio</a>
+			</div>
+			<p><small>&nbsp;</small></p>
 		</div>
-		<p><small>&nbsp;</small></p>
-	</div>
-</c:if>
+	</c:if>
+</div>
 <!-- FIN - Seccion de links que permiten crear nueva orden de servicio : COORDINADOR -->
 
 <!-- Seccion de dialgo que se muestra para seleccionar el equipo -->

@@ -423,19 +423,19 @@ BEGIN
 			WHEN f.followUpReferenceTypeId = 'T' THEN 'Seguimiento a Ticket'
 			WHEN f.followUpReferenceTypeId = 'O' THEN 'Seguimiento a Orden de Servicio'
 			WHEN f.followUpReferenceTypeId = 'I' THEN 'Asignacion SAC'
-			WHEN f.followUpReferenceTypeId = 'R' THEN 'Requisicon'
+			WHEN f.followUpReferenceTypeId = 'R' THEN 'Requisicion'
 		END AS title,
 		followUp AS detail,
-		coalesce(ts.ticketStatus, ist.issueStatus, '', bts.name) as status,
+		coalesce(ts.ticketStatus, ist.issueStatus, bts.name, '') as status,
 		ifnull(u1.name, '') AS createdByUsr,
 		u2.name AS asignee
 	FROM (
 		SELECT * FROM (
-			SELECT @rowNumber := IF(coalesce(ticketId, serviceOrderId, issueId) = @prevRefId, @rowNumber + 1, 1) AS RowNum,
+			SELECT @rowNumber := IF(coalesce(ticketId, serviceOrderId, issueId, bloomTicketId) = @prevRefId, @rowNumber + 1, 1) AS RowNum,
 				f.*, 
-				@prevRefId := coalesce(ticketId, serviceOrderId, issueId) AS PrevRef
+				@prevRefId := coalesce(ticketId, serviceOrderId, issueId, bloomTicketId) AS PrevRef
 			FROM followUp f
-			ORDER BY followUpReferenceTypeId, coalesce(ticketId, serviceOrderId, issueId), created DESC
+			ORDER BY followUpReferenceTypeId, coalesce(ticketId, serviceOrderId, issueId, bloomTicketId), created DESC
 		) a WHERE a.RowNum = 1  -- a: todos los followUps asignados por usuario, numerados por id de (ticket, so, issue)
 	) f -- f: el ultimo comentario de cada (ticket, so, issue, requisicion) y que esta asignado al usuario
 		INNER JOIN followUpReferenceType r ON f.followUpReferenceTypeId = r.followUpReferenceTypeId
@@ -451,9 +451,10 @@ BEGIN
 		LEFT OUTER JOIN bloomStatusType bts ON bts._id = bt.statusId
 		LEFT OUTER JOIN blackstarUser u1 ON f.createdByUsr = u1.email
 		LEFT OUTER JOIN blackstarUser u2 ON f.asignee = u2.email
-	WHERE (coalesce(t.createdByUsr, s.createdByUsr, i.createdByUsr) = pUser
+	WHERE (coalesce(t.createdByUsr, s.createdByUsr, i.createdByUsr, bt.createdByUsr) = pUser
 			OR u2.bossId = @myId)
-		AND coalesce(t.ticketStatusId, s.serviceStatusId, i.issueStatusId) NOT IN ('C', 'F')
+		AND coalesce(t.ticketStatusId, s.serviceStatusId, i.issueStatusId, '') NOT IN ('C', 'F')
+		AND ifnull(bt.statusId, 0) NOT IN(6, 4)
 	ORDER BY f.created;
 	
 END$$
@@ -467,6 +468,7 @@ BEGIN
 
 	SET @prevRefId := 0;
 	SET @rowNumber := 0;
+	SET @myId:= (SELECT blackstarUserId FROM blackstarUser WHERE email = pUser);
 
 	SELECT 
 		f.followUpReferenceTypeId AS referenceTypeId, 
@@ -476,26 +478,25 @@ BEGIN
 		coalesce(p.project, c.project, i.project, bt.project) AS project,
 		coalesce(p.customer, c.customerName, i.customer, '') AS customer,
 		f.created AS created,
-		i.dueDate AS dueDate,
 		CASE 
 			WHEN f.followUpReferenceTypeId = 'T' THEN 'Seguimiento a Ticket'
 			WHEN f.followUpReferenceTypeId = 'O' THEN 'Seguimiento a Orden de Servicio'
 			WHEN f.followUpReferenceTypeId = 'I' THEN 'Asignacion SAC'
-			WHEN f.followUpReferenceTypeId = 'R' THEN 'Requisicon'
+			WHEN f.followUpReferenceTypeId = 'R' THEN 'Requisicion'
 		END AS title,
 		followUp AS detail,
-		coalesce(ts.ticketStatus, ist.issueStatus, '') as status,
-		u1.name AS createdByUsr,
+		coalesce(ts.ticketStatus, ist.issueStatus, bts.name, '') as status,
+		ifnull(u1.name, '') AS createdByUsr,
 		u2.name AS asignee
 	FROM (
 		SELECT * FROM (
-			SELECT @rowNumber := IF(coalesce(ticketId, serviceOrderId, issueId) = @prevRefId, @rowNumber + 1, 1) AS RowNum,
+			SELECT @rowNumber := IF(coalesce(ticketId, serviceOrderId, issueId, bloomTicketId) = @prevRefId, @rowNumber + 1, 1) AS RowNum,
 				f.*, 
-				@prevRefId := coalesce(ticketId, serviceOrderId, issueId) AS PrevRef
+				@prevRefId := coalesce(ticketId, serviceOrderId, issueId, bloomTicketId) AS PrevRef
 			FROM followUp f
-			ORDER BY followUpReferenceTypeId, coalesce(ticketId, serviceOrderId, issueId), created DESC
-		) a WHERE a.RowNum = 1 AND asignee = pUser -- a: todos los followUps asignados al usuario, numerados por id de (ticket, so, issue)
-	) f -- f: el ultimo comentario de cada (ticket, so, issue) y que esta asignado al usuario
+			ORDER BY followUpReferenceTypeId, coalesce(ticketId, serviceOrderId, issueId, bloomTicketId), created DESC
+		) a WHERE a.RowNum = 1  -- a: todos los followUps asignados por usuario, numerados por id de (ticket, so, issue)
+	) f -- f: el ultimo comentario de cada (ticket, so, issue, requisicion) y que esta asignado al usuario
 		INNER JOIN followUpReferenceType r ON f.followUpReferenceTypeId = r.followUpReferenceTypeId
 		LEFT OUTER JOIN ticket t ON f.ticketId = t.ticketId
 		LEFT OUTER JOIN serviceOrder s ON s.serviceOrderId = f.serviceOrderId
@@ -507,10 +508,11 @@ BEGIN
 		LEFT OUTER JOIN issueStatus ist ON ist.issueStatusId = i.issueStatusId
 		LEFT OUTER JOIN bloomTicket bt ON f.bloomTicketId = bt._id
 		LEFT OUTER JOIN bloomStatusType bts ON bts._id = bt.statusId
-		INNER JOIN blackstarUser u1 ON f.createdByUsr = u1.email
-		INNER JOIN blackstarUser u2 ON f.asignee = u2.email
-	WHERE coalesce(t.asignee, s.asignee, i.asignee) = pUser
-	AND coalesce(t.ticketStatusId, s.serviceStatusId, i.issueStatusId) NOT IN ('C', 'F')
+		LEFT OUTER JOIN blackstarUser u1 ON f.createdByUsr = u1.email
+		LEFT OUTER JOIN blackstarUser u2 ON f.asignee = u2.email
+	WHERE coalesce(t.asignee, s.asignee, i.asignee, bt.asignee) = pUser
+		AND coalesce(t.ticketStatusId, s.serviceStatusId, i.issueStatusId, '') NOT IN ('C', 'F')
+		AND ifnull(bt.statusId, 0) NOT IN(6, 4)
 	ORDER BY f.created;
 	
 END$$

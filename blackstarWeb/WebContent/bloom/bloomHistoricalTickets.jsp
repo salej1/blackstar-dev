@@ -43,8 +43,9 @@
 				<tr>
 					<th style="width:80px;">Folio</th>
 					<th>Estatus</th>
-					<th style="width:140px;">Creado</th>
-					<th>Solicitante</th>
+					<th style="width:80px;">Creado</th>
+					<th style="width:100px;">Solicitante</th>
+					<th>Area Solicitante</th>
 					<th style="width:200px;">Tipo</th>
 					<th>Fecha Limite</th>
 					<th>Proyecto</th>
@@ -158,6 +159,7 @@
 							{"mData" : "ticketNumber"}, 
 							{"mData" : "statusDescr"}, 
 							{"mData" : "created"}, 
+							{"mData" : "createdUserName"}, 
 							{"mData" : "petitionerArea"}, 
 							{"mData" : "serviceTypeDescr"}, 
 							{"mData" : "dueDate"}, 

@@ -1615,19 +1615,19 @@ BEGIN
 			WHEN f.followUpReferenceTypeId = 'T' THEN 'Seguimiento a Ticket'
 			WHEN f.followUpReferenceTypeId = 'O' THEN 'Seguimiento a Orden de Servicio'
 			WHEN f.followUpReferenceTypeId = 'I' THEN 'Asignacion SAC'
-			WHEN f.followUpReferenceTypeId = 'R' THEN 'Requisicon'
+			WHEN f.followUpReferenceTypeId = 'R' THEN 'Requisicion'
 		END AS title,
 		followUp AS detail,
-		coalesce(ts.ticketStatus, ist.issueStatus, '', bts.name) as status,
+		coalesce(ts.ticketStatus, ist.issueStatus, bts.name, '') as status,
 		ifnull(u1.name, '') AS createdByUsr,
 		u2.name AS asignee
 	FROM (
 		SELECT * FROM (
-			SELECT @rowNumber := IF(coalesce(ticketId, serviceOrderId, issueId) = @prevRefId, @rowNumber + 1, 1) AS RowNum,
+			SELECT @rowNumber := IF(coalesce(ticketId, serviceOrderId, issueId, bloomTicketId) = @prevRefId, @rowNumber + 1, 1) AS RowNum,
 				f.*, 
-				@prevRefId := coalesce(ticketId, serviceOrderId, issueId) AS PrevRef
+				@prevRefId := coalesce(ticketId, serviceOrderId, issueId, bloomTicketId) AS PrevRef
 			FROM followUp f
-			ORDER BY followUpReferenceTypeId, coalesce(ticketId, serviceOrderId, issueId), created DESC
+			ORDER BY followUpReferenceTypeId, coalesce(ticketId, serviceOrderId, issueId, bloomTicketId), created DESC
 		) a WHERE a.RowNum = 1  -- a: todos los followUps asignados por usuario, numerados por id de (ticket, so, issue)
 	) f -- f: el ultimo comentario de cada (ticket, so, issue, requisicion) y que esta asignado al usuario
 		INNER JOIN followUpReferenceType r ON f.followUpReferenceTypeId = r.followUpReferenceTypeId
@@ -1643,9 +1643,10 @@ BEGIN
 		LEFT OUTER JOIN bloomStatusType bts ON bts._id = bt.statusId
 		LEFT OUTER JOIN blackstarUser u1 ON f.createdByUsr = u1.email
 		LEFT OUTER JOIN blackstarUser u2 ON f.asignee = u2.email
-	WHERE (coalesce(t.createdByUsr, s.createdByUsr, i.createdByUsr) = pUser
+	WHERE (coalesce(t.createdByUsr, s.createdByUsr, i.createdByUsr, bt.createdByUsr) = pUser
 			OR u2.bossId = @myId)
-		AND coalesce(t.ticketStatusId, s.serviceStatusId, i.issueStatusId) NOT IN ('C', 'F')
+		AND coalesce(t.ticketStatusId, s.serviceStatusId, i.issueStatusId, '') NOT IN ('C', 'F')
+		AND ifnull(bt.statusId, 0) NOT IN(6, 4)
 	ORDER BY f.created;
 	
 END$$
@@ -1659,6 +1660,7 @@ BEGIN
 
 	SET @prevRefId := 0;
 	SET @rowNumber := 0;
+	SET @myId:= (SELECT blackstarUserId FROM blackstarUser WHERE email = pUser);
 
 	SELECT 
 		f.followUpReferenceTypeId AS referenceTypeId, 
@@ -1668,26 +1670,25 @@ BEGIN
 		coalesce(p.project, c.project, i.project, bt.project) AS project,
 		coalesce(p.customer, c.customerName, i.customer, '') AS customer,
 		f.created AS created,
-		i.dueDate AS dueDate,
 		CASE 
 			WHEN f.followUpReferenceTypeId = 'T' THEN 'Seguimiento a Ticket'
 			WHEN f.followUpReferenceTypeId = 'O' THEN 'Seguimiento a Orden de Servicio'
 			WHEN f.followUpReferenceTypeId = 'I' THEN 'Asignacion SAC'
-			WHEN f.followUpReferenceTypeId = 'R' THEN 'Requisicon'
+			WHEN f.followUpReferenceTypeId = 'R' THEN 'Requisicion'
 		END AS title,
 		followUp AS detail,
-		coalesce(ts.ticketStatus, ist.issueStatus, '') as status,
-		u1.name AS createdByUsr,
+		coalesce(ts.ticketStatus, ist.issueStatus, bts.name, '') as status,
+		ifnull(u1.name, '') AS createdByUsr,
 		u2.name AS asignee
 	FROM (
 		SELECT * FROM (
-			SELECT @rowNumber := IF(coalesce(ticketId, serviceOrderId, issueId) = @prevRefId, @rowNumber + 1, 1) AS RowNum,
+			SELECT @rowNumber := IF(coalesce(ticketId, serviceOrderId, issueId, bloomTicketId) = @prevRefId, @rowNumber + 1, 1) AS RowNum,
 				f.*, 
-				@prevRefId := coalesce(ticketId, serviceOrderId, issueId) AS PrevRef
+				@prevRefId := coalesce(ticketId, serviceOrderId, issueId, bloomTicketId) AS PrevRef
 			FROM followUp f
-			ORDER BY followUpReferenceTypeId, coalesce(ticketId, serviceOrderId, issueId), created DESC
-		) a WHERE a.RowNum = 1 AND asignee = pUser -- a: todos los followUps asignados al usuario, numerados por id de (ticket, so, issue)
-	) f -- f: el ultimo comentario de cada (ticket, so, issue) y que esta asignado al usuario
+			ORDER BY followUpReferenceTypeId, coalesce(ticketId, serviceOrderId, issueId, bloomTicketId), created DESC
+		) a WHERE a.RowNum = 1  -- a: todos los followUps asignados por usuario, numerados por id de (ticket, so, issue)
+	) f -- f: el ultimo comentario de cada (ticket, so, issue, requisicion) y que esta asignado al usuario
 		INNER JOIN followUpReferenceType r ON f.followUpReferenceTypeId = r.followUpReferenceTypeId
 		LEFT OUTER JOIN ticket t ON f.ticketId = t.ticketId
 		LEFT OUTER JOIN serviceOrder s ON s.serviceOrderId = f.serviceOrderId
@@ -1699,10 +1700,11 @@ BEGIN
 		LEFT OUTER JOIN issueStatus ist ON ist.issueStatusId = i.issueStatusId
 		LEFT OUTER JOIN bloomTicket bt ON f.bloomTicketId = bt._id
 		LEFT OUTER JOIN bloomStatusType bts ON bts._id = bt.statusId
-		INNER JOIN blackstarUser u1 ON f.createdByUsr = u1.email
-		INNER JOIN blackstarUser u2 ON f.asignee = u2.email
-	WHERE coalesce(t.asignee, s.asignee, i.asignee) = pUser
-	AND coalesce(t.ticketStatusId, s.serviceStatusId, i.issueStatusId) NOT IN ('C', 'F')
+		LEFT OUTER JOIN blackstarUser u1 ON f.createdByUsr = u1.email
+		LEFT OUTER JOIN blackstarUser u2 ON f.asignee = u2.email
+	WHERE coalesce(t.asignee, s.asignee, i.asignee, bt.asignee) = pUser
+		AND coalesce(t.ticketStatusId, s.serviceStatusId, i.issueStatusId, '') NOT IN ('C', 'F')
+		AND ifnull(bt.statusId, 0) NOT IN(6, 4)
 	ORDER BY f.created;
 	
 END$$
@@ -6826,7 +6828,7 @@ IF NOT EXISTS (SELECT * FROM bloomTicketTeam WHERE ticketId = pTicketId AND blac
 ELSE
    UPDATE blackstarDb.bloomTicketTeam SET 
       assignedDate = CONVERT_TZ(now(),'+00:00','-5:00'), 
-      workerRoleTypeId = pWorkerRoleTypeId
+      workerRoleTypeId = IF(workerRoleTypeId < pWorkerRoleTypeId, workerRoleTypeId, pWorkerRoleTypeId)
    WHERE ticketId = pTicketId 
     AND blackstarUserId = @blackstarUserId;
 END IF;
@@ -6954,6 +6956,7 @@ BEGIN
     ti.applicantAreaId, 
     ti.dueDate, 
     ti.desiredDate, 
+    bu.name AS createdUserName,
     ba.name as areaName,
     ti.serviceTypeId,
     st.name as serviceName,
@@ -6971,6 +6974,7 @@ BEGIN
        INNER JOIN office o on (o.officeId = ti.officeId)
        INNER JOIN bloomStatusType s on (s._id = ti.statusId)
        INNER JOIN bloomServiceArea a ON a.bloomServiceAreaId = st.bloomServiceAreaId
+       INNER JOIN blackstarUser bu ON ti.createdByUsr = bu.email
   WHERE tm.blackstarUserId = UserId 
       AND tm.workerRoleTypeId = 1
       AND ti.statusId < 6 
@@ -7282,6 +7286,10 @@ WHERE _ID = pTicketId;
 
 END$$
 
+
+-- -----------------------------------------------------------------------------
+  -- blackstarDb.GetbloomTicketByUserKPI
+-- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetbloomTicketByUserKPI$$
 CREATE PROCEDURE blackstarDb.`GetbloomTicketByUserKPI`()
 BEGIN
@@ -7296,6 +7304,9 @@ ORDER BY counter desc;
 END$$
 
 
+-- -----------------------------------------------------------------------------
+  -- blackstarDb.GetbloomTicketByOfficeKPI
+-- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetbloomTicketByOfficeKPI$$
 CREATE PROCEDURE blackstarDb.`GetbloomTicketByOfficeKPI`()
 BEGIN
@@ -7308,6 +7319,10 @@ ORDER BY counter desc;
 
 END$$
 
+
+-- -----------------------------------------------------------------------------
+  -- blackstarDb.GetbloomTicketByAreaKPI
+-- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetbloomTicketByAreaKPI$$
 CREATE PROCEDURE blackstarDb.`GetbloomTicketByAreaKPI`()
 BEGIN
@@ -7319,6 +7334,9 @@ ORDER BY counter desc;
 END$$
 
 
+-- -----------------------------------------------------------------------------
+  -- blackstarDb.GetbloomTicketByDayKPI
+-- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetbloomTicketByDayKPI$$
 CREATE PROCEDURE blackstarDb.`GetbloomTicketByDayKPI`()
 BEGIN
@@ -7327,6 +7345,10 @@ BEGIN
 GROUP BY DATE_FORMAT(created,'%d/%m/%Y');
 END$$
 
+
+-- -----------------------------------------------------------------------------
+  -- blackstarDb.GetbloomTicketByProjectKPI
+-- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetbloomTicketByProjectKPI$$
 CREATE PROCEDURE blackstarDb.`GetbloomTicketByProjectKPI`()
 BEGIN
@@ -7341,6 +7363,10 @@ ORDER BY counter DESC
 LIMIT 5;
 END$$
 
+
+-- -----------------------------------------------------------------------------
+  -- blackstarDb.GetbloomTicketByServiceAreaKPI
+-- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetbloomTicketByServiceAreaKPI$$
 CREATE PROCEDURE blackstarDb.`GetbloomTicketByServiceAreaKPI`()
 BEGIN
@@ -7351,6 +7377,10 @@ WHERE bt.serviceTypeId = st._id
 GROUP BY bt.applicantAreaId, bt.serviceTypeId;
 END$$
 
+
+-- -----------------------------------------------------------------------------
+  -- blackstarDb.GetbloomTicketDeliverable
+-- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetbloomTicketDeliverable$$
 CREATE PROCEDURE blackstarDb.`GetbloomTicketDeliverable`(pTicketId INTEGER)
 BEGIN
@@ -7367,6 +7397,10 @@ BEGIN
 
 END$$ 
 
+
+-- -----------------------------------------------------------------------------
+  -- blackstarDb.GetbloomSurveyTable
+-- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetbloomSurveyTable$$
 CREATE PROCEDURE blackstarDb.`GetbloomSurveyTable`(userId INTEGER)
 BEGIN
@@ -7387,6 +7421,10 @@ BEGIN
     AND workerRoleTypeId = 1;
 END$$
 
+
+-- -----------------------------------------------------------------------------
+  -- blackstarDb.GetBloomPendingSurveyTable
+-- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetBloomPendingSurveyTable$$
 CREATE PROCEDURE blackstarDb.`GetBloomPendingSurveyTable`(userId INTEGER)
 BEGIN
@@ -7408,6 +7446,10 @@ WHERE bu2.blackstarUserId = userId
 GROUP BY bt._id;
 END$$
 
+
+-- -----------------------------------------------------------------------------
+  -- blackstarDb.InsertbloomSurvey
+-- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.InsertbloomSurvey$$
 CREATE PROCEDURE blackstarDb.`InsertbloomSurvey`(pTicketId INTEGER, pEvaluation INTEGER, pComments TEXT, pCreated DATE)
 BEGIN
@@ -7415,6 +7457,10 @@ BEGIN
   VALUES(pTicketId, pEvaluation, pComments, pCreated);
 END$$
 
+
+-- -----------------------------------------------------------------------------
+  -- blackstarDb.GetBloomPendingSurveys
+-- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetBloomPendingSurveys$$
 CREATE PROCEDURE blackstarDb.`GetBloomPendingSurveys`()
 BEGIN
@@ -7815,6 +7861,7 @@ BEGIN
       ti._id AS id, 
       ti.ticketNumber, 
       ti.created AS created,
+      bu.name AS createdUserName,
       ti.applicantAreaId, 
       ba.name AS areaName, 
       ti.serviceTypeId, 
@@ -7834,6 +7881,7 @@ BEGIN
       INNER JOIN office o on (o.officeId = ti.officeId) 
       INNER JOIN bloomStatusType s on (s._id = ti.statusId)
       INNER JOIN bloomServiceArea a ON st.bloomServiceAreaId = a.bloomServiceAreaId 
+      INNER JOIN blackstarUser bu ON ti.createdByUsr = bu.email
     WHERE ti.created >= startCreationDate -- AND ti.created <= endCreationDate
       AND (IFNULL(st.hidden, 0) <= showHidden  OR ti.createdBy = pUser)
     ORDER BY ti.created DESC;
@@ -7842,6 +7890,7 @@ BEGIN
       ti._id AS id, 
       ti.ticketNumber, 
       ti.created AS created,
+      bu.name AS createdUserName,
       ti.applicantAreaId, 
       ba.name AS areaName, 
       ti.serviceTypeId, 
@@ -7861,6 +7910,7 @@ BEGIN
       INNER JOIN office o on (o.officeId = ti.officeId) 
       INNER JOIN bloomStatusType s on (s._id = ti.statusId) 
       INNER JOIN bloomServiceArea a ON st.bloomServiceAreaId = a.bloomServiceAreaId 
+      INNER JOIN blackstarUser bu ON ti.createdByUsr = bu.email
     WHERE ti.created >= startCreationDate -- AND ti.created <= endCreationDate
       AND (IFNULL(st.hidden, 0) <= showHidden  OR ti.createdBy = pUser)
       AND ti.statusId = statusTicket
@@ -8096,6 +8146,9 @@ CALL ExecuteTransfer();
 -- --   --------   -------  ----------------------------------------------------
 -- 6	09/09/2014	SAG 	Se establece SAC600 como inicio secuencia de requisiciones
 -- -----------------------------------------------------------------------------
+-- 7	17/09/2014	SAG 	Se establecen tiempos Auto-close
+-- -----------------------------------------------------------------------------
+
 use blackstarDb;
 
 
@@ -8104,6 +8157,12 @@ DELIMITER $$
 DROP PROCEDURE IF EXISTS blackstarDb.updateDataBloom$$
 CREATE PROCEDURE blackstarDb.updateDataBloom()
 BEGIN
+
+-- Tiempos auto-close
+UPDATE bloomServiceType SET
+	autoClose = 2
+WHERE _id NOT IN (13, 15);
+
 -- Estableciendo contador inicial para Requisiciones
 IF(SELECT sequenceNumber FROM blackstarDb.sequence WHERE sequenceTypeId='I') < 600 THEN
 	UPDATE blackstarDb.sequence SET sequenceNumber = 600 WHERE sequenceTypeId='I';

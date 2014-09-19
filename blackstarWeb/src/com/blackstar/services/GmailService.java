@@ -33,21 +33,23 @@ public class GmailService implements IEmailService{
 	}
 
 	@Override
-	public void sendEmail(String from, String to, String subject, String body) {
+	public void sendEmail(String from, String toList, String subject, String body) {
 		Properties props = new Properties();
 		props.put("mail.smtp.auth", "true");
 		props.put("mail.smtp.starttls.enable", "true");
 		props.put("mail.smtp.host", "smtp.gmail.com");
 		props.put("mail.smtp.port", "587");
- 
+
 		Session session = Session.getInstance(props, null);
  
 		try {
  
 			Message message = new MimeMessage(session);
 			message.setFrom(new InternetAddress(defaultFrom));
-			message.setRecipients(Message.RecipientType.TO,
-				InternetAddress.parse(to));
+			
+			// Filter out spaces
+			toList = toList.replace(" ", "");
+			message.setRecipients(Message.RecipientType.TO,  InternetAddress.parse(toList));		
 			message.setSubject(MimeUtility.encodeText(subject, "UTF-8", "Q"));
 			message.setContent(body, "text/html; charset=utf-8");
 			

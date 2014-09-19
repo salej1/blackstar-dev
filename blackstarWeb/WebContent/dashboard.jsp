@@ -22,6 +22,13 @@
 
 <!--   CONTENT COLUMN   -->		
 
+	<!-- Link para crear nuevo ticket interno - Disponible para todos menos para el cliente -->
+	<c:set var="sysCliente" scope="request" value="${user.belongsToGroup['Cliente']}" />
+	<c:if test="${sysCliente == null || sysCliente == false}">
+		<c:import url="bloom/newInternalTicketLink.jsp"></c:import>
+	</c:if>
+	<!-- FIN Link para crear nuevo ticket interno  -->
+
 <!-- Inicia Contenido De Perfil Syscoordinador-->
 <c:set var="captOsLinks" scope="request" value="${user.belongsToGroup['Coordinador'] || user.belongsToGroup['Implementacion y Servicio']}" />
 	<c:if test="${captOsLinks == true}">
@@ -128,14 +135,6 @@
 			});
 		</script>
 <!-- Fin Tabla De Ordenes De Servicio Con Pendientes -->
-
-
-	<!-- Link para crear nuevo ticket interno - Disponible para todos menos para el cliente -->
-	<c:set var="sysCliente" scope="request" value="${user.belongsToGroup['Cliente']}" />
-	<c:if test="${sysCliente == null || sysCliente == false}">
-		<c:import url="bloom/newInternalTicketLink.jsp"></c:import>
-	</c:if>
-	<!-- FIN Link para crear nuevo ticket interno  -->
 
 	<!-- Requisiciones por cerrar - Disponible solo apra usuarios responsables de Req -->
 	<c:set var="reqViewer" scope="session" value="${user.belongsToGroup['Lider de Ingenieria'] || user.belongsToGroup['Ingeniero de Soporte'] || user.belongsToGroup['Gerente de Implementación y Servicio'] || user.belongsToGroup['Ingeniero de Redes y Monitoreo'] || user.belongsToGroup['Jefe de Compras'] || user.belongsToGroup['Compras'] || user.belongsToGroup['Jefe de Capital Humano'] || user.belongsToGroup['Gerente de Calidad']}"/> 

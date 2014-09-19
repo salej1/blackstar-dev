@@ -551,9 +551,7 @@
 		}
 		if (serviceTypeId === 6) {
 
-			$('#tr_questionVPT').show();
-
-			$('#sp_questionVPT').text("Pregunta");
+			$('#descrLabel').text("Pregunta");
 
 		}
 		if (serviceTypeId === 7) {
@@ -574,10 +572,8 @@
 		}
 		if (serviceTypeId === 9) {
 
-			$('#tr_observationsISED').show();
 			$('#tr_draftCopyPlanISED').show();
 
-			$('#sp_observationsISED').text("Observaciones");
 			$('#sp_draftCopyPlanISED').text("Diagrama o Plano en borrador");
 
 		}
@@ -586,7 +582,7 @@
 			$('#tr_observationsISRC').show();
 			$('#tr_attachmentsISRC').show();
 
-			$('#sp_observationsISRC').text("Observaciones y/o ligas de fotos");
+			$('#sp_observationsISRC').text("Ligas de fotos");
 			$('#sp_attachmentsISRC').text("Anexar Datos Descargados del Analizador");
 
 		}
@@ -601,10 +597,8 @@
 
 		}
 		if (serviceTypeId === 12) {
-
-			$('#tr_questionISPT').show();
-
-			$('#sp_questionISPT').text("Pregunta");
+			
+			$('#descrLabel').text("Pregunta");
 
 		}
 		if (serviceTypeId === 13) {

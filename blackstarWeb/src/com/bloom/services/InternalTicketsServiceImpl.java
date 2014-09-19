@@ -93,14 +93,14 @@ public class InternalTicketsServiceImpl extends AbstractService
     	List<AdvisedUserDTO> teamDto;
     	List<CatalogoBean<Integer>> doctos;
     	
-    	List<TicketTeamBean> miembros= new ArrayList<TicketTeamBean>();
+    	List<TicketTeamBean> members= new ArrayList<TicketTeamBean>();
     	
     	Long idTicket= getInternalTicketsDao().registrarNuevoTicket(ticket);
 
     	if (idTicket > 0) {
 
     		//El creador del ticket entra con rol colaborador (2)
-    		miembros.add(
+    		members.add(
     				new TicketTeamBean(idTicket, 2L, ticket.getCreatedUserId(),ticket.getCreatedUserEmail(),ticket.getCreatedUserName(), "creator"));
 
     		//obtener coordinadores
@@ -111,7 +111,7 @@ public class InternalTicketsServiceImpl extends AbstractService
 
     		for(AdvisedUserDTO teamM : teamDto){
 
-    			miembros.add(new TicketTeamBean(
+    			members.add(new TicketTeamBean(
     					idTicket,
     					(long)teamM.getWorkerRoleTypeId(), 
     					(long)teamM.getId(),
@@ -122,9 +122,9 @@ public class InternalTicketsServiceImpl extends AbstractService
     		}
 
 
-    		for(TicketTeamBean miembro:miembros){
+    		for(TicketTeamBean member:members){
     			//registrar bloomTicketTeam  Responsables
-    			getInternalTicketsDao().addTicketTeam(idTicket.intValue(), miembro.getWorkerRoleId().intValue(), miembro.getEmail(), miembro.getUserGroup());
+    			getInternalTicketsDao().addTicketTeam(idTicket.intValue(), member.getWorkerRoleId().intValue(), member.getEmail(), member.getUserGroup());
     		}
 
     		//registrar bloomDeliverableTrace. Documentos
@@ -140,15 +140,23 @@ public class InternalTicketsServiceImpl extends AbstractService
 
     		//Funcionalidad para el envio de correo a los incolucrados:
     		//Creador del ticket y usuarios coordiandores.
-    		for(TicketTeamBean miembro:miembros){
+    		StringBuilder emailList = new StringBuilder();
+    		for(TicketTeamBean member:members){
     			//enviar correos a los involucrados.
-    			if(miembro.getWorkerRoleId() == 1){
+    			if(member.getWorkerRoleId() == 1){
     				//AddFollowUpController.AssignBloomTicket(idTicket.intValue(), miembro.getEmail(), ticket.getCreatedUserEmail());
     			}
     			else{
-    				AddFollowUpController.NotifyBloomTicket(idTicket.intValue(), miembro.getEmail(), ticket.getCreatedUserEmail(), ticket.getDescription());
+    				if(emailList.length() == 0){
+    					emailList.append(member.getEmail());
+    				}
+    				else{
+    					emailList.append("," + member.getEmail());
+    				}
     			}
     		}
+    		// enviando el email
+    		AddFollowUpController.NotifyBloomTicket(idTicket.intValue(), emailList.toString(), ticket.getCreatedUserEmail(), ticket.getDescription());
     	}
     }
    

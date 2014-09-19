@@ -106,7 +106,6 @@
 
 		// Mosrtar - ocultar campos complementarios
 		configureAdditionalFields();
-		loadAdditionalFieldsData();
 
 		attLoader_init("attachmentFileId");
 	});
@@ -259,63 +258,8 @@
 		$('#sp_documentCodeGSM').text("");
 		$('#sp_justificationGSM').text("");
 		$('#sp_problemDescriptionGPTR').text("");
-
-		
-
-		
-		$('#txt_purposeVisitVL').val("");
-		$('#txt_purposeVisitVISAS').val("");
-		$('#txt_draftCopyDiagramVED').val("");
-		$('#txt_formProjectVED').val("");
-		$('#txt_observationsVEPI').val("");
-		$('#txt_draftCopyPlanVEPI').val("");
-		$('#txt_formProjectVEPI').val("");
-		$('#txt_observationsVRCC').val("");
-		$('#txt_checkListVRCC').val("");
-		$('#txt_formProjectVRCC').val("");
-		$('#txt_questionVPT').val("");
-		$('#txt_observationsVSA').val("");
-		$('#txt_formProjectVSA').val("");
-		$('#txt_productInformationVSP').val("");
-		$('#txt_observationsISED').val("");
-		$('#txt_draftCopyPlanISED').val("");
-		$('#txt_observationsISRC').val("");
-		$('#txt_attachmentsISRC').val("");
-		$('#txt_apparatusTraceISSM').val("");
-		$('#txt_observationsISSM').val("");
-		$('#txt_questionISPT').val("");
-		$('#txt_ticketISRPR').val("");
-		$('#txt_modelPartISRPR').val("");
-		$('#txt_observationsISRPR').val("");
-		$('#txt_productInformationISSPC').val("");
-		$('#txt_positionPGCAS').val("");
-		$('#txt_collaboratorPGCAS').val("");
-		$('#txt_justificationPGCAS').val("");
-		$('#txt_salaryPGCAS').val("");
-		$('#txt_positionPGCCP').val("");
-		$('#txt_commentsPGCCP').val("");
-		$('#txt_developmentPlanPGCCP').val("");
-		$('#txt_targetPGCCP').val("");
-		$('#txt_salaryPGCCP').val("");
-		$('#txt_positionPGCNC').val("");
-		$('#txt_developmentPlanPGCNC').val("");
-		$('#txt_targetPGCNC').val("");
-		$('#txt_salaryPGCNC').val("");
-		$('#txt_justificationPGCNC').val("");
-		$('#txt_positionPGCF').val("");
-		$('#txt_collaboratorPGCF').val("");
-		$('#txt_justificationPGCF').val("");
-		$('#txt_positionPGCAA').val("");
-		$('#txt_collaboratorPGCAA').val("");
-		$('#txt_justificationPGCAA').val("");
-		$('#txt_requisitionFormatGRC').val("");
-		$('#txt_linkDocumentGM').val("");
-		$('#txt_suggestionGSM').val("");
-		$('#txt_documentCodeGSM').val("");
-		$('#txt_justificationGSM').val("");
-		$('#txt_problemDescriptionGPTR').val("");
-		
 	}
+
 	function configureAdditionalFields() {
 
 		iniHideAdditionalFields();
@@ -371,9 +315,7 @@
 		}
 		if (serviceTypeId === 6) {
 
-			$('#tr_questionVPT').show();
-
-			$('#sp_questionVPT').text("Pregunta");
+			$('#descrLabel').text("Pregunta");
 
 		}
 		if (serviceTypeId === 7) {
@@ -394,10 +336,8 @@
 		}
 		if (serviceTypeId === 9) {
 
-			$('#tr_observationsISED').show();
 			$('#tr_draftCopyPlanISED').show();
 
-			$('#sp_observationsISED').text("Observaciones");
 			$('#sp_draftCopyPlanISED').text("Diagrama o Plano en borrador");
 
 		}
@@ -406,7 +346,7 @@
 			$('#tr_observationsISRC').show();
 			$('#tr_attachmentsISRC').show();
 
-			$('#sp_observationsISRC').text("Observaciones y/o ligas de fotos");
+			$('#sp_observationsISRC').text("Ligas de fotos");
 			$('#sp_attachmentsISRC').text("Anexar Datos Descargados del Analizador");
 
 		}
@@ -422,9 +362,7 @@
 		}
 		if (serviceTypeId === 12) {
 
-			$('#tr_questionISPT').show();
-
-			$('#sp_questionISPT').text("Pregunta");
+			$('#descrLabel').text("Pregunta");
 
 		}
 		if (serviceTypeId === 13) {
@@ -545,60 +483,6 @@
 		}
 	}
 
-	function loadAdditionalFieldsData(){
-
-		$('#txt_purposeVisitVL').val("${ticketDetail.purposeVisitVL}");
-		$('#txt_purposeVisitVISAS').val("${ticketDetail.purposeVisitVISAS}");
-		$('#txt_draftCopyDiagramVED').val("${ticketDetail.draftCopyDiagramVED}");
-		$('#txt_formProjectVED').val("${ticketDetail.formProjectVED}");
-		$('#txt_observationsVEPI').val("${ticketDetail.observationsVEPI}");
-		$('#txt_draftCopyPlanVEPI').val("${ticketDetail.draftCopyPlanVEPI}");
-		$('#txt_formProjectVEPI').val("${ticketDetail.formProjectVEPI}");
-		$('#txt_observationsVRCC').val("${ticketDetail.observationsVRCC}");
-		$('#txt_checkListVRCC').val("${ticketDetail.checkListVRCC}");
-		$('#txt_formProjectVRCC').val("${ticketDetail.formProjectVRCC}");
-		$('#txt_questionVPT').val("${ticketDetail.questionVPT}");
-		$('#txt_observationsVSA').val("${ticketDetail.observationsVSA}");
-		$('#txt_formProjectVSA').val("${ticketDetail.formProjectVSA}");
-		$('#txt_productInformationVSP').val("${ticketDetail.productInformationVSP}");
-		$('#txt_observationsISED').val("${ticketDetail.observationsISED}");
-		$('#txt_draftCopyPlanISED').val("${ticketDetail.draftCopyPlanISED}");
-		$('#txt_observationsISRC').val("${ticketDetail.observationsISRC}");
-		$('#txt_attachmentsISRC').val("${ticketDetail.attachmentsISRC}");
-		$('#txt_apparatusTraceISSM').val("${ticketDetail.apparatusTraceISSM}");
-		$('#txt_observationsISSM').val("${ticketDetail.observationsISSM}");
-		$('#txt_questionISPT').val("${ticketDetail.questionISPT}");
-		$('#txt_ticketISRPR').val("${ticketDetail.ticketISRPR}");
-		$('#txt_modelPartISRPR').val("${ticketDetail.modelPartISRPR}");
-		$('#txt_observationsISRPR').val("${ticketDetail.observationsISRPR}");
-		$('#txt_productInformationISSPC').val("${ticketDetail.productInformationISSPC}");
-		$('#txt_positionPGCAS').val("${ticketDetail.positionPGCAS}");
-		$('#txt_collaboratorPGCAS').val("${ticketDetail.collaboratorPGCAS}");
-		$('#txt_justificationPGCAS').val("${ticketDetail.justificationPGCAS}");
-		$('#txt_salaryPGCAS').val("${ticketDetail.salaryPGCAS}");
-		$('#txt_positionPGCCP').val("${ticketDetail.positionPGCCP}");
-		$('#txt_commentsPGCCP').val("${ticketDetail.commentsPGCCP}");
-		$('#txt_developmentPlanPGCCP').val("${ticketDetail.developmentPlanPGCCP}");
-		$('#txt_targetPGCCP').val("${ticketDetail.targetPGCCP}");
-		$('#txt_salaryPGCCP').val("${ticketDetail.salaryPGCCP}");
-		$('#txt_positionPGCNC').val("${ticketDetail.positionPGCNC}");
-		$('#txt_developmentPlanPGCNC').val("${ticketDetail.developmentPlanPGCNC}");
-		$('#txt_targetPGCNC').val("${ticketDetail.targetPGCNC}");
-		$('#txt_salaryPGCNC').val("${ticketDetail.salaryPGCNC}");
-		$('#txt_justificationPGCNC').val("${ticketDetail.justificationPGCNC}");
-		$('#txt_positionPGCF').val("${ticketDetail.positionPGCF}");
-		$('#txt_collaboratorPGCF').val("${ticketDetail.collaboratorPGCF}");
-		$('#txt_justificationPGCF').val("${ticketDetail.justificationPGCF}");
-		$('#txt_positionPGCAA').val("${ticketDetail.positionPGCAA}");
-		$('#txt_collaboratorPGCAA').val("${ticketDetail.collaboratorPGCAA}");
-		$('#txt_justificationPGCAA').val("${ticketDetail.justificationPGCAA}");
-		$('#txt_requisitionFormatGRC').val("${ticketDetail.requisitionFormatGRC}");
-		$('#txt_linkDocumentGM').val("${ticketDetail.linkDocumentGM}");
-		$('#txt_suggestionGSM').val("${ticketDetail.suggestionGSM}");
-		$('#txt_documentCodeGSM').val("${ticketDetail.documentCodeGSM}");
-		$('#txt_justificationGSM').val("${ticketDetail.justificationGSM}");
-		$('#txt_problemDescriptionGPTR').val("${ticketDetail.problemDescriptionGPTR}");
-	}
 
 </script>	
 <!--   CONTENT   -->
@@ -682,7 +566,7 @@
 							</tr>
 							<!-- Inicia seccion de campos dinamicos -->
 							<tr>
-								<td>Descripcion de la solicitud</td>
+								<td><span id="descrLabel">Descripción de la solicitud</span></td>
 								<td colspan="5">										
 									<textarea id="fldSitEnc" style="width:100%;height:100%;" readOnly="true" rows="8">${ticketDetail.description}</textarea>
 								</td>
@@ -691,209 +575,208 @@
 							<input type="hidden" id="slTipoServicio" value="${ticketDetail.serviceTypeId}"/>
 							<tr id='tr_purposeVisitVL'>
 								<td><span id='sp_purposeVisitVL'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_purposeVisitVL' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
+								<td colspan="5"><textarea id='txt_purposeVisitVL' style='width: 100%; height: 100%;' rows='3' >${ticketDetail.purposeVisitVL}</textarea></td>
 							</tr>
 							<tr id='tr_purposeVisitVISAS'>
 								<td><span id='sp_purposeVisitVISAS'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_purposeVisitVISAS' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
+								<td colspan="5"><textarea id='txt_purposeVisitVISAS' style='width: 100%; height: 100%;' rows='3' >${ticketDetail.purposeVisitVISAS}</textarea></td>
 							</tr>
 							<tr id='tr_draftCopyDiagramVED'>
 								<td><span id='sp_draftCopyDiagramVED'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_draftCopyDiagramVED' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
+								<td colspan="5"><textarea id='txt_draftCopyDiagramVED' style='width: 100%; height: 100%;' rows='3' >${ticketDetail.draftCopyDiagramVED}</textarea></td>
 							</tr>
 							<tr id='tr_formProjectVED'>
 								<td><span id='sp_formProjectVED'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_formProjectVED' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
+								<td colspan="5"><textarea id='txt_formProjectVED' style='width: 100%; height: 100%;' rows='3' >${ticketDetail.formProjectVED}</textarea></td>
 							</tr>
 							<tr id='tr_observationsVEPI'>
 								<td><span id='sp_observationsVEPI'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_observationsVEPI' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
+								<td colspan="5"><textarea id='txt_observationsVEPI' style='width: 100%; height: 100%;' rows='3' >${ticketDetail.observationsVEPI}</textarea></td>
 							</tr>
 							<tr id='tr_draftCopyPlanVEPI'>
 								<td><span id='sp_draftCopyPlanVEPI'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_draftCopyPlanVEPI' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
+								<td colspan="5"><textarea id='txt_draftCopyPlanVEPI' style='width: 100%; height: 100%;' rows='3' >${ticketDetail.draftCopyPlanVEPI}</textarea></td>
 							</tr>
 							<tr id='tr_formProjectVEPI'>
 								<td><span id='sp_formProjectVEPI'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_formProjectVEPI' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
+								<td colspan="5"><textarea id='txt_formProjectVEPI' style='width: 100%; height: 100%;' rows='3' >${ticketDetail.formProjectVEPI}</textarea></td>
 							</tr>
 							<tr id='tr_observationsVRCC'>
 								<td><span id='sp_observationsVRCC'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_observationsVRCC' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
+								<td colspan="5"><textarea id='txt_observationsVRCC' style='width: 100%; height: 100%;' rows='3' >${ticketDetail.observationsVRCC}</textarea></td>
 							</tr>
 							<tr id='tr_checkListVRCC'>
 								<td><span id='sp_checkListVRCC'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_checkListVRCC' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
+								<td colspan="5"><textarea id='txt_checkListVRCC' style='width: 100%; height: 100%;' rows='3' >${ticketDetail.checkListVRCC}</textarea></td>
 							</tr>
 							<tr id='tr_formProjectVRCC'>
 								<td><span id='sp_formProjectVRCC'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_formProjectVRCC' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
+								<td colspan="5"><textarea id='txt_formProjectVRCC' style='width: 100%; height: 100%;' rows='3' >${ticketDetail.formProjectVRCC}</textarea></td>
 							</tr>
 							<tr id='tr_questionVPT'>
 								<td><span id='sp_questionVPT'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_questionVPT' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
+								<td colspan="5"><textarea id='txt_questionVPT' style='width: 100%; height: 100%;' rows='3' >${ticketDetail.questionVPT}</textarea></td>
 							</tr>
 							<tr id='tr_observationsVSA'>
 								<td><span id='sp_observationsVSA'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_observationsVSA' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
+								<td colspan="5"><textarea id='txt_observationsVSA' style='width: 100%; height: 100%;' rows='3' >${ticketDetail.observationsVSA}</textarea></td>
 							</tr>
 							<tr id='tr_formProjectVSA'>
 								<td><span id='sp_formProjectVSA'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_formProjectVSA' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
+								<td colspan="5"><textarea id='txt_formProjectVSA' style='width: 100%; height: 100%;' rows='3' >${ticketDetail.formProjectVSA}</textarea></td>
 							</tr>
 							<tr id='tr_productInformationVSP'>
 								<td><span id='sp_productInformationVSP'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_productInformationVSP' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
+								<td colspan="5"><textarea id='txt_productInformationVSP' style='width: 100%; height: 100%;' rows='3' >${ticketDetail.productInformationVSP}</textarea></td>
 							</tr>
 							<tr id='tr_observationsISED'>
 								<td><span id='sp_observationsISED'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_observationsISED' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
+								<td colspan="5"><textarea id='txt_observationsISED' style='width: 100%; height: 100%;' rows='3' >${ticketDetail.observationsISED}</textarea></td>
 							</tr>
 							<tr id='tr_draftCopyPlanISED'>
 								<td><span id='sp_draftCopyPlanISED'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_draftCopyPlanISED' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
+								<td colspan="5"><textarea id='txt_draftCopyPlanISED' style='width: 100%; height: 100%;' rows='3' >${ticketDetail.draftCopyPlanISED}</textarea></td>
 							</tr>
 							<tr id='tr_observationsISRC'>
 								<td><span id='sp_observationsISRC'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_observationsISRC' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
+								<td colspan="5"><textarea id='txt_observationsISRC' style='width: 100%; height: 100%;' rows='3' >${ticketDetail.observationsISRC}</textarea></td>
 							</tr>
 							<tr id='tr_attachmentsISRC'>
 								<td><span id='sp_attachmentsISRC'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_attachmentsISRC' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
+								<td colspan="5"><textarea id='txt_attachmentsISRC' style='width: 100%; height: 100%;' rows='3' >${ticketDetail.attachmentsISRC}</textarea></td>
 							</tr>
 							<tr id='tr_apparatusTraceISSM'>
 								<td><span id='sp_apparatusTraceISSM'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_apparatusTraceISSM' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
+								<td colspan="5"><textarea id='txt_apparatusTraceISSM' style='width: 100%; height: 100%;' rows='3' >${ticketDetail.apparatusTraceISSM}</textarea></td>
 							</tr>
 							<tr id='tr_observationsISSM'>
 								<td><span id='sp_observationsISSM'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_observationsISSM' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
+								<td colspan="5"><textarea id='txt_observationsISSM' style='width: 100%; height: 100%;' rows='3' >${ticketDetail.observationsISSM}</textarea></td>
 							</tr>
 							<tr id='tr_questionISPT'>
 								<td><span id='sp_questionISPT'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_questionISPT' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
+								<td colspan="5"><textarea id='txt_questionISPT' style='width: 100%; height: 100%;' rows='3' >${ticketDetail.questionISPT}</textarea></td>
 							</tr>
 							<tr id='tr_ticketISRPR'>
 								<td><span id='sp_ticketISRPR'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_ticketISRPR' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
+								<td colspan="5"><textarea id='txt_ticketISRPR' style='width: 100%; height: 100%;' rows='3' >${ticketDetail.ticketISRPR}</textarea></td>
 							</tr>
 							<tr id='tr_modelPartISRPR'>
 								<td><span id='sp_modelPartISRPR'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_modelPartISRPR' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
+								<td colspan="5"><textarea id='txt_modelPartISRPR' style='width: 100%; height: 100%;' rows='3' >${ticketDetail.modelPartISRPR}</textarea></td>
 							</tr>
 							<tr id='tr_observationsISRPR'>
 								<td><span id='sp_observationsISRPR'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_observationsISRPR' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
+								<td colspan="5"><textarea id='txt_observationsISRPR' style='width: 100%; height: 100%;' rows='3' >${ticketDetail.observationsISRPR}</textarea></td>
 							</tr>
 							<tr id='tr_productInformationISSPC'>
 								<td><span id='sp_productInformationISSPC'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_productInformationISSPC' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
+								<td colspan="5"><textarea id='txt_productInformationISSPC' style='width: 100%; height: 100%;' rows='3' >${ticketDetail.productInformationISSPC}</textarea></td>
 							</tr>
 							<tr id='tr_positionPGCAS'>
 								<td><span id='sp_positionPGCAS'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_positionPGCAS' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
+								<td colspan="5"><textarea id='txt_positionPGCAS' style='width: 100%; height: 100%;' rows='3' >${ticketDetail.positionPGCAS}</textarea></td>
 							</tr>
 							<tr id='tr_collaboratorPGCAS'>
 								<td><span id='sp_collaboratorPGCAS'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_collaboratorPGCAS' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
+								<td colspan="5"><textarea id='txt_collaboratorPGCAS' style='width: 100%; height: 100%;' rows='3' >${ticketDetail.collaboratorPGCAS}</textarea></td>
 							</tr>
 							<tr id='tr_justificationPGCAS'>
 								<td><span id='sp_justificationPGCAS'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_justificationPGCAS' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
+								<td colspan="5"><textarea id='txt_justificationPGCAS' style='width: 100%; height: 100%;' rows='3' >${ticketDetail.justificationPGCAS}</textarea></td>
 							</tr>
 							<tr id='tr_salaryPGCAS'>
 								<td><span id='sp_salaryPGCAS'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_salaryPGCAS' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
+								<td colspan="5"><textarea id='txt_salaryPGCAS' style='width: 100%; height: 100%;' rows='3' >${ticketDetail.salaryPGCAS}</textarea></td>
 							</tr>
 							<tr id='tr_positionPGCCP'>
 								<td><span id='sp_positionPGCCP'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_positionPGCCP' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
+								<td colspan="5"><textarea id='txt_positionPGCCP' style='width: 100%; height: 100%;' rows='3' >${ticketDetail.positionPGCCP}</textarea></td>
 							</tr>
 							<tr id='tr_commentsPGCCP'>
 								<td><span id='sp_commentsPGCCP'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_commentsPGCCP' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
+								<td colspan="5"><textarea id='txt_commentsPGCCP' style='width: 100%; height: 100%;' rows='3' >${ticketDetail.commentsPGCCP}</textarea></td>
 							</tr>
 							<tr id='tr_developmentPlanPGCCP'>
 								<td><span id='sp_developmentPlanPGCCP'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_developmentPlanPGCCP' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
+								<td colspan="5"><textarea id='txt_developmentPlanPGCCP' style='width: 100%; height: 100%;' rows='3' >${ticketDetail.developmentPlanPGCCP}</textarea></td>
 							</tr>
 							<tr id='tr_targetPGCCP'>
 								<td><span id='sp_targetPGCCP'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_targetPGCCP' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
+								<td colspan="5"><textarea id='txt_targetPGCCP' style='width: 100%; height: 100%;' rows='3' >${ticketDetail.targetPGCCP}</textarea></td>
 							</tr>
 							<tr id='tr_salaryPGCCP'>
 								<td><span id='sp_salaryPGCCP'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_salaryPGCCP' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
+								<td colspan="5"><textarea id='txt_salaryPGCCP' style='width: 100%; height: 100%;' rows='3' >${ticketDetail.salaryPGCCP}</textarea></td>
 							</tr>
 							<tr id='tr_positionPGCNC'>
 								<td><span id='sp_positionPGCNC'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_positionPGCNC' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
+								<td colspan="5"><textarea id='txt_positionPGCNC' style='width: 100%; height: 100%;' rows='3' >${ticketDetail.positionPGCNC}</textarea></td>
 							</tr>
 							<tr id='tr_developmentPlanPGCNC'>
 								<td><span id='sp_developmentPlanPGCNC'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_developmentPlanPGCNC' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
+								<td colspan="5"><textarea id='txt_developmentPlanPGCNC' style='width: 100%; height: 100%;' rows='3' >${ticketDetail.developmentPlanPGCNC}</textarea></td>
 							</tr>
 							<tr id='tr_targetPGCNC'>
 								<td><span id='sp_targetPGCNC'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_targetPGCNC' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
+								<td colspan="5"><textarea id='txt_targetPGCNC' style='width: 100%; height: 100%;' rows='3' >${ticketDetail.targetPGCNC}</textarea></td>
 							</tr>
 							<tr id='tr_salaryPGCNC'>
 								<td><span id='sp_salaryPGCNC'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_salaryPGCNC' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
+								<td colspan="5"><textarea id='txt_salaryPGCNC' style='width: 100%; height: 100%;' rows='3' >${ticketDetail.salaryPGCNC}</textarea></td>
 							</tr>
 							<tr id='tr_justificationPGCNC'>
 								<td><span id='sp_justificationPGCNC'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_justificationPGCNC' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
+								<td colspan="5"><textarea id='txt_justificationPGCNC' style='width: 100%; height: 100%;' rows='3' >${ticketDetail.justificationPGCNC}</textarea></td>
 							</tr>
 							<tr id='tr_positionPGCF'>
 								<td><span id='sp_positionPGCF'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_positionPGCF' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
+								<td colspan="5"><textarea id='txt_positionPGCF' style='width: 100%; height: 100%;' rows='3' >${ticketDetail.positionPGCF}</textarea></td>
 							</tr>
 							<tr id='tr_collaboratorPGCF'>
 								<td><span id='sp_collaboratorPGCF'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_collaboratorPGCF' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
+								<td colspan="5"><textarea id='txt_collaboratorPGCF' style='width: 100%; height: 100%;' rows='3' >${ticketDetail.collaboratorPGCF}</textarea></td>
 							</tr>
 							<tr id='tr_justificationPGCF'>
 								<td><span id='sp_justificationPGCF'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_justificationPGCF' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
+								<td colspan="5"><textarea id='txt_justificationPGCF' style='width: 100%; height: 100%;' rows='3' >${ticketDetail.justificationPGCF}</textarea></td>
 							</tr>
 							<tr id='tr_positionPGCAA'>
 								<td><span id='sp_positionPGCAA'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_positionPGCAA' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
+								<td colspan="5"><textarea id='txt_positionPGCAA' style='width: 100%; height: 100%;' rows='3' >${ticketDetail.positionPGCAA}</textarea></td>
 							</tr>
 							<tr id='tr_collaboratorPGCAA'>
 								<td><span id='sp_collaboratorPGCAA'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_collaboratorPGCAA' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
+								<td colspan="5"><textarea id='txt_collaboratorPGCAA' style='width: 100%; height: 100%;' rows='3' >${ticketDetail.collaboratorPGCAA}</textarea></td>
 							</tr>
 							<tr id='tr_justificationPGCAA'>
 								<td><span id='sp_justificationPGCAA'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_justificationPGCAA' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
+								<td colspan="5"><textarea id='txt_justificationPGCAA' style='width: 100%; height: 100%;' rows='3' >${ticketDetail.justificationPGCAA}</textarea></td>
 							</tr>
 							<tr id='tr_requisitionFormatGRC'>
 								<td><span id='sp_requisitionFormatGRC'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_requisitionFormatGRC' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
+								<td colspan="5"><textarea id='txt_requisitionFormatGRC' style='width: 100%; height: 100%;' rows='3' >${ticketDetail.requisitionFormatGRC}</textarea></td>
 							</tr>
 							<tr id='tr_linkDocumentGM'>
 								<td><span id='sp_linkDocumentGM'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_linkDocumentGM' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
+								<td colspan="5"><textarea id='txt_linkDocumentGM' style='width: 100%; height: 100%;' rows='3' >${ticketDetail.linkDocumentGM}</textarea></td>
 							</tr>
 							<tr id='tr_suggestionGSM'>
 								<td><span id='sp_suggestionGSM'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_suggestionGSM' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
+								<td colspan="5"><textarea id='txt_suggestionGSM' style='width: 100%; height: 100%;' rows='3' >${ticketDetail.suggestionGSM}</textarea></td>
 							</tr>
 							<tr id='tr_documentCodeGSM'>
 								<td><span id='sp_documentCodeGSM'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_documentCodeGSM' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
+								<td colspan="5"><textarea id='txt_documentCodeGSM' style='width: 100%; height: 100%;' rows='3' >${ticketDetail.documentCodeGSM}</textarea></td>
 							</tr>
 							<tr id='tr_justificationGSM'>
 								<td><span id='sp_justificationGSM'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_justificationGSM' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
+								<td colspan="5"><textarea id='txt_justificationGSM' style='width: 100%; height: 100%;' rows='3' >${ticketDetail.justificationGSM}</textarea></td>
 							</tr>
 							<tr id='tr_problemDescriptionGPTR'>
 								<td><span id='sp_problemDescriptionGPTR'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_problemDescriptionGPTR' style='width: 100%; height: 100%;' rows='2' readOnly></textarea></td>
+								<td colspan="5"><textarea id='txt_problemDescriptionGPTR' style='width: 100%; height: 100%;' rows='3' >${ticketDetail.problemDescriptionGPTR}</textarea></td>
 							</tr>
-
 						</table>
 					</div>					
 				</div>

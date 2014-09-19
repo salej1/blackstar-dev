@@ -8,6 +8,23 @@
 		getUserWatchingIssues("${user.userEmail}");
 	}
 
+	function getReferenceLink(row){
+		if(row.referenceTypeId == 'O'){
+			return "<a href='/osDetail/show.do?serviceOrderId=" + row.referenceId + "'>" + row.referenceNumber + "</a>";
+		}	
+		else if(row.referenceTypeId == 'T'){
+			return "<a href='/ticketDetail?ticketId=" + row.referenceId + "'>" + row.referenceNumber + "</a>";
+		}
+		else if(row.referenceTypeId == 'I'){
+			return "<a href='/issues/show.do?issueId=" + row.referenceId + "'>" + row.referenceNumber + "</a>";
+		}
+		else if(row.referenceTypeId == 'R'){
+			return "<a href='/bloom/ticketDetail/show.do?ticketId=" + row.referenceId + "'>" + row.referenceNumber + "</a>";
+		}
+
+		return "N/A";
+	}
+
 	function getUserWatchingIssues(user){
 		$.getJSON("/issues/getUserWatchingIssuesJson.do", function(data){
 			$('#userWatchingIssues').dataTable({
@@ -33,15 +50,7 @@
 				],
 				"aoColumnDefs": [
 								{"mRender": function(data, type, row){
-										if(row.referenceTypeId == 'O'){
-											return "<a href='/osDetail/show.do?serviceOrderId=" + row.referenceId + "'>" + row.referenceNumber + "</a>";
-										}	
-										else if(row.referenceTypeId == 'T'){
-											return "<a href='/ticketDetail?ticketId=" + row.referenceId + "'>" + row.referenceNumber + "</a>";
-										}
-										else if(row.referenceTypeId == 'I'){
-											return "<a href='/issues/show.do?issueId=" + row.referenceId + "'>" + row.referenceNumber + "</a>";
-										}
+										return getReferenceLink(row);
 									}, "aTargets" : [0]}
 				]
 			});
@@ -73,15 +82,7 @@
 				],
 				"aoColumnDefs": [
 								{"mRender": function(data, type, row){
-										if(row.referenceTypeId == 'O'){
-											return "<a href='/osDetail/show.do?serviceOrderId=" + row.referenceId + "'>" + row.referenceNumber + "</a>";
-										}	
-										else if(row.referenceTypeId == 'T'){
-											return "<a href='/ticketDetail?ticketId=" + row.referenceId + "'>" + row.referenceNumber + "</a>";
-										}
-										else if(row.referenceTypeId == 'I'){
-											return "<a href='/issues/show.do?issueId=" + row.referenceId + "'>" + row.referenceNumber + "</a>";
-										}
+										return getReferenceLink(row);
 									}, "aTargets" : [0]}
 				]
 			});
