@@ -137,7 +137,7 @@
 <!-- Fin Tabla De Ordenes De Servicio Con Pendientes -->
 
 	<!-- Requisiciones por cerrar - Disponible solo apra usuarios responsables de Req -->
-	<c:set var="reqViewer" scope="session" value="${user.belongsToGroup['Lider de Ingenieria'] || user.belongsToGroup['Ingeniero de Soporte'] || user.belongsToGroup['Gerente de Implementación y Servicio'] || user.belongsToGroup['Ingeniero de Redes y Monitoreo'] || user.belongsToGroup['Jefe de Compras'] || user.belongsToGroup['Compras'] || user.belongsToGroup['Jefe de Capital Humano'] || user.belongsToGroup['Gerente de Calidad']}"/> 
+	<c:set var="reqViewer" scope="session" value="${user.belongsToGroup['Lider de Ingenieria'] || user.belongsToGroup['Ingeniero de Soporte'] || user.belongsToGroup['Gerente de Implementación y Servicio'] || user.belongsToGroup['Ingeniero de Redes y Monitoreo'] || user.belongsToGroup['Jefe de Compras'] || user.belongsToGroup['Compras'] || user.belongsToGroup['Jefe de Capital Humano'] || user.belongsToGroup['Gerente de Calidad'] || user.belongsToGroup['Encargado de las Redes']}"/> 
 	<c:if test="${reqViewer == true}">
 		
 		<!-- Tabla De Tickets internos pendientes - bloomPendingInternalTickets.jsp -->

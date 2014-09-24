@@ -84,7 +84,7 @@ String.prototype.trim = function() {
 	return this.replace(/^\s+|\s+$/g,"");
 }
 
-function sendPolicyToDatabase(policy, conn, eqTypes, sqlLog){
+function sendPolicyToDatabase(policy, conn, eqTypes, sqlLog, range){
 	// sql string initialization
 	var sql = "CALL upsertPolicy(VALUES_PLACEHOLDER);";
 	
@@ -198,6 +198,9 @@ function sendPolicyToDatabase(policy, conn, eqTypes, sqlLog){
 	var stmt = conn.createStatement();
 	stmt.execute(sql);
 	
+	// remove seed
+	range.setValue(2); // sent
+
 	return sqlLog;
 }
 
@@ -273,28 +276,77 @@ function startPolicySyncJob(conn, sqlLog){
 	var eqTypes = loadEquipmentTypes(conn);
 	
 	// start point at the spreadsheet
-	const offset = 4; // Ajustar de acuerdo al numero de polizas cargadas en el sistema
+	const offset = 951; // Ajustar de acuerdo al numero de polizas cargadas en el sistema
 	var startRec = offset;
 	
 	// iterate looking for new policies
-	var range = "A" + startRec.toString() + ":AE" + startRec.toString();
+	var range = "A" + startRec.toString() + ":BD" + startRec.toString();
 	var ss = SpreadsheetApp.getActiveSpreadsheet();
-	var sheet = ss.getSheets()[4];
+	var sheet = ss.getSheets()[1];
 	var data = sheet.getRange(range).getValues();
 	var currPolicy = data[0];
-	
-	while(currPolicy != null && currPolicy[0] != null && currPolicy[0].toString() != ""){
+	var seed = currPolicy[55];
+	var update = 0;
+
+	while(currPolicy != null && currPolicy[11] != null && currPolicy[11].toString() != ""){
 		try{
-			sqlLog = sendPolicyToDatabase(currPolicy, conn, eqTypes, sqlLog);
+			if(seed == 1){
+				sqlLog = sendPolicyToDatabase(currPolicy, conn, eqTypes, sqlLog, sheet.getRange("BD" + startRec.toString()));		
+				update = 1;		
+			}
 		}
 		catch(err){
 			Logger.log("Error al sincronizar poliza # " + startRec);
 			Logger.log(err);
 		}
 		startRec++;
+		seedRange = "BD" + startRec.toString();
+		seed = sheet.getRange(seedRange).getValues()[0];
 		range = "A" + startRec.toString() + ":AE" + startRec.toString();
 		data = SpreadsheetApp.getActiveSpreadsheet().getRange(range).getValues();
 		currPolicy = data[0];
 	}	
+
+	if(update == 1){
+		sqlLog = executeTransfer(conn, sqlLog);
+	}
+
+	return sqlLog;
 }
 
+// Process
+function executeTransfer(conn, sqlLog){
+	var stmt = conn.createStatement();
+	var sql = "call executeTransfer();";
+
+	Logger.log("Executing Transfer...");
+	
+	sqlLog = saveSql(sqlLog, sql);
+	
+	stmt.execute(sql);
+	stmt.close();
+
+	return sqlLog;
+}
+
+// Seed
+function onEdit(event)
+{
+	try{
+		var s = SpreadsheetApp.getActiveSheet();
+		if( s.getName() == "GENERAL" ) { 
+		    var actSht = event.source.getActiveSheet();
+		    var actRng = event.source.getActiveRange();
+
+		    var index = actRng.getRowIndex();
+		    var seedCell = actSht.getRange(index,55);
+		    var serialNumber = actSht.getRange(index,11).getValue();
+		    if(serialNumber != ""){
+			    seedCell.setValue(1);
+		    }
+		}
+	}
+	catch(err){
+		Logger.log(err);
+	}
+}

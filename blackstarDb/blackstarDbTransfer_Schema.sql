@@ -30,6 +30,8 @@
 -- ---------------------------------------------------------------------------
 -- 10	30/06/2014	SAG		Se incrementa tamaño de equipmentUser y contact en policy
 -- ---------------------------------------------------------------------------
+-- 11 	22/09/2014	SAG 	Se agrega tabla de transferencia bloom ticket
+-- ---------------------------------------------------------------------------
 
 
 USE blackstarDbTransfer;
@@ -44,6 +46,28 @@ BEGIN
 -- -----------------------------------------------------------------------------
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
+
+	-- Agregando bloomTicket
+	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDbTransfer' AND TABLE_NAME = 'bloomTicket') = 0 THEN
+		CREATE TABLE blackstarDbTransfer.bloomTicket(
+			bloomTicketId INT AUTO_INCREMENT,
+			created DATETIME,
+			createdByUsr VARCHAR(100),
+			requestArea VARCHAR(100),
+			ticketType INT,
+			dueDate DATETIME,
+			description VARCHAR(400),
+			project VARCHAR(100),
+			office VARCHAR(100),
+			ticketNumber VARCHAR(100),
+			followUp VARCHAR(2000),
+			responseTime DATETIME,
+			resolved INT,
+			status INT(1),
+			processed INT,
+			KEY(bloomTicketId)
+		)ENGINE=INNODB;
+	END IF;
 
 	-- Aumentando capacidad de equipmentUser de policy
 	ALTER TABLE policy MODIFY equipmentUser VARCHAR(400);

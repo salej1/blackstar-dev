@@ -5369,6 +5369,8 @@ DELIMITER ;
 -- ---------------------------------------------------------------------------
 -- 10	30/06/2014	SAG		Se incrementa tamaño de equipmentUser y contact en policy
 -- ---------------------------------------------------------------------------
+-- 11 	22/09/2014	SAG 	Se agrega tabla de transferencia bloom ticket
+-- ---------------------------------------------------------------------------
 
 
 USE blackstarDbTransfer;
@@ -5383,6 +5385,28 @@ BEGIN
 -- -----------------------------------------------------------------------------
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
+
+	-- Agregando bloomTicket
+	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDbTransfer' AND TABLE_NAME = 'bloomTicket') = 0 THEN
+		CREATE TABLE blackstarDbTransfer.bloomTicket(
+			bloomTicketId INT AUTO_INCREMENT,
+			created DATETIME,
+			createdByUsr VARCHAR(100),
+			requestArea VARCHAR(100),
+			ticketType INT,
+			dueDate DATETIME,
+			description VARCHAR(400),
+			project VARCHAR(100),
+			office VARCHAR(100),
+			ticketNumber VARCHAR(100),
+			followUp VARCHAR(2000),
+			responseTime DATETIME,
+			resolved INT,
+			status INT(1),
+			processed INT,
+			KEY(bloomTicketId)
+		)ENGINE=INNODB;
+	END IF;
 
 	-- Aumentando capacidad de equipmentUser de policy
 	ALTER TABLE policy MODIFY equipmentUser VARCHAR(400);
@@ -5490,12 +5514,60 @@ DROP PROCEDURE blackstarDbTransfer.upgradeSchema;
 -- -----------------------------------------------------------------------------
 -- 10 	20/08/2014	SAG 	Se incorpora proyecto Bloom
 -- -----------------------------------------------------------------------------
+-- 11 	22/09/2014	SAG 	Se agrega UpsertBloomTicket
+-- -----------------------------------------------------------------------------
 
 use blackstarDbTransfer;
 
 
 DELIMITER $$
 
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.upsertBloomTicket
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS upsertBloomTicket $$
+CREATE PROCEDURE upsertBloomTicket(
+	pCreated DATETIME,
+	pCreatedByUsr VARCHAR(100),
+	pRequestArea VARCHAR(100),
+	pTicketType INT,
+	pDueDate DATETIME,
+	pDescription VARCHAR(400),
+	pProject VARCHAR(100),
+	pOffice VARCHAR(100),
+	pTicketNumber VARCHAR(100),
+	pFollowUp VARCHAR(2000),
+	pResponseTime DATETIME,
+	pResolved INT,
+	pStatus CHAR(1),
+	processed INT
+)
+BEGIN
+	IF(SELECT count(*) FROM blackstarDbTransfer.bloomTicket WHERE ticketNumber = pTicketNumber)  = 0 THEN
+		INSERT INTO blackstarDbTransfer.bloomTicket(
+			created,  createdByUsr,  requestArea,  ticketType,  dueDate,  description,  project,  office,  ticketNumber,  followUp,  responseTime,  resolved,  status, processed )
+		SELECT 
+			pCreated, pCreatedByUsr, pRequestArea, pTicketType, pDueDate, pDescription, pProject, pOffice, pTicketNumber, pFollowUp, pResponseTime, pResolved, pStatus, 0;
+	ELSE
+		UPDATE blackstarDbTransfer.bloomTicket SET
+			created = pCreated,
+			createdByUsr = pCreatedByUsr,
+			requestArea = pRequestArea,
+			ticketType = pTicketType,
+			dueDate = pDueDate,
+			description = pDescription,
+			project = pProject,
+			office = pOffice,
+			ticketNumber = pTicketNumber,
+			followUp = pFollowUp,
+			responseTime = pResponseTime,
+			resolved = pResolved,
+			status = pStatus,
+			processed = 0
+		WHERE ticketNumber = pTicketNumber;
+	END IF;
+END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.UpsertServiceOrder
@@ -5879,6 +5951,38 @@ BEGIN
 
 	-- ACTUALIZACION DEL ESTADO DE LOS TICKETS
 	CALL blackstarDb.UpdateTicketStatus();
+
+	-- TRANSFERENCIA DE LOS TICKETS BLOOM
+	INSERT INTO blackstarDb.bloomTicket(ticketNumber, applicantUserId, officeId, serviceTypeId, statusId, applicantAreaId, dueDate, project, description, created, createdby, createdByUsr)
+	SELECT t1.ticketNumber, bu.blackstarUserId, SUBSTRING(t1.office, 1, 1), t1.ticketType, t1.status, st.applicantAreaId, t1.dueDate, t1.project, t1.description, t1.created, 'BloomTicketTransfer', t1.createdByUsr
+	FROM blackstarDbTransfer.bloomTicket t1
+		INNER JOIN blackstarDb.blackstarUser bu ON t1.createdByUsr = bu.email
+		INNER JOIN blackstarDb.bloomServiceType st ON st._id = t1.ticketType
+		LEFT OUTER JOIN blackstarDb.bloomTicket t2 ON t1.ticketNumber =t2.ticketNumber
+	WHERE t2._id IS NULL
+	AND t1.processed = 0;
+
+	-- ACTUALIZACION DE ESTATUS DE LOS TICKETS
+	UPDATE blackstarDb.bloomTicket t2
+		INNER JOIN blackstarDbTransfer.bloomTicket t1 ON t1.ticketNumber = t2.ticketNumber
+		INNER JOIN blackstarDb.blackstarUser bu ON t1.createdByUsr = bu.email
+		INNER JOIN blackstarDb.bloomServiceType st ON st._id = t1.ticketType
+	SET 
+		t2.applicantUserId = bu.blackstarUserId,
+		t2.officeId = SUBSTRING(t1.office, 1, 1),
+		t2.serviceTypeId = t1.ticketType,
+		t2.statusId = t1.status,
+		t2.applicantAreaId = st.applicantAreaId,
+		t2.dueDate = t1.dueDate,
+		t2.project = t1.project,
+		t2.description = t1.description,
+		t2.responseDate = t1.responseTime,
+		t2.createdByUsr = t1.createdByUsr,
+		t2.modified = now(),
+		t2.modifiedBy = 'BloomTicketTransfer',
+		t2.modifiedByUsr = 'portal-servicios',
+		t2.created = t1.created
+	WHERE t1.processed = 0;
 -- -----------------------------------------------------------------------------
 
 
