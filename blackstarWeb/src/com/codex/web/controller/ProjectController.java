@@ -24,7 +24,9 @@ import com.blackstar.model.User;
 import com.blackstar.model.UserSession;
 import com.blackstar.web.AbstractController;
 import com.codex.model.dto.CostCenterDTO;
+import com.codex.model.dto.CstDTO;
 import com.codex.service.ClientService;
+import com.codex.service.CstService;
 import com.codex.service.ExchangeRateService;
 import com.codex.service.ProjectService;
 import com.codex.vo.ClientVO;
@@ -38,7 +40,8 @@ public class ProjectController extends AbstractController {
 	private ProjectService service;
 	private ClientService cService = null;
 	private ExchangeRateService xrService;
-
+	private CstService cstService;
+	
 	public void setService(ProjectService service) {
 		this.service = service;
 	}
@@ -51,7 +54,11 @@ public class ProjectController extends AbstractController {
 		this.xrService = xrService;
 	}
 	
-  @RequestMapping(value = "/showList.do") 
+  public void setCstService(CstService cstService) {
+		this.cstService = cstService;
+	}
+
+@RequestMapping(value = "/showList.do") 
   public String showList(ModelMap model, HttpServletRequest request ){
 	User user = null;
 	try {
@@ -72,7 +79,8 @@ public class ProjectController extends AbstractController {
 		  @ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession){
 	ProjectVO project = null;
 	try {
-		 project = service.getProjectDetail(projectId);
+		 project = service.getProjectDetail(projectId, cstService.getCstByEmail(userSession.getUser().getUserEmail()));
+		
 	     model.addAttribute("project", project);
 	     model.addAttribute("entryTypes", service.getAllEntryTypes());
 	     model.addAttribute("entryItemTypes", service.getAllEntryItemTypes());
@@ -113,13 +121,21 @@ public class ProjectController extends AbstractController {
   @RequestMapping(value = "/create.do")
   public String create(ModelMap model, @RequestParam(required = false) Integer clientId,
 		  @ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession){
-	ProjectVO project = new ProjectVO();
+	ProjectVO project;
 	ClientVO client= null;
 	Integer projectNum = null;
 	String officeId = null;
 	try {
+		
 		 officeId = service.getCSTOffice(userSession.getUser().getUserEmail());
 		 projectNum = service.getNewProjectId(officeId);
+		 CstDTO cst = cstService.getCstByEmail(userSession.getUser().getUserEmail());
+	     if(cst == null){
+	    	 throw new Exception(String.format("El usuario %s no esta registrado como CST", userSession.getUser().getUserName()));
+	     }
+		 
+	     project = new ProjectVO(cst);
+		 
 		 if(clientId != null && ((client = cService.getClientById(clientId)) != null)){
 			 project.setClientId(client.getId());
 			 project.setLocation(client.getState());
@@ -132,6 +148,7 @@ public class ProjectController extends AbstractController {
 	     project.setCostCenter(project.getProjectNumber());
 	     project.setCreated(new Date());
 	     project.setChangeType(xrService.getExchangeRate());
+	     
 	     model.addAttribute("project", project);
 	     model.addAttribute("entryTypes", service.getAllEntryTypes());
 	     model.addAttribute("entryItemTypes", service.getAllEntryItemTypes());
@@ -253,10 +270,11 @@ public class ProjectController extends AbstractController {
   
   @RequestMapping(value = "/advanceStatus.do") 
   public String advanceStatus(ModelMap model, HttpServletRequest request 
-		            , @RequestParam(required = true) Integer projectId){
+		            , @RequestParam(required = true) Integer projectId,
+		            @ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession){
 	  ProjectVO project = null;
 	  try {
-		    project = service.getProjectDetail(projectId);
+		    project = service.getProjectDetail(projectId, cstService.getCstByEmail(userSession.getUser().getUserEmail()));
 	        service.advanceStatus(project);
 	  } catch (Exception e) {
 			e.printStackTrace();

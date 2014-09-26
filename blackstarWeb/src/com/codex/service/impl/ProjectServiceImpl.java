@@ -13,6 +13,7 @@ import com.blackstar.model.User;
 import com.blackstar.services.AbstractService;
 import com.blackstar.services.EmailServiceFactory;
 import com.codex.model.dto.CostCenterDTO;
+import com.codex.model.dto.CstDTO;
 import com.codex.db.ClientDAO;
 import com.codex.db.ProjectDAO;
 import com.codex.service.PDFReportService;
@@ -140,6 +141,23 @@ public class ProjectServiceImpl extends AbstractService
 	  mail.sendEmail(from.getUserEmail(), to.getUserEmail(), "Asignación de Proyecto " + project.getProjectNumber(), message.toString());
 	}
   }
+  
+
+	@Override
+	public ProjectVO getProjectDetail(Integer projectId, CstDTO cst) {
+		ProjectVO p = getProjectDetail(projectId);
+
+		if(cst != null){
+			 p.setCstAutoAuth(cst.getAutoAuthProjects());
+			 p.setCstEmail(cst.getEmail());
+			 p.setCstMobile(cst.getMobile());
+			 p.setCstName(cst.getName());
+			 p.setCstPhone(cst.getPhone());
+			 p.setCstPhoneExt(cst.getPhoneExt());
+		}
+		 
+		 return p;
+	}
 
   @Override
   public ProjectVO getProjectDetail(Integer projectId) {
@@ -270,7 +288,14 @@ public class ProjectServiceImpl extends AbstractService
 
 	  switch(project.getStatusId()){
 	  case 1: 
-		  gotoByAuthStatus(project);
+		  if(project.getCstAutoAuth() == 1 && project.getTotalProjectNumber() < Globals.PROJECT_AUTH_LIMIT){
+			  project.setStatusId(project.getStatusId() + 1);
+			  gotoAuthStatus(project);  
+		  }
+		  else{
+			  gotoByAuthStatus(project);
+		  }
+		  
 		  break;	
 	  case 2: 
 		  gotoAuthStatus(project);
@@ -286,7 +311,7 @@ public class ProjectServiceImpl extends AbstractService
 	  IEmailService mail = EmailServiceFactory.getEmailService();
 
 	  // STATUS ADVANCE
-	  dao.advanceStatus(project.getId());
+	  dao.advanceStatus(project.getId(), project.getStatusId() + 1);
 	  
 	  if(project.getTotalProjectNumber() < Globals.PROJECT_AUTH_LIMIT){
 
@@ -326,7 +351,7 @@ public class ProjectServiceImpl extends AbstractService
 	  IEmailService mail = EmailServiceFactory.getEmailService();
 
 	  // STATUS ADVANCE
-	  dao.advanceStatus(project.getId());
+	  dao.advanceStatus(project.getId(), project.getStatusId() + 1);
 
 	  to = dao.getResponsable(project.getId());
 	  message.append(String.format("Proyecto Autorizado: ", project.getProjectNumber()));
@@ -347,7 +372,7 @@ public class ProjectServiceImpl extends AbstractService
 	  saveReport(project, report);
 
 	  // STATUS ADVANCE
-	  dao.advanceStatus(project.getId());
+	  dao.advanceStatus(project.getId(), project.getStatusId() + 1);
 
 	  // DESACTIVADO TEMPORALMENTE HASTA QUE SE VALIDE CREACION DE PDF
 	  // gmService.sendEmail(client.getEmail(), "Cotización "  + priceProposal
@@ -398,5 +423,6 @@ public List<String> getIncotermList() {
 public String getPriceList() {
 	return dao.getPriceList().toString();
 }
+
 
 }

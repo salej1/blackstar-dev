@@ -214,9 +214,9 @@ public class ProjectDAOImpl extends AbstractDAO
   }
   
   @Override
-  public void advanceStatus(Integer projectId){
-	String sqlQuery = "CALL CodexAdvanceStatus(?)";
-	getJdbcTemplate().update(sqlQuery, new Object[]{projectId});
+  public void advanceStatus(Integer projectId, Integer statusId){
+	String sqlQuery = "CALL CodexAdvanceStatus(?,?)";
+	getJdbcTemplate().update(sqlQuery, new Object[]{projectId, statusId});
   }
   
   @Override

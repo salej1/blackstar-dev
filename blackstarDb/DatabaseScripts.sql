@@ -3117,10 +3117,25 @@ CALL ExecuteTransfer();
 -- --   --------   -------  ------------------------------------
 -- 3    01/10/2014  SAG     Se agrega blackstarDb.codexIncoterm
 -- ---------------------------------------------------------------------------
+-- 4    24/09/2014  SAG     Se agrega blackstarDb.cst
+-- ---------------------------------------------------------------------------
 
 USE blackstarDb;
 
 DELIMITER ;
+
+CREATE TABLE IF NOT EXISTS blackstarDb.cst(
+  cstId INTEGER NOT NULL AUTO_INCREMENT ,
+  name VARCHAR(400) NOT NULL,
+  officeId CHAR(1) NOT NULL,
+  phone VARCHAR(200),
+  phoneExt VARCHAR(200),
+  mobile VARCHAR(200),
+  email VARCHAR(400) NOT NULL,
+  autoAuthProjects INT,
+  PRIMARY KEY(cstId)
+  -- FOREIGN KEY(officeId) REFERENCES office(officeId)
+)ENGINE=INNODB;
 
 CREATE TABLE IF NOT EXISTS blackstarDb.location(
   _id INT NOT NULL AUTO_INCREMENT,
@@ -3490,12 +3505,30 @@ DROP PROCEDURE blackstarDb.upgradeCodexSchema;
 --                          Se elimina:
 --                              blackstarDb.GetNextEntryId
 -- -----------------------------------------------------------------------------
+-- 4  24/09/2014    SAG     Se agrega:
+--                              blackstarDb.GetCstByEmail
+--                          Se modifica:
+--                              blackstarDb.GetCSTOffice
+-- -----------------------------------------------------------------------------
 
 use blackstarDb;
 
 DELIMITER $$
 
 
+-- -----------------------------------------------------------------------------
+  -- blackstarDb.GetCstByEmail
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetCstByEmail$$
+CREATE PROCEDURE blackstarDb.GetCstByEmail(pcstEmail VARCHAR(400))
+BEGIN
+
+  SELECT *
+  FROM blackstarDb.cst
+  WHERE email = pcstEmail
+  LIMIT 1;
+  
+END$$
 
 -- -----------------------------------------------------------------------------
   -- blackstarDb.GetCodexPriceList
@@ -3513,6 +3546,7 @@ BEGIN
   ORDER BY id;
   
 END$$
+
 -- -----------------------------------------------------------------------------
   -- blackstarDb.UpsertCodexCostCenter
 -- -----------------------------------------------------------------------------
@@ -3534,7 +3568,7 @@ DROP PROCEDURE IF EXISTS blackstarDb.GetCSTOffice$$
 CREATE PROCEDURE blackstarDb.GetCSTOffice(pCst VARCHAR(200))
 BEGIN
 
-  SELECT officeId FROM blackstarDb.cstOffice WHERE cstId = pCst LIMIT 1;
+  SELECT officeId FROM blackstarDb.cst WHERE email = pCst LIMIT 1;
   
 END$$
 
@@ -4196,12 +4230,12 @@ END$$
 	-- blackstarDb.CodexAdvanceStatus
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.CodexAdvanceStatus$$
-CREATE PROCEDURE blackstarDb.`CodexAdvanceStatus`(pProjectId int(11))
+CREATE PROCEDURE blackstarDb.`CodexAdvanceStatus`(pProjectId int(11), pStatusId INTEGER)
 BEGIN
 
   DECLARE status INTEGER;
   SET status = (SELECT cp.statusId FROM codexProject cp WHERE cp._id =  pProjectId);
-  UPDATE codexProject SET statusId = (status + 1) WHERE _id = pProjectId;
+  UPDATE codexProject SET statusId = pStatusId WHERE _id = pProjectId;
 END$$
 
 -- -----------------------------------------------------------------------------
@@ -4319,6 +4353,22 @@ DELIMITER $$
 DROP PROCEDURE IF EXISTS blackstarDb.updateCodexData$$
 CREATE PROCEDURE blackstarDb.updateCodexData()
 BEGIN
+
+	-- Lista de CST
+	IF(SELECT count(*) FROM blackstarDb.cst) = 0 THEN
+		INSERT INTO blackstarDb.cst(name, officeId, phone, phoneExt, mobile, email, autoAuthProjects)
+		SELECT 'SERGIO ALEJANDRO GOMEZ AVILA', 'Q', '(22) 2222-3333', '456', '(22) 4444-5555', 'portal-servicios@gposac.com.mx', 1 UNION
+		SELECT 'JUAN JOSE ESPINOZA BRAVO', 'G', '(33) 3793-0138', '211', '(33) 3129-3377', 'juanjose.espinoza@gposac.com.mx', 1 UNION
+		SELECT 'FRANCISCO RAMÓN UREÑA VILLANUEVA', 'G', '(33) 3793-0138', '206', '(33) 3661-1378', 'francisco.urena@gposac.com.mx', 0 UNION
+		SELECT 'JOSE IVAN MARTIN MIRANDA', 'Q', '442 295 24 68', '312', '(44) 2226-7847', 'ivan.martin@gposac.com.mx', 1 UNION
+		SELECT 'JUAN RAMOS ANAYA', 'Q', '442 295 24 68', '318', '', 'juan.ramos@gposac.com.mx', 0 UNION
+		SELECT 'JORGE ALBERTO MARTINEZ', 'M', '(55) 5020-2160', '427', '(55) 1452-7626', 'jorge.martinez@gposac.com.mx', 1 UNION
+		SELECT 'MICHEL GALICIA CAMACHO', 'M', '(55) 5020-2160', '429', '', 'michelle.galicia@gposac.com.mx', 0 UNION
+		SELECT 'LILIANA DIAZ CUEVAS', 'M', '(55) 5020-2160', '407', '(55) 1452-7278', 'liliana.diaz@gposac.com.mx', 0 UNION
+		SELECT 'PILAR PAZ TORRES', 'M', '(55) 5020-2160', '428', '', 'pilar.paz@gposac.com.mx', 0 UNION
+		SELECT 'NICOLAS ANDRADE CARRILLO', 'G', '(33) 3793-0138', '217', '(33) 3191-9226', 'nicolas.andrade@gposac.com.mx', 1 UNION
+		SELECT 'SAUL ANDRADE GONZALEZ', 'G', '(33) 3793-0138', '220', '(33) 3576-8144', 'saul.andrade@gposac.com.mx', 1 ;
+	END IF;
 
 	-- Lista de proyectos
 	IF(SELECT count(*) FROM blackstarDb.codexCostCenter) = 0 THEN

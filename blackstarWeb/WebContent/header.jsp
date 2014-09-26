@@ -42,35 +42,35 @@
 		       <li><span class="active" onclick="window.location = '${pageContext.request.contextPath}/codex/dashboard/show.do'">Inicio</span></li>
 			    <li><a href="${pageContext.request.contextPath}/codex/client/showClientList.do">Clientes</a></li>
 			    <li><a href="${pageContext.request.contextPath}/codex/project/showList.do">Cedula de Proyectos</a></li>
-				<li><a href="${pageContext.request.contextPath}/tickets">Cotizaciones</a></li>
-				<li><a href="${pageContext.request.contextPath}/serviceOrders/show.do">Pedidos</a></li>
-				<li><a href="${pageContext.request.contextPath}/encuestas">Indicadores</a></li>
+				<li><a href="${pageContext.request.contextPath}/codex/priceProposal/showAll.do">Cotizaciones</a></li>
+				<li><a href="${pageContext.request.contextPath}">Pedidos</a></li>
+				<li><a href="${pageContext.request.contextPath}">Indicadores</a></li>
 			</c:when>
 			
 		<c:when test="${pageSection == 'clientes'}">
 		       <li><a href="${pageContext.request.contextPath}/codex/dashboard/show.do">Inicio</a></li>
 			    <li><span class="active" onclick="window.location = '${pageContext.request.contextPath}/codex/client/showClientList.do'">Clientes</span></li>
 			    <li><a href="${pageContext.request.contextPath}/codex/project/showList.do">Cedula de Proyectos</a></li>
-				<li><a href="${pageContext.request.contextPath}/tickets">Cotizaciones</a></li>
-				<li><a href="${pageContext.request.contextPath}/serviceOrders/show.do">Pedidos</a></li>
-				<li><a href="${pageContext.request.contextPath}/encuestas">Indicadores</a></li>
+				<li><a href="${pageContext.request.contextPath}/codex/priceProposal/showAll.do">Cotizaciones</a></li>
+				<li><a href="${pageContext.request.contextPath}">Pedidos</a></li>
+				<li><a href="${pageContext.request.contextPath}">Indicadores</a></li>
 			</c:when>
 			
 			<c:when test="${pageSection == 'projects'}">
 		       <li><a href="${pageContext.request.contextPath}/codex/dashboard/show.do">Inicio</a></li>
 		       <li><a href="${pageContext.request.contextPath}/codex/client/showClientList.do">Clientes</a></li>
 			    <li><span class="active" onclick="window.location = '${pageContext.request.contextPath}/codex/project/showList.do'">Cedula de Proyectos</span></li>
-				<li><a href="${pageContext.request.contextPath}/tickets">Cotizaciones</a></li>
-				<li><a href="${pageContext.request.contextPath}/serviceOrders/show.do">Pedidos</a></li>
-				<li><a href="${pageContext.request.contextPath}/encuestas">Indicadores</a></li>
+				<li><a href="${pageContext.request.contextPath}/codex/priceProposal/showAll.do">Cotizaciones</a></li>
+				<li><a href="${pageContext.request.contextPath}">Pedidos</a></li>
+				<li><a href="${pageContext.request.contextPath}">Indicadores</a></li>
 			</c:when>
 			<c:otherwise>
 			    <li><a href="${pageContext.request.contextPath}/codex/dashboard/show.do">Inicio</a></li>
 		       <li><a href="${pageContext.request.contextPath}/codex/client/showClientList.do">Clientes</a></li>
 			    <li><span class="active" onclick="window.location = '${pageContext.request.contextPath}/codex/project/showList.do'">Cedula de Proyectos</span></li>
-				<li><a href="${pageContext.request.contextPath}/tickets">Cotizaciones</a></li>
-				<li><a href="${pageContext.request.contextPath}/serviceOrders/show.do">Pedidos</a></li>
-				<li><a href="${pageContext.request.contextPath}/encuestas">Indicadores</a></li>
+				<li><a href="${pageContext.request.contextPath}/codex/priceProposal/showAll.do">Cotizaciones</a></li>
+				<li><a href="${pageContext.request.contextPath}">Pedidos</a></li>
+				<li><a href="${pageContext.request.contextPath}">Indicadores</a></li>
 			</c:otherwise>
 		</c:choose>
 			<li><span style="width:15px;"></span></li>

@@ -27,12 +27,30 @@
 --                          Se elimina:
 --                              blackstarDb.GetNextEntryId
 -- -----------------------------------------------------------------------------
+-- 4  24/09/2014    SAG     Se agrega:
+--                              blackstarDb.GetCstByEmail
+--                          Se modifica:
+--                              blackstarDb.GetCSTOffice
+-- -----------------------------------------------------------------------------
 
 use blackstarDb;
 
 DELIMITER $$
 
 
+-- -----------------------------------------------------------------------------
+  -- blackstarDb.GetCstByEmail
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetCstByEmail$$
+CREATE PROCEDURE blackstarDb.GetCstByEmail(pcstEmail VARCHAR(400))
+BEGIN
+
+  SELECT *
+  FROM blackstarDb.cst
+  WHERE email = pcstEmail
+  LIMIT 1;
+  
+END$$
 
 -- -----------------------------------------------------------------------------
   -- blackstarDb.GetCodexPriceList
@@ -50,6 +68,7 @@ BEGIN
   ORDER BY id;
   
 END$$
+
 -- -----------------------------------------------------------------------------
   -- blackstarDb.UpsertCodexCostCenter
 -- -----------------------------------------------------------------------------
@@ -71,7 +90,7 @@ DROP PROCEDURE IF EXISTS blackstarDb.GetCSTOffice$$
 CREATE PROCEDURE blackstarDb.GetCSTOffice(pCst VARCHAR(200))
 BEGIN
 
-  SELECT officeId FROM blackstarDb.cstOffice WHERE cstId = pCst LIMIT 1;
+  SELECT officeId FROM blackstarDb.cst WHERE email = pCst LIMIT 1;
   
 END$$
 
@@ -733,12 +752,12 @@ END$$
 	-- blackstarDb.CodexAdvanceStatus
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.CodexAdvanceStatus$$
-CREATE PROCEDURE blackstarDb.`CodexAdvanceStatus`(pProjectId int(11))
+CREATE PROCEDURE blackstarDb.`CodexAdvanceStatus`(pProjectId int(11), pStatusId INTEGER)
 BEGIN
 
   DECLARE status INTEGER;
   SET status = (SELECT cp.statusId FROM codexProject cp WHERE cp._id =  pProjectId);
-  UPDATE codexProject SET statusId = (status + 1) WHERE _id = pProjectId;
+  UPDATE codexProject SET statusId = pStatusId WHERE _id = pProjectId;
 END$$
 
 -- -----------------------------------------------------------------------------

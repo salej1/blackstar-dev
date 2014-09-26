@@ -7,9 +7,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.codex.model.CurrencyType;
+import com.codex.model.dto.CstDTO;
+
 public class ProjectVO {
 
-	
 	private Integer id;
 	private String projectNumber;
 	private Integer clientId;
@@ -41,7 +43,37 @@ public class ProjectVO {
 	private Date modified;
 	private String modifiedBy;
 	private Integer modifiedByUsr;
+	private String cstName;
+	private String cstPhone;
+	private String cstPhoneExt;
+	private String cstMobile;
+	private String cstEmail;
+	private Integer cstAutoAuth;
 	
+	public ProjectVO(){
+		
+	}
+	
+	public ProjectVO(CstDTO cst) {
+		super();
+		this.cstName = cst.getName();
+		this.cstPhone = cst.getPhone();
+		this.cstPhoneExt = cst.getPhoneExt();
+		this.cstMobile = cst.getMobile();
+		this.cstEmail = cst.getEmail();
+		this.cstAutoAuth = cst.getAutoAuthProjects();
+	}
+	
+	public String getCurrencyCode(){
+		if(this.currencyTypeId == CurrencyType.USD){
+			return "USD";
+		}
+		else if(this.currencyTypeId == CurrencyType.MXN){
+			return "MXN";
+		}
+		else return "";
+	}
+		
 	public Integer getId() {
 		return id;
 	}
@@ -232,6 +264,48 @@ public class ProjectVO {
 	}
 	public void setModifiedByUsr(Integer modifiedByUsr) {
 		this.modifiedByUsr = modifiedByUsr;
+	}
+	public String getCstNane() {
+		return cstName;
+	}
+	public void setCstNane(String cstNane) {
+		this.cstName = cstNane;
+	}
+	public String getCstPhone() {
+		return cstPhone;
+	}
+	public void setCstPhone(String cstPhone) {
+		this.cstPhone = cstPhone;
+	}
+	public String getCstEmail() {
+		return cstEmail;
+	}
+	public void setCstEmail(String cstEmail) {
+		this.cstEmail = cstEmail;
+	}
+	public String getCstName() {
+		return cstName;
+	}
+	public void setCstName(String cstName) {
+		this.cstName = cstName;
+	}
+	public Integer getCstAutoAuth() {
+		return cstAutoAuth;
+	}
+	public void setCstAutoAuth(Integer cstAutoAuth) {
+		this.cstAutoAuth = cstAutoAuth;
+	}
+	public String getCstPhoneExt() {
+		return cstPhoneExt;
+	}
+	public void setCstPhoneExt(String cstPhoneExt) {
+		this.cstPhoneExt = cstPhoneExt;
+	}
+	public String getCstMobile() {
+		return cstMobile;
+	}
+	public void setCstMobile(String cstMobile) {
+		this.cstMobile = cstMobile;
 	}
 	
 }

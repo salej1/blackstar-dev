@@ -21,7 +21,6 @@
 		 try{
 		     var newProjects = $.parseJSON('${newProjects}');
 		     var authProjects = $.parseJSON('${authProjects}');
-		     var cotProjects = $.parseJSON('${cotProjects}');
 		     var byAuthProjects = $.parseJSON('${byAuthProjects}');
 		 }
 		 catch(err){
@@ -72,29 +71,6 @@
 
 			);
 		 
-		 $('#cotProjectsList').dataTable({
-				"bProcessing": true,
-				"bFilter": true,
-				"bLengthChange": false,
-				"iDisplayLength": 10,
-				"bInfo": false,
-				"sPaginationType": "full_numbers",
-				"aaData": cotProjects,
-				"sDom": '<"top"i>rt<"bottom"flp><"clear">',
-				"aoColumns": [
-							  { "mData": "projectNumber"},
-							  { "mData": "clientDescription" },
-							  { "mData": "created" },
-							  { "mData": "location" },
-							  { "mData": "statusDescription" },
-							  { "mData": null }
-						  ],
-				"aoColumnDefs" : [{"mRender" : function(data, type, row){return "<div align=center style='width:75px;'><a href=/codex/project/advanceStatus.do?projectId=" + row.id + ">" + "Crear pedido" + "</a></div>";}, "aTargets" : [5]},
-								  {"mRender" : function(data, type, row){return "<div align=center style='width:75px;'><a href=${pageContext.request.contextPath}/codex/project/edit.do?projectId=" + row.id + ">" + data + "</a></div>";}, "aTargets" : [0]}]}
-
-			);
-		 
-		 
 		 $('#byAuthProjectsList').dataTable({
 				"bProcessing": true,
 				"bFilter": true,
@@ -125,7 +101,9 @@
  </head>
 <body>
 	<div id="content" class="container_16 clearfix">
-	     <c:set var="sysSalesManger" scope="request" value="${user.belongsToGroup['Gerente Comercial']}" />
+	     <c:set var="sysSalesManger" scope="request" value="${user.belongsToGroup['Gerente comercial']}" />
+	     <c:set var="sysCST" scope="request" value="${user.belongsToGroup['CST']}" />
+
 	     <div class="grid_16">	
 			<p>
 				<img src="/img/navigate-right.png"/><a href="${pageContext.request.contextPath}/codex/client/create.do" >Nuevo Prospecto</a>
@@ -135,120 +113,80 @@
 			</p>
 		</div>
 		
-		<c:choose>
-		         <c:when test="${sysSalesManger == true}">
-                      <div class="grid_16">
-		<div class="box">
-			<h2>C. de proyectos por autorizar</h2>
-			<div class="utils">
-				
+		<c:if test="${user.belongsToGroup['Gerente comercial']}">
+        <div class="grid_16">
+			<div class="box">
+				<h2>C. de proyectos por autorizar</h2>
+				<div class="utils">
+					
+				</div>
+				<table cellpadding="0" cellspacing="0" border="0" class="display" id="byAuthProjectsList">
+					<thead>
+						<tr>
+							<th>Proyecto</th>
+							<th>Cliente</th>
+							<th>Ultima Actividad</th>
+							<th>Ubicacion</th>
+							<th>Estatus</th>
+							<th>Accion</th>
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+				</table>
 			</div>
-			<table cellpadding="0" cellspacing="0" border="0" class="display" id="byAuthProjectsList">
-				<thead>
-					<tr>
-						<th>Proyecto</th>
-						<th>Cliente</th>
-						<th>Ultima Actividad</th>
-						<th>Ubicacion</th>
-						<th>Estatus</th>
-						<th>Accion</th>
-					</tr>
-				</thead>
-				<tbody>
-
-				</tbody>
-			</table>
 		</div>
-	</div>
-                 </c:when>
-                 <c:otherwise>
-                     <div class="grid_16">
-
-			<div class="grid_16">
-		<div class="box">
-			<h2>C. de proyectos nuevas</h2>
-			<div class="utils">
-				
-			</div>
-			<table cellpadding="0" cellspacing="0" border="0" class="display" id="newProjectsList">
-				<thead>
-					<tr>
-						<th>Proyecto</th>
-						<th>Cliente</th>
-						<th>Ultima Actividad</th>
-						<th>Ubicacion</th>
-						<th>Estatus</th>
-						<th>Accion</th>
-					</tr>
-				</thead>
-				<tbody>
-
-				</tbody>
-			</table>
-		</div>
-	</div>
-	
-	
-		</div>
+        </c:if>   
+        <c:if test="${sysCST}" >   
 		<div class="grid_16">
+			<div class="box">
+				<h2>C. de proyectos nuevas</h2>
+				<div class="utils">
+					
+				</div>
+				<table cellpadding="0" cellspacing="0" border="0" class="display" id="newProjectsList">
+					<thead>
+						<tr>
+							<th>Proyecto</th>
+							<th>Cliente</th>
+							<th>Ultima Actividad</th>
+							<th>Ubicacion</th>
+							<th>Estatus</th>
+							<th>Accion</th>
+						</tr>
+					</thead>
+					<tbody>
 
-			<div class="grid_16">
-		<div class="box">
-			<h2>C. de proyectos autorizadas</h2>
-			<div class="utils">
-				
+					</tbody>
+				</table>
 			</div>
-			<table cellpadding="0" cellspacing="0" border="0" class="display" id="authProjectsList">
-				<thead>
-					<tr>
-						<th>Proyecto</th>
-						<th>Cliente</th>
-						<th>Ultima Actividad</th>
-						<th>Ubicacion</th>
-						<th>Estatus</th>
-						<th>Accion</th>
-					</tr>
-				</thead>
-				<tbody>
+		</div>
 
-				</tbody>
-			</table>
+		<div class="grid_16">
+			<div class="box">
+				<h2>C. de proyectos autorizadas</h2>
+				<div class="utils">
+					
+				</div>
+				<table cellpadding="0" cellspacing="0" border="0" class="display" id="authProjectsList">
+					<thead>
+						<tr>
+							<th>Proyecto</th>
+							<th>Cliente</th>
+							<th>Ultima Actividad</th>
+							<th>Ubicacion</th>
+							<th>Estatus</th>
+							<th>Accion</th>
+						</tr>
+					</thead>
+					<tbody>
+
+					</tbody>
+				</table>
+			</div>
 		</div>
-	</div>
-	
-	
-		</div>
+		</c:if>
 		
-		<div class="grid_16">
-
-			<div class="grid_16">
-		<div class="box">
-			<h2>C. de proyectos en cotización</h2>
-			<div class="utils">
-				
-			</div>
-			<table cellpadding="0" cellspacing="0" border="0" class="display" id="cotProjectsList">
-				<thead>
-					<tr>
-						<th>Proyecto</th>
-						<th>Cliente</th>
-						<th>Ultima Actividad</th>
-						<th>Ubicacion</th>
-						<th>Estatus</th>
-						<th>Accion</th>
-					</tr>
-				</thead>
-				<tbody>
-
-				</tbody>
-			</table>
-		</div>
-	</div>
-	
-	
-		</div>
-                </c:otherwise>
-         </c:choose>
 	</div>
 </body>
 </html>

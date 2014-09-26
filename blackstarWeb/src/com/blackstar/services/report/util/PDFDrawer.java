@@ -4,6 +4,8 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.plaf.basic.BasicBorders.MarginBorder;
+
 import com.blackstar.common.StringUtils;
 import com.pdfjet.*;
 
@@ -50,7 +52,7 @@ public class PDFDrawer {
   }
   
   public void point(float x, float y, float radius, int color, boolean fill) throws Exception {
-	com.pdfjet.Point point = new com.pdfjet.Point(x, y);
+	com.pdfjet.Point point = new com.pdfjet.Point(x, TOP_MARGIN + y);
 	point.setShape(com.pdfjet.Point.CIRCLE);
 	point.setRadius(radius);
 	point.setColor(color);
@@ -125,10 +127,19 @@ public class PDFDrawer {
 	 textBox(StringUtils.notNull(text), x, y, w, h, isBold, DEFAULT_FONT_SIZE, showBorder);
   }
   
-  public void image(String path, float x, float y) throws Exception {
+  public void image(String path, float x, float y, double scale) throws Exception {
+	int type = 0;
+	String ext = path.substring(path.lastIndexOf("."), path.length());
+	if(ext.equals(".jpg")){
+		type = ImageType.JPG;
+	}
+	else if(ext.equals(".png")){
+		type = ImageType.PNG;
+	}
 	Image image = new Image(pdf, getClass().getClassLoader()
-			     .getResourceAsStream(path), ImageType.JPG);
+			     .getResourceAsStream(path), type);
 	image.setPosition(x + LEFT_MARGIN, y + TOP_MARGIN);
+	image.scaleBy(scale);
 	image.drawOn(page);
   }
   
@@ -189,14 +200,117 @@ public class PDFDrawer {
 	return lines;
   } 
   
-  public void textBlock(String text, com.blackstar.services.report.util.Paragraph.Align alignment, int y, Boolean bold, int size) throws Exception{
+  public void textBlock(String text, int alignment, int x, int y, int width, Boolean bold, int size) throws Exception{
+	  textBlock(text, alignment, x, y, width, bold, DEFAULT_COLOR, size);
+  }
+  
+  public void textBlock(String text, int alignment, int x, int y, int width, Boolean bold, int color, int size) throws Exception{
 	  Font f = getFont(bold, size);
-	  Paragraph p = new Paragraph();
+	  String[] word = text.split(" ");
+	  List<String> outBuf = new ArrayList<String>();
+	  int wordIx = 0;
+	  boolean moreWords = (word.length > 0);
 	  
-	  p.setAlignment(alignment);
-	  p.setFont(f);
-	  p.add(text);
-	  p.setPosition(LEFT_MARGIN, y);
-	  p.drawOn(page);
+	  StringBuilder sb = new StringBuilder();
+	  
+	  // 1 - Word Wrap
+	  while(moreWords){
+		  // cabe?
+		  if(f.stringWidth(sb.toString() + word[wordIx]) <= width){
+			  // Fits --> Add it
+			  if(sb.length() == 0){
+				  sb.append(word[wordIx]);
+			  }
+			  else{
+				  sb.append(" " + word[wordIx]);
+			  }
+		  }
+		  else{
+			  // Too long --> Send to buffer and create new line
+			  outBuf.add(sb.toString());
+			  sb = new StringBuilder();
+			  sb.append(word[wordIx]);
+		  }
+		  
+		  wordIx ++;
+		  moreWords = (word.length > wordIx);
+		  
+		  // Final line
+		  if(!moreWords){
+			  outBuf.add(sb.toString());
+		  }
+	  }
+	  
+	  // 2 - Alignment - Left is default
+	  if(alignment == Align.CENTER){
+		  int offset = 0;
+		  
+		  for(String line : outBuf){
+			  TextLine t = new TextLine(f);
+			  StringBuilder val = new StringBuilder(line);
+			  boolean lead = true;
+			  while(f.stringWidth(val.toString() + " ") < width){
+				  if(lead){
+					  val.insert(0, " ");
+					  lead = false;
+				  }
+				  else{
+					  val.append(" ");
+					  lead = true;
+				  }			  
+			  }
+			  
+			  t.setText(val.toString());
+			  t.setColor(color);
+			  t.setPosition(x + LEFT_MARGIN, y + TOP_MARGIN + offset);
+			  t.drawOn(page);
+			  offset += (2 + f.getHeight());
+		  }
+	  }
+	  else if(alignment == Align.JUSTIFY){
+		  int offset = 0;
+		  
+		  for(int i = 0; i < outBuf.size(); i++){
+			  String line = outBuf.get(i);
+			  TextLine t = new TextLine(f);
+			  StringBuilder val = new StringBuilder(line);
+			  
+			  if(i + 1 < outBuf.size()){
+				  int lastSpace = 0;
+				  while(f.stringWidth(val.toString() + " ") < width){
+					  lastSpace = val.toString().indexOf(" ", lastSpace + 1);
+					  if(lastSpace < 0){
+						  lastSpace = 0;
+					  }
+					  val.insert(lastSpace, " ");
+					  lastSpace++;
+				  }
+			  }
+			 			  
+			  t.setText(val.toString());
+			  t.setColor(color);
+			  t.setPosition(x + LEFT_MARGIN, y + TOP_MARGIN  + offset);
+			  t.drawOn(page);
+			  offset += (2 + f.getHeight());
+		  }
+	  }
+	  else if(alignment == Align.RIGHT){
+		  int offset = 0;
+		  
+		  for(String line : outBuf){
+			  TextLine t = new TextLine(f);
+			  StringBuilder val = new StringBuilder(line);
+			  
+			  while(f.stringWidth(val.toString() + " ") < width){
+				  val.insert(0, " ");
+			  }
+			  
+			  t.setText(val.toString());
+			  t.setColor(color);
+			  t.setPosition(x + LEFT_MARGIN, y + TOP_MARGIN  + offset);
+			  t.drawOn(page);
+			  offset += (2 + f.getHeight());
+		  }
+	  }
   }
 }

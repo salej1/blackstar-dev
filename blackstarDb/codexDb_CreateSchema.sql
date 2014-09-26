@@ -13,10 +13,25 @@
 -- --   --------   -------  ------------------------------------
 -- 3    01/10/2014  SAG     Se agrega blackstarDb.codexIncoterm
 -- ---------------------------------------------------------------------------
+-- 4    24/09/2014  SAG     Se agrega blackstarDb.cst
+-- ---------------------------------------------------------------------------
 
 USE blackstarDb;
 
 DELIMITER ;
+
+CREATE TABLE IF NOT EXISTS blackstarDb.cst(
+  cstId INTEGER NOT NULL AUTO_INCREMENT ,
+  name VARCHAR(400) NOT NULL,
+  officeId CHAR(1) NOT NULL,
+  phone VARCHAR(200),
+  phoneExt VARCHAR(200),
+  mobile VARCHAR(200),
+  email VARCHAR(400) NOT NULL,
+  autoAuthProjects INT,
+  PRIMARY KEY(cstId)
+  -- FOREIGN KEY(officeId) REFERENCES office(officeId)
+)ENGINE=INNODB;
 
 CREATE TABLE IF NOT EXISTS blackstarDb.location(
   _id INT NOT NULL AUTO_INCREMENT,

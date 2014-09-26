@@ -2,6 +2,10 @@ package com.blackstar.common;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
 
 import com.google.api.client.extensions.appengine.datastore.AppEngineDataStoreFactory;
 import com.google.api.client.extensions.appengine.http.UrlFetchTransport;
@@ -51,6 +55,24 @@ public class Globals {
 	  public static final String GROUP_CALL_CENTER = "sysCallCenter";
 	  public static final String GROUP_COORDINATOR = "sysCoordinador";
 	  public static final String GROUP_SALES_MANAGER = "Gerente comercial";
+	  
+	  // time format
+	  public static final String DEFAULT_TIME_ZONE = "America/Mexico_City";
+	  public static final String DATE_FORMAT_PATTERN = "dd/MM/yyyy hh:mm:ss a";
+	  public static Date getLocalTime(){
+		  Calendar c = Calendar.getInstance(TimeZone.getTimeZone(DEFAULT_TIME_ZONE));
+		  return c.getTime();
+	  }
+	  public static String getLocalTimeString(){
+		  SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT_PATTERN);
+		  sdf.setTimeZone(TimeZone.getTimeZone(DEFAULT_TIME_ZONE));
+		  return sdf.format(getLocalTime());
+	  }
+	  public static String getLocalDateString(){
+		  SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		  sdf.setTimeZone(TimeZone.getTimeZone(DEFAULT_TIME_ZONE));
+		  return sdf.format(getLocalTime());
+	  }
 	  
 	  // Codex settings
 	  public static final Integer PROJECT_AUTH_LIMIT = 30000; // USD

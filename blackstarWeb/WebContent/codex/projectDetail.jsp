@@ -474,6 +474,13 @@
 						   <form:input type="hidden" path="strEntries"/>
 						   <form:input type="hidden" path="statusId"/>
 						   <form:input type="hidden" path="id" id="projectId"/>
+						   <form:input type="hidden" path="cstName"/>
+						   <form:input type="hidden" path="cstPhone"/>
+						   <form:input type="hidden" path="cstPhoneExt"/>
+						   <form:input type="hidden" path="cstMobile"/>
+						   <form:input type="hidden" path="cstEmail"/>
+						   <form:input type="hidden" path="cstAutoAuth"/>
+						   
                        </form:form>
 						
 <!--   ~ ENCABEZADO CEDULA   -->

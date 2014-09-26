@@ -121,6 +121,7 @@
 	    <property name="service" ref="projectService" />
 	    <property name="cService" ref="clientService" />
 	    <property name="xrService" ref="exchangeRateService" />
+	    <property name="cstService" ref="cstService" />
 	</bean>
 	
 	<bean class="com.codex.web.controller.DashboardController" parent="abstractController">
@@ -129,6 +130,7 @@
 	
 	<bean class="com.codex.web.controller.PriceProposalController" parent="abstractController">
 	    <property name="service" ref="priceProposalService" />
+	    <property name="dService" ref="codexDashboardService" />
 	</bean>
 	<context:annotation-config />
 </beans>

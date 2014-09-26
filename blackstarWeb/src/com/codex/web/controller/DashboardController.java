@@ -34,7 +34,7 @@ public class DashboardController extends AbstractController{
         		 .getProjectsByStatusAndUserJson(1, user.getBlackstarUserId()));
          model.addAttribute("byAuthProjects", service.getProjectsByStatusJson(2));
 	     model.addAttribute("authProjects", service.getProjectsByStatusJson(3));
-	     model.addAttribute("cotProjects", service.getProjectsByStatusJson(4));
+
 	} catch (Exception e) {
 		e.printStackTrace();
 		model.addAttribute("errorDetails", e.getStackTrace()[0].toString());
