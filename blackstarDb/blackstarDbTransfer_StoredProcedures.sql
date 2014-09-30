@@ -29,7 +29,7 @@
 -- -----------------------------------------------------------------------------
 -- 10 	20/08/2014	SAG 	Se incorpora proyecto Bloom
 -- -----------------------------------------------------------------------------
--- 11 	22/09/2014	SAG 	Se agrega UpsertBloomTicket
+-- 11 	22/09/2014	SAG 	Se agrega UpsertbloomTicket
 -- -----------------------------------------------------------------------------
 
 use blackstarDbTransfer;
@@ -39,20 +39,19 @@ DELIMITER $$
 
 
 -- -----------------------------------------------------------------------------
-	-- blackstarDb.upsertBloomTicket
+	-- blackstarDb.upsertbloomTicket
 -- -----------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS upsertBloomTicket $$
-CREATE PROCEDURE upsertBloomTicket(
+DROP PROCEDURE IF EXISTS upsertbloomTicket $$
+CREATE PROCEDURE upsertbloomTicket(
 	pCreated DATETIME,
 	pCreatedByUsr VARCHAR(100),
-	pRequestArea VARCHAR(100),
 	pTicketType INT,
 	pDueDate DATETIME,
-	pDescription VARCHAR(400),
+	pDescription VARCHAR(4000),
 	pProject VARCHAR(100),
 	pOffice VARCHAR(100),
 	pTicketNumber VARCHAR(100),
-	pFollowUp VARCHAR(2000),
+	pfollowUp VARCHAR(2000),
 	pResponseTime DATETIME,
 	pResolved INT,
 	pStatus CHAR(1),
@@ -61,21 +60,20 @@ CREATE PROCEDURE upsertBloomTicket(
 BEGIN
 	IF(SELECT count(*) FROM blackstarDbTransfer.bloomTicket WHERE ticketNumber = pTicketNumber)  = 0 THEN
 		INSERT INTO blackstarDbTransfer.bloomTicket(
-			created,  createdByUsr,  requestArea,  ticketType,  dueDate,  description,  project,  office,  ticketNumber,  followUp,  responseTime,  resolved,  status, processed )
+			created,  createdByUsr,  ticketType,  dueDate,  description,  project,  office,  ticketNumber,  followUp,  responseTime,  resolved,  status, processed )
 		SELECT 
-			pCreated, pCreatedByUsr, pRequestArea, pTicketType, pDueDate, pDescription, pProject, pOffice, pTicketNumber, pFollowUp, pResponseTime, pResolved, pStatus, 0;
+			pCreated, pCreatedByUsr, pTicketType, pDueDate, pDescription, pProject, pOffice, pTicketNumber, pfollowUp, pResponseTime, pResolved, pStatus, 0;
 	ELSE
 		UPDATE blackstarDbTransfer.bloomTicket SET
 			created = pCreated,
 			createdByUsr = pCreatedByUsr,
-			requestArea = pRequestArea,
 			ticketType = pTicketType,
 			dueDate = pDueDate,
 			description = pDescription,
 			project = pProject,
 			office = pOffice,
 			ticketNumber = pTicketNumber,
-			followUp = pFollowUp,
+			followUp = pfollowUp,
 			responseTime = pResponseTime,
 			resolved = pResolved,
 			status = pStatus,
@@ -103,7 +101,7 @@ CREATE PROCEDURE upsertServiceOrder(
 	pReceivedBy varchar(100),
 	pServiceComments text,
 	pClosed datetime,
-	pFollowUp text,
+	pfollowUp text,
 	pSpares text,
 	pConsultant varchar(100),
 	pContractorCompany varchar(100),
@@ -123,7 +121,7 @@ BEGIN
 		INSERT INTO blackstarDbTransfer.serviceTx(
 			serviceNumber,  ticketNumber,  serviceUnit,  project,  customer,  city,  address,  serviceTypeId,  serviceDate,  serialNumber,  responsible,  receivedBy,  serviceComments,  closed,  followUp,  spares,  consultant,  contractorCompany,  serviceRate,  customerComments,  created,  createdBy,  createdByUsr,  equipmentTypeId,  brand,  model,  capacity,  employeeId )
 		SELECT
-			pServiceNumber, pTicketNumber, pServiceUnit, pProject, pCustomer, pCity, pAddress, pServiceTypeId, pServiceDate, pSerialNumber, pResponsible, pReceivedBy, pServiceComments, pClosed, pFollowUp, pSpares, pConsultant, pContractorCompany, pServiceRate, pCustomerComments, pCreated, pCreatedBy, pCreatedByUsr, pEquipmentTypeId, pBrand, pModel, pCapacity, pEmployeeId;
+			pServiceNumber, pTicketNumber, pServiceUnit, pProject, pCustomer, pCity, pAddress, pServiceTypeId, pServiceDate, pSerialNumber, pResponsible, pReceivedBy, pServiceComments, pClosed, pfollowUp, pSpares, pConsultant, pContractorCompany, pServiceRate, pCustomerComments, pCreated, pCreatedBy, pCreatedByUsr, pEquipmentTypeId, pBrand, pModel, pCapacity, pEmployeeId;
 	ELSE
 		UPDATE serviceTx SET
 			employeeId = pEmployeeId
@@ -387,7 +385,7 @@ BEGIN
 	INSERT INTO blackstarDb.followUp(
 		ticketId,
 		asignee,
-		followup,
+		followUp,
 		isSource,
 		created,
 		createdBy,
@@ -451,7 +449,7 @@ BEGIN
 	INSERT INTO blackstarDb.followUp(
 		serviceOrderId,
 		asignee,
-		followup,
+		followUp,
 		isSource,
 		created,
 		createdBy,
@@ -469,7 +467,7 @@ BEGIN
 
 	-- TRANSFERENCIA DE LOS TICKETS BLOOM
 	INSERT INTO blackstarDb.bloomTicket(ticketNumber, applicantUserId, officeId, serviceTypeId, statusId, applicantAreaId, dueDate, project, description, created, createdby, createdByUsr)
-	SELECT t1.ticketNumber, bu.blackstarUserId, SUBSTRING(t1.office, 1, 1), t1.ticketType, t1.status, st.applicantAreaId, t1.dueDate, t1.project, t1.description, t1.created, 'BloomTicketTransfer', t1.createdByUsr
+	SELECT t1.ticketNumber, bu.blackstarUserId, SUBSTRING(t1.office, 1, 1), t1.ticketType, t1.status, st.applicantAreaId, t1.dueDate, t1.project, t1.description, t1.created, 'bloomTicketTransfer', t1.createdByUsr
 	FROM blackstarDbTransfer.bloomTicket t1
 		INNER JOIN blackstarDb.blackstarUser bu ON t1.createdByUsr = bu.email
 		INNER JOIN blackstarDb.bloomServiceType st ON st._id = t1.ticketType
@@ -494,10 +492,57 @@ BEGIN
 		t2.responseDate = t1.responseTime,
 		t2.createdByUsr = t1.createdByUsr,
 		t2.modified = now(),
-		t2.modifiedBy = 'BloomTicketTransfer',
-		t2.modifiedByUsr = 'portal-servicios',
+		t2.modifiedBy = 'bloomTicketTransfer',
+		t2.modifiedByUsr = 'portal-servicios@gposac.com.mx',
 		t2.created = t1.created
 	WHERE t1.processed = 0;
+
+	-- INSERCION DE LOS USUARIOS RESPONSABLES DE CERRAR
+	INSERT INTO blackstarDb.bloomTicketTeam(ticketId, workerRoleTypeId, blackstarUserId, userGroup, assignedDate)
+	SELECT t._id, a.workerRoleTypeId, bg.blackStarUserId, a.userGroup, now() 
+	FROM blackstarDb.bloomTicket t
+		INNER JOIN blackstarDb.bloomAdvisedGroup a ON t.serviceTypeId = a.serviceTypeId
+		INNER JOIN blackstarDb.userGroup g ON a.userGroup = g.externalId
+		INNER JOIN blackstarDb.blackstarUser_userGroup bg ON bg.userGroupId = g.userGroupId
+		LEFT OUTER JOIN blackstarDb.bloomTicketTeam tt ON tt.ticketId = t._id
+	WHERE tt._id IS NULL;
+
+	-- INSERCION DE followUps de tickets bloom
+	INSERT INTO blackstarDb.followUp(followUp, created, createdBy, createdByUsr, isSource, followUpReferenceTypeId, bloomTicketId)
+	SELECT  t1.followUp, now(), 'bloomTicketTransfer', 'portal-servicios@gposac.com.mx', 1, 'R', t2._id
+	FROM blackstarDbTransfer.bloomTicket t1
+		INNER JOIN blackstarDb.bloomTicket t2 ON t1.ticketNumber = t2.ticketNumber
+		LEFT OUTER JOIN blackstarDb.followUp f ON t2._id = f.bloomTicketId
+	WHERE f.followUpId IS NULL;
+
+	-- INSERCION DE ENCUESTAS DE TICKETS BLOOM
+	INSERT INTO blackstarDb.bloomSurvey(bloomTicketId, evaluation, comments, created)
+	SELECT t2._id, if(t1.resolved = 1, 10, 5), 'N/A', now()
+	FROM blackstarDbTransfer.bloomTicket t1
+		INNER JOIN blackstarDb.bloomTicket t2 ON t1.ticketNumber = t2.ticketNumber
+		LEFT OUTER JOIN blackstarDb.bloomSurvey s ON t2._id = s.bloomTicketId
+	WHERE s._id IS NULL;
+
+	-- ACTUALIZACION DEL ESTATUS
+	UPDATE blackstarDb.bloomTicket t2
+		INNER JOIN blackstarDb.bloomServiceType ty ON t2.serviceTypeId = ty._id
+		INNER JOIN blackstarDbTransfer.bloomTicket t1 ON t1.ticketNumber = t2.ticketNumber
+	SET
+		reponseInTime = if(ty.responseTime < (TO_DAYS(t2.responseDate) - TO_DAYS(t2.created)), 0, 1),
+		desviation = ((TO_DAYS(t2.responseDate) - TO_DAYS(t2.created)) - ty.responseTime),
+		t2.modified = now(),
+	    t2.modifiedBy = 'bloomTicketTransfer',
+	    t2.modifiedByUsr = 'portal-servicios@gposac.com.mx'
+	WHERE responseDate IS NOT NULL
+		AND statusId = 6;
+
+	-- PROCESSED
+	UPDATE blackstarDbTransfer.bloomTicket SET
+		processed = 1
+	WHERE processed = 0 
+		AND ticketNumber IN(SELECT DISTINCT ticketNumber FROM blackstarDb.bloomTicket);
+
+
 -- -----------------------------------------------------------------------------
 
 
@@ -708,7 +753,7 @@ BEGIN
       IF desviation = '' THEN
          SET desviation = '0';
       END IF;
-      INSERT INTO blackstarDb.bloomticket(applicantUserId, officeId, serviceTypeId, statusId, applicantAreaId
+      INSERT INTO blackstarDb.bloomTicket(applicantUserId, officeId, serviceTypeId, statusId, applicantAreaId
                   , dueDate, project, ticketNumber, description, reponseInTime, evaluation, desviation
                   , responseDate, created, createdBy, createdByUsr, modified, modifiedBy, modifiedByUsr) 
              VALUES(applicantUserId, officeL, serviceTypeId, status, applicantAreaId, dueDate, project
@@ -748,7 +793,7 @@ BEGIN
 			   LEAVE loop_lbl;
 		  END IF;  
       SET ticketId =(SELECT _id from blackstarDb.bloomTicket where ticketNumber = ticket);
-      INSERT INTO blackstarDb.followUp(bloomTicketId,followup, created, createdBy, createdByUsr) 
+      INSERT INTO blackstarDb.followUp(bloomTicketId,followUp, created, createdBy, createdByUsr) 
              VALUES(ticketId, comment, STR_TO_DATE(createdStr, '%y/%m/%d'), 'BloomDataLoader', 'portal-servicios@gposac.com.mx');
       SET counter = counter + 1;
   END LOOP loop_lbl;

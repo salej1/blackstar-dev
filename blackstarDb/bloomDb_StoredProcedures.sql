@@ -647,27 +647,20 @@ DROP PROCEDURE IF EXISTS blackstarDb.ClosebloomTicket$$
 CREATE PROCEDURE blackstarDb.`ClosebloomTicket`(pTicketId INTEGER, pUserId INTEGER, pStatusId INTEGER)
 BEGIN
 
-DECLARE inTime TINYINT DEFAULT 1;
-DECLARE elapsed FLOAT (30,20);
-DECLARE createdDate DATETIME;
-DECLARE today DATETIME DEFAULT CONVERT_TZ(now(),'+00:00','-5:00');
-DECLARE required INT;
+  SET @today := (CONVERT_TZ(now(),'+00:00','-5:00'));
 
-SET createdDate = (SELECT created FROM bloomTicket WHERE _id = pTicketId);
-SET elapsed =  TO_DAYS(today) - TO_DAYS(createdDate);
-SET required = (SELECT bst.responseTime 
-                FROM bloomTicket bt, bloomServiceType bst
-                WHERE bt.serviceTypeId = bst._id 
-                       AND bt._id = pTicketId);
-
-IF(elapsed > required) THEN
-   SET inTime = 0;
-END IF;
-
-UPDATE bloomTicket 
-SET statusId = pStatusId, reponseInTime = inTime, desviation = (elapsed - required), modified = today
-  , responseDate = today, modifiedBy = "ClosebloomTicket", modifiedByUsr = (SELECT email FROM blackstarUser WHERE blackstarUserId = pUserId)
-WHERE _ID = pTicketId;
+  UPDATE blackstarDb.bloomTicket t
+    INNER JOIN blackstarDb.bloomServiceType ty ON t.serviceTypeId = ty._id
+  SET
+    statusId = pStatusId,
+    reponseInTime = if(ty.responseTime < (TO_DAYS(@today) - TO_DAYS(t.created)), 0, 1),
+    resolvedOnTime = if(ty.responseTime < (TO_DAYS(@today) - TO_DAYS(t.created)), 0, 1),
+    desviation = ((TO_DAYS(@today) - TO_DAYS(t.created)) - ty.responseTime),
+    responseDate = @today,
+    t.modified = now(),
+    t.modifiedBy = 'ClosebloomTicket',
+    t.modifiedByUsr = (SELECT email FROM blackstarUser WHERE blackstarUserId = pUserId)
+  WHERE t._id = pTicketId;
 
 END$$
 

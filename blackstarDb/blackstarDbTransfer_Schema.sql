@@ -53,10 +53,9 @@ BEGIN
 			bloomTicketId INT AUTO_INCREMENT,
 			created DATETIME,
 			createdByUsr VARCHAR(100),
-			requestArea VARCHAR(100),
 			ticketType INT,
 			dueDate DATETIME,
-			description VARCHAR(400),
+			description VARCHAR(4000),
 			project VARCHAR(100),
 			office VARCHAR(100),
 			ticketNumber VARCHAR(100),
@@ -68,6 +67,9 @@ BEGIN
 			KEY(bloomTicketId)
 		)ENGINE=INNODB;
 	END IF;
+
+	-- Aumentando capacidad de description
+	ALTER TABLE bloomTicket MODIFY description VARCHAR(4000);
 
 	-- Aumentando capacidad de equipmentUser de policy
 	ALTER TABLE policy MODIFY equipmentUser VARCHAR(400);
