@@ -66,7 +66,7 @@ public interface InternalTicketsDao {
   public void addTicketTeam(Integer ticketId, Integer roleId, String userId, String userGroup);
   public List<Followup> getFollowUps(Integer ticketId);
   public List<DeliverableTypeDTO> getDeliverableTypes(Integer ticketTypeId);
-  public void addDeliverableTrace(Integer ticketId, Integer deliverableTypeId, String docId);
+  public void addDeliverableTrace(Integer ticketId, Integer deliverableTypeId, String docId, String name);
   public List<User> getAsigneedUser(Integer ticketId);
   public List<User> getResponseUser(Integer ticketId);
   public void closeTicket(Integer ticketId, Integer userId, Integer statusId);

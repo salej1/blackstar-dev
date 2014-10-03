@@ -3,7 +3,7 @@ DELIMITER $$
 DROP PROCEDURE IF EXISTS blackstarDb.DeleteServiceOrder$$
 CREATE PROCEDURE blackstarDb.DeleteServiceOrder()
 BEGIN
-	SET @pServiceOrderNumber = 'OS-05901';
+	SET @pServiceOrderNumber = 'UPS-1600';
 	SET @id = (SELECT serviceOrderId FROM blackstarDb.serviceOrder WHERE serviceOrderNumber = @pServiceOrderNumber);
 
 	IF(@id IS NOT NULL) THEN
@@ -58,6 +58,10 @@ BEGIN
 		IF left(@pServiceOrderNumber, 2) = 'OS' THEN
 			DELETE FROM blackstarDb.plainService WHERE serviceOrderId = @id;
 		END IF;
+
+		-- followUp
+		DELETE FROM blackstarDb.followUp WHERE serviceOrderId = @id;
+
 		-- serviceOrder
 		DELETE FROM blackstarDb.serviceOrder WHERE serviceOrderId = @id;
 	END IF;

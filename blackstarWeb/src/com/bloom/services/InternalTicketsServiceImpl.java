@@ -219,8 +219,8 @@ public class InternalTicketsServiceImpl extends AbstractService
 	 return internalTicketsDao.getDeliverableTypes(ticketTypeId);
   }
   
-  public void addDeliverableTrace(Integer ticketId, Integer deliverableTypeId, String docId){
-	internalTicketsDao.addDeliverableTrace(ticketId, deliverableTypeId, docId);
+  public void addDeliverableTrace(Integer ticketId, Integer deliverableTypeId, String docId, String name){
+	internalTicketsDao.addDeliverableTrace(ticketId, deliverableTypeId, docId, name);
   }
   
   public User getAsigneed(Integer ticketId){

@@ -8,10 +8,13 @@ import com.blackstar.logging.Logger;
 import java.util.Properties;
 
 import javax.mail.Message;
+import javax.mail.Multipart;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 import javax.mail.internet.MimeUtility;
 
 import org.springframework.core.io.ByteArrayResource;
@@ -51,10 +54,14 @@ public class GmailService implements IEmailService{
 			toList = toList.replace(" ", "");
 			message.setRecipients(Message.RecipientType.TO,  InternetAddress.parse(toList));		
 			message.setSubject(MimeUtility.encodeText(subject, "UTF-8", "Q"));
-			message.setContent(body, "text/html; charset=utf-8");
+			Multipart mp = new MimeMultipart();
+	        MimeBodyPart htmlPart = new MimeBodyPart();
+	        htmlPart.setContent(body, "text/html; charset=utf-8");
+	        mp.addBodyPart(htmlPart);
+			message.setContent(mp);
 			
 			Transport.send(message);
- 
+			
 		} 
 		catch (Exception e) 
 		{

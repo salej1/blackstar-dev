@@ -121,11 +121,11 @@ public class InternalTicketsDaoImpl extends AbstractDAO implements InternalTicke
 	}
 	 
 	  
-	public void addDeliverableTrace(Integer ticketId, Integer deliverableTypeId, String docId) {
+	public void addDeliverableTrace(Integer ticketId, Integer deliverableTypeId, String docId, String name) {
 		StringBuilder sqlBuilder = new StringBuilder(
-				"CALL AddBloomDelivarable(?,?,?);");
+				"CALL AddBloomDelivarable(?,?,?,?);");
 		getJdbcTemplate().update(sqlBuilder.toString(),
-				new Object[] { ticketId, deliverableTypeId, docId });
+				new Object[] { ticketId, deliverableTypeId, docId, name });
 	}
 
 

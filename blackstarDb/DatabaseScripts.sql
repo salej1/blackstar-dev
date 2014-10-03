@@ -6469,6 +6469,8 @@ DELIMITER ;
 --							Se agrega bloomServiceArea
 --							Se agrega bloomServiceAreaId a bloomServiceType
 -- ---------------------------------------------------------------------------
+-- 5 	03/10/2014	SAG 	Se agrega name a bloomDeliverableTrace
+-- ---------------------------------------------------------------------------
 
 use blackstarDb;
 
@@ -6481,6 +6483,11 @@ BEGIN
 -- -----------------------------------------------------------------------------
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
+
+-- Agregando name a bloomDeliverableTrace
+	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'bloomDeliverableTrace' AND COLUMN_NAME = 'name') = 0  THEN
+		ALTER TABLE bloomDeliverableTrace ADD name VARCHAR(400) NULL;
+	END IF;
 
 -- AGREGANDO TABLA bloomServiceArea
 	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'bloomServiceArea') = 0 THEN
@@ -6714,7 +6721,6 @@ IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blacksta
            delivered INT(11) DEFAULT 0,
            date Datetime NOT NULL,
 		   PRIMARY KEY (_id),
-		   UNIQUE UQ_bloomDeliverableTrace(bloomTicketId,deliverableTypeId),
 		   FOREIGN KEY (bloomTicketId) REFERENCES bloomTicket (_id),
            FOREIGN KEY (deliverableTypeId) REFERENCES bloomDeliverableType (_id)
          )ENGINE=INNODB;
@@ -7022,18 +7028,21 @@ END$$
 	-- blackstarDb.AddBloomDelivarable
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.AddBloomDelivarable$$
-CREATE PROCEDURE blackstarDb.`AddBloomDelivarable`(pTicketId INTEGER, pDeliverableTypeId INTEGER, docId VARCHAR(200))
+CREATE PROCEDURE blackstarDb.`AddBloomDelivarable`(pTicketId INTEGER, pDeliverableTypeId INTEGER, pDocId VARCHAR(200), pName VARCHAR(400))
 BEGIN
 DECLARE counter INTEGER;
 
   SET counter = (SELECT count(*) 
                  FROM bloomDeliverableTrace 
-                 WHERE bloomTicketId = pTicketId AND deliverableTypeId = pDeliverableTypeId);
+                 WHERE bloomTicketId = pTicketId 
+                  AND deliverableTypeId = pDeliverableTypeId
+                  AND deliverableTypeId NOT IN(SELECT _id FROM bloomDeliverableType WHERE name = 'Otro'));
+
   IF (counter > 0) THEN
-    UPDATE bloomDeliverableTrace SET delivered = 1, date = CONVERT_TZ(now(),'+00:00','-5:00');
+    UPDATE bloomDeliverableTrace SET delivered = 1, date = CONVERT_TZ(now(),'+00:00','-5:00'), docId = pDocId;
   ELSE 
-	  INSERT INTO bloomDeliverableTrace (bloomTicketId, deliverableTypeId, delivered, date, docId)
-    VALUES (pTicketId, pDeliverableTypeId, 1, CONVERT_TZ(now(),'+00:00','-5:00'), docId);
+	  INSERT INTO bloomDeliverableTrace (bloomTicketId, deliverableTypeId, delivered, date, docId, name)
+    VALUES (pTicketId, pDeliverableTypeId, 1, CONVERT_TZ(now(),'+00:00','-5:00'), pDocId, pName);
   END IF;  
 END$$
 
@@ -7531,7 +7540,7 @@ BEGIN
 
   SELECT 
     bdt._id id, 
-    bdt.name name, 
+    bd.name name, 
     IF(bd._id IS NOT NULL, true, false) AS delivered,
     bd.docId docId
   FROM bloomTicket bt
@@ -8292,6 +8301,8 @@ CALL ExecuteTransfer();
 -- -----------------------------------------------------------------------------
 -- 7	17/09/2014	SAG 	Se establecen tiempos Auto-close
 -- -----------------------------------------------------------------------------
+-- 7	03/10/2014	SAG 	Se agrega DeliverableType 'Otro'
+-- -----------------------------------------------------------------------------
 
 use blackstarDb;
 
@@ -8301,6 +8312,35 @@ DELIMITER $$
 DROP PROCEDURE IF EXISTS blackstarDb.updateDataBloom$$
 CREATE PROCEDURE blackstarDb.updateDataBloom()
 BEGIN
+
+-- DeliverableType
+IF(SELECT count(*) FROM blackstarDb.bloomDeliverableType WHERE name = 'Otro') = 0 THEN
+	INSERT INTO blackstarDb.bloomDeliverableType(_id, name, description, serviceTypeId)
+	SELECT 46,  'Otro', 'Otro', 1 UNION
+	SELECT 47,  'Otro', 'Otro', 2 UNION
+	SELECT 48,  'Otro', 'Otro', 3 UNION
+	SELECT 49,  'Otro', 'Otro', 4 UNION
+	SELECT 50,  'Otro', 'Otro', 5 UNION
+	SELECT 51,  'Otro', 'Otro', 6 UNION
+	SELECT 52,  'Otro', 'Otro', 7 UNION
+	SELECT 53,  'Otro', 'Otro', 8 UNION
+	SELECT 54,  'Otro', 'Otro', 9 UNION
+	SELECT 55,  'Otro', 'Otro', 10 UNION
+	SELECT 56,  'Otro', 'Otro', 11 UNION
+	SELECT 57,  'Otro', 'Otro', 12 UNION
+	SELECT 58,  'Otro', 'Otro', 13 UNION
+	SELECT 59,  'Otro', 'Otro', 14 UNION
+	SELECT 60,  'Otro', 'Otro', 15 UNION
+	SELECT 61,  'Otro', 'Otro', 16 UNION
+	SELECT 62,  'Otro', 'Otro', 17 UNION
+	SELECT 63,  'Otro', 'Otro', 18 UNION
+	SELECT 64,  'Otro', 'Otro', 19 UNION
+	SELECT 65,  'Otro', 'Otro', 20 UNION
+	SELECT 66,  'Otro', 'Otro', 21 UNION
+	SELECT 67,  'Otro', 'Otro', 22 UNION
+	SELECT 68,  'Otro', 'Otro', 23 UNION
+	SELECT 69,  'Otro', 'Otro', 24;
+END IF;
 
 -- Tiempos auto-close
 UPDATE bloomServiceType SET

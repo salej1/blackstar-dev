@@ -256,18 +256,21 @@ END$$
 	-- blackstarDb.AddBloomDelivarable
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.AddBloomDelivarable$$
-CREATE PROCEDURE blackstarDb.`AddBloomDelivarable`(pTicketId INTEGER, pDeliverableTypeId INTEGER, docId VARCHAR(200))
+CREATE PROCEDURE blackstarDb.`AddBloomDelivarable`(pTicketId INTEGER, pDeliverableTypeId INTEGER, pDocId VARCHAR(200), pName VARCHAR(400))
 BEGIN
 DECLARE counter INTEGER;
 
   SET counter = (SELECT count(*) 
                  FROM bloomDeliverableTrace 
-                 WHERE bloomTicketId = pTicketId AND deliverableTypeId = pDeliverableTypeId);
+                 WHERE bloomTicketId = pTicketId 
+                  AND deliverableTypeId = pDeliverableTypeId
+                  AND deliverableTypeId NOT IN(SELECT _id FROM bloomDeliverableType WHERE name = 'Otro'));
+
   IF (counter > 0) THEN
-    UPDATE bloomDeliverableTrace SET delivered = 1, date = CONVERT_TZ(now(),'+00:00','-5:00');
+    UPDATE bloomDeliverableTrace SET delivered = 1, date = CONVERT_TZ(now(),'+00:00','-5:00'), docId = pDocId;
   ELSE 
-	  INSERT INTO bloomDeliverableTrace (bloomTicketId, deliverableTypeId, delivered, date, docId)
-    VALUES (pTicketId, pDeliverableTypeId, 1, CONVERT_TZ(now(),'+00:00','-5:00'), docId);
+	  INSERT INTO bloomDeliverableTrace (bloomTicketId, deliverableTypeId, delivered, date, docId, name)
+    VALUES (pTicketId, pDeliverableTypeId, 1, CONVERT_TZ(now(),'+00:00','-5:00'), pDocId, pName);
   END IF;  
 END$$
 
@@ -765,7 +768,7 @@ BEGIN
 
   SELECT 
     bdt._id id, 
-    bdt.name name, 
+    bd.name name, 
     IF(bd._id IS NOT NULL, true, false) AS delivered,
     bd.docId docId
   FROM bloomTicket bt

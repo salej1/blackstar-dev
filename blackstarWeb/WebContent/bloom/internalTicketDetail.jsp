@@ -44,12 +44,19 @@
 			modal: true,
 			buttons: {
 				"Aceptar": function() {
+					var attName = "";
+					if($("#attachmentType option:selected").text() == "Otro"){
+						attName = $("#attachmentFileName").val();
+					}
+					else{
+						attName = $("#attachmentType option:selected").text();
+					}
 					$.ajax({
 				        type: "GET",
 				        url: "addDeliverableTrace.do",
 				        data: "ticketId=${ticketDetail._id}&deliverableTypeId=" + $("#attachmentType").val() + 
 				        		"&prevId=" + $('#attachmentFileId').val() + 
-				        		"&deliverableName=" + $("#attachmentType option:selected").text() + 
+				        		"&deliverableName=" + attName + 
 				        		"&ticketNumber=${ticketDetail.ticketNumber}"
 				    })
 				    .done(function(){
@@ -895,14 +902,15 @@
 				
 				<!-- Attachment Img section -->
 				<div id="attachmentDlg" title="Referencia">
-					<p></p>
-					<p>Nombre del archivo:</p>
-					<input id="attachmentFileName" style="width:80px;" readOnly="true"/> 
+					Nombre del archivo:
+					<br
+					><input id="attachmentFileName" style="width:300px;" readOnly="true"/> 
 					<input type="hidden" id="attachmentFileId"/> 
 					<br>
-					<p>Referencia:</p>
-					<select id="attachmentType" style="width:200px;">
-					   <option value="-1">Sin referencia</option>
+					<br>
+					Referencia:
+					<br>
+					<select id="attachmentType" style="width:300px;">
 					     <c:forEach var="current" items="${deliverableTypes}" >
 					        <option value="${current.id}">${current.name}</option>
 					     </c:forEach>

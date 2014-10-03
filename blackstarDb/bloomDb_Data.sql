@@ -21,6 +21,8 @@
 -- -----------------------------------------------------------------------------
 -- 7	17/09/2014	SAG 	Se establecen tiempos Auto-close
 -- -----------------------------------------------------------------------------
+-- 7	03/10/2014	SAG 	Se agrega DeliverableType 'Otro'
+-- -----------------------------------------------------------------------------
 
 use blackstarDb;
 
@@ -30,6 +32,35 @@ DELIMITER $$
 DROP PROCEDURE IF EXISTS blackstarDb.updateDataBloom$$
 CREATE PROCEDURE blackstarDb.updateDataBloom()
 BEGIN
+
+-- DeliverableType
+IF(SELECT count(*) FROM blackstarDb.bloomDeliverableType WHERE name = 'Otro') = 0 THEN
+	INSERT INTO blackstarDb.bloomDeliverableType(_id, name, description, serviceTypeId)
+	SELECT 46,  'Otro', 'Otro', 1 UNION
+	SELECT 47,  'Otro', 'Otro', 2 UNION
+	SELECT 48,  'Otro', 'Otro', 3 UNION
+	SELECT 49,  'Otro', 'Otro', 4 UNION
+	SELECT 50,  'Otro', 'Otro', 5 UNION
+	SELECT 51,  'Otro', 'Otro', 6 UNION
+	SELECT 52,  'Otro', 'Otro', 7 UNION
+	SELECT 53,  'Otro', 'Otro', 8 UNION
+	SELECT 54,  'Otro', 'Otro', 9 UNION
+	SELECT 55,  'Otro', 'Otro', 10 UNION
+	SELECT 56,  'Otro', 'Otro', 11 UNION
+	SELECT 57,  'Otro', 'Otro', 12 UNION
+	SELECT 58,  'Otro', 'Otro', 13 UNION
+	SELECT 59,  'Otro', 'Otro', 14 UNION
+	SELECT 60,  'Otro', 'Otro', 15 UNION
+	SELECT 61,  'Otro', 'Otro', 16 UNION
+	SELECT 62,  'Otro', 'Otro', 17 UNION
+	SELECT 63,  'Otro', 'Otro', 18 UNION
+	SELECT 64,  'Otro', 'Otro', 19 UNION
+	SELECT 65,  'Otro', 'Otro', 20 UNION
+	SELECT 66,  'Otro', 'Otro', 21 UNION
+	SELECT 67,  'Otro', 'Otro', 22 UNION
+	SELECT 68,  'Otro', 'Otro', 23 UNION
+	SELECT 69,  'Otro', 'Otro', 24;
+END IF;
 
 -- Tiempos auto-close
 UPDATE bloomServiceType SET

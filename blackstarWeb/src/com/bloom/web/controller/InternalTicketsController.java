@@ -220,7 +220,7 @@ public class InternalTicketsController extends AbstractController {
 			docId = gdService.importFile(prevId, deliverableName, gdService.getAttachmentFolderId(ticketNumber));
 		}
 		 if(deliverableTypeId > 0){
-		   internalTicketsService.addDeliverableTrace(ticketId, deliverableTypeId, docId);
+		   internalTicketsService.addDeliverableTrace(ticketId, deliverableTypeId, docId, deliverableName);
 		 }
 	} catch (Exception e) {
 		Logger.Log(LogLevel.ERROR,e.getStackTrace()[0].toString(), e);

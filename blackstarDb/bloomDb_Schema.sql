@@ -33,6 +33,8 @@
 --							Se agrega bloomServiceArea
 --							Se agrega bloomServiceAreaId a bloomServiceType
 -- ---------------------------------------------------------------------------
+-- 5 	03/10/2014	SAG 	Se agrega name a bloomDeliverableTrace
+-- ---------------------------------------------------------------------------
 
 use blackstarDb;
 
@@ -45,6 +47,11 @@ BEGIN
 -- -----------------------------------------------------------------------------
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
+
+-- Agregando name a bloomDeliverableTrace
+	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'bloomDeliverableTrace' AND COLUMN_NAME = 'name') = 0  THEN
+		ALTER TABLE bloomDeliverableTrace ADD name VARCHAR(400) NULL;
+	END IF;
 
 -- AGREGANDO TABLA bloomServiceArea
 	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'bloomServiceArea') = 0 THEN
@@ -278,7 +285,6 @@ IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blacksta
            delivered INT(11) DEFAULT 0,
            date Datetime NOT NULL,
 		   PRIMARY KEY (_id),
-		   UNIQUE UQ_bloomDeliverableTrace(bloomTicketId,deliverableTypeId),
 		   FOREIGN KEY (bloomTicketId) REFERENCES bloomTicket (_id),
            FOREIGN KEY (deliverableTypeId) REFERENCES bloomDeliverableType (_id)
          )ENGINE=INNODB;

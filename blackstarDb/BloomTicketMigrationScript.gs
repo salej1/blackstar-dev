@@ -122,14 +122,14 @@ function sendTicketToDatabase(ticket, conn, ticketTypes, sqlLog, range){
 	var ticketNumber = ticket[ix]; ix++;
 	var followUp = ticket[ix]; ix++;
 	var followUp2 = ticket[ix]; ix++;
-	ix = 18;
+	ix = 15;
 	var responseTime = ticket[ix]; ix++;
 	var rawResolved = ticket[ix]; ix++;
 	var resolved = 0;
 	if(rawResolved == "Si"){
 		resolved = 1;
 	}
-	ix = 22;
+	ix = 17;
 	var rawStatus = ticket[ix]; ix++;
 	var status = 1;
 	if(rawStatus == "C"){
@@ -268,18 +268,18 @@ function startTicketSyncJob(conn, sqlLog){
 	var startRec = offset;
 	
 	// iterate looking for new policies
-	var range = "A" + startRec.toString() + ":AI" + startRec.toString();
+	var range = "A" + startRec.toString() + ":S" + startRec.toString();
 	var ss = SpreadsheetApp.getActiveSpreadsheet();
-	var sheet = ss.getSheets()[1];
+	var sheet = ss.getSheets()[0];
 	var data = sheet.getRange(range).getValues();
 	var currTicket = data[0];
-	var seed = currTicket[34];
+	var seed = currTicket[18];
 	var update = 0;
 
 	while(currTicket != null && currTicket[11] != null && currTicket[11].toString() != ""){
 		try{
 			if(seed == 1){
-				sqlLog = sendTicketToDatabase(currTicket, conn, ticketTypes, sqlLog, sheet.getRange("AI" + startRec.toString()));		
+				sqlLog = sendTicketToDatabase(currTicket, conn, ticketTypes, sqlLog, sheet.getRange("S" + startRec.toString()));		
 				update = 1;		
 			}
 		}
@@ -288,9 +288,9 @@ function startTicketSyncJob(conn, sqlLog){
 			Logger.log(err);
 		}
 		startRec++;
-		seedRange = "AI" + startRec.toString();
+		seedRange = "S" + startRec.toString();
 		seed = sheet.getRange(seedRange).getValues()[0];
-		range = "A" + startRec.toString() + ":AI" + startRec.toString();
+		range = "A" + startRec.toString() + ":S" + startRec.toString();
 		data = SpreadsheetApp.getActiveSpreadsheet().getRange(range).getValues();
 		currTicket = data[0];
 	}	
@@ -327,7 +327,7 @@ function onEdit(event)
 		    var actRng = event.source.getActiveRange();
 
 		    var index = actRng.getRowIndex();
-		    var seedCell = actSht.getRange(index,34);
+		    var seedCell = actSht.getRange(index,18);
 		    var ticketNumber = actSht.getRange(index,11).getValue();
 		    if(ticketNumber != ""){
 			    seedCell.setValue(1);

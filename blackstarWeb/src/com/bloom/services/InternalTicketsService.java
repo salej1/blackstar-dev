@@ -21,7 +21,7 @@ public interface InternalTicketsService {
 	public void addTicketTeam(Integer ticketId, Integer roleId, String userId, String userGroup);
 	public List<Followup> getFollowUps(Integer ticketId);
 	public List<DeliverableTypeDTO> getDeliverableTypes(Integer ticketTypeId);
-	public void addDeliverableTrace(Integer ticketId, Integer deliverableTypeId, String docId);
+	public void addDeliverableTrace(Integer ticketId, Integer deliverableTypeId, String docId, String name);
 	public User getAsigneed(Integer ticketId);
 	public User getResponseUser(Integer ticketId);
 	public void sendNotification(String from, String to , Integer ticketId, String detail, String fromName);
