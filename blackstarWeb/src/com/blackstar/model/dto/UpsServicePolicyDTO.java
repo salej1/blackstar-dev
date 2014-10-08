@@ -85,6 +85,7 @@ public class UpsServicePolicyDTO {
 		this.serviceEndDate = serviceOrder.getServiceEndDate();
 		this.surveyScore = serviceOrder.getSurveyScore();
 		this.surveyServiceId = serviceOrder.getSurveyServiceId();
+		this.hasPdf = serviceOrder.getHasPdf();
 	}
 	
 	public UpsServicePolicyDTO(Policy policy, Serviceorder serviceOrder,  UpsServiceDTO upsService)
@@ -123,6 +124,7 @@ public class UpsServicePolicyDTO {
 		this.serviceEndDate = serviceOrder.getServiceEndDate();
 		this.surveyScore = serviceOrder.getSurveyScore();
 		this.surveyServiceId = serviceOrder.getSurveyServiceId();
+		this.hasPdf = serviceOrder.getHasPdf();
 		
 		this.upsServiceId = upsService.getUpsServiceId();
 		this.estatusEquipment = upsService.getEstatusEquipment();
@@ -202,6 +204,7 @@ public class UpsServicePolicyDTO {
 		this.serviceEndDate = serviceOrder.getServiceEndDate();
 		this.surveyScore = serviceOrder.getSurveyScore();
 		this.surveyServiceId = serviceOrder.getSurveyServiceId();
+		this.hasPdf = serviceOrder.getHasPdf();
 		
 		this.upsServiceId = upsService.getUpsServiceId();
 		this.estatusEquipment = upsService.getEstatusEquipment();
@@ -279,6 +282,7 @@ public class UpsServicePolicyDTO {
 	private Date serviceEndDate;
 	private Integer surveyScore;
 	private Integer surveyServiceId;
+	private Integer hasPdf;
 	
 	private Integer upsServiceId;	
 	private String estatusEquipment;
@@ -885,6 +889,14 @@ public class UpsServicePolicyDTO {
 
 	public void setReceivedByEmail(String receivedByEmail) {
 		this.receivedByEmail = receivedByEmail;
+	}
+
+	public Integer getHasPdf() {
+		return hasPdf;
+	}
+
+	public void setHasPdf(Integer hasPdf) {
+		this.hasPdf = hasPdf;
 	}
 
 

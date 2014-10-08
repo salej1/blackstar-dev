@@ -125,7 +125,7 @@
 						<tr>
 							<td>Folio:</td>
 							<td><form:input path="serviceOrderNumber" type="text" style="width:95%;" maxlength="5"  cssClass="lockOnDetail lockOnPolicy" required="true" /></td>
-								<c:if test="${serviceOrder.serviceOrderId > 0}">
+								<c:if test="${serviceOrder.serviceOrderId > 0 && serviceOrder.hasPdf == 1}">
 									<td colspan="2"><a href='${pageContext.request.contextPath}/report/show.do?serviceOrderId=${serviceOrder.serviceOrderId}' target="_blank">Ver PDF</a><img src='${pageContext.request.contextPath}/img/pdf.png'/>	
 								</c:if>	
 								<form:input path="serviceOrderId" type="hidden"/>

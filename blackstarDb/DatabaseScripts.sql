@@ -4695,7 +4695,7 @@ BEGIN
 
 	select 
 		A.upsServiceId, serviceOrderId, estatusEquipment, cleaned, hooverClean, verifyConnections, capacitorStatus, verifyFuzz, 
-		chargerReview, fanStatus,
+		chargerReview, fanStatus, observations,
 		
 		upsServiceBatteryBankId, checkConnectors, cverifyOutflow, numberBatteries, manufacturedDateSerial, damageBatteries, 
 		other, temp, chargeTest, brandModel, batteryVoltage, 
