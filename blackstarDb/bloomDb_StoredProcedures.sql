@@ -63,6 +63,12 @@
 -- 30   16/09/2014  SAG   Se agrega:
 --                        Se agrega bloomTicketAutoclose
 -- ------------------------------------------------------------------------------
+-- 31   06/10/2014  SAG   Se cambia:
+--                          bloomTicketAutoclose por bloomTicketAutoProcess
+-- ------------------------------------------------------------------------------
+-- 32   07/10/2014  SAG   Se modifica:
+--                          GetBloomHistoricalTickets - se agrega opcion 0 - Abiertos y retrasados
+-- ------------------------------------------------------------------------------
 
 use blackstarDb;
 
@@ -74,17 +80,27 @@ DELIMITER $$
   -- blackstarDb.bloomTicketAutoclose
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.bloomTicketAutoclose$$
-CREATE PROCEDURE blackstarDb.bloomTicketAutoclose()
+DROP PROCEDURE IF EXISTS blackstarDb.bloomTicketAutoProcess$$
+CREATE PROCEDURE blackstarDb.bloomTicketAutoProcess()
 BEGIN
-  
+  -- Auto close
   UPDATE bloomTicket SET 
     statusId = 6,
     modified = CONVERT_TZ(now(),'+00:00','-5:00'),
-    modifiedBy = 'bloomTicketAutoclose',
+    modifiedBy = 'bloomTicketAutoProcess',
     modifiedByUsr = 'Jobs'
   WHERE serviceTypeId NOT IN (13, 15)
     AND statusId = 5
     AND responseDate < DATE_ADD(now(), INTERVAL -2 DAY);
+
+  -- Auto status - Retrasado
+  UPDATE bloomTicket SET 
+    statusId = 3,
+    modified = CONVERT_TZ(now(),'+00:00','-5:00'),
+    modifiedBy = 'bloomTicketAutoProcess',
+    modifiedByUsr = 'Jobs'
+  WHERE CONVERT_TZ(now(),'+00:00','-5:00') > dueDate
+    AND statusId = 1;
 
 END$$
 
@@ -1237,7 +1253,7 @@ DROP PROCEDURE IF EXISTS blackstarDb.GetBloomHistoricalTickets$$
 CREATE PROCEDURE blackstarDb.GetBloomHistoricalTickets(statusTicket INT, startCreationDate DATETIME, endCreationDate DATETIME, showHidden INT, pUser VARCHAR(100))
 BEGIN
 
-  IF(statusTicket <= 0) THEN
+  IF(statusTicket < 0) THEN
     SELECT 
       ti._id AS id, 
       ti.ticketNumber, 
@@ -1267,35 +1283,67 @@ BEGIN
       AND (IFNULL(st.hidden, 0) <= showHidden  OR ti.createdBy = pUser)
     ORDER BY ti.created DESC;
   ELSE
-    SELECT 
-      ti._id AS id, 
-      ti.ticketNumber, 
-      ti.created AS created,
-      bu.name AS createdUserName,
-      ti.applicantAreaId, 
-      ba.name AS areaName, 
-      ti.serviceTypeId, 
-      st.name AS serviceName, 
-      st.responseTime, 
-      ti.project, 
-      ti.officeId, 
-      o.officeName,
-      ti.statusId, 
-      s.name AS statusTicket,
-      ti.dueDate AS dueDate,
-      ti.desiredDate AS desiredDate,
-      a.bloomServiceArea AS serviceArea
-    FROM bloomTicket ti 
-      INNER JOIN bloomApplicantArea ba on (ba._id = ti.applicantAreaId) 
-      INNER JOIN bloomServiceType st on (st._id = ti.serviceTypeId) 
-      INNER JOIN office o on (o.officeId = ti.officeId) 
-      INNER JOIN bloomStatusType s on (s._id = ti.statusId) 
-      INNER JOIN bloomServiceArea a ON st.bloomServiceAreaId = a.bloomServiceAreaId 
-      INNER JOIN blackstarUser bu ON ti.createdByUsr = bu.email
-    WHERE ti.created >= startCreationDate -- AND ti.created <= endCreationDate
-      AND (IFNULL(st.hidden, 0) <= showHidden  OR ti.createdBy = pUser)
-      AND ti.statusId = statusTicket
-    ORDER BY ti.created DESC;
+    IF (statusTicket = 0) THEN
+      SELECT 
+        ti._id AS id, 
+        ti.ticketNumber, 
+        ti.created AS created,
+        bu.name AS createdUserName,
+        ti.applicantAreaId, 
+        ba.name AS areaName, 
+        ti.serviceTypeId, 
+        st.name AS serviceName, 
+        st.responseTime, 
+        ti.project, 
+        ti.officeId, 
+        o.officeName,
+        ti.statusId, 
+        s.name AS statusTicket,
+        ti.dueDate AS dueDate,
+        ti.desiredDate AS desiredDate,
+        a.bloomServiceArea AS serviceArea
+      FROM bloomTicket ti 
+        INNER JOIN bloomApplicantArea ba on (ba._id = ti.applicantAreaId) 
+        INNER JOIN bloomServiceType st on (st._id = ti.serviceTypeId) 
+        INNER JOIN office o on (o.officeId = ti.officeId) 
+        INNER JOIN bloomStatusType s on (s._id = ti.statusId) 
+        INNER JOIN bloomServiceArea a ON st.bloomServiceAreaId = a.bloomServiceAreaId 
+        INNER JOIN blackstarUser bu ON ti.createdByUsr = bu.email
+      WHERE ti.created >= startCreationDate -- AND ti.created <= endCreationDate
+        AND (IFNULL(st.hidden, 0) <= showHidden  OR ti.createdBy = pUser)
+        AND ti.statusId IN(1,3)
+      ORDER BY ti.created DESC;
+    ELSE
+      SELECT 
+        ti._id AS id, 
+        ti.ticketNumber, 
+        ti.created AS created,
+        bu.name AS createdUserName,
+        ti.applicantAreaId, 
+        ba.name AS areaName, 
+        ti.serviceTypeId, 
+        st.name AS serviceName, 
+        st.responseTime, 
+        ti.project, 
+        ti.officeId, 
+        o.officeName,
+        ti.statusId, 
+        s.name AS statusTicket,
+        ti.dueDate AS dueDate,
+        ti.desiredDate AS desiredDate,
+        a.bloomServiceArea AS serviceArea
+      FROM bloomTicket ti 
+        INNER JOIN bloomApplicantArea ba on (ba._id = ti.applicantAreaId) 
+        INNER JOIN bloomServiceType st on (st._id = ti.serviceTypeId) 
+        INNER JOIN office o on (o.officeId = ti.officeId) 
+        INNER JOIN bloomStatusType s on (s._id = ti.statusId) 
+        INNER JOIN bloomServiceArea a ON st.bloomServiceAreaId = a.bloomServiceAreaId 
+        INNER JOIN blackstarUser bu ON ti.createdByUsr = bu.email
+      WHERE ti.created >= startCreationDate -- AND ti.created <= endCreationDate
+        AND (IFNULL(st.hidden, 0) <= showHidden  OR ti.createdBy = pUser)
+        AND ti.statusId = statusTicket
+      ORDER BY ti.created DESC;
+    END IF;
   END IF;
 
 END$$

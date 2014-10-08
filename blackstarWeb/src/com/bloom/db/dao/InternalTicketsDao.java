@@ -95,4 +95,5 @@ public interface InternalTicketsDao {
 	public List<InternalTicketBean> getHistoricalTickets(String startCreationDate, String endCreationDate, Integer idStatusTicket, Integer showHidden, String user) throws DAOException;	
 
 	public Integer userCanAssign(Integer ticketId, String currentUser);
+	public void autoProcessBloomTickets();
 }

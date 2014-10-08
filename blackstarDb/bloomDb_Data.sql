@@ -21,7 +21,9 @@
 -- -----------------------------------------------------------------------------
 -- 7	17/09/2014	SAG 	Se establecen tiempos Auto-close
 -- -----------------------------------------------------------------------------
--- 7	03/10/2014	SAG 	Se agrega DeliverableType 'Otro'
+-- 8	03/10/2014	SAG 	Se agrega DeliverableType 'Otro'
+-- -----------------------------------------------------------------------------
+-- 9 	06/10/2014	SAG 	Se elimina status En Proceso
 -- -----------------------------------------------------------------------------
 
 use blackstarDb;
@@ -32,6 +34,9 @@ DELIMITER $$
 DROP PROCEDURE IF EXISTS blackstarDb.updateDataBloom$$
 CREATE PROCEDURE blackstarDb.updateDataBloom()
 BEGIN
+
+-- ELIMINANDO ESTATUS EN PROCESO
+DELETE FROM blackstarDb.bloomStatusType WHERE name ='EN PROCESO';
 
 -- DeliverableType
 IF(SELECT count(*) FROM blackstarDb.bloomDeliverableType WHERE name = 'Otro') = 0 THEN

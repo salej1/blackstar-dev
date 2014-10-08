@@ -94,6 +94,20 @@
 				$( this ).dialog( "close" );
 			}}
 		});
+
+		$("#cancelConfirm").dialog({
+			autoOpen: false,
+			height: 200,
+			width: 380,
+			modal: true,
+			buttons: {
+					"Aceptar": function() {
+						window.location.href = 'cancel.do?ticketId=${ticketDetail._id}&userId=${ user.blackstarUserId }';
+					},
+				"Cancelar": function() {
+				$( this ).dialog( "close" );
+			}}
+		});
 		
 		
 		//History dialog
@@ -892,6 +906,11 @@
 												<button class="searchButton" onclick="$('#closeConfirm').dialog('open');">Cerrar Requisicion</button>
 											</td>
 										</c:if>
+										<c:if test="${ticketDetail.statusId != 4 && ticketDetail.userCanClose == true}">
+											<td>
+												<button class="searchButton" onclick="$('#cancelConfirm').dialog('open');">Cancelar Requisicion</button>
+											</td>
+										</c:if>
 									</tr>
 								<tbody>
 							</table>
@@ -925,6 +944,11 @@
 
 				<div id="closeConfirm" title="Cerrar Requisicion ${ticketDetail.ticketNumber}?">
 					<p>¿Confirma que dar por cerrada la requisicion ${ticketDetail.ticketNumber}?</p>
+				</div>
+
+				<div id="cancelConfirm" title="Cancelar Requisicion ${ticketDetail.ticketNumber}?">
+					<p>¿Confirma que desea cancelar la requisicion ${ticketDetail.ticketNumber}?</p>
+					<p>Todas las acciones asociadas a la requisición serán suspendidas.</p>
 				</div>
 				
 <!--   ~ CONTENT   -->

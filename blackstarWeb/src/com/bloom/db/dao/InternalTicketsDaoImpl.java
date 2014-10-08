@@ -364,4 +364,11 @@ public class InternalTicketsDaoImpl extends AbstractDAO implements InternalTicke
 		
 		return val;
 	}
+
+	@Override
+	public void autoProcessBloomTickets() {
+		String sql = "CALL bloomTicketAutoProcess;";
+		
+		getJdbcTemplate().update(sql);
+	}
 }

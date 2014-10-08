@@ -43,6 +43,7 @@ public class InternalTicketsController extends AbstractController {
 
   private static final Integer RESOVLED_STATUS = 5;
   private static final Integer CLOSED_STATUS = 6;
+  private static final Integer CANCELED_STATUS = 4;
   
   private InternalTicketsService internalTicketsService;
   
@@ -252,6 +253,21 @@ public class InternalTicketsController extends AbstractController {
 		                , @ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession) {
 	try {
 		internalTicketsService.closeTicket(ticketId, userId, CLOSED_STATUS, userSession.getUser().getUserName());
+	} catch (Exception e) {
+		Logger.Log(LogLevel.ERROR,e.getStackTrace()[0].toString(), e);
+		e.printStackTrace();
+		model.addAttribute("errorDetails", e.getStackTrace()[0].toString());
+		return "error";
+	}
+	return "bloom/bloomTicketPage";
+  }
+  
+  @RequestMapping(value = "/ticketDetail/cancel.do", method = RequestMethod.GET)
+  public String cancelTicket(@RequestParam(required = true) Integer ticketId
+		                , @RequestParam(required = true) Integer userId, ModelMap model
+		                , @ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession) {
+	try {
+		internalTicketsService.closeTicket(ticketId, userId, CANCELED_STATUS, userSession.getUser().getUserName());
 	} catch (Exception e) {
 		Logger.Log(LogLevel.ERROR,e.getStackTrace()[0].toString(), e);
 		e.printStackTrace();
@@ -530,5 +546,14 @@ public class InternalTicketsController extends AbstractController {
 		return "bloom/bloomTicketPage";
 	}
 
+	@RequestMapping(value="/autoProcess.do", method = RequestMethod.GET)
+	public void bloomAutoProcessTickets(){
+		try{
+			internalTicketsService.autoProcessBloomTickets();
+		} catch (Exception e) {
+			e.printStackTrace();
+			Logger.Log(LogLevel.ERROR,e.getStackTrace()[0].toString(), e);
+		}
+	}
 
 }

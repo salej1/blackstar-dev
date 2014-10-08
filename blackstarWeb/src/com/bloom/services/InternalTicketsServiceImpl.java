@@ -261,16 +261,60 @@ public class InternalTicketsServiceImpl extends AbstractService
   }
 
   public void closeTicket(Integer ticketId, Integer userId, Integer statusId, String sender){
-	  if(statusId == 5){
-		  List<TicketDetailDTO> ticketDetail = internalTicketsDao.getTicketDetail(ticketId);
-		  String to = null;
-		  StringBuilder message = null;
-		  TicketDetailDTO ticket = null;
-		  IEmailService mail = EmailServiceFactory.getEmailService();
-		  String timeStamp = Globals.getLocalTimeString();
+	  List<TicketDetailDTO> ticketDetail = internalTicketsDao.getTicketDetail(ticketId);
+	  String to = null;
+	  StringBuilder message = null;
+	  TicketDetailDTO ticket = null;
+	  IEmailService mail = EmailServiceFactory.getEmailService();
+	  String timeStamp = Globals.getLocalTimeString();
 
-		  if(ticketDetail.size() > 0){
-			  ticket = ticketDetail.get(0);
+	  if(ticketDetail.size() > 0){
+		  ticket = ticketDetail.get(0);
+
+		  if(statusId == 4){
+			  List<AdvisedUserDTO> teamDto;
+			  teamDto = catalogInternalTicketsDao.getAdviceUsers(ticket.getApplicantAreaId(), ticket.getServiceTypeId());
+			  
+			  if(teamDto != null && teamDto.size() > 0){
+				  StringBuilder tob = new StringBuilder();
+				  for(AdvisedUserDTO usr : teamDto){
+					  if(usr.getWorkerRoleTypeId() == 2 ){
+						  if(tob.length() == 0){
+							  tob.append(usr.getEmail());
+						  }
+						  else{
+							  tob.append("," + usr.getEmail());
+						  }
+					  }
+				  }
+				  
+				  to = tob.toString();
+			  }
+			  
+			  if(to != null){
+
+				  String subject = "Requisición " + ticket.getTicketNumber() + " cancelada";
+				  StringBuilder bodySb = new StringBuilder();
+				  String ticketLink = String.format("<a href='%s/bloom/ticketDetail/show.do?ticketId=%s'>%s</a>", Globals.GOOGLE_CONTEXT_URL, ticket.get_id(), ticket.getTicketNumber());
+				  
+				  bodySb.append("<img src='" + Globals.GPOSAC_LOGO_DEFAULT_URL + "'>");
+				  bodySb.append("<div style='font-family:sans-serif;margin-left:50px;'>");
+				  bodySb.append("<h3 >Requisición cancelada</h3>");
+				  bodySb.append("<p>La requisición " + ticket.getTicketNumber() + " ha sido cancelada. Favor de suspender las actividades relacionadas a esta.</p>");
+				  bodySb.append("<br>Cancelado por: " + sender);
+				  bodySb.append("<br>Fecha: " + timeStamp);
+				  bodySb.append("<br>");
+				  bodySb.append("<p>Haga click en el siguiente link para revisar la requisición y/o agregar algún comentario</p>");
+				  bodySb.append(ticketLink);
+				  bodySb.append("</div>");
+				  bodySb.append("<hr>");
+				  bodySb.append("<small>Favor de no responder a este email. En caso de duda póngase en contacto con la persona que canceló la requisición</small>");
+
+				  mail.sendEmail(Globals.GPOSAC_DEFAULT_SENDER, to, subject, bodySb.toString());
+			  }
+		  }
+		  if(statusId == 5){
+
 			  to = ticket.getCreatedByUsr();
 			  if(to != null){
 
@@ -362,5 +406,10 @@ public class InternalTicketsServiceImpl extends AbstractService
 	    		                                          , message.toString());
     }
   }
+
+	@Override
+	public void autoProcessBloomTickets() {
+		internalTicketsDao.autoProcessBloomTickets();		
+	}
 
 }

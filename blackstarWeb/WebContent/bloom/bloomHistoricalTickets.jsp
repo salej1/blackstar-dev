@@ -14,27 +14,16 @@
 				<td style="width: 90px;"><input id="fldFechaIni" type="text" readOnly="true" style="width: 95%;"/></td>
 				<td style="width: 60px;text-align:center;"> a</td>
 				<td style="width: 90px;"><input id="fldFechaFin" type="text" readOnly="true" style="width: 95%;"/></td>
-				<td style="width: 30px;"></td>
+				<td style="width: 20px;"></td>
 				<td>Estatus</td>
-				<td colspan="3">
-					<select name="slEstatusTicket" id="slEstatusTicket" style="width:200px;">
+				<td style="width: 210px;">
+					<select name="slEstatusTicket" id="slEstatusTicket">
 					</select>
 				</td>
-			</tr>
-			
-			<!-- <tr>
-				<td>Responsable</td>
-				<td colspan="3">
-					<select name="slResponsable" id="slResponsable" style="width:200px;">
-					</select>
-				</td>
-			</tr> -->
-			<tr colspan="4">
-				<td>
+				<td style="width: 240px;">
 					<button id="buscarButtonTicket" class="searchButton">Buscar</button>
 				</td>
 			</tr>
-			
 		</table>
 			
 		</div>
@@ -217,13 +206,12 @@
 	}
 
 	function cargaCombosFormulario() {
-
 		for (var i = 0; i < listaEstatusTickets.length; i++) {
 			$("#slEstatusTicket").append(
 					new Option(listaEstatusTickets[i].descripcion, listaEstatusTickets[i].id));
 		}
 		
-		$('#slEstatusTicket').val(-1);
+		$('#slEstatusTicket').val(0);
 	}
 
 </script>

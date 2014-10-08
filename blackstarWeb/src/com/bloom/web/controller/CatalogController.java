@@ -156,8 +156,10 @@ public class CatalogController extends AbstractController {
 		List<CatalogoBean<Integer>> inilistaUsuariosMesaAyuda = new ArrayList<CatalogoBean<Integer>>();
 
 		
-		CatalogoBean<Integer> todos = new CatalogoBean<Integer>(-1, "Todos");
+		CatalogoBean<Integer> todos = new CatalogoBean<Integer>(-1, "TODOS");
+		CatalogoBean<Integer> ayr = new CatalogoBean<Integer>(0, "ABIERTOS Y RETRASADOS");
 		inilistaEstatusTickets.add(todos);
+		inilistaEstatusTickets.add(ayr);
 		inilistaUsuariosMesaAyuda.add(todos);
 		
 		
