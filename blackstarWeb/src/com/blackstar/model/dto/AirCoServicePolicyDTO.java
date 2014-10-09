@@ -88,6 +88,7 @@ public class AirCoServicePolicyDTO {
 		this.serviceEndDate = serviceOrder.getServiceEndDate();
 		this.surveyScore = serviceOrder.getSurveyScore();
 		this.surveyServiceId = serviceOrder.getSurveyServiceId();
+		this.hasPdf = serviceOrder.getHasPdf();
 	}
 	
 	public AirCoServicePolicyDTO(Policy policy, Serviceorder serviceOrder,  AirCoServiceDTO airCo)
@@ -126,6 +127,7 @@ public class AirCoServicePolicyDTO {
 		this.serviceEndDate = serviceOrder.getServiceEndDate();
 		this.surveyScore = serviceOrder.getSurveyScore();
 		this.surveyServiceId = serviceOrder.getSurveyServiceId();
+		this.hasPdf = serviceOrder.getHasPdf();
 		
 		this.aaServiceId = airCo.getAaServiceId();
 		this.evaDescription = airCo.getEvaDescription();
@@ -219,6 +221,7 @@ public class AirCoServicePolicyDTO {
 		this.serviceEndDate = serviceOrder.getServiceEndDate();
 		this.surveyScore = serviceOrder.getSurveyScore();
 		this.surveyServiceId = serviceOrder.getSurveyServiceId();
+		this.hasPdf = serviceOrder.getHasPdf();
 		
 		this.aaServiceId = airCo.getAaServiceId();
 		this.evaDescription = airCo.getEvaDescription();
@@ -308,6 +311,7 @@ public class AirCoServicePolicyDTO {
 	private Date serviceEndDate;
 	private Integer surveyScore;
 	private Integer surveyServiceId;
+	private Integer hasPdf;
 	
 	private Integer aaServiceId;
 	private String evaDescription;
@@ -1049,6 +1053,14 @@ public class AirCoServicePolicyDTO {
 
 	public void setResponsibleName(String responsibleName) {
 		this.responsibleName = responsibleName;
+	}
+
+	public Integer getHasPdf() {
+		return hasPdf;
+	}
+
+	public void setHasPdf(Integer hasPdf) {
+		this.hasPdf = hasPdf;
 	}
 	
 }

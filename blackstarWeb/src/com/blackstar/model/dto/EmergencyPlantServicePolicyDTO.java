@@ -89,6 +89,7 @@ public class EmergencyPlantServicePolicyDTO {
 		this.serviceEndDate = serviceOrder.getServiceEndDate();
 		this.surveyScore = serviceOrder.getSurveyScore();
 		this.surveyServiceId = serviceOrder.getSurveyServiceId();
+		this.hasPdf = serviceOrder.getHasPdf();
 	}
 	
 	public EmergencyPlantServicePolicyDTO(Policy policy, Serviceorder serviceOrder,  EmergencyPlantServiceDTO emergencyPlantService)
@@ -127,6 +128,7 @@ public class EmergencyPlantServicePolicyDTO {
 		this.serviceEndDate = serviceOrder.getServiceEndDate();
 		this.surveyScore = serviceOrder.getSurveyScore();
 		this.surveyServiceId = serviceOrder.getSurveyServiceId();
+		this.hasPdf = serviceOrder.getHasPdf();
 		
 		this.epServiceId = emergencyPlantService.getEpServiceId();
 		this.brandPE = emergencyPlantService.getBrandPE();
@@ -277,6 +279,7 @@ public class EmergencyPlantServicePolicyDTO {
 		this.serviceEndDate = serviceOrder.getServiceEndDate();
 		this.surveyScore = serviceOrder.getSurveyScore();
 		this.surveyServiceId = serviceOrder.getSurveyServiceId();
+		this.hasPdf = serviceOrder.getHasPdf();
 		
 		this.epServiceId = emergencyPlantService.getEpServiceId();
 		this.brandPE = emergencyPlantService.getBrandPE();
@@ -426,6 +429,7 @@ public class EmergencyPlantServicePolicyDTO {
 	private Date serviceEndDate;
 	private Integer surveyScore;
 	private Integer surveyServiceId;
+	private Integer hasPdf;
 	
 	private Integer epServiceId;
 	private String brandPE;
@@ -1694,6 +1698,14 @@ public class EmergencyPlantServicePolicyDTO {
 
 	public void setServiceCorrectiveDisplay(String serviceCorrectiveDisplay) {
 		this.serviceCorrectiveDisplay = serviceCorrectiveDisplay;
+	}
+
+	public Integer getHasPdf() {
+		return hasPdf;
+	}
+
+	public void setHasPdf(Integer hasPdf) {
+		this.hasPdf = hasPdf;
 	}
 	
 	

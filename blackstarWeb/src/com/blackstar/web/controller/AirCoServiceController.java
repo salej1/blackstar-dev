@@ -161,7 +161,8 @@ public class AirCoServiceController extends AbstractController {
 				servicioOrderSave.setClosed(serviceOrder.getClosed());
 				servicioOrderSave.setIsWrong(serviceOrder.getIsWrong()?1:0);
 				servicioOrderSave.setServiceStatusId(serviceOrder.getServiceStatusId());
-			
+				servicioOrderSave.setHasPdf(serviceOrder.getHasPdf());
+
 				service.updateServiceOrder(servicioOrderSave, "AirCoServiceController", userSession.getUser().getUserEmail());
 			}
 			else{
@@ -237,7 +238,7 @@ public class AirCoServiceController extends AbstractController {
   private void commit(AirCoServicePolicyDTO serviceOrder) throws Exception {
 	byte [] report = rpService.getAirCoReport(serviceOrder);
 	saveReport(serviceOrder.getServiceOrderId(), report);
-	sendNotification(serviceOrder.getReceivedByEmail(), report);
+	sendNotification(serviceOrder.getReceivedByEmail(), report, serviceOrder.getServiceOrderNumber());
   }
   
   private void saveReport(Integer id, byte[] report) throws Exception {
@@ -245,8 +246,9 @@ public class AirCoServiceController extends AbstractController {
   	gdService.insertFileFromStream(id, "application/pdf", "ServiceOrder.pdf", parentId, report);
   }
   
-  private void sendNotification(String to, byte [] report){
-  	gmService.sendEmail(to, "Reporte de servicio de Aire Acondicionado", "Reporte de servicio de Aire Acondicionado", "ServiceOrder.pdf", report);
+  private void sendNotification(String to, byte [] report, String serviceNumber){
+	  to = to + "," + Globals.GPOSAC_CALL_CENTER_GROUP;
+  	gmService.sendEmail(to, "Reporte de servicio de Aire Acondicionado", "Reporte de servicio de Aire Acondicionado", serviceNumber, report);
   }
 
 }

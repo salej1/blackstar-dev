@@ -160,6 +160,7 @@ public class UpsServiceController extends AbstractController {
 		    		servicioOrderSave.setClosed(serviceOrder.getClosed());
 		    		servicioOrderSave.setIsWrong(serviceOrder.getIsWrong()?1:0);
 		    		servicioOrderSave.setStatusId(serviceOrder.getServiceStatusId());
+		    		servicioOrderSave.setHasPdf(serviceOrder.getHasPdf());
 		    		
 		    		service.updateServiceOrder(servicioOrderSave, "UpsServiceController", userSession.getUser().getUserEmail());
 		    		idServicio = serviceOrder.getServiceOrderId();
@@ -239,7 +240,7 @@ public class UpsServiceController extends AbstractController {
 	     private void commit(UpsServicePolicyDTO serviceOrder) throws Exception {
 	    	byte [] report = rpService.getUPSReport(serviceOrder);
 	    	saveReport(serviceOrder.getServiceOrderId(), report);
-	    	sendNotification(serviceOrder.getReceivedByEmail(), report);
+	    	sendNotification(serviceOrder.getReceivedByEmail(), report, serviceOrder.getServiceOrderNumber());
 	      }
 	      
 	      private void saveReport(Integer id, byte[] report) throws Exception {
@@ -247,7 +248,8 @@ public class UpsServiceController extends AbstractController {
 	      	gdService.insertFileFromStream(id, "application/pdf", "ServiceOrder.pdf", parentId, report);
 	      }
 	      
-	      private void sendNotification(String to, byte [] report){
-	      	gmService.sendEmail(to, "Reporte de servicio de UPS", "Reporte de servicio de UPS", "ServiceOrder.pdf", report);
+	      private void sendNotification(String to, byte [] report, String serviceNumber){
+	    	  to = to + "," + Globals.GPOSAC_CALL_CENTER_GROUP;
+	      	gmService.sendEmail(to, "Reporte de servicio de UPS", "Reporte de servicio de UPS", serviceNumber, report);
 	      }
 }

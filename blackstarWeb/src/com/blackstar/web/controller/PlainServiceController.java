@@ -333,15 +333,9 @@ public class PlainServiceController extends AbstractController {
 	    private void sendNotification(String to, byte [] report, String osNumber){
 	    	String content = "Buen dia. Por este medio se anexan las siguientes ordenes de servicio. Gracias por su preferencia.";
 	    	// envio de la OS en PDF
-	    	gmService.sendEmail(to, osNumber, content, "ServiceOrder.pdf", report);
-	    	
 	    	// copia a call center
-	    	List<EmployeeDTO> callCtr = udService.getStaff(Globals.GROUP_CALL_CENTER);
-	    	for(EmployeeDTO usr : callCtr){
-	    		to = usr.getEmail();
-	    		gmService.sendEmail(to, "Orden de Servicio", "Orden de Servicio", "ServiceOrder.pdf", report);
-	    	}
-	    	//
+	    	to = to + "," + Globals.GPOSAC_CALL_CENTER_GROUP;
+	    	gmService.sendEmail(to, osNumber, content, osNumber, report);
 	    	
 	    }
 	    

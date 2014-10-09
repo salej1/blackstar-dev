@@ -72,16 +72,18 @@ public class GmailService implements IEmailService{
 	}
 		
 	@Override
-	public void sendEmail(final String to, final String subject, final String body,
+	public void sendEmail(String to, final String subject, final String body,
 			final String attachmentName, final byte[] file) {
 		try {
+			final String toList = to.replace(" ", "");
 			mailSender.send(new MimeMessagePreparator() {
 				public void prepare(MimeMessage mimeMessage) throws Exception {
 					MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
 					if(attachmentName != null && file != null){
 						helper.addAttachment(attachmentName, new ByteArrayResource(file));
 					}
-					helper.setTo(to);
+					
+					helper.setTo(InternetAddress.parse(toList));
 					helper.setFrom(defaultFrom);
 					helper.setSubject(subject);
 					helper.setText(body);

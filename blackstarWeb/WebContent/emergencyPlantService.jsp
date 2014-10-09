@@ -162,6 +162,7 @@
 											<td colspan="2"><a href='${pageContext.request.contextPath}/report/show.do?serviceOrderId=${serviceOrder.serviceOrderId}' target="_blank">Ver PDF</a><img src='${pageContext.request.contextPath}/img/pdf.png'/>	
 										</c:if>
 										<form:input path="serviceOrderId" type="hidden"/>
+										<form:input path="hasPdf" type="hidden"/>
 									</td>
 								</tr>
 								<tr>

@@ -95,6 +95,7 @@ public class BatteryServicePolicyDTO {
 		this.serviceEndDate = serviceOrder.getServiceEndDate();
 		this.surveyScore = serviceOrder.getSurveyScore();
 		this.surveyServiceId = serviceOrder.getSurveyServiceId();
+		this.hasPdf = serviceOrder.getHasPdf();
 		
 		this.setCells(new ArrayList<BatteryCellServiceDTO>());
 		
@@ -136,6 +137,7 @@ public class BatteryServicePolicyDTO {
 		this.serviceEndDate = serviceOrder.getServiceEndDate();
 		this.surveyScore = serviceOrder.getSurveyScore();
 		this.surveyServiceId = serviceOrder.getSurveyServiceId();
+		this.hasPdf = serviceOrder.getHasPdf();
 		
 		this.bbServiceId = batteryServiceDTO.getBbServiceId();
 		this.serviceOrderId = batteryServiceDTO.getServiceOrderId();		
@@ -198,6 +200,7 @@ public class BatteryServicePolicyDTO {
 		this.serviceEndDate = serviceOrder.getServiceEndDate();
 		this.surveyScore = serviceOrder.getSurveyScore();
 		this.surveyServiceId = serviceOrder.getSurveyServiceId();
+		this.hasPdf = serviceOrder.getHasPdf();
 		
 		this.bbServiceId = batteryServiceDTO.getBbServiceId();
 		this.serviceOrderId = batteryServiceDTO.getServiceOrderId();		
@@ -253,6 +256,7 @@ public class BatteryServicePolicyDTO {
 	private String receivedByPosition;
 	private String serviceOrderNumber;
 	private String serviceTypeId;
+	private Integer hasPdf;
 	
 	private Integer bbServiceId;	
 	private Integer plugClean;
@@ -736,6 +740,14 @@ public class BatteryServicePolicyDTO {
 
 	public void setSurveyServiceId(Integer surveyServiceId) {
 		this.surveyServiceId = surveyServiceId;
+	}
+
+	public Integer getHasPdf() {
+		return hasPdf;
+	}
+
+	public void setHasPdf(Integer hasPdf) {
+		this.hasPdf = hasPdf;
 	}	
 	
 	

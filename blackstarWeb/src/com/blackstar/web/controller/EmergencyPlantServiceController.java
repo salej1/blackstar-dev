@@ -159,6 +159,7 @@ public class EmergencyPlantServiceController extends AbstractController {
 		    		servicioOrderSave.setClosed(serviceOrder.getClosed());
 		    		servicioOrderSave.setIsWrong(serviceOrder.getIsWrong()?1:0);
 		    		servicioOrderSave.setStatusId(serviceOrder.getServiceStatusId());
+		    		servicioOrderSave.setHasPdf(serviceOrder.getHasPdf());
 		    		
 		    		service.updateServiceOrder(servicioOrderSave, "EmergencyPlantServiceController", userSession.getUser().getUserEmail());
 		    		idServicio = serviceOrder.getServiceOrderId();
@@ -240,14 +241,15 @@ public class EmergencyPlantServiceController extends AbstractController {
 	    	gdService.insertFileFromStream(id, "application/pdf", "ServiceOrder.pdf", parentId, report);
 	    }
 	    
-	    private void sendNotification(String to, byte [] report){
-	    	gmService.sendEmail(to, "Orden de Servicio", "Orden de Servicio", "ServiceOrder.pdf", report);
+	    private void sendNotification(String to, byte [] report, String serviceNumber){
+	    	to = to + "," + Globals.GPOSAC_CALL_CENTER_GROUP;
+	    	gmService.sendEmail(to, "Orden de Servicio", "Orden de Servicio", serviceNumber, report);
 	    }
 	    
 	    private void commit(EmergencyPlantServicePolicyDTO serviceOrder) throws Exception {
 	      byte [] report = rpService.getEmergencyPlantReport(serviceOrder);
 	      saveReport(serviceOrder.getServiceOrderId(), report);
-	      sendNotification(serviceOrder.getReceivedByEmail(), report);
+	      sendNotification(serviceOrder.getReceivedByEmail(), report, serviceOrder.getServiceOrderNumber());
 	    }
 
 }

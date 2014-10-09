@@ -81,4 +81,5 @@ public class Globals {
 	  // Gpo SAC
 	  public static final String GPOSAC_LOGO_DEFAULT_URL = "http://www.gposac.com.mx/images/grupo-sac-logo.png";
 	  public static final String GPOSAC_DEFAULT_SENDER = "portal-servicios@gposac.com.mx";
+	  public static final String GPOSAC_CALL_CENTER_GROUP = "call-center@gposac.com.mx";
 }
