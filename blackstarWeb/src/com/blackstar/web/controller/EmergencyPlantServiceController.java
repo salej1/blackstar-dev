@@ -243,7 +243,7 @@ public class EmergencyPlantServiceController extends AbstractController {
 	    
 	    private void sendNotification(String to, byte [] report, String serviceNumber){
 	    	to = to + "," + Globals.GPOSAC_CALL_CENTER_GROUP;
-	    	gmService.sendEmail(to, "Orden de Servicio", "Orden de Servicio", serviceNumber, report);
+	    	gmService.sendEmail(to, "Orden de Servicio", "Orden de Servicio", serviceNumber + ".pdf", report);
 	    }
 	    
 	    private void commit(EmergencyPlantServicePolicyDTO serviceOrder) throws Exception {

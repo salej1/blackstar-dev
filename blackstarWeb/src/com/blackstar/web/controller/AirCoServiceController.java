@@ -248,7 +248,7 @@ public class AirCoServiceController extends AbstractController {
   
   private void sendNotification(String to, byte [] report, String serviceNumber){
 	  to = to + "," + Globals.GPOSAC_CALL_CENTER_GROUP;
-  	gmService.sendEmail(to, "Reporte de servicio de Aire Acondicionado", "Reporte de servicio de Aire Acondicionado", serviceNumber, report);
+  	gmService.sendEmail(to, "Reporte de servicio de Aire Acondicionado", "Reporte de servicio de Aire Acondicionado", serviceNumber + ".pdf", report);
   }
 
 }

@@ -51,6 +51,7 @@ BEGIN
 -- -----------------------------------------------------------------------------
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
+ALTER TABLE followUp ADD INDEX (asignee);
 
 -- AGREGANDO NULLS A BOLEANOS DE OS
 -- AA

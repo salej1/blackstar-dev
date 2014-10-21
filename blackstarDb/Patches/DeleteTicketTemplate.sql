@@ -3,7 +3,7 @@ DELIMITER $$
 DROP PROCEDURE IF EXISTS blackstarDb.DeleteTicket$$
 CREATE PROCEDURE blackstarDb.DeleteTicket()
 BEGIN
-	SET @ticketNumber = '14-255';
+	SET @ticketNumber = '14-274';
 	SET @ticketId = (SELECT ticketId FROM blackstarDb.ticket WHERE ticketNumber = @ticketNumber);
 
 	-- ServiceOrder
@@ -12,6 +12,7 @@ BEGIN
 	ELSE
 		SELECT 'Eliminando...';
 		DELETE FROM blackstarDbTransfer.ticket WHERE ticketNumber = @ticketNumber;
+		DELETE FROM blackstarDb.followUp WHERE ticketId = @ticketId;
 		DELETE FROM blackstarDb.ticket WHERE ticketId = @ticketId;
 	END IF;
 END$$

@@ -239,7 +239,7 @@ public class BatteryServiceController extends AbstractController {
   
   private void sendNotification(String to, byte [] report, String serviceNumber){
 	  to = to + "," + Globals.GPOSAC_CALL_CENTER_GROUP;
-  	gmService.sendEmail(to, "Reporte de servicio a baterias", "Reporte de servicio a baterias", serviceNumber, report);
+  	gmService.sendEmail(to, "Reporte de servicio a baterias", "Reporte de servicio a baterias", serviceNumber + ".pdf", report);
   }
   
   private void commit(BatteryServicePolicyDTO serviceOrder) throws Exception {

@@ -51,6 +51,7 @@ BEGIN
 -- -----------------------------------------------------------------------------
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
+ALTER TABLE followUp ADD INDEX (asignee);
 
 -- AGREGANDO NULLS A BOLEANOS DE OS
 -- AA
@@ -1599,56 +1600,99 @@ DROP PROCEDURE IF EXISTS blackstarDb.GetUserWatchingIssues$$
 CREATE PROCEDURE blackstarDb.GetUserWatchingIssues(pUser VARCHAR(100))
 BEGIN
 
-	SET @prevRefId := 0;
-	SET @rowNumber := 0;
-	SET @myId:= (SELECT blackstarUserId FROM blackstarUser WHERE email = pUser);
+	SET @prevRefId = 0;
+	SET @rowNumber = 0;
+	SET @myId = (SELECT blackstarUserId FROM blackstarUser WHERE email = pUser);
 
+	CREATE TEMPORARY TABLE usrGroup(email VARCHAR(100), name VARCHAR(200));
+	INSERT INTO usrGroup(email, name)
+	SELECT email, name FROM blackstarUser WHERE email = pUser;
+
+	INSERT INTO usrGroup(email, name)
+	SELECT email, name FROM blackstarUser WHERE bossId = (SELECT blackstarUserId FROM blackstarUser WHERE email = pUser);
+
+	CREATE TEMPORARY TABLE followUpCandidates(followUpId INT, asignee VARCHAR(100), followUp TEXT, created DATETIME, createdByUsr VARCHAR(200), ticketId INT, serviceOrderId INT, issueId INT, bloomTicketId INT);
+	INSERT INTO followUpCandidates(followUpId, asignee, followUp, created, createdByUsr, ticketId, serviceOrderId, issueId, bloomTicketId)
+	SELECT followUpId, asignee, followUp, created, createdByUsr, ticketId, serviceOrderId, issueId, bloomTicketId FROM (
+		SELECT @rowNumber := IF(coalesce(ticketId, serviceOrderId, issueId, bloomTicketId) = @prevRefId, @rowNumber + 1, 1) AS RowNum,
+			f.*, 
+			@prevRefId := coalesce(ticketId, serviceOrderId, issueId, bloomTicketId) AS PrevRef
+		FROM followUp f
+		ORDER BY followUpReferenceTypeId, coalesce(ticketId, serviceOrderId, issueId, bloomTicketId), created DESC
+	) a 
+	INNER JOIN usrGroup g ON a.asignee = g.email
+	WHERE a.RowNum = 1;
+
+	CREATE TEMPORARY TABLE displayIssues(referenceTypeId CHAR, referenceType VARCHAR(200), referenceId INT, referenceNumber VARCHAR(200), project VARCHAR(100), customer VARCHAR(400), created DATETIME, title VARCHAR(400), detail TEXT, status VARCHAR(200), createdByUsr VARCHAR(200), asignee VARCHAR(200));
+
+	-- Tickets - policies
+	INSERT INTO displayIssues(referenceTypeId, referenceType, referenceId, referenceNumber, project, customer, created, title, detail, status, createdByUsr, asignee)
 	SELECT 
-		f.followUpReferenceTypeId AS referenceTypeId, 
-		r.followupreferencetype AS referenceType,
-		coalesce(t.ticketId, s.serviceOrderId, i.issueId, bt._id) AS referenceId, 
-		coalesce(t.ticketNumber, s.serviceOrderNumber, i.issueNumber, bt.ticketNumber) AS referenceNumber,
-		coalesce(p.project, c.project, i.project, bt.project) AS project,
-		coalesce(p.customer, c.customerName, i.customer, '') AS customer,
-		f.created AS created,
-		CASE 
-			WHEN f.followUpReferenceTypeId = 'T' THEN 'Seguimiento a Ticket'
-			WHEN f.followUpReferenceTypeId = 'O' THEN 'Seguimiento a Orden de Servicio'
-			WHEN f.followUpReferenceTypeId = 'I' THEN 'Asignacion SAC'
-			WHEN f.followUpReferenceTypeId = 'R' THEN 'Requisicion'
-		END AS title,
-		followUp AS detail,
-		coalesce(ts.ticketStatus, ist.issueStatus, bts.name, '') as status,
-		ifnull(u1.name, '') AS createdByUsr,
-		u2.name AS asignee
-	FROM (
-		SELECT * FROM (
-			SELECT @rowNumber := IF(coalesce(ticketId, serviceOrderId, issueId, bloomTicketId) = @prevRefId, @rowNumber + 1, 1) AS RowNum,
-				f.*, 
-				@prevRefId := coalesce(ticketId, serviceOrderId, issueId, bloomTicketId) AS PrevRef
-			FROM followUp f
-			ORDER BY followUpReferenceTypeId, coalesce(ticketId, serviceOrderId, issueId, bloomTicketId), created DESC
-		) a WHERE a.RowNum = 1  -- a: todos los followUps asignados por usuario, numerados por id de (ticket, so, issue)
-	) f -- f: el ultimo comentario de cada (ticket, so, issue, requisicion) y que esta asignado al usuario
-		INNER JOIN followUpReferenceType r ON f.followUpReferenceTypeId = r.followUpReferenceTypeId
-		LEFT OUTER JOIN ticket t ON f.ticketId = t.ticketId
-		LEFT OUTER JOIN serviceOrder s ON s.serviceOrderId = f.serviceOrderId
-		LEFT OUTER JOIN issue i ON i.issueId = f.issueId
-		LEFT OUTER JOIN policy p ON coalesce(t.policyId, s.policyId) = p.policyId
-		LEFT OUTER JOIN openCustomer c ON s.openCustomerId = c.openCustomerId
-		LEFT OUTER JOIN ticketStatus ts ON ts.ticketStatusId = t.ticketStatusId
-		LEFT OUTER JOIN serviceStatus ss ON ss.serviceStatusId = s.serviceStatusId
-		LEFT OUTER JOIN issueStatus ist ON ist.issueStatusId = i.issueStatusId
-		LEFT OUTER JOIN bloomTicket bt ON f.bloomTicketId = bt._id
-		LEFT OUTER JOIN bloomStatusType bts ON bts._id = bt.statusId
-		LEFT OUTER JOIN blackstarUser u1 ON f.createdByUsr = u1.email
-		LEFT OUTER JOIN blackstarUser u2 ON f.asignee = u2.email
-	WHERE (coalesce(t.createdByUsr, s.createdByUsr, i.createdByUsr, bt.createdByUsr) = pUser
-			OR u2.bossId = @myId)
-		AND coalesce(t.ticketStatusId, s.serviceStatusId, i.issueStatusId, '') NOT IN ('C', 'F')
-		AND ifnull(bt.statusId, 0) NOT IN(6, 4)
-	ORDER BY f.created;
-	
+		'T', 'Ticket', f.ticketId, ticketNumber, project, customer, f.created, 'Seguimiento a Ticket', followUp, ticketStatus, u1.name, u2.name
+	FROM followUpCandidates f 
+		INNER JOIN ticket t ON t.ticketId = f.ticketId
+		INNER JOIN policy p ON t.policyId = p.policyId
+		INNER JOIN ticketStatus s ON t.ticketStatusId = s.ticketStatusId
+		INNER JOIN usrGroup u1 ON u1.email = f.asignee
+		INNER JOIN blackstarUser u2 ON f.createdByUsr = u2.email
+	WHERE f.ticketId IS NOT NULL
+		AND t.ticketStatusId IN('A','R');
+
+	-- ServiceOrders - policy
+	INSERT INTO displayIssues(referenceTypeId, referenceType, referenceId, referenceNumber, project, customer, created, title, detail, status, createdByUsr, asignee)
+	SELECT 
+		'O', 'Orden de Servicio', f.serviceOrderId, serviceOrderNumber, project, customer, f.created, 'Seguimiento a Orden de Servicio', followUp, serviceStatus, u1.name, u2.name
+	FROM followUpCandidates f 
+		INNER JOIN serviceOrder o ON o.serviceOrderId = f.serviceOrderId
+		INNER JOIN policy p ON o.policyId = p.policyId
+		INNER JOIN serviceStatus s ON o.serviceStatusId = s.serviceStatusId
+		INNER JOIN usrGroup u1 ON u1.email = f.asignee
+		INNER JOIN blackstarUser u2 ON f.createdByUsr = u2.email
+	WHERE f.serviceOrderId IS NOT NULL
+		AND o.serviceStatusId = 'E';
+
+	-- ServiceOrders - openCustomer
+	INSERT INTO displayIssues(referenceTypeId, referenceType, referenceId, referenceNumber, project, customer, created, title, detail, status, createdByUsr, asignee)
+	SELECT 
+		'O', 'Orden de Servicio', f.serviceOrderId, serviceOrderNumber, project, customerName, f.created, 'Seguimiento a Orden de Servicio', followUp, serviceStatus, u1.name, u2.name
+	FROM followUpCandidates f 
+		INNER JOIN serviceOrder o ON o.serviceOrderId = f.serviceOrderId
+		INNER JOIN openCustomer p ON o.openCustomerId = p.openCustomerId
+		INNER JOIN serviceStatus s ON o.serviceStatusId = s.serviceStatusId
+		INNER JOIN usrGroup u1 ON u1.email = f.asignee
+		INNER JOIN blackstarUser u2 ON f.createdByUsr = u2.email
+	WHERE f.serviceOrderId IS NOT NULL
+		AND o.serviceStatusId = 'E';
+
+	-- BloomTickets
+	INSERT INTO displayIssues(referenceTypeId, referenceType, referenceId, referenceNumber, project, customer, created, title, detail, status, createdByUsr, asignee)
+	SELECT 
+		'R', 'Requisicion', bloomTicketId, ticketNumber, project, '', f.created, 'Requisicion', followUp, s.name, u1.name, u2.name
+	FROM followUpCandidates f 
+		INNER JOIN bloomTicket t ON t._id = f.bloomTicketId
+		INNER JOIN bloomStatusType s ON t.statusId = s._id
+		INNER JOIN usrGroup u1 ON u1.email = f.asignee
+		INNER JOIN blackstarUser u2 ON f.createdByUsr = u2.email
+	WHERE f.bloomTicketId IS NOT NULL
+		AND t.statusId IN(1,3);
+
+	-- Issues
+	INSERT INTO displayIssues(referenceTypeId, referenceType, referenceId, referenceNumber, project, customer, created, title, detail, status, createdByUsr, asignee)
+	SELECT 
+		'I', 'Asignacion SAC', f.issueId, issueNumber, project, ifnull(customer,''), f.created, 'Asignacion SAC', followUp, s.issueStatus, u1.name, u2.name
+	FROM followUpCandidates f 
+		INNER JOIN issue i ON i.issueId = f.issueId
+		INNER JOIN issueStatus s ON i.issueStatusId = s.issueStatusId
+		INNER JOIN usrGroup u1 ON u1.email = f.asignee
+		INNER JOIN blackstarUser u2 ON f.createdByUsr = u2.email
+	WHERE f.bloomTicketId IS NOT NULL
+		AND i.issueStatusId = 'A';
+
+	SELECT * FROM displayIssues ORDER BY created;
+
+	DROP TABLE usrGroup;
+	DROP TABLE followUpCandidates;
+	DROP TABLE displayIssues;
 END$$
 
 -- -----------------------------------------------------------------------------

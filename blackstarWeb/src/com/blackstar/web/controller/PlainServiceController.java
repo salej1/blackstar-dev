@@ -335,7 +335,7 @@ public class PlainServiceController extends AbstractController {
 	    	// envio de la OS en PDF
 	    	// copia a call center
 	    	to = to + "," + Globals.GPOSAC_CALL_CENTER_GROUP;
-	    	gmService.sendEmail(to, osNumber, content, osNumber, report);
+	    	gmService.sendEmail(to, osNumber, content, osNumber + ".pdf", report);
 	    	
 	    }
 	    
