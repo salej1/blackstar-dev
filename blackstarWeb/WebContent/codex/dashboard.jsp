@@ -187,6 +187,13 @@
 		</div>
 		</c:if>
 		
+		<!-- Visitas a clientes -->
+		<c:import url="visitList.jsp"></c:import>
+		<script type="text/javascript">
+			$(function(){
+				visitList_init();
+			});
+		</script>
 	</div>
 </body>
 </html>

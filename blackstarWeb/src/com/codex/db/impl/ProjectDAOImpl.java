@@ -151,7 +151,7 @@ public class ProjectDAOImpl extends AbstractDAO
   
   @Override 
   public Integer upsertProject(ProjectVO project){
-	String sqlQuery = "CALL CodexUpsertProject(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	String sqlQuery = "CALL CodexUpsertProject(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 	Integer projectId = (Integer)getJdbcTemplate().queryForObject(sqlQuery, new Object[]{project.getId(), project.getClientId()
 			            , project.getTaxesTypeId(), project.getStatusId()
 			            , project.getPaymentTypeId(), project.getCurrencyTypeId()
@@ -163,7 +163,7 @@ public class ProjectDAOImpl extends AbstractDAO
 			            , project.getIncoterm(), project.getProductsNumber()
 			            , project.getFinancesNumber(), project.getServicesNumber()
 			            , project.getTotalProjectNumber(), project.getCreatedByUsr()
-			                                         , project.getModifiedByUsr()}, Integer.class);
+			            , project.getModifiedByUsr(), project.getDiscountNumber()}, Integer.class);
 	project.setId(projectId);
 	
 	return projectId;

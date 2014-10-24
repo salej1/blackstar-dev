@@ -34,6 +34,7 @@ public class ProjectVO {
 	private Double productsNumber;
 	private Double financesNumber;
 	private Double servicesNumber;
+	private Double discountNumber;
 	private Double totalProjectNumber; 
 	private List<ProjectEntryVO> entries = new ArrayList<ProjectEntryVO>();
 	private String strEntries;
@@ -306,6 +307,14 @@ public class ProjectVO {
 	}
 	public void setCstMobile(String cstMobile) {
 		this.cstMobile = cstMobile;
+	}
+
+	public Double getDiscountNumber() {
+		return discountNumber;
+	}
+
+	public void setDiscountNumber(Double discountNumber) {
+		this.discountNumber = discountNumber;
 	}
 	
 }

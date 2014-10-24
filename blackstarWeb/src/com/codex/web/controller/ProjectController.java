@@ -138,7 +138,7 @@ public class ProjectController extends AbstractController {
 		 
 		 if(clientId != null && ((client = cService.getClientById(clientId)) != null)){
 			 project.setClientId(client.getId());
-			 project.setLocation(client.getState());
+			 project.setLocation(client.getCity() + ", " + client.getState());
 			 project.setContactName(client.getContactName());
 		 }
 	     project.setId(0);
@@ -146,7 +146,8 @@ public class ProjectController extends AbstractController {
 	     project.setStatusDescription("Nuevo");
 	     project.setProjectNumber("C" + officeId + projectNum);
 	     project.setCostCenter(project.getProjectNumber());
-	     project.setCreated(new Date());
+	     project.setCreated(Globals.getLocalTime());
+	     project.setPaymentTypeId(1);
 	     project.setChangeType(xrService.getExchangeRate());
 	     
 	     model.addAttribute("project", project);
@@ -157,7 +158,7 @@ public class ProjectController extends AbstractController {
 	     model.addAttribute("deliverableTypes", service.getDeliverableTypes());
 	     model.addAttribute("paymentTypes", service.getAllPaymentTypes());
 	     model.addAttribute("staff", udService.getStaff());
-	     model.addAttribute("enableEdition", false);
+	     model.addAttribute("enableEdition", true);
 	     model.addAttribute("isUpdate", false);
 	     model.addAttribute("clients", cService.getAllClients());
 	     model.addAttribute("costCenterList", getCostCenterList(project.getProjectNumber()));

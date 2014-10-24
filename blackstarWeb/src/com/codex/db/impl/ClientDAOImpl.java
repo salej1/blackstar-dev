@@ -76,20 +76,34 @@ public class ClientDAOImpl extends AbstractDAO
   @Override
   public void insertClient(ClientVO client) {
 	String sqlQuery = "CALL CodexUpsertProspect(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-	Object [] params = new Object[]{client.getId(), client.getClientTypeId(), client.getClientOriginId()
-			                      , client.getSellerId(), client.isProspect()
-			                      , client.getRfc(), client.getCorporateName()
-			                      , client.getTradeName(), client.getPhoneArea()
-			                      , client.getPhoneNumber(), client.getPhoneExtension()
-			                      , client.getPhoneAreaAlt(), client.getPhoneNumberAlt()
-			                      , client.getPhoneExtensionAlt(), client.getEmail()
-			                      , client.getEmailAlt(), client.getStreet()
-			                      , client.getIntNumber(), client.getExtNumber()
-			                      , client.getZipCode(), client.getCountry()
-			                      , client.getState(), client.getMunicipality()
-			                      , client.getCity(), client.getNeighborhood()
-			                      , client.getContactName(), client.getCurp()
-			                      , client.getRetention()};
+	Object [] params = new Object[]{client.getId(),
+			client.getClientTypeId(),
+			client.getClientOriginId(),
+			client.getSellerId(),
+			client.isProspect(),
+			client.getRfc(),
+			client.getCorporateName(),
+			client.getTradeName(),
+			client.getPhoneArea(),
+			client.getPhoneNumber(),
+			client.getPhoneExtension(),
+			client.getPhoneAreaAlt(),
+			client.getPhoneNumberAlt(),
+			client.getPhoneExtensionAlt(),
+			client.getEmail(),
+			client.getEmailAlt(),
+			client.getStreet(),
+			client.getIntNumber(),
+			client.getExtNumber(),
+			client.getZipCode(),
+			client.getCountry(),
+			client.getState(),
+			client.getMunicipality(),
+			client.getCity(),
+			client.getNeighborhood(),
+			client.getContactName(),
+			client.getCurp(),
+			client.getRetention()};
 	getJdbcTemplate().update(sqlQuery, params);
   }
   

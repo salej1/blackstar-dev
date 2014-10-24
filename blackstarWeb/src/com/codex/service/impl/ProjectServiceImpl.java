@@ -197,7 +197,7 @@ public class ProjectServiceImpl extends AbstractService
   @Override
   public String getReferenceTypes(Integer itemTypeId){
 	List<JSONObject> types = dao.getReferenceTypes(itemTypeId);
-	return types != null ? encode(types.toString()): "";
+	return types.toString();
   }
   
   @Override

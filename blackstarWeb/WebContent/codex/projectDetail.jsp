@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ page isELIgnored="false"%>
@@ -19,13 +19,21 @@
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery-ui.min.css">
 	<script src="${pageContext.request.contextPath}/js/dateFormat.js"></script>	
 	<script type="text/javascript" src="${pageContext.request.contextPath}/js/common/popup.js"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/js/customAutoComplete.js"></script>
 	
 	<script type="text/javascript">
 	    var entryNumber = 0;
 	    var itemNumber = 0;
 	    var totProducts = 0;
 	    var totServices = 0;
+	    var totDiscount = 0;
 	    var priceList = $.parseJSON('${priceListJson}');
+	    var productTypeMap = {};
+
+    	<c:forEach var="pt" items="${entryTypes}">
+		<c:out value='productTypeMap[${pt.id}] = "${pt.productType}";' escapeXml='false'/>
+		</c:forEach>
+	   
 
 	    $(document).ready(function () {
 
@@ -49,12 +57,8 @@
 					}}
 			});
 			setButtonStatusText();
-			if('${enableEdition}' == 'true'){
-				$('#addItemButton').hide();
-			}
-
 			// Bloqueo de campos
-			if('${enableEdition}' == 'false')
+			if('${enableEdition}' == 'true')
 			{
 				$("#created").val(dateNow());				
 			}
@@ -66,9 +70,28 @@
 
 			// Calc binding
 			bindCalc();
+
+			// paymentTypeId
+			$("#paymentTypeId").bind('change', function(){
+				if($("#paymentTypeId").val() == '1'){
+					$("#creditInputLine").hide();
+				}
+				else{
+					$("#creditInputLine").show();
+				}
+			});
+
+			// init
+			if("${project.paymentTypeId}" == "1"){
+				$("#creditInputLine").hide();
+			}
+			else{
+				$("#creditInputLine").show();
+			}
 	    });
 	    
 	    function bindCalc(){
+	    	$(".calc").unbind();
 			$(".calc").bind("change", function(){
 				calc();
 			});
@@ -80,18 +103,28 @@
 		  	$(".statusButton").html("Enviar a Autorización");
 		  } else if(projectStatus == '2'){
 		  	$(".statusButton").html("Autorizar");
+		  } else if(projectStatus == '3'){
+		  	$(".statusButton").html("Enviar cotización");
+		  } else if(projectStatus == '4'){
+		  	$(".statusButton").html("Adjuntar orden de compra");
 		  }
 	    }
 	    
+	    function bindEntryProductType(entryNum, prodId){
+	    	$("#productType_" + entryNum).val(productTypeMap[prodId]);
+	    }
+
 	    function addEntry(){
 	    	entryNumber++;
 	    	$('#entryTable').append('\
 	    		<tr class="part" id="entry_' + entryNumber + '" name="' + entryNumber + '"><td>' + entryNumber + '</td>\
-		    		<td colspan="2"><select name="" id="entryTypeId_' + entryNumber + '" style="width:350px" class="required" >\
-		    			<option value="">Seleccione</option>\
-		    			<c:forEach var="ss" items="${entryTypes}">\
-		    				<option value="${ss.id}">${ss.name}</option>\
-		    			</c:forEach></select>\
+		    		<td colspan="2">\
+		    			<select name="" id="entryTypeId_' + entryNumber + '" style="width:350px" class="required" onchange="bindEntryProductType(' + entryNumber + ', this.value);">\
+		    				<option value="">Seleccione</option>\
+			    			<c:forEach var="ss" items="${entryTypes}">\
+			    				<option value="${ss.id}">${ss.name}</option>\
+			    			</c:forEach>\
+			    		</select>\
 		    		</td>\
 		    		<td colspan="3"><input type="text" id="description_' + entryNumber + '" style="width:280px" class="required"/></td>\
 		    		<td><input type="text" id="discount_' + entryNumber + '" style="width:20px" class="calc" value="0"/>%</td>\
@@ -103,7 +136,7 @@
 	    		</tr>\
 	    		<tr>\
 	    			<td></td>\
-	    			<td><button class="searchButton" onclick="addItem(' + entryNumber +');" id="addItemButton">+ Item</button></td>\
+	    			<c:if test="${enableEdition}"><td><button class="searchButton" onclick="addItem(' + entryNumber +');" id="addItemButton">+ Item</button></td></c:if>\
 	    		</tr>');
 			
 			bindCalc();
@@ -113,26 +146,25 @@
 	    	itemNumber++;
 	    	$('#items_' + entryNumber).append('\
 	    		<tr id="item_' + itemNumber + '" name="' + itemNumber + '">\
-	    			<td><button class="searchButton" onclick="removeItem(\'item_' + itemNumber +'\')" style="width:10px" id="removeItemButton_' + itemNumber +'">-</button>\</td>\
-	    			<td><select onchange="setReferenceTypes(this.value, referenceId_' + itemNumber + ', reference_' + itemNumber + ', ' + itemNumber + ')" id="entryItemTypeId_' + itemNumber + '" style="width:157px" class="required">\
+	    			<td>\
+	    			<c:if test="${enableEdition}"><button class="searchButton" onclick="removeItem(\'item_' + itemNumber +'\')" style="width:10px" id="removeItemButton_' + itemNumber +'">-</button></c:if>\
+	    			</td>\
+	    			<td><select onchange="setReferenceTypes(this.value, referenceId_' + itemNumber + ', reference_' + itemNumber + ', ' + itemNumber + ')" id="entryItemTypeId_' + itemNumber + '" style="width:110px" class="required">\
 	    				<option value="">Seleccione</option>\
 	    				<c:forEach var="ss" items="${entryItemTypes}"><option value="${ss.id}">${ss.name}</option>\
 	    				</c:forEach></select>\
 	    			</td>\
-	    			<td colspan="2"><select id="referenceId_' + itemNumber + '" disabled="true" style="width:355px" class="required" onchange="setPrice(' + itemNumber + ', this.value);">\
-	    				<option value="-1">Seleccione</option>\
-	    				</select><input type="text" id="reference_' + itemNumber + '" style="display: none;width:145px" class="required"/>\
+	    			<td colspan="2">\
+	    				<input type="text" id="reference_' + itemNumber + '" style="width:355px" class="required">\
+	    				<input type="hidden" id="referenceId_' + itemNumber + '"/>\
 	    			</td>\
-	    			<td><input type="text" id="itemQuantity_' + itemNumber + '" style="width:40px" class="required" value="1" onchange="calcItem(' + itemNumber + ');"/></td>\
-	    			<td><input type="text" id="itemPriceByUnit_' + itemNumber + '" style="width:40px" class="required" readonly onchange="calcItem(' + itemNumber + ');"/></td>\
-	    			<td><input type="text" id="itemDiscount_' + itemNumber + '" style="width:20px" class="required" value="0" onchange="calcItem(' + itemNumber + ');"/>%</td>\
+	    			<td><input type="text" id="itemQuantity_' 	+ itemNumber + '" style="width:40px" class="required" value="1" onchange="calcItem(' + itemNumber + ');"/></td>\
+	    			<td><input type="text" id="itemPriceByUnit_'+ itemNumber + '" style="width:40px" class="required" onchange="calcItem(' + itemNumber + ');"/></td>\
+	    			<td><input type="text" id="itemDiscount_' 	+ itemNumber + '" style="width:20px" class="required" value="0" onchange="calcItem(' + itemNumber + ');"/>%</td>\
+	    				<input type="hidden" id="itemDiscountNum_' + itemNumber + '"/>\
 	    			<td><input type="text" id="itemTotalPrice_' + itemNumber + '" style="width:40px" class="required" readonly/></td>\
-	    			<td><input type="text" id="itemComments_' + itemNumber + '" style="width:80px" /></td>\
+	    			<td><input type="text" id="itemComments_' 	+ itemNumber + '" style="width:80px" /></td>\
 	    		</tr>');
-
-	    	if('${enableEdition}' == 'true'){
-	    		$("#removeItemButton_" + itemNumber).hide();
-	    	}
 
 	    	bindCalc();
 	    }
@@ -152,6 +184,9 @@
 	     	var entryId, itemId;
 	     	var items;
 	     	var itemReference;
+	     	var description;
+	     	var itemTypeId;
+
 	     	for(var i = 0; i < entries.length ; i++){
 	     		entryId = entries[i].id.substring(6);
 	     		strEntries += $("#entryTypeId_" + entryId).val()
@@ -164,14 +199,17 @@
 	     		items = $("#" + entries[i].id).next().find("table.items tr");
 	     		for(var j = 0; j < items.length ; j++){
 	     			itemId = items[j].id.substring(5);
-	     			if($("#referenceId_" + itemId).is(":visible")){
+	     			itemTypeId = $("#entryItemTypeId_" + itemId).val();
+	     			if(itemTypeId == 1 || itemTypeId == 2){
 	     				itemReference = $("#referenceId_" + itemId).val();
+	     				description = $("#reference_" + itemId).val();
 	     			} else {
 	     				itemReference = $("#reference_" + itemId).val();
+	     				description = $("#reference_" + itemId).val();
 	     			}
 	     			strEntries += $("#entryItemTypeId_" + itemId).val()
 	     			           +  "°" + itemReference
-	     			           +  "°" + $("#itemDescription_" + itemId).val()
+	     			           +  "°" + description
 	     			           +  "°" + $("#itemQuantity_" + itemId).val()
 	     			           +  "°" + $("#itemPriceByUnit_" + itemId).val()
 	     			           +  "°" + $("#itemDiscount_" + itemId).val()
@@ -222,38 +260,41 @@
 	      }
 	    }
 	    
-	    function setReferenceTypes(value, selectObj, inputObj, itemNumber){
-	    	var selectObjId = selectObj.id;
-	    	var inputObjId = inputObj.id;
-	    	if(selectObjId == undefined){
-	    		selectObjId = selectObj.attr('id');
+	    function setReferenceTypes(value, idsFld, descFld, itemNumber){
+	    	var idsFldId = idsFld.id;
+	    	var descFldId = descFld.id;
+	    	if(idsFldId == undefined){
+	    		idsFldId = idsFld.attr('id');
 	    	}
-	    	if(inputObjId == undefined){
-	    		inputObjId = selectObj.attr('id');
+	    	if(descFldId == undefined){
+	    		descFldId = descFld.attr('id');
 	    	}
-	    	$('#' + selectObjId).empty().append('<option value="">Seleccione</option>');
-	    	$("#" + selectObjId).prop( "disabled", false );
-	    	if(value == 3){
-	    		$("#" + inputObjId).show();
-	    		$("#" + selectObjId).hide();
-	    	} else {
-	    		$("#" + inputObjId).hide();
-	    		$("#" + selectObjId).show();
-	    	    $.ajax({
+	    	if(value == 1 || value == 2){
+	    		$.ajax({
 				       url: "${pageContext.request.contextPath}/codex/project/getReferenceTypes.do?itemTypeId=" + value,
 				       type: 'get',
                        dataType: 'json',
                        async:false,
 				       success: function(data){
-					         for (var i = 0; i < data.length; i++) {
-					            d = data[i];
-					        	$('#' + selectObjId).append('<option value="' + d.id + '">' + d.name + '</option>');
-					         }
+				       		$("#" + descFldId).val("");
+				       		$("#" + idsFldId).val("");
+				       		$("#itemPriceByUnit_" + itemNumber).val("");
+					         init_autoComplete(data, descFldId, idsFldId, "single", function(refId){
+					         	if(value == 1){
+					         		setPrice(itemNumber, refId);					         		
+					         	}
+					         });
                        } 
 				});
 	    	}
+	    	if(value == 1){
+				$("#itemPriceByUnit_" + itemNumber).attr("readonly", "");
+	    	}
+	    	else{
+				$("#itemPriceByUnit_" + itemNumber).removeAttr("readonly");
+	    	}
 	    }
-	    
+
 	    function advanceStatus(){
 	      $('#mainForm').attr('action', '/codex/project/advanceStatus.do?projectId=' +  $("#projectId").val());
 	      $("#mainForm").submit();
@@ -269,10 +310,14 @@
 	    	else{
 	    		var qty = Number(rawQty);
 	    		var price = Number(rawPrice);
-	    		var discount = (100 - Number(rawDiscount))/100;
+	    		var discount = Number(rawDiscount);
 
 	    		var tot = (qty * price);
-	    		tot = tot * discount;
+	    		var rawTot = tot;
+
+	    		tot = tot * ((100 - discount)/100);
+	    		$("#itemDiscountNum_" + itemNumber).val(rawTot * (discount)/100);
+
 	    		$("#itemTotalPrice_" + itemNumber).val(tot);
 	    	}
 
@@ -285,11 +330,19 @@
 	    		entryTotPrice = entryTotPrice + Number($(value).val());
 	    	});
 
+	    	$("input[id^='itemDiscountNum_']", "table#items_" + entryNumber).each(function(index, value){
+	    		totDiscount = totDiscount + Number($(value).val());
+	    	});
+
 	    	// aplicar descuento por partida
 	    	var discount = 0;
-	    	discount = Number($("#discount_" + entryNumber).val());
+	    	var rawEntryPrice = entryTotPrice;
 
+	    	discount = Number($("#discount_" + entryNumber).val());
 	    	entryTotPrice = ((100 - discount)/100) * entryTotPrice;
+	    	totDiscount = totDiscount + (rawEntryPrice * (discount)/100);
+
+	    	$("#discountNumber").val(totDiscount);
 
 	    	$("#totalPrice_" + entryNumber).val(entryTotPrice);
 
@@ -307,6 +360,7 @@
 	    function calc(){
 	    	totProducts = 0;
 	    	totServices = 0;
+	    	totDiscount = 0;
 
 	    	// sumarizar items por partida
 	    	for(entryNum = 1; entryNum <= entryNumber; entryNum ++){
@@ -354,14 +408,13 @@
 						<h2>Cedula de proyectos</h2>				
 						<div>
 							<p></p>							
-							<c:if test="${enableEdition}">
-	    					  	<button class="searchButton" onclick="window.location = 'intTicketDetail_new.html'">Agregar Req. Gral.</button>
+							<c:if test="${not enableEdition}">
 								<button class="searchButton statusButton" onclick="advanceStatus()"></button>
 							</c:if>
-							<c:if test="${not enableEdition}">
-							   <button class="searchButton" onclick="window.history.back();">Cancelar</button>
+							<c:if test="${enableEdition}">
+								<button class="searchButton" onclick="commit();">Guardar</button>
+								<button class="searchButton" onclick="window.history.back();">Cancelar</button>
 							</c:if>
-							<button class="searchButton" onclick="commit();">Guardar</button>
 							<button class="searchButton" onclick="window.history.back();">Descartar</button>
 							<hr>
 						</div>		
@@ -422,7 +475,7 @@
 								<td>Anticipo:</td>
 								<td><form:input type="text" id="advance" path="advance" style="width:100%" class="lockOnDetail" maxlength="10" /></td>
 								<td>Plazo:</td>
-								<td><form:input type="text" id="timeLimit" path="timeLimit" style="width:85%" class="lockOnDetail" maxlength="3" /> Días</td>
+								<td><form:input type="text" id="timeLimit" path="timeLimit" style="width:75%" class="lockOnDetail" maxlength="3" /> Días</td>
 							  <tr>
 							  <tr>
 								<td>Plazo finiquito:</td>
@@ -467,8 +520,12 @@
 							  <tr>
 								<td>TOTAL DE SERVICIOS</td>
 								<td><form:input type="text" path="servicesNumber" style="width:100%" maxlength="7" readOnly="true"/></td>
+								<td>TOTAL DESCUENTO</td>
+								<td><form:input type="text" path="discountNumber" style="width:95%" maxlength="7" readOnly="true"/></td>
+							  </tr>
+							  <tr>
 								<td>TOTAL DEL PROYECTO</td>
-								<td><form:input type="text" path="totalProjectNumber" style="width:95%" maxlength="7" readOnly="true"/></td>
+								<td><form:input type="text" path="totalProjectNumber" style="width:100%" maxlength="7" readOnly="true"/></td>
 							  </tr>
 						   </table>
 						   <form:input type="hidden" path="strEntries"/>
@@ -523,17 +580,8 @@
                                            <script type="text/javascript">
                                                  addItem(entryNumber);
                                                  $("#entryItemTypeId_" + itemNumber).val('${item.itemTypeId}');
-                                                 setReferenceTypes('${item.itemTypeId}', $('#referenceId_' + itemNumber) , $('#reference_' + itemNumber), itemNumber);
-                                                 if('${item.itemTypeId}' == "3"){
-                                                	 $("#reference_" + itemNumber).val('${item.reference}');
-                                                	 $("#reference_" + itemNumber).show();
-                                                	 $("#referenceId_" + itemNumber).hide();
-                                                 } else {
-                                                    $("#referenceId_" + itemNumber).val('${item.reference}');
-                                                    $("#reference_" + itemNumber).hide();
-                                                    $("#referenceId_" + itemNumber).show();
-                                                 }
-                  	     			             $("#itemDescription_" + itemNumber).val('${item.description}');
+                                                 $("#referenceId_" + itemNumber).val('${item.reference}');
+                  	     			             $("#reference_" + itemNumber).val('${item.description}');
                   	     			             $("#itemQuantity_" + itemNumber).val('${item.quantity}');
                   	     			             $("#itemPriceByUnit_" + itemNumber).val('${item.priceByUnit}');
                   	     			             $("#itemDiscount_" + itemNumber).val('${item.discount}');
@@ -554,14 +602,14 @@
                               </c:forEach>
 							</tbody>
 						</table>
-						<c:if test="${not enableEdition}">
+						<c:if test="${enableEdition}">
 						   <div>
 							  <button class="searchButton" onclick="addEntry();">+ Partida</button>
 						   </div>
 						</c:if>
 <!--   ~PARTIDAS   -->		
 
-                         <c:if test="${enableEdition}">
+                         <c:if test="${not enableEdition}">
                          
 <!--   SEGUIMIENTO   -->		
 						<br /><br />		
@@ -574,20 +622,19 @@
                                <c:import url="/codex/_fileTraceTable.jsp"></c:import>
                             </div>
 							<c:import url="/_attachments.jsp"></c:import>
-							</c:if>
+						</c:if>
 <!-- ~ ADJUNTOS -->
 
 <!--   BOTONES    -->
 						<div>
 							<hr>
-							<c:if test="${enableEdition}">
-							  <button class="searchButton" onclick="window.location = 'intTicketDetail_new.html'">Agregar Req. Gral.</button>
-							  <button class="searchButton statusButton" onclick="advanceStatus();">Autorizar</button>
-							</c:if>
 							<c:if test="${not enableEdition}">
-							   <button class="searchButton" onclick="window.history.back();">Cancelar</button>
+							  <button class="searchButton statusButton" onclick="advanceStatus();"></button>
 							</c:if>
-							<button class="searchButton" onclick="commit();">Guardar</button>
+							<c:if test="${enableEdition}">
+								<button class="searchButton" onclick="commit();">Guardar</button>
+								<button class="searchButton" onclick="window.history.back();">Cancelar</button>
+							</c:if>
 							<button class="searchButton" onclick="window.history.back();">Descartar</button>
 						</div>
 					</div>					

@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ page isELIgnored="false"%>
@@ -88,7 +88,9 @@
 			<!--   LINKS   -->
 		<div class="grid_16">	
 			<p>
-				<img src="/img/navigate-right.png"/><a href="projectNew.html" >Crear Cedula de proyecto</a>
+				<c:if test="${mode != 'new'}">
+					<img src="/img/navigate-right.png"/><a href="/codex/project/create.do?clientId=${client.id}" >Crear Cedula de proyecto</a>
+				</c:if>
 			</p>
 		</div>	
 <!--  ~ LINKS   -->

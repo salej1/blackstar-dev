@@ -5,6 +5,7 @@ public class ProjectEntryTypesVO {
 	private Integer id;
 	private String name;
 	private String description;
+	private String productType;
 	
 	public Integer getId() {
 		return id;
@@ -23,6 +24,12 @@ public class ProjectEntryTypesVO {
 	}
 	public void setDescription(String description) {
 		this.description = description;
+	}
+	public String getProductType() {
+		return productType;
+	}
+	public void setProductType(String productType) {
+		this.productType = productType;
 	}
 
 }
