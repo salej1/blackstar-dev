@@ -113,7 +113,11 @@
       <property name="dao" ref="cstDAO" />
   </bean>
 
-   <bean id="visitService" class="com.codex.service.impl.VisitServiceImpl" parent="abstractService">
+  <bean id="visitService" class="com.codex.service.impl.VisitServiceImpl" parent="abstractService">
       <property name="dao" ref="visitDAO" />
+  </bean>
+
+  <bean id="kpiService" class="com.codex.service.impl.KpiServiceImpl" parent="abstractService">
+      <property name="dao" ref="kpiDAO" />
   </bean>
 </beans>

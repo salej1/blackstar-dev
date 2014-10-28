@@ -138,5 +138,11 @@
 	    <property name="clService" ref="clientService" />
 	    <property name="cstService" ref="cstService" />
 	</bean>
+
+	<bean class="com.codex.web.controller.KpiController" parent="abstractController">
+	    <property name="service" ref="kpiService" />
+	    <property name="clService" ref="clientService" />
+	    <property name="cstService" ref="cstService" />
+	</bean>
 	<context:annotation-config />
 </beans>
