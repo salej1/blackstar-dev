@@ -3578,11 +3578,251 @@ DROP PROCEDURE blackstarDb.upgradeCodexSchema;
 --                              blackstarDb.GetAllCst
 --                              blackstarDb.GetVisitById
 -- -----------------------------------------------------------------------------
+-- 6  28/10/2014    SAG     Se agrega:
+--                              blackstarDb.getCodexInvoicingKpi
+--                              blackstarDb.getCodexEffectiveness
+--                              blackstarDb.getCodexProposals
+--                              blackstarDb.getCodexProjectsByStatus
+--                              blackstarDb.getCodexProjectsByOrigin
+--                              blackstarDb.getCodexClientVisits
+--                              blackstarDb.getCodexNewCustomers
+--                              blackstarDb.getCodexProductFamilies
+--                              blackstarDb.getCodexComerceCodes
+-- -----------------------------------------------------------------------------
 
 use blackstarDb;
 
 DELIMITER $$
 
+
+-- -----------------------------------------------------------------------------
+  -- blackstarDb.getCodexInvoicingKpi
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.getCodexInvoicingKpi$$
+CREATE PROCEDURE blackstarDb.getCodexInvoicingKpi(startDate DATETIME, endDate DATETIME, cst VARCHAR(200), originId INT)
+BEGIN
+
+  IF(ifnull(cst, '') != '') THEN
+    SELECT
+      c.name AS cstName,
+      sum(p.totalProjectNumber) AS amount,
+      o.name AS origin,
+      '0 %' AS coverage
+    FROM codexProject p
+      INNER JOIN cst c ON p.createdByUsr = c.email
+      INNER JOIN codexClient cl ON cl._id = p.clientId
+      INNER JOIN codexClientOrigin o ON o._id = cl.clientOriginId
+    WHERE p.created >= startDate
+      AND p.created <= endDate
+      AND c.email = cst
+      AND cl.clientOriginId = originId
+    GROUP BY c.name, o.name;
+  ELSE
+     SELECT
+      c.name AS cstName,
+      sum(p.totalProjectNumber) AS amount,
+      o.name AS origin,
+      '0 %' AS coverage
+    FROM codexProject p
+      INNER JOIN cst c ON p.createdByUsr = c.email
+      INNER JOIN codexClient cl ON cl._id = p.clientId
+      INNER JOIN codexClientOrigin o ON o._id = cl.clientOriginId
+    WHERE p.created >= startDate
+      AND p.created <= endDate
+      AND cl.clientOriginId = originId
+    GROUP BY c.name, o.name;
+  END IF;
+  
+END$$
+
+
+-- -----------------------------------------------------------------------------
+  -- blackstarDb.getCodexEffectiveness
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.getCodexEffectiveness$$
+CREATE PROCEDURE blackstarDb.getCodexEffectiveness(startDate DATETIME, endDate DATETIME, cst VARCHAR(200), originId INT)
+BEGIN
+  
+  CREATE TEMPORARY TABLE cstProjects(cstEmail VARCHAR(200), originId INT, projectCount INT, soldCount INT);
+
+  INSERT INTO cstProjects(cstEmail, originId, projectCount, soldCount)
+  SELECT createdByUsr, cl.clientOriginId, count(*), 0
+  FROM codexProject p
+    INNER JOIN codexClient cl ON p.clientId = cl._id
+  WHERE p.created >= startDate
+      AND p.created <= endDate
+  GROUP BY createdByUsr, clientOriginId;
+
+  UPDATE cstProjects SET
+    soldCount = (
+      SELECT count(*) FROM codexProject p
+        INNER JOIN codexClient cl ON p.clientId = cl._id
+      WHERE createdByUsr = cstEmail
+        AND p.created >= startDate
+        AND p.created <= endDate
+        AND cl.clientOriginId = originId
+        AND p.statusId >=4);
+
+  SELECT
+    c.name AS cstName,
+    o.name AS origin,
+    (soldCount/projectCount) * 100 AS effectiveness
+  FROM cstProjects p
+    INNER JOIN cst c ON p.cstEmail = c.email
+    INNER JOIN codexClientOrigin o ON p.originId = o._id;
+
+  DROP TABLE cstProjects;
+  
+END$$
+
+
+-- -----------------------------------------------------------------------------
+  -- blackstarDb.getCodexProposals
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.getCodexProposals$$
+CREATE PROCEDURE blackstarDb.getCodexProposals(startDate DATETIME, endDate DATETIME, cst VARCHAR(200), originId INT)
+BEGIN
+
+  SELECT
+    c.name AS cstName,
+    o.name AS origin,
+    s.name AS status,
+    sum(totalProjectNumber) AS amount
+  FROM codexProject p
+    INNER JOIN cst c ON p.createdByUsr = c.email
+    INNER JOIN codexClient cl ON p.clientId = cl._id
+    INNER JOIN codexClientOrigin o ON o._id = cl.clientOriginId
+    INNER JOIN codexStatusType s ON p.statusId = s._id
+  WHERE p.created >= startDate
+    AND p.created <= endDate
+  GROUP BY c.name, o.name, s.name;
+
+  
+END$$
+
+-- -----------------------------------------------------------------------------
+  -- blackstarDb.getCodexProjectsByStatus
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.getCodexProjectsByStatus$$
+CREATE PROCEDURE blackstarDb.getCodexProjectsByStatus(startDate DATETIME, endDate DATETIME, cst VARCHAR(200), originId INT)
+BEGIN
+
+  SET @projectCount = (SELECT count(*) FROM codexProject WHERE created >= startDate AND created <= endDate);
+
+  SELECT
+    c.name AS cstName,
+    o.name AS origin,
+    s.name AS status,
+    count(*) AS count,
+    (count(*) / @projectCount) * 100 AS contribution
+  FROM codexProject p
+    INNER JOIN cst c ON p.createdByUsr = c.email
+    INNER JOIN codexClient cl ON p.clientId = cl._id
+    INNER JOIN codexClientOrigin o ON o._id = cl.clientOriginId
+    INNER JOIN codexStatusType s ON p.statusId = s._id
+  WHERE p.created >= startDate
+    AND p.created <= endDate
+  GROUP BY c.name, o.name, s.name;
+  
+END$$
+
+-- -----------------------------------------------------------------------------
+  -- blackstarDb.getCodexProjectsByOrigin
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.getCodexProjectsByOrigin$$
+CREATE PROCEDURE blackstarDb.getCodexProjectsByOrigin(startDate DATETIME, endDate DATETIME, cst VARCHAR(200), originId INT)
+BEGIN
+
+  SET @projectTotal = (SELECT sum(totalProjectNumber) FROM codexProject WHERE created >= startDate AND created <= endDate);
+
+  SELECT
+    o.name AS origin,
+    sum(totalProjectNumber) AS amount,
+    (sum(totalProjectNumber) / @projectTotal) * 100 AS contribution
+  FROM codexProject p
+    INNER JOIN codexClient cl ON p.clientId = cl._id
+    INNER JOIN codexClientOrigin o ON o._id = cl.clientOriginId
+  WHERE p.created >= startDate
+    AND p.created <= endDate
+  GROUP BY o.name;
+  
+END$$
+
+-- -----------------------------------------------------------------------------
+  -- blackstarDb.getCodexClientVisits
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.getCodexClientVisits$$
+CREATE PROCEDURE blackstarDb.getCodexClientVisits(startDate DATETIME, endDate DATETIME, cst VARCHAR(200), originId INT)
+BEGIN
+
+  SELECT 
+    c.name AS cstName,
+    o.name AS origin,
+    count(*) AS count
+  FROM codexVisit v 
+    INNER JOIN cst c ON v.cstId = c.cstId
+    INNER JOIN codexClient cl ON cl._id = v.codexClientId
+    INNER JOIN codexClientOrigin o ON o._id = cl.clientOriginId
+  WHERE v.created >= startDate
+    AND v.created <= endDate
+  GROUP BY c.name, o.name;
+  
+END$$
+
+-- -----------------------------------------------------------------------------
+  -- blackstarDb.getCodexNewCustomers
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.getCodexNewCustomers$$
+CREATE PROCEDURE blackstarDb.getCodexNewCustomers(startDate DATETIME, endDate DATETIME, cst VARCHAR(200))
+BEGIN
+
+   
+END$$
+
+-- -----------------------------------------------------------------------------
+  -- blackstarDb.getCodexProductFamilies
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.getCodexProductFamilies$$
+CREATE PROCEDURE blackstarDb.getCodexProductFamilies(startDate DATETIME, endDate DATETIME)
+BEGIN
+
+  -- SET @projectTotal = (
+  --     SELECT sum(totalPrice) 
+  --     FROM codexProject p
+  --       INNER JOIN codexProjectEntry e ON e.projectId = p._id
+  --       INNER JOIN codexEntryItem i ON i.entryId = e._id
+  --     WHERE created >= p.startDate AND p.created <= endDate);
+
+  -- SELECT 
+  --   productFamily,
+  --   amount,
+  --   contribution
+  -- FROM codexProject p
+  --   INNER JOIN codexProjectEntry e ON e.projectId = p._id
+  --   INNER JOIN codexEntryItem i ON i.entryId = e._id
+  --   INNER JOIN codexPriceList l ON i.
+  -- WHERE created >= p.startDate AND p.created <= endDate
+
+END$$
+
+-- -----------------------------------------------------------------------------
+  -- blackstarDb.getCodexComerceCodes
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.getCodexComerceCodes$$
+CREATE PROCEDURE blackstarDb.getCodexComerceCodes(startDate DATETIME, endDate DATETIME)
+BEGIN
+
+  SELECT
+    t.name AS code,
+    sum(e.totalPrice) AS amount
+  FROM codexProject p
+    INNER JOIN codexProjectEntry e ON e.projectId = p._id
+    INNER JOIN codexEntryItem i ON i.entryId = e._id
+    INNER JOIN codexProjectEntryTypes t ON t._id = e.entryTypeId
+  WHERE p.created >= startDate AND p.created <= endDate
+  GROUP BY t.name;
+  
+END$$
 
 -- -----------------------------------------------------------------------------
   -- blackstarDb.GetVisitById
@@ -3615,6 +3855,7 @@ BEGIN
   WHERE codexVisitId = pVisitId;
   
 END$$
+
 -- -----------------------------------------------------------------------------
   -- blackstarDb.GetAllCst
 -- -----------------------------------------------------------------------------

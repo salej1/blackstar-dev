@@ -19,7 +19,7 @@
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery-ui.min.css">
 	<script src="${pageContext.request.contextPath}/js/dateFormat.js"></script>	
 	<script type="text/javascript" src="${pageContext.request.contextPath}/js/common/popup.js"></script>
-	<script type="text/javascript" src="${pageContext.request.contextPath}/js/customAutoComplete.js"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/js/customAutocomplete.js"></script>
 	
 	<script type="text/javascript">
 	    var entryNumber = 0;

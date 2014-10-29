@@ -27,7 +27,7 @@
 				// invoicing KPI
 				var parametersTemplate = "?startDate=" + encodeURIComponent(startDateStr) + "&endDate=" + encodeURIComponent(endDateStr) + "&cst=" + $("#cstList").val() + "&clientOriginId=" + $("#originList").val();
 				$.getJSON("${pageContext.request.contextPath}/codex/kpi/getInvoicingKpi.do" + parametersTemplate, function(data){
-					$("#invoicingKpi").datatable({
+					$("#invoicingKpi").dataTable({
 						"bProcessing": true,
 						"bFilter": true,
 						"bLengthChange": false,
@@ -47,7 +47,7 @@
 
 				// Effectiveness KPI
 				$.getJSON("${pageContext.request.contextPath}/codex/kpi/getEffectiveness.do" + parametersTemplate, function(data){
-					$("#effectivenessKpi").datatable({
+					$("#effectivenessKpi").dataTable({
 						"bProcessing": true,
 						"bFilter": true,
 						"bLengthChange": false,
@@ -66,7 +66,7 @@
 
 				// Proposals KPI
 				$.getJSON("${pageContext.request.contextPath}/codex/kpi/getProposals.do" + parametersTemplate, function(data){
-					$("#proposalsKpi").datatable({
+					$("#proposalsKpi").dataTable({
 						"bProcessing": true,
 						"bFilter": true,
 						"bLengthChange": false,
@@ -86,7 +86,7 @@
 
 				// Projects by status KPI
 				$.getJSON("${pageContext.request.contextPath}/codex/kpi/getProjectsByStatus.do" + parametersTemplate, function(data){
-					$("#projectsByStatus").datatable({
+					$("#projectsByStatus").dataTable({
 						"bProcessing": true,
 						"bFilter": true,
 						"bLengthChange": false,
@@ -107,7 +107,7 @@
 
 				// Projects by origin KPI
 				$.getJSON("${pageContext.request.contextPath}/codex/kpi/getProjectsByOrigin.do" + parametersTemplate, function(data){
-					$("#projectsByStatus").datatable({
+					$("#projectsByOrigin").dataTable({
 						"bProcessing": true,
 						"bFilter": true,
 						"bLengthChange": false,
@@ -126,7 +126,7 @@
 
 				// Client Visits KPI
 				$.getJSON("${pageContext.request.contextPath}/codex/kpi/getClientVisits.do" + parametersTemplate, function(data){
-					$("#projectsByStatus").datatable({
+					$("#clientVisits").dataTable({
 						"bProcessing": true,
 						"bFilter": true,
 						"bLengthChange": false,
@@ -145,7 +145,7 @@
 
 				// New Customers KPI
 				$.getJSON("${pageContext.request.contextPath}/codex/kpi/getNewCustomers.do" + parametersTemplate, function(data){
-					$("#projectsByStatus").datatable({
+					$("#newCustomers").dataTable({
 						"bProcessing": true,
 						"bFilter": true,
 						"bLengthChange": false,
@@ -163,7 +163,7 @@
 
 				// Product families KPI
 				$.getJSON("${pageContext.request.contextPath}/codex/kpi/getProductFamilies.do" + parametersTemplate, function(data){
-					$("#projectsByStatus").datatable({
+					$("#productFamilies").dataTable({
 						"bProcessing": true,
 						"bFilter": true,
 						"bLengthChange": false,
@@ -182,7 +182,7 @@
 
 				// Comerce Codes KPI
 				$.getJSON("${pageContext.request.contextPath}/codex/kpi/getComerceCodes.do" + parametersTemplate, function(data){
-					$("#projectsByStatus").datatable({
+					$("#comerceCodes").dataTable({
 						"bProcessing": true,
 						"bFilter": true,
 						"bLengthChange": false,
@@ -322,7 +322,6 @@
 					</h2>
 					<table id="invoicingKpi">
 						<tr>
-							<th>Periodo</th>
 							<th>CST</th>
 							<th>Monto</th>
 							<th>Origen</th>
@@ -338,7 +337,6 @@
 					</h2>
 					<table id="effectivenessKpi">
 						<tr>
-							<th>Periodo</th>
 							<th>CST</th>
 							<th>Origen</th>
 							<th>Efectividad</th>
@@ -353,7 +351,6 @@
 					</h2>
 					<table id="proposalsKpi">
 						<tr>
-							<th>Periodo</th>
 							<th>CST</th>
 							<th>Origen</th>
 							<th>Monto</th>
@@ -402,7 +399,6 @@
 					</h2>
 					<table id="clientVisits">
 						<tr>
-							<th>Periodo</th>
 							<th>CST</th>
 							<th>Origen</th>
 							<th>Cantidad</th>
@@ -417,7 +413,6 @@
 					</h2>
 					<table id="newCustomers">
 						<tr>
-							<th>Periodo</th>
 							<th>CST</th>
 							<th>Cantidad</th>
 						</tr>
@@ -431,7 +426,6 @@
 					</h2>
 					<table id="productFamilies">
 						<tr>
-							<th>Periodo</th>
 							<th>Familia de productos</th>
 							<th>Monto</th>
 							<th></th>
@@ -447,7 +441,6 @@
 					</h2>
 					<table id="comerceCodes">
 						<tr>
-							<th>Periodo</th>
 							<th>Codigo Comercia</th>
 							<th>Monto</th>
 						</tr>
