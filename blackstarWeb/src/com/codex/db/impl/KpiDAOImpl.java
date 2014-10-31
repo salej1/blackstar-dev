@@ -21,7 +21,7 @@ public class KpiDAOImpl extends AbstractDAO implements KpiDAO{
 			return list.toString();
 		}
 		else{
-			return "{}";
+			return "[]";
 		}
 	}
 
@@ -35,7 +35,7 @@ public class KpiDAOImpl extends AbstractDAO implements KpiDAO{
 			return list.toString();
 		}
 		else{
-			return "{}";
+			return "[]";
 		}
 	}
 
@@ -49,7 +49,7 @@ public class KpiDAOImpl extends AbstractDAO implements KpiDAO{
 			return list.toString();
 		}
 		else{
-			return "{}";
+			return "[]";
 		}
 	}
 
@@ -63,7 +63,7 @@ public class KpiDAOImpl extends AbstractDAO implements KpiDAO{
 			return list.toString();
 		}
 		else{
-			return "{}";
+			return "[]";
 		}
 	}
 
@@ -77,7 +77,7 @@ public class KpiDAOImpl extends AbstractDAO implements KpiDAO{
 			return list.toString();
 		}
 		else{
-			return "{}";
+			return "[]";
 		}
 	}
 
@@ -91,7 +91,7 @@ public class KpiDAOImpl extends AbstractDAO implements KpiDAO{
 			return list.toString();
 		}
 		else{
-			return "{}";
+			return "[]";
 		}
 	}
 
@@ -104,7 +104,7 @@ public class KpiDAOImpl extends AbstractDAO implements KpiDAO{
 			return list.toString();
 		}
 		else{
-			return "{}";
+			return "[]";
 		}
 	}
 
@@ -117,7 +117,7 @@ public class KpiDAOImpl extends AbstractDAO implements KpiDAO{
 			return list.toString();
 		}
 		else{
-			return "{}";
+			return "[]";
 		}
 	}
 
@@ -130,7 +130,7 @@ public class KpiDAOImpl extends AbstractDAO implements KpiDAO{
 			return list.toString();
 		}
 		else{
-			return "{}";
+			return "[]";
 		}
 	}
 

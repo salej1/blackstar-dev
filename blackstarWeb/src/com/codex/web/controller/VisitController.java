@@ -67,7 +67,7 @@ public class VisitController extends AbstractController {
 			
 			model.addAttribute("mode", "new");
 			model.addAttribute("isEditable", true);
-			model.addAttribute("clients", clService.getAllClients());
+			model.addAttribute("clients", clService.getCLientListJson());
 			model.addAttribute("cstList", cstService.getAllCst());
 			model.addAttribute("statusList", service.getVisitaStatusList());
 		}
@@ -91,7 +91,7 @@ public class VisitController extends AbstractController {
 			model.addAttribute("mode", "detail");
 			boolean isEditable = (visit.getCstEmail().equals(userSession.getUser().getUserEmail()) && visit.getVisitStatusId().equals("P"));
 			model.addAttribute("isEditable", isEditable);
-			model.addAttribute("clients", clService.getAllClients());
+			model.addAttribute("clients", clService.getCLientListJson());
 			model.addAttribute("cstList", cstService.getAllCst());
 			model.addAttribute("statusList", service.getVisitaStatusList());
 		}

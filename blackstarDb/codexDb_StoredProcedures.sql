@@ -49,12 +49,28 @@
 --                              blackstarDb.getCodexNewCustomers
 --                              blackstarDb.getCodexProductFamilies
 --                              blackstarDb.getCodexComerceCodes
+--                              blackstarDb.getAutocompleteClientList
 -- -----------------------------------------------------------------------------
 
 use blackstarDb;
 
 DELIMITER $$
 
+
+-- -----------------------------------------------------------------------------
+  -- blackstarDb.getAutocompleteClientList
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.getAutocompleteClientList$$
+CREATE PROCEDURE blackstarDb.getAutocompleteClientList()
+BEGIN
+
+  SELECT 
+    _id AS value,
+    corporateName AS label
+  FROM codexClient
+  ORDER BY corporateName;
+  
+END$$
 
 -- -----------------------------------------------------------------------------
   -- blackstarDb.getCodexInvoicingKpi
@@ -83,7 +99,7 @@ BEGIN
       c.name AS cstName,
       sum(p.totalProjectNumber) AS amount,
       o.name AS origin,
-      '0 %' AS coverage
+      CONVERT((sum(p.totalProjectNumber) / yearQuota) * 100, CHAR) AS coverage
     FROM codexProject p
       INNER JOIN cst c ON p.createdByUsr = c.email
       INNER JOIN codexClient cl ON cl._id = p.clientId
@@ -218,14 +234,15 @@ BEGIN
 
   SELECT 
     c.name AS cstName,
-    o.name AS origin,
+    ifnull(o.name, '') AS origin,
     count(*) AS count
   FROM codexVisit v 
     INNER JOIN cst c ON v.cstId = c.cstId
-    INNER JOIN codexClient cl ON cl._id = v.codexClientId
-    INNER JOIN codexClientOrigin o ON o._id = cl.clientOriginId
+    LEFT OUTER JOIN codexClient cl ON cl._id = v.codexClientId
+    LEFT OUTER JOIN codexClientOrigin o ON o._id = cl.clientOriginId
   WHERE v.created >= startDate
     AND v.created <= endDate
+    AND v.visitStatusId = 'R'
   GROUP BY c.name, o.name;
   
 END$$
@@ -237,6 +254,14 @@ DROP PROCEDURE IF EXISTS blackstarDb.getCodexNewCustomers$$
 CREATE PROCEDURE blackstarDb.getCodexNewCustomers(startDate DATETIME, endDate DATETIME, cst VARCHAR(200))
 BEGIN
 
+  SELECT
+    u.name AS cstName,
+    count(*) AS count
+  FROM codexClient c
+    INNER JOIN blackstarUser u ON u.blackstarUserId = c.sellerId
+  WHERE turnedCustomerDate >= startDate 
+    AND turnedCustomerDate <= endDate
+  GROUP BY u.name;
    
 END$$
 
@@ -247,22 +272,24 @@ DROP PROCEDURE IF EXISTS blackstarDb.getCodexProductFamilies$$
 CREATE PROCEDURE blackstarDb.getCodexProductFamilies(startDate DATETIME, endDate DATETIME)
 BEGIN
 
-  -- SET @projectTotal = (
-  --     SELECT sum(totalPrice) 
-  --     FROM codexProject p
-  --       INNER JOIN codexProjectEntry e ON e.projectId = p._id
-  --       INNER JOIN codexEntryItem i ON i.entryId = e._id
-  --     WHERE created >= p.startDate AND p.created <= endDate);
+  SET @projectTotal = (
+      SELECT sum(totalProjectNumber) 
+      FROM codexProject p
+        INNER JOIN codexProjectEntry e ON e.projectId = p._id
+        INNER JOIN codexEntryItem i ON i.entryId = e._id
+      WHERE p.created >= startDate AND p.created <= endDate);
 
-  -- SELECT 
-  --   productFamily,
-  --   amount,
-  --   contribution
-  -- FROM codexProject p
-  --   INNER JOIN codexProjectEntry e ON e.projectId = p._id
-  --   INNER JOIN codexEntryItem i ON i.entryId = e._id
-  --   INNER JOIN codexPriceList l ON i.
-  -- WHERE created >= p.startDate AND p.created <= endDate
+  SELECT 
+    f.productFamily,
+    sum(totalProjectNumber) AS totalamount,
+    (sum(totalProjectNumber) / @projectTotal) * 100 AS contribution
+  FROM codexProject p
+    INNER JOIN codexProjectEntry e ON e.projectId = p._id
+    INNER JOIN codexEntryItem i ON i.entryId = e._id
+    INNER JOIN codexPriceList l ON i.priceListId = l._id
+    INNER JOIN codexProductFamily f ON f.codexProductFamilyId = l.codexProductFamilyId
+  WHERE p.created >= startDate AND p.created <= endDate
+  GROUP BY productFamily;
 
 END$$
 
@@ -295,9 +322,10 @@ BEGIN
   SELECT 
       v.codexVisitId,
       v.cstId,
-      v.codexClientId,
+      ifnull(v.codexClientId, 0),
       v.visitDate,
       v.description,
+      v.closure,
       v.visitStatusId,
       v.created,
       v.createdBy,
@@ -307,11 +335,10 @@ BEGIN
       v.modifiedByUsr,
       c.name AS cstName,
       c.email AS cstEmail,
-      cl.corporateName AS clientName,
+      v.customerName AS customerName,
       s.visitStatus
     FROM blackstarDb.codexVisit v
         INNER JOIN blackstarDb.cst c ON v.cstId = c.cstId
-        INNER JOIN blackstarDb.codexClient cl ON v.codexClientId = cl._id
         INNER JOIN blackstarDb.codexVisitStatus s ON s.visitStatusId = v.visitStatusId
   WHERE codexVisitId = pVisitId;
   
@@ -342,6 +369,7 @@ BEGIN
       v.codexClientId,
       v.visitDate,
       v.description,
+      v.closure,
       v.visitStatusId,
       v.created,
       v.createdBy,
@@ -351,11 +379,10 @@ BEGIN
       v.modifiedByUsr,
       c.name AS cstName,
       c.email AS cstEmail,
-      cl.corporateName AS clientName,
+      v.customerName,
       s.visitStatus
     FROM blackstarDb.codexVisit v
         INNER JOIN blackstarDb.cst c ON v.cstId = c.cstId
-        INNER JOIN blackstarDb.codexClient cl ON v.codexClientId = cl._id
         INNER JOIN blackstarDb.codexVisitStatus s ON s.visitStatusId = v.visitStatusId
     WHERE v.visitStatusId != 'D';
   ELSE
@@ -365,6 +392,7 @@ BEGIN
       v.codexClientId,
       v.visitDate,
       v.description,
+      v.closure,
       v.visitStatusId,
       v.created,
       v.createdBy,
@@ -374,11 +402,10 @@ BEGIN
       v.modifiedByUsr,
       c.name AS cstName,
       c.email AS cstEmail,
-      cl.corporateName AS clientName,
+      v.customerName,
       s.visitStatus
     FROM blackstarDb.codexVisit v
         INNER JOIN blackstarDb.cst c ON v.cstId = c.cstId
-        INNER JOIN blackstarDb.codexClient cl ON v.codexClientId = cl._id
         INNER JOIN blackstarDb.codexVisitStatus s ON s.visitStatusId = v.visitStatusId
     WHERE v.visitStatusId != 'D'
     AND v.cstId = (SELECT cstId FROM blackstarDb.cst WHERE email = pcstEmail);
@@ -402,15 +429,17 @@ END$$
   -- blackstarDb.UpsertCodexVisit
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.UpsertCodexVisit$$
-CREATE PROCEDURE blackstarDb.UpsertCodexVisit(pCodexVisitId INT, pCstId INT, pCodexClientId INT, pVisitDate DATETIME, pDescription TEXT, pVisitStatusId CHAR(1), pCreated DATETIME, pCreatedBy NVARCHAR(100), pCreatedByUsr VARCHAR(100), pModified DATETIME, pModifiedBy NVARCHAR(100), pModifiedByUsr VARCHAR(100))
+CREATE PROCEDURE blackstarDb.UpsertCodexVisit(pCodexVisitId INT, pCstId INT, pCodexClientId INT, pCustomerName VARCHAR(400), pVisitDate DATETIME, pDescription TEXT, pClosure TEXT, pVisitStatusId CHAR(1), pCreated DATETIME, pCreatedBy NVARCHAR(100), pCreatedByUsr VARCHAR(100), pModified DATETIME, pModifiedBy NVARCHAR(100), pModifiedByUsr VARCHAR(100))
 BEGIN
 
   IF(SELECT count(*) FROM codexVisit WHERE codexVisitId = pCodexVisitId) > 0 THEN
     UPDATE blackstarDb.codexVisit SET
       cstId = pCstId,
-      codexClientId = pCodexClientId,
+      codexClientId = if(pCodexClientId = 0, NULL, pCodexClientId),
+      customerName = pCustomerName,
       visitDate = pVisitDate,
       description = pDescription,
+      closure = pClosure,
       visitStatusId = pVisitStatusId,
       modified = now(),
       modifiedBy = pModifiedBy,
@@ -418,8 +447,8 @@ BEGIN
     WHERE codexVisitId = pCodexVisitId;
     SELECT pCodexVisitId;
   ELSE
-    INSERT INTO blackstarDb.codexVisit(cstId, codexClientId,  visitDate,  description,  visitStatusId,  created,  createdBy,  createdByUsr) VALUES(
-                                      pCstId, pCodexClientId, pVisitDate, pDescription, pVisitStatusId, pCreated, pCreatedBy, pCreatedByUsr);
+    INSERT INTO blackstarDb.codexVisit(cstId, codexClientId,                                customerName,  visitDate,  description,  closure,  visitStatusId,  created,  createdBy,  createdByUsr) VALUES(
+                                      pCstId, if(pCodexClientId = 0, NULL, pCodexClientId), pCustomerName, pVisitDate, pDescription, pClosure, pVisitStatusId, pCreated, pCreatedBy, pCreatedByUsr);
 
     SELECT LAST_INSERT_ID();
   END IF;

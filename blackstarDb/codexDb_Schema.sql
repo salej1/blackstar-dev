@@ -17,6 +17,10 @@
 --							Se agrega codexVisit
 --							Se agrega codexVisitStatus
 -- ---------------------------------------------------------------------------
+-- 4	28/10/2014 SAG 		Se agrega yearQuota a cst
+--							Se agrega turnedCustomerDate a codexClient
+--							Se agrega priceListId a codexEntryItem
+-- ---------------------------------------------------------------------------
 
 use blackstarDb;
 
@@ -29,6 +33,22 @@ BEGIN
 -- -----------------------------------------------------------------------------
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
+
+-- AGREGANDO priceListId a codexEntryItem
+IF(SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'codexEntryItem' AND COLUMN_NAME = 'priceListId') = 0 THEN
+	ALTER TABLE blackstarDb.codexEntryItem ADD priceListId INT NULL;
+	ALTER TABLE blackstarDb.codexEntryItem ADD CONSTRAINT FK_codexEntyItem_priceList FOREIGN KEY (priceListId) REFERENCES codexPriceList(_id);
+END IF;
+
+-- AGREGANDO turnedCustomerDate a codexClient
+IF(SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'codexClient' AND COLUMN_NAME = 'turnedCustomerDate') = 0 THEN
+	ALTER TABLE blackstarDb.codexClient ADD turnedCustomerDate DATETIME NULL;
+END IF;
+
+-- AGREGANDO yearQuota a cst
+IF(SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'cst' AND COLUMN_NAME = 'yearQuota') = 0 THEN
+	ALTER TABLE blackstarDb.cst ADD yearQuota INT NOT NULL DEFAULT 0;
+END IF;
 
 -- AGREGANDO TABLA codexVisitStatus
 	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'codexVisitStatus') = 0 THEN
@@ -44,10 +64,12 @@ BEGIN
 		CREATE TABLE blackstarDb.codexVisit(
 			codexVisitId INTEGER NOT NULL AUTO_INCREMENT,
 			cstId INT,
-			codexClientId INT,
+			codexClientId INT NULL,
+			customerName VARCHAR(400),
 			visitDate DATETIME,
 			description TEXT,
 			visitStatusId CHAR(1),
+			closure TEXT,
 			created DATETIME NULL,
 			createdBy VARCHAR(100) NULL,
 			createdByUsr VARCHAR(100) NULL,

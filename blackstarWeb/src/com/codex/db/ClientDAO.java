@@ -23,5 +23,5 @@ public interface ClientDAO {
   public List<JSONObject> getClientList(boolean isProspect);
   public List<ClientVO> getAllClients();
   public ClientVO getClientById(Integer clientId);
-
+  public String getCLientListJson();
 }

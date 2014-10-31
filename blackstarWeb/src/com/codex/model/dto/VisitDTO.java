@@ -6,8 +6,10 @@ public class VisitDTO {
 	int codexVisitId ;
 	int cstId ;
 	int codexClientId ;
+	String customerName;
 	Date visitDate ;
 	String description ;
+	String closure;
 	String visitStatusId ;
 	Date created ;
 	String createdBy ;
@@ -18,8 +20,6 @@ public class VisitDTO {
 	// CST
 	String cstName;
 	String cstEmail;
-	// Client
-	String clientName;
 	// Status
 	String visitStatus;
 
@@ -107,18 +107,24 @@ public class VisitDTO {
 	public void setCstEmail(String cstEmail) {
 		this.cstEmail = cstEmail;
 	}
-	public String getClientName() {
-		return clientName;
-	}
-	public void setClientName(String clientName) {
-		this.clientName = clientName;
-	}
-
+	
 	public String getVisitStatus(){
 		return visitStatus;
 	}
 
 	public void setVisitStatus(String status){
 		this.visitStatus = status;
+	}
+	public String getCustomerName() {
+		return customerName;
+	}
+	public void setCustomerName(String customerName) {
+		this.customerName = customerName;
+	}
+	public String getClosure() {
+		return closure;
+	}
+	public void setClosure(String closure) {
+		this.closure = closure;
 	}
 }

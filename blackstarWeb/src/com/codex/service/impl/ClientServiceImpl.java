@@ -74,5 +74,10 @@ public class ClientServiceImpl extends AbstractService
   public ClientVO getClientById(Integer clientId){
 	return dao.getClientById(clientId);
   }
+
+@Override
+public String getCLientListJson() {
+	return dao.getCLientListJson();
+}
   
 }

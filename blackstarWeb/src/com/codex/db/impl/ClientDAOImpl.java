@@ -7,6 +7,7 @@ import java.util.List;
 
 
 
+
 import org.json.JSONObject;
 
 import com.blackstar.db.dao.AbstractDAO;
@@ -118,5 +119,12 @@ public class ClientDAOImpl extends AbstractDAO
 	String sqlQuery = "CALL CodexGetClientList(?)";
 	return getJdbcTemplate().query(sqlQuery, new Object[]{isProspect ? 0 : 1} , new JSONRowMapper());
   }
+
+@Override
+public String getCLientListJson() {
+	String sql = "CALL getAutocompleteClientList";
+	List<JSONObject> list = getJdbcTemplate().query(sql, new JSONRowMapper());
+	return list.toString();
+}
  
 }

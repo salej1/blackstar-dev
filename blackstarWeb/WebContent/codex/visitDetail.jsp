@@ -18,6 +18,7 @@
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery.ui.theme.css">
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery-ui.min.css">
 	<script src="${pageContext.request.contextPath}/js/dateFormat.js"></script>	
+	<script src="${pageContext.request.contextPath}/js/customAutocomplete.js"></script>	
 	<script src="${pageContext.request.contextPath}/js/jquery.ui.datepicker.js"></script>	
 	<script type="text/javascript" src="${pageContext.request.contextPath}/js/common/popup.js"></script>
 	
@@ -32,6 +33,8 @@
 	   				$(".editable").attr("disabled", "");
 	   			}
 	   		}
+
+			init_autoComplete(${clients}, "customerName", "clientId", "single");
 	   });
 
 	   function discard(){
@@ -52,8 +55,11 @@
                         <form:form  commandName="visit" action="${pageContext.request.contextPath}/codex/visit/insert.do">
 						<table>
 							<tr>
-								<td>Cliente:</td>
-								<td><form:select items="${clients}" itemLabel="corporateName" itemValue="id" style="width:95%;" path="codexClientId" class="editable"/></td>
+								<td style="width:85px;">Cliente:</td>
+								<td>
+									<form:input type="text" style="width:95%;" path="customerName" required="true" class="editable"/>
+									<form:hidden path="codexClientId"/>
+								</td>
 							</tr>
 							<tr>
 								<td>Fecha:</td>
@@ -61,11 +67,15 @@
 							</tr>
 							<tr>
 								<td>CST:</td>
-								<td><form:select items="${cstList}" itemLabel="name" itemValue="cstId" style="width:50%;" path="cstId" class="editable"/></td>
+								<td><form:select items="${cstList}" itemLabel="name" itemValue="cstId" style="width:50%;" required="true" path="cstId" class="editable"/></td>
 							</tr>
 							<tr>
 								<td>Comentarios:</td>
-								<td><form:input type="text" style="width:95%;" path="description" class="editable"/></td>
+								<td><form:textarea type="text" style="width:50%%;" rows="3" path="description" class="editable"/></td>
+							</tr>
+							<tr>
+								<td>Cierre:</td>
+								<td><form:textarea type="text" style="width:50%%;" rows="3" path="closure" class="editable"/></td>
 							</tr>
 							<tr>
 								<td>Estatus:</td>
@@ -73,16 +83,16 @@
 							</tr>
 						</table>
 						<p></p>
-						<div>
-							<c:if test="${isEditable}">
-								<button class="searchButton" onclick="submit();">Guardar</button>
-								<button class="searchButton" onclick="discard();">Descartar</button>
-								<button class="searchButton" onclick="window.location='/dashboard'">Cerrar</button>
-							</c:if>
-						</div>
 						</form:form>
-					</div>					
-				</div>
+					<div>
+						<c:if test="${isEditable}">
+							<button class="searchButton" onclick="submit();">Guardar</button>
+							<button class="searchButton" onclick="discard();">Descartar</button>
+							<button class="searchButton" onclick="window.location='${pageContext.request.contextPath}/codex/dashboard/show.do';">Cerrar</button>
+						</c:if>
+					</div>
+				</div>					
+			</div>
 				
 <!--   ~ CONTENT COLUMN   -->
 

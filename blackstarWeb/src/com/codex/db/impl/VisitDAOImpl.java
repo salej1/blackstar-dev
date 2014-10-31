@@ -14,14 +14,16 @@ public class VisitDAOImpl extends AbstractDAO implements VisitDAO {
 
 	@Override
 	public int upsertVisit(VisitDTO visit) {
-		String sql = "CALL UpsertCodexVisit(?,?,?,?,?,?,?,?,?,?,?,?)";
+		String sql = "CALL UpsertCodexVisit(?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 		
 		Integer visitId = (int)getJdbcTemplate().queryForObject(sql, new Object[]{
 			visit.getCodexVisitId(),
 			visit.getCstId(),
 			visit.getCodexClientId(),
+			visit.getCustomerName(),
 			visit.getVisitDate(),
 			visit.getDescription(),
+			visit.getClosure(),
 			visit.getVisitStatusId(),
 			visit.getCreated(),
 			visit.getCreatedBy(),

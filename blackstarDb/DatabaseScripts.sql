@@ -3452,6 +3452,10 @@ CREATE TABLE IF NOT EXISTS blackstarDb.cstOffice(
 --							Se agrega codexVisit
 --							Se agrega codexVisitStatus
 -- ---------------------------------------------------------------------------
+-- 4	28/10/2014 SAG 		Se agrega yearQuota a cst
+--							Se agrega turnedCustomerDate a codexClient
+--							Se agrega priceListId a codexEntryItem
+-- ---------------------------------------------------------------------------
 
 use blackstarDb;
 
@@ -3464,6 +3468,22 @@ BEGIN
 -- -----------------------------------------------------------------------------
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
+
+-- AGREGANDO priceListId a codexEntryItem
+IF(SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'codexEntryItem' AND COLUMN_NAME = 'priceListId') = 0 THEN
+	ALTER TABLE blackstarDb.codexEntryItem ADD priceListId INT NULL;
+	ALTER TABLE blackstarDb.codexEntryItem ADD CONSTRAINT FK_codexEntyItem_priceList FOREIGN KEY (priceListId) REFERENCES codexPriceList(_id);
+END IF;
+
+-- AGREGANDO turnedCustomerDate a codexClient
+IF(SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'codexClient' AND COLUMN_NAME = 'turnedCustomerDate') = 0 THEN
+	ALTER TABLE blackstarDb.codexClient ADD turnedCustomerDate DATETIME NULL;
+END IF;
+
+-- AGREGANDO yearQuota a cst
+IF(SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'cst' AND COLUMN_NAME = 'yearQuota') = 0 THEN
+	ALTER TABLE blackstarDb.cst ADD yearQuota INT NOT NULL DEFAULT 0;
+END IF;
 
 -- AGREGANDO TABLA codexVisitStatus
 	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'codexVisitStatus') = 0 THEN
@@ -3479,10 +3499,12 @@ BEGIN
 		CREATE TABLE blackstarDb.codexVisit(
 			codexVisitId INTEGER NOT NULL AUTO_INCREMENT,
 			cstId INT,
-			codexClientId INT,
+			codexClientId INT NULL,
+			customerName VARCHAR(400),
 			visitDate DATETIME,
 			description TEXT,
 			visitStatusId CHAR(1),
+			closure TEXT,
 			created DATETIME NULL,
 			createdBy VARCHAR(100) NULL,
 			createdByUsr VARCHAR(100) NULL,
@@ -3588,12 +3610,28 @@ DROP PROCEDURE blackstarDb.upgradeCodexSchema;
 --                              blackstarDb.getCodexNewCustomers
 --                              blackstarDb.getCodexProductFamilies
 --                              blackstarDb.getCodexComerceCodes
+--                              blackstarDb.getAutocompleteClientList
 -- -----------------------------------------------------------------------------
 
 use blackstarDb;
 
 DELIMITER $$
 
+
+-- -----------------------------------------------------------------------------
+  -- blackstarDb.getAutocompleteClientList
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.getAutocompleteClientList$$
+CREATE PROCEDURE blackstarDb.getAutocompleteClientList()
+BEGIN
+
+  SELECT 
+    _id AS value,
+    corporateName AS label
+  FROM codexClient
+  ORDER BY corporateName;
+  
+END$$
 
 -- -----------------------------------------------------------------------------
   -- blackstarDb.getCodexInvoicingKpi
@@ -3622,7 +3660,7 @@ BEGIN
       c.name AS cstName,
       sum(p.totalProjectNumber) AS amount,
       o.name AS origin,
-      '0 %' AS coverage
+      CONVERT((sum(p.totalProjectNumber) / yearQuota) * 100, CHAR) AS coverage
     FROM codexProject p
       INNER JOIN cst c ON p.createdByUsr = c.email
       INNER JOIN codexClient cl ON cl._id = p.clientId
@@ -3757,14 +3795,15 @@ BEGIN
 
   SELECT 
     c.name AS cstName,
-    o.name AS origin,
+    ifnull(o.name, '') AS origin,
     count(*) AS count
   FROM codexVisit v 
     INNER JOIN cst c ON v.cstId = c.cstId
-    INNER JOIN codexClient cl ON cl._id = v.codexClientId
-    INNER JOIN codexClientOrigin o ON o._id = cl.clientOriginId
+    LEFT OUTER JOIN codexClient cl ON cl._id = v.codexClientId
+    LEFT OUTER JOIN codexClientOrigin o ON o._id = cl.clientOriginId
   WHERE v.created >= startDate
     AND v.created <= endDate
+    AND v.visitStatusId = 'R'
   GROUP BY c.name, o.name;
   
 END$$
@@ -3776,6 +3815,14 @@ DROP PROCEDURE IF EXISTS blackstarDb.getCodexNewCustomers$$
 CREATE PROCEDURE blackstarDb.getCodexNewCustomers(startDate DATETIME, endDate DATETIME, cst VARCHAR(200))
 BEGIN
 
+  SELECT
+    u.name AS cstName,
+    count(*) AS count
+  FROM codexClient c
+    INNER JOIN blackstarUser u ON u.blackstarUserId = c.sellerId
+  WHERE turnedCustomerDate >= startDate 
+    AND turnedCustomerDate <= endDate
+  GROUP BY u.name;
    
 END$$
 
@@ -3786,22 +3833,24 @@ DROP PROCEDURE IF EXISTS blackstarDb.getCodexProductFamilies$$
 CREATE PROCEDURE blackstarDb.getCodexProductFamilies(startDate DATETIME, endDate DATETIME)
 BEGIN
 
-  -- SET @projectTotal = (
-  --     SELECT sum(totalPrice) 
-  --     FROM codexProject p
-  --       INNER JOIN codexProjectEntry e ON e.projectId = p._id
-  --       INNER JOIN codexEntryItem i ON i.entryId = e._id
-  --     WHERE created >= p.startDate AND p.created <= endDate);
+  SET @projectTotal = (
+      SELECT sum(totalProjectNumber) 
+      FROM codexProject p
+        INNER JOIN codexProjectEntry e ON e.projectId = p._id
+        INNER JOIN codexEntryItem i ON i.entryId = e._id
+      WHERE p.created >= startDate AND p.created <= endDate);
 
-  -- SELECT 
-  --   productFamily,
-  --   amount,
-  --   contribution
-  -- FROM codexProject p
-  --   INNER JOIN codexProjectEntry e ON e.projectId = p._id
-  --   INNER JOIN codexEntryItem i ON i.entryId = e._id
-  --   INNER JOIN codexPriceList l ON i.
-  -- WHERE created >= p.startDate AND p.created <= endDate
+  SELECT 
+    f.productFamily,
+    sum(totalProjectNumber) AS totalamount,
+    (sum(totalProjectNumber) / @projectTotal) * 100 AS contribution
+  FROM codexProject p
+    INNER JOIN codexProjectEntry e ON e.projectId = p._id
+    INNER JOIN codexEntryItem i ON i.entryId = e._id
+    INNER JOIN codexPriceList l ON i.priceListId = l._id
+    INNER JOIN codexProductFamily f ON f.codexProductFamilyId = l.codexProductFamilyId
+  WHERE p.created >= startDate AND p.created <= endDate
+  GROUP BY productFamily;
 
 END$$
 
@@ -3834,9 +3883,10 @@ BEGIN
   SELECT 
       v.codexVisitId,
       v.cstId,
-      v.codexClientId,
+      ifnull(v.codexClientId, 0),
       v.visitDate,
       v.description,
+      v.closure,
       v.visitStatusId,
       v.created,
       v.createdBy,
@@ -3846,11 +3896,10 @@ BEGIN
       v.modifiedByUsr,
       c.name AS cstName,
       c.email AS cstEmail,
-      cl.corporateName AS clientName,
+      v.customerName AS customerName,
       s.visitStatus
     FROM blackstarDb.codexVisit v
         INNER JOIN blackstarDb.cst c ON v.cstId = c.cstId
-        INNER JOIN blackstarDb.codexClient cl ON v.codexClientId = cl._id
         INNER JOIN blackstarDb.codexVisitStatus s ON s.visitStatusId = v.visitStatusId
   WHERE codexVisitId = pVisitId;
   
@@ -3881,6 +3930,7 @@ BEGIN
       v.codexClientId,
       v.visitDate,
       v.description,
+      v.closure,
       v.visitStatusId,
       v.created,
       v.createdBy,
@@ -3890,11 +3940,10 @@ BEGIN
       v.modifiedByUsr,
       c.name AS cstName,
       c.email AS cstEmail,
-      cl.corporateName AS clientName,
+      v.customerName,
       s.visitStatus
     FROM blackstarDb.codexVisit v
         INNER JOIN blackstarDb.cst c ON v.cstId = c.cstId
-        INNER JOIN blackstarDb.codexClient cl ON v.codexClientId = cl._id
         INNER JOIN blackstarDb.codexVisitStatus s ON s.visitStatusId = v.visitStatusId
     WHERE v.visitStatusId != 'D';
   ELSE
@@ -3904,6 +3953,7 @@ BEGIN
       v.codexClientId,
       v.visitDate,
       v.description,
+      v.closure,
       v.visitStatusId,
       v.created,
       v.createdBy,
@@ -3913,11 +3963,10 @@ BEGIN
       v.modifiedByUsr,
       c.name AS cstName,
       c.email AS cstEmail,
-      cl.corporateName AS clientName,
+      v.customerName,
       s.visitStatus
     FROM blackstarDb.codexVisit v
         INNER JOIN blackstarDb.cst c ON v.cstId = c.cstId
-        INNER JOIN blackstarDb.codexClient cl ON v.codexClientId = cl._id
         INNER JOIN blackstarDb.codexVisitStatus s ON s.visitStatusId = v.visitStatusId
     WHERE v.visitStatusId != 'D'
     AND v.cstId = (SELECT cstId FROM blackstarDb.cst WHERE email = pcstEmail);
@@ -3941,15 +3990,17 @@ END$$
   -- blackstarDb.UpsertCodexVisit
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.UpsertCodexVisit$$
-CREATE PROCEDURE blackstarDb.UpsertCodexVisit(pCodexVisitId INT, pCstId INT, pCodexClientId INT, pVisitDate DATETIME, pDescription TEXT, pVisitStatusId CHAR(1), pCreated DATETIME, pCreatedBy NVARCHAR(100), pCreatedByUsr VARCHAR(100), pModified DATETIME, pModifiedBy NVARCHAR(100), pModifiedByUsr VARCHAR(100))
+CREATE PROCEDURE blackstarDb.UpsertCodexVisit(pCodexVisitId INT, pCstId INT, pCodexClientId INT, pCustomerName VARCHAR(400), pVisitDate DATETIME, pDescription TEXT, pClosure TEXT, pVisitStatusId CHAR(1), pCreated DATETIME, pCreatedBy NVARCHAR(100), pCreatedByUsr VARCHAR(100), pModified DATETIME, pModifiedBy NVARCHAR(100), pModifiedByUsr VARCHAR(100))
 BEGIN
 
   IF(SELECT count(*) FROM codexVisit WHERE codexVisitId = pCodexVisitId) > 0 THEN
     UPDATE blackstarDb.codexVisit SET
       cstId = pCstId,
-      codexClientId = pCodexClientId,
+      codexClientId = if(pCodexClientId = 0, NULL, pCodexClientId),
+      customerName = pCustomerName,
       visitDate = pVisitDate,
       description = pDescription,
+      closure = pClosure,
       visitStatusId = pVisitStatusId,
       modified = now(),
       modifiedBy = pModifiedBy,
@@ -3957,8 +4008,8 @@ BEGIN
     WHERE codexVisitId = pCodexVisitId;
     SELECT pCodexVisitId;
   ELSE
-    INSERT INTO blackstarDb.codexVisit(cstId, codexClientId,  visitDate,  description,  visitStatusId,  created,  createdBy,  createdByUsr) VALUES(
-                                      pCstId, pCodexClientId, pVisitDate, pDescription, pVisitStatusId, pCreated, pCreatedBy, pCreatedByUsr);
+    INSERT INTO blackstarDb.codexVisit(cstId, codexClientId,                                customerName,  visitDate,  description,  closure,  visitStatusId,  created,  createdBy,  createdByUsr) VALUES(
+                                      pCstId, if(pCodexClientId = 0, NULL, pCodexClientId), pCustomerName, pVisitDate, pDescription, pClosure, pVisitStatusId, pCreated, pCreatedBy, pCreatedByUsr);
 
     SELECT LAST_INSERT_ID();
   END IF;
@@ -4836,17 +4887,17 @@ BEGIN
 	-- Lista de CST
 	IF(SELECT count(*) FROM blackstarDb.cst) = 0 THEN
 		INSERT INTO blackstarDb.cst(name, officeId, phone, phoneExt, mobile, email, autoAuthProjects)
-		SELECT 'SERGIO ALEJANDRO GOMEZ AVILA', 'Q', '(22) 2222-3333', '456', '(22) 4444-5555', 'portal-servicios@gposac.com.mx', 1 UNION
-		SELECT 'JUAN JOSE ESPINOZA BRAVO', 'G', '(33) 3793-0138', '211', '(33) 3129-3377', 'juanjose.espinoza@gposac.com.mx', 1 UNION
-		SELECT 'FRANCISCO RAMÓN UREÑA VILLANUEVA', 'G', '(33) 3793-0138', '206', '(33) 3661-1378', 'francisco.urena@gposac.com.mx', 0 UNION
-		SELECT 'JOSE IVAN MARTIN MIRANDA', 'Q', '442 295 24 68', '312', '(44) 2226-7847', 'ivan.martin@gposac.com.mx', 1 UNION
-		SELECT 'JUAN RAMOS ANAYA', 'Q', '442 295 24 68', '318', '', 'juan.ramos@gposac.com.mx', 0 UNION
-		SELECT 'JORGE ALBERTO MARTINEZ', 'M', '(55) 5020-2160', '427', '(55) 1452-7626', 'jorge.martinez@gposac.com.mx', 1 UNION
-		SELECT 'MICHEL GALICIA CAMACHO', 'M', '(55) 5020-2160', '429', '', 'michelle.galicia@gposac.com.mx', 0 UNION
-		SELECT 'LILIANA DIAZ CUEVAS', 'M', '(55) 5020-2160', '407', '(55) 1452-7278', 'liliana.diaz@gposac.com.mx', 0 UNION
-		SELECT 'PILAR PAZ TORRES', 'M', '(55) 5020-2160', '428', '', 'pilar.paz@gposac.com.mx', 0 UNION
-		SELECT 'NICOLAS ANDRADE CARRILLO', 'G', '(33) 3793-0138', '217', '(33) 3191-9226', 'nicolas.andrade@gposac.com.mx', 1 UNION
-		SELECT 'SAUL ANDRADE GONZALEZ', 'G', '(33) 3793-0138', '220', '(33) 3576-8144', 'saul.andrade@gposac.com.mx', 1 ;
+		SELECT 'Sergio Alejandro Gomez Avila', 'Q', '(22) 2222-3333', '456', '(22) 4444-5555', 'portal-servicios@gposac.com.mx', 1 UNION
+		SELECT 'Juan Jose Espinoza Bravo', 'G', '(33) 3793-0138', '211', '(33) 3129-3377', 'juanjose.espinoza@gposac.com.mx', 1 UNION
+		SELECT 'Francisco Ramón Ureña Villanueva', 'G', '(33) 3793-0138', '206', '(33) 3661-1378', 'francisco.urena@gposac.com.mx', 0 UNION
+		SELECT 'Jose Ivan Martin Miranda', 'Q', '442 295 24 68', '312', '(44) 2226-7847', 'ivan.martin@gposac.com.mx', 1 UNION
+		SELECT 'Juan Ramos Anaya', 'Q', '442 295 24 68', '318', '', 'juan.ramos@gposac.com.mx', 0 UNION
+		SELECT 'Jorge Alberto Martinez', 'M', '(55) 5020-2160', '427', '(55) 1452-7626', 'jorge.martinez@gposac.com.mx', 1 UNION
+		SELECT 'Michel Galicia Camacho', 'M', '(55) 5020-2160', '429', '', 'michelle.galicia@gposac.com.mx', 0 UNION
+		SELECT 'Liliana Diaz Cuevas', 'M', '(55) 5020-2160', '407', '(55) 1452-7278', 'liliana.diaz@gposac.com.mx', 0 UNION
+		SELECT 'Pilar Paz Torres', 'M', '(55) 5020-2160', '428', '', 'pilar.paz@gposac.com.mx', 0 UNION
+		SELECT 'Nicolas Andrade Carrillo', 'G', '(33) 3793-0138', '217', '(33) 3191-9226', 'nicolas.andrade@gposac.com.mx', 1 UNION
+		SELECT 'Saul Andrade Gonzalez', 'G', '(33) 3793-0138', '220', '(33) 3576-8144', 'saul.andrade@gposac.com.mx', 1 ;
 	END IF;
 
 	-- Lista de proyectos

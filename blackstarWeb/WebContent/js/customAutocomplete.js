@@ -44,7 +44,9 @@ function init_autoComplete(src, targetLabels, targetValues, mode, callBack){
 		        $("#" + values + "").val($("#" + values + "").val() + ";" + ui.item.value );
    			}
 	    	
-	    	callBack(ui.item.value);
+	    	if(typeof(callBack) != "undefined"){
+		    	callBack(ui.item.value);
+	    	}
 	        return false;
 		}
 	});

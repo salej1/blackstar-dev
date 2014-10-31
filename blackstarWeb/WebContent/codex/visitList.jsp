@@ -22,7 +22,7 @@
 					"aoColumns": [
 							  { "mData": "cstName" },
 							  { "mData": "visitDate" },
-							  { "mData": "clientName" },
+							  { "mData": "customerName" },
 							  { "mData": "visitStatus" },
 							  { "mData": "codexVisitId" }
 							  ],

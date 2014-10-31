@@ -233,14 +233,7 @@
 												>${ss.name}</option>
 											</c:forEach>
 										</form:select></td>
-							</tr>
-							<tr>
-								<td>CURP</td>
-								<td colspan="2"><form:input type="text" style="width:95%;" path="curp" maxlength="18"/></td>
-								<td>Retencion</td>
-								<td colspan="2"><form:input type="text"  style="width:95%;" path="retention" maxlength="20"/></td>
-							</tr>
-							
+							</tr>						
 						</table>
 						<p></p>
 						<div>

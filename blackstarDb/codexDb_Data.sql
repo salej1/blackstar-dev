@@ -57,17 +57,17 @@ BEGIN
 	-- Lista de CST
 	IF(SELECT count(*) FROM blackstarDb.cst) = 0 THEN
 		INSERT INTO blackstarDb.cst(name, officeId, phone, phoneExt, mobile, email, autoAuthProjects)
-		SELECT 'SERGIO ALEJANDRO GOMEZ AVILA', 'Q', '(22) 2222-3333', '456', '(22) 4444-5555', 'portal-servicios@gposac.com.mx', 1 UNION
-		SELECT 'JUAN JOSE ESPINOZA BRAVO', 'G', '(33) 3793-0138', '211', '(33) 3129-3377', 'juanjose.espinoza@gposac.com.mx', 1 UNION
-		SELECT 'FRANCISCO RAMÓN UREÑA VILLANUEVA', 'G', '(33) 3793-0138', '206', '(33) 3661-1378', 'francisco.urena@gposac.com.mx', 0 UNION
-		SELECT 'JOSE IVAN MARTIN MIRANDA', 'Q', '442 295 24 68', '312', '(44) 2226-7847', 'ivan.martin@gposac.com.mx', 1 UNION
-		SELECT 'JUAN RAMOS ANAYA', 'Q', '442 295 24 68', '318', '', 'juan.ramos@gposac.com.mx', 0 UNION
-		SELECT 'JORGE ALBERTO MARTINEZ', 'M', '(55) 5020-2160', '427', '(55) 1452-7626', 'jorge.martinez@gposac.com.mx', 1 UNION
-		SELECT 'MICHEL GALICIA CAMACHO', 'M', '(55) 5020-2160', '429', '', 'michelle.galicia@gposac.com.mx', 0 UNION
-		SELECT 'LILIANA DIAZ CUEVAS', 'M', '(55) 5020-2160', '407', '(55) 1452-7278', 'liliana.diaz@gposac.com.mx', 0 UNION
-		SELECT 'PILAR PAZ TORRES', 'M', '(55) 5020-2160', '428', '', 'pilar.paz@gposac.com.mx', 0 UNION
-		SELECT 'NICOLAS ANDRADE CARRILLO', 'G', '(33) 3793-0138', '217', '(33) 3191-9226', 'nicolas.andrade@gposac.com.mx', 1 UNION
-		SELECT 'SAUL ANDRADE GONZALEZ', 'G', '(33) 3793-0138', '220', '(33) 3576-8144', 'saul.andrade@gposac.com.mx', 1 ;
+		SELECT 'Sergio Alejandro Gomez Avila', 'Q', '(22) 2222-3333', '456', '(22) 4444-5555', 'portal-servicios@gposac.com.mx', 1 UNION
+		SELECT 'Juan Jose Espinoza Bravo', 'G', '(33) 3793-0138', '211', '(33) 3129-3377', 'juanjose.espinoza@gposac.com.mx', 1 UNION
+		SELECT 'Francisco Ramón Ureña Villanueva', 'G', '(33) 3793-0138', '206', '(33) 3661-1378', 'francisco.urena@gposac.com.mx', 0 UNION
+		SELECT 'Jose Ivan Martin Miranda', 'Q', '442 295 24 68', '312', '(44) 2226-7847', 'ivan.martin@gposac.com.mx', 1 UNION
+		SELECT 'Juan Ramos Anaya', 'Q', '442 295 24 68', '318', '', 'juan.ramos@gposac.com.mx', 0 UNION
+		SELECT 'Jorge Alberto Martinez', 'M', '(55) 5020-2160', '427', '(55) 1452-7626', 'jorge.martinez@gposac.com.mx', 1 UNION
+		SELECT 'Michel Galicia Camacho', 'M', '(55) 5020-2160', '429', '', 'michelle.galicia@gposac.com.mx', 0 UNION
+		SELECT 'Liliana Diaz Cuevas', 'M', '(55) 5020-2160', '407', '(55) 1452-7278', 'liliana.diaz@gposac.com.mx', 0 UNION
+		SELECT 'Pilar Paz Torres', 'M', '(55) 5020-2160', '428', '', 'pilar.paz@gposac.com.mx', 0 UNION
+		SELECT 'Nicolas Andrade Carrillo', 'G', '(33) 3793-0138', '217', '(33) 3191-9226', 'nicolas.andrade@gposac.com.mx', 1 UNION
+		SELECT 'Saul Andrade Gonzalez', 'G', '(33) 3793-0138', '220', '(33) 3576-8144', 'saul.andrade@gposac.com.mx', 1 ;
 	END IF;
 
 	-- Lista de proyectos

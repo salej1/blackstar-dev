@@ -200,6 +200,15 @@
 			}
 
 			function applyFilter(){
+				$('#invoicingKpi').dataTable().fnDestroy();
+				$('#effectivenessKpi').dataTable().fnDestroy();
+				$('#proposalsKpi').dataTable().fnDestroy();
+				$('#projectsByStatus').dataTable().fnDestroy();
+				$('#projectsByOrigin').dataTable().fnDestroy();
+				$('#clientVisits').dataTable().fnDestroy();
+				$('#newCustomers').dataTable().fnDestroy();
+				$('#productFamilies').dataTable().fnDestroy();
+				$('#comerceCodes').dataTable().fnDestroy();
 				loadAllKpi();
 			}
 
@@ -265,7 +274,7 @@
 							<td>
 								CST
 								<select name="" id="cstList">
-									<option value="0">TODOS</option>
+									<option value="0">Todos</option>
 									<c:forEach var="cst" items="${cstList}">
 										<option value="${cst.cstId}">${cst.name}</option>
 									</c:forEach>
@@ -274,7 +283,7 @@
 							<td>
 								Origen
 								<select name="" id="originList">
-									<option value="0">TODOS</option>
+									<option value="0">Todos</option>
 									<c:forEach var="origin" items="${originList}">
 										<option value="${origin.id}">${origin.name}</option>
 									</c:forEach>
@@ -321,12 +330,14 @@
 						Facturacion
 					</h2>
 					<table id="invoicingKpi">
-						<tr>
-							<th>CST</th>
-							<th>Monto</th>
-							<th>Origen</th>
-							<th>Cumplimiento Cuota %</th>
-						</tr>
+						<thead>
+							<tr>
+								<th>CST</th>
+								<th>Monto</th>
+								<th>Origen</th>
+								<th>Cumplimiento Cuota %</th>
+							</tr>
+						</thead>
 					</table>
 <!--   ~ Facturacion  -->		
 
@@ -336,11 +347,13 @@
 						Efectividad
 					</h2>
 					<table id="effectivenessKpi">
-						<tr>
-							<th>CST</th>
-							<th>Origen</th>
-							<th>Efectividad</th>
-						</tr>
+						<thead>
+							<tr>
+								<th>CST</th>
+								<th>Origen</th>
+								<th>Efectividad</th>
+							</tr>
+						</thead>
 					</table>
 <!--   ~ Efectividad  -->		
 
@@ -350,12 +363,14 @@
 						Cotizaciones Enviadas
 					</h2>
 					<table id="proposalsKpi">
+						<thead>
 						<tr>
 							<th>CST</th>
 							<th>Origen</th>
 							<th>Monto</th>
 							<th>Estatus</th>
 						</tr>
+						</thead>
 					</table>
 <!--   ~ Cotizaciones  -->	
 
@@ -365,6 +380,7 @@
 						Cedulas por Estatus
 					</h2>
 					<table id="projectsByStatus">
+						<thead>
 						<tr>
 							<th>CST</th>
 							<th>Origen</th>
@@ -372,8 +388,8 @@
 							<th>Cantidad</th>
 							<th>Porcentaje</th>
 						</tr>
+						</thead>
 					</table>
-					<img src="img/piechart.png" alt="">
 <!--   ~ Estatus  -->	
 
 <!--   Origen    -->	
@@ -383,13 +399,14 @@
 					</h2>
 
 					<table id="projectsByOrigin">
+						<thead>
 						<tr>
 							<th>Origen</th>
 							<th>Cantidad</th>
 							<th>Porcentaje</th>
 						</tr>
+						</thead>
 					</table>
-					<img src="img/piechart2.png" alt="">
 <!--   ~ Origen  -->	
 
 <!--   Prospectos    -->	
@@ -398,11 +415,13 @@
 						Visitas a Prospectos
 					</h2>
 					<table id="clientVisits">
+						<thead>
 						<tr>
 							<th>CST</th>
 							<th>Origen</th>
 							<th>Cantidad</th>
 						</tr>
+						</thead>
 					</table>					
 <!--   ~ Prospectos  -->	
 
@@ -412,10 +431,12 @@
 						Nuevos Clientes
 					</h2>
 					<table id="newCustomers">
+						<thead>
 						<tr>
 							<th>CST</th>
 							<th>Cantidad</th>
 						</tr>
+						</thead>
 					</table>
 <!--   ~ Nuevos  -->	
 
@@ -425,12 +446,14 @@
 						Familias de Productos
 					</h2>
 					<table id="productFamilies">
+						<thead>
 						<tr>
 							<th>Familia de productos</th>
 							<th>Monto</th>
 							<th></th>
 							<th>Contribucion %</th>
 						</tr>
+						</thead>
 					</table>
 <!--   ~ Familias  -->	
 
@@ -440,10 +463,12 @@
 						Codigos Comercia
 					</h2>
 					<table id="comerceCodes">
+						<thead>
 						<tr>
 							<th>Codigo Comercia</th>
 							<th>Monto</th>
 						</tr>
+						</thead>
 					</table>
 <!--   ~ Comercia  -->	
 
