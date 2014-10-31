@@ -101,6 +101,7 @@ public class AirCoServiceController extends AbstractController {
 	  				  airCoServicePolicyDTO.setServiceOrderNumber(service.getNewServiceNumber("A"));
 	  				  airCoServicePolicyDTO.setServiceStatusId("N");
 	  				  airCoServicePolicyDTO.setServiceTypeId("P");
+	  				  airCoServicePolicyDTO.setServiceDate(Globals.getLocalTime());
 	  				  model.addAttribute("serviceOrder", airCoServicePolicyDTO);
 	  				  model.addAttribute("serviceEmployees", udService.getStaffByGroupJson(Globals.GROUP_SERVICE));
 	  				  model.addAttribute("mode", "new");
@@ -113,6 +114,7 @@ public class AirCoServiceController extends AbstractController {
 		  			  airCoServicePolicyDTO.setServiceOrderNumber(service.getNewServiceNumber("A"));
 		  			  airCoServicePolicyDTO.setServiceStatusId("N");
 	  				  airCoServicePolicyDTO.setServiceTypeId("P");
+	  				  airCoServicePolicyDTO.setServiceDate(Globals.getLocalTime());
 	  				  model.addAttribute("serviceOrder", airCoServicePolicyDTO);
 	  				  model.addAttribute("serviceEmployees", udService.getStaffByGroupJson(Globals.GROUP_SERVICE));
 	  				  model.addAttribute("mode", "new");

@@ -98,6 +98,7 @@ public class BatteryServiceController extends AbstractController {
 					  batteryServicePolicyDTO.setServiceOrderNumber(service.getNewServiceNumber("B"));
 					  batteryServicePolicyDTO.setServiceStatusId("N");
 					  batteryServicePolicyDTO.setServiceTypeId("P");
+					  batteryServicePolicyDTO.setServiceDate(Globals.getLocalTime());
 	  				  model.addAttribute("serviceOrder", batteryServicePolicyDTO);
 	  				  model.addAttribute("serviceEmployees", udService.getStaffByGroupJson(Globals.GROUP_SERVICE));
 					  model.addAttribute("mode", "new");
@@ -110,6 +111,7 @@ public class BatteryServiceController extends AbstractController {
 					  batteryServicePolicyDTO.setServiceOrderNumber(service.getNewServiceNumber("B"));
 					  batteryServicePolicyDTO.setServiceStatusId("N");
 					  batteryServicePolicyDTO.setServiceTypeId("P");
+					  batteryServicePolicyDTO.setServiceDate(Globals.getLocalTime());
 	  				  model.addAttribute("serviceOrder", batteryServicePolicyDTO);
 	  				  model.addAttribute("serviceEmployees", udService.getStaffByGroupJson(Globals.GROUP_SERVICE));
 					  model.addAttribute("mode", "new");

@@ -36,7 +36,7 @@
 			}
 
 			if(mode == "new"){
-				$("#serviceDate").val(dateNow());
+				//$("#serviceDate").val(dateNow());
 				$("#responsibleName").val("${ user.userName }");
 				$("#responsible").val("${ user.userEmail }");
 

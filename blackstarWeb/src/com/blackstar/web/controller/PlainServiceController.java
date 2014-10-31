@@ -93,6 +93,7 @@ public class PlainServiceController extends AbstractController {
 	  				  plainServicePolicyDTO.setServiceTypeId("C");
 	  				  plainServicePolicyDTO.setTicketNumber(ticket.getTicketNumber());
 	  				  plainServicePolicyDTO.setTicketId(idTicket);
+	  				  plainServicePolicyDTO.setServiceDate(Globals.getLocalTime());
 	  				  model.addAttribute("serviceOrder", plainServicePolicyDTO);
 	  				  model.addAttribute("serviceEmployees", udService.getStaffByGroupJson(Globals.GROUP_SERVICE));
 	  				  model.addAttribute("mode", "new");
@@ -157,6 +158,7 @@ public class PlainServiceController extends AbstractController {
 	  				  plainServicePolicyDTO.setServiceStatusId("N");
 	  				  plainServicePolicyDTO.setServiceTypeId("C");
 	  				  plainServicePolicyDTO.setTicketNumber("NA");
+	  				  plainServicePolicyDTO.setServiceDate(Globals.getLocalTime());
 	  				  model.addAttribute("serviceOrder", plainServicePolicyDTO);
 	  				  model.addAttribute("serviceEmployees", udService.getStaffByGroupJson(Globals.GROUP_SERVICE));
 	  				  model.addAttribute("mode", "new");
@@ -181,6 +183,7 @@ public class PlainServiceController extends AbstractController {
 		  			  plainServicePolicyDTO.setServiceStatusId("N");
 		  			  plainServicePolicyDTO.setServiceTypeId("P");
 		  			  plainServicePolicyDTO.setTicketNumber("NA");
+		  			  plainServicePolicyDTO.setServiceDate(Globals.getLocalTime());
 	  				  model.addAttribute("serviceOrder", plainServicePolicyDTO);
 	  				  model.addAttribute("serviceEmployees", udService.getStaffByGroupJson(Globals.GROUP_SERVICE));
 	  				  model.addAttribute("mode", "new");

@@ -39,6 +39,8 @@
 -- ---------------------------------------------------------------------------
 -- 28	09/09/2014	SAG 	Se permiten nulos en boleanos de OS - todos los formatos
 -- ---------------------------------------------------------------------------
+-- 29	24/10/2014	SAG 	Se incrementa campo contact en policy
+-- ---------------------------------------------------------------------------
 
 use blackstarDb;
 
@@ -51,6 +53,11 @@ BEGIN
 -- -----------------------------------------------------------------------------
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
+
+-- INCREMENTANDO contact en policy
+ALTER TABLE policy MODIFY contactName VARCHAR(200);
+
+-- AGREGANDO INCIDE asignee a followUp
 ALTER TABLE followUp ADD INDEX (asignee);
 
 -- AGREGANDO NULLS A BOLEANOS DE OS
@@ -5668,7 +5675,7 @@ CREATE PROCEDURE upsertPolicy(
 	  pOffice VARCHAR(50),
 	  pPolicyType VARCHAR(50),
 	  pCustomerContract VARCHAR(50),
-	  pCustomer VARCHAR(100),
+	  pCustomer VARCHAR(200),
 	  pFinalUser VARCHAR(200),
 	  pProject VARCHAR(50),
 	  pCst VARCHAR(50),
@@ -5679,7 +5686,7 @@ CREATE PROCEDURE upsertPolicy(
 	  pCapacity VARCHAR(50),
 	  pEquipmentAddress VARCHAR(250),
 	  pEquipmentLocation VARCHAR(250),
-	  pContact VARCHAR(100),
+	  pContact VARCHAR(200),
 	  pContactEmail VARCHAR(200),
 	  pContactPhone VARCHAR(200),
 	  pStartDate DATETIME,

@@ -55,7 +55,7 @@ BEGIN
 -- -----------------------------------------------------------------------------
 
 -- INCREMENTANDO contact en policy
-ALTER TABLE policy MODIFY contact VARCHAR(200);
+ALTER TABLE policy MODIFY contactName VARCHAR(200);
 
 -- AGREGANDO INCIDE asignee a followUp
 ALTER TABLE followUp ADD INDEX (asignee);

@@ -95,6 +95,7 @@ public class EmergencyPlantServiceController extends AbstractController {
 					  emergencyPlantServicePolicyDTO.setServiceOrderNumber(service.getNewServiceNumber("P"));
 					  emergencyPlantServicePolicyDTO.setServiceStatusId("N");
 					  emergencyPlantServicePolicyDTO.setServiceTypeId("P");
+					  emergencyPlantServicePolicyDTO.setServiceDate(Globals.getLocalTime());
 	  				  model.addAttribute("serviceOrder", emergencyPlantServicePolicyDTO);
 	  				  model.addAttribute("serviceEmployees", udService.getStaffByGroupJson(Globals.GROUP_SERVICE));
 	  				  model.addAttribute("mode", "new");
@@ -107,6 +108,7 @@ public class EmergencyPlantServiceController extends AbstractController {
 					  emergencyPlantServicePolicyDTO.setServiceOrderNumber(service.getNewServiceNumber("P"));
 					  emergencyPlantServicePolicyDTO.setServiceStatusId("N");
 					  emergencyPlantServicePolicyDTO.setServiceTypeId("P");
+					  emergencyPlantServicePolicyDTO.setServiceDate(Globals.getLocalTime());
 	  				  model.addAttribute("serviceOrder", emergencyPlantServicePolicyDTO);
 	  				  model.addAttribute("serviceEmployees", udService.getStaffByGroupJson(Globals.GROUP_SERVICE));
 	  				  model.addAttribute("mode", "new");

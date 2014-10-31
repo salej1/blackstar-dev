@@ -97,6 +97,7 @@ public class UpsServiceController extends AbstractController {
 					  upsServicePolicyDTO.setServiceOrderNumber(service.getNewServiceNumber("U"));
 					  upsServicePolicyDTO.setServiceStatusId("N");
 					  upsServicePolicyDTO.setServiceTypeId("P");
+					  upsServicePolicyDTO.setServiceDate(Globals.getLocalTime());
 	  				  model.addAttribute("serviceOrder", upsServicePolicyDTO);
 	  			      model.addAttribute("serviceEmployees", udService.getStaffByGroupJson(Globals.GROUP_SERVICE));
 	  				  model.addAttribute("mode", "new");
@@ -109,6 +110,7 @@ public class UpsServiceController extends AbstractController {
 					  upsServicePolicyDTO.setServiceOrderNumber(service.getNewServiceNumber("U"));
 					  upsServicePolicyDTO.setServiceStatusId("N");
 					  upsServicePolicyDTO.setServiceTypeId("P");
+					  upsServicePolicyDTO.setServiceDate(Globals.getLocalTime());
 	  				  model.addAttribute("serviceOrder", upsServicePolicyDTO);
 	  			      model.addAttribute("serviceEmployees", udService.getStaffByGroupJson(Globals.GROUP_SERVICE));
 	  				  model.addAttribute("mode", "new");

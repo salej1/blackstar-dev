@@ -49,7 +49,7 @@
 		// Auto-llenar campos iniciales (solo para OS nuevas)
 		if(mode == "new"){
 			if(isEng == "true"){
-				$("#serviceDate").val(dateNow());
+				//$("#serviceDate").val(dateNow());
 			}
 			else{
 				$("#serviceDate").val("");
