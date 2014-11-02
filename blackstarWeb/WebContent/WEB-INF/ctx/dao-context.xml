@@ -47,12 +47,13 @@
        <bean id="equipmentTypeDAO" class="com.blackstar.db.dao.impl.EquipmentTypeDAOImpl" parent="abstractDAO"/>
        <bean id="schedulingDAO" class="com.blackstar.db.dao.impl.SchedulingDAOImpl" parent="abstractDAO"/>
        <bean id="issueDAO" class="com.blackstar.db.dao.impl.IssueDAOImpl" parent="abstractDAO"/>
+       <bean id="supportDao" class="com.blackstar.db.dao.impl.SupportDAOImpl" parent="abstractDAO"/>
 
 	   <!-- Implementacion de BLOOM HELPDESK -->
 	   <bean id="internalTicketsDao" class="com.bloom.db.dao.InternalTicketsDaoImpl" parent="abstractDAO"/>
 	   <bean id="internatTicketsKPIDao" class="com.bloom.db.dao.InternatTicketsKPIDaoImpl" parent="abstractDAO"/>        
 	   <bean id="catalogInternalTicketsDao" class="com.bloom.db.dao.CatalogInternalTicketsDaoImpl" parent="abstractDAO"/>
 	   <bean id="reportsTicketsDao" class="com.bloom.db.dao.ReportsTicketsDaoImpl" parent="abstractDAO"/>
-	   <bean id="internalTicketsSurveyDao" class="com.bloom.db.dao.InternalTicketsSurveyDaoImpl" parent="abstractDAO"/>
+     <bean id="internalTicketsSurveyDao" class="com.bloom.db.dao.InternalTicketsSurveyDaoImpl" parent="abstractDAO"/>
 
 </beans>

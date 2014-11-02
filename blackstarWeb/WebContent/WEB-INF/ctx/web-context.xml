@@ -134,4 +134,8 @@
       <property name="service" ref="internalTicketSurveyService" />
       <property name="internalTicketsService" ref="internalTicketsService" />
    </bean>
+
+    <bean class="com.blackstar.web.controller.ServiceKitController" parent="abstractController">
+      <property name="service" ref="supportService" />
+   </bean>
 </beans>

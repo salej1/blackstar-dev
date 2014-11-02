@@ -1246,11 +1246,279 @@ DROP PROCEDURE blackstarDb.upgradeSchema;
 -- 53	09/09/2014	SAG 	Se modifica:
 --								blackstarDb.AddupsService
 -- -----------------------------------------------------------------------------
+-- 54 	01/11/2014	SAG 	Se agrega:
+--								GetSupportServiceOrderDetail
+--								GetSupportServiceOrderComments
+--								DeleteServiceOrder
+--								DeleteServiceOrderPDF
+--								GetSupportTicketDetail
+--								DeleteFollowUp
+--								DeleteTicket
+--								GetSupportTicketComments
+--								GetSupportBloomTicketDetails
+--								DeleteBloomTicket
+--								GetSupportBloomTicketComments
+-- -----------------------------------------------------------------------------
 
 use blackstarDb;
 
 DELIMITER $$
 
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetSupportBloomTicketComments
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetSupportBloomTicketComments$$
+CREATE PROCEDURE blackstarDb.GetSupportBloomTicketComments (pTicketNumber VARCHAR(100))
+BEGIN
+
+	SELECT
+		created,
+		createdByUsr,
+		followUp,
+		followUpId
+	FROM
+		followUp
+	WHERE
+		bloomTicketId = (SELECT _id FROM bloomTicket WHERE ticketNumber = pTicketNumber);
+
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.DeleteBloomTicket
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.DeleteBloomTicket$$
+CREATE PROCEDURE blackstarDb.DeleteBloomTicket (pTicketNumber VARCHAR(100))
+BEGIN
+
+	SET @ticketId = (SELECT _id FROM blackstarDb.bloomTicket WHERE ticketNumber = pTicketNumber);
+
+	DELETE FROM blackstarDb.followUp WHERE bloomTicketId = @ticketId;
+	DELETE FROM blackstarDb.bloomSurvey WHERE bloomTicketId = @ticketId;
+	DELETE FROM blackstarDb.bloomTicketTeam WHERE ticketId = @ticketId;
+	DELETE FROM blackstarDb.bloomTicket WHERE _id = @ticketId;
+	SELECT 'OK';
+
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetSupportBloomTicketDetails
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetSupportBloomTicketDetails$$
+CREATE PROCEDURE blackstarDb.GetSupportBloomTicketDetails (pTicketNumber VARCHAR(100))
+BEGIN
+
+	SELECT
+		t.ticketNumber AS ticketNumber,
+		y.name AS ticketType,
+		t.createdByUsr,
+		t.created,
+		s.name AS status
+	FROM bloomTicket t 
+		INNER JOIN bloomServiceType y ON t.serviceTypeId = y._id
+		INNER JOIN bloomStatusType s ON t.statusId = s._id
+	WHERE ticketNumber = pTicketNumber;
+
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetSupportTicketComments
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetSupportTicketComments$$
+CREATE PROCEDURE blackstarDb.GetSupportTicketComments (pTicketNumber VARCHAR(100))
+BEGIN
+
+	SELECT
+		created,
+		createdByUsr,
+		followUp,
+		followUpId
+	FROM
+		followUp
+	WHERE
+		ticketId = (SELECT ticketId FROM ticket WHERE ticketNumber = pTicketNumber);
+
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.DeleteTicket
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.DeleteTicket$$
+CREATE PROCEDURE blackstarDb.DeleteTicket (pTicketNumber VARCHAR(100))
+BEGIN
+
+	SET @ticketId = (SELECT ticketId FROM blackstarDb.ticket WHERE ticketNumber = pTicketNumber);
+
+	-- ServiceOrder
+	IF(SELECT count(*) FROM blackstarDb.serviceOrder WHERE ticketId = @ticketId) > 0 THEN
+		SELECT 'No se puede eliminar el ticket, ya ha sido usado en una OS' AS OK;
+	ELSE
+		DELETE FROM blackstarDbTransfer.ticket WHERE ticketNumber = pTicketNumber;
+		DELETE FROM blackstarDb.followUp WHERE ticketId = @ticketId;
+		DELETE FROM blackstarDb.ticket WHERE ticketId = @ticketId;
+		SELECT 'OK';
+	END IF;
+
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetSupportTicketDetail
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetSupportTicketDetail$$
+CREATE PROCEDURE blackstarDb.GetSupportTicketDetail (pTicketNumber VARCHAR(100))
+BEGIN
+
+	SELECT
+		t.ticketNumber,
+		t.contact AS createdByUsr,
+		t.created,
+		s.ticketStatus AS status
+	FROM ticket t 
+		INNER JOIN ticketStatus s ON t.ticketStatusId = s.ticketStatusId
+	WHERE ticketNumber = pTicketNumber;
+
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.DeleteFollowUp
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.DeleteFollowUp$$
+CREATE PROCEDURE blackstarDb.DeleteFollowUp (pFollowUpId INT)
+BEGIN
+
+	DELETE FROM followUp WHERE followUpId = pFollowUpId;
+
+	SELECT 'OK';
+	
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.DeleteServiceOrderPDF
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.DeleteServiceOrderPDF$$
+CREATE PROCEDURE blackstarDb.DeleteServiceOrderPDF (pServiceOrderNumber VARCHAR(200))
+BEGIN
+
+	UPDATE serviceOrder SET
+		hasPDF = 0 
+	WHERE serviceOrderNumber = pServiceOrderNumber;
+
+	SELECT 'OK';
+	
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.DeleteServiceOrder
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.DeleteServiceOrder$$
+CREATE PROCEDURE blackstarDb.DeleteServiceOrder (pServiceOrderNumber VARCHAR(200))
+BEGIN
+
+	SET @id = (SELECT serviceOrderId FROM blackstarDb.serviceOrder WHERE serviceOrderNumber = pServiceOrderNumber);
+
+	IF(@id IS NOT NULL) THEN
+		-- ticket
+		UPDATE blackstarDb.ticket SET 
+			serviceOrderNumber = NULL, 
+			modified = now(), 
+			modifiedBy = 'DeleteServiceOrder'
+		WHERE serviceOrderNumber = pServiceOrderNumber;
+
+		-- serviceOrderEmployee
+		DELETE FROM blackstarDb.serviceOrderEmployee WHERE serviceOrderId = @id;
+
+		-- aa
+		IF left(pServiceOrderNumber, 2) = 'AA' THEN
+			DELETE FROM blackstarDb.aaService WHERE serviceOrderId = @id;
+		END IF;
+
+		-- bb
+		IF left(pServiceOrderNumber, 2) = 'BB' THEN
+			SET @bbId = (SELECT bbServiceId FROM blackstarDb.bbService WHERE serviceOrderId = @id);
+
+			DELETE FROM blackstarDb.bbCellService WHERE bbServiceId = @bbId;
+			DELETE FROM blackstarDb.bbService WHERE bbServiceId = @bbId;
+		END IF;
+
+		-- ep
+		IF left(pServiceOrderNumber, 2) = 'PE' THEN
+			SET @peId = (SELECT epServiceId FROM blackstarDb.epService WHERE serviceOrderId = @id);
+
+			DELETE FROM blackstarDb.epServiceDynamicTest WHERE epServiceId = @peId;
+			DELETE FROM blackstarDb.epServiceLectures WHERE epServiceId = @peId;
+			DELETE FROM blackstarDb.epServiceParams WHERE epServiceId = @peId;
+			DELETE FROM blackstarDb.epServiceSurvey WHERE epServiceId = @peId;
+			DELETE FROM blackstarDb.epServiceTestProtection WHERE epServiceId = @peId;
+			DELETE FROM blackstarDb.epServiceTransferSwitch WHERE epServiceId = @peId;
+			DELETE FROM blackstarDb.epServiceWorkBasic WHERE epServiceId = @peId;
+			DELETE FROM blackstarDb.epService WHERE epServiceId = @peId;
+		END IF;
+
+		-- ups
+		IF left(pServiceOrderNumber, 3) = 'UPS' THEN
+			SET @upsId = (SELECT upsServiceId FROM blackstarDb.upsService WHERE serviceOrderId = @id);
+
+			DELETE FROM blackstarDb.upsServiceBatteryBank WHERE upsServiceId = @upsId;
+			DELETE FROM blackstarDb.upsServiceGeneralTest WHERE upsServiceId = @upsId;
+			DELETE FROM blackstarDb.upsServiceParams WHERE upsServiceId = @upsId;
+			DELETE FROM blackstarDb.upsService WHERE upsServiceId = @upsId;
+		END IF;
+
+		-- plain
+		DELETE FROM blackstarDb.plainService WHERE serviceOrderId = @id;
+		
+		-- followUp
+		DELETE FROM blackstarDb.followUp WHERE serviceOrderId = @id;
+
+		-- serviceOrder
+		DELETE FROM blackstarDb.serviceOrder WHERE serviceOrderId = @id;
+	END IF;
+
+	SELECT 'OK';
+	
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetSupportServiceOrderDetail
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetSupportServiceOrderDetail$$
+CREATE PROCEDURE blackstarDb.GetSupportServiceOrderDetail (pServiceOrderNumber VARCHAR(200))
+BEGIN
+
+	SELECT
+		serviceOrderNumber AS serviceOrderNumber,
+		serviceDate AS serviceDate,
+		createdByUsr AS createdByUsr,
+		created AS created,
+		if(ticketId IS NOT NULL, 'SI', 'NO') AS ticket,
+		if(policyId IS NOT NULL, 'SI', 'NO') AS policy,
+		if(openCustomerId IS NOT NULL, 'SI', 'NO') AS openCustomer,
+		if(hasPdf = 1, 'SI', 'NO') AS hasPdf
+	FROM
+		serviceOrder
+	WHERE
+		serviceOrderNumber = pServiceOrderNumber;
+	
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetSupportServiceOrderComments
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetSupportServiceOrderComments$$
+CREATE PROCEDURE blackstarDb.GetSupportServiceOrderComments (pServiceOrderNumber VARCHAR(200))
+BEGIN
+
+	SELECT
+		created,
+		createdByUsr,
+		followUp,
+		followUpId
+	FROM
+		followUp
+	WHERE
+		serviceOrderId = (SELECT serviceOrderId FROM serviceOrder WHERE serviceOrderNumber = pServiceOrderNumber);
+	
+END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetAutoCompleteServiceOrdersByDate
