@@ -26,9 +26,15 @@ public class ServiceKitController extends AbstractController{
 	}
 
 	@RequestMapping(value= "/show.do", method = RequestMethod.GET)
-	public String show(@RequestParam(required = true) String code, ModelMap model){
+	public String show(@RequestParam(required = false) String code, ModelMap model){
 		try{
-
+			if(service.isGuidValid(code)){
+				return "serviceKit";
+			}else
+			{
+				service.newGuid();
+				return "serviceKitCodeSent";
+			}
 		}
 		catch (Exception e) 
 		{
@@ -37,8 +43,6 @@ public class ServiceKitController extends AbstractController{
 			model.addAttribute("errorDetails", e.getMessage() + " - " + e.getStackTrace()[0].toString());
 			return "error";
 		}
-
-		return "serviceKit";
 	}
 
 	@RequestMapping(value="getServiceOrderDetails.do")

@@ -1,13 +1,27 @@
 package com.blackstar.services.impl;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.TimeZone;
+import java.util.UUID;
+
+import com.blackstar.common.Globals;
 import com.blackstar.db.dao.SupportDAO;
+import com.blackstar.model.BlackstarGuid;
+import com.blackstar.services.GmailService;
 import com.blackstar.services.SupportService;
 
 public class SupportServiceImpl implements SupportService {
 	SupportDAO dao;
+	GmailService gmServ;
 	
 	public void setDao(SupportDAO dao){
 		this.dao = dao;
+	}
+
+	public void setMailService(GmailService mailService) {
+		this.gmServ = mailService;
 	}
 
 	@Override
@@ -63,6 +77,43 @@ public class SupportServiceImpl implements SupportService {
 	@Override
 	public String deleteServiceOrderPDF(String serviceOrderNumber) {
 		return dao.deleteServiceOrderPDF(serviceOrderNumber);
+	}
+
+	@Override
+	public boolean isGuidValid(String guid) {
+		if(guid == null){
+			return false;
+		}
+		else{
+			List<BlackstarGuid> g = dao.getGuid(guid);
+			if(g == null || g.size() == 0){
+				return false;
+			}
+			else{
+				if(Globals.getLocalTime().compareTo(g.get(0).getExpires()) < 0){
+					return true;
+				}
+				else{
+					return false;
+				}
+			}
+		}
+	}
+
+	@Override
+	public void newGuid() {
+		BlackstarGuid guid = new BlackstarGuid();
+		guid.setGuid(UUID.randomUUID().toString());
+		
+		Calendar c = Calendar.getInstance(TimeZone.getTimeZone(Globals.DEFAULT_TIME_ZONE));
+		c.add(Calendar.HOUR, 1);
+		guid.setExpires(c.getTime());
+		
+		dao.saveGuid(guid);
+		String link = Globals.GOOGLE_CONTEXT_URL + "/support/show.do?code=" + guid.getGuid();
+		String body = "<a href=\"" + link + "\">" + link + "</a>";
+		gmServ.sendEmail(Globals.GPOSAC_DEFAULT_SENDER, Globals.GPOSAC_DEFAULT_SENDER, "Link de servicio", body);
+		
 	}
 
 }

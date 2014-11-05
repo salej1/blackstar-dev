@@ -12,4 +12,6 @@ public interface SupportService{
 	public String getBloomTicketComments(String ticketNumber);
 	public String deleteBloomTicket(String ticketNumber);
 	public String deleteFollowUp(Integer followUpId);
+	public boolean isGuidValid(String guid);
+	public void newGuid();
 }

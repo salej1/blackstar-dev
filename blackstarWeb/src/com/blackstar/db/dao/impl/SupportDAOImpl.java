@@ -1,5 +1,6 @@
 package com.blackstar.db.dao.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import org.json.JSONObject;
@@ -7,6 +8,7 @@ import org.json.JSONObject;
 import com.blackstar.db.dao.AbstractDAO;
 import com.blackstar.db.dao.SupportDAO;
 import com.blackstar.db.dao.mapper.JSONRowMapper;
+import com.blackstar.model.BlackstarGuid;
 
 public class SupportDAOImpl extends AbstractDAO implements SupportDAO {
 
@@ -87,6 +89,23 @@ public class SupportDAOImpl extends AbstractDAO implements SupportDAO {
 	public String deleteServiceOrderPDF(String serviceOrderNumber) {
 		String sql = "CALL DeleteServiceOrderPDF(?)";
 		return getJdbcTemplate().query(sql, new Object[]{serviceOrderNumber}, new JSONRowMapper()).toString();
+	}
+
+	@Override
+	public List<BlackstarGuid> getGuid(String guid) {
+		String sql = "CALL GetGuid(?)";
+		
+		List<BlackstarGuid> res = (List<BlackstarGuid>) getJdbcTemplate().query(sql, new Object[]{guid}, getMapperFor(BlackstarGuid.class));
+		
+		return res;
+	}
+
+	@Override
+	public void saveGuid(BlackstarGuid guid) {
+		String sql = "CALL SaveGuid(?,?)";
+		
+		getJdbcTemplate().update(sql, new Object[]{guid.getGuid(), guid.getExpires()});
+		
 	}
 
 }

@@ -41,6 +41,8 @@
 -- ---------------------------------------------------------------------------
 -- 29	24/10/2014	SAG 	Se incrementa campo contact en policy
 -- ---------------------------------------------------------------------------
+-- 30	03/11/2014	SAG 	Se agrega guid
+-- ---------------------------------------------------------------------------
 
 use blackstarDb;
 
@@ -53,6 +55,17 @@ BEGIN
 -- -----------------------------------------------------------------------------
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
+-- AGREGANDO TABLA guid
+IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'guid') = 0 THEN
+		 CREATE TABLE blackstarDb.guid(
+			guid VARCHAR(100) NOT NULL,
+			expires DATETIME NOT NULL,
+			PRIMARY KEY (guid)
+		) ENGINE=INNODB;
+
+		-- Eliminando columna equipmentUser de policy
+		ALTER TABLE policy DROP COLUMN equipmentUser;
+	END IF;
 
 -- INCREMENTANDO contact en policy
 ALTER TABLE policy MODIFY contactName VARCHAR(200);

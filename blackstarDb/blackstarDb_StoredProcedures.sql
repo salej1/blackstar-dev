@@ -59,11 +59,40 @@
 --								DeleteBloomTicket
 --								GetSupportBloomTicketComments
 -- -----------------------------------------------------------------------------
+-- 03/11/2014				Se agrega:
+--								GetGuid
+--								SaveGuid
+-- -----------------------------------------------------------------------------
 
 use blackstarDb;
 
 DELIMITER $$
 
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.SaveGuid
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.SaveGuid$$
+CREATE PROCEDURE blackstarDb.SaveGuid (pGuid VARCHAR(100), pExpires DATETIME)
+BEGIN
+
+	INSERT INTO blackstarDb.guid(guid, expires)
+	SELECT pGuid, pExpires;
+
+END$$
+
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetSupportBloomTicketComments
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetGuid$$
+CREATE PROCEDURE blackstarDb.GetGuid (pGuid VARCHAR(100))
+BEGIN
+
+	SELECT guid, expires FROM blackstarDb.guid
+	WHERE guid = pGuid;
+
+END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetSupportBloomTicketComments

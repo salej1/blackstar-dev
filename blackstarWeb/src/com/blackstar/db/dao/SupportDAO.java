@@ -1,5 +1,10 @@
 package com.blackstar.db.dao;
 
+import java.util.Date;
+import java.util.List;
+
+import com.blackstar.model.BlackstarGuid;
+
 public interface SupportDAO {
 	public String getServiceOrderDetail(String serviceOrderNumber);
 	public String getServiceOrderComments(String serviceOrderNumber);
@@ -12,4 +17,6 @@ public interface SupportDAO {
 	public String getBloomTicketComments(String ticketNumber);
 	public String deleteBloomTicket(String ticketNumber);
 	public String deleteFollowUp(Integer followUpId);
+	public List<BlackstarGuid> getGuid(String guid);
+	public void saveGuid(BlackstarGuid guid);
 }
