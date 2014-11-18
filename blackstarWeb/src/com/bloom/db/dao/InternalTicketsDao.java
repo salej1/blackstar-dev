@@ -96,4 +96,5 @@ public interface InternalTicketsDao {
 
 	public Integer userCanAssign(Integer ticketId, String currentUser);
 	public void autoProcessBloomTickets();
+	public String getTicketServiceOrdersMixed();
 }

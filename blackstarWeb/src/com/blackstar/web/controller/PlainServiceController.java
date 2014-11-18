@@ -308,7 +308,7 @@ public class PlainServiceController extends AbstractController {
 	    		
 		    	if(serviceOrder.getPlainServiceId()==null && userSession.getUser().getBelongsToGroup().get(Globals.GROUP_SERVICE) != null)
                 {
-		    		commit(serviceOrder);
+		    		commit(serviceOrder, userSession.getUser().getUserEmail());
                 }
 		    	else{
 		    		if(idServicio > 0 && serviceOrder.getLoadedOSFileId() != null && !serviceOrder.getLoadedOSFileId().equals("")){
@@ -321,7 +321,14 @@ public class PlainServiceController extends AbstractController {
 				 model.addAttribute("errorDetails", e.getMessage() + " - " + e.getStackTrace()[0].toString());
 				 throw e;
 	    	}
-	    	return "redirect:/dashboard/show.do";
+	    	
+	    	if(userSession.getUser().getBelongsToGroup().get(Globals.GROUP_COORDINATOR) != null){
+	    		return "redirect:/osDetail/show.do?serviceOrderId=" + idServicio;
+	    	}
+	    	else{
+	    		return "redirect:/dashboard/show.do";	
+	    	}
+	    	
 	    }
 	    
 	    private void saveReport(Integer id, byte[] report) throws Exception {
@@ -350,10 +357,10 @@ public class PlainServiceController extends AbstractController {
 	    	AddFollowUpController.AssignServiceOrder(serviceOrder.getServiceOrderId(), Utils.noCommas(asignee.toString()), who, message);
 	    }
 	    
-	    private void commit(PlainServicePolicyDTO serviceOrder) throws Exception {
+	    private void commit(PlainServicePolicyDTO serviceOrder, String userEmail) throws Exception {
 	      byte [] report = rpService.getGeneralReport(serviceOrder);
 	      saveReport(serviceOrder.getServiceOrderId(), report);
-	      sendNotification(serviceOrder.getReceivedByEmail(), report, serviceOrder.getServiceOrderNumber());
+	      sendNotification(userEmail + "," + serviceOrder.getReceivedByEmail(), report, serviceOrder.getServiceOrderNumber());
 	      // enviar email a Call Center en caso de tener ticket asociado
 	      if(serviceOrder.getTicketNumber() != null && !serviceOrder.getTicketNumber().equals("")){
 	    	  callCenterLink(serviceOrder);

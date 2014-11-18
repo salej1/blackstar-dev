@@ -69,12 +69,29 @@
 -- 32   07/10/2014  SAG   Se modifica:
 --                          GetBloomHistoricalTickets - se agrega opcion 0 - Abiertos y retrasados
 -- ------------------------------------------------------------------------------
+-- 33   17/11/2014  SAG   Se agrega:
+--                          bloomGetTicketsServiceOrdersMixed
+-- ------------------------------------------------------------------------------
 
 use blackstarDb;
 
 
 DELIMITER $$
 
+
+-- -----------------------------------------------------------------------------
+  -- blackstarDb.bloomGetTicketsServiceOrdersMixed
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.bloomGetTicketsServiceOrdersMixed$$
+CREATE PROCEDURE blackstarDb.bloomGetTicketsServiceOrdersMixed()
+BEGIN
+ 
+  SELECT * FROM (
+    SELECT DISTINCT ticketNumber AS label, ticketNumber AS value FROM ticket UNION
+    SELECT DISTINCT serviceOrderNumber AS label, serviceOrderNumber AS value FROM serviceOrder
+  ) A ORDER BY label;
+  
+END$$
 
 -- -----------------------------------------------------------------------------
   -- blackstarDb.bloomTicketAutoclose
@@ -161,7 +178,7 @@ FROM ((SELECT *
        LEFT JOIN (SELECT of.officeId refId, of.officeName as officeName 
            FROM office of) AS j2
            ON ticketDetail.officeId = j2.refId
-       LEFT JOIN (SELECT st._id refId, st.name as serviceTypeName 
+       LEFT JOIN (SELECT st._id refId, st.name as serviceTypeName, st.resolverCanClose as resolverCanClose 
            FROM bloomServiceType st) AS j3
            ON ticketDetail.serviceTypeId = j3.refId           
        LEFT JOIN (SELECT sp._id refId, sp.name as statusName 
@@ -190,6 +207,7 @@ SELECT
   ticketId AS ticketId,
   workerRoleTypeId AS workerRoleTypeId,
   t.blackstarUserId AS blackstarUserId,
+  u.email AS userEmail,
   assignedDate AS assignedDate
 FROM bloomTicketTeam t
   INNER JOIN blackstarUser u ON t.blackstarUserId = u.blackstarUserId

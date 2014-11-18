@@ -59,15 +59,31 @@
 --								DeleteBloomTicket
 --								GetSupportBloomTicketComments
 -- -----------------------------------------------------------------------------
--- 03/11/2014				Se agrega:
+-- 55	03/11/2014	SAG		Se agrega:
 --								GetGuid
 --								SaveGuid
+-- -----------------------------------------------------------------------------
+-- 56	06/11/2014	SAG 	Se agrega:		
+--								FlagSurveySuggestion
 -- -----------------------------------------------------------------------------
 
 use blackstarDb;
 
 DELIMITER $$
 
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.FlagSurveySuggestion
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.FlagSurveySuggestion$$
+CREATE PROCEDURE blackstarDb.FlagSurveySuggestion (pSurveyId INT, pFlag INT)
+BEGIN
+
+	UPDATE blackstarDb.surveyService SET
+		suggestionFlag = pFlag
+	WHERE surveyServiceId = pSurveyId;
+
+END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.SaveGuid
@@ -80,7 +96,6 @@ BEGIN
 	SELECT pGuid, pExpires;
 
 END$$
-
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetSupportBloomTicketComments
@@ -4344,7 +4359,7 @@ CREATE PROCEDURE blackstarDb.AddserviceOrder (
   policyId int(11) ,
   serviceUnit varchar(10) ,
   serviceDate datetime ,
-  responsible varchar(100) ,
+  responsible varchar(400) ,
   additionalEmployees varchar(400) ,
   receivedBy varchar(100) ,
   serviceComments text,
@@ -4476,7 +4491,8 @@ BEGIN
 		reasonUniform,
 		score,
 		sign,
-		suggestion
+		suggestion,
+		suggestionFlag
 	FROM surveyService 
 	WHERE surveyServiceId = pSurveyServiceId;
 END$$

@@ -598,7 +598,6 @@
 		<div id="OkMessage" title="Orden de servicio guardada">
 			La orden de servicio ${serviceOrder.serviceOrderNumber} se guardo exitosamente.
 			<br>
-			Seleccione Aceptar para volver al inicio.
 		</div>
 		<div id="FailMessage" title="Error al guardar la OS">
 			Ocurrio un error al guardar la orden de servicio ${serviceOrder.serviceOrderNumber}. Por favor verifique los datos e intente nuevamente
@@ -633,7 +632,15 @@
 		      buttons: {
 		        Aceptar: function() {
 		          $( this ).dialog( "close" );
-					window.location = '/dashboard/show.do';
+		          <c:choose>
+			          <c:when test="${user.belongsToGroup['Coordinador']}">
+						window.location = '/osDetail/show.do?serviceOrderId=0&serviceOrderNumber=' + $("#serviceOrderNumber").val();
+					  </c:when>
+					  <c:otherwise>
+						window.location = '/dashboard/show.do';
+					  </c:otherwise>
+				  </c:choose>
+
 		        }
 		      }
 		    });

@@ -37,6 +37,8 @@ public class TicketDetailDTO {
     private Date desiredDate;
     private boolean userCanClose;
     private boolean userCanAssign;
+    private Integer resolverCanClose;
+    private boolean userCanCancel;
     private String asignee;
     
 
@@ -635,6 +637,16 @@ public class TicketDetailDTO {
 			return "";
 		}
 	}
-	
-
+	public Integer getResolverCanClose() {
+		return resolverCanClose;
+	}
+	public void setResolverCanClose(Integer resolverCanClose) {
+		this.resolverCanClose = resolverCanClose;
+	}
+	public boolean isUserCanCancel() {
+		return userCanCancel;
+	}
+	public void setUserCanCancel(boolean userCanCancel) {
+		this.userCanCancel = userCanCancel;
+	}
 }

@@ -26,8 +26,13 @@
 ** 8    01/04/2014  SAG  	Se agrega modelo STTP
 ** --   --------   -------  ------------------------------------
 ** 9	09/04/2014	SAG 	Se corrige asignacion de sync seed
+** --   --------   -------  ------------------------------------
+** 10 	06/11/2014	SAG 	Se implementa errStack y envio de errores por mail
 *****************************************************************************/
+// errStack
+var errStack = [];
 
+// functions
 function ticketMain() {
 	// Log init and timestamp
 	var formattedDate = Utilities.formatDate(new Date(), "CST", "yyyy-MM-dd HH:mm:ss");
@@ -147,7 +152,9 @@ function sendToDatabase(ticket, conn, policies, sqlLog, range){
 	var processed = 0;
 
 	if(created == ""){
-		Logger.log(Utilities.formatString("Ticket %s ignorado. Sin marca temporal", ticketNumber));
+		var errStr = Utilities.formatString("Ticket %s ignorado. Sin marca temporal", ticketNumber);
+		Logger.log(errStr);
+		errStack.push(errStr);
 		return;
 	}
 
@@ -155,7 +162,9 @@ function sendToDatabase(ticket, conn, policies, sqlLog, range){
 	var policyId = policies[serialNumber];
 	
 	if(policyId == null){
-		Logger.log(Utilities.formatString("Ticket %s ignorado, no se encontro poliza %s", ticketNumber, serialNumber));
+		var errStr2 = Utilities.formatString("Ticket %s ignorado, no se encontro poliza %s", ticketNumber, serialNumber);
+		Logger.log(errStr2);
+		errStack.push(errStr2);
 		return;
 	}
 	
@@ -245,7 +254,9 @@ function ticketSync(){
 	Logger.log("Iniciando sincronizacion de tickets a base de datos: %s", formattedDate);
 	// sqlLog
 	var sqlLog = "";
-	
+	// init errStack
+	errStack = [];
+
 	try{
 		// start syncing
 		sqlLog = startSyncJob(sqlLog);
@@ -261,9 +272,11 @@ function ticketSync(){
 		Logger.log(err);
 		Logger.log("Sincronizacion de tickets finalizada con errores", formattedDate);
 	}
-	
-	saveLog(formattedDate, sqlLog);
 
+	// send errors by email
+	mailErrors();
+
+	saveLog(formattedDate, sqlLog);
 }
 
 function startSyncJob(sqlLog){
@@ -366,5 +379,17 @@ function onEdit(event)
 	}
 	catch(err){
 		Logger.log(err);
+	}
+}
+
+// mail errors
+function mailErrors(){
+	if(errStack.length > 0){
+		var body = '';
+		for(var i = 0; i < errStack.length; i++){
+			body = body + "\r\n" + errStack[i];
+		}
+		
+		MailApp.sendEmail('sergio.aga@gmail.com', 'Error al sincronizar tickets', body);
 	}
 }

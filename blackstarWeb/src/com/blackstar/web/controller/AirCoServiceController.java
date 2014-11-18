@@ -225,7 +225,7 @@ public class AirCoServiceController extends AbstractController {
 	      serviceOrder.setServiceOrderId(idServicio);
 	      //Crear orden de servicio de AirCo
 	      service.saveAirCoService(new AirCoServiceDTO(serviceOrder), "AirCoServiceController", userSession.getUser().getUserName());
-	      commit(serviceOrder);
+	      commit(serviceOrder, userSession.getUser().getUserEmail());
 	    }
 	} catch(Exception e){
 	    Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1]
@@ -237,10 +237,10 @@ public class AirCoServiceController extends AbstractController {
     return "dashboard";
   }
   
-  private void commit(AirCoServicePolicyDTO serviceOrder) throws Exception {
+  private void commit(AirCoServicePolicyDTO serviceOrder, String userEmail) throws Exception {
 	byte [] report = rpService.getAirCoReport(serviceOrder);
 	saveReport(serviceOrder.getServiceOrderId(), report);
-	sendNotification(serviceOrder.getReceivedByEmail(), report, serviceOrder.getServiceOrderNumber());
+	sendNotification(userEmail + "," + serviceOrder.getReceivedByEmail(), report, serviceOrder.getServiceOrderNumber());
   }
   
   private void saveReport(Integer id, byte[] report) throws Exception {

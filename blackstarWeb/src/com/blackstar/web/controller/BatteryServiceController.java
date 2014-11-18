@@ -223,7 +223,7 @@ public class BatteryServiceController extends AbstractController {
 	    	serviceOrder.setServiceOrderId(idServicio);
 	    	//Crear orden de servicio de Battery
 	    	service.saveBateryService(new BatteryServiceDTO(serviceOrder), "BatteryServiceController", userSession.getUser().getUserName());
-	    	commit(serviceOrder);
+	    	commit(serviceOrder, userSession.getUser().getUserEmail());
 	     }
     } catch(Exception e){
 	    Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
@@ -244,9 +244,9 @@ public class BatteryServiceController extends AbstractController {
   	gmService.sendEmail(to, "Reporte de servicio a baterias", "Reporte de servicio a baterias", serviceNumber + ".pdf", report);
   }
   
-  private void commit(BatteryServicePolicyDTO serviceOrder) throws Exception {
+  private void commit(BatteryServicePolicyDTO serviceOrder, String userEmail) throws Exception {
     byte [] report = rpService.getBatteryReport(serviceOrder);
     saveReport(serviceOrder.getServiceOrderId(), report);
-    sendNotification(serviceOrder.getReceivedByEmail(), report, serviceOrder.getServiceOrderNumber());
+    sendNotification(userEmail + "," + serviceOrder.getReceivedByEmail(), report, serviceOrder.getServiceOrderNumber());
   }
 }

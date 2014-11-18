@@ -17,8 +17,13 @@
 ** 3	09/04/2014	SAG 	Se implementa sincronizacion selectiva
 ** --   --------   -------  ------------------------------------
 ** 4	30/07/2014	SAG 	Se implementa upsert
+** --   --------   -------  ------------------------------------
+** 5 	06/11/2014	SAG 	Se implementa errStack y envio de errores por mail
 *****************************************************************************/
+// errStack
+var errStack = [];
 
+// functions
 function policyMain() {
 	// Log init and timestamp
 	var formattedDate = Utilities.formatDate(new Date(), "CST", "yyyy-MM-dd HH:mm:ss");
@@ -131,13 +136,13 @@ function sendPolicyToDatabase(policy, conn, eqTypes, sqlLog, range){
 	var createdByUsr = "sergio.aga";
 
 	// fetching derived values
-	if(equipmentType == "SERVICIO DE DESCONTAMINACIÓN DATA CENTER"){
-		equipmentType = "SERVICIO DE DESCONTAMINACION DATA CENTER";
+	if(equipmentType == "DESCONTAMINACIÓN"){
+		equipmentType = "DESCONTAMINACION";
 	}
 	var equipmentTypeId = eqTypes[equipmentType.trim()];
 	
 	if(equipmentTypeId == null){
-		throw Utilities.formatString("equipmentType %s could not be found", equipmentType);
+		throw Utilities.formatString("Tipo de equipo %s no es valido", equipmentType);
 	}
 	
 	var includesPartsBool = 0;
@@ -244,7 +249,9 @@ function policySync(){
 	Logger.log("Iniciando sincronizacion de polizas a base de datos: %s", formattedDate);
 	// sqlLog
 	var sqlLog = "";
-	
+	// init errStack
+	errStack = [];
+
 	// verify connection & load
 	try{
 		// get the database connection
@@ -266,8 +273,11 @@ function policySync(){
 		Logger.log("Sincronizacion de polizas finalizada con errores", formattedDate);
 	}
 	
-	saveLog(formattedDate, sqlLog);
+	// send errors by email
+	mailErrors();
 
+	// save log
+	saveLog(formattedDate, sqlLog);
 }
 
 function startPolicySyncJob(conn, sqlLog){
@@ -276,7 +286,7 @@ function startPolicySyncJob(conn, sqlLog){
 	var eqTypes = loadEquipmentTypes(conn);
 	
 	// start point at the spreadsheet
-	const offset = 951; // Ajustar de acuerdo al numero de polizas cargadas en el sistema
+	const offset = 5; // Ajustar de acuerdo al numero de polizas cargadas en el sistema
 	var startRec = offset;
 	
 	// iterate looking for new policies
@@ -296,8 +306,9 @@ function startPolicySyncJob(conn, sqlLog){
 			}
 		}
 		catch(err){
-			Logger.log("Error al sincronizar poliza # " + startRec);
-			Logger.log(err);
+			var errStr = "Error al sincronizar poliza # " + startRec + ": " + err;
+			Logger.log(errStr);
+			errStack.push(errStr);
 		}
 		startRec++;
 		seedRange = "BD" + startRec.toString();
@@ -339,7 +350,7 @@ function onEdit(event)
 		    var actRng = event.source.getActiveRange();
 
 		    var index = actRng.getRowIndex();
-		    var seedCell = actSht.getRange(index,55);
+		    var seedCell = actSht.getRange(index,56);
 		    var serialNumber = actSht.getRange(index,11).getValue();
 		    if(serialNumber != ""){
 			    seedCell.setValue(1);
@@ -348,5 +359,16 @@ function onEdit(event)
 	}
 	catch(err){
 		Logger.log(err);
+	}
+}
+
+function mailErrors(){
+	if(errStack.length > 0){
+		var body = '';
+		for(var i = 0; i < errStack.length; i++){
+			body = body + "\r\n" + errStack[i];
+		}
+		
+		MailApp.sendEmail('sergio.aga@gmail.com', 'Error al sincronizar polizas', body);
 	}
 }

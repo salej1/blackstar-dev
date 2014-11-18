@@ -38,6 +38,13 @@ BEGIN
 -- ELIMINANDO ESTATUS EN PROCESO
 DELETE FROM blackstarDb.bloomStatusType WHERE name ='EN PROCESO';
 
+-- Resolver can close
+IF(SELECT count(*) FROM bloomServiceType WHERE resolverCanClose > 0) = 0 THEN
+	UPDATE bloomServiceType SET
+		resolverCanClose = 1 
+	WHERE _id IN(13,15);
+END IF;
+
 -- DeliverableType
 IF(SELECT count(*) FROM blackstarDb.bloomDeliverableType WHERE name = 'Otro') = 0 THEN
 	INSERT INTO blackstarDb.bloomDeliverableType(_id, name, description, serviceTypeId)

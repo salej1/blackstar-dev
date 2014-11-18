@@ -116,6 +116,7 @@
   
   <bean id="internalTicketSurveyService" class="com.bloom.services.InternalTicketsSurveyServiceImpl" parent="abstractService">
       <property name="dao" ref="internalTicketsSurveyDao" />
+      <property name="tickDao" ref="internalTicketsDao" />
   </bean>
 
    <bean id="supportService" class="com.blackstar.services.impl.SupportServiceImpl" parent="abstractService">

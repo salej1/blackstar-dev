@@ -78,6 +78,14 @@
 		    	  });
 			 	}
 		     }
+
+		     function goBloom(indAction){
+				$("a[href*=#]").css({ "color": "#888", "text-decoration":"underline"});
+				var url = "${pageContext.request.contextPath}/bloom/indServicios/" + indAction + ".do?startDate=" + encodeURIComponent(startDateStr) + "&endDate=" + encodeURIComponent(endDateStr);
+				$("#indicatorDetail").load(url, function() {
+					$("#" + indAction).css({ "color": "#800080", "text-decoration":"none"});
+				});
+		     }
 		</script>
 	</head>
 	<body>
@@ -188,6 +196,33 @@
 					</c:otherwise>
 				</c:choose>
 			</div>	
+
+			<c:if test="${isCustomer == null}">
+				<!-- Indicadores de Requisiciones -->
+				 <div class="box" style="margin-top:20px;">
+				  <h2>Indicadores de Requisiciones</h2>
+			    </div>
+				<div>
+					<div>
+						<img src="/img/navigate-right.png"/><a href="#" id="getTicketByUser" onclick="goBloom('getTicketByUser')">Requisiciones por Usuario</a>
+					</div>
+					<div>
+						<img src="/img/navigate-right.png"/><a href="#" id="getTicketByOffice" onclick="goBloom('getTicketByOffice')">Requisiciones por Oficina</a>
+					</div>
+					<div>
+						<img src="/img/navigate-right.png"/><a href="#" id="getTicketByArea" onclick="goBloom('getTicketByArea')">Requisiciones por Area solicitante</a>
+					</div>
+					<div>
+						<img src="/img/navigate-right.png"/><a href="#" id="getTicketByDay" onclick="goBloom('getTicketByDay')">Requisiciones por Dia</a>
+					</div>
+					<div>
+						<img src="/img/navigate-right.png"/><a href="#" id="getTicketByProject" onclick="goBloom('getTicketByProject')">Requisiciones por Proyecto</a>
+					</div>
+					<div>
+						<img src="/img/navigate-right.png"/><a href="#" id="getTicketByServiceAreaKPI" onclick="goBloom('getTicketByServiceAreaKPI')">Requisiciones por Area de apoyo</a>
+					</div>
+				</div>	
+			</c:if>
 		</div>
 		<div id="indicatorDetail"></div>
 	</body>

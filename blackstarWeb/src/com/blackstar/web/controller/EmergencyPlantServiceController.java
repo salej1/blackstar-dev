@@ -224,7 +224,7 @@ public class EmergencyPlantServiceController extends AbstractController {
 	    			serviceOrder.setServiceOrderId(idServicio);
 	    			//Crear orden de servicio de AirCo
 	    			service.saveEmergencyPlantService(new EmergencyPlantServiceDTO(serviceOrder), "EmergencyPlantServiceController", userSession.getUser().getUserName());
-	    			commit(serviceOrder);
+	    			commit(serviceOrder, userSession.getUser().getUserEmail());
 	    		}
 			}
 			catch (Exception e) 
@@ -248,10 +248,10 @@ public class EmergencyPlantServiceController extends AbstractController {
 	    	gmService.sendEmail(to, "Orden de Servicio", "Orden de Servicio", serviceNumber + ".pdf", report);
 	    }
 	    
-	    private void commit(EmergencyPlantServicePolicyDTO serviceOrder) throws Exception {
+	    private void commit(EmergencyPlantServicePolicyDTO serviceOrder, String userEmail) throws Exception {
 	      byte [] report = rpService.getEmergencyPlantReport(serviceOrder);
 	      saveReport(serviceOrder.getServiceOrderId(), report);
-	      sendNotification(serviceOrder.getReceivedByEmail(), report, serviceOrder.getServiceOrderNumber());
+	      sendNotification(userEmail + "," + serviceOrder.getReceivedByEmail(), report, serviceOrder.getServiceOrderNumber());
 	    }
 
 }

@@ -94,6 +94,7 @@ public class SurveyServiceDetialController extends AbstractController{
 			ss.setQuestionUniform(surveyService.getQuestionUniform());
 			ss.setReasonUniform(surveyService.getReasonUniform());
 			ss.setSuggestion(surveyService.getSuggestion());
+			ss.setSuggestionFlag(surveyService.getSuggestionFlag());
 			ss.setSign(surveyService.getSign());
 			ss.setCreated(Utils.getCurerntDateTime());
 			ss.setCreatedBy("SurveyServiceController");
@@ -126,6 +127,21 @@ public class SurveyServiceDetialController extends AbstractController{
 			else{
 				retVal = "error";
 			}
+		} catch (Exception ex) {
+			Logger.Log(LogLevel.ERROR,
+					Thread.currentThread().getStackTrace()[1].toString(), ex);
+			ex.printStackTrace();
+			retVal = "error";
+		}
+		return retVal;
+	}
+	
+	@RequestMapping(value = "/flagSuggestion.do", method = RequestMethod.GET)
+	public @ResponseBody String getOsDetailsJson(@RequestParam(required = true) Integer surveyId, @RequestParam(required = true) Integer flag) {
+		String retVal;
+		try {
+			service.flagSurveyService(surveyId, flag);
+			retVal = "OK";
 		} catch (Exception ex) {
 			Logger.Log(LogLevel.ERROR,
 					Thread.currentThread().getStackTrace()[1].toString(), ex);

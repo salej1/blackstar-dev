@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import org.json.JSONObject;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
@@ -16,6 +17,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
 import com.blackstar.db.dao.AbstractDAO;
+import com.blackstar.db.dao.mapper.JSONRowMapper;
 import com.blackstar.model.Followup;
 import com.blackstar.model.User;
 import com.blackstar.logging.LogLevel;
@@ -370,5 +372,14 @@ public class InternalTicketsDaoImpl extends AbstractDAO implements InternalTicke
 		String sql = "CALL bloomTicketAutoProcess;";
 		
 		getJdbcTemplate().update(sql);
+	}
+
+	@Override
+	public String getTicketServiceOrdersMixed() {
+		String sql = "CALL bloomGetTicketsServiceOrdersMixed";
+		
+		List<JSONObject> res = getJdbcTemplate().query(sql, new JSONRowMapper());
+		
+		return res.toString();
 	}
 }

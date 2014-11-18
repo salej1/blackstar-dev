@@ -181,8 +181,9 @@ public class InternalTicketsServiceImpl extends AbstractService
 	if(details.size() > 0){
 		TicketDetailDTO detail = details.get(0);
 		
-		detail.setUserCanClose(detail.getCreatedByUsr().equals(user));
 		detail.setUserCanAssign(internalTicketsDao.userCanAssign(ticketId, user) > 0);
+		detail.setUserCanClose(detail.getCreatedByUsr().equals(user) || (detail.isUserCanAssign() && detail.getResolverCanClose() > 0));
+		detail.setUserCanCancel(detail.getCreatedByUsr().equals(user));
 		if(detail.getResponseDate() != null && detail.getDueDate() != null){
 			detail.setResolvedOnTime(detail.getDueDate().compareTo(detail.getResponseDate()));
 		}
@@ -410,6 +411,11 @@ public class InternalTicketsServiceImpl extends AbstractService
 	@Override
 	public void autoProcessBloomTickets() {
 		internalTicketsDao.autoProcessBloomTickets();		
+	}
+
+	@Override
+	public String getTicketServiceOrdersMixed() {
+		return internalTicketsDao.getTicketServiceOrdersMixed();
 	}
 
 }

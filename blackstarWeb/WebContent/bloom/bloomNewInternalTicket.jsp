@@ -172,7 +172,8 @@
 							</tr>
 							<tr id='tr_ticketISRPR'>
 								<td><span id='sp_ticketISRPR'>Datos Adicionales 1</span></td>
-								<td><textarea id='txt_ticketISRPR' style='width: 100%; height: 100%;' rows='2'></textarea></td>
+								<td><input type="text" id='txt_ticketISRPR' style='width: 100%; height: 100%;' rows='2'/>
+									<input type="hidden" id="dummy_txt_ticketISRPR"></td>
 							</tr>
 							<tr id='tr_modelPartISRPR'>
 								<td><span id='sp_modelPartISRPR'>Datos Adicionales 1</span></td>
@@ -327,6 +328,7 @@
 	</body>
 	<script src="${pageContext.request.contextPath}/js/dateFormat.js"></script>
 	<script type="text/javascript" src="${pageContext.request.contextPath}/js/common/popup.js"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/js/customAutocomplete.js"></script>
 	<script type="text/javascript" charset="utf-8">
 
 	function split( val ) {
@@ -460,7 +462,7 @@
 						});
 
 						readDataForm();
-						
+
 					});
 
 
@@ -607,9 +609,14 @@
 			$('#tr_modelPartISRPR').show();
 			$('#tr_observationsISRPR').show();
 
-			$('#sp_ticketISRPR').text("Ticket");
+			$('#sp_ticketISRPR').text("Ticket / Orden de servicio");
 			$('#sp_modelPartISRPR').text("Modelo, Marca y N\u00famero de parte");
 			$('#sp_observationsISRPR').text("Observaciones y/o ligas de anexos como fotos");
+
+			$.ajax("${pageContext.request.contextPath}/bloom/getTicketsServiceOrdersMixed.do", {dataType : "text"}).done(function(data){
+				init_autoComplete(data, "txt_ticketISRPR", "dummy_txt_ticketISRPR", "single")
+			});
+
 
 		}
 		if (serviceTypeId === 14) {

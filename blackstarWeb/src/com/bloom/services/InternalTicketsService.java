@@ -41,4 +41,5 @@ public interface InternalTicketsService {
 	public List<InternalTicketBean> getHistoricalTickets(String startCreationDateTicket, String endCreationDateTicket, Integer idStatusTicket, Integer showHidden, String user) throws ServiceException;
 	public void sendPendingSurveys();
 	public void autoProcessBloomTickets();
+	public String getTicketServiceOrdersMixed();
 }

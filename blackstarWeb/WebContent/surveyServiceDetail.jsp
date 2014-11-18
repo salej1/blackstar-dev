@@ -77,7 +77,38 @@
             }
           }
         });
+
+         $( "#flagSuggestionDlg" ).dialog({
+          modal: true,
+          autoOpen: false,
+          width: 350,
+          buttons: {
+            Positivo: function() {
+              sendSuggestionFlag(1);
+              $( this ).dialog( "close" );
+              location.reload();
+            },
+            Negativo: function(){
+              sendSuggestionFlag(0);
+              $( this ).dialog( "close" );
+              location.reload();
+            },
+            Cancelar: function(){
+              $( this ).dialog( "close" );
+            }
+          }
+        });
     });
+
+    function sendSuggestionFlag(flag){
+        $.ajax("${pageContext.request.contextPath}/surveyServiceDetail/flagSuggestion.do?surveyId=${surveyService.surveyServiceId}&flag=" + flag, function(response){
+          location.reload();
+        });
+    }
+
+    function addSuggestionFlag(){
+        $("#flagSuggestionDlg").dialog("open");
+    }
 
     function validate(){
         var timeStamp = Date.parseExact($("#date").val(), 'dd/MM/yyyy HH:mm:ss');
@@ -205,6 +236,26 @@
 				  <p>Sugerencias y comentarios</p>
 				  <p>
               <form:textarea path="suggestion" cols="150" rows="8" cssClass="lockOnDetail"></form:textarea>
+          <div style="margin-bottom:10px;" >
+            <c:choose>
+              <c:when test="${surveyService.suggestionFlag != null}">
+                Calificación de Comentarios: 
+                <c:choose>
+                  <c:when test="${surveyService.suggestionFlag == 1}">
+                    <img src="/img/sucess.png"> Positivos
+                  </c:when>
+                  <c:otherwise>
+                    <img src="/img/warning.png"> Negativos
+                  </c:otherwise>
+                </c:choose>
+              </c:when>
+              <c:otherwise>
+                <c:if test="${surveyService.suggestionFlag == null && (user.belongsToGroup['Call Center'] || user.belongsToGroup['Calidad'])}">
+                  <input class="searchButton" type="submit" onclick="addSuggestionFlag(); return false;" value="Calificar comentarios" id="flagSuggestion"/>
+                </c:if>
+              </c:otherwise>
+            </c:choose>
+          </div>
 
 				 <div align="left"><input class="searchButton lockOnDetail" type="submit" onclick="saveSurvey(); return false;" value="Guardar Encuesta" id="guardar"/></div>
 	  		</div>
@@ -218,6 +269,10 @@
 		</div>
     <div id="InvalidMessage" title="Revise los datos de la OS">
       Por favor revise que todos los campos hayan sido llenados.
+    </div>
+
+    <div id="flagSuggestionDlg" title="Calificar comentario"> 
+      Por favor califique el comentario:
     </div>
 </body>
 </html>

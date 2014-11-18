@@ -392,9 +392,27 @@
 			$('#tr_modelPartISRPR').show();
 			$('#tr_observationsISRPR').show();
 
-			$('#sp_ticketISRPR').text("Ticket");
+			$('#sp_ticketISRPR').text("Ticket / Orden de Servicio");
 			$('#sp_modelPartISRPR').text("Modelo, Marca y N\u00famero de parte");
 			$('#sp_observationsISRPR').text("Observaciones y/o ligas de anexos como fotos");
+
+			var tickLinkTemplate = "${pageContext.request.contextPath}/ticketDetail?ticketNumber=";
+			var servOLinkTemplate = "${pageContext.request.contextPath}/osDetail/show.do?serviceOrderId=0&serviceOrderNumber=";
+			var val = "${ticketDetail.ticketISRPR}";
+			var link = "<a href='LINK'>TEXT</a>";
+			if(val != "" && val != "NA" && val != "N/A"){
+				if(isNaN(val.substring(0,2))){
+					link = link.replace("LINK", servOLinkTemplate + val).replace("TEXT", val);
+				}
+				else{
+					link = link.replace("LINK", tickLinkTemplate + val).replace("TEXT", val);
+				}
+				$("#txt_ticketISRPR").html(link);
+			}
+			else{
+				$("#txt_ticketISRPR").html(val);
+			}
+			
 
 		}
 		if (serviceTypeId === 14) {
@@ -680,7 +698,7 @@
 							</tr>
 							<tr id='tr_ticketISRPR'>
 								<td><span id='sp_ticketISRPR'>Datos Adicionales 1</span></td>
-								<td colspan="5"><textarea id='txt_ticketISRPR' style='width: 100%; height: 100%;' rows='3' >${ticketDetail.ticketISRPR}</textarea></td>
+								<td colspan="5"><span id='txt_ticketISRPR'></span></td>
 							</tr>
 							<tr id='tr_modelPartISRPR'>
 								<td><span id='sp_modelPartISRPR'>Datos Adicionales 1</span></td>
@@ -906,7 +924,7 @@
 												<button class="searchButton" onclick="$('#closeConfirm').dialog('open');">Cerrar Requisicion</button>
 											</td>
 										</c:if>
-										<c:if test="${ticketDetail.statusId != 4 && ticketDetail.userCanClose == true}">
+										<c:if test="${ticketDetail.statusId != 4 && ticketDetail.userCanCancel == true}">
 											<td>
 												<button class="searchButton" onclick="$('#cancelConfirm').dialog('open');">Cancelar Requisicion</button>
 											</td>

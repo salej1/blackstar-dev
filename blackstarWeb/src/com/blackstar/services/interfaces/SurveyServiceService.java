@@ -16,4 +16,5 @@ public interface SurveyServiceService {
 	List<JSONObject> getAllSurveyServiceList();
 	List<JSONObject> getLimitedSurveyServiceList(String user);
 	List<String> getSurveyLinkedServices(Integer surveyServiceId);
+	void flagSurveyService(Integer surveyServiceId, Integer flag);
 }

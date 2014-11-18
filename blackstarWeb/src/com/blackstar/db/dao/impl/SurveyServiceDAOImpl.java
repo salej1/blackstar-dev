@@ -139,4 +139,13 @@ public class SurveyServiceDAOImpl extends AbstractDAO implements SurveyServiceDA
 		return retVal;
 	}
 
+
+	@Override
+	public void flagSurveyService(Integer surveyServiceId, Integer flag) {
+		String sql = "CALL FlagSurveySuggestion(?,?)";
+		
+		getJdbcTemplate().update(sql, new Object[]{surveyServiceId, flag});
+		
+	}
+
 }

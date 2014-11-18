@@ -10,7 +10,14 @@ public class TicketTeamDTO {
   private String workerRoleTypeName;
   private Integer blackstarUserId;
   private String blackstarUserName;
-  private Date assignedDate;
+  private String userEmail;
+  public String getUserEmail() {
+	return userEmail;
+}
+public void setUserEmail(String userEmail) {
+	this.userEmail = userEmail;
+}
+private Date assignedDate;
   
   public Integer getId() {
 	return id;

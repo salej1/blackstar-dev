@@ -21,6 +21,7 @@ public class SurveyService {
 	private String reasonUniform;	
 	private Integer score;
 	private String suggestion;
+	private Integer suggestionFlag;
 	private String sign;
 	private String questionTreatment;
 	private Date created;
@@ -174,6 +175,12 @@ public class SurveyService {
 	}
 	public void setSurveyServiceId(Integer surveyServiceId) {
 		this.surveyServiceId = surveyServiceId;
+	}
+	public Integer getSuggestionFlag() {
+		return suggestionFlag;
+	}
+	public void setSuggestionFlag(Integer suggestionFlag) {
+		this.suggestionFlag = suggestionFlag;
 	}
 	
 	

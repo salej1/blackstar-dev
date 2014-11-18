@@ -102,8 +102,7 @@ public class InternalTicketSurveyController extends AbstractController {
 	try {
 		 ticketId = internalTicketsService.getTicketId(ticketNumber);
 		 if(ticketId != null && ticketId > 0){
-			 service.insertSurvey(ticketId, evaluation, observations
-					                               , marcaTemporal);
+			 service.insertSurvey(ticketId, ticketNumber, evaluation, observations, marcaTemporal, userSession.getUser().getUserName());
 		 }
 	} catch (Exception e) {
 		 Logger.Log(LogLevel.ERROR,e.getStackTrace()[0].toString(), e);

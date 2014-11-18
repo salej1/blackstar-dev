@@ -102,12 +102,7 @@ public class SurveyServiceServiceImpl extends AbstractService  implements Survey
 		sb.append(surveyService.getReasonUniform());
 		
 		if(sb.toString().length() > 0){
-			String to = "";
-			List<EmployeeDTO> callCenter = udService.getStaff(Globals.GROUP_CALL_CENTER);
-			for(EmployeeDTO emp : callCenter){
-				if(to.length() > 0) to += ", ";
-				to += emp.getEmail();
-			}
+			String to = Globals.GPOSAC_CALL_CENTER_GROUP + "," + Globals.GPOSAC_QA_GROUP;
 			
 			StringBuilder bodySb = new StringBuilder();
 			bodySb.append("<img src='" + Globals.GPOSAC_LOGO_DEFAULT_URL + "'>");
@@ -128,6 +123,12 @@ public class SurveyServiceServiceImpl extends AbstractService  implements Survey
 			String subject = "Comentarios en encuesta de servicio";
 			mail.sendEmail(Globals.GPOSAC_DEFAULT_SENDER, to, subject, bodySb.toString());
 		}
+	}
+
+	@Override
+	public void flagSurveyService(Integer surveyServiceId, Integer flag) {
+		surveyServiceDAO.flagSurveyService(surveyServiceId, flag);
+		
 	}
 
 

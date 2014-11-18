@@ -43,6 +43,8 @@
 -- ---------------------------------------------------------------------------
 -- 30	03/11/2014	SAG 	Se agrega guid
 -- ---------------------------------------------------------------------------
+-- 31 	06/11/2014	SAG 	Se agrega suggestionFlag - 1 Bueno, 0 Malo
+-- ---------------------------------------------------------------------------
 
 use blackstarDb;
 
@@ -55,6 +57,12 @@ BEGIN
 -- -----------------------------------------------------------------------------
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
+
+-- AGREGANDO suggestionFlag a surveyService
+IF(SELECT count(*) FROM information_schema.columns WHERE  table_schema = 'blackstarDb' AND table_name = 'surveyService' AND column_name = 'suggestionFlag' ) = 0 THEN
+	ALTER TABLE blackstarDb.surveyService ADD suggestionFlag INT NULL;
+END IF;
+
 -- AGREGANDO TABLA guid
 IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'guid') = 0 THEN
 		 CREATE TABLE blackstarDb.guid(
@@ -70,8 +78,8 @@ IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blacksta
 -- INCREMENTANDO contact en policy
 ALTER TABLE policy MODIFY contactName VARCHAR(200);
 
--- AGREGANDO INCIDE asignee a followUp
-ALTER TABLE followUp ADD INDEX (asignee);
+-- AGREGANDO INDICE asignee a followUp
+-- ALTER TABLE followUp ADD INDEX (asignee);
 
 -- AGREGANDO NULLS A BOLEANOS DE OS
 -- AA
@@ -378,7 +386,7 @@ ALTER TABLE upsServiceBatteryBank MODIFY manufacturedDateSerial VARCHAR(200);
 	END If;
 
 --	AGREGANDO UNIQUE(serviceOrderNumber) A serviceOrder
-	ALTER TABLE serviceOrder ADD UNIQUE(serviceOrderNumber);
+	-- ALTER TABLE serviceOrder ADD UNIQUE(serviceOrderNumber);
 	
 --	INCREMENTANDO TAMANO DE responsible EN serviceOrder
 	ALTER TABLE serviceOrder MODIFY responsible VARCHAR(400);
@@ -1272,15 +1280,31 @@ DROP PROCEDURE blackstarDb.upgradeSchema;
 --								DeleteBloomTicket
 --								GetSupportBloomTicketComments
 -- -----------------------------------------------------------------------------
--- 03/11/2014				Se agrega:
+-- 55	03/11/2014	SAG		Se agrega:
 --								GetGuid
 --								SaveGuid
+-- -----------------------------------------------------------------------------
+-- 56	06/11/2014	SAG 	Se agrega:		
+--								FlagSurveySuggestion
 -- -----------------------------------------------------------------------------
 
 use blackstarDb;
 
 DELIMITER $$
 
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.FlagSurveySuggestion
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.FlagSurveySuggestion$$
+CREATE PROCEDURE blackstarDb.FlagSurveySuggestion (pSurveyId INT, pFlag INT)
+BEGIN
+
+	UPDATE blackstarDb.surveyService SET
+		suggestionFlag = pFlag
+	WHERE surveyServiceId = pSurveyId;
+
+END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.SaveGuid
@@ -1293,7 +1317,6 @@ BEGIN
 	SELECT pGuid, pExpires;
 
 END$$
-
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetSupportBloomTicketComments
@@ -5557,7 +5580,7 @@ CREATE PROCEDURE blackstarDb.AddserviceOrder (
   policyId int(11) ,
   serviceUnit varchar(10) ,
   serviceDate datetime ,
-  responsible varchar(100) ,
+  responsible varchar(400) ,
   additionalEmployees varchar(400) ,
   receivedBy varchar(100) ,
   serviceComments text,
@@ -5689,7 +5712,8 @@ BEGIN
 		reasonUniform,
 		score,
 		sign,
-		suggestion
+		suggestion,
+		suggestionFlag
 	FROM surveyService 
 	WHERE surveyServiceId = pSurveyServiceId;
 END$$
@@ -6832,6 +6856,8 @@ DELIMITER ;
 -- ---------------------------------------------------------------------------
 -- 5 	03/10/2014	SAG 	Se agrega name a bloomDeliverableTrace
 -- ---------------------------------------------------------------------------
+-- 6 	10/11/2014	SAG 	Se agrega resolverCanClose
+-- ---------------------------------------------------------------------------
 
 use blackstarDb;
 
@@ -6844,6 +6870,11 @@ BEGIN
 -- -----------------------------------------------------------------------------
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
+
+-- Agregando resolverCanClose en bloomServiceType
+	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'bloomServiceType' AND COLUMN_NAME = 'resolverCanClose') = 0  THEN
+		ALTER TABLE bloomServiceType ADD resolverCanClose INT NULL DEFAULT 0;
+	END IF;
 
 -- Agregando name a bloomDeliverableTrace
 	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'bloomDeliverableTrace' AND COLUMN_NAME = 'name') = 0  THEN
@@ -7202,12 +7233,29 @@ DROP PROCEDURE blackstarDb.upgradeBloomSchema;
 -- 32   07/10/2014  SAG   Se modifica:
 --                          GetBloomHistoricalTickets - se agrega opcion 0 - Abiertos y retrasados
 -- ------------------------------------------------------------------------------
+-- 33   17/11/2014  SAG   Se agrega:
+--                          bloomGetTicketsServiceOrdersMixed
+-- ------------------------------------------------------------------------------
 
 use blackstarDb;
 
 
 DELIMITER $$
 
+
+-- -----------------------------------------------------------------------------
+  -- blackstarDb.bloomGetTicketsServiceOrdersMixed
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.bloomGetTicketsServiceOrdersMixed$$
+CREATE PROCEDURE blackstarDb.bloomGetTicketsServiceOrdersMixed()
+BEGIN
+ 
+  SELECT * FROM (
+    SELECT DISTINCT ticketNumber AS label, ticketNumber AS value FROM ticket UNION
+    SELECT DISTINCT serviceOrderNumber AS label, serviceOrderNumber AS value FROM serviceOrder
+  ) A ORDER BY label;
+  
+END$$
 
 -- -----------------------------------------------------------------------------
   -- blackstarDb.bloomTicketAutoclose
@@ -7294,7 +7342,7 @@ FROM ((SELECT *
        LEFT JOIN (SELECT of.officeId refId, of.officeName as officeName 
            FROM office of) AS j2
            ON ticketDetail.officeId = j2.refId
-       LEFT JOIN (SELECT st._id refId, st.name as serviceTypeName 
+       LEFT JOIN (SELECT st._id refId, st.name as serviceTypeName, st.resolverCanClose as resolverCanClose 
            FROM bloomServiceType st) AS j3
            ON ticketDetail.serviceTypeId = j3.refId           
        LEFT JOIN (SELECT sp._id refId, sp.name as statusName 
@@ -7323,6 +7371,7 @@ SELECT
   ticketId AS ticketId,
   workerRoleTypeId AS workerRoleTypeId,
   t.blackstarUserId AS blackstarUserId,
+  u.email AS userEmail,
   assignedDate AS assignedDate
 FROM bloomTicketTeam t
   INNER JOIN blackstarUser u ON t.blackstarUserId = u.blackstarUserId
@@ -8726,6 +8775,13 @@ BEGIN
 
 -- ELIMINANDO ESTATUS EN PROCESO
 DELETE FROM blackstarDb.bloomStatusType WHERE name ='EN PROCESO';
+
+-- Resolver can close
+IF(SELECT count(*) FROM bloomServiceType WHERE resolverCanClose > 0) = 0 THEN
+	UPDATE bloomServiceType SET
+		resolverCanClose = 1 
+	WHERE _id IN(13,15);
+END IF;
 
 -- DeliverableType
 IF(SELECT count(*) FROM blackstarDb.bloomDeliverableType WHERE name = 'Otro') = 0 THEN

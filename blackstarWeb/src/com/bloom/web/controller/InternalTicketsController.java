@@ -555,5 +555,21 @@ public class InternalTicketsController extends AbstractController {
 			Logger.Log(LogLevel.ERROR,e.getStackTrace()[0].toString(), e);
 		}
 	}
+	
+	@RequestMapping(value = "/getTicketsServiceOrdersMixed.do", method = RequestMethod.GET, produces = "application/json")
+	@ResponseBody String getTicketsServiceOrdersMixed() {
+		String retVal = "";
+		
+		try {
+			retVal = internalTicketsService.getTicketServiceOrdersMixed();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			Logger.Log(LogLevel.ERROR,e.getStackTrace()[0].toString(), e);
+		}
+
+		return retVal;
+	}
+
 
 }

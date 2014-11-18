@@ -43,6 +43,8 @@
 -- ---------------------------------------------------------------------------
 -- 30	03/11/2014	SAG 	Se agrega guid
 -- ---------------------------------------------------------------------------
+-- 31 	06/11/2014	SAG 	Se agrega suggestionFlag - 1 Bueno, 0 Malo
+-- ---------------------------------------------------------------------------
 
 use blackstarDb;
 
@@ -55,6 +57,12 @@ BEGIN
 -- -----------------------------------------------------------------------------
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
+
+-- AGREGANDO suggestionFlag a surveyService
+IF(SELECT count(*) FROM information_schema.columns WHERE  table_schema = 'blackstarDb' AND table_name = 'surveyService' AND column_name = 'suggestionFlag' ) = 0 THEN
+	ALTER TABLE blackstarDb.surveyService ADD suggestionFlag INT NULL;
+END IF;
+
 -- AGREGANDO TABLA guid
 IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'guid') = 0 THEN
 		 CREATE TABLE blackstarDb.guid(
@@ -70,8 +78,8 @@ IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blacksta
 -- INCREMENTANDO contact en policy
 ALTER TABLE policy MODIFY contactName VARCHAR(200);
 
--- AGREGANDO INCIDE asignee a followUp
-ALTER TABLE followUp ADD INDEX (asignee);
+-- AGREGANDO INDICE asignee a followUp
+-- ALTER TABLE followUp ADD INDEX (asignee);
 
 -- AGREGANDO NULLS A BOLEANOS DE OS
 -- AA
@@ -378,7 +386,7 @@ ALTER TABLE upsServiceBatteryBank MODIFY manufacturedDateSerial VARCHAR(200);
 	END If;
 
 --	AGREGANDO UNIQUE(serviceOrderNumber) A serviceOrder
-	ALTER TABLE serviceOrder ADD UNIQUE(serviceOrderNumber);
+	-- ALTER TABLE serviceOrder ADD UNIQUE(serviceOrderNumber);
 	
 --	INCREMENTANDO TAMANO DE responsible EN serviceOrder
 	ALTER TABLE serviceOrder MODIFY responsible VARCHAR(400);

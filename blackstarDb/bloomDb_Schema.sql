@@ -35,6 +35,8 @@
 -- ---------------------------------------------------------------------------
 -- 5 	03/10/2014	SAG 	Se agrega name a bloomDeliverableTrace
 -- ---------------------------------------------------------------------------
+-- 6 	10/11/2014	SAG 	Se agrega resolverCanClose
+-- ---------------------------------------------------------------------------
 
 use blackstarDb;
 
@@ -47,6 +49,11 @@ BEGIN
 -- -----------------------------------------------------------------------------
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
+
+-- Agregando resolverCanClose en bloomServiceType
+	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'bloomServiceType' AND COLUMN_NAME = 'resolverCanClose') = 0  THEN
+		ALTER TABLE bloomServiceType ADD resolverCanClose INT NULL DEFAULT 0;
+	END IF;
 
 -- Agregando name a bloomDeliverableTrace
 	IF (SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'bloomDeliverableTrace' AND COLUMN_NAME = 'name') = 0  THEN

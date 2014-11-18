@@ -23,7 +23,7 @@ public class InternatTicketsKPIServiceImpl extends AbstractService
   public List<Chart> getTicketByOfficeKPI(){
 	List<Chart> charts = new ArrayList<Chart>();
 	Chart chart = new Chart();
-	chart.setTitle("TICKETS POR OFICINA");
+	chart.setTitle("Requisiciones por Oficina");
 	chart.setIs3d(true);
 	chart.setType("pie");
 	chart.setData(dao.getTicketByOfficeKPI().toString().replaceAll("\"", "'"));
@@ -34,7 +34,7 @@ public class InternatTicketsKPIServiceImpl extends AbstractService
   public List<Chart> getTicketByAreaKPI(){
 	List<Chart> charts = new ArrayList<Chart>();
 	Chart chart = new Chart();
-	chart.setTitle("TICKETS POR AREA");
+	chart.setTitle("Requisiciones por Area solicitante");
 	chart.setIs3d(true);
 	chart.setType("donut");
 	chart.setData(dao.getTicketByAreaKPI().toString().replaceAll("\"", "'"));
@@ -45,7 +45,7 @@ public class InternatTicketsKPIServiceImpl extends AbstractService
   public List<Chart> getTicketByDayKPI(){
 	List<Chart> charts = new ArrayList<Chart>();
 	Chart chart = new Chart();
-	chart.setTitle("TICKETS POR DIA");
+	chart.setTitle("Reauisiciones por Dia");
 	chart.setIs3d(true);
 	chart.setType("line");
 	chart.setData(dao.getTicketByDayKPI().toString().replaceAll("\"", "'"));
@@ -56,7 +56,7 @@ public class InternatTicketsKPIServiceImpl extends AbstractService
   public List<Chart> getTicketByProjectKPI(){
 	List<Chart> charts = new ArrayList<Chart>();
 	Chart chart = new Chart();
-	chart.setTitle("TICKETS POR PROYECTO");
+	chart.setTitle("Requisiciones por Proyecto");
 	chart.setIs3d(true);
 	chart.setType("bar");
 	chart.setData(dao.getTicketByProjectKPI().toString().replaceAll("\"", "'"));
@@ -67,7 +67,7 @@ public class InternatTicketsKPIServiceImpl extends AbstractService
   public List<Chart> getTicketByServiceAreaKPI(){
 	List<Chart> charts = new ArrayList<Chart>();
 	Chart chart = new Chart();
-	chart.setTitle("TICKETS POR AREA / TIPO DE SOLICITUD");
+	chart.setTitle("Requisiciones por Area y Tipo");
 	chart.setIs3d(true);
 	chart.setType("area");
 	chart.setData(dao.getTicketByServiceAreaKPI().toString().replaceAll("\"", "'"));

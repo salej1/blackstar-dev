@@ -23,6 +23,7 @@ public class SurveyServiceDTO {
 	private String reasonUniform;	
 	private Integer score;
 	private String suggestion;	
+	private Integer suggestionFlag;
 	private String sign;
 	private String questionTreatment;
 	private Date created;
@@ -36,6 +37,7 @@ public class SurveyServiceDTO {
 	public SurveyServiceDTO(){}
 	
 	public SurveyServiceDTO(SurveyService source){
+		this.surveyServiceId = source.getSurveyServiceId();
 		this.company = source.getCompany();
 		this.name = source.getName();
 		this.email = source.getEmail();	
@@ -51,6 +53,7 @@ public class SurveyServiceDTO {
 		this.reasonUniform = source.getReasonUniform();
 		this.score = source.getScore();
 		this.suggestion = source.getSuggestion();
+		this.suggestionFlag = source.getSuggestionFlag();
 		this.sign = source.getSign();
 		this.questionTreatment = source.getQuestionTreatment();
 		this.created = source.getCreated();
@@ -62,6 +65,7 @@ public class SurveyServiceDTO {
 	}
 	
 	public SurveyServiceDTO(SurveyService source, List<String>servicesList){
+		this.surveyServiceId = source.getSurveyServiceId();
 		this.company = source.getCompany();
 		this.name = source.getName();
 		this.email = source.getEmail();	
@@ -77,6 +81,7 @@ public class SurveyServiceDTO {
 		this.reasonUniform = source.getReasonUniform();
 		this.score = source.getScore();
 		this.suggestion = source.getSuggestion();
+		this.suggestionFlag = source.getSuggestionFlag();
 		this.sign = source.getSign();
 		this.questionTreatment = source.getQuestionTreatment();
 		this.created = source.getCreated();
@@ -250,6 +255,14 @@ public class SurveyServiceDTO {
 
 	public void setSurveyServiceId(Integer surveyServiceId) {
 		this.surveyServiceId = surveyServiceId;
+	}
+
+	public Integer getSuggestionFlag() {
+		return suggestionFlag;
+	}
+
+	public void setSuggestionFlag(Integer suggestionFlag) {
+		this.suggestionFlag = suggestionFlag;
 	}
 	
 }

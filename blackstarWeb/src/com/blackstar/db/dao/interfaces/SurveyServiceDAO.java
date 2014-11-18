@@ -17,4 +17,5 @@ public interface SurveyServiceDAO {
 	List<JSONObject> getLimitedSurveyServiceList(String user);
 	void LinkSurveyServiceOrder(String order, Integer surveyServiceId, String modifiedBy, String user);
 	List<Serviceorder> getLinkedServiceOrderList(Integer surveyServiceId);
+	void flagSurveyService(Integer surveyServiceId, Integer flag);
 }
