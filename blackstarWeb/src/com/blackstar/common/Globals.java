@@ -73,8 +73,8 @@ public class Globals {
 	  }
 	  
 	  // Google 
-	  public static final String GOOGLE_DRIVE_URL_PREFIX = "https://docs.google.com/a/gposac.com.mx/viewer?a=v&pid=explorer&srcid=";
-	  public static final String GOOGLE_DRIVE_URL_SUFIX = ""; //"/edit";
+	  public static final String GOOGLE_DRIVE_URL_PREFIX = "https://docs.google.com/a/gposac.com.mx/file/d/";
+	  public static final String GOOGLE_DRIVE_URL_SUFIX = "/edit";
 	  public static final String GOOGLE_LOGOUT_URL = "https://www.google.com/accounts/Logout";
 	  public static final String GOOGLE_CONTEXT_URL = "http://gposac-blackstar-pro.appspot.com";
 	  
