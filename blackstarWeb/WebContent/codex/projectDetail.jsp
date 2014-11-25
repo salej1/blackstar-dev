@@ -423,7 +423,7 @@
                            <table>
 							  <tr>
 								<td  style="width:140px">No. Cedula</td>
-								<td><form:input type="text" path="projectNumber" readOnly="true" style="width:100%"/></td>
+								<td><form:input type="text" path="projectNumber" style="width:100%" class="lockOnDetail"/></td>
 								<td style="width:120px">Estatus</td>
 								<td><form:input type="text" path="statusDescription" readOnly="true" style="width:95%"/></td>
 							  </tr>
@@ -444,7 +444,7 @@
 							  </tr>
 								<td>Proyecto:</td>
 								<td>
-									<form:select items="${costCenterList}" itemLabel="costCenter" itemValue="costCenter" path="costCenter" class="lockOnDetail"/>
+									<form:input type="text" path="costCenter" style="width:100%" class="lockOnDetail"/>
 								</td>
 							  </tr>
 							  <tr>
