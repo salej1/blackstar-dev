@@ -15,16 +15,22 @@
 	// Refresh
 	function refreshSoListByOffice(office){
 		// tabla de OS nuevas
-		newServiceOrders_filter(office);
+		if(typeof(newServiceOrders_filter) != "undefined"){
+			newServiceOrders_filter(office);
+		}
 
 		// tabla de OS con pendientes
-		pendingServiceOrders_filter(office);
+		if(typeof(pendingServiceOrders_filter) != "undefined"){
+			pendingServiceOrders_filter(office);	
+		}
 			
 		// historico de tickets
-		serviceOrdersHistory_filter(office);
+		if(typeof(serviceOrdersHistory_filter) != "undefined"){
+			serviceOrdersHistory_filter(office);	
+		}
 		
 		// se guarda la preferencia del usuario
-		$.cookie('blackstar_office_pref', office, { expires: 365 });
+		$.cookie('blackstar_office_pref', office, { expires: 365, path: "/" });
 	}
 
 </script>

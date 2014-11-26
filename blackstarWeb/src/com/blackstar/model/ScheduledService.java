@@ -16,7 +16,19 @@ public class ScheduledService {
 	private String project;
 	private String serviceContact;
 	private String serviceContactEmail;
+	private String officeId;
 	
+	public String getOfficeId() {
+		if(officeId != null){
+			return officeId.substring(0,1);
+		}
+		else{
+			return null;
+		}
+	}
+	public void setOfficeId(String officeId) {
+		this.officeId = officeId;
+	}
 	public int getScheduledServiceId() {
 		return scheduledServiceId;
 	}

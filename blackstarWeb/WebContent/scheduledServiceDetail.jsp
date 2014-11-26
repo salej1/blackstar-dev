@@ -11,6 +11,7 @@
 <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/jquery.datetimepicker.css"/ >
 <script src="${pageContext.request.contextPath}/js/jquery.datetimepicker.js"></script>
 <script src="${pageContext.request.contextPath}/DataTables-1.9.4/media/js/jquery.dataTables.js"></script>
+<script src="${pageContext.request.contextPath}/js/jquery.cookie.js"></script>
 
 <script type="text/javascript">
 	
@@ -56,7 +57,21 @@
 			$("#officeId").val($(this).val().substring(0,1));
 		});
 
-		$("#optOffices option[value='${scheduledService.officeId}']").attr("selected", "true");
+		if("${scheduledService.scheduledServiceId}" > 0){
+			var officeId = "${scheduledService.officeId}";
+			var officeName = "";
+
+			switch(officeId){
+				case "Q": officeName = "QRO"; break;
+				case "M": officeName = "MXO"; break;
+				case "G": officeName = "GDL"; break;
+			}
+			$("#optOffices option[value='" + officeName + "']").attr("selected", "true");
+		}
+		else{
+			$("#optOffices option[value='" + $.cookie('blackstar_office_pref') + "']").attr("selected", "true");
+			$("#officeId").val($.cookie('blackstar_office_pref'));
+		}
 
 		var noPolicy = "${scheduledService.noPolicy}";
 		if(noPolicy == "true"){
@@ -230,7 +245,7 @@
 		$("#equipmentTypeList").bind('change', function(){
 			$("#equipmentTypeId").val($(this).val());
 		});
-		$("#equipmentTypeId").val($("#equipmentTypeList:option:selected").val());
+		$("#equipmentTypeId").val($("#equipmentTypeList option:selected").val());
 	});
 	
 	function processForm(form){
@@ -257,6 +272,17 @@
 					<p></p>
 					<div style="width:630px;">
 						<span>
+							Oficina:
+							<form:input type="hidden" path="officeId" id="officeId"/>
+							<select id="optOffices">
+								<option value="">Todas</option>
+								<c:forEach var="office" items="${offices}">
+									<option value = "${office}">${office}</option>
+								</c:forEach>					
+							</select>
+						</span>
+						
+						<span style="margin-left:10px">
 							Proyecto: 
 							<form:input type="hidden" id="scheduledServiceId" path="scheduledServiceId"/>
 							<select id="optProjects" onchange="filterEquipmentByProject($(this).val());">
@@ -266,10 +292,10 @@
 								</c:forEach>	
 							</select>
 						</span>
-						<span>
+						<span style="margin-left:10px">
 							Fecha y hora: <form:input id="serviceStartDate" path="serviceStartDate" type="text" readonly="readonly" required="true" />
 						</span>
-						<span>
+						<span style="margin-left:10px">
 							Dias: <form:input id="numDays" path="numDays" type="text" style="width:20px;" required="true" />
 						</span>
 						<div>
@@ -373,16 +399,6 @@
 								<tr>
 									<td>Numero de serie</td>
 									<td><form:input type="text" path="serialNumber" style="width:95%"/></td>
-									<td>Oficina</td>
-									<td>
-										<form:input type="hidden" path="officeId" id="officeId"/>
-										<select id="optOffices">
-											<option value="">Todas</option>
-											<c:forEach var="office" items="${offices}">
-												<option value = "${office}">${office}</option>
-											</c:forEach>					
-										</select>
-									</td>
 								</tr>
 								<tr>
 									<td>Proyecto</td>

@@ -28,6 +28,7 @@ public class ScheduledServiceDTO implements Serializable {
 		this.project = schService.getProject();
 		this.serviceContact = schService.getServiceContact();
 		this.serviceContactEmail = schService.getServiceContactEmail();
+		this.officeId = schService.getOfficeId();
 	}
 	
 	public ScheduledServiceDTO(ScheduledService schService, OpenCustomer customer){
@@ -53,7 +54,7 @@ public class ScheduledServiceDTO implements Serializable {
 		this.brand = customer.getBrand();
 		this.model = customer.getModel();
 		this.noPolicy = true;
-		this.officeId = customer.getOfficeId();
+		this.officeId = schService.getOfficeId();
 	}
 	
 	// Scheduled Service
@@ -288,7 +289,12 @@ public class ScheduledServiceDTO implements Serializable {
 	}
 
 	public String getOfficeId() {
-		return officeId;
+		if(officeId != null){
+			return officeId.substring(0,1);
+		}
+		else{
+			return null;
+		}
 	}
 
 	public void setOfficeId(String officeId) {

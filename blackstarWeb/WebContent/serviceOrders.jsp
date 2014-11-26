@@ -21,7 +21,18 @@
 		<div id="content" class="container_16 clearfix">
 			<div>
 				<div>
-					<img src="/img/navigate-right.png"/><a href="/scheduleStatus/show.do">Programa de servicios</a>
+					<script type="text/javascript">
+						function goScheduledServices(){
+							var officePref = $.cookie('blackstar_office_pref');
+							if(officePref != null){
+								window.location = "/scheduleStatus/show.do?office=" + officePref;
+							}
+							else{
+								window.location = "/scheduleStatus/show.do";
+							}
+						}
+					</script>
+					<img src="/img/navigate-right.png"/><a href="" onclick="goScheduledServices(); return false;">Programa de servicios</a>
 				</div>
 			</div>
 			<p><small>&nbsp;</small></p>

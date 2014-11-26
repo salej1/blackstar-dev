@@ -38,11 +38,19 @@ public class ScheduleStatusController extends AbstractController{
 	}
 	
 	@RequestMapping(value= "/show.do", method = RequestMethod.GET)
-	public String show( ModelMap model, @ModelAttribute(Globals.SESSION_KEY_PARAM)  UserSession userSession){
+	public String show( ModelMap model, @RequestParam(required = false) String office, @ModelAttribute(Globals.SESSION_KEY_PARAM)  UserSession userSession){
 		try{
 			// Servicios programados
 			Calendar cal = Calendar.getInstance();
 			printDates(model);
+			
+			// Office selection
+			if(office == null || office.isEmpty()){
+				office = "A";
+			}
+			else{
+				office = office.substring(0,1);
+			}
 			
 			boolean isLimited = (userSession.getUser().getBelongsToGroup().get(Globals.GROUP_CUSTOMER) != null);
 			
@@ -51,7 +59,7 @@ public class ScheduleStatusController extends AbstractController{
 					model.addAttribute("servicesToday" + i.toString(), service.getLimitedScheduledServices(userSession.getUser().getUserEmail(), cal.getTime()));	
 				}
 				else{
-					model.addAttribute("servicesToday" + i.toString(), service.getScheduledServices(cal.getTime()));	
+					model.addAttribute("servicesToday" + i.toString(), service.getScheduledServices(cal.getTime(), office));	
 				}
 				cal.add(Calendar.DATE, 1);
 			}
@@ -60,10 +68,9 @@ public class ScheduleStatusController extends AbstractController{
 				model.addAttribute("futureServices", service.getLimitedFutureServices(userSession.getUser().getUserEmail()));
 			}
 			else{
-				model.addAttribute("futureServices", service.getFutureServices());				
+				model.addAttribute("futureServices", service.getFutureServices(office));				
 			}
 
-			
 			// Redireccionando el request
 			return "scheduleStatus";
 		}

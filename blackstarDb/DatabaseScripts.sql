@@ -45,6 +45,8 @@
 -- ---------------------------------------------------------------------------
 -- 31 	06/11/2014	SAG 	Se agrega suggestionFlag - 1 Bueno, 0 Malo
 -- ---------------------------------------------------------------------------
+-- 32 	24/11/2014	SAG 	Se agreta officeId a ScheduledService
+-- ---------------------------------------------------------------------------
 
 use blackstarDb;
 
@@ -57,6 +59,13 @@ BEGIN
 -- -----------------------------------------------------------------------------
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
+
+
+-- AGREGANDO office a scheduledService
+IF(SELECT count(*) FROM information_schema.columns WHERE  table_schema = 'blackstarDb' AND table_name = 'scheduledService' AND column_name = 'officeId' ) = 0 THEN
+	ALTER TABLE scheduledService ADD officeId CHAR(1) NULL DEFAULT NULL;
+	ALTER TABLE scheduledService ADD CONSTRAINT FK_scheduledService_office FOREIGN KEY (officeId) REFERENCES office(officeId);
+END IF;
 
 -- AGREGANDO suggestionFlag a surveyService
 IF(SELECT count(*) FROM information_schema.columns WHERE  table_schema = 'blackstarDb' AND table_name = 'surveyService' AND column_name = 'suggestionFlag' ) = 0 THEN
@@ -1286,6 +1295,11 @@ DROP PROCEDURE blackstarDb.upgradeSchema;
 -- -----------------------------------------------------------------------------
 -- 56	06/11/2014	SAG 	Se agrega:		
 --								FlagSurveySuggestion
+-- -----------------------------------------------------------------------------
+-- 57 	24/11/2014	SAG 	Se modifica:
+--								UpsertScheduledService
+--								GetFutureServicesSchedule
+--								GetServicesSchedule
 -- -----------------------------------------------------------------------------
 
 use blackstarDb;
@@ -3908,7 +3922,7 @@ END$$
 	-- blackstarDb.GetFutureServicesSchedule
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetFutureServicesSchedule$$
-CREATE PROCEDURE blackstarDb.GetFutureServicesSchedule(pServiceDate DATETIME)
+CREATE PROCEDURE blackstarDb.GetFutureServicesSchedule(pServiceDate DATETIME, pOfficeId CHAR(1))
 BEGIN
 
 	SELECT DISTINCT
@@ -3933,6 +3947,7 @@ BEGIN
 		LEFT OUTER  JOIN blackstarDb.office o ON o.officeId = ifnull(p.officeId, oc.officeId)
 	WHERE s.serviceStatusId = 'P'
 		AND serviceDate >= pServiceDate
+		AND if(pOfficeId = "A", 1 = 1, ifnull(s.officeId, pOfficeId) = pOfficeId)
 	ORDER BY equipmentType;
 	
 END$$
@@ -4443,7 +4458,7 @@ END$$
 	-- blackstarDb.UpsertScheduledService
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.UpsertScheduledService$$
-CREATE PROCEDURE blackstarDb.UpsertScheduledService(pScheduledServiceId INTEGER, pDescription VARCHAR(1000), pOpenCustomerId INT, pProject VARCHAR(100), pServiceContact VARCHAR(100), pServiceContactEmail VARCHAR(100), pCreatedBy VARCHAR(100), pUser VARCHAR(100) )
+CREATE PROCEDURE blackstarDb.UpsertScheduledService(pScheduledServiceId INTEGER, pDescription VARCHAR(1000), pOpenCustomerId INT, pProject VARCHAR(100), pServiceContact VARCHAR(100), pServiceContactEmail VARCHAR(100), pCreatedBy VARCHAR(100), pUser VARCHAR(100), pOfficeId CHAR(1))
 BEGIN
 
 	IF pScheduledServiceId = 0 THEN
@@ -4456,10 +4471,11 @@ BEGIN
 			serviceContactEmail,
 			created,
 			createdBy,
-			createdByUsr
+			createdByUsr,
+			officeId
 		)
 		SELECT 
-			'P', pDescription, pOpenCustomerId, pProject, pServiceContact, pServiceContactEmail, NOW(), pCreatedBy, pUser;
+			'P', pDescription, pOpenCustomerId, pProject, pServiceContact, pServiceContactEmail, NOW(), pCreatedBy, pUser, pOfficeId;
 			
 		SET pScheduledServiceId = LAST_INSERT_ID();
 	ELSE
@@ -4472,7 +4488,8 @@ BEGIN
 				serviceContactEmail = pServiceContactEmail,
 				modified = NOW(),
 				modifiedBy = pCreatedBy,
-				modifiedByUsr = pUser
+				modifiedByUsr = pUser,
+				officeId = pOfficeId
 		WHERE scheduledServiceId = pScheduledServiceId;
 	END IF;
 	
@@ -4623,7 +4640,7 @@ END$$
 	-- blackstarDb.GetServicesSchedule
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetServicesSchedule$$
-CREATE PROCEDURE blackstarDb.GetServicesSchedule(pServiceDate DATETIME)
+CREATE PROCEDURE blackstarDb.GetServicesSchedule(pServiceDate DATETIME, pOfficeId CHAR(1))
 BEGIN
 
 	SELECT DISTINCT
@@ -4645,6 +4662,7 @@ BEGIN
 		LEFT OUTER JOIN blackstarDb.blackstarUser us ON us.email = em.employeeId
 	WHERE s.serviceStatusId = 'P'
 		AND serviceDate > pServiceDate AND serviceDate < DATE_ADD(pServiceDate, INTERVAL 1 DAY)
+		AND if(pOfficeId = "A", 1 = 1, ifnull(s.officeId, pOfficeId) = pOfficeId)
 	ORDER BY equipmentType;
 	
 END$$

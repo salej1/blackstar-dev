@@ -16,14 +16,14 @@ import com.blackstar.model.dto.ScheduledServiceDTO;
 public class SchedulingDAOImpl extends AbstractDAO implements SchedulingDAO {
 
 	@Override
-	public List<JSONObject> getFutureServices() {
+	public List<JSONObject> getFutureServices(String officeId) {
 
 		Calendar cal = Calendar.getInstance();
 		cal.add(Calendar.DATE, 7);
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		String sql = "CALL GetFutureServicesSchedule(?)";
-		List<JSONObject> list = getJdbcTemplate().query(sql, new Object[]{sdf.format(cal.getTime())}, new JSONRowMapper());
+		String sql = "CALL GetFutureServicesSchedule(?,?)";
+		List<JSONObject> list = getJdbcTemplate().query(sql, new Object[]{sdf.format(cal.getTime()), officeId}, new JSONRowMapper());
 		
 		return list;
 	}
@@ -42,12 +42,12 @@ public class SchedulingDAOImpl extends AbstractDAO implements SchedulingDAO {
 	}
 
 	@Override
-	public List<ScheduledServiceDTO> getScheduledServices(Date date) {
+	public List<ScheduledServiceDTO> getScheduledServices(Date date, String office) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		String sql = "CALL GetServicesSchedule(?)";
+		String sql = "CALL GetServicesSchedule(?,?)";
 		
 		@SuppressWarnings("unchecked")
-		List<ScheduledServiceDTO> list = (List<ScheduledServiceDTO>)getJdbcTemplate().query(sql, new Object[]{sdf.format(date)}, getMapperFor(ScheduledServiceDTO.class));
+		List<ScheduledServiceDTO> list = (List<ScheduledServiceDTO>)getJdbcTemplate().query(sql, new Object[]{sdf.format(date), office}, getMapperFor(ScheduledServiceDTO.class));
 		
 		return list;
 	}
@@ -80,7 +80,7 @@ public class SchedulingDAOImpl extends AbstractDAO implements SchedulingDAO {
 
 	@Override
 	public Integer upsertScheduledService(ScheduledService service) {
-		String sql = "CALL UpsertScheduledService(?,?,?,?,?,?,?,?)";
+		String sql = "CALL UpsertScheduledService(?,?,?,?,?,?,?,?,?)";
 		Integer id = getJdbcTemplate().queryForObject(sql, new Object[]{
 				service.getScheduledServiceId(), 
 				service.getDescription(),
@@ -89,7 +89,8 @@ public class SchedulingDAOImpl extends AbstractDAO implements SchedulingDAO {
 				service.getServiceContact(),
 				service.getServiceContactEmail(),
 				service.getModifiedBy() == null? service.getCreatedBy() : service.getModifiedBy(),
-				service.getModifiedByUsr() == null? service.getCreatedByUsr():service.getModifiedByUsr()
+				service.getModifiedByUsr() == null? service.getCreatedByUsr():service.getModifiedByUsr(),
+				service.getOfficeId()
 			}, Integer.class);
 		
 		return id;

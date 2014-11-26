@@ -546,7 +546,7 @@ public class InternalTicketsController extends AbstractController {
 		return "bloom/bloomTicketPage";
 	}
 
-	@RequestMapping(value="/autoProcess.do", method = RequestMethod.GET)
+	@RequestMapping(value="/cron/autoProcess.do", method = RequestMethod.GET)
 	public void bloomAutoProcessTickets(){
 		try{
 			internalTicketsService.autoProcessBloomTickets();

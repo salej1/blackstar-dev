@@ -45,6 +45,8 @@
 -- ---------------------------------------------------------------------------
 -- 31 	06/11/2014	SAG 	Se agrega suggestionFlag - 1 Bueno, 0 Malo
 -- ---------------------------------------------------------------------------
+-- 32 	24/11/2014	SAG 	Se agreta officeId a ScheduledService
+-- ---------------------------------------------------------------------------
 
 use blackstarDb;
 
@@ -57,6 +59,13 @@ BEGIN
 -- -----------------------------------------------------------------------------
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
+
+
+-- AGREGANDO office a scheduledService
+IF(SELECT count(*) FROM information_schema.columns WHERE  table_schema = 'blackstarDb' AND table_name = 'scheduledService' AND column_name = 'officeId' ) = 0 THEN
+	ALTER TABLE scheduledService ADD officeId CHAR(1) NULL DEFAULT NULL;
+	ALTER TABLE scheduledService ADD CONSTRAINT FK_scheduledService_office FOREIGN KEY (officeId) REFERENCES office(officeId);
+END IF;
 
 -- AGREGANDO suggestionFlag a surveyService
 IF(SELECT count(*) FROM information_schema.columns WHERE  table_schema = 'blackstarDb' AND table_name = 'surveyService' AND column_name = 'suggestionFlag' ) = 0 THEN

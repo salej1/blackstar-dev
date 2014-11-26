@@ -38,8 +38,8 @@ public class SchedulingServiceImpl implements SchedulingService {
 	}
 
 	@Override
-	public List<JSONObject> getFutureServices() {
-		return dao.getFutureServices();
+	public List<JSONObject> getFutureServices(String officeId) {
+		return dao.getFutureServices(officeId);
 	}
 
 	@Override
@@ -48,8 +48,8 @@ public class SchedulingServiceImpl implements SchedulingService {
 	}
 
 	@Override
-	public List<ScheduledServiceDTO> getScheduledServices(Date date) {
-		return dao.getScheduledServices(date);
+	public List<ScheduledServiceDTO> getScheduledServices(Date date, String office) {
+		return dao.getScheduledServices(date, office);
 	}
 
 	@Override
@@ -107,6 +107,7 @@ public class SchedulingServiceImpl implements SchedulingService {
 		saveService.setProject(service.getProject());
 		saveService.setServiceContact(service.getServiceContact());
 		saveService.setServiceContactEmail(service.getServiceContactEmail());
+		saveService.setOfficeId(service.getOfficeId());
 		if(service.getScheduledServiceId() != null && service.getScheduledServiceId() > 0){
 			saveService.setModifiedBy(who);
 			saveService.setModifiedByUsr(user);

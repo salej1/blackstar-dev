@@ -83,12 +83,29 @@
 
 		$("#closeConfirm").dialog({
 			autoOpen: false,
-			height: 150,
+			height: 200,
 			width: 380,
 			modal: true,
 			buttons: {
 					"Aceptar": function() {
-						window.location.href = 'close.do?ticketId=${ticketDetail._id}&userId=${ user.blackstarUserId }';
+						var resolverCanClose = "${ticketDetail.resolverCanClose}";
+						var closeRef = 'close.do?ticketId=${ticketDetail._id}&userId=${ user.blackstarUserId }';
+						if(resolverCanClose == 1){
+							var transNumber = $("#transNumber").val();
+							if(transNumber != ""){
+								$.ajax("${pageContext.request.contextPath}/bloom/ticketDetail/addFollowUp.do?ticketId=${ticketDetail._id}&userId=${ user.blackstarUserId }&userToAssign=${user.userEmail}&comment=Se%20cierra%20con%20Traspaso%20No.%20" + transNumber)
+								.done(function(){
+									window.location.href = closeRef;
+								});
+							}
+							else{
+								$(this).dialog("close");
+								$("#transNumberErr").dialog("open");
+							}
+						}
+						else{
+							window.location.href = closeRef;			
+						}
 					},
 				"Cancelar": function() {
 				$( this ).dialog( "close" );
@@ -107,6 +124,19 @@
 				"Cancelar": function() {
 				$( this ).dialog( "close" );
 			}}
+		});
+
+		$("#transNumberErr").dialog({
+			autoOpen: false,
+			height: 200,
+			width: 380,
+			modal: true,
+			buttons: {
+					"Aceptar": function() {
+						$( this ).dialog("close");
+						$( "#closeConfirm" ).dialog("open");
+					}
+			}
 		});
 		
 		
@@ -962,11 +992,18 @@
 
 				<div id="closeConfirm" title="Cerrar Requisicion ${ticketDetail.ticketNumber}?">
 					<p>¿Confirma que dar por cerrada la requisicion ${ticketDetail.ticketNumber}?</p>
+					<c:if test="${ticketDetail.resolverCanClose == 1}">
+						Número de traspaso: <input id="transNumber" style="width:180px"/>
+					</c:if>
 				</div>
 
 				<div id="cancelConfirm" title="Cancelar Requisicion ${ticketDetail.ticketNumber}?">
 					<p>¿Confirma que desea cancelar la requisicion ${ticketDetail.ticketNumber}?</p>
 					<p>Todas las acciones asociadas a la requisición serán suspendidas.</p>
+				</div>
+
+				<div id="transNumberErr" title="Error">
+					<p>Es necesario capturar el número de traspaso para cerrar la requisición</p>
 				</div>
 				
 <!--   ~ CONTENT   -->

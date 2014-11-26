@@ -8,6 +8,7 @@
 <c:import url="header.jsp"></c:import>
 <script src="${pageContext.request.contextPath}/js/dateFormat.js"></script>
 <script src="${pageContext.request.contextPath}/DataTables-1.9.4/media/js/jquery.dataTables.js"></script>
+<script src="${pageContext.request.contextPath}/js/jquery.cookie.js"></script>
 <script>
 	$(function(){
 		// tabla de servicios futuros
@@ -37,8 +38,15 @@
 						{"mRender" : function(data, type, row){return "<a href='/scheduleStatus/scheduledServiceDetail.do?serviceId=" + row.scheduledServiceId + "'>Editar</a>";}, "aTargets" : [7]}
 					]}
 		);	
+
+		$("#optOffices option[value='" + $.cookie('blackstar_office_pref') + "']").attr("selected", "true");
 	});
 
+	function refresh(val){
+		// guardamos la preferencia
+		$.cookie('blackstar_office_pref', val, { expires: 365, path: "/" });
+		window.location = "/scheduleStatus/show.do?office=" + val;
+	}
 </script>
 <body>
 	<!--   CONTENT   -->
@@ -56,6 +64,15 @@
 			<small>&nbsp;</small>
 		</p>
 		<div class="grid_16">
+			<p>Oficina:
+				<select id="optOffices" onchange="refresh($(this).val());">
+					<option value="">Todas</option>
+					<c:forEach var="office" items="${offices}">
+						<option value = "${office}">${office}</option>
+					</c:forEach>					
+				</select>
+			</p>
+
 			<div class="box">
 				<h2>Programa semanal de servicios</h2>
 				<div class="utils"></div>
