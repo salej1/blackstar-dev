@@ -53,6 +53,8 @@
 						  { "mData": "cst" },
 						  { "mData": "startDate" },
 						  { "mData": "endDate" },
+						  { "mData": "time"},
+						  { "mData": "cost"},
 						  { "mData": "contactName"},
 						  { "mData": "contactPhone"}],
 			"fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull){
@@ -98,6 +100,8 @@
 						<th>CST</th>
 						<th>Fecha de inicio</th>
 						<th>Fecha de termino</th>
+						<th>Tiempo dedicado (hr)</th>
+						<th>Costo dedicado ($)</th>
 						<th>Contacto</th>
 						<th>Telefono de contacto</th>
 					</tr>

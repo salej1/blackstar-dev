@@ -2,12 +2,16 @@ package com.blackstar.web.controller;
 
 import java.util.Date;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.blackstar.common.Globals;
@@ -15,12 +19,16 @@ import com.blackstar.db.DAOFactory;
 import com.blackstar.interfaces.IEmailService;
 import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
+import com.blackstar.model.Equipmenttype;
 import com.blackstar.model.OpenCustomer;
 import com.blackstar.model.Policy;
 import com.blackstar.model.Serviceorder;
+import com.blackstar.model.Ticket;
 import com.blackstar.model.UserSession;
 import com.blackstar.model.dto.AirCoServiceDTO;
 import com.blackstar.model.dto.AirCoServicePolicyDTO;
+import com.blackstar.model.dto.PlainServiceDTO;
+import com.blackstar.model.dto.PlainServicePolicyDTO;
 import com.blackstar.services.interfaces.OpenCustomerService;
 import com.blackstar.services.interfaces.ReportService;
 import com.blackstar.services.interfaces.ServiceOrderService;
@@ -253,4 +261,48 @@ public class AirCoServiceController extends AbstractController {
   	gmService.sendEmail(to, "Reporte de servicio de Aire Acondicionado", "Reporte de servicio de Aire Acondicionado", serviceNumber + ".pdf", report);
   }
 
+  @RequestMapping(value = "/remake.do", method = RequestMethod.GET)
+  public @ResponseBody String remake( 
+  		@RequestParam(required = true) int idObject,
+  		@ModelAttribute(Globals.SESSION_KEY_PARAM)  UserSession userSession,
+        ModelMap model, HttpServletRequest req, HttpServletResponse resp) throws Exception
+  {
+	  AirCoServicePolicyDTO serviceDTO = null;
+  	if(userSession.getUser().getUserEmail().equals("portal-servicios@gposac.com.mx")){
+  		try{
+  			Integer serviceOrderId = idObject;
+  			AirCoServiceDTO airCoServiceDTO = service.getAirCoService(serviceOrderId);
+  			if(airCoServiceDTO == null){
+  				airCoServiceDTO = new AirCoServiceDTO();
+  				airCoServiceDTO.setServiceOrderId(serviceOrderId);
+  			}
+  			Serviceorder serviceOrder = this.daoFactory.getServiceOrderDAO().getServiceOrderById(serviceOrderId);
+  			Policy policy = this.daoFactory.getPolicyDAO().getPolicyById(serviceOrder.getPolicyId());
+  			Equipmenttype equipType;
+  			if(policy != null && policy.getPolicyId() > 0){
+  				equipType = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
+  				serviceDTO = new AirCoServicePolicyDTO(policy, serviceOrder,  airCoServiceDTO);
+  				model.addAttribute("hasPolicy", true);
+  			}
+  			else if(serviceOrder.getOpenCustomerId() > 0){
+  				OpenCustomer oc = ocService.GetOpenCustomerById(serviceOrder.getOpenCustomerId());
+  				serviceDTO = new AirCoServicePolicyDTO(oc, serviceOrder, airCoServiceDTO);
+  				model.addAttribute("hasPolicy", false);
+  			}
+
+  			byte [] report = rpService.getAirCoReport(serviceDTO);
+  			saveReport(serviceOrder.getServiceOrderId(), report);
+
+  			return "OK";
+  		}
+  		catch(Exception e){
+  			Logger.Log(LogLevel.FATAL, e.getStackTrace()[0].toString(), e);
+  			model.addAttribute("errorDetails", e.getMessage() + " - " + e.getStackTrace()[0].toString());
+  			return "Fail";
+  		}
+  	}
+  	else{
+  		return "Not allowed";
+  	}
+  }
 }

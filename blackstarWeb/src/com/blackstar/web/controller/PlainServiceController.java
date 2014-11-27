@@ -348,23 +348,12 @@ public class PlainServiceController extends AbstractController {
 	    	gmService.sendEmail(to, osNumber, content, osNumber + ".pdf", report);
 	    	
 	    }
-	    
-	    private void callCenterLink(PlainServicePolicyDTO serviceOrder){
-	    	String who = serviceOrder.getResponsible().split(";")[0];
-	    	StringBuilder asignee = new StringBuilder();
-	    	String message = "Orden de servicio creada";
-	    	
-	    	AddFollowUpController.AssignServiceOrder(serviceOrder.getServiceOrderId(), Utils.noCommas(asignee.toString()), who, message);
-	    }
-	    
+	    	    
 	    private void commit(PlainServicePolicyDTO serviceOrder, String userEmail) throws Exception {
 	      byte [] report = rpService.getGeneralReport(serviceOrder);
 	      saveReport(serviceOrder.getServiceOrderId(), report);
 	      sendNotification(userEmail + "," + serviceOrder.getReceivedByEmail(), report, serviceOrder.getServiceOrderNumber());
 	      // enviar email a Call Center en caso de tener ticket asociado
-	      if(serviceOrder.getTicketNumber() != null && !serviceOrder.getTicketNumber().equals("")){
-	    	  callCenterLink(serviceOrder);
-	      }
 	    }
 	    
 	    @RequestMapping(value = "/loadOs.do", method = RequestMethod.POST)

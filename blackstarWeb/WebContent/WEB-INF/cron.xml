@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <cronentries>
   <cron>
-    <url>/bloom/autoProcess.do</url>
+    <url>/bloom/cron/autoProcess.do</url>
     <description>Closes old resolved tickets</description>
     <schedule>every day 18:00</schedule>
   </cron>

@@ -391,46 +391,43 @@ END$$
 DROP PROCEDURE IF EXISTS blackstarDb.GetProjectsKPI$$
 CREATE PROCEDURE blackstarDb.GetProjectsKPI (pProject VARCHAR(100), pStartDate DATETIME, pEndDate DATETIME)
 BEGIN
-	IF pProject = 'All' THEN
+	
+	SELECT * FROM (
 		SELECT 
-			p.project AS project,
-			o.officeName AS officeName,
-			pt.policyType AS warranty,
-			ifnull(p.customerContract, '') AS contract,
-			ifnull(p.customer, '') AS customer,
-			ifnull(p.finalUser, '') AS finalUser,
-			ifnull(p.cst, '') AS cst,
-			p.startDate AS startDate,
-			p.endDate AS endDate,
-			ifnull(p.contactName, '') AS  contactName,
-			ifnull(p.contactPhone, '') AS contactPhone
-		FROM policy p 
-			INNER JOIN office o ON p.officeId = o.officeId
-			INNER JOIN policyType pt ON p.policyTypeId = pt.policyTypeId
-		WHERE NOT (p.startDate >= pEndDate OR p.endDate <= pStartDate)
-		GROUP BY project
-		ORDER BY officeName, project;
-	ELSE
-		SELECT 
-			p.project AS project,
-			o.officeName AS officeName,
-			pt.policyType AS warranty,
-			ifnull(p.customerContract, '') AS contract,
-			ifnull(p.customer, '') AS customer,
-			ifnull(p.finalUser, '') AS finalUser,
-			ifnull(p.cst, '') AS cst,
-			p.startDate AS startDate,
-			p.endDate AS endDate,
-			ifnull(p.contactName, '') AS  contactName,
-			ifnull(p.contactPhone, '') AS contactPhone
-		FROM policy p 
-			INNER JOIN office o ON p.officeId = o.officeId
-			INNER JOIN policyType pt ON p.policyTypeId = pt.policyTypeId
-		WHERE NOT (p.startDate >= pEndDate OR p.endDate <= pStartDate)
-			AND p.project = pProject
-		GROUP BY project
-		ORDER BY officeName, project;
-	END IF;
+				p.project AS project,
+				o.officeName AS officeName,
+				pt.policyType AS warranty,
+				ifnull(p.customerContract, '') AS contract,
+				ifnull(p.customer, '') AS customer,
+				ifnull(p.finalUser, '') AS finalUser,
+				ifnull(p.cst, '') AS cst,
+				p.startDate AS startDate,
+				p.endDate AS endDate,
+				ifnull(p.contactName, '') AS  contactName,
+				ifnull(p.contactPhone, '') AS contactPhone
+			FROM policy p 
+				INNER JOIN office o ON p.officeId = o.officeId
+				INNER JOIN policyType pt ON p.policyTypeId = pt.policyTypeId
+			WHERE NOT (p.startDate >= pEndDate OR p.endDate <= pStartDate)
+				AND if(pProject = 'ALL', 1 = 1, p.project = pProject)
+			GROUP BY project
+	) data 
+		INNER JOIN (
+			SELECT 
+				coalesce(p.project, c.project) AS project2,
+				sum(TIMESTAMPDIFF(HOUR, serviceDate, serviceEndDate)) AS time,
+				sum(TIMESTAMPDIFF(HOUR, serviceDate, serviceEndDate)) * 20 AS cost
+			FROM serviceOrder o
+				INNER JOIN serviceOrderEmployee e ON o.serviceOrderId = e.serviceOrderId
+				LEFT OUTER JOIN policy p ON p.policyId = o.policyId
+				LEFT OUTER JOIN openCustomer c ON c.openCustomerId = o.openCustomerId
+			WHERE serviceDate IS NOT NULL 
+				AND serviceEndDate IS NOT NULL
+			AND ifnull(employeeId, '') != ''
+			GROUP BY project2
+		) times ON data.project = times.project2
+	ORDER BY officeName, data.project;
+
 END$$
 
 -- -----------------------------------------------------------------------------
