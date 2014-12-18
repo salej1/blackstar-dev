@@ -33,17 +33,6 @@ CREATE TABLE IF NOT EXISTS blackstarDb.cst(
   -- FOREIGN KEY(officeId) REFERENCES office(officeId)
 )ENGINE=INNODB;
 
-CREATE TABLE IF NOT EXISTS blackstarDb.location(
-  _id INT NOT NULL AUTO_INCREMENT,
-  zipCode VARCHAR(20) NOT NULL,
-  country TEXT NOT NULL,
-  state TEXT NOT NULL,
-  municipality TEXT NOT NULL,
-  city TEXT,
-  neighborhood TEXT NOT NULL,
-  PRIMARY KEY (_id)
-)ENGINE=INNODB;
-
 CREATE TABLE IF NOT EXISTS blackstarDb.codexClientType(
   _id INT NOT NULL,
   name VARCHAR(100) NOT NULL,

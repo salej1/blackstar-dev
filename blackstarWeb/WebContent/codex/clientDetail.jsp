@@ -22,6 +22,21 @@
 	
 	
 	<script type="text/javascript">
+		$(function(){
+			$("#errMsg").dialog({
+				modal: true,
+				autoOpen: false,
+				resizable: false,
+				height: 140,
+				width: 350,
+			    buttons: {
+			    	Aceptar: function() {
+			        	$( this ).dialog( "close" );
+        			}
+        		}
+			});
+		});
+
 	   function checkZipCode(evt) {
            var theEvent = evt || window.event;
            var key = theEvent.keyCode || theEvent.which;
@@ -75,8 +90,38 @@
         }
 	   
 	   function validate(){
-		   
+
+	   		// name
+	   		var name = $("#corporateName").val();
+	   		if(name == ""){
+	   			$("#errMsg").html("Por favor ingrese la Razón Social del prospecto");
+	   			$("#errMsg").dialog("open");
+	   			return false;
+	   		}
+
+	   		name = $("#tradeName").val();
+	   		if(name == ""){
+	   			$("#errMsg").html("Por favor ingrese el Nombre Comercial del prospecto");
+	   			$("#errMsg").dialog("open");
+	   			return false;
+	   		}
+
+			var classf = $("#clientTypeId").val();
+			if(classf == ""){
+	   			$("#errMsg").html("Por favor seleccione la Clasificacion del prospecto");
+		   		$("#errMsg").dialog('open');
+			 	return false;
+		   }
+
+		   // todo bien
+		   return true;
 	   }
+
+		function save(frm){
+			if(validate()){
+				frm.submit();
+			}
+		}
 
 	</script>
 	
@@ -212,7 +257,7 @@
 							</tr>
 							<tr>
 								<td>Clasificacion</td>
-								<td colspan="2"><form:select path="clientTypeId" name="clientType" id="clientType" style="width:95%;">
+								<td colspan="2"><form:select path="clientTypeId" style="width:95%;">
 								            <option value="">Seleccione</option>
 											<c:forEach var="ss" items="${clientTypes}">
 												<option value="${ss.id}"
@@ -237,11 +282,14 @@
 						</table>
 						<p></p>
 						<div>
-							<button class="searchButton" onclick="submit();">Guardar</button>
+							<button class="searchButton" onclick="save(); return false;">Guardar</button>
 							<button class="searchButton" onclick="window.history.back();">Cancelar</button>
 						</div>
 						</form:form>
 					</div>					
+				</div>
+				<div id="errMsg" title="Datos incompletos">
+					
 				</div>
 				
 <!--   ~ CONTENT COLUMN   -->
