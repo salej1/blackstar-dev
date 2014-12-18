@@ -41,12 +41,7 @@ public class ReportsInternalTicketsController extends AbstractController {
 	private ReportsTicketsService reportsTicketsService;
 	
 	
-	@RequestMapping(value = "/reportStatisticsByAreaSupport.do", method = RequestMethod.GET)
-	public String reportStatisticsByAreaSupport(ModelMap model,
-			@ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession) {
-
-		return "bloom/reportStatisticsByAreaSupport";
-	}	
+	
 	
 
 	@RequestMapping(value = "/reportStatisticsByHelpDesk.do", method = RequestMethod.GET)
@@ -79,14 +74,6 @@ public class ReportsInternalTicketsController extends AbstractController {
 		return "bloom/reportNumberTicketsByArea";
 	}	
 
-	@RequestMapping(value = "/reportUnsatisfactoryTicketsByUserEngineeringService.do", method = RequestMethod.GET)
-	public String reportUnsatisfactoryTicketsByUserEngineeringService(ModelMap model,
-			@ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession) {
-
-		return "bloom/reportUnsatisfactoryTicketsByUserEngineeringService";
-	}
-
-
 	/**
 	 * @return the reportsTicketsService
 	 */
@@ -101,60 +88,6 @@ public class ReportsInternalTicketsController extends AbstractController {
 	public void setReportsTicketsService(ReportsTicketsService reportsTicketsService) {
 		this.reportsTicketsService = reportsTicketsService;
 	}	
-	
-	
-	
-	/**
-	 * lista de registros del reporte.
-	 * @param startCreationDateTicket
-	 * @param endCreationDateTicket
-	 * @return
-	 */
-	@RequestMapping(value = "/getStatisticsByAreaSupport.do", method = RequestMethod.GET, produces = "application/json")
-	@ResponseBody
-	RespuestaJsonBean getStatisticsByAreaSupport(
-			@RequestParam(value = "startCreationDateTicket", required = true) String startCreationDateTicket,
-			@RequestParam(value = "endCreationDateTicket", required = true) String endCreationDateTicket) {
-
-		RespuestaJsonBean response = new RespuestaJsonBean();
-
-		try {
-
-			List<ReportTicketBean> registros = reportsTicketsService.getStatisticsByAreaSupport(startCreationDateTicket, endCreationDateTicket);
-					
-
-			if (registros == null || registros.isEmpty()) {
-				response.setEstatus("preventivo");
-				response.setMensaje("No se encontro datos del reporte tiempo de response por area de apoyo");
-				response.setLista(registros);
-
-			} else {
-				String resumen = "Se encontraron " + registros.size()
-						+ " del reporte";
-				response.setEstatus("ok");
-				response.setLista(registros);
-				response.setMensaje(resumen);
-			}
-
-		} catch (ServiceException e) {
-
-			Logger.Log(LogLevel.ERROR, e.getMessage(), e);
-
-			response.setEstatus("error");
-			response.setMensaje(e.getMessage());
-		} catch (Exception e) {
-
-			Logger.Log(LogLevel.ERROR, e.getMessage(), e);
-
-			response.setEstatus("error");
-			response
-					.setMensaje("Error al obtener datos del reporte. Por favor intente m\u00e1s tarde.");
-		}
-
-		return response;
-	}
-	
-
 	
 	
 	/**
@@ -362,59 +295,5 @@ public class ReportsInternalTicketsController extends AbstractController {
 
 		return response;
 	}
-	
-	
-	
-	/**
-	 * lista de registros del reporte.
-	 * @param startCreationDateTicket
-	 * @param endCreationDateTicket
-	 * @return
-	 */
-	@RequestMapping(value = "/getUnsatisfactoryTicketsByUserEngineeringService.do", method = RequestMethod.GET, produces = "application/json")
-	@ResponseBody
-	RespuestaJsonBean getUnsatisfactoryTicketsByUserEngineeringService(
-			@RequestParam(value = "startCreationDateTicket", required = true) String startCreationDateTicket,
-			@RequestParam(value = "endCreationDateTicket", required = true) String endCreationDateTicket) {
-
-		RespuestaJsonBean response = new RespuestaJsonBean();
-
-		try {
-
-			List<ReportTicketBean> registros = reportsTicketsService.getUnsatisfactoryTicketsByUserEngineeringService(startCreationDateTicket, endCreationDateTicket);
-					
-
-			if (registros == null || registros.isEmpty()) {
-				response.setEstatus("preventivo");
-				response.setMensaje("No se encontro datos del reporte tickets no satisfactorios por Ing. de Servicio");
-				response.setLista(registros);
-
-			} else {
-				String resumen = "Se encontraron " + registros.size()
-						+ " del reporte";
-				response.setEstatus("ok");
-				response.setLista(registros);
-				response.setMensaje(resumen);
-			}
-
-		} catch (ServiceException e) {
-
-			Logger.Log(LogLevel.ERROR, e.getMessage(), e);
-
-			response.setEstatus("error");
-			response.setMensaje(e.getMessage());
-		} catch (Exception e) {
-
-			Logger.Log(LogLevel.ERROR, e.getMessage(), e);
-
-			response.setEstatus("error");
-			response
-			.setMensaje("Error al obtener datos del reporte. Por favor intente m\u00e1s tarde.");
-		}
-
-		return response;
-	}
-	
-	
-	
+		
 }

@@ -1,7 +1,12 @@
 package com.bloom.db.dao;
 
+import java.util.Date;
 import java.util.List;
 
+
+
+
+import org.json.JSONObject;
 
 import com.bloom.common.bean.ReportTicketBean;
 import com.bloom.common.exception.DAOException;
@@ -16,7 +21,7 @@ public interface ReportsTicketsDao {
 	 * @return
 	 * @throws DAOException
 	 */
-	public List<ReportTicketBean> getStatisticsByAreaSupport(String startCreation, String endCreation) throws DAOException;
+	public List<JSONObject> getStatisticsByAreaSupport(Date startCreation, Date endCreation) throws DAOException;
 
 	/**
 	 * estadisticas de tickes en tiempo de atencion
@@ -63,7 +68,7 @@ public interface ReportsTicketsDao {
 	 * @return
 	 * @throws DAOException
 	 */
-	public List<ReportTicketBean> getUnsatisfactoryTicketsByUserEngineeringService(String startCreation, String endCreation)
+	public List<JSONObject> getUnsatisfactoryTicketsByUserEngineeringService(Date startDate, Date endDate)
 			throws DAOException;
 	
 	

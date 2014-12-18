@@ -1,7 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
     
 <script type="text/javascript">
-  $(document).ready(function() {    	  
+  function indServTicketsByOffice_Init() {    	  
 
       google.load('visualization', '1.0', {packages:['corechart'], callback: draw});
       
@@ -24,7 +24,7 @@
     		 data.addRow(row);
          }
          chart = new google.visualization.PieChart(document.getElementById('chart_' + i));
-    	 options = {legend: {position: 'right', alignment: 'center'},
+    	   options = {legend: {position: 'right', alignment: 'center'},
   		       		      chartArea:{left:50,top:10,width:"100%", height:"100%"},
   		       		      is3D: $('#is3d_' + i).val(),
   		        		  pieHole: 0.4,};
@@ -42,7 +42,7 @@
     	console.log(input.replace(/'/g, '"'));
     	return output;
       }
-   });
+   }
  </script>
 
 

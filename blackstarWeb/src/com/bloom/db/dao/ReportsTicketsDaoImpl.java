@@ -5,13 +5,16 @@ import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
+import org.json.JSONObject;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 
 import com.blackstar.db.dao.AbstractDAO;
+import com.blackstar.db.dao.mapper.JSONRowMapper;
 import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
 import com.bloom.common.bean.ReportTicketBean;
@@ -97,49 +100,11 @@ public class ReportsTicketsDaoImpl extends AbstractDAO implements
 		}
 	}
 
-	public List<ReportTicketBean> getStatisticsByAreaSupport(String startCreation, String endCreation)
+	public List<JSONObject> getStatisticsByAreaSupport(Date startCreation, Date endCreation)
 			throws DAOException {
-
-		List<ReportTicketBean> listStatisticsArea = new ArrayList<ReportTicketBean>();
-
-		List<ReportTicketBean> listAreas;
-
-		try {
-
-			listAreas = getJdbcTemplate()
-					.query(String.format(QUERY_SUPPORT_AREAS,startCreation,endCreation),
-							new InternalTicketMapper(
-									"GetBloomSupportAreasWithTickets"));
-
-			for (ReportTicketBean bean : listAreas) {
-				List<ReportTicketBean> listDataArea = getJdbcTemplate().query(
-						String.format(QUERY_STATISTICS_AREA, bean.getValue5(),
-								bean.getValue1(),startCreation,endCreation),
-						new InternalTicketMapper(
-								"GetBloomStatisticsByAreaSupport"));
-
-				ReportTicketBean area;
-				area = listDataArea.get(0);
-				listStatisticsArea.add(area);
-
-			}
-
-			return listStatisticsArea;
-
-		} catch (EmptyResultDataAccessException e) {
-
-			Logger.Log(LogLevel.WARNING, EMPTY_CONSULTA, e);
-			System.out.println("Error => " + e);
-			listStatisticsArea = new ArrayList<ReportTicketBean>();
-
-			return listStatisticsArea;
-
-		} catch (DataAccessException e) {
-			
-			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
-			throw new DAOException(ERROR_CONSULTA, e);
-		}
-
+		String sql = "CALL GetBloomStatisticsByAreaSupport(?,?)";
+		
+		return getJdbcTemplate().query(sql, new Object[]{startCreation, endCreation}, new JSONRowMapper());
 	}
 
 	public List<ReportTicketBean> getStatisticsByHelpDesk(String startCreation, String endCreation) throws DAOException {
@@ -277,36 +242,12 @@ public class ReportsTicketsDaoImpl extends AbstractDAO implements
 
 	}
 
-	public List<ReportTicketBean> getUnsatisfactoryTicketsByUserEngineeringService(String startCreation, String endCreation)
+	public List<JSONObject> getUnsatisfactoryTicketsByUserEngineeringService(Date startDate, Date endDate)
 			throws DAOException {
-
-		List<ReportTicketBean> listData = new ArrayList<ReportTicketBean>();
-
-		try {
-
-			listData = getJdbcTemplate().query(
-					String.format(QUERY_UNSATISFATORY_AREA,
-							INIT_EVALUATION_SATISFACTORY,
-							AREA_ENGINEERING_SERVICE,startCreation,endCreation),
-					new InternalTicketMapper(
-							"GetBloomUnsatisfactoryTicketsByUserByArea"));
-
-		} catch (EmptyResultDataAccessException e) {
-			Logger.Log(LogLevel.WARNING, EMPTY_CONSULTA, e);
-			
-
-			listData = new ArrayList<ReportTicketBean>();
-
-			return listData;
-
-		} catch (DataAccessException e) {
-			System.out.println("Error => " + e);
-			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
-			throw new DAOException(ERROR_CONSULTA, e);
-		}
-
-		return listData;
-
+		
+		String sql = "CALL GetBloomUnsatisfactoryTicketsByUserByArea(?,?)";
+		
+		return getJdbcTemplate().query(sql, new Object[]{startDate, endDate}, new JSONRowMapper());
 	}
 
 }

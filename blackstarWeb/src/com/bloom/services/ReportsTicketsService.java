@@ -1,5 +1,6 @@
 package com.bloom.services;
 
+import java.util.Date;
 import java.util.List;
 
 import com.bloom.common.bean.ReportTicketBean;
@@ -14,7 +15,7 @@ public interface ReportsTicketsService {
 	 * @return
 	 * @throws ServiceException
 	 */
-	public List<ReportTicketBean> getStatisticsByAreaSupport(String startCreationDateTicket, String endCreationDateTicket) throws ServiceException;
+	public String getStatisticsByAreaSupport(Date startDate, Date endDate) throws ServiceException;
 	
 	/**
 	 * Estadisticas de mesa de ayuda.
@@ -62,7 +63,7 @@ public interface ReportsTicketsService {
 	 * @return
 	 * @throws ServiceException
 	 */
-	public List<ReportTicketBean> getUnsatisfactoryTicketsByUserEngineeringService(String startCreationDateTicket, String endCreationDateTicket) throws ServiceException;	
+	public String getUnsatisfactoryTicketsByUserEngineeringService(Date startDate, Date endDate) throws ServiceException;	
 
 
 }

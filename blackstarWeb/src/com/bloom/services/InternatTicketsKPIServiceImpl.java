@@ -36,7 +36,7 @@ public class InternatTicketsKPIServiceImpl extends AbstractService
 	Chart chart = new Chart();
 	chart.setTitle("Requisiciones por Area solicitante");
 	chart.setIs3d(true);
-	chart.setType("donut");
+	chart.setType("pie");
 	chart.setData(dao.getTicketByAreaKPI().toString().replaceAll("\"", "'"));
 	charts.add(chart);
 	return charts;
@@ -67,9 +67,9 @@ public class InternatTicketsKPIServiceImpl extends AbstractService
   public List<Chart> getTicketByServiceAreaKPI(){
 	List<Chart> charts = new ArrayList<Chart>();
 	Chart chart = new Chart();
-	chart.setTitle("Requisiciones por Area y Tipo");
+	chart.setTitle("Requisiciones por Area de apoyo");
 	chart.setIs3d(true);
-	chart.setType("area");
+	chart.setType("pie");
 	chart.setData(dao.getTicketByServiceAreaKPI().toString().replaceAll("\"", "'"));
 	charts.add(chart);
 	return charts;

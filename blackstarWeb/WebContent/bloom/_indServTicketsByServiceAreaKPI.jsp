@@ -23,7 +23,10 @@
     		 row.push(json[j].counter);
     		 data.addRow(row);
          }
-    	  chart = new google.visualization.AreaChart(document.getElementById('chart_' + i));
+    	  chart = new google.visualization.PieChart(document.getElementById('chart_' + i));
+        options = {legend: { position: 'right', alignment: 'center' },
+                   chartArea:{left:50,top:10,width:"100%", height:"100%"},
+                   is3D: $('#is3d_' + i).val()};
     	  chart.draw(data, options);
         }
       } 	

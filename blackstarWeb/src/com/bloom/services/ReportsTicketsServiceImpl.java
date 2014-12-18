@@ -1,5 +1,6 @@
 package com.bloom.services;
 
+import java.util.Date;
 import java.util.List;
 
 import com.blackstar.services.AbstractService;
@@ -16,13 +17,10 @@ public class ReportsTicketsServiceImpl extends AbstractService
   
   
   @Override
-  public List<ReportTicketBean> getStatisticsByAreaSupport(String startCreationDateTicket, String endCreationDateTicket) throws ServiceException {
-  	
-  	startCreationDateTicket = DataTypeUtil.transformDateFormat(startCreationDateTicket,DataTypeUtil.MIN_TIME);
-  	endCreationDateTicket = DataTypeUtil.transformDateFormat(endCreationDateTicket,DataTypeUtil.MAX_TIME);
+  public String getStatisticsByAreaSupport(Date startDate, Date endDate) throws ServiceException {
   	
       try {
-      	return getReportsTicketsDao().getStatisticsByAreaSupport(startCreationDateTicket, endCreationDateTicket);
+      	return getReportsTicketsDao().getStatisticsByAreaSupport(startDate, endDate).toString();
           
       } catch (DAOException e) {
       	//LOGGER.error(ERROR_CONSULTA_CAT, e);
@@ -96,13 +94,10 @@ public class ReportsTicketsServiceImpl extends AbstractService
   
 
   @Override
-  public List<ReportTicketBean> getUnsatisfactoryTicketsByUserEngineeringService(String startCreationDateTicket, String endCreationDateTicket) throws ServiceException {
-  	
-  	startCreationDateTicket = DataTypeUtil.transformDateFormat(startCreationDateTicket,DataTypeUtil.MIN_TIME);
-  	endCreationDateTicket = DataTypeUtil.transformDateFormat(endCreationDateTicket,DataTypeUtil.MAX_TIME);
+  public String getUnsatisfactoryTicketsByUserEngineeringService(Date startDate, Date endDate) throws ServiceException {
   	
       try {
-      	return getReportsTicketsDao().getUnsatisfactoryTicketsByUserEngineeringService(startCreationDateTicket, endCreationDateTicket);
+      	return getReportsTicketsDao().getUnsatisfactoryTicketsByUserEngineeringService(startDate, endDate).toString();
           
       } catch (DAOException e) {
       	//LOGGER.error(ERROR_CONSULTA_CAT, e);

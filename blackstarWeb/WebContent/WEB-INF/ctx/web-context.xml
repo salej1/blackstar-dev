@@ -120,6 +120,7 @@
    
    <bean class="com.bloom.web.controller.InternalTicketsKPIController" parent="abstractController">
       <property name="service" ref="internatTicketsKPIService" />
+      <property name="reportsTicketsService" ref="reportsTicketsService" />
    </bean>
    
    <bean class="com.bloom.web.controller.CatalogController" parent="abstractController">

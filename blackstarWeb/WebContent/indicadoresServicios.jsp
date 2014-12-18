@@ -58,6 +58,8 @@
 		    	 			break;
 		    	 	}
 		    	 });
+
+		    	 $("#content").accordion();
 			});
 
 			 function go(indAction, mode){
@@ -81,7 +83,7 @@
 
 		     function goBloom(indAction){
 				$("a[href*=#]").css({ "color": "#888", "text-decoration":"underline"});
-				var url = "${pageContext.request.contextPath}/bloom/indServicios/" + indAction + ".do?startDate=" + encodeURIComponent(startDateStr) + "&endDate=" + encodeURIComponent(endDateStr);
+				var url = "${pageContext.request.contextPath}/bloom/bloomKpi/" + indAction + ".do?startDate=" + encodeURIComponent(startDateStr) + "&endDate=" + encodeURIComponent(endDateStr);
 				$("#indicatorDetail").load(url, function() {
 					$("#" + indAction).css({ "color": "#800080", "text-decoration":"none"});
 				});
@@ -91,139 +93,138 @@
 	<body>
 
 <!--   CONTENT COLUMN   -->		
-		<div id="content" class="container_16 clearfix">
-		    <div class="box">
-			  <h2>Indicadores de Servicio</h2>
-		    </div>
-				<div>
-					<div id="indFilters">
-					<table>
-						<tr>
-							<td style="width:15%;">
-								Proyecto:
-								<select name="" id="optProjects">
-									<option value="All">Todos</option>
-									<c:forEach var="project" items="${projects}">
-										<option value = "${project}">${project}</option>
-									</c:forEach>	
-								</select>
-							</td>
+		<div id="all" class="container_16 clearfix">
+			<div id="indFilters">
+				<table>
+					<tr>
+						<td style="width:15%;">
+							Proyecto:
+							<select name="" id="optProjects">
+								<option value="All">Todos</option>
+								<c:forEach var="project" items="${projects}">
+									<option value = "${project}">${project}</option>
+								</c:forEach>	
+							</select>
+						</td>
 
-							<td style="width:20%;">
-								Periodo:
-								<select id="dateSelector">
-									<option value="1" selected>Año Actual</option>
-									<option value="2">Mes Actual</option>
-									<option value="3">Rango de fechas</option>
-								</select>
-							</td>
-							<td style="width:33%;">
-								<div id="dateRange">
-									Fecha Inicial
-									<input type="text" id="startDate" readonly/>
-									Fecha final
-									<input type="text" id="endDate" readonly/>
-								</div>
-							</td>
-						</tr>
-					</table>
-				</div>
-				<hr>  
-				<!-- Seccion links para acceso a clientes -->
-				<c:set var="isCustomer" scope="request" value="${user.belongsToGroup['Cliente']}" />
-				<c:choose>
-					<c:when test="${isCustomer == true}">
-						<div>
-							<img src="/img/navigate-right.png"/><a href="#" id="getCharts" onclick="go('getCharts')">Graficas generales</a>
-						</div>
-						<div>
-							<img src="/img/navigate-right.png"/><a href="#" id="getConcurrentFailures" onclick="go('getConcurrentFailures')">Fallas recurrentes</a>
-						</div>
-						<div>
-							<img src="/img/navigate-right.png"/><a href="#" id="getTickets" onclick="go('getTickets')">Tickets</a>
-						</div>
-						<div>
-							<img src="/img/navigate-right.png"/><a href="#" id="getPolicies" onclick="go('getPolicies');">Concentrado polizas</a>
-						</div>
-					</c:when>
-					<c:otherwise>
-						<!-- Seccion links para empleados GPO SAC -->
-						<div>
-							<img src="/img/navigate-right.png"/><a href="#" id="getStatics" onclick="go('getStatics')">Estadisticas</a>
-						</div>
-						<div>
-							<img src="/img/navigate-right.png"/><a href="#" id="getCharts" onclick="go('getCharts')">Graficas generales</a>
-						</div>
-						<div>
-							<img src="/img/navigate-right.png"/><a href="#" id="getMaxReportsByUser" onclick="go('getMaxReportsByUser')">Usuarios que mas reportan</a>
-						</div>
-						<div>
-							<img src="/img/navigate-right.png"/><a href="#" id="getTickets" onclick="go('getTickets')">Tickets</a>
-						</div>
-						<div>
-							<img src="/img/navigate-right.png"/><a href="#" id="getConcurrentFailures" onclick="go('getConcurrentFailures')">Fallas recurrentes</a>
-						</div>
-						<div>
-							<img src="/img/navigate-right.png"/><a href="#" id="getAverage" onclick="go('getAverage')">Promedios</a>
-						</div>
-						<!-- <div>
-							<img src="/img/navigate-right.png"/><a href="#" id="getReportOS" onclick="go('getReportOS')">Reporte Ordenes de servicio</a>
-						</div>
-						<div>
-							<img src="/img/navigate-right.png"/><a href="#" id="getOSResume" onclick="go('getOSResume')">Resumen Ordenes de servicio</a>
-						</div> -->
-						<div>
-							<img src="/img/navigate-right.png"/><a href="#" id="getPolicies" onclick="go('getPolicies');">Concentrado polizas</a>
-							<input type="checkbox" name="includeRenewedPolicies">Incluir renovadas</input>
-						</div>
-						<c:if test="${user.belongsToGroup['Call Center']}">
-							<div>
-								<img src="/img/navigate-right.png"/><a href="#" id="getCharts" onclick="go('getDisplayCharts', 'display')">Display de graficas generales</a>
+						<td style="width:20%;">
+							Periodo:
+							<select id="dateSelector">
+								<option value="1" selected>Año Actual</option>
+								<option value="2">Mes Actual</option>
+								<option value="3">Rango de fechas</option>
+							</select>
+						</td>
+						<td style="width:33%;">
+							<div id="dateRange">
+								Fecha Inicial
+								<input type="text" id="startDate" readonly/>
+								Fecha final
+								<input type="text" id="endDate" readonly/>
 							</div>
-						</c:if>
-						<div>
-							<img src="/img/navigate-right.png"/><a href="#" id="getAverage" onclick="go('getProjects')">Proyectos</a>
-						</div>
-						<div>
-							<img src="/img/navigate-right.png"/><a href="#" id="getAverage" onclick="go('getPolicyExport', 'display')">Exportar Polizas</a>
-						</div>
-						<div>
-							<img src="/img/navigate-right.png"/><a href="#" id="getAverage" onclick="go('getTicketsExport', 'display')">Exportar Tickets</a>
-						</div>
-						<div>
-							<img src="/img/navigate-right.png"/><a href="#" id="getAverage" onclick="go('getSOExport', 'display')">Exportar Ordenes de servicio</a>
-						</div>
-					</c:otherwise>
-				</c:choose>
-			</div>	
-
-			<c:if test="${isCustomer == null}">
-				<!-- Indicadores de Requisiciones -->
-				 <div class="box" style="margin-top:20px;">
-				  <h2>Indicadores de Requisiciones</h2>
-			    </div>
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div id="content">
+				<h3>Indicadores de Servicio</h3>
 				<div>
-					<div>
-						<img src="/img/navigate-right.png"/><a href="#" id="getTicketByUser" onclick="goBloom('getTicketByUser')">Requisiciones por Usuario</a>
-					</div>
-					<div>
-						<img src="/img/navigate-right.png"/><a href="#" id="getTicketByOffice" onclick="goBloom('getTicketByOffice')">Requisiciones por Oficina</a>
-					</div>
-					<div>
-						<img src="/img/navigate-right.png"/><a href="#" id="getTicketByArea" onclick="goBloom('getTicketByArea')">Requisiciones por Area solicitante</a>
-					</div>
-					<div>
-						<img src="/img/navigate-right.png"/><a href="#" id="getTicketByDay" onclick="goBloom('getTicketByDay')">Requisiciones por Dia</a>
-					</div>
-					<div>
-						<img src="/img/navigate-right.png"/><a href="#" id="getTicketByProject" onclick="goBloom('getTicketByProject')">Requisiciones por Proyecto</a>
-					</div>
-					<div>
-						<img src="/img/navigate-right.png"/><a href="#" id="getTicketByServiceAreaKPI" onclick="goBloom('getTicketByServiceAreaKPI')">Requisiciones por Area de apoyo</a>
-					</div>
+					<!-- Seccion links para acceso a clientes -->
+					<c:set var="isCustomer" scope="request" value="${user.belongsToGroup['Cliente']}" />
+					<c:choose>
+						<c:when test="${isCustomer == true}">
+							<div>
+								<img src="/img/navigate-right.png"/><a href="#" id="getCharts" onclick="go('getCharts')">Graficas generales</a>
+							</div>
+							<div>
+								<img src="/img/navigate-right.png"/><a href="#" id="getConcurrentFailures" onclick="go('getConcurrentFailures')">Fallas recurrentes</a>
+							</div>
+							<div>
+								<img src="/img/navigate-right.png"/><a href="#" id="getTickets" onclick="go('getTickets')">Tickets</a>
+							</div>
+							<div>
+								<img src="/img/navigate-right.png"/><a href="#" id="getPolicies" onclick="go('getPolicies');">Concentrado polizas</a>
+							</div>
+						</c:when>
+						<c:otherwise>
+							<!-- Seccion links para empleados GPO SAC -->
+							<div>
+								<img src="/img/navigate-right.png"/><a href="#" id="getStatics" onclick="go('getStatics')">Estadisticas</a>
+							</div>
+							<div>
+								<img src="/img/navigate-right.png"/><a href="#" id="getCharts" onclick="go('getCharts')">Graficas generales</a>
+							</div>
+							<div>
+								<img src="/img/navigate-right.png"/><a href="#" id="getMaxReportsByUser" onclick="go('getMaxReportsByUser')">Usuarios que mas reportan</a>
+							</div>
+							<div>
+								<img src="/img/navigate-right.png"/><a href="#" id="getTickets" onclick="go('getTickets')">Tickets</a>
+							</div>
+							<div>
+								<img src="/img/navigate-right.png"/><a href="#" id="getConcurrentFailures" onclick="go('getConcurrentFailures')">Fallas recurrentes</a>
+							</div>
+							<div>
+								<img src="/img/navigate-right.png"/><a href="#" id="getAverage" onclick="go('getAverage')">Promedios</a>
+							</div>
+							<div>
+								<img src="/img/navigate-right.png"/><a href="#" id="getPolicies" onclick="go('getPolicies');">Concentrado polizas</a>
+								<input type="checkbox" name="includeRenewedPolicies"/>Incluir renovadas
+							</div>
+							<c:if test="${user.belongsToGroup['Call Center']}">
+								<div>
+									<img src="/img/navigate-right.png"/><a href="#" id="getCharts" onclick="go('getDisplayCharts', 'display')">Display de graficas generales</a>
+								</div>
+							</c:if>
+							<div>
+								<img src="/img/navigate-right.png"/><a href="#" id="getAverage" onclick="go('getProjects')">Proyectos</a>
+							</div>
+							<div>
+								<img src="/img/navigate-right.png"/><a href="#" id="getAverage" onclick="go('getPolicyExport', 'display')">Exportar Polizas</a>
+							</div>
+							<div>
+								<img src="/img/navigate-right.png"/><a href="#" id="getAverage" onclick="go('getTicketsExport', 'display')">Exportar Tickets</a>
+							</div>
+							<div>
+								<img src="/img/navigate-right.png"/><a href="#" id="getAverage" onclick="go('getSOExport', 'display')">Exportar Ordenes de servicio</a>
+							</div>
+						</c:otherwise>
+					</c:choose>
 				</div>	
-			</c:if>
+
+				<c:if test="${isCustomer == null}">
+					<!-- Indicadores de Requisiciones -->
+		  		  	<h3>Indicadores de Requisiciones</h3>
+					<div>
+						<div>
+							<img src="/img/navigate-right.png"/><a href="#" id="getTicketByUser" onclick="goBloom('getTicketByUser')">Requisiciones por Usuario</a>
+						</div>
+						<div>
+							<img src="/img/navigate-right.png"/><a href="#" id="getTicketByOffice" onclick="goBloom('getTicketByOffice')">Requisiciones por Oficina</a>
+						</div>
+						<div>
+							<img src="/img/navigate-right.png"/><a href="#" id="getTicketByArea" onclick="goBloom('getTicketByArea')">Requisiciones por Area solicitante</a>
+						</div>
+						<div>
+							<img src="/img/navigate-right.png"/><a href="#" id="getTicketByDay" onclick="goBloom('getTicketByDay')">Requisiciones por Dia</a>
+						</div>
+						<div>
+							<img src="/img/navigate-right.png"/><a href="#" id="getTicketByProject" onclick="goBloom('getTicketByProject')">Requisiciones por Proyecto</a>
+						</div>
+						<div>
+							<img src="/img/navigate-right.png"/><a href="#" id="getTicketByServiceAreaKPI" onclick="goBloom('getTicketByServiceAreaKPI')">Requisiciones por Area de apoyo</a>
+						</div>
+						<div>
+							<img src="/img/navigate-right.png"/><a href="#" id="getTicketStatsByServiceAreaKPI" onclick="goBloom('getTicketStatsByServiceAreaKPI')">Resultados por Area de apoyo</a>
+						</div>
+						<div>
+							<img src="/img/navigate-right.png"/><a href="#" id="getNonSatisfactoryTicketsByUsr" onclick="goBloom('getNonSatisfactoryTicketsByUsr')">Requisiciones no satisfactorias por usuario</a>
+						</div>
+					</div>	
+				</c:if>
+			</div>
 		</div>
-		<div id="indicatorDetail"></div>
+		<div id="indicatorDetail">
+			
+		</div>
 	</body>
-</html>>
+</html>
