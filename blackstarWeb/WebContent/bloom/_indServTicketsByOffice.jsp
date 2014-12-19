@@ -1,7 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
     
 <script type="text/javascript">
-  function indServTicketsByOffice_Init() {    	  
+  $(document).ready(function() {    	  
 
       google.load('visualization', '1.0', {packages:['corechart'], callback: draw});
       
@@ -42,7 +42,7 @@
     	console.log(input.replace(/'/g, '"'));
     	return output;
       }
-   }
+   });
  </script>
 
 

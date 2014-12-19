@@ -92,10 +92,10 @@ function consultingReportData() {
 
 	</script>
 
-	<div id="contentReportInternalTicket" class="container_16 clearfix">
+	<div id="content" class="container_16 clearfix">
 		<div class="grid_16">
 			<div class="box">
-				<h2>Requisiciones no satisfactorios por responsable</h2>
+				<h2>Requisiciones no satisfactorias por responsable</h2>
 				<div class="utils">
 
 				</div>

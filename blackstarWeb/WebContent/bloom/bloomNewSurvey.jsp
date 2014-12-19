@@ -30,7 +30,7 @@
 <!--   CONTENT COLUMN   -->		
 				<div class="grid_16">					
 					<div class="box">
-						<h2>Ticket ${ticketNumber}</h2>
+						<h2>Requisicion ${ticketNumber}</h2>
 						<div class="utils">
 						</div>
 						<form action="/bloom/survey/save.do" id="mainform">

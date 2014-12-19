@@ -30,12 +30,13 @@
 		<table cellpadding="0" cellspacing="0" border="0" class="display" id="dtGridHistoricalTicketsInternos" >
 			<thead>
 				<tr>
-					<th style="width:80px;">Folio</th>
+					<th style="width:40px;">Folio</th>
 					<th>Estatus</th>
 					<th style="width:80px;">Creado</th>
+					<th style="width:80px;">Resuelto</th>
 					<th style="width:100px;">Solicitante</th>
 					<th>Area Solicitante</th>
-					<th style="width:200px;">Tipo</th>
+					<th style="width:180px;">Tipo</th>
 					<th>Fecha Limite</th>
 					<th>Proyecto</th>
 					<th>Oficina</th>
@@ -148,6 +149,7 @@
 							{"mData" : "ticketNumber"}, 
 							{"mData" : "statusDescr"}, 
 							{"mData" : "created"}, 
+							{"mData" : "responseDate"}, 
 							{"mData" : "createdUserName"}, 
 							{"mData" : "petitionerArea"}, 
 							{"mData" : "serviceTypeDescr"}, 

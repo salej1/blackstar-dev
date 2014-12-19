@@ -45,7 +45,7 @@ public class InternatTicketsKPIServiceImpl extends AbstractService
   public List<Chart> getTicketByDayKPI(){
 	List<Chart> charts = new ArrayList<Chart>();
 	Chart chart = new Chart();
-	chart.setTitle("Reauisiciones por Dia");
+	chart.setTitle("Requisiciones por Dia");
 	chart.setIs3d(true);
 	chart.setType("line");
 	chart.setData(dao.getTicketByDayKPI().toString().replaceAll("\"", "'"));

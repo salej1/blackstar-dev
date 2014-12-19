@@ -44,6 +44,7 @@ public class InternalTicketBean implements Serializable {
 	private String createdUserEmail;
 	private Date desiredDate;
 	private String serviceArea;
+	private Date responseDate;
 
 	private String purposeVisitVL;
 	private String purposeVisitVISAS;
@@ -907,6 +908,14 @@ public class InternalTicketBean implements Serializable {
 
 	public void setServiceArea(String serviceArea) {
 		this.serviceArea = serviceArea;
+	}
+
+	public Date getResponseDate() {
+		return responseDate;
+	}
+
+	public void setResponseDate(Date responseDate) {
+		this.responseDate = responseDate;
 	}
 
 

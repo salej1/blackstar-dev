@@ -712,7 +712,10 @@ DROP PROCEDURE IF EXISTS blackstarDb.GetbloomTicketByUserKPI$$
 CREATE PROCEDURE blackstarDb.`GetbloomTicketByUserKPI`()
 BEGIN
 
-SELECT bu.name name, bu.email email, aa.name applicantArea, count(*) counter
+SELECT 
+  bu.name name, 
+  bu.email email, 
+  count(*) counter
 FROM bloomTicket bt, blackstarUser bu, bloomApplicantArea aa
 WHERE bt.applicantUserId = bu.blackstarUserId
       AND bt.applicantAreaId = aa._id
@@ -758,9 +761,14 @@ END$$
 DROP PROCEDURE IF EXISTS blackstarDb.GetbloomTicketByDayKPI$$
 CREATE PROCEDURE blackstarDb.`GetbloomTicketByDayKPI`()
 BEGIN
-  SELECT DATE_FORMAT(created,'%d/%m/%Y') created, count(*) counter
+
+  SELECT 
+    DATE(created) AS created,
+    DATE_FORMAT(created,'%d/%m/%Y') createdStr, 
+    count(*) counter
   FROM bloomTicket
-GROUP BY DATE_FORMAT(created,'%d/%m/%Y');
+GROUP BY DATE(created)
+ORDER BY created;
 END$$
 
 
@@ -943,8 +951,8 @@ BEGIN
       @respTime:=TIMESTAMPDIFF(HOUR, if(t.created < t.responseDate, t.created, t.responseDate), t.responseDate) as respTime, 
       if(@respTime <= (responseTime * 24), 1, 0) as onTime, 
       if(@respTime > (responseTime * 24), 1, 0) as outTime, 
-      if(ifnull(s.evaluation, 5) >= 3, 1, 0) as ok,
-      if(s.evaluation < 3, 1, 0) as notOk
+      if(ifnull(s.evaluation, 1) > 0, 1, 0) as ok,
+      if(s.evaluation < 1, 1, 0) as notOk
     FROM bloomTicket t
       INNER JOIN bloomServiceType y ON y._id = t.serviceTypeId
       INNER JOIN bloomServiceArea a ON y.bloomServiceAreaId = a.bloomServiceAreaId
@@ -1079,9 +1087,9 @@ BEGIN
 	SELECT 
     u.blackstarUserId,
     u.name as name,
-    sum(if(s.evaluation < 5, 1, 0)) as notOk,
+    sum(if(s.evaluation < 1, 1, 0)) as notOk,
     count(*) as total,
-    round(sum(if(s.evaluation < 5, 1, 0))*100/count(*), 1) as ratio
+    round(sum(if(s.evaluation < 1, 1, 0))*100/count(*), 1) as ratio
   FROM bloomSurvey s
     INNER JOIN bloomTicket t ON t._id = s.bloomTicketId
     INNER JOIN bloomTicketTeam tt ON tt.ticketId = t._id
@@ -1089,7 +1097,7 @@ BEGIN
   WHERE tt.workerRoleTypeId = 2
     AND userGroup != 'creator' 
   GROUP BY u.blackstarUserId, u.name
-  ORDER BY ratio DESC;
+  ORDER BY notOk DESC;
 
 END$$
 
@@ -1120,7 +1128,8 @@ BEGIN
       s.name AS statusTicket,
       ti.dueDate AS dueDate,
       ti.desiredDate AS desiredDate,
-      a.bloomServiceArea AS serviceArea
+      a.bloomServiceArea AS serviceArea,
+      ti.responseDate as responseDate
     FROM bloomTicket ti 
       INNER JOIN bloomApplicantArea ba on (ba._id = ti.applicantAreaId) 
       INNER JOIN bloomServiceType st on (st._id = ti.serviceTypeId) 
@@ -1150,7 +1159,8 @@ BEGIN
         s.name AS statusTicket,
         ti.dueDate AS dueDate,
         ti.desiredDate AS desiredDate,
-        a.bloomServiceArea AS serviceArea
+        a.bloomServiceArea AS serviceArea,
+      ti.responseDate as responseDate
       FROM bloomTicket ti 
         INNER JOIN bloomApplicantArea ba on (ba._id = ti.applicantAreaId) 
         INNER JOIN bloomServiceType st on (st._id = ti.serviceTypeId) 
@@ -1180,7 +1190,8 @@ BEGIN
         s.name AS statusTicket,
         ti.dueDate AS dueDate,
         ti.desiredDate AS desiredDate,
-        a.bloomServiceArea AS serviceArea
+        a.bloomServiceArea AS serviceArea,
+        ti.responseDate as responseDate
       FROM bloomTicket ti 
         INNER JOIN bloomApplicantArea ba on (ba._id = ti.applicantAreaId) 
         INNER JOIN bloomServiceType st on (st._id = ti.serviceTypeId) 

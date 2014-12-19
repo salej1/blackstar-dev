@@ -172,6 +172,7 @@ public class InternalTicketsDaoImpl extends AbstractDAO implements InternalTicke
 
 			ticket.setStatusId(rs.getInt("statusId"));
 			ticket.setStatusDescr(rs.getString("statusTicket"));
+			ticket.setResponseDate(rs.getDate("responseDate"));
 
 			return ticket;
 		}

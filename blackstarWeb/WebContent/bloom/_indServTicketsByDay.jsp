@@ -15,7 +15,7 @@
     	for(var i = 0; i< chartsNumber; i ++){
     	  json=pase($('#data_' + i).val());
     	  data = new google.visualization.DataTable();
-    	  data.addColumn('string','created');
+    	  data.addColumn('string','createdStr');
     	  data.addColumn('number','No. de Tickets');
     	  for (var j=0;j<json.length;j++) {
     		 row = [];       
@@ -41,8 +41,8 @@
    });
  </script>
 
+<div id="content" class="container_16 clearfix">
 
-	<div id="content" class="container_16 clearfix">
 	    <c:forEach var="chart" items="${graphics}" varStatus="counter">
 	      <div class="grid_16">
 			  <div class="box">
@@ -55,4 +55,4 @@
 		    </div>
 		  </div>
 	    </c:forEach>
-	</div>
+    </div>

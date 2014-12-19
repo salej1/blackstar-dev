@@ -59,7 +59,13 @@
 		    	 	}
 		    	 });
 
-		    	 $("#content").accordion();
+		    	 $(".links").accordion({
+		    	 	collapsible: true,
+		    	 	active: false,
+		    	 	event: "click mouseover",
+		    	 	icons: false,
+		    	 	heightStyle: "content"
+		    	 });
 			});
 
 			 function go(indAction, mode){
@@ -94,7 +100,7 @@
 
 <!--   CONTENT COLUMN   -->		
 		<div id="all" class="container_16 clearfix">
-			<div id="indFilters">
+			<div id="content">
 				<table>
 					<tr>
 						<td style="width:15%;">
@@ -126,7 +132,7 @@
 					</tr>
 				</table>
 			</div>
-			<div id="content">
+			<div id="content" class="links">
 				<h3>Indicadores de Servicio</h3>
 				<div>
 					<!-- Seccion links para acceso a clientes -->
@@ -222,9 +228,9 @@
 					</div>	
 				</c:if>
 			</div>
-		</div>
-		<div id="indicatorDetail">
-			
+			<div id="indicatorDetail">
+				
+			</div>
 		</div>
 	</body>
 </html>

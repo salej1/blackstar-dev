@@ -23,7 +23,6 @@
 			"aoColumns": [
 						  { "mData": "name" },
 						  { "mData": "email" },
-						  { "mData": "applicantArea" },
 						  { "mData": "counter" }
 					  ],
 		     "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
@@ -50,7 +49,6 @@
 					<tr>
 						<th>Usuario</th>
 						<th>Email</th>
-						<th>Area</th>
 						<th>Numero de Reqs.</th>
 					</tr>
 				</thead>
