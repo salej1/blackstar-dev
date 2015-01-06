@@ -21,6 +21,13 @@
 --							Se agrega turnedCustomerDate a codexClient
 --							Se agrega priceListId a codexEntryItem
 -- ---------------------------------------------------------------------------
+-- 5 	20/12/2014	SAG 	Se cambia sellerId por cstId en codexClient
+-- ---------------------------------------------------------------------------
+-- 6 	23/12/2014	SAG 	Se acepta NULL en anticipo y plazo anticipo
+-- ---------------------------------------------------------------------------
+-- 7	05/01/2015	SAG 	Se agregan qty y unitPrice a codexProjectEntry
+--							Se agrega paymentConditions a codexProject
+-- ---------------------------------------------------------------------------
 
 use blackstarDb;
 
@@ -33,6 +40,29 @@ BEGIN
 -- -----------------------------------------------------------------------------
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
+
+-- AGREGANDO paymentConditions a codexProject
+IF(SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'codexProject' AND COLUMN_NAME = 'paymentConditions') = 0 THEN
+	ALTER TABLE blackstarDb.codexProject ADD paymentConditions TEXT NULL;
+END IF;
+
+-- AGREGANDO qty y unitPrice a codexProjectEntry
+IF(SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'codexProjectEntry' AND COLUMN_NAME = 'qty') = 0 THEN
+	ALTER TABLE blackstarDb.codexProjectEntry ADD qty INT NOT NULL DEFAULT 1;
+	ALTER TABLE blackstarDb.codexProjectEntry ADD unitPrice FLOAT(15,2) NULL;
+END IF;
+
+ALTER TABLE codexPriceProposal MODIFY advance float(15,2) NULL;
+ALTER TABLE codexPriceProposal MODIFY timeLimit int NULL;
+ALTER TABLE codexPriceProposal MODIFY settlementTimeLimit int NULL;
+
+-- CAMBIANDO sellerId
+IF(SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'codexClient' AND COLUMN_NAME = 'sellerId') > 0 THEN
+	ALTER TABLE blackstarDb.codexClient DROP FOREIGN KEY codexClient_ibfk_3;
+	ALTER TABLE blackstarDb.codexClient DROP INDEX sellerId;
+	ALTER TABLE blackstarDb.codexClient CHANGE sellerId cstId INT(11) NULL;
+	ALTER TABLE blackstarDb.codexClient ADD CONSTRAINT FK_codexClient_cst FOREIGN KEY (cstId) REFERENCES cst(cstId);
+END IF;
 
 -- AGREGANDO priceListId a codexEntryItem
 IF(SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'codexEntryItem' AND COLUMN_NAME = 'priceListId') = 0 THEN

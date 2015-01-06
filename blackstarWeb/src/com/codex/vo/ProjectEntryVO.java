@@ -10,6 +10,8 @@ public class ProjectEntryVO {
 	private Integer entryTypeId;
 	private String entryTypeDescription;
 	private String description;
+	private Integer qty;
+	private Float unitPrice;
 	private Float discount;
 	private Double totalPrice;
 	private String comments;
@@ -86,6 +88,22 @@ public class ProjectEntryVO {
 	}
 	public void setEntryTypeDescription(String entryTypeDescription) {
 		this.entryTypeDescription = entryTypeDescription;
+	}
+
+	public Integer getQty() {
+		return qty;
+	}
+
+	public void setQty(Integer qty) {
+		this.qty = qty;
+	}
+
+	public Float getUnitPrice() {
+		return unitPrice;
+	}
+
+	public void setUnitPrice(Float unitPrice) {
+		this.unitPrice = unitPrice;
 	}
 
 }

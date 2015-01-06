@@ -1,8 +1,8 @@
-CREATE DATABASE IF NOT EXISTS blackstarStatic;
+CREATE DATABASE IF NOT EXISTS blackstarConst;
 
-use blackstarStatic;
+use blackstarConst;
 
-CREATE TABLE IF NOT EXISTS blackstarStatic.location(
+CREATE TABLE IF NOT EXISTS blackstarConst.location(
   _id INT NOT NULL AUTO_INCREMENT,
   zipCode VARCHAR(20) NOT NULL,
   country TEXT NOT NULL,
@@ -16,16 +16,16 @@ CREATE TABLE IF NOT EXISTS blackstarStatic.location(
 DELIMITER $$
 
 -- -----------------------------------------------------------------------------
-  -- blackstarStatic.importLocation
+  -- blackstarConst.importLocation
 -- -----------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS blackstarStatic.importLocation$$
-CREATE PROCEDURE blackstarStatic.importLocation()
+DROP PROCEDURE IF EXISTS blackstarConst.importLocation$$
+CREATE PROCEDURE blackstarConst.importLocation()
 BEGIN
 
-	IF(SELECT count(*) FROM blackstarStatic.location) < (SELECT count(*) FROM blackstarDb.location) THEN
-		TRUNCATE TABLE blackstarStatic.location;
+	IF(SELECT count(*) FROM blackstarConst.location) < (SELECT count(*) FROM blackstarDb.location) THEN
+		TRUNCATE TABLE blackstarConst.location;
 	
-		INSERT INTO blackstarStatic.location
+		INSERT INTO blackstarConst.location
 		SELECT 
 			_id,
 			zipCode,
@@ -40,6 +40,6 @@ END$$
 
 CALL importLocation$$
 
-DROP PROCEDURE IF EXISTS blackstarStatic.importLocation$$
+DROP PROCEDURE IF EXISTS blackstarConst.importLocation$$
   
 DELIMITER ;

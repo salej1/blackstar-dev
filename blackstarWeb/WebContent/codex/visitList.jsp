@@ -1,3 +1,7 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ page isELIgnored="false"%>
+
 <script type="text/javascript">
 	
 	// Inicializacion de tabla
@@ -5,8 +9,27 @@
 
 		// Tabla de ordenes de servicio pendientes
 		getVisitList();
+
+		$("#closureDialog").dialog({
+			autoOpen: false,
+			height: 250,
+			width: 400,
+			modal: true,
+			buttons: {
+				"Aceptar": function() {
+					window.location = "${pageContext.request.contextPath}/codex/visit/resolve.do?codexVisitId=" + $("#closingVisitId").val() + "&closureComment=" + $("#closureComment").val();
+					$(this).dialog('close');
+				},
+				"Cancelar": function() {
+					$(this).dialog('close');
+				}}
+		});
 	}	
 	
+	function closeVisit(){
+		$("#closureDialog").dialog('open');
+	}
+
 	function getVisitList(){
 		$.getJSON("/codex/visit/visitListJson.do", function(data){
 			// Inicializacion de tabla de ordenes de servicio con algun pendiente
@@ -29,7 +52,7 @@
 					"aoColumnDefs" : [{"mRender" : function(data, type, row){return "<div><a href='${pageContext.request.contextPath}/codex/visit/show.do?codexVisitId=" + row.codexVisitId + "'>" + data + "</a></div>";}, "aTargets" : [2]},
 									  {"mRender" : function(data, type, row){
 									  		if(row.visitStatusId == "P"){
-										  		return "<div align='center'><a href='${pageContext.request.contextPath}/codex/visit/resolve.do?codexVisitId=" + row.codexVisitId + "'>Visita realizada</a></div>";
+										  		return "<div align='center'><a href='#' onclick='$(\"#closingVisitId\").val(" + row.codexVisitId + "); closeVisit(); return false;'>Visita realizada</a></div>";
 									  		}
 									  		else{
 									  			return "";
@@ -53,14 +76,14 @@
 		<br>				
 
 		<div class="box">
-			<h2>Visitas a clientes</h2>
+			<h2>Visitas de prospección</h2>
 			<div class="utils">
 			</div>
 			<table cellpadding="0" cellspacing="0" border="0" class="display" id="dtVisits">
 				<thead>
 					<tr>
-						<th style="width:200px;">CST</th>
-						<th>Fecha</th>
+						<th style="width:180px;">CST</th>
+						<th style="width:150px;">Fecha</th>
 						<th style="width:350px;">Cliente</th>
 						<th>Estatus</th>
 						<th>Accion</th>
@@ -72,7 +95,11 @@
 			</table>
 		</div>
 	</div>
-
+	<div id="closureDialog" title="Comentario de cierre">
+		Por favor ingrese un comentario de cierre de la visita:
+		<input type="hidden" id="closingVisitId">
+		<textarea name="" id="closureComment" style="margin-top:15px;width:95%" rows="5"></textarea>
+	</div>
 <!--
 	FIN - Seccion tabla de historial de ordenes de servicio 
 -->

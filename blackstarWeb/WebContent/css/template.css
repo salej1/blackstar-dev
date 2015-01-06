@@ -387,3 +387,8 @@ input[type="submit"], input[type="reset"] {
 	padding: 0px;
 	text-align: left;
 }
+
+.total{
+	font-size:12px;
+	font-weight:bold;
+}

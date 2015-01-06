@@ -16,6 +16,8 @@
 		<file name ="codexDb_Schema.sql"/>
 		<file name ="codexDb_StoredProcedures.sql"/>
 		<file name ="codexDb_Data.sql"/>
+
+		<file name ="blackstarConst_CreateSchema.sql"/>
 	</files>
 	<outputs>
 		<output prefix="" suffix="" name="DatabaseScripts.sql"/>

@@ -8,12 +8,14 @@ import java.util.List;
 
 
 
+
 import org.json.JSONObject;
 
 import com.blackstar.db.dao.AbstractDAO;
 import com.blackstar.db.dao.mapper.JSONRowMapper;
 import com.blackstar.model.User;
 import com.codex.db.ClientDAO;
+import com.codex.model.dto.CstDTO;
 import com.codex.vo.ClientOriginTypesVO;
 import com.codex.vo.ClientTypesVO;
 import com.codex.vo.LocationVO;
@@ -61,10 +63,9 @@ public class ClientDAOImpl extends AbstractDAO
   
   
   @Override
-  public List<User> getUsersByGroup(String groupName) {
-	String sqlQuery = "CALL GetUsersByGroup(?)";
-	return (List<User>) getJdbcTemplate().query(sqlQuery,new Object[]{groupName} 
-	                                                , getMapperFor(User.class));
+  public List<CstDTO> getCstList() {
+	String sqlQuery = "CALL GetAllCst()";
+	return (List<CstDTO>) getJdbcTemplate().query(sqlQuery, getMapperFor(CstDTO.class));
   }
   
   @Override
@@ -80,7 +81,7 @@ public class ClientDAOImpl extends AbstractDAO
 	Object [] params = new Object[]{client.getId(),
 			client.getClientTypeId(),
 			client.getClientOriginId(),
-			client.getSellerId(),
+			client.getCstId(),
 			client.isProspect(),
 			client.getRfc(),
 			client.getCorporateName(),

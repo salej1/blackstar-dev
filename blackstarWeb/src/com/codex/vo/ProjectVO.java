@@ -29,6 +29,7 @@ public class ProjectVO {
 	private Float advance;
 	private Integer timeLimit;
 	private Integer settlementTimeLimit;
+	private String paymentConditions;
 	private Integer deliveryTime;
 	private String incoterm;
 	private Double productsNumber;
@@ -50,6 +51,7 @@ public class ProjectVO {
 	private String cstMobile;
 	private String cstEmail;
 	private Integer cstAutoAuth;
+	private String priceProposalNumber;
 	
 	public ProjectVO(){
 		
@@ -316,5 +318,30 @@ public class ProjectVO {
 	public void setDiscountNumber(Double discountNumber) {
 		this.discountNumber = discountNumber;
 	}
-	
+
+	public String getDeliveryTimeDisplay() {
+		if(deliveryTime != null){
+			return String.valueOf(deliveryTime / 7); // dias a semanas
+		}
+		else{
+			return "";
+		}
+	}
+
+	public String getPaymentConditions() {
+		return paymentConditions;
+	}
+
+	public void setPaymentConditions(String paymentConditions) {
+		this.paymentConditions = paymentConditions;
+	}
+
+	public String getPriceProposalNumber() {
+		return priceProposalNumber;
+	}
+
+	public void setPriceProposalNumber(String priceProposalNumber) {
+		this.priceProposalNumber = priceProposalNumber;
+	}
+
 }

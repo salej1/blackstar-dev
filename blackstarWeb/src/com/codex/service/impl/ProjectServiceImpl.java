@@ -221,10 +221,10 @@ public class ProjectServiceImpl extends AbstractService
 	for(String entry : entries){
 		values = entry.split("\\|");
 
-		entryId = dao.upsertProjectEntry(0, project.getId(), Integer.valueOf(values[0])
-				, values[1], Float.valueOf(values[2]), Float.valueOf(values[3])
-				                                                  , values[4]);
-		items = values[6].split("\\^");
+		entryId = dao.upsertProjectEntry(0, project.getId(), Integer.valueOf(values[0]),
+						values[1], Integer.valueOf(values[2]), Float.valueOf(values[3]),
+						Float.valueOf(values[4]),Float.valueOf(values[5]), values[6]);
+		items = values[8].split("\\^");
 		for(String item : items){
 			values = item.split("°");
 			dao.upsertEntryItem(-1, entryId, Integer.valueOf(values[0]), values[1]
@@ -246,10 +246,10 @@ public class ProjectServiceImpl extends AbstractService
 	for(String entry : entries){
 		values = entry.split("\\|");
 
-		entryId = dao.upsertProjectEntry(0, project.getId(), Integer.valueOf(values[0])
-				, values[1], Float.valueOf(values[2]), Float.valueOf(values[3])
-				                                                  , values[4]);
-		items = values[6].split("\\^");
+		entryId = dao.upsertProjectEntry(0, project.getId(), Integer.valueOf(values[0]),
+				values[1], Integer.valueOf(values[2]), Float.valueOf(values[3]),
+				Float.valueOf(values[4]),Float.valueOf(values[5]), values[6]);
+		items = values[8].split("\\^");
 		for(String item : items){
 			values = item.split("°");
 			dao.upsertEntryItem(-1, entryId, Integer.valueOf(values[0]), values[1]
@@ -267,8 +267,8 @@ public class ProjectServiceImpl extends AbstractService
 	for(String entry : entries){
 		values = entry.split("\\|");
 		entryId = Integer.valueOf(values[5]);
-		dao.upsertProjectEntry(entryId, project.getId(), 0, "", 0F, 0F, values[4]);
-		items = values[6].split("\\^");
+		dao.upsertProjectEntry(entryId, project.getId(), 0, "", 0, 0F, 0F, 0F, values[6]);
+		items = values[8].split("\\^");
 		for(String item : items){
 			values = item.split("°");
 			itemId = Integer.valueOf(values[8]);
@@ -288,12 +288,12 @@ public class ProjectServiceImpl extends AbstractService
 
 	  switch(project.getStatusId()){
 	  case 1: 
-		  if(project.getCstAutoAuth() == 1 && project.getTotalProjectNumber() < Globals.PROJECT_AUTH_LIMIT){
+		  if(project.getCstAutoAuth() >= project.getTotalProjectNumber()){
 			  project.setStatusId(project.getStatusId() + 1);
 			  gotoAuthStatus(project);  
 		  }
 		  else{
-			  gotoByAuthStatus(project);
+			  gotoByAuthStatus(project, false);
 		  }
 		  
 		  break;	
@@ -306,14 +306,25 @@ public class ProjectServiceImpl extends AbstractService
 	  }
   }
   
-  private void gotoByAuthStatus(ProjectVO project){
+  @Override
+  public void fallbackStatus(ProjectVO project) throws Exception{
+
+	  gotoNewStatus(project);
+  }
+  
+  private void gotoNewStatus(ProjectVO project){
+	  // STATUS ADVANCE
+	  dao.advanceStatus(project.getId(), 1);
+  }
+  
+  private void gotoByAuthStatus(ProjectVO project, boolean autoAuth){
 	  StringBuilder message = new StringBuilder();
 	  IEmailService mail = EmailServiceFactory.getEmailService();
 
 	  // STATUS ADVANCE
 	  dao.advanceStatus(project.getId(), project.getStatusId() + 1);
-	  
-	  if(project.getTotalProjectNumber() < Globals.PROJECT_AUTH_LIMIT){
+	  	  
+	  if(autoAuth){
 
 		  List<User> to = dao.getSalesManger();
 
@@ -363,9 +374,12 @@ public class ProjectServiceImpl extends AbstractService
   }
     
   private void gotoPricePropStatus(ProjectVO project) throws Exception{
-	  byte[] report = pdfService.getPriceProposalReport(project);
 	  PriceProposalVO priceProposal = priceProposalService
 			  .getProposalFromProject(project);
+	  
+	  project.setPriceProposalNumber(priceProposal.getPriceProposalNumber());
+	  byte[] report = pdfService.getPriceProposalReport(project);
+	  
 	  priceProposalService.insertPriceProposal(priceProposal);
 	  ClientVO client = cDAO.getClientById(project.getClientId());
 
@@ -402,19 +416,8 @@ public String getCSTOffice(String cst) {
 @Override
 public List<String> getIncotermList() {
 	List<String> incs = new ArrayList<String>();
-	incs.add("CFR");
-	incs.add("CIF");
-	incs.add("CIP");
-	incs.add("CPT");
-	incs.add("DAF");
 	incs.add("DDP");
-	incs.add("DDU");
-	incs.add("DEQ");
-	incs.add("DES");
-	incs.add("EXW");
-	incs.add("FAS");
-	incs.add("FCA");
-	incs.add("FBO");
+	incs.add("FOB");
 	
 	return incs;
 }

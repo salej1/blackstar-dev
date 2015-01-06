@@ -49,7 +49,7 @@ public class ClientController extends AbstractController {
 		  client.setId(Integer.valueOf(service.getNextclientId()));
 		  client.setProspect(true);
 		  model.addAttribute("client", client);
-		  model.addAttribute("sellers", service.getUsersByGroup("sysCST"));
+		  model.addAttribute("cstList", service.getCstList());
 		  model.addAttribute("states", service.getAllStates());
 		  model.addAttribute("originTypes", service.getAllOriginTypes());
 		  model.addAttribute("clientTypes", service.getAllClientTypes());
@@ -69,7 +69,7 @@ public class ClientController extends AbstractController {
 	  try{
 		  ClientVO client = service.getClientById(clientId);
 		  model.addAttribute("client", client);
-		  model.addAttribute("sellers", service.getUsersByGroup("sysCST"));
+		  model.addAttribute("cstList", service.getCstList());
 		  model.addAttribute("states", service.getAllStates());
 		  model.addAttribute("originTypes", service.getAllOriginTypes());
 		  model.addAttribute("clientTypes", service.getAllClientTypes());

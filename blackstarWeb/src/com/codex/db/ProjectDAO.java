@@ -41,7 +41,7 @@ public interface ProjectDAO {
 	public List<PaymentTypeVO> getAllPaymentTypes(); 
 	public Integer upsertProjectEntry(Integer entryId, Integer projectId
             , Integer entryTypeId, String description 
-            , Float discount, Float totalPrice
+            , Integer qty, Float unitPrice, Float discount, Float totalPrice
             , String comments);
 	public void upsertEntryItem(Integer itemId, Integer entryId, Integer itemTypeId
                       , String reference, String description , Integer  quantity

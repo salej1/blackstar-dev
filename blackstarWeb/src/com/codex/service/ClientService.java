@@ -3,6 +3,7 @@ package com.codex.service;
 import java.util.List;
 
 import com.blackstar.model.User;
+import com.codex.model.dto.CstDTO;
 import com.codex.vo.ClientOriginTypesVO;
 import com.codex.vo.ClientTypesVO;
 import com.codex.vo.LocationVO;
@@ -13,7 +14,7 @@ public interface ClientService {
   public List<LocationVO> getAllStates();
   public List<ClientTypesVO> getAllClientTypes();
   public List<ClientOriginTypesVO> getAllOriginTypes();
-  public List<User> getUsersByGroup(String groupName);
+  public List<CstDTO> getCstList();
   public String getLocationsJSONByZipCode(String zipCode);
   public void insertClient(ClientVO client);
   public String getNextclientId();

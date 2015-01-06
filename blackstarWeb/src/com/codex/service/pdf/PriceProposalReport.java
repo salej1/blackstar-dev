@@ -43,9 +43,10 @@ public class PriceProposalReport extends AbstractReport {
   
   private void printCover() throws Exception {
 	  
-	  String projectNumber = data.getProjectNumber() + "-1";
+	  drawer.textBlock("Proyecto:", Align.CENTER, 20, 180, 520, false, 12);
+	  drawer.textBlock(data.getProjectNumber(), Align.CENTER, 20, 200, 520, true, 12);
 	  drawer.textBlock("Cotización No.", Align.CENTER, 20, 230, 520, false, 12);
-	  drawer.textBlock(projectNumber, Align.CENTER, 20, 250, 520, true, 12);
+	  drawer.textBlock(data.getPriceProposalNumber(), Align.CENTER, 20, 250, 520, true, 12);
 	  drawer.textBlock("Cliente:", Align.CENTER, 20, 280, 520, false, 10);
 	  drawer.textBlock(data.getClientDescription(), Align.CENTER, 20, 300, 520, true, 12);
 	  drawer.textBlock("Atención:", Align.CENTER, 20, 330, 520, false, 10);
@@ -66,7 +67,7 @@ public class PriceProposalReport extends AbstractReport {
 	  String s = "La información contenida en la totalidad de este documento es clasificada como confidencial y se entrega bajo el entendido de que no será usada o " +
 			  "divulgada, sin el permiso de Sistemas Avanzados en Computación de México, S.A. de C.V.";
 	  drawer.textBlock(s, Align.JUSTIFY, 40, 785, 480, false, Color.gray, 7);
-	  drawer.text("4 - VE - 11                Rev. 0           30-11-2014                                                                TRA: Mientras este Activo   TRAM: 1 año", 40,805, false, Color.gray, 7);
+	  drawer.text("4 - VE - 11                Rev. 1           15-01-2015                                                                TRA: Mientras este Activo   TRAM: 1 año", 40,805, false, Color.gray, 7);
 	  drawer.text("Pag. " + page + "/4", 500 , 805, false, Color.gray, 7);
   }
   
@@ -244,7 +245,7 @@ public class PriceProposalReport extends AbstractReport {
 	  drawer.textBlock(s, Align.JUSTIFY, 40, 250, 490, false, 8);
 
 	  drawer.text("4. Entrega", 40, 310, true);
-	  s = "a) El tiempo de entrega es de " + data.getDeliveryTime() + " DIAS, el cual iniciará a partir de la recepción de su orden de compra y/o contrato y/o nuestra cotización " +
+	  s = "a) El tiempo de entrega es de " + data.getDeliveryTimeDisplay() + " SEMANAS, el cual iniciará a partir de la recepción de su orden de compra y/o contrato y/o nuestra cotización " +
 			  "y del deposito en firme del anticipo correspondiente.";
 	  drawer.textBlock(s, Align.JUSTIFY, 40, 320, 490, false, 8);
 	  

@@ -106,6 +106,40 @@
 	   			return false;
 	   		}
 
+		   // phone
+			var phoneArea = $("#phoneArea").val();
+			var phoneNumber = $("#phoneNumber").val();
+			if(phoneArea == "" || phoneNumber == ""){
+	   			$("#errMsg").html("Por favor capture el Telefono incluyendo clave lada");
+		   		$("#errMsg").dialog('open');
+			 	return false;
+		   }
+
+		   // email
+			var email = $("#email").val();
+			if(email == ""){
+	   			$("#errMsg").html("Por favor capture el email del prospecto");
+		   		$("#errMsg").dialog('open');
+			 	return false;
+		   }
+
+		   // CST
+		   var cstId = $("#cstId").val();
+			if(cstId == ""){
+	   			$("#errMsg").html("Por favor seleccione un Vendedor");
+		   		$("#errMsg").dialog('open');
+			 	return false;
+		   }
+
+		   // contactName
+		   var contactName = $("#contactName").val();
+			if(contactName == ""){
+	   			$("#errMsg").html("Por favor capture el nombre del contacto");
+		   		$("#errMsg").dialog('open');
+			 	return false;
+		   }
+
+	   		// type
 			var classf = $("#clientTypeId").val();
 			if(classf == ""){
 	   			$("#errMsg").html("Por favor seleccione la Clasificacion del prospecto");
@@ -113,6 +147,13 @@
 			 	return false;
 		   }
 
+		   // origin
+			var originType = $("#originType").val();
+			if(originType == ""){
+	   			$("#errMsg").html("Por favor seleccione el origen del prospecto");
+		   		$("#errMsg").dialog('open');
+			 	return false;
+		   }
 		   // todo bien
 		   return true;
 	   }
@@ -150,24 +191,29 @@
 								<td colspan="2"><form:input type="text" style="width:95%;" path="id" readonly="true"/></td>
 							</tr>
 							<tr>
+								<td colspan="2" style="font-style: italic;">Los datos marcados con * son obligatorios</td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr>
 								<td>RFC</td>
 								<td colspan="4"><form:input type="text" style="width:95%;" path="rfc" maxlength="13"/></td>
 							</tr>
 							<tr>
-								<td>Razon Social</td>
-								<td colspan="6"><form:input type="text" style="width:95%;" path="corporateName"/></td>
+								<td>Razon Social*</td>
+								<td colspan="6"><form:input type="text" style="width:95%;" path="corporateName" required="true"/></td>
 							</tr>
 							<tr>
-								<td>Nombre comercial</td>
-								<td colspan="6"><form:input type="text" style="width:95%;" path="tradeName" /></td>
+								<td>Nombre comercial*</td>
+								<td colspan="6"><form:input type="text" style="width:95%;" path="tradeName" required="true"/></td>
 							</tr>
 							<tr><td></td></tr>
 							<tr>
-								<td>Telefono 1</td>
-								<td>Lada</td>
-								<td><form:input type="text" style="width:95%;" path="phoneArea" maxlength="3"/></td>
-								<td>Telefono</td>
-								<td><form:input type="text" style="width:95%;" path="phoneNumber" maxlength="10"/></td>
+								<td>Telefono 1*</td>
+								<td>Lada*</td>
+								<td><form:input type="text" style="width:95%;" path="phoneArea" maxlength="3" required="true"/></td>
+								<td>Telefono*</td>
+								<td><form:input type="text" style="width:95%;" path="phoneNumber" maxlength="10" required="true"/></td>
 								<td>Extension</td>
 								<td><form:input type="text" style="width:95%;" path="phoneExtension" maxlength="6"/></td>
 							</tr>
@@ -181,8 +227,8 @@
 								<td><form:input type="text" style="width:95%;" path="phoneExtensionAlt" maxlength="6"/></td>
 							</tr>
 							<tr>
-								<td>Email 1</td>
-								<td colspan="2"><form:input type="text"  style="width:95%;" path="email" maxlength="60"/></td>
+								<td>Email 1*</td>
+								<td colspan="2"><form:input type="text"  style="width:95%;" path="email" maxlength="60" required="true"/></td>
 								<td>Email 2</td>
 								<td colspan="2"><form:input type="text"  style="width:95%;" path="emailAlt" maxlength="60"/></td>
 							</tr>
@@ -212,7 +258,6 @@
 												</c:if>
 												>${ss.state}</option>
 											</c:forEach>
-											
 										</form:select>
 								</td>
 							</tr>
@@ -241,23 +286,25 @@
 							</tr>	
 							<tr><td></td></tr>
 							<tr>
-								<td>Vendedor</td>
-								<td colspan="2"><form:select path="sellerId" name="seller" id="seller" style="width:95%;">
+								<td>Vendedor*</td>
+								<td colspan="2">
+									<form:select path="cstId" name="cstId" style="width:95%;" required="true">
 								            <option value="">Seleccione</option>
-											<c:forEach var="ss" items="${sellers}">
-												<option value="${ss.blackstarUserId}"
-												<c:if test="${ss.blackstarUserId == client.sellerId}">
+											<c:forEach var="cst" items="${cstList}">
+												<option value="${cst.cstId}"
+												<c:if test="${cst.cstId == client.cstId}">
 													selected="true"
 												</c:if>
-												>${ss.userName}</option>
+												>${cst.name}</option>
 											</c:forEach>
-										</form:select></td>
-								<td>Contacto</td>
-								<td colspan="2"><form:input type="text" style="width:95%;" path="contactName"/></td>
+									</form:select>
+								</td>
+								<td>Contacto*</td>
+								<td colspan="2"><form:input type="text" style="width:95%;" path="contactName" required="true"/></td>
 							</tr>
 							<tr>
-								<td>Clasificacion</td>
-								<td colspan="2"><form:select path="clientTypeId" style="width:95%;">
+								<td>Clasificacion*</td>
+								<td colspan="2"><form:select path="clientTypeId" style="width:95%;" required="true">
 								            <option value="">Seleccione</option>
 											<c:forEach var="ss" items="${clientTypes}">
 												<option value="${ss.id}"
@@ -267,8 +314,8 @@
 												>${ss.name}</option>
 											</c:forEach>
 										</form:select></td>
-								<td>Origen</td>
-								<td colspan="2"><form:select path="clientOriginId" name="originType" id="originType" style="width:95%;">
+								<td>Origen*</td>
+								<td colspan="2"><form:select path="clientOriginId" name="originType" id="originType" style="width:95%;" required="true">
 								            <option value="">Seleccione</option>
 											<c:forEach var="ss" items="${originTypes}">
 												<option value="${ss.id}"

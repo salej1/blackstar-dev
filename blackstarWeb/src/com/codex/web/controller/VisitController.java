@@ -108,10 +108,12 @@ public class VisitController extends AbstractController {
 	@RequestMapping(value = "/resolve.do") 
 	public String resolve(ModelMap model,
 			@ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession,
-			@ModelAttribute("codexVisitId") Integer codexVisitId){
+			@ModelAttribute("codexVisitId") Integer codexVisitId,
+			@ModelAttribute("closureComment") String closureComment){
 		try{
 			VisitDTO visit = service.getVisitById(codexVisitId);
 			visit.setVisitStatusId("R");
+			visit.setClosure(closureComment);
 			visit.setModifiedByUsr(userSession.getUser().getUserEmail());
 			visit.setModifiedBy("resolve");
 			visit.setModified(Globals.getLocalTime());

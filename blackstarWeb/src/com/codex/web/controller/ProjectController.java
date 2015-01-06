@@ -90,6 +90,7 @@ public class ProjectController extends AbstractController {
 		 model.addAttribute("paymentTypes", service.getAllPaymentTypes());
 		 model.addAttribute("staff", udService.getStaff());
 		 model.addAttribute("accessToken", gdService.getAccessToken());
+
 		 Boolean enableEdition = false;
 		 if(project.getStatusId() == 1){
 			 if(project.getCreatedByUsr() == userSession.getUser().getBlackstarUserId()){
@@ -110,6 +111,7 @@ public class ProjectController extends AbstractController {
 		 model.addAttribute("followUps", service.getFollowUps(projectId));
 		 model.addAttribute("incotermList", service.getIncotermList());
 		 model.addAttribute("priceListJson", service.getPriceList());
+		 model.addAttribute("userCanAuth", userSession.getUser().getBelongsToGroup().get(Globals.GROUP_SALES_MANAGER) != null);
 		} catch (Exception e) {
 			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 			e.printStackTrace();
@@ -138,7 +140,9 @@ public class ProjectController extends AbstractController {
 		 
 		 if(clientId != null && ((client = cService.getClientById(clientId)) != null)){
 			 project.setClientId(client.getId());
-			 project.setLocation(client.getCity() + ", " + client.getState());
+			 if(client.getCity() != null && !client.getCity().equals("") && client.getState() != null && !client.getState().equals("") ){
+				 project.setLocation(client.getCity() + ", " + client.getState());
+			 }
 			 project.setContactName(client.getContactName());
 		 }
 	     project.setId(0);
@@ -245,12 +249,13 @@ public class ProjectController extends AbstractController {
 		System.out.println("Error =>" + e);
 		return "error";
 	}
-    return showList(model, request);
+    return edit(model, project.getId(), userSession);
   }
   
   @RequestMapping(value = "/update.do") 
   public String update(ModelMap model, HttpServletRequest request 
-		       ,   @ModelAttribute("project") ProjectVO project){
+		       ,   @ModelAttribute("project") ProjectVO project,
+	            @ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession){
     User user = null;
 	try {
 		 user = ((UserSession) request.getSession().getAttribute(Globals
@@ -266,7 +271,7 @@ public class ProjectController extends AbstractController {
 		System.out.println("Error =>" + e);
 		return "error";
 	}
-    return showList(model, request);
+	return edit(model, project.getId(), userSession);
   }
   
   @RequestMapping(value = "/advanceStatus.do") 
@@ -274,6 +279,9 @@ public class ProjectController extends AbstractController {
 		            , @RequestParam(required = true) Integer projectId,
 		            @ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession){
 	  ProjectVO project = null;
+	  
+	  update(model, request, project, userSession);
+	  
 	  try {
 		    project = service.getProjectDetail(projectId, cstService.getCstByEmail(userSession.getUser().getUserEmail()));
 	        service.advanceStatus(project);
@@ -283,6 +291,22 @@ public class ProjectController extends AbstractController {
 			return "error";
 	}
 	return showList(model, request);
+  }
+  
+  @RequestMapping(value = "/fallbackStatus.do") 
+  public String fallbackStatus(ModelMap model, HttpServletRequest request 
+		            , @RequestParam(required = true) Integer projectId,
+		            @ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession){
+	  ProjectVO project = null;
+	  try {
+		    project = service.getProjectDetail(projectId, cstService.getCstByEmail(userSession.getUser().getUserEmail()));
+	        service.fallbackStatus(project);
+	  } catch (Exception e) {
+			e.printStackTrace();
+			model.addAttribute("errorDetails", e.getStackTrace()[0].toString());
+			return "error";
+	}
+	return edit(model, projectId, userSession);
   }
 	
   private List<CostCenterDTO> getCostCenterList(String projectNumber){

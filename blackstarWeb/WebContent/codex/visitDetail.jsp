@@ -15,18 +15,18 @@
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/template.css" type="text/css" media="screen"/>
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/colour.css" type="text/css" media="screen"/>
 	<link href="${pageContext.request.contextPath}/js/glow/1.7.0/widgets/widgets.css" type="text/css" rel="stylesheet" />
+	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery.datetimepicker.css">
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery.ui.theme.css">
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery-ui.min.css">
 	<script src="${pageContext.request.contextPath}/js/dateFormat.js"></script>	
 	<script src="${pageContext.request.contextPath}/js/customAutocomplete.js"></script>	
-	<script src="${pageContext.request.contextPath}/js/jquery.ui.datepicker.js"></script>	
-	<script type="text/javascript" src="${pageContext.request.contextPath}/js/common/popup.js"></script>
+	<script src="${pageContext.request.contextPath}/js/jquery.datetimepicker.js"></script>	
 	
 	
 	<script type="text/javascript">
 	   $(function(){
 	   		if("${mode}" == "new" || "${isEditable}" == "true"){
-		   		$("#visitDate").datepicker();
+		   		$("#visitDate").datetimepicker();
 	   		}
 	   		else{
 	   			if("${isEditable}" == "false"){
@@ -38,7 +38,11 @@
 	   });
 
 	   function discard(){
-	   		$("#visitStatusId").val(3);
+	   		$("#visitStatusId").val('D');
+	   		$("#visit").submit();
+	   }
+
+	   function submit(){
 	   		$("#visit").submit();
 	   }
 	</script>
@@ -51,7 +55,7 @@
 <!--   CONTENT COLUMN   -->			
 				<div class="grid_16">					
 					<div class="box">
-						<h2>Visita a Cliente</h2>
+						<h2>Visita de prospección</h2>
                         <form:form  commandName="visit" action="${pageContext.request.contextPath}/codex/visit/insert.do">
 						<table>
 							<tr>

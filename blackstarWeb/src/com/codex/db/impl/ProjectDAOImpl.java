@@ -151,7 +151,7 @@ public class ProjectDAOImpl extends AbstractDAO
   
   @Override 
   public Integer upsertProject(ProjectVO project){
-	String sqlQuery = "CALL CodexUpsertProject(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	String sqlQuery = "CALL CodexUpsertProject(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 	Integer projectId = (Integer)getJdbcTemplate().queryForObject(sqlQuery, new Object[]{project.getId(), project.getClientId()
 			            , project.getTaxesTypeId(), project.getStatusId()
 			            , project.getPaymentTypeId(), project.getCurrencyTypeId()
@@ -163,7 +163,8 @@ public class ProjectDAOImpl extends AbstractDAO
 			            , project.getIncoterm(), project.getProductsNumber()
 			            , project.getFinancesNumber(), project.getServicesNumber()
 			            , project.getTotalProjectNumber(), project.getCreatedByUsr()
-			            , project.getModifiedByUsr(), project.getDiscountNumber()}, Integer.class);
+			            , project.getModifiedByUsr(), project.getDiscountNumber()
+			            , project.getPaymentConditions()}, Integer.class);
 	project.setId(projectId);
 	
 	return projectId;
@@ -172,11 +173,11 @@ public class ProjectDAOImpl extends AbstractDAO
   @Override
   public Integer upsertProjectEntry(Integer entryId, Integer projectId
 		                         , Integer entryTypeId, String description 
-		                         , Float discount, Float totalPrice
+		                         , Integer qty, Float unitPrice, Float discount, Float totalPrice
 		                         , String comments) {
-	 String sqlQuery = "CALL CodexUpsertProjectEntry(?, ?, ?, ?, ?, ?, ?)";
+	 String sqlQuery = "CALL CodexUpsertProjectEntry(?, ?, ?, ?, ?, ?, ?, ?, ?)";
 	 entryId = (Integer)getJdbcTemplate().queryForObject(sqlQuery, new Object[]{entryId, projectId
-	      , entryTypeId, description, discount, totalPrice, comments}, Integer.class);
+	      , entryTypeId, description, discount, totalPrice, comments, qty, unitPrice}, Integer.class);
 	 
 	 return entryId;
   }

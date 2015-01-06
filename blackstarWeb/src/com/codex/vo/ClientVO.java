@@ -7,8 +7,8 @@ public class ClientVO {
 	private String clientTypeDesc;
 	private Integer clientOriginId;
 	private String clientOriginDesc;
-	private Integer sellerId;
-	private String sellerDesc;
+	private Integer cstId;
+	private String cstName;
 	private boolean isProspect;
 	private String rfc;
 	private String corporateName;
@@ -64,17 +64,17 @@ public class ClientVO {
 	public void setClientOriginDesc(String clientOriginDesc) {
 		this.clientOriginDesc = clientOriginDesc;
 	}
-	public Integer getSellerId() {
-		return sellerId;
+	public Integer getCstId() {
+		return cstId;
 	}
-	public void setSellerId(Integer sellerId) {
-		this.sellerId = sellerId;
+	public void setCstId(Integer cstId) {
+		this.cstId = cstId;
 	}
-	public String getSellerDesc() {
-		return sellerDesc;
+	public String getCstName() {
+		return cstName;
 	}
-	public void setSellerDesc(String sellerDesc) {
-		this.sellerDesc = sellerDesc;
+	public void setCstName(String cstName) {
+		this.cstName = cstName;
 	}
 	public boolean isProspect() {
 		return isProspect;

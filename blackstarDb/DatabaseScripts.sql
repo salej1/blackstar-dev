@@ -3445,6 +3445,13 @@ CREATE TABLE IF NOT EXISTS blackstarDb.cstOffice(
 --							Se agrega turnedCustomerDate a codexClient
 --							Se agrega priceListId a codexEntryItem
 -- ---------------------------------------------------------------------------
+-- 5 	20/12/2014	SAG 	Se cambia sellerId por cstId en codexClient
+-- ---------------------------------------------------------------------------
+-- 6 	23/12/2014	SAG 	Se acepta NULL en anticipo y plazo anticipo
+-- ---------------------------------------------------------------------------
+-- 7	05/01/2015	SAG 	Se agregan qty y unitPrice a codexProjectEntry
+--							Se agrega paymentConditions a codexProject
+-- ---------------------------------------------------------------------------
 
 use blackstarDb;
 
@@ -3457,6 +3464,29 @@ BEGIN
 -- -----------------------------------------------------------------------------
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
+
+-- AGREGANDO paymentConditions a codexProject
+IF(SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'codexProject' AND COLUMN_NAME = 'paymentConditions') = 0 THEN
+	ALTER TABLE blackstarDb.codexProject ADD paymentConditions TEXT NULL;
+END IF;
+
+-- AGREGANDO qty y unitPrice a codexProjectEntry
+IF(SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'codexProjectEntry' AND COLUMN_NAME = 'qty') = 0 THEN
+	ALTER TABLE blackstarDb.codexProjectEntry ADD qty INT NOT NULL DEFAULT 1;
+	ALTER TABLE blackstarDb.codexProjectEntry ADD unitPrice FLOAT(15,2) NULL;
+END IF;
+
+ALTER TABLE codexPriceProposal MODIFY advance float(15,2) NULL;
+ALTER TABLE codexPriceProposal MODIFY timeLimit int NULL;
+ALTER TABLE codexPriceProposal MODIFY settlementTimeLimit int NULL;
+
+-- CAMBIANDO sellerId
+IF(SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'codexClient' AND COLUMN_NAME = 'sellerId') > 0 THEN
+	ALTER TABLE blackstarDb.codexClient DROP FOREIGN KEY codexClient_ibfk_3;
+	ALTER TABLE blackstarDb.codexClient DROP INDEX sellerId;
+	ALTER TABLE blackstarDb.codexClient CHANGE sellerId cstId INT(11) NULL;
+	ALTER TABLE blackstarDb.codexClient ADD CONSTRAINT FK_codexClient_cst FOREIGN KEY (cstId) REFERENCES cst(cstId);
+END IF;
 
 -- AGREGANDO priceListId a codexEntryItem
 IF(SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'codexEntryItem' AND COLUMN_NAME = 'priceListId') = 0 THEN
@@ -3601,11 +3631,13 @@ DROP PROCEDURE blackstarDb.upgradeCodexSchema;
 --                              blackstarDb.getCodexComerceCodes
 --                              blackstarDb.getAutocompleteClientList
 -- -----------------------------------------------------------------------------
+-- 7  05/01/2015  SAG     Se actualiza:
+--                              blackstarDb.
+-- -----------------------------------------------------------------------------
 
 use blackstarDb;
 
 DELIMITER $$
-
 
 -- -----------------------------------------------------------------------------
   -- blackstarDb.getAutocompleteClientList
@@ -3808,7 +3840,7 @@ BEGIN
     u.name AS cstName,
     count(*) AS count
   FROM codexClient c
-    INNER JOIN blackstarUser u ON u.blackstarUserId = c.sellerId
+    INNER JOIN blackstarUser u ON u.blackstarUserId = c.cstId
   WHERE turnedCustomerDate >= startDate 
     AND turnedCustomerDate <= endDate
   GROUP BY u.name;
@@ -3901,7 +3933,7 @@ DROP PROCEDURE IF EXISTS blackstarDb.GetAllCst$$
 CREATE PROCEDURE blackstarDb.GetAllCst()
 BEGIN
 
-  SELECT * FROM blackstarDb.cst;
+  SELECT * FROM blackstarDb.cst ORDER BY name;
   
 END$$
 
@@ -3912,31 +3944,7 @@ DROP PROCEDURE IF EXISTS blackstarDb.GetVisitList$$
 CREATE PROCEDURE blackstarDb.GetVisitList(pcstEmail VARCHAR(100))
 BEGIN
 
-  IF pcstEmail IS NULL OR pcstEmail = '' THEN
-    SELECT 
-      v.codexVisitId,
-      v.cstId,
-      v.codexClientId,
-      v.visitDate,
-      v.description,
-      v.closure,
-      v.visitStatusId,
-      v.created,
-      v.createdBy,
-      v.createdByUsr,
-      v.modified,
-      v.modifiedBy,
-      v.modifiedByUsr,
-      c.name AS cstName,
-      c.email AS cstEmail,
-      v.customerName,
-      s.visitStatus
-    FROM blackstarDb.codexVisit v
-        INNER JOIN blackstarDb.cst c ON v.cstId = c.cstId
-        INNER JOIN blackstarDb.codexVisitStatus s ON s.visitStatusId = v.visitStatusId
-    WHERE v.visitStatusId != 'D';
-  ELSE
-    SELECT 
+  SELECT 
       v.codexVisitId,
       v.cstId,
       v.codexClientId,
@@ -3958,8 +3966,7 @@ BEGIN
         INNER JOIN blackstarDb.cst c ON v.cstId = c.cstId
         INNER JOIN blackstarDb.codexVisitStatus s ON s.visitStatusId = v.visitStatusId
     WHERE v.visitStatusId != 'D'
-    AND v.cstId = (SELECT cstId FROM blackstarDb.cst WHERE email = pcstEmail);
-  END IF;
+  AND if(ifnull(pcstEmail, '') != '', c.email = pcstEmail, 1=1 );
 
   
 END$$
@@ -4082,7 +4089,7 @@ CREATE PROCEDURE blackstarDb.CodexGetAllStates()
 BEGIN
 
 	SELECT DISTINCT loc.state AS state 
-  FROM location loc 
+  FROM blackstarConst.location loc 
   ORDER BY state ASC;
 	
 END$$
@@ -4138,7 +4145,7 @@ CREATE PROCEDURE blackstarDb.GetLocationsByState(pZipCode VARCHAR(5))
 BEGIN
 
    SELECT * 
-   FROM location
+   FROM blackstarConst.location
    WHERE zipCode = pZipCode;
 
 END$$
@@ -4147,7 +4154,7 @@ END$$
 	-- blackstarDb.CodexInsertClient
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.CodexInsertClient$$
-CREATE PROCEDURE blackstarDb.`CodexInsertClient`(pClientTypeId int(2), pClientOriginId int(2), pSellerId int(11)
+CREATE PROCEDURE blackstarDb.`CodexInsertClient`(pClientTypeId int(2), pClientOriginId int(2), pCstId int(11)
                                                  , pIsProspect tinyint(4), pRfc varchar(13), pCorporateName text, pTradeName text, pPhoneArea varchar(3), pPhoneNumber varchar(10)
                                                  , pPhoneExtension varchar(6), pPhoneAreaAlt varchar(3), pPhoneNumberAlt varchar(10), pPhoneExtensionAlt varchar(6)
                                                  , pEmail varchar(60), pEmailAlt varchar(60), pStreet text, pIntNumber varchar(5), pExtNumber varchar(5)
@@ -4155,12 +4162,12 @@ CREATE PROCEDURE blackstarDb.`CodexInsertClient`(pClientTypeId int(2), pClientOr
                                                  , pContactName text, pCurp varchar(18), pRetention varchar(20))
 BEGIN
 
-	INSERT INTO codexClient (clientTypeId, clientOriginId, sellerId, isProspect, rfc, corporateName,
+	INSERT INTO codexClient (clientTypeId, clientOriginId, cstId, isProspect, rfc, corporateName,
               tradeName, phoneArea, phoneNumber, phoneExtension, phoneAreaAlt, phoneNumberAlt,
               phoneExtensionAlt, email, emailAlt, street, intNumber, extNumber, zipCode, country,
               state, municipality, city, neighborhood, contactName, curp, retention)
               VALUES
-              (pClientTypeId, pClientOriginId, pSellerId, pIsProspect, pRfc, pCorporateName,
+              (pClientTypeId, pClientOriginId, pCstId, pIsProspect, pRfc, pCorporateName,
               pTradeName, pPhoneArea, pPhoneNumber, pPhoneExtension, pPhoneAreaAlt, pPhoneNumberAlt,
               pPhoneExtensionAlt, pEmail, pEmailAlt, pStreet, pIntNumber, pExtNumber, pZipCode, pCountry,
               pState, pMunicipality, pCity, pNeighborhood, pContactName, pCurp, pRetention);
@@ -4195,16 +4202,17 @@ BEGIN
 END$$
 
 -- -----------------------------------------------------------------------------
-	-- blackstarDb.CodexGetEntryTypes
+	-- blackstarDb.CodexGetEntryTypes -- optimizado para rendereo en html
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.CodexGetEntryTypes$$
 CREATE PROCEDURE blackstarDb.`CodexGetEntryTypes`()
 BEGIN
 
   SELECT  _id AS id, 
-          name AS name, 
+          concat_ws('', replace(rpad(_id, 9, ' '), ' ', "&nbsp;"), name) AS name, 
           productType AS productType
-  FROM codexProjectEntryTypes;
+  FROM codexProjectEntryTypes
+  ORDER BY _id; 
 	
 END$$
 
@@ -4378,7 +4386,8 @@ SELECT cp._id id, cp.projectNumber projectNumber, cp.clientId clientId, cp.taxes
       , cp.settlementTimeLimit settlementTimeLimit, cp.deliveryTime deliveryTime, cp.incoterm incoterm
       , cp.productsNumber productsNumber, cp.financesNumber financesNumber, cp.servicesNumber servicesNumber
       , cp.totalProjectNumber totalProjectNumber, cp.createdBy createdBy, cp.createdByUsr createdByUsr
-      , cp. modified modified, cp.modifiedBy modifiedBy, cp.modifiedByUsr modifiedByUsr, cp.discountNumber
+      , cp. modified modified, cp.modifiedBy modifiedBy, cp.modifiedByUsr modifiedByUsr, cp.discountNumber discountNumber
+      , cp.paymentConditions paymentConditions
 FROM codexProject cp, codexClient cc, codexStatusType cst, codexPaymentType cpt, codexCurrencyType cct, codexCostCenter ccc
 WHERE cp.statusId = cst._id
       AND cp.clientId = cc._id
@@ -4448,18 +4457,19 @@ END$$
 	-- blackstarDb.CodexUpsertProjectEntry
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.CodexUpsertProjectEntry$$
-CREATE PROCEDURE blackstarDb.`CodexUpsertProjectEntry`(pEntryId int(11), pProjectId int(11), pEntryTypeId int(11), pDescription TEXT, pDiscount FLOAT(15,2), pTotalPrice FLOAT(15,2), pComments TEXT)
+CREATE PROCEDURE blackstarDb.`CodexUpsertProjectEntry`(pEntryId int(11), pProjectId int(11), pEntryTypeId int(11), pDescription TEXT, pDiscount FLOAT(15,2), pTotalPrice FLOAT(15,2), pComments TEXT, pQty INT, pUnitPrice FLOAT(15,2))
 BEGIN
   DECLARE isUpdate INTEGER;
   SET isUpdate = (SELECT COUNT(*) FROM codexProjectEntry WHERE _id = pEntryId);
   
   IF(isUpdate = 0) THEN
-    INSERT INTO codexProjectEntry (projectId, entryTypeId, description, discount, totalPrice, comments)
-    VALUES (pProjectId, pEntryTypeId, pDescription, pDiscount, pTotalPrice, pComments);
+    INSERT INTO codexProjectEntry (projectId, entryTypeId, description, discount, totalPrice, comments, qty, unitPrice)
+    VALUES (pProjectId, pEntryTypeId, pDescription, pDiscount, pTotalPrice, pComments, pQty, pUnitPrice);
     
     SELECT LAST_INSERT_ID();
   ELSE
-    UPDATE  codexProjectEntry SET comments = pComments
+    UPDATE  codexProjectEntry SET 
+      comments = pComments
     WHERE _id = pEntryId;
 
     SELECT pEntryId;
@@ -4489,17 +4499,17 @@ END$$
 	-- blackstarDb.CodexUpsertProject
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.CodexUpsertProject$$
-CREATE PROCEDURE blackstarDb.`CodexUpsertProject`(pProjectId int(11), pClientId int(11), pTaxesTypeId int(1), pStatusId int(1), pPaymentTypeId int(1),pCurrencyTypeId int(2), pProjectNumber varchar(8), pCostCenter varchar(8), pChangeType float, pCreated varchar(40), pContactName text, pLocation varchar(400), pAdvance FLOAT(15,2), pTimeLimit int(3), pSettlementTimeLimit int(3), pDeliveryTime int(3), pincoterm varchar(5), pProductsNumber FLOAT(15,2), pFinancesNumber FLOAT(15,2), pServicesNumber FLOAT(15,2), pTotalProjectNumber FLOAT(15,2), pCreatedByUsr int(11), pModifiedByUsr int(11), pDiscountNumber FLOAT(15,2))
+CREATE PROCEDURE blackstarDb.`CodexUpsertProject`(pProjectId int(11), pClientId int(11), pTaxesTypeId int(1), pStatusId int(1), pPaymentTypeId int(1),pCurrencyTypeId int(2), pProjectNumber varchar(8), pCostCenter varchar(8), pChangeType float, pCreated varchar(40), pContactName text, pLocation varchar(400), pAdvance FLOAT(15,2), pTimeLimit int(3), pSettlementTimeLimit int(3), pDeliveryTime int(3), pincoterm varchar(5), pProductsNumber FLOAT(15,2), pFinancesNumber FLOAT(15,2), pServicesNumber FLOAT(15,2), pTotalProjectNumber FLOAT(15,2), pCreatedByUsr int(11), pModifiedByUsr int(11), pDiscountNumber FLOAT(15,2), pPaymentConditions TEXT)
 BEGIN
   DECLARE isUpdate INTEGER;
   SET isUpdate = (SELECT COUNT(*) FROM codexProject WHERE _id = pProjectId);
 
-  IF(isUpdate = 0) THEN
-     CALL UpsertCodexCostCenter(pCostCenter, pCreatedByUsr);
-     SET @ccId = (SELECT _id FROM codexCostCenter WHERE costCenter = pCostCenter);
+  CALL UpsertCodexCostCenter(pCostCenter, pCreatedByUsr);
+  SET @ccId = (SELECT _id FROM codexCostCenter WHERE costCenter = pCostCenter);
 
-     INSERT INTO codexProject (clientId , taxesTypeId , statusId , paymentTypeId ,currencyTypeId , projectNumber , costCenterId , changeType , created , contactName , location , advance , timeLimit , settlementTimeLimit , deliveryTime , incoterm , productsNumber , financesNumber , servicesNumber , totalProjectNumber, createdByUsr, discountNumber)
-     VALUES (pClientId , pTaxesTypeId , pStatusId , pPaymentTypeId ,pCurrencyTypeId , pProjectNumber , @ccId , pChangeType , pCreated , pContactName , pLocation , pAdvance , pTimeLimit , pSettlementTimeLimit , pDeliveryTime , pincoterm , pProductsNumber , pFinancesNumber , pServicesNumber , pTotalProjectNumber, pCreatedByUsr, pDiscountNumber);
+  IF(isUpdate = 0) THEN
+     INSERT INTO codexProject (clientId , taxesTypeId , statusId , paymentTypeId ,currencyTypeId , projectNumber , costCenterId , changeType , created , contactName , location , advance , timeLimit , settlementTimeLimit , deliveryTime , incoterm , productsNumber , financesNumber , servicesNumber , totalProjectNumber, createdByUsr, discountNumber, paymentConditions)
+     VALUES (pClientId , pTaxesTypeId , pStatusId , pPaymentTypeId ,pCurrencyTypeId , pProjectNumber , @ccId , pChangeType , pCreated , pContactName , pLocation , pAdvance , pTimeLimit , pSettlementTimeLimit , pDeliveryTime , pincoterm , pProductsNumber , pFinancesNumber , pServicesNumber , pTotalProjectNumber, pCreatedByUsr, pDiscountNumber, pPaymentConditions);
 
      SELECT LAST_INSERT_ID();
   ELSE
@@ -4511,6 +4521,7 @@ BEGIN
          , deliveryTime = pDeliveryTime, incoterm = pincoterm, productsNumber = pProductsNumber
          , financesNumber = pFinancesNumber, servicesNumber = pServicesNumber, totalProjectNumber = pTotalProjectNumber
          , discountNumber = pDiscountNumber
+         , paymentConditions = pPaymentConditions
 		 , modifiedByUsr = pModifiedByUsr, modified = NOW()
      WHERE _id = pProjectId;
 
@@ -4526,7 +4537,7 @@ CREATE PROCEDURE blackstarDb.`GetLocationsByZipCode`(pZipCode VARCHAR(5))
 BEGIN
 
    SELECT _id, zipCode, country, state, municipality, IF(city IS NULL OR city = '', municipality, city) AS city, neighborhood
-   FROM location
+   FROM blackstarConst.location
    WHERE zipCode = pZipCode;
 
 END$$
@@ -4535,7 +4546,7 @@ END$$
 	-- blackstarDb.CodexUpsertProspect
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.CodexUpsertProspect$$
-CREATE PROCEDURE blackstarDb.`CodexUpsertProspect`(pClientId INT, pClientTypeId int(2), pClientOriginId int(2), pSellerId int(11)
+CREATE PROCEDURE blackstarDb.`CodexUpsertProspect`(pClientId INT, pClientTypeId int(2), pClientOriginId int(2), pCstId int(11)
                                                  , pIsProspect tinyint(4), pRfc varchar(13), pCorporateName text, pTradeName text, pPhoneArea varchar(3), pPhoneNumber varchar(10)
                                                  , pPhoneExtension varchar(6), pPhoneAreaAlt varchar(3), pPhoneNumberAlt varchar(10), pPhoneExtensionAlt varchar(6)
                                                  , pEmail varchar(60), pEmailAlt varchar(60), pStreet text, pIntNumber varchar(5), pExtNumber varchar(5)
@@ -4546,19 +4557,19 @@ BEGIN
   
   SET existsId = (SELECT COUNT(*) FROM codexClient WHERE _id = pClientId);
   IF (existsId = 0) THEN
-     INSERT INTO codexClient (_id, clientTypeId, clientOriginId, sellerId, isProspect, rfc, corporateName,
+     INSERT INTO codexClient (_id, clientTypeId, clientOriginId, cstId, isProspect, rfc, corporateName,
                  tradeName, phoneArea, phoneNumber, phoneExtension, phoneAreaAlt, phoneNumberAlt,
                  phoneExtensionAlt, email, emailAlt, street, intNumber, extNumber, zipCode, country,
                  state, municipality, city, neighborhood, contactName, curp, retention)
                  VALUES
-                 (pClientId, pClientTypeId, pClientOriginId, pSellerId, pIsProspect, pRfc, pCorporateName,
+                 (pClientId, pClientTypeId, pClientOriginId, pCstId, pIsProspect, pRfc, pCorporateName,
                  pTradeName, pPhoneArea, pPhoneNumber, pPhoneExtension, pPhoneAreaAlt, pPhoneNumberAlt,
                  pPhoneExtensionAlt, pEmail, pEmailAlt, pStreet, pIntNumber, pExtNumber, pZipCode, pCountry,
                  pState, pMunicipality, pCity, pNeighborhood, pContactName, pCurp, pRetention);
   END IF;
   IF (existsId > 0) THEN
       UPDATE codexClient SET _id = pClientId, clientTypeId = pClientTypeId, clientOriginId = pClientOriginId
-           , sellerId = pSellerId, isProspect = pIsProspect, rfc = pRfc, corporateName = pCorporateName
+           , cstId = pCstId, isProspect = pIsProspect, rfc = pRfc, corporateName = pCorporateName
            , tradeName = pTradeName, phoneArea = pPhoneArea, phoneNumber = pPhoneNumber, phoneExtension = pPhoneExtension
            , phoneAreaAlt = pPhoneAreaAlt, phoneNumberAlt = pPhoneNumberAlt, phoneExtensionAlt = pPhoneExtensionAlt
            , email = pEmail, emailAlt = pEmailAlt, street = pStreet, intNumber = pIntNumber, extNumber = pExtNumber
@@ -4575,7 +4586,7 @@ END$$
 DROP PROCEDURE IF EXISTS blackstarDb.CodexGetAllClients$$
 CREATE PROCEDURE blackstarDb.`CodexGetAllClients`()
 BEGIN
-  SELECT _id id, clientTypeId clientTypeId, clientOriginId clientOriginId, sellerId sellerId
+  SELECT _id id, clientTypeId clientTypeId, clientOriginId clientOriginId, cstId cstId
          , isProspect isProspect, rfc rfc, corporateName corporateName, tradeName tradeName
          , phoneArea phoneArea, phoneNumber phoneNumber, phoneExtension phoneExtension
          , phoneAreaAlt phoneAreaAlt, phoneNumberAlt phoneNumberAlt, phoneExtensionAlt phoneExtensionAlt
@@ -4592,7 +4603,7 @@ END$$
 DROP PROCEDURE IF EXISTS blackstarDb.CodexGetClientById$$
 CREATE PROCEDURE blackstarDb.`CodexGetClientById`(pClientId int(11))
 BEGIN
-  SELECT _id id, clientTypeId clientTypeId, clientOriginId clientOriginId, sellerId sellerId
+  SELECT _id id, clientTypeId clientTypeId, clientOriginId clientOriginId, cstId cstId
          , isProspect isProspect, rfc rfc, corporateName corporateName, tradeName tradeName
          , phoneArea phoneArea, phoneNumber phoneNumber, phoneExtension phoneExtension
          , phoneAreaAlt phoneAreaAlt, phoneNumberAlt phoneNumberAlt, phoneExtensionAlt phoneExtensionAlt
@@ -4679,8 +4690,9 @@ END$$
 DROP PROCEDURE IF EXISTS blackstarDb.CodexGetEntriesByProject$$
 CREATE PROCEDURE blackstarDb.`CodexGetEntriesByProject`(pProjectId int(11))
 BEGIN
-	SELECT cpe._id id, cpe.projectId projectId, cpe.entryTypeId entryTypeId, cpe.description description
-         , cpe.discount discount, cpe.totalPrice totalPrice, cpe.comments comments, cpet.name entryTypeDescription
+	SELECT cpe._id id, cpe.projectId projectId, cpe.entryTypeId entryTypeId, cpe.description description, 
+         cpe.discount discount, cpe.totalPrice totalPrice, cpe.comments comments, cpet.name entryTypeDescription,
+         cpe.qty qty, cpe.unitPrice unitPrice
     FROM codexProjectEntry cpe, codexProjectEntryTypes cpet
     WHERE projectId = pProjectId
           AND  cpe.entryTypeId = cpet._id;
@@ -4832,6 +4844,11 @@ DELIMITER ;
 -- --   --------   -------  ------------------------------------
 -- 2    01/10/2014  SAG  	Se agregan listas
 -- ---------------------------------------------------------------------------
+-- 3 	23/12/2014 	SAG 	Se elimina No Definido de clientType
+-- ---------------------------------------------------------------------------
+-- 4 	05/01/2014 	SAG 	Se establece unitPrice = totalPrice en Entry
+-- ---------------------------------------------------------------------------
+
 use blackstarDb;
 
 DELIMITER $$
@@ -4843,6 +4860,31 @@ DELIMITER $$
 DROP PROCEDURE IF EXISTS blackstarDb.updateCodexData$$
 CREATE PROCEDURE blackstarDb.updateCodexData()
 BEGIN
+	UPDATE codexProjectEntry e SET
+		unitPrice = (
+			SELECT sum(totalPrice) FROM codexEntryItem i WHERE i.entryId = e._id
+		)
+	WHERE e.unitPrice IS NULL;
+
+	IF(SELECT max(autoAuthProjects) FROM cst) = 1 THEN
+		UPDATE cst SET autoAuthProjects =  30000 WHERE email = 'portal-servicios@gposac.com.mx';
+		UPDATE cst SET autoAuthProjects =  30000 WHERE email = 'juanjose.espinoza@gposac.com.mx';
+		UPDATE cst SET autoAuthProjects =  10000 WHERE email = 'francisco.urena@gposac.com.mx';
+		UPDATE cst SET autoAuthProjects =  30000 WHERE email = 'ivan.martin@gposac.com.mx';
+		UPDATE cst SET autoAuthProjects =  0 WHERE email = 'juan.ramos@gposac.com.mx';
+		UPDATE cst SET autoAuthProjects =  30000 WHERE email = 'jorge.martinez@gposac.com.mx';
+		UPDATE cst SET autoAuthProjects =  0 WHERE email = 'michelle.galicia@gposac.com.mx';
+		UPDATE cst SET autoAuthProjects =  1000 WHERE email = 'liliana.diaz@gposac.com.mx';
+		UPDATE cst SET autoAuthProjects =  0 WHERE email = 'pilar.paz@gposac.com.mx';
+		UPDATE cst SET autoAuthProjects =  50000 WHERE email = 'nicolas.andrade@gposac.com.mx';
+		UPDATE cst SET autoAuthProjects =  50000 WHERE email = 'saul.andrade@gposac.com.mx';
+	END IF;
+
+	IF(SELECT count(*) FROM codexClientType WHERE name = 'No Definido') > 0 THEN
+		UPDATE codexClient SET clientTypeId = 1 WHERE clientTypeId = 4;
+
+		DELETE FROM codexClientType WHERE _id = 4;
+	END IF;
 
 	IF(SELECT count(*) FROM codexVisitStatus) = 0 THEN
 		INSERT INTO blackstarDb.codexVisitStatus(visitStatusId, visitStatus) 
@@ -8399,6 +8441,33 @@ DELIMITER ;
 CALL blackstarDb.updateCodexData();
 
 DROP PROCEDURE blackstarDb.updateCodexData;
+
+-- -----------------------------------------------------------------------------
+-- File:	blackstarConst_CreateSchema.sql    
+-- Name:	blackstarConst_CreateSchema
+-- Desc:	Crea una version inicial de la base de datos de constatnes
+-- Auth:	Sergio A Gomez
+-- Date:	20/12/2014
+-- -----------------------------------------------------------------------------
+-- Change History
+-- -----------------------------------------------------------------------------
+-- PR   Date    	Author	Description
+-- --   --------   -------  ------------------------------------
+-- 1    20/12/2014  SAG  	Version inicial.
+-- ---------------------------------------------------------------------------
+
+CREATE DATABASE IF NOT EXISTS blackstarConst ;
+
+CREATE TABLE IF NOT EXISTS blackstarConst.location(
+  _id INT NOT NULL AUTO_INCREMENT,
+  zipCode VARCHAR(20) NOT NULL,
+  country TEXT NOT NULL,
+  state TEXT NOT NULL,
+  municipality TEXT NOT NULL,
+  city TEXT,
+  neighborhood TEXT NOT NULL,
+  PRIMARY KEY (_id)
+)ENGINE=INNODB;
 
 
 

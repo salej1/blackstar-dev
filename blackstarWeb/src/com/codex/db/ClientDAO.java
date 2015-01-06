@@ -5,6 +5,7 @@ import java.util.List;
 import org.json.JSONObject;
 
 import com.blackstar.model.User;
+import com.codex.model.dto.CstDTO;
 import com.codex.vo.ClientVO;
 import com.codex.vo.ClientOriginTypesVO;
 import com.codex.vo.ClientTypesVO;
@@ -16,7 +17,7 @@ public interface ClientDAO {
   public List<LocationVO> getAllStates();
   public List<ClientTypesVO> getAllClientTypes();
   public List<ClientOriginTypesVO> getAllOriginTypes();
-  public List<User> getUsersByGroup(String groupName);
+  public List<CstDTO> getCstList();
   public List<JSONObject> getLocationsJSONByZipCode(String zipCode);
   public void insertClient(ClientVO client);
   public String getNextclientId();

@@ -13,6 +13,11 @@
 -- --   --------   -------  ------------------------------------
 -- 2    01/10/2014  SAG  	Se agregan listas
 -- ---------------------------------------------------------------------------
+-- 3 	23/12/2014 	SAG 	Se elimina No Definido de clientType
+-- ---------------------------------------------------------------------------
+-- 4 	05/01/2014 	SAG 	Se establece unitPrice = totalPrice en Entry
+-- ---------------------------------------------------------------------------
+
 use blackstarDb;
 
 DELIMITER $$
@@ -24,6 +29,31 @@ DELIMITER $$
 DROP PROCEDURE IF EXISTS blackstarDb.updateCodexData$$
 CREATE PROCEDURE blackstarDb.updateCodexData()
 BEGIN
+	UPDATE codexProjectEntry e SET
+		unitPrice = (
+			SELECT sum(totalPrice) FROM codexEntryItem i WHERE i.entryId = e._id
+		)
+	WHERE e.unitPrice IS NULL;
+
+	IF(SELECT max(autoAuthProjects) FROM cst) = 1 THEN
+		UPDATE cst SET autoAuthProjects =  30000 WHERE email = 'portal-servicios@gposac.com.mx';
+		UPDATE cst SET autoAuthProjects =  30000 WHERE email = 'juanjose.espinoza@gposac.com.mx';
+		UPDATE cst SET autoAuthProjects =  10000 WHERE email = 'francisco.urena@gposac.com.mx';
+		UPDATE cst SET autoAuthProjects =  30000 WHERE email = 'ivan.martin@gposac.com.mx';
+		UPDATE cst SET autoAuthProjects =  0 WHERE email = 'juan.ramos@gposac.com.mx';
+		UPDATE cst SET autoAuthProjects =  30000 WHERE email = 'jorge.martinez@gposac.com.mx';
+		UPDATE cst SET autoAuthProjects =  0 WHERE email = 'michelle.galicia@gposac.com.mx';
+		UPDATE cst SET autoAuthProjects =  1000 WHERE email = 'liliana.diaz@gposac.com.mx';
+		UPDATE cst SET autoAuthProjects =  0 WHERE email = 'pilar.paz@gposac.com.mx';
+		UPDATE cst SET autoAuthProjects =  50000 WHERE email = 'nicolas.andrade@gposac.com.mx';
+		UPDATE cst SET autoAuthProjects =  50000 WHERE email = 'saul.andrade@gposac.com.mx';
+	END IF;
+
+	IF(SELECT count(*) FROM codexClientType WHERE name = 'No Definido') > 0 THEN
+		UPDATE codexClient SET clientTypeId = 1 WHERE clientTypeId = 4;
+
+		DELETE FROM codexClientType WHERE _id = 4;
+	END IF;
 
 	IF(SELECT count(*) FROM codexVisitStatus) = 0 THEN
 		INSERT INTO blackstarDb.codexVisitStatus(visitStatusId, visitStatus) 

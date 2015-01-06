@@ -7,6 +7,7 @@ import org.json.JSONObject;
 import com.blackstar.model.User;
 import com.blackstar.services.AbstractService;
 import com.codex.db.ClientDAO;
+import com.codex.model.dto.CstDTO;
 import com.codex.service.ClientService;
 import com.codex.vo.ClientOriginTypesVO;
 import com.codex.vo.ClientTypesVO;
@@ -39,8 +40,8 @@ public class ClientServiceImpl extends AbstractService
   }
   
   @Override
-  public List<User> getUsersByGroup(String groupName){
-	  return dao.getUsersByGroup(groupName);
+  public List<CstDTO> getCstList(){
+	  return dao.getCstList();
   }
   
   @Override

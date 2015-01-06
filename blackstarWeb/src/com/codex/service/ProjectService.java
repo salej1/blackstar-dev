@@ -44,6 +44,7 @@ public interface ProjectService {
   public ProjectVO getProjectDetail(Integer projectId, CstDTO cst);
   public List<DeliverableVO> getDeliverables(Integer projectId);
   public void advanceStatus(ProjectVO project) throws Exception;
+  public void fallbackStatus(ProjectVO project) throws Exception;
   public void updateEntries(ProjectVO project);
   public List<CostCenterDTO> getCostCenterList();
   public String getCSTOffice(String cst);

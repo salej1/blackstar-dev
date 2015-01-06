@@ -73,7 +73,4 @@ public class Globals {
 		  sdf.setTimeZone(TimeZone.getTimeZone(DEFAULT_TIME_ZONE));
 		  return sdf.format(getLocalTime());
 	  }
-	  
-	  // Codex settings
-	  public static final Integer PROJECT_AUTH_LIMIT = 30000; // USD
 }
