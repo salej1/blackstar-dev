@@ -7565,6 +7565,7 @@ BEGIN
     ti.serviceTypeId,
     st.name as serviceName,
     st.responseTime,
+    ti.responseDate,
     ti.project,
     ti.officeId, 
     o.officeName,
