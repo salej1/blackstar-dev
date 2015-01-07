@@ -111,8 +111,8 @@
 			// Description dialog
 			$("#descriptionDialog").dialog({
 				autoOpen: false,
-				height: 250,
-				width: 400,
+				height: 350,
+				width: 550,
 				modal: true,
 				buttons: {
 					"Aceptar": function() {
@@ -127,8 +127,8 @@
 			// Comments dialog
 			$("#commentsDialog").dialog({
 				autoOpen: false,
-				height: 250,
-				width: 400,
+				height: 350,
+				width: 550,
 				modal: true,
 				buttons: {
 					"Aceptar": function() {
@@ -158,6 +158,9 @@
 		  if(projectStatus == '1'){
 		  	if('${enableEdition}' == 'true'){
 			  	$(".statusButton").html("Enviar a Autorización");
+		  	}
+		  	else{
+		  		$(".statusButton").hide();
 		  	}
 		  } else if(projectStatus == '2'){
 		  	if('${userCanAuth}' == 'true'){
@@ -226,13 +229,13 @@
 	    				<c:forEach var="ss" items="${entryItemTypes}"><option value="${ss.id}">${ss.name}</option>\
 	    				</c:forEach></select>\
 	    			</td>\
-	    			<td  style="width:371px">\
+	    			<td  style="width:338px">\
 	    				<input type="text" id="reference_' + itemNumber + '" style="width:95%" required disabled>\
 	    				<input type="hidden" id="referenceId_' + itemNumber + '"/>\
 	    			</td>\
 	    			<td><input type="text" id="itemQuantity_' 	+ itemNumber + '" style="width:20px" required value="1" onchange="calcItem(' + itemNumber + ');" disabled/></td>\
-	    			<td><input type="text" id="itemPriceByUnit_'+ itemNumber + '" style="width:40px" required onchange="calcItem(' + itemNumber + ');" disabled/></td>\
-	    			<td><input type="text" id="itemDiscount_' 	+ itemNumber + '" style="width:20px" required value="0" onchange="calcItem(' + itemNumber + ');" disabled/>%</td>\
+	    			<td><input type="text" id="itemPriceByUnit_'+ itemNumber + '" style="width:45px" required onchange="calcItem(' + itemNumber + ');" disabled/></td>\
+	    			<td><input type="text" id="itemDiscount_' 	+ itemNumber + '" style="width:25px" required value="0" onchange="calcItem(' + itemNumber + ');" disabled/>%</td>\
 	    				<input type="hidden" id="itemDiscountNum_' + itemNumber + '"/>\
 	    			<td style="width:110px"><input type="text" id="itemTotalPrice_' + itemNumber + '" style="width:95%" required readonly disabled/></td>\
 	    			<td style="width:65px"><a href="#" id="itemComments_' + entryNumber + 'Display" onclick="getComments(\'itemComments_\', ' + entryNumber + '); return false;"></a><input type="hidden" id="itemComments_' 	+ itemNumber + '"/></td>\
@@ -802,7 +805,7 @@
 									<th style="width:220px;">Referencia</th>
 									<th style="width:210px;">Descripcion</th>
 									<th style="width:15px;">Cant.</th>
-									<th style="width:60px;">P. Unt.</th>
+									<th style="width:90px;">P. Unt.</th>
 									<th style="width:50px;">Descto.</th>
 									<th style="width:100px;">P. Tot.</th>
 									<th>Observaciones</th>
@@ -916,7 +919,7 @@
 				<div id="descriptionDialog" title="Descripción del producto o servicio:">
 					Descripción:
 					<input type="hidden" id="getDescriptionNumber">
-					<textarea name="" id="descriptionCapture" style="margin-top:15px;width:95%" rows="5" class="lockOnDetail"
+					<textarea name="" id="descriptionCapture" style="margin-top:15px;width:95%" rows="10" class="lockOnDetail"
 					<c:if test="${enableEdition == false}">
 						disabled
 					</c:if>
@@ -927,7 +930,7 @@
 					Observaciones:
 					<input type="hidden" id="getCommentsNumber">
 					<input type="hidden" id="getCommentsField">
-					<textarea name="" id="commentsCapture" style="margin-top:15px;width:95%" rows="5" class="lockOnDetail"
+					<textarea name="" id="commentsCapture" style="margin-top:15px;width:95%" rows="10" class="lockOnDetail"
 					<c:if test="${enableEdition == false}">
 						disabled
 					</c:if>

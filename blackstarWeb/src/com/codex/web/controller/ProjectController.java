@@ -249,7 +249,7 @@ public class ProjectController extends AbstractController {
 		System.out.println("Error =>" + e);
 		return "error";
 	}
-    return edit(model, project.getId(), userSession);
+    return "redirect:/codex/project/edit.do?projectId=" + project.getId();
   }
   
   @RequestMapping(value = "/update.do") 
@@ -271,7 +271,7 @@ public class ProjectController extends AbstractController {
 		System.out.println("Error =>" + e);
 		return "error";
 	}
-	return edit(model, project.getId(), userSession);
+	return "redirect:/codex/project/edit.do?projectId=" + project.getId();
   }
   
   @RequestMapping(value = "/advanceStatus.do") 
