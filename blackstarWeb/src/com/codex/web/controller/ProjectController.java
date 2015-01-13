@@ -59,13 +59,16 @@ public class ProjectController extends AbstractController {
 	}
 
 @RequestMapping(value = "/showList.do") 
-  public String showList(ModelMap model, HttpServletRequest request ){
+  public String showList(ModelMap model, HttpServletRequest request,
+		  @ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession ){
 	User user = null;
 	try {
-		 user = ((UserSession) request.getSession().getAttribute(Globals
-	                                     .SESSION_KEY_PARAM)).getUser();
-		 model.addAttribute("projects", service.getAllProjectsByUsrJson(user
-				                                    .getBlackstarUserId()));
+		 CstDTO cstId =  cstService.getCstByEmail(userSession.getUser().getUserEmail());
+		 
+		 if(cstId != null){
+			 model.addAttribute("projects", service.getAllProjectsByUsrJson(cstId.getCstId()));
+		 }
+		 
 	} catch (Exception e) {
 		e.printStackTrace();
 		model.addAttribute("errorDetails", e.getStackTrace()[0].toString());
@@ -79,7 +82,8 @@ public class ProjectController extends AbstractController {
 		  @ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession){
 	ProjectVO project = null;
 	try {
-		 project = service.getProjectDetail(projectId, cstService.getCstByEmail(userSession.getUser().getUserEmail()));
+		 CstDTO cstId =  cstService.getCstByEmail(userSession.getUser().getUserEmail());
+		 project = service.getProjectDetail(projectId, cstId);
 		
 	     model.addAttribute("project", project);
 	     model.addAttribute("entryTypes", service.getAllEntryTypes());
@@ -92,17 +96,23 @@ public class ProjectController extends AbstractController {
 		 model.addAttribute("accessToken", gdService.getAccessToken());
 
 		 Boolean enableEdition = false;
+		 Boolean enableFallback = false;
 		 if(project.getStatusId() == 1){
-			 if(project.getCreatedByUsr() == userSession.getUser().getBlackstarUserId()){
+			 if(userSession.getUser().getBelongsToGroup().get(Globals.GROUP_SALES_MANAGER) != null || project.getCstEmail().equals(userSession.getUser().getUserEmail())){
 				 enableEdition = true;
 			 }
 		 }
-		 else if(project.getStatusId() == 2){
+		 else if(project.getStatusId() > 1 && project.getStatusId() <= 4){
 			 if(userSession.getUser().getBelongsToGroup().get(Globals.GROUP_SALES_MANAGER) != null && userSession.getUser().getBelongsToGroup().get(Globals.GROUP_SALES_MANAGER) == true){
 				 enableEdition = true;
 			 }
+			 if(project.getCstEmail().equals(userSession.getUser().getUserEmail())){
+				 enableFallback = true;
+			 }
 		 }
+		 
 		 model.addAttribute("enableEdition", enableEdition);
+		 model.addAttribute("enableFallback", enableFallback);
 		 model.addAttribute("isUpdate", true);
 		 model.addAttribute("clients", cService.getAllClients());
 		 model.addAttribute("osAttachmentFolder", gdService.getAttachmentFolderId(project.getProjectNumber()));
@@ -279,18 +289,19 @@ public class ProjectController extends AbstractController {
 		            , @RequestParam(required = true) Integer projectId,
 		            @ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession){
 	  ProjectVO project = null;
-	  
-	  update(model, request, project, userSession);
-	  
+	  	  
 	  try {
 		    project = service.getProjectDetail(projectId, cstService.getCstByEmail(userSession.getUser().getUserEmail()));
+		    if(project == null){
+		    	throw new Exception("No fue posible cargar el proyecto " + projectId.toString());
+		    }
 	        service.advanceStatus(project);
 	  } catch (Exception e) {
 			e.printStackTrace();
 			model.addAttribute("errorDetails", e.getStackTrace()[0].toString());
 			return "error";
 	}
-	return showList(model, request);
+	return showList(model, request, userSession);
   }
   
   @RequestMapping(value = "/fallbackStatus.do") 

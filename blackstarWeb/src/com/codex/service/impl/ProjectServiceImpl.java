@@ -266,7 +266,7 @@ public class ProjectServiceImpl extends AbstractService
 	Integer entryId, itemId;
 	for(String entry : entries){
 		values = entry.split("\\|");
-		entryId = Integer.valueOf(values[5]);
+		entryId = Integer.valueOf(values[7]);
 		dao.upsertProjectEntry(entryId, project.getId(), 0, "", 0, 0F, 0F, 0F, values[6]);
 		items = values[8].split("\\^");
 		for(String item : items){
@@ -342,8 +342,8 @@ public class ProjectServiceImpl extends AbstractService
 	  else{
 		  // Auto-authorized
 		  List<User> to = dao.getSalesManger();
-		  User resp = dao.getResponsable(project.getId());
-		  to.add(resp);
+		  //User resp = dao.getResponsable(project.getId());
+		  //to.add(resp);
 		  
 		  for(User usr : to){
 			  message.append(String.format("Proyecto Autorizado por default: ", project.getProjectNumber()));
@@ -392,8 +392,8 @@ public class ProjectServiceImpl extends AbstractService
 	  // gmService.sendEmail(client.getEmail(), "Cotización "  + priceProposal
 	  //		  .getPriceProposalNumber(), "Cotización", "Cotizacion.pdf", report);
 	  
-	  User to = dao.getResponsable(project.getId());
-	  gmService.sendEmail(to.getUserEmail(), "Cotización "  + priceProposal.getPriceProposalNumber(), "Cotización", "Cotizacion.pdf", report);
+	  String to = project.getCstEmail();
+	  gmService.sendEmail(to, "Cotización "  + priceProposal.getPriceProposalNumber(), "Cotización", "Cotizacion.pdf", report);
   }
   
   

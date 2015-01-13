@@ -93,6 +93,9 @@ public class ProjectEntryItemVO {
 	public String getComments() {
 		return comments;
 	}
+	public String getCommentsDisplay() {
+		return comments.replace("\r\n", "\\r\\n");
+	}
 	public void setComments(String comments) {
 		this.comments = comments;
 	}

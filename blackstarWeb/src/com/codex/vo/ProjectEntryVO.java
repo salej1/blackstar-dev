@@ -16,7 +16,7 @@ public class ProjectEntryVO {
 	private Double totalPrice;
 	private String comments;
 	private List<ProjectEntryItemVO> items = new ArrayList<ProjectEntryItemVO>();
-	
+
 	
 	public ProjectEntryVO (){
 		
@@ -74,6 +74,9 @@ public class ProjectEntryVO {
 	public String getComments() {
 		return comments;
 	}
+	public String getCommentsDisplay() {
+		return comments.replace("\r\n", "\\r\\n");
+	}
 	public void setComments(String comments) {
 		this.comments = comments;
 	}
@@ -104,6 +107,10 @@ public class ProjectEntryVO {
 
 	public void setUnitPrice(Float unitPrice) {
 		this.unitPrice = unitPrice;
+	}
+
+	public String getDescriptionDisplay() {
+		return description.replace("\r\n", "\\r\\n");
 	}
 
 }

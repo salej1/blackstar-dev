@@ -108,13 +108,6 @@ public class PriceProposalReport extends AbstractReport {
 			  drawer.hLine(40, 545, 120);
 		  }   
 		  yFactor = rowCounter * 25 + adjusment;
-		  drawer.hLine(40, 525, 335 + yFactor);
-		  drawer.vLine(310 + yFactor, 335 + yFactor, 40);
-		  drawer.vLine(310 + yFactor, 335 + yFactor, 90);
-		  drawer.vLine(310 + yFactor, 335 + yFactor, 320);
-		  drawer.vLine(310 + yFactor, 335 + yFactor, 370);
-		  drawer.vLine(310 + yFactor, 335 + yFactor, 440);
-		  drawer.vLine(310 + yFactor, 335 + yFactor, 525);
 		  
 		  items = entries.get(i).getItems();
 		  rawEntryPrice = 0F;
@@ -123,8 +116,17 @@ public class PriceProposalReport extends AbstractReport {
 		  }
 		  
 		  drawer.text(i + 1 + "", 60, 325 + yFactor);
-		  drawer.text(entries.get(i).getDescription(), 105, 325 + yFactor);
-		  drawer.text("1", 342, 325 + yFactor);
+		  int descOffset = drawer.textBlock(entries.get(i).getDescription(), Align.JUSTIFY, 105, 325 + yFactor, 200, false, 9);
+		  descOffset *= 12;
+		  drawer.text(entries.get(i).getQty().toString(), 342, 325 + yFactor);
+		  
+		  drawer.hLine(40, 525, 335 + yFactor + descOffset);
+		  drawer.vLine(310 + yFactor, 335 + yFactor + descOffset, 40);
+		  drawer.vLine(310 + yFactor, 335 + yFactor + descOffset, 90);
+		  drawer.vLine(310 + yFactor, 335 + yFactor + descOffset, 320);
+		  drawer.vLine(310 + yFactor, 335 + yFactor + descOffset, 370);
+		  drawer.vLine(310 + yFactor, 335 + yFactor + descOffset, 440);
+		  drawer.vLine(310 + yFactor, 335 + yFactor + descOffset, 525);
 		  
 		  Double actualEntryPrice = entries.get(i).getTotalPrice();
 		  
@@ -132,15 +134,11 @@ public class PriceProposalReport extends AbstractReport {
 			  rawEntryPrice = rawEntryPrice * data.getChangeType();
 			  actualEntryPrice = actualEntryPrice * data.getChangeType();
 		  }
+		  		  
+		  drawer.text(DecimalFormat.getCurrencyInstance().format(actualEntryPrice) + "", 385, 325 + yFactor);
+		  drawer.text(DecimalFormat.getCurrencyInstance().format(actualEntryPrice) + "", 455, 325 + yFactor);
 		  
-		  if(entries.get(i).getDiscount() > 0){
-			  drawer.text(DecimalFormat.getCurrencyInstance().format(rawEntryPrice) + "", 385, 325 + yFactor);
-			  drawer.text(DecimalFormat.getCurrencyInstance().format(rawEntryPrice) + "", 455, 325 + yFactor);
-		  }
-		  else{
-			  drawer.text(DecimalFormat.getCurrencyInstance().format(actualEntryPrice) + "", 385, 325 + yFactor);
-			  drawer.text(DecimalFormat.getCurrencyInstance().format(actualEntryPrice) + "", 455, 325 + yFactor);
-		  }
+		  yFactor += descOffset;
 		  
 		  totalPrice += actualEntryPrice;
 		  
@@ -158,32 +156,14 @@ public class PriceProposalReport extends AbstractReport {
 	  }
 
 	  
-	  if(totalDiscount > 0){
-		  drawer.hLine(370, 525, yFactor);
-		  drawer.hLine(370, 525, yFactor + 20);
-		  drawer.hLine(370, 525, yFactor + 40);
-		  drawer.hLine(370, 525, yFactor + 60);
-		  drawer.vLine(yFactor, yFactor + 60, 370);
-		  drawer.vLine(yFactor, yFactor + 60, 440);
-		  drawer.vLine(yFactor, yFactor + 60, 525);
-		  
-		  drawer.text("Subtotal", 375, yFactor + 13, true);
-		  drawer.text(DecimalFormat.getCurrencyInstance().format((totalPrice + totalDiscount)) + "", 455, yFactor + 13, true);
-		  drawer.text("Descuento", 375, yFactor + 33, true);
-		  drawer.text(DecimalFormat.getCurrencyInstance().format(totalDiscount) + "", 455, yFactor + 33, true);
-		  drawer.text("Total " + data.getCurrencyCode(), 375, yFactor + 53, true);
-		  drawer.text(DecimalFormat.getCurrencyInstance().format(totalPrice) + "", 455, yFactor + 53, true);
-	  }
-	  else{
-		  drawer.hLine(370, 525, yFactor);
-		  drawer.hLine(370, 525, yFactor + 20);
-		  drawer.vLine(yFactor, yFactor + 20, 370);
-		  drawer.vLine(yFactor, yFactor + 20, 440);
-		  drawer.vLine(yFactor, yFactor + 20, 525);
-		  
-		  drawer.text("Total " + data.getCurrencyCode(), 375, yFactor + 13, true);
-		  drawer.text(DecimalFormat.getCurrencyInstance().format(totalPrice) + "", 450, yFactor + 13, true);
-	  }
+	  drawer.hLine(370, 525, yFactor);
+	  drawer.hLine(370, 525, yFactor + 20);
+	  drawer.vLine(yFactor, yFactor + 20, 370);
+	  drawer.vLine(yFactor, yFactor + 20, 440);
+	  drawer.vLine(yFactor, yFactor + 20, 525);
+	  
+	  drawer.text("Total " + data.getCurrencyCode(), 375, yFactor + 13, true);
+	  drawer.text(DecimalFormat.getCurrencyInstance().format(totalPrice) + "", 450, yFactor + 13, true);
 	  
 	  yFactor += 53;
 	  

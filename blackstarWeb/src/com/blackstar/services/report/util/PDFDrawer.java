@@ -200,16 +200,17 @@ public class PDFDrawer {
 	return lines;
   } 
   
-  public void textBlock(String text, int alignment, int x, int y, int width, Boolean bold, int size) throws Exception{
-	  textBlock(text, alignment, x, y, width, bold, DEFAULT_COLOR, size);
+  public int textBlock(String text, int alignment, int x, int y, int width, Boolean bold, int size) throws Exception{
+	 return textBlock(text, alignment, x, y, width, bold, DEFAULT_COLOR, size);
   }
   
-  public void textBlock(String text, int alignment, int x, int y, int width, Boolean bold, int color, int size) throws Exception{
+  public int textBlock(String text, int alignment, int x, int y, int width, Boolean bold, int color, int size) throws Exception{
 	  Font f = getFont(bold, size);
 	  String[] word = text.split(" ");
 	  List<String> outBuf = new ArrayList<String>();
 	  int wordIx = 0;
 	  boolean moreWords = (word.length > 0);
+	  int totLines = 0;
 	  
 	  StringBuilder sb = new StringBuilder();
 	  
@@ -228,6 +229,7 @@ public class PDFDrawer {
 		  else{
 			  // Too long --> Send to buffer and create new line
 			  outBuf.add(sb.toString());
+			  totLines ++;
 			  sb = new StringBuilder();
 			  sb.append(word[wordIx]);
 		  }
@@ -238,6 +240,7 @@ public class PDFDrawer {
 		  // Final line
 		  if(!moreWords){
 			  outBuf.add(sb.toString());
+			  totLines ++;
 		  }
 	  }
 	  
@@ -312,5 +315,7 @@ public class PDFDrawer {
 			  offset += (2 + f.getHeight());
 		  }
 	  }
+	  
+	  return totLines;
   }
 }

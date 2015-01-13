@@ -1048,13 +1048,15 @@ SELECT cp._id id, cp.projectNumber projectNumber, cp.clientId clientId, cp.taxes
       , cp.productsNumber productsNumber, cp.financesNumber financesNumber, cp.servicesNumber servicesNumber
       , cp.totalProjectNumber totalProjectNumber, cp.createdBy createdBy, cp.createdByUsr createdByUsr
       , cp. modified modified, cp.modifiedBy modifiedBy, cp.modifiedByUsr modifiedByUsr
-FROM codexProject cp, codexClient cc, codexStatusType cst, codexPaymentType cpt, codexCurrencyType cct, codexCostCenter ccc
-WHERE cp.statusId = cst._id
-      AND cp.clientId = cc._id
-      AND cp.paymentTypeId = cpt._id
-      AND cp.currencyTypeId = cct._id
-      AND cp.costCenterId = ccc._id
-      AND cp.createdByUsr = pUserId;
+FROM codexProject cp
+  INNER JOIN codexClient cc ON cp.clientId = cc._id
+  INNER JOIN codexStatusType cst ON cp.statusId = cst._id
+  INNER JOIN codexPaymentType cpt ON cp.paymentTypeId = cpt._id
+  INNER JOIN codexCurrencyType cct ON cp.currencyTypeId = cct._id
+  INNER JOIN codexCostCenter ccc ON cp.costCenterId = ccc._id
+WHERE 
+      cc.cstId = pUserId;
+      
 END$$
 
 -- -----------------------------------------------------------------------------
@@ -1084,7 +1086,7 @@ END$$
 	-- blackstarDb.CodexGetProjectsByStatusAndUser
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.CodexGetProjectsByStatusAndUser$$
-CREATE PROCEDURE blackstarDb.`CodexGetProjectsByStatusAndUser`(pStatusId INT(2), pCreatedByUsr INT(11))
+CREATE PROCEDURE blackstarDb.`CodexGetProjectsByStatusAndUser`(pStatusId INT(2), pUserId INT(11))
 BEGIN
 SELECT cp._id id, cp.projectNumber projectNumber, cp.clientId clientId, cp.taxesTypeId taxesTypeId, cp.statusId statusId
       , cp.paymentTypeId paymentTypeId, cp.currencyTypeId currencyTypeId, cst.name statusDescription
@@ -1094,14 +1096,15 @@ SELECT cp._id id, cp.projectNumber projectNumber, cp.clientId clientId, cp.taxes
       , cp.productsNumber productsNumber, cp.financesNumber financesNumber, cp.servicesNumber servicesNumber
       , cp.totalProjectNumber totalProjectNumber, cp.createdBy createdBy, cp.createdByUsr createdByUsr
       , cp. modified modified, cp.modifiedBy modifiedBy, cp.modifiedByUsr modifiedByUsr
-FROM codexProject cp, codexClient cc, codexStatusType cst, codexPaymentType cpt, codexCurrencyType cct, codexCostCenter ccc
-WHERE cp.statusId = cst._id
-      AND cp.clientId = cc._id
-      AND cp.paymentTypeId = cpt._id
-      AND cp.currencyTypeId = cct._id
-      AND cp.costCenterId = ccc._id
-      AND cp.statusId = pStatusId
-	  AND cp.createdByUsr = pCreatedByUsr;
+FROM codexProject cp
+  INNER JOIN codexClient cc ON cp.clientId = cc._id
+  INNER JOIN codexStatusType cst ON cp.statusId = cst._id
+  INNER JOIN codexPaymentType cpt ON cp.paymentTypeId = cpt._id
+  INNER JOIN codexCurrencyType cct ON cp.currencyTypeId = cct._id
+  INNER JOIN codexCostCenter ccc ON cp.costCenterId = ccc._id
+WHERE 
+      cc.cstId = pUserId
+      AND cp.statusId = pStatusId;
 END$$ 
 
 -- -----------------------------------------------------------------------------

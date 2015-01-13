@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ page isELIgnored="false"%>
 <!DOCTYPE html>
 <c:set var="pageSection" scope="request" value="clientDetail" />
@@ -66,8 +67,8 @@
 			}
 			else
 			{
-				$(".lockOnDetail").attr("readonly");
-				$("select .lockOnDetail").attr("disabled", "true");
+				$(".lockOnDetail").attr("readonly", "true");
+				$("select.lockOnDetail").attr("disabled", "true");
 			}
 
 			// Calc binding
@@ -385,6 +386,14 @@
                        } 
 				});
 	    	}
+	    	else{
+	    		$("#" + descFldId).val("");
+	       		$("#" + idsFldId).val("");
+	       		$("#itemPriceByUnit_" + itemNumber).val("");
+	    		init_autoComplete([], descFldId, idsFldId, "single", function(refId){
+					         	
+					         });
+	    	}
 	    	if(value == 1){
 				$("#itemPriceByUnit_" + itemNumber).attr("readonly", "");
 	    	}
@@ -654,7 +663,7 @@
 								<button class="searchButton" onclick="commit();">Guardar</button>
 								<button class="searchButton" onclick="window.history.back();">Cancelar</button>
 							</c:if>
-							<c:if test="${!enableEdition}">
+							<c:if test="${enableFallback}">
 								<button class="searchButton" onclick="fallBackStatus();">Editar</button>
 							</c:if>
 							<button class="searchButton" onclick="window.history.back();">Descartar</button>
@@ -671,7 +680,7 @@
 							  </tr>
 							  <tr>
 								<td>Cliente</td>
-								<td colspan="4"><form:select name="" id="clientId" path="clientId" style="width:100%" required="true" >
+								<td colspan="4"><form:select name="" id="clientId" path="clientId" style="width:100%" required="true" class="lockOnDetail">
 								            <option value="">Seleccione</option>
 											<c:forEach var="ss" items="${clients}">
 												<option value="${ss.id}"
@@ -817,12 +826,12 @@
                                        addEntry();
                                        enableEntry(entryNumber);
                                        $("#entryTypeId_" + entryNumber).val('${entry.entryTypeId}');
-                                       bindDescription(entryNumber, '${entry.description}');
+                                       bindDescription(entryNumber, '${entry.descriptionDisplay}');
                  	     		       $("#qty_" + entryNumber).val(${entry.qty});
                  	     		       set("unitPrice_" + entryNumber, ${entry.unitPrice});
                  	     		       $("#discount_" + entryNumber).val('${entry.discount}');
                  	     		       set("totalPrice_" + entryNumber, ${entry.totalPrice});
-                 	     		       bindComments("comments_", entryNumber, "${entry.comments}");
+                 	     		       bindComments("comments_", entryNumber, "${entry.commentsDisplay}");
                  	     		       if('${enableEdition}' == 'false'){
                  	     		    	 $("#entryTypeId_" + entryNumber).prop( "disabled", true );
                    	     		         $("#qty_" + entryNumber).prop( "disabled", true );
@@ -843,7 +852,7 @@
                   	     			             $("#itemPriceByUnit_" + itemNumber).val('${item.priceByUnit}');
                   	     			             $("#itemDiscount_" + itemNumber).val('${item.discount}');
                   	     			             $("#itemTotalPrice_" + itemNumber).val('${item.totalPrice}');
-                  	     			             bindComments("itemComments_", itemNumber, "${item.comments}");
+                  	     			             bindComments("itemComments_", itemNumber, "${item.commentsDisplay}");
                   	     			             if('${enableEdition}' == 'false'){
                   	     			            	$("#entryItemTypeId_" + itemNumber).prop( "disabled", true );
                   	     			            	$("#reference_" + itemNumber).prop( "disabled", true );
@@ -890,7 +899,7 @@
 								<button class="searchButton" onclick="commit();">Guardar</button>
 								<button class="searchButton" onclick="window.history.back();">Cancelar</button>
 							</c:if>
-							<c:if test="${!enableEdition}">
+							<c:if test="${enableFallback}">
 								<button class="searchButton" onclick="fallBackStatus();">Editar</button>
 							</c:if>
 							<button class="searchButton" onclick="window.history.back();">Descartar</button>

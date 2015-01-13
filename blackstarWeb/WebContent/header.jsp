@@ -41,7 +41,7 @@
 		<c:when test="${pageSection == 'dashboard'}">
 		       <li><span class="active" onclick="window.location = '${pageContext.request.contextPath}/codex/dashboard/show.do'">Inicio</span></li>
 			    <li><a href="${pageContext.request.contextPath}/codex/client/showClientList.do">Clientes</a></li>
-			    <li><a href="${pageContext.request.contextPath}/codex/project/showList.do">Cedula de Proyectos</a></li>
+			    <li><a href="${pageContext.request.contextPath}/codex/project/showList.do">Cedulas de Proyectos</a></li>
 				<li><a href="${pageContext.request.contextPath}/codex/priceProposal/showAll.do">Cotizaciones</a></li>
 				<li><a href="${pageContext.request.contextPath}">Pedidos</a></li>
 				<li><a href="${pageContext.request.contextPath}/codex/kpi/show.do">Indicadores</a></li>
@@ -50,7 +50,7 @@
 		<c:when test="${pageSection == 'clientes'}">
 		       <li><a href="${pageContext.request.contextPath}/codex/dashboard/show.do">Inicio</a></li>
 			    <li><span class="active" onclick="window.location = '${pageContext.request.contextPath}/codex/client/showClientList.do'">Clientes</span></li>
-			    <li><a href="${pageContext.request.contextPath}/codex/project/showList.do">Cedula de Proyectos</a></li>
+			    <li><a href="${pageContext.request.contextPath}/codex/project/showList.do">Cedulas de Proyectos</a></li>
 				<li><a href="${pageContext.request.contextPath}/codex/priceProposal/showAll.do">Cotizaciones</a></li>
 				<li><a href="${pageContext.request.contextPath}">Pedidos</a></li>
 				<li><a href="${pageContext.request.contextPath}/codex/kpi/show.do">Indicadores</a></li>
@@ -59,7 +59,7 @@
 			<c:when test="${pageSection == 'projects'}">
 		       <li><a href="${pageContext.request.contextPath}/codex/dashboard/show.do">Inicio</a></li>
 		       <li><a href="${pageContext.request.contextPath}/codex/client/showClientList.do">Clientes</a></li>
-			    <li><span class="active" onclick="window.location = '${pageContext.request.contextPath}/codex/project/showList.do'">Cedula de Proyectos</span></li>
+			    <li><span class="active" onclick="window.location = '${pageContext.request.contextPath}/codex/project/showList.do'">Cedulas de Proyectos</span></li>
 				<li><a href="${pageContext.request.contextPath}/codex/priceProposal/showAll.do">Cotizaciones</a></li>
 				<li><a href="${pageContext.request.contextPath}">Pedidos</a></li>
 				<li><a href="${pageContext.request.contextPath}/codex/kpi/show.do">Indicadores</a></li>
@@ -67,7 +67,7 @@
 			<c:otherwise>
 			    <li><a href="${pageContext.request.contextPath}/codex/dashboard/show.do">Inicio</a></li>
 		       <li><a href="${pageContext.request.contextPath}/codex/client/showClientList.do">Clientes</a></li>
-			    <li><span class="active" onclick="window.location = '${pageContext.request.contextPath}/codex/project/showList.do'">Cedula de Proyectos</span></li>
+			    <li><span class="active" onclick="window.location = '${pageContext.request.contextPath}/codex/project/showList.do'">Cedulas de Proyectos</span></li>
 				<li><a href="${pageContext.request.contextPath}/codex/priceProposal/showAll.do">Cotizaciones</a></li>
 				<li><a href="${pageContext.request.contextPath}">Pedidos</a></li>
 				<li><a href="${pageContext.request.contextPath}/codex/kpi/show.do">Indicadores</a></li>
