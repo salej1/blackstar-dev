@@ -28,6 +28,7 @@ public class PriceProposalVO {
 	private Date created;
 	private String priceProposalNumber;
 	private List<PriceProposalEntryVO> entries = new ArrayList<PriceProposalEntryVO>();
+	private String documentId;
 	
 	public Integer getId() {
 		return id;
@@ -160,6 +161,12 @@ public class PriceProposalVO {
 	}
 	public void setEntries(List<PriceProposalEntryVO> entries) {
 		this.entries = entries;
+	}
+	public String getDocumentId() {
+		return documentId;
+	}
+	public void setDocumentId(String documentId) {
+		this.documentId = documentId;
 	}
 
 }

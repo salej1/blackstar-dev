@@ -94,6 +94,7 @@ public class ProjectController extends AbstractController {
 		 model.addAttribute("paymentTypes", service.getAllPaymentTypes());
 		 model.addAttribute("staff", udService.getStaff());
 		 model.addAttribute("accessToken", gdService.getAccessToken());
+		 model.addAttribute("proposalList", service.getPriceProposalList(projectId));
 
 		 Boolean enableEdition = false;
 		 Boolean enableFallback = false;
@@ -103,7 +104,7 @@ public class ProjectController extends AbstractController {
 			 }
 		 }
 		 else if(project.getStatusId() > 1 && project.getStatusId() <= 4){
-			 if(userSession.getUser().getBelongsToGroup().get(Globals.GROUP_SALES_MANAGER) != null && userSession.getUser().getBelongsToGroup().get(Globals.GROUP_SALES_MANAGER) == true){
+			 if(userSession.getUser().getBelongsToGroup().get(Globals.GROUP_SALES_MANAGER) != null && userSession.getUser().getBelongsToGroup().get(Globals.GROUP_SALES_MANAGER) == true && project.getStatusId() < 3){
 				 enableEdition = true;
 			 }
 			 if(project.getCstEmail().equals(userSession.getUser().getUserEmail())){
@@ -197,15 +198,15 @@ public class ProjectController extends AbstractController {
   
   @RequestMapping(value = "/addFollow.do", method = RequestMethod.GET)
   public String addFollow(@RequestParam(required = true) Integer projectId
-		                , @RequestParam(required = true) Integer userId
+		                , @RequestParam(required = true) String userId
 		                , @RequestParam(required = true) String comment
-		                , @RequestParam(required = true) Integer userToAssign
+		                , @RequestParam(required = true) String userToAssign
 				                                    , ModelMap model) {
 	boolean sendNotification = true;
 	try {
 		service.addFollow(projectId, userId, userToAssign, comment);
-		if(userToAssign != null && userToAssign > 0){
-			service.addProjectTeam(projectId, 1, userToAssign);
+		if(userToAssign != null && userToAssign != null){
+			//service.addProjectTeam(projectId, 1, userToAssign);
 		}
 
 		if(sendNotification){
@@ -213,9 +214,8 @@ public class ProjectController extends AbstractController {
 		}
 		model.addAttribute("followUps", service.getFollowUps(projectId));
 	} catch (Exception e) {
+		Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 		e.printStackTrace();
-		model.addAttribute("errorDetails", e.getStackTrace()[0].toString());
-		System.out.println("CodexAddFollowError=> " + e);
 		return "error";
 	}
 	return "codex/_follow";

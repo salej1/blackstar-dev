@@ -5,42 +5,42 @@
 <%@ page isELIgnored="false"%>
 
 <script>
+	var followType = 1;
+	$(document).ready(function () {
+		$("#seguimientoCapture").hide();
+	});
 
-  $(document).ready(function () {
-	  $("#seguimientoCapture").hide();
-  });
-
-   function addSeguimiento(type){
-	 var d = new Date(); 
-	 $("#seguimientoCapture").show();	
-	 $("#seguimientoStamp").html(d.format('dd/MM/yyyy h:mm:ss') + ' ${ user.userName }');
-	 $("#seguimientoText").val('');
-	 $("#who").val("-1");
-	 followType = type;
-	 if(type == "1"){
-		$("#assignamentArea").show();
-	 } else {
-		$("#assignamentArea").hide(); 
-	 }
-  }
-
-  function applySeguimiento(){
-    var who;
-	if(followType == "1"){
-		who = $("#who").val();
-	} else if(followType == "2"){
-		who = "-2";
-	}else { 
-		who = "-3";
+	function addSeguimiento(type){
+		var d = new Date(); 
+		$("#seguimientoCapture").show();	
+		$("#seguimientoStamp").html(d.format('dd/MM/yyyy h:mm:ss') + ' ${ user.userName }');
+		$("#seguimientoText").val('');
+		$("#who").val("-1");
+		followType = type;
+		if(type == "1"){
+			$("#assignamentArea").show();
+		} else {
+			$("#assignamentArea").hide(); 
+		}
 	}
-	$("#followDetail").load("${pageContext.request.contextPath}/codex/project/addFollow.do?projectId=${project.id}&userId=${ user.blackstarUserId }" 
-			                    + "&userToAssign=" + who + "&comment=" + $("#seguimientoText").val().replace(/ /g, '%20'));
-	$("#seguimientoCapture").hide();	
-  }
 
-  function cancelAddSeguimiento(){
-	$("#seguimientoCapture").hide();
-  }
+	function applySeguimiento(){
+		var who;
+		if(followType == "1"){
+			who = $("#who").val();
+		} else if(followType == "2"){
+			who = "-2";
+		}else { 
+			who = "-3";
+		}
+		$("#followDetail").load("${pageContext.request.contextPath}/codex/project/addFollow.do?projectId=${project.id}&userId=${ user.blackstarUserId }" 
+		            + "&userToAssign=" + who + "&comment=" + $("#seguimientoText").val().replace(/ /g, '%20'));
+		$("#seguimientoCapture").hide();	
+	}
+
+	function cancelAddSeguimiento(){
+		$("#seguimientoCapture").hide();
+	}
 
 </script>
 
@@ -69,7 +69,7 @@
 												  <select id="who" style="width:200px;">
 												    <option value="-1">Seleccione</option>
 												    <c:forEach var="current" items="${staff}" >
-												       <option value="${current.id}">${current.name}</option>
+												       <option value="${current.email}">${current.name}</option>
 												    </c:forEach>
 												  </select>
 												<p></p>

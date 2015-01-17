@@ -107,7 +107,6 @@ public class PriceProposalReport extends AbstractReport {
 			  printHeader();
 			  drawer.hLine(40, 545, 120);
 		  }   
-		  yFactor = rowCounter * 25 + adjusment;
 		  
 		  items = entries.get(i).getItems();
 		  rawEntryPrice = 0F;
@@ -116,7 +115,7 @@ public class PriceProposalReport extends AbstractReport {
 		  }
 		  
 		  drawer.text(i + 1 + "", 60, 325 + yFactor);
-		  int descOffset = drawer.textBlock(entries.get(i).getDescription(), Align.JUSTIFY, 105, 325 + yFactor, 200, false, 9);
+		  int descOffset = drawer.textBlock(entries.get(i).getDescription(), Align.JUSTIFY, 105, 325 + yFactor, 200, false, 8);
 		  descOffset *= 12;
 		  drawer.text(entries.get(i).getQty().toString(), 342, 325 + yFactor);
 		  
@@ -138,8 +137,8 @@ public class PriceProposalReport extends AbstractReport {
 		  drawer.text(DecimalFormat.getCurrencyInstance().format(actualEntryPrice) + "", 385, 325 + yFactor);
 		  drawer.text(DecimalFormat.getCurrencyInstance().format(actualEntryPrice) + "", 455, 325 + yFactor);
 		  
-		  yFactor += descOffset;
-		  
+		  yFactor += descOffset + 25;
+		  		  
 		  totalPrice += actualEntryPrice;
 		  
 		  if(entries.get(i).getDiscount() > 0){

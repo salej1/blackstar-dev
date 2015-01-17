@@ -85,7 +85,7 @@ public class ProjectDAOImpl extends AbstractDAO
   }
 
   @Override
-  public void addFollow(Integer projectId, Integer userId, Integer asignedUserId
+  public void addFollow(Integer projectId, String userId, String asignedUserId
 		                                                     , String comment) {
 	StringBuilder sqlBuilder = new StringBuilder("CALL AddFollowUpToCodexProject(?, ?, ?, ?);");
 	getJdbcTemplate().update(sqlBuilder.toString(),new Object[] { projectId
@@ -259,6 +259,13 @@ public String getCSTOffice(String cst) {
 public List<JSONObject> getPriceList() {
 	String sql = "CALL GetCodexPriceList;";
 	List<JSONObject> list = (List<JSONObject>) getJdbcTemplate().query(sql, new JSONRowMapper());
+	return list;
+}
+
+@Override
+public List<JSONObject> getPriceProposalList(Integer projectId) {
+	String sql = "CALL GetPriceProposalList(?);";
+	List<JSONObject> list = (List<JSONObject>) getJdbcTemplate().query(sql, new Object[]{projectId}, new JSONRowMapper());
 	return list;
 }
 

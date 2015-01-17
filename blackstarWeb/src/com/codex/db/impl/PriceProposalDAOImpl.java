@@ -11,7 +11,7 @@ public class PriceProposalDAOImpl extends AbstractDAO
 
   @Override 
   public Integer insertPriceProposal(PriceProposalVO priceProposal){
-	String sqlQuery = "CALL CodexInsertPriceProposal(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	String sqlQuery = "CALL CodexInsertPriceProposal(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 	Integer propId = getJdbcTemplate().queryForObject(sqlQuery, new Object[]{
 			                  priceProposal.getProjectId(), priceProposal.getPriceProposalNumber()
 			                , priceProposal.getClientId(), priceProposal.getTaxesTypeId()
@@ -22,7 +22,8 @@ public class PriceProposalDAOImpl extends AbstractDAO
 				            , priceProposal.getTimeLimit(), priceProposal.getSettlementTimeLimit()
 				            , priceProposal.getDeliveryTime(), priceProposal.getIncoterm()
 				            , priceProposal.getProductsNumber(), priceProposal.getFinancesNumber()
-				            , priceProposal.getServicesNumber(), priceProposal.getTotalProjectNumber()}, Integer.class);
+				            , priceProposal.getServicesNumber(), priceProposal.getTotalProjectNumber()
+				            , priceProposal.getDocumentId()}, Integer.class);
 	
 	priceProposal.setId(propId);
 	return propId;

@@ -26,10 +26,10 @@ public interface ProjectService {
   public List<TicketTeamDTO> getWorkTeam(Integer projectId);
   public List<User> getAsigneedUser(Integer projectId);
   public List<User> getResponseUser(Integer projectId);
-  public void addFollow(Integer projectId, Integer userId, Integer assignedUserId
+  public void addFollow(Integer projectId, String userId, String assignedUserId
                                                                , String comment);
   public void addProjectTeam(Integer projectId, Integer roleId, Integer userId);
-  public void sendNotification(Integer fromUserId, Integer toUserId 
+  public void sendNotification(String fromUserId, String toUser 
 		                       , Integer projectId, String detail);
   public Integer getNewProjectId(String type);
   public List<DeliverableTypesVO> getDeliverableTypes();
@@ -50,4 +50,5 @@ public interface ProjectService {
   public String getCSTOffice(String cst);
   public List<String> getIncotermList();
   public String getPriceList();
+  public String getPriceProposalList(Integer projectId);
 }

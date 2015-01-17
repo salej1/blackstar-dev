@@ -107,7 +107,7 @@ public class ProjectServiceImpl extends AbstractService
   }
 
   @Override
-  public void addFollow(Integer projectId, Integer userId, Integer assignedUserId
+  public void addFollow(Integer projectId, String userId, String assignedUserId
 		                                                      , String comment) {
 	dao.addFollow(projectId, userId, assignedUserId, comment);
   }
@@ -118,27 +118,24 @@ public class ProjectServiceImpl extends AbstractService
   }
   
   @Override
-  public void sendNotification(Integer fromUserId, Integer toUserId 
+  public void sendNotification(String fromUser, String toUser 
 		                      , Integer projectId, String detail) {
 	List<ProjectVO> projects = dao.getProjectDetail(projectId);
 	ProjectVO project = null;
 	StringBuilder message;
-	User to;
-	User from;
+
 	if(projects.size() > 0){
 	  project = projects.get(0);
 	  message = new StringBuilder();
-	  System.out.println("sendNot=> From(" + fromUserId + "), to(" + toUserId + ")");
-	  to = uDAO.getUserById(toUserId);
-	  from = uDAO.getUserById(fromUserId);
+	  System.out.println("sendNot=> From(" + fromUser + "), to(" + toUser + ")");
+
 	  IEmailService mail = EmailServiceFactory.getEmailService();
-	  message.append(String.format("La requisicion %s le ha sido asignada para dar seguimiento. Por favor revise a continuación los detalles: ", project.getProjectNumber()));
+	  message.append(String.format("El proyecto %s le ha sido asignada para dar seguimiento. Por favor revise a continuaciÃ³n los detalles: ", project.getProjectNumber()));
 	  message.append(String.format("\r\n\r\n Estatus: %s", project.getStatusDescription()));
 	  message.append(String.format("\r\n\r\n Cliente: %s", project.getClientDescription()));
 	  message.append(String.format("\r\n\r\n"));
-	  message.append(String.format("\r\n\r\n Usuario que asignó: %s", from.getUserName()));
 	  message.append(String.format("\r\n\r\n Mensaje: %s", detail));
-	  mail.sendEmail(from.getUserEmail(), to.getUserEmail(), "Asignación de Proyecto " + project.getProjectNumber(), message.toString());
+	  mail.sendEmail(fromUser, toUser, "AsignaciÃ³n de Proyecto " + project.getProjectNumber(), message.toString());
 	}
   }
   
@@ -226,7 +223,7 @@ public class ProjectServiceImpl extends AbstractService
 						Float.valueOf(values[4]),Float.valueOf(values[5]), values[6]);
 		items = values[8].split("\\^");
 		for(String item : items){
-			values = item.split("°");
+			values = item.split("Â°");
 			dao.upsertEntryItem(-1, entryId, Integer.valueOf(values[0]), values[1]
 			   , values[2], Integer.valueOf(values[3]), Float.valueOf(values[4])
 			   , Float.valueOf(values[5]), Float.valueOf(values[6]), values[7]);
@@ -251,7 +248,7 @@ public class ProjectServiceImpl extends AbstractService
 				Float.valueOf(values[4]),Float.valueOf(values[5]), values[6]);
 		items = values[8].split("\\^");
 		for(String item : items){
-			values = item.split("°");
+			values = item.split("Â°");
 			dao.upsertEntryItem(-1, entryId, Integer.valueOf(values[0]), values[1]
 			   , values[2], Integer.valueOf(values[3]), Float.valueOf(values[4])
 			   , Float.valueOf(values[5]), Float.valueOf(values[6]), values[7]);
@@ -270,7 +267,7 @@ public class ProjectServiceImpl extends AbstractService
 		dao.upsertProjectEntry(entryId, project.getId(), 0, "", 0, 0F, 0F, 0F, values[6]);
 		items = values[8].split("\\^");
 		for(String item : items){
-			values = item.split("°");
+			values = item.split("Â°");
 			itemId = Integer.valueOf(values[8]);
 			dao.upsertEntryItem(itemId, entryId, 0, "", "", 0, 0F, 0F, 0F, values[7]);
 		}
@@ -318,89 +315,108 @@ public class ProjectServiceImpl extends AbstractService
   }
   
   private void gotoByAuthStatus(ProjectVO project, boolean autoAuth){
-	  StringBuilder message = new StringBuilder();
 	  IEmailService mail = EmailServiceFactory.getEmailService();
 
 	  // STATUS ADVANCE
 	  dao.advanceStatus(project.getId(), project.getStatusId() + 1);
-	  	  
-	  if(autoAuth){
 
-		  List<User> to = dao.getSalesManger();
+	  if(!autoAuth){
+		  StringBuilder to = new StringBuilder();
 
-		  for(User mgr : to){
+		  List<User> mgrs = dao.getSalesManger();
 
-			  message.append(String.format("Proyecto pendiente de Autorización: ", project.getProjectNumber()));
-			  message.append(String.format("\r\n\r\n Estatus: %s", project.getStatusDescription()));
-			  message.append(String.format("\r\n\r\n Cliente: %s", project.getClientDescription()));
-			  message.append(String.format("\r\n\r\n"));
-
-			  mail.sendEmail("portal-servicios@gposac.com.mx", mgr.getUserEmail(), "Proyecto pendiente de Autorización " 
-					  + project.getProjectNumber(), message.toString());
+		  for(User mgr : mgrs){
+			  if(to.length() > 0){
+				  to.append(",");  
+			  }
+			  else{
+				  to.append(mgr.getUserEmail());
+			  }
 		  }
+
+		  String link = Globals.GOOGLE_CONTEXT_URL + "/codex/project/edit.do?projectId=" + project.getId();
+		  String subject = "Solicitud de aprobacion para proyecto " + project.getProjectNumber();
+		  StringBuilder bodySb = new StringBuilder();
+
+		  bodySb.append("<img src='" + Globals.GPOSAC_LOGO_DEFAULT_URL + "'>");
+		  bodySb.append("<div style='font-family:sans-serif;margin-left:50px;'>");
+		  bodySb.append("<h3>Solicitud de aprobacion para proyecto " + project.getProjectNumber() + "</h3>");
+		  bodySb.append("<p>Para su informacion:</p>");
+		  bodySb.append("<p>Se ha solicitado la autorizacion del proyecto " + project.getProjectNumber() + "</p>");
+		  bodySb.append("<br>Registrado por: " + project.getCstName());
+		  bodySb.append("<br>Fecha: " + Globals.getLocalTimeString());
+		  bodySb.append("<br>");
+		  bodySb.append("<p>En el siguiente Link podra revisar los detalles. Por favor revise la informacion para dar el seguimiento correspondiente</p>");
+		  bodySb.append(link);
+		  bodySb.append("</div>");
+		  bodySb.append("<hr>");
+		  bodySb.append("<small>Favor de no responder a este email. En caso de duda pongase en contacto con la persona que lo solicito</small>");
+
+		  mail.sendEmail("portal-servicios@gposac.com.mx", to.toString(), subject, bodySb.toString());
 	  }
 	  else{
-		  // Auto-authorized
-		  List<User> to = dao.getSalesManger();
-		  //User resp = dao.getResponsable(project.getId());
-		  //to.add(resp);
-		  
-		  for(User usr : to){
-			  message.append(String.format("Proyecto Autorizado por default: ", project.getProjectNumber()));
-				message.append(String.format("\r\n\r\n Estatus: %s", project.getStatusDescription()));
-				message.append(String.format("\r\n\r\n Cliente: %s", project.getClientDescription()));
-				message.append(String.format("\r\n\r\n"));
-				mail.sendEmail("portal-servicios@gposac.com.mx", usr.getUserEmail(), "Proyecto Autorizado " 
-				                                       + project.getProjectNumber(), message.toString());
-		  }
+		  // Auto-autorizado
 	  }
   }
   
   private void gotoAuthStatus(ProjectVO project){
-	  StringBuilder message = new StringBuilder();
-	  User to = null;
 	  IEmailService mail = EmailServiceFactory.getEmailService();
 
 	  // STATUS ADVANCE
 	  dao.advanceStatus(project.getId(), project.getStatusId() + 1);
 
-	  to = dao.getResponsable(project.getId());
-	  message.append(String.format("Proyecto Autorizado: ", project.getProjectNumber()));
-	  message.append(String.format("\r\n\r\n Estatus: %s", project.getStatusDescription()));
-	  message.append(String.format("\r\n\r\n Cliente: %s", project.getClientDescription()));
-	  message.append(String.format("\r\n\r\n"));
-	  mail.sendEmail("portal-servicios@gposac.com.mx", to.getUserEmail(), "Proyecto Autorizado " 
-			  + project.getProjectNumber(), message.toString());
+	  String link = Globals.GOOGLE_CONTEXT_URL + "/codex/project/edit.do?projectId=" + project.getId();
+	  String subject = "Proyecto " + project.getProjectNumber() + " autorizado";
+	  StringBuilder bodySb = new StringBuilder();
+	  String to = project.getCstEmail();
+
+	  bodySb.append("<img src='" + Globals.GPOSAC_LOGO_DEFAULT_URL + "'>");
+	  bodySb.append("<div style='font-family:sans-serif;margin-left:50px;'>");
+	  bodySb.append("<h3>Proyecto " + project.getProjectNumber() + " autorizado</h3>");
+	  bodySb.append("<p>Para su informacion:</p>");
+	  bodySb.append("<p>La solicitud de autorizacion del proyecto " + project.getProjectNumber() + " ha sido aprobada</p>");
+	  bodySb.append("<br>Fecha: " + Globals.getLocalTimeString());
+	  bodySb.append("<br>");
+	  bodySb.append("<p>En el siguiente Link podra revisar los detalles.</p>");
+	  bodySb.append(link);
+	  bodySb.append("</div>");
+	  bodySb.append("<hr>");
+	  bodySb.append("<small>Favor de no responder a este email. En caso de duda pongase en contacto con la persona que autorizo</small>");
+
+	  mail.sendEmail("portal-servicios@gposac.com.mx", to.toString(), subject, bodySb.toString());
   }
     
   private void gotoPricePropStatus(ProjectVO project) throws Exception{
+	  IEmailService mail = EmailServiceFactory.getEmailService();
 	  PriceProposalVO priceProposal = priceProposalService
 			  .getProposalFromProject(project);
 	  
 	  project.setPriceProposalNumber(priceProposal.getPriceProposalNumber());
 	  byte[] report = pdfService.getPriceProposalReport(project);
 	  
+	  String documentId = saveReport(project, report);
+	  if(documentId == null || documentId.equals("")){
+		  throw new Exception("Error de comunicacion con Google Drive, no fue posible guardar el documento " + priceProposal.getPriceProposalNumber());
+	  }
+	  
+	  priceProposal.setDocumentId(documentId);
 	  priceProposalService.insertPriceProposal(priceProposal);
-	  ClientVO client = cDAO.getClientById(project.getClientId());
-
-	  saveReport(project, report);
 
 	  // STATUS ADVANCE
 	  dao.advanceStatus(project.getId(), project.getStatusId() + 1);
 
-	  // DESACTIVADO TEMPORALMENTE HASTA QUE SE VALIDE CREACION DE PDF
-	  // gmService.sendEmail(client.getEmail(), "Cotización "  + priceProposal
-	  //		  .getPriceProposalNumber(), "Cotización", "Cotizacion.pdf", report);
-	  
 	  String to = project.getCstEmail();
-	  gmService.sendEmail(to, "Cotización "  + priceProposal.getPriceProposalNumber(), "Cotización", "Cotizacion.pdf", report);
+	  gmService.sendEmail(to, "CotizaciÃ³n "  + priceProposal.getPriceProposalNumber(), "CotizaciÃ³n", "Cotizacion.pdf", report);
+
   }
   
   
-  private void saveReport(ProjectVO project, byte[] report) throws Exception {
+  private String saveReport(ProjectVO project, byte[] report) throws Exception {
 	String parentId = gdService.getProposalFolderId(project.getProjectNumber());
-	gdService.insertFileFromStream("application/pdf", project.getProjectNumber() 
+	String documentId = gdService.insertFileFromStream("application/pdf", project.getProjectNumber() 
 			                                        + ".pdf", parentId, report);
+	
+	return documentId;
   }
 
   @Override
@@ -425,6 +441,11 @@ public List<String> getIncotermList() {
 @Override
 public String getPriceList() {
 	return dao.getPriceList().toString();
+}
+
+@Override
+public String getPriceProposalList(Integer projectId) {
+	return dao.getPriceProposalList(projectId).toString();
 }
 
 

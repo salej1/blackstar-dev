@@ -17,7 +17,8 @@
 -- ---------------------------------------------------------------------------
 -- 4 	05/01/2014 	SAG 	Se establece unitPrice = totalPrice en Entry
 -- ---------------------------------------------------------------------------
-
+-- 5 	15/01/2015	SAG 	Se agregan los valores de secuencia para clientes
+-- ---------------------------------------------------------------------------
 use blackstarDb;
 
 DELIMITER $$
@@ -29,6 +30,12 @@ DELIMITER $$
 DROP PROCEDURE IF EXISTS blackstarDb.updateCodexData$$
 CREATE PROCEDURE blackstarDb.updateCodexData()
 BEGIN
+
+	IF(SELECT count(*) FROM blackstarDb.sequence WHERE sequenceTypeId = 'C') = 0 THEN
+		INSERT INTO blackstarDb.sequence(sequenceTypeId, sequenceNumber, description)
+		SELECT 'C', max(_id), 'Secuencia para numero de clientes' FROM blackstarDb.codexClient;
+	END IF;
+
 	UPDATE codexProjectEntry e SET
 		unitPrice = (
 			SELECT sum(totalPrice) FROM codexEntryItem i WHERE i.entryId = e._id

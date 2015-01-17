@@ -21,6 +21,7 @@
 	<script src="${pageContext.request.contextPath}/js/dateFormat.js"></script>	
 	<script type="text/javascript" src="${pageContext.request.contextPath}/js/common/popup.js"></script>
 	<script type="text/javascript" src="${pageContext.request.contextPath}/js/customAutocomplete.js"></script>
+	<script src="${pageContext.request.contextPath}/DataTables-1.9.4/media/js/jquery.dataTables.js"></script>
 	
 	<script type="text/javascript">
 	    var entryNumber = 0;
@@ -189,7 +190,13 @@
 	    function addEntry(){
 	    	entryNumber++;
 	    	$('#entryTable').append('\
-	    		<tr class="part" id="entry_' + entryNumber + '" name="' + entryNumber + '"><td>' + entryNumber + '</td>\
+	    		<tr class="part" id="entry_' + entryNumber + '" name="' + entryNumber + '">\
+	    			<td>\
+	    			<span>\
+	    				<c:if test="${enableEdition}"><img src="/img/delete.png" title="Eliminar partida" id="removeEntryButton_' + entryNumber +'" onclick="removeEntry(' + entryNumber +'); return false;" style="cursor:pointer"/></c:if>\
+		    			' + entryNumber + '\
+		    		</span>\
+		    		</td>\
 		    		<td>\
 		    			<select name="" id="entryTypeId_' + entryNumber + '" style="width:95%" required onchange="bindEntryProductType(' + entryNumber + ', this.value);">\
 		    				<option value="">Seleccione</option>\
@@ -205,12 +212,12 @@
 		    		<td><span class="total" id="totalPrice_' + entryNumber + 'Display"></span><input type="hidden" id="totalPrice_' + entryNumber + '"/></td>\
 		    		<td><a href="#" id="comments_' + entryNumber + 'Display" onclick="getComments(\'comments_\', ' + entryNumber + '); return false;"></a><input type="hidden" id="comments_' + entryNumber + '" /><hidden id="productType_' + entryNumber + '"/></td>\
 	    		</tr>\
-	    		<tr class="item_part' + entryNumber + '">\
+	    		<tr id="itemPart_' + entryNumber + '" class="item_part' + entryNumber + '">\
 	    			<td colspan="9"><table class="items" id="items_'+ entryNumber + '" style="width:100%"></table></td>\
 	    		</tr>\
-	    		<tr>\
+	    		<tr id="itemAdd_' + entryNumber + '" >\
 	    			<td></td>\
-	    			<c:if test="${enableEdition}"><td><button class="searchButton" onclick="addItem(' + entryNumber +');" id="addItemButton">+ Item</button></td></c:if>\
+	    			<c:if test="${enableEdition}"><td><a href="#"" onclick="addItem(' + entryNumber +'); return false;" id="addItemButton">Agregar item</a></td></c:if>\
 	    		</tr>');
 			
 			bindCalc();
@@ -222,8 +229,8 @@
 	    	itemNumber++;
 	    	$('#items_' + entryNumber).append('\
 	    		<tr id="item_' + itemNumber + '" name="' + itemNumber + '">\
-	    			<td style="width:45px" >\
-	    				<c:if test="${enableEdition}"><button class="searchButton" onclick="removeItem(\'item_' + itemNumber +'\')" id="removeItemButton_' + itemNumber +'" >-</button></c:if>\
+	    			<td style="width:45px; text-align:right;" >\
+	    				<c:if test="${enableEdition}"><a href="#" onclick="removeItem(\'item_' + itemNumber +'\'); return false;"><img src="/img/delete.png" title="Eliminar Item" id="removeItemButton_' + itemNumber +'" /></a></c:if>\
 	    			</td>\
 	    			<td><select onchange="setReferenceTypes(this.value, referenceId_' + itemNumber + ', reference_' + itemNumber + ', ' + itemNumber + ')" id="entryItemTypeId_' + itemNumber + '" style="width:110px" required>\
 	    				<option value="">Seleccione</option>\
@@ -239,7 +246,7 @@
 	    			<td><input type="text" id="itemDiscount_' 	+ itemNumber + '" style="width:25px" required value="0" onchange="calcItem(' + itemNumber + ');" disabled/>%</td>\
 	    				<input type="hidden" id="itemDiscountNum_' + itemNumber + '"/>\
 	    			<td style="width:110px"><input type="text" id="itemTotalPrice_' + itemNumber + '" style="width:95%" required readonly disabled/></td>\
-	    			<td style="width:65px"><a href="#" id="itemComments_' + entryNumber + 'Display" onclick="getComments(\'itemComments_\', ' + entryNumber + '); return false;"></a><input type="hidden" id="itemComments_' 	+ itemNumber + '"/></td>\
+	    			<td style="width:65px"><a href="#" id="itemComments_' + itemNumber + 'Display" onclick="getComments(\'itemComments_\', ' + itemNumber + '); return false;"></a><input type="hidden" id="itemComments_' 	+ itemNumber + '"/></td>\
 	    		</tr>');
 
 	    	bindCalc();
@@ -248,8 +255,16 @@
 	    
 	    function removeItem(itemId){
 	    	$('#' + itemId).remove();
+	    	calc();
 	    }
 	    
+	    function removeEntry(entryNumber){
+	    	$("#entry_" + entryNumber).remove();
+	    	$("#itemPart_" + entryNumber).remove();
+	    	$("#itemAdd_" + entryNumber).remove();
+	    	calc();
+	    }
+
 	    function customPickerCallBack(data) {
 			$("#attachmentFileName").val(data.docs[0].name);
 			$('#attachmentDlg').dialog('open');
@@ -328,7 +343,7 @@
 
 	    	// Plazo finiquito
 	    	if($("#deliveryTime").val() == ""){
-	    		warning ("Favor de tiempo de entrega");
+	    		warning ("Favor de capturar tiempo de entrega");
 	    		return false;
 	    	}
 
@@ -530,7 +545,9 @@
 
 	    	// sumarizar items por partida
 	    	for(entryNum = 1; entryNum <= entryNumber; entryNum ++){
-	    		calcEntry(entryNum);
+	    		if($("#entry_" + entryNum).length > 0){
+	    			calcEntry(entryNum);	    			
+	    		}
 	    	}
 
 	    	// fianza
@@ -545,7 +562,9 @@
 
 	    	// aplicacion de la fianza
 	    	for(entryNum = 1; entryNum <= entryNumber; entryNum ++){
-	    		distributeFine(entryNum, projectFine, projectTotal);
+	    		if($("#entry_" + entryNum).length > 0){
+		    		distributeFine(entryNum, projectFine, projectTotal);
+		    	}
 	    	}
 	    }
 
@@ -809,14 +828,14 @@
 						<table id="entryTable">
 							<thead>
 								<tr>
-									<th style="width:5px;">Part.</th>
+									<th style="width:25px;">Part.</th>
 									<th style="width:80px;">Tipo</th>
 									<th style="width:220px;">Referencia</th>
-									<th style="width:210px;">Descripcion</th>
+									<th style="width:180px;">Descripcion</th>
 									<th style="width:15px;">Cant.</th>
 									<th style="width:90px;">P. Unt.</th>
 									<th style="width:50px;">Descto.</th>
-									<th style="width:100px;">P. Tot.</th>
+									<th style="width:90px;">P. Tot.</th>
 									<th>Observaciones</th>
 								</tr>
 							</thead>
@@ -870,11 +889,59 @@
 						</table>
 						<c:if test="${enableEdition}">
 						   <div>
-							  <button class="searchButton" onclick="addEntry();">+ Partida</button>
+							  <a href="#" onclick="addEntry(); return false;">Agregar Partida</a>
 						   </div>
 						</c:if>
 <!--   ~PARTIDAS   -->		
 
+<!--   COTIZACIONES   -->		
+						<script type="text/javascript">
+							$(function(){
+								var proposalList = $.parseJSON('${proposalList}');
+								
+								$('#priceProposalList').dataTable({
+									"bProcessing": true,
+									"bFilter": true,
+									"bLengthChange": false,
+									"iDisplayLength": 10,
+									"bInfo": false,
+									"sPaginationType": "full_numbers",
+									"aaData": proposalList,
+									"sDom": '<"top"i>rt<"bottom"flp><"clear">',
+									"aaSorting": [],
+									"aoColumns": [
+												  { "mData": "priceProposalNumber"},
+												  { "mData": "created" },
+												  { "mData": "name" },
+												  { "mData": "contactName" },
+												  { "mData": "total" },
+												  { "mData": "documentId" }
+											  ],
+									"aoColumnDefs" : [
+										{"mRender" : function(data, type, row){
+											return "<a href='https://docs.google.com/a/gposac.com.mx/file/d/" + data + "/edit' target='_blank'><img src='${pageContext.request.contextPath}/img/pdf.png'</a>";
+										}, "aTargets" : [5]},
+										{"mRender" : function(data, type, row){
+											return toCurrency(data) + " USD";
+										}, "aTargets" : [4]}]
+								});
+							});
+							
+						</script>
+						<br>
+						<h2>Cotizaciones enviadas</h2>
+						<table id="priceProposalList">
+							<thead><tr>
+								<th>No. Cotizacion</th>
+								<th>Fecha</th>
+								<th>Cliente</th>
+								<th>Contacto</th>
+								<th>Total</th>
+								<th>Documento</th>
+							</tr></thead>
+							<tbody></tbody>
+						</table>
+<!--   ~COTIZACIONES   -->		
                          <c:if test="${not enableEdition}">
                          
 <!--   SEGUIMIENTO   -->		

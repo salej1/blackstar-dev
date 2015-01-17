@@ -28,6 +28,8 @@
 -- 7	05/01/2015	SAG 	Se agregan qty y unitPrice a codexProjectEntry
 --							Se agrega paymentConditions a codexProject
 -- ---------------------------------------------------------------------------
+-- 8	15/01/2015	SAG 	Se agrega documentId a priceProposal
+-- ---------------------------------------------------------------------------
 
 use blackstarDb;
 
@@ -40,6 +42,11 @@ BEGIN
 -- -----------------------------------------------------------------------------
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
+
+-- AGREGANDO documentId a codexPriceProposal
+IF(SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'codexPriceProposal' AND COLUMN_NAME = 'documentId') = 0 THEN
+	ALTER TABLE blackstarDb.codexPriceProposal ADD documentId VARCHAR(2000) NULL;
+END IF;
 
 -- AGREGANDO paymentConditions a codexProject
 IF(SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'codexProject' AND COLUMN_NAME = 'paymentConditions') = 0 THEN

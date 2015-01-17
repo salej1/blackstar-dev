@@ -29,7 +29,7 @@ public interface ProjectDAO {
 	public List<TicketTeamDTO> getWorkTeam(Integer projectId);
 	public List<User> getAsigneedUser(Integer projectId);
 	public List<User> getResponseUser(Integer projectId);
-	public void addFollow(Integer projectId, Integer userId, Integer asignedUserId
+	public void addFollow(Integer projectId, String userId, String asignedUserId
                                                                 , String comment);
 	public void addProjectTeam(Integer projectId, Integer roleId, Integer userId);
 	public List<ProjectVO> getProjectDetail(Integer projectId);
@@ -59,4 +59,5 @@ public interface ProjectDAO {
 	public List<CostCenterDTO> getCostCenterList();
 	public String getCSTOffice(String cst);
 	public List<JSONObject> getPriceList();
+	public List<JSONObject> getPriceProposalList(Integer projectId);
 }
