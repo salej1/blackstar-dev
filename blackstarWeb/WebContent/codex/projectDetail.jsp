@@ -250,7 +250,7 @@
 	    		</tr>');
 
 	    	bindCalc();
-			bindComments("itemComments_", entryNumber, "");
+			bindComments("itemComments_", itemNumber, "");
 	    }
 	    
 	    function removeItem(itemId){
@@ -373,6 +373,9 @@
 	    }
 	    
 	    function setReferenceTypes(value, idsFld, descFld, itemNumber){
+	    	// |  1 | Lista de precios |
+			// |  2 | Requisicion      |
+			// |  3 | Abierto          |
 	    	enableItem(itemNumber);
 
 	    	var idsFldId = idsFld.id;
@@ -462,9 +465,9 @@
 
 	    		tot = tot * ((100 - discount)/100);
 	    		var discountNum = rawTot - tot;
-	    		$("#itemDiscountNum_" + itemNumber).val(discountNum);
+	    		$("#itemDiscountNum_" + itemNumber).val(discountNum.toFixed(2));
 
-	    		$("#itemTotalPrice_" + itemNumber).val(tot);
+	    		$("#itemTotalPrice_" + itemNumber).val(tot.toFixed(2));
 	    	}
 
 	    	calc();
@@ -625,8 +628,8 @@
 				$("#description_" + entryNumber + "Display").attr("title", "Haga click sobre el link para agregar la descripción de la partida");
 			}
 			else{
-				if(description.length > 60){
-					var shortDesc = description.substring(0,60) + "...";
+				if(description.length > 50){
+					var shortDesc = description.substring(0,50) + "...";
 					$("#description_" + entryNumber + "Display").html(shortDesc);
 				}
 				else{
@@ -654,7 +657,14 @@
 				}
 			}
 			else{
-				$(id + "Display").html(comments.substring(0,10) + "...");
+				if(comments.length > 10){
+					var shortComment = comments.substring(0,10) + "...";
+					$(id + "Display").html(shortComment);
+				}
+				else{
+					var count = $(id + "Display").length;
+					$(id + "Display").html(comments);
+				}
 				$(id + "Display").attr("title", comments);
 			}
 			$(id).val(comments);
@@ -785,7 +795,7 @@
 									<span class="total" id="productsNumberDisplay"></span>
 								</td>
 								<td>FIANZA(S)</td>
-								<td><form:input type="text" path="financesNumber" style="width:95%" class="calc" title="Monto de fianza = Monto del proyecto * % a afianzar * 2.0 % * numero de años * numero de fianzas. Si es < $ 4,000.00 fianza es $ 4,000.00"/></td>
+								<td><form:input type="text" path="financesNumber" style="width:95%" class="calc" title="Monto de fianza = Monto del proyecto * % a afianzar * 2.0 % * numero de años * numero de fianzas. Si es < $ 290.00 fianza es $ 290.00"/></td>
 							  </tr>
 							  <tr>
 								<td>TOTAL DE SERVICIOS</td>

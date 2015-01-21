@@ -1139,8 +1139,11 @@ DROP PROCEDURE IF EXISTS blackstarDb.GetDomainEmployees$$
 CREATE PROCEDURE blackstarDb.GetDomainEmployees()
 BEGIN
 
-	SELECT DISTINCT email AS email, name AS name
-	FROM blackstarUser
+	SELECT DISTINCT u.email AS email, u.name AS name
+	FROM blackstarUser u
+		INNER JOIN blackstarUser_userGroup ug ON u.blackstarUserId = ug.blackstarUserId
+		INNER JOIN userGroup g ON g.userGroupId = ug.userGroupId
+	WHERE externalId != 'sysCliente'
 	ORDER BY name;
 	
 END$$

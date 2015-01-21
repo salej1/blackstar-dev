@@ -127,6 +127,7 @@ public class ProjectServiceImpl extends AbstractService
 	if(projects.size() > 0){
 	  project = projects.get(0);
 	  message = new StringBuilder();
+	  
 	  System.out.println("sendNot=> From(" + fromUser + "), to(" + toUser + ")");
 
 	  IEmailService mail = EmailServiceFactory.getEmailService();
@@ -135,7 +136,9 @@ public class ProjectServiceImpl extends AbstractService
 	  message.append(String.format("\r\n\r\n Cliente: %s", project.getClientDescription()));
 	  message.append(String.format("\r\n\r\n"));
 	  message.append(String.format("\r\n\r\n Mensaje: %s", detail));
-	  mail.sendEmail(fromUser, toUser, "Asignación de Proyecto " + project.getProjectNumber(), message.toString());
+	 //  mail.sendEmail(fromUser, toUser, "Asignación de Proyecto " + project.getProjectNumber(), message.toString());
+	  
+	  mail.sendEmail(Globals.GPOSAC_DEFAULT_SENDER, toUser, "Asignación de Proyecto " + project.getProjectNumber(), message.toString());
 	}
   }
   

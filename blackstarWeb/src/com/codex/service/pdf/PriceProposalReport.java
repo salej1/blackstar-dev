@@ -25,15 +25,20 @@ public class PriceProposalReport extends AbstractReport {
 	data = (ProjectVO) fillData;
 	printHeader();
 	printCover();
-	printFooter(1);
+
 	drawer.newPage();
 	printHeader();
 	printProposal();
-	printFooter(2);
+	
 	drawer.newPage();
 	printHeader();
-	printContract();
-	printFooter(4);
+	printContract(data);
+
+	// printing footers
+	for(int i = 0; i < drawer.getPageCount(); i++){
+		
+		printFooter(i + 1, drawer.getPageCount());
+	}
   }
 	
 	
@@ -43,32 +48,32 @@ public class PriceProposalReport extends AbstractReport {
   
   private void printCover() throws Exception {
 	  
-	  drawer.textBlock("Proyecto:", Align.CENTER, 20, 180, 520, false, 12);
-	  drawer.textBlock(data.getProjectNumber(), Align.CENTER, 20, 200, 520, true, 12);
-	  drawer.textBlock("Cotización No.", Align.CENTER, 20, 230, 520, false, 12);
-	  drawer.textBlock(data.getPriceProposalNumber(), Align.CENTER, 20, 250, 520, true, 12);
-	  drawer.textBlock("Cliente:", Align.CENTER, 20, 280, 520, false, 10);
-	  drawer.textBlock(data.getClientDescription(), Align.CENTER, 20, 300, 520, true, 12);
-	  drawer.textBlock("Atención:", Align.CENTER, 20, 330, 520, false, 10);
-	  drawer.textBlock(data.getContactName(), Align.CENTER, 20, 350, 520, true, 12);
-	  drawer.textBlock("Fecha de Creación:", Align.CENTER, 20, 380, 520, false, 10);
-	  drawer.textBlock(Globals.getLocalDateString(), Align.CENTER, 20, 410, 520, false, 10);
-	  drawer.textBlock("Aviso de Restricciones de Uso y Divulgación:", Align.JUSTIFY, 40, 660, 520, true, 9);
+	  drawer.textBlock("Proyecto:", Align.CENTER, 20, 180, 520, false, 14);
+	  drawer.textBlock(data.getProjectNumber(), Align.CENTER, 20, 200, 520, true, 14);
+	  drawer.textBlock("Cotización No.", Align.CENTER, 20, 230, 520, false, 14);
+	  drawer.textBlock(data.getPriceProposalNumber(), Align.CENTER, 20, 250, 520, true, 14);
+	  drawer.textBlock("Cliente:", Align.CENTER, 20, 280, 520, false, 12);
+	  drawer.textBlock(data.getClientDescription(), Align.CENTER, 20, 300, 520, true, 14);
+	  drawer.textBlock("Atención:", Align.CENTER, 20, 330, 520, false, 12);
+	  drawer.textBlock(data.getContactName(), Align.CENTER, 20, 350, 520, true, 14);
+	  drawer.textBlock("Fecha de Creación:", Align.CENTER, 20, 380, 520, false, 12);
+	  drawer.textBlock(Globals.getLocalDateString(), Align.CENTER, 20, 410, 520, false, 12);
+	  drawer.textBlock("Aviso de Restricciones de Uso y Divulgación:", Align.JUSTIFY, 40, 630, 520, true, 9);
 	  String s = "La información contenida en la totalidad de esta Propuesta, constituye un secreto de marca y/o información comercial y/o financiera " +
 	  "propiedad de SISTEMAS AVANZADOS EN COMPUTACIÓN DE MÉXICO, S.A. DE C.V., en lo sucesivo \"GRUPO SAC\", la cual, se encuentra " +
 	  "clasificada como confidencial. Esta información es proporcionada con la restricción de que no podrá ser usada o divulgada sin el permiso " +
 	  "de GRUPO SAC para otros propósitos que no sean para su evaluación, acordando con el Cliente, el protegerla con el mismo grado de cuidado " +
 	  "que el mismo utilizaría para proteger su propia información.";
-	  drawer.textBlock(s, Align.JUSTIFY, 40, 685, 500, false, 8);
+	  drawer.textBlock(s, Align.JUSTIFY, 40, 655, 500, false, 8);
 
   }
   
-  private void printFooter(int page) throws Exception {
+  private void printFooter(int page, int pageCount) throws Exception {
 	  String s = "La información contenida en la totalidad de este documento es clasificada como confidencial y se entrega bajo el entendido de que no será usada o " +
 			  "divulgada, sin el permiso de Sistemas Avanzados en Computación de México, S.A. de C.V.";
-	  drawer.textBlock(s, Align.JUSTIFY, 40, 785, 480, false, Color.gray, 7);
-	  drawer.text("4 - VE - 11                Rev. 1           15-01-2015                                                                TRA: Mientras este Activo   TRAM: 1 año", 40,805, false, Color.gray, 7);
-	  drawer.text("Pag. " + page + "/4", 500 , 805, false, Color.gray, 7);
+	 // drawer.textBlock(s, Align.JUSTIFY, 40, 725, 480, false, Color.gray, 7);
+	  drawer.text("4 - VE - 11                Rev. 1           15-01-2015                                                                TRA: Mientras este Activo   TRAM: 1 año", 40,745, false, Color.gray, 7);
+	  drawer.text("Pag. " + page + "/" + pageCount, 500 , 745, false, Color.gray, 7);
   }
   
   private void printProposal() throws Exception {
@@ -99,7 +104,7 @@ public class PriceProposalReport extends AbstractReport {
 	  drawer.text("P. Unitario", 387, 303, true);
 	  drawer.text("Importe", 468, 303, true);
 	  for(int i = 0; i < entries.size() ; i++, rowCounter ++){
-		  if((yFactor + 335) > 750){
+		  if((yFactor + 335) > 690){
 			  yFactor = -190;
 			  rowCounter = 0;
 			  adjusment = -190;
@@ -148,7 +153,7 @@ public class PriceProposalReport extends AbstractReport {
 	  
 	  
 	  yFactor += 355;
-	  if((yFactor + 60) > 750){
+	  if((yFactor + 60) > 690){
 		  yFactor = 120;
 		  drawer.newPage();
 		  printHeader();
@@ -166,7 +171,7 @@ public class PriceProposalReport extends AbstractReport {
 	  
 	  yFactor += 53;
 	  
-	  if((yFactor + 210) > 750){
+	  if((yFactor + 210) > 690){
 		  yFactor = 90;
 		  drawer.newPage();
 		  printHeader();
@@ -204,7 +209,7 @@ public class PriceProposalReport extends AbstractReport {
 	  drawer.text("Atención  especializada en cualquiera de las modalidades de servicio 5x8 ó 7X24", 75, yFactor + 123);
   }
   
-  private void printContract() throws Exception {
+  private void printContract(ProjectVO data) throws Exception {
 	  drawer.box(35, 120, 490, 20, Color.gray, true);
 	  drawer.text("Términos de Venta", 240, 134, true, 0, 10);
 	  drawer.text("1. Validez de Oferta", 40, 160, true);
@@ -217,7 +222,7 @@ public class PriceProposalReport extends AbstractReport {
 	  drawer.text("Los precios están cotizados en " + data.getCurrencyCode() + " y no incluyen el impuesto al valor agregado (IVA), el cual se cargará al momento de la facturación.", 40, 200);
 	  
 	  drawer.text("3. Condiciones de Pago", 40, 220, true);
-	  drawer.text("30 DIAS A MES VENCIDO", 40, 230);
+	  drawer.text(data.getPaymentConditions().replace("\r\n", ". "), 40, 230);
 	  String s = "Nota: En caso de que se le ofrezca un crédito y no cuente con línea de crédito ya establecida con GRUPO SAC, su autorización estará  " +
 			  "supeditada al dictamen de nuestro departamento correspondiente. Para las cotizaciones en dólares el pago podrá ser realizado en moneda " +
 			  "nacional con base al tipo de cambio publicado en el DOF del día en que se aplique en firme el deposito en nuestra cuenta bancaria.";
@@ -266,7 +271,6 @@ public class PriceProposalReport extends AbstractReport {
 			  "nuestro personal.";
 	  drawer.textBlock(s, Align.JUSTIFY, 40, 640, 490, false, 8);
 
-	  printFooter(3);
 	  drawer.newPage();
 	  printHeader();
 	  

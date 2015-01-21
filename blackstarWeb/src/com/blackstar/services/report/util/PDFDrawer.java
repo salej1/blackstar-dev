@@ -11,9 +11,11 @@ import com.pdfjet.*;
 
 public class PDFDrawer {
 	
+  private List<Page> pages = null;
   private Page page = null;
   private PDF pdf = null;
   private ByteArrayOutputStream  stream;
+  private int pageCount;
   
   private static final int DEFAULT_FONT_SIZE = 8;
   private static final float DEFAULT_LINE_WIDTH = .5F;
@@ -36,11 +38,14 @@ public class PDFDrawer {
   public PDFDrawer() throws Exception {
 	stream = new ByteArrayOutputStream ();
 	pdf  = new PDF(stream);
-	page = new Page(pdf, A4.PORTRAIT);
+	pages = new ArrayList<Page>();
+	newPage();
   }
   
   public void newPage() throws Exception {
-	 page = new Page(pdf, A4.PORTRAIT);
+	  pages.add(new Page(pdf, Letter.PORTRAIT));
+	  pageCount = pages.size();
+	  page = pages.get(pageCount - 1);
   }
   
   public ByteArrayOutputStream getStream(){
@@ -49,6 +54,10 @@ public class PDFDrawer {
   
   public void close() throws Exception {
 	pdf.close();  
+  }
+    
+  public int getPageCount(){
+	  return pageCount;
   }
   
   public void point(float x, float y, float radius, int color, boolean fill) throws Exception {
@@ -295,6 +304,7 @@ public class PDFDrawer {
 			  t.setPosition(x + LEFT_MARGIN, y + TOP_MARGIN  + offset);
 			  t.drawOn(page);
 			  offset += (2 + f.getHeight());
+			  
 		  }
 	  }
 	  else if(alignment == Align.RIGHT){

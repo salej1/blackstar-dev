@@ -126,6 +126,7 @@ public class ProjectController extends AbstractController {
 		} catch (Exception e) {
 			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 			e.printStackTrace();
+			model.addAttribute("errorDetails", e.getMessage());
 			return "error";
 		}   
 		return "codex/projectDetail";
