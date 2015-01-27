@@ -26,56 +26,73 @@
 	};
 	 $(document).ready(function() {
 
-	 try{
-	 	var data = $.parseJSON(str);
-	 }
-		 catch(err){
-		 alert(err);
-	 }
-	 
-	 $('#policy').dataTable({
-			"bProcessing": true,
-			"bFilter": true,
-			"bLengthChange": false,
-			"bPaginate": false,
-			"bInfo": false,
-			"sPaginationType": "full_numbers",
-			"aaData": data,
-			"sDom": '<"top"fi>rt<"bottom"><"clear">',
-			"aaSorting": [],
-			"aoColumns": [
-						  { "mData": "project" },
-						  { "mData": "officeName" },
-						  { "mData": "warranty" },
-						  { "mData": "contract" },
-						  { "mData": "customer" },
-						  { "mData": "finalUser" }, 	              
-						  { "mData": "cst" },
-						  { "mData": "startDate" },
-						  { "mData": "endDate" },
-						  { "mData": "time"},
-						  { "mData": "cost"},
-						  { "mData": "contactName"},
-						  { "mData": "contactPhone"}],
-			"fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull){
-								var ed = new Date(aData.endDate);
-								var today = new Date();
-								var criticalDate = new Date(aData.endDate).addMonths(-2);
+		 try{
+		 	var data = $.parseJSON(str);
+		 }
+			 catch(err){
+			 alert(err);
+		 }
+		 
+		 $('#policy').dataTable({
+				"bProcessing": true,
+				"bFilter": true,
+				"bLengthChange": false,
+				"bPaginate": false,
+				"bInfo": false,
+				"sPaginationType": "full_numbers",
+				"aaData": data,
+				"sDom": '<"top"fi>rt<"bottom"><"clear">',
+				"aaSorting": [],
+				"aoColumns": [
+							  { "mData": "project" },
+							  { "mData": "officeName" },
+							  { "mData": "warranty" },
+							  { "mData": "contract" },
+							  { "mData": "customer" },
+							  { "mData": "finalUser" }, 	              
+							  { "mData": "cst" },
+							  { "mData": "startDate" },
+							  { "mData": "endDate" },
+							  { "mData": "time"},
+							  { "mData": "cost"},
+							  { "mData": "contactName"},
+							  { "mData": "contactPhone"}],
+				"fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull){
+									var ed = new Date(aData.endDate);
+									var today = new Date();
+									var criticalDate = new Date(aData.endDate).addMonths(-2);
 
-								if(ed.getTime() < today.getTime()){
-									$(nRow).css('background-color', '#F5A2A4');
+									if(ed.getTime() < today.getTime()){
+										$(nRow).css('background-color', '#F5A2A4');
+									}
+									else if(criticalDate.getTime() < today.getTime()){
+										$(nRow).css('background-color', '#F2CF83');
+									}
+									else{
+										$(nRow).css('background-color', '#FFFFFF');
+									}
 								}
-								else if(criticalDate.getTime() < today.getTime()){
-									$(nRow).css('background-color', '#F2CF83');
-								}
-								else{
-									$(nRow).css('background-color', '#FFFFFF');
-								}
-							}
+				}
+			);
+			$("td", "#policy").css("background-color", "transparent");
+
+			// message
+			$("#ehCostMessage").hide();
+		} );
+
+		function updateEngCost(){
+			if(isNaN($("#ehCost").val())){
+				$("#ehCostMessage").show();
 			}
-		);
-		$("td", "#policy").css("background-color", "transparent");
-	} );
+			$.ajax({
+			  type: "POST",
+			  url: "/indServicios/setEhCost.do",
+			  data: $("#engHourCostForm").serialize(),
+			  success: function(){
+			  	go('getProjects');
+			  }
+			});
+		}
  </script> 
 
 
@@ -87,7 +104,18 @@
 							<div class="utils">
 								
 			</div>
-			
+			<div style="margin-top:10px;margin-bottom:20px;">
+				<form id="engHourCostForm" action="" method="POST">
+					<img src="/img/config.png" alt="" style="display:inline-block; height:100%; vertical-align: middle; margin-right: 10px;" >
+					Costo por hora-ingeniero: $<input type="text" name="ehCost" id="ehCost" style="width:40px" value="${engHourCost}"/>
+					<input type="submit" class="searchButton" value="Actualizar" onclick="updateEngCost(); return false;"/>
+					<div id="ehCostMessage" class="error" style="width:300px;">Por favor ingrese un valor numerico</div>
+					<input type="hidden" name="startDate" value="${startDate}">
+					<input type="hidden" name="endDate" value="${endDate}">
+					<input type="hidden" name="project" value="${project}">
+				</form>
+			<br>
+			</div>
 			<table cellpadding="0" cellspacing="0" border="0" class="display" id="policy">
 				<thead>
 					<tr>

@@ -30,4 +30,6 @@ public interface ServiceIndicatorsService {
 	public String getTicketsExport(String search, String project, Date startDate, Date endDate);
 	public String getSOExport(String search, String project, Date startDate, Date endDate);
 	public String getProjects(String project, Date startDate, Date endDate);
+	public void setEngHourCost(Double engHourCost);
+	public Double getEngHourCost();
 }

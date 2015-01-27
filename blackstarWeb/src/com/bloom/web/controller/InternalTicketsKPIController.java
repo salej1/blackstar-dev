@@ -68,7 +68,7 @@ public class InternalTicketsKPIController extends AbstractController {
   @RequestMapping(value = "/bloomKpi/getTicketByOffice.do", method = RequestMethod.GET)
   public String getTicketByOffice(ModelMap model) {
 	try {
-		 model.addAttribute("graphics", service.getTicketByOfficeKPI());
+		 model.addAttribute("ticketByOffice", service.getTicketByOfficeKPI());
 	} catch (Exception e) {
 		Logger.Log(LogLevel.ERROR,e.getStackTrace()[0].toString(), e);
 		e.printStackTrace();
@@ -81,7 +81,7 @@ public class InternalTicketsKPIController extends AbstractController {
   @RequestMapping(value = "/bloomKpi/getTicketByArea.do", method = RequestMethod.GET)
   public String getTicketByArea(ModelMap model) {
 	try {
-		 model.addAttribute("graphics", service.getTicketByAreaKPI());
+		 model.addAttribute("ticketByArea", service.getTicketByAreaKPI());
 	} catch (Exception e) {
 		Logger.Log(LogLevel.ERROR,e.getStackTrace()[0].toString(), e);
 		e.printStackTrace();
@@ -94,7 +94,7 @@ public class InternalTicketsKPIController extends AbstractController {
   @RequestMapping(value = "/bloomKpi/getTicketByDay.do", method = RequestMethod.GET)
   public String getTicketByDay(ModelMap model) {
 	try {
-		 model.addAttribute("graphics", service.getTicketByDayKPI());
+		 model.addAttribute("ticketByDay", service.getTicketByDayKPI());
 	} catch (Exception e) {
 		Logger.Log(LogLevel.ERROR,e.getStackTrace()[0].toString(), e);
 		e.printStackTrace();
@@ -107,7 +107,7 @@ public class InternalTicketsKPIController extends AbstractController {
   @RequestMapping(value = "/bloomKpi/getTicketByProject.do", method = RequestMethod.GET)
   public String getTicketByProject(ModelMap model) {
 	try {
-		 model.addAttribute("graphics", service.getTicketByProjectKPI());
+		 model.addAttribute("ticketByProject", service.getTicketByProjectKPI());
 	} catch (Exception e) {
 		Logger.Log(LogLevel.ERROR,e.getStackTrace()[0].toString(), e);
 		e.printStackTrace();
@@ -120,7 +120,7 @@ public class InternalTicketsKPIController extends AbstractController {
   @RequestMapping(value = "/bloomKpi/getTicketByServiceAreaKPI.do", method = RequestMethod.GET)
   public String getTicketByServiceAreaKPI(ModelMap model) {
 	try {
-		 model.addAttribute("graphics", service.getTicketByServiceAreaKPI());
+		 model.addAttribute("ticketByServiceAreaKPI", service.getTicketByServiceAreaKPI());
 	} catch (Exception e) {
 		System.out.println("Error => " + e);
 		Logger.Log(LogLevel.ERROR,e.getStackTrace()[0].toString(), e);

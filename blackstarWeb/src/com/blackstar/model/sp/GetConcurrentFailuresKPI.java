@@ -15,6 +15,7 @@ public class GetConcurrentFailuresKPI {
 	private Date created;
 	private String lastTicketNumber;
 	private String lastTicketClosed;
+	private String lastServiceNumber;
 	
 	public GetConcurrentFailuresKPI(){
 		
@@ -92,5 +93,13 @@ public class GetConcurrentFailuresKPI {
 
 	public void setLastTicketClosed(String lastTicketClosed) {
 		this.lastTicketClosed = lastTicketClosed;
+	}
+
+	public String getLastServiceNumber() {
+		return lastServiceNumber;
+	}
+
+	public void setLastServiceNumber(String lastServiceNumber) {
+		this.lastServiceNumber = lastServiceNumber;
 	}
 }

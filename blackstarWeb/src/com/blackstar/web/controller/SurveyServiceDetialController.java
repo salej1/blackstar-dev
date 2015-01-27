@@ -51,6 +51,12 @@ public class SurveyServiceDetialController extends AbstractController{
 	  {
 		if(operation == 1){
 			SurveyServiceDTO surveyService = new SurveyServiceDTO();
+			  // init
+			  surveyService.setQuestionTreatment("1");
+			  surveyService.setQuestionIdentificationPersonal("1");
+			  surveyService.setQuestionIdealEquipment("1");
+			  surveyService.setQuestionTime("1");
+			  surveyService.setQuestionUniform("1");
 			  surveyService.setScore(10);
 			  model.addAttribute("surveyQualificationList", getQualificationsList());
 			  model.addAttribute("surveyService", surveyService);

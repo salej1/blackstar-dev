@@ -47,6 +47,8 @@
 -- ---------------------------------------------------------------------------
 -- 32 	24/11/2014	SAG 	Se agreta officeId a ScheduledService
 -- ---------------------------------------------------------------------------
+-- 33	22/01/2015	SAG 	Se agrega Global Settings
+-- ---------------------------------------------------------------------------
 
 use blackstarDb;
 
@@ -60,6 +62,14 @@ BEGIN
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
 
+-- AGREGANDO TABLA globalSettings
+IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'globalSettings') = 0 THEN
+		 CREATE TABLE blackstarDb.globalSettings(
+			globalSettingsId INT NOT NULL,
+			engHourCost FLOAT(10,2) NOT NULL,
+			PRIMARY KEY (globalSettingsId)
+		) ENGINE=INNODB;
+END IF;
 
 -- AGREGANDO office a scheduledService
 IF(SELECT count(*) FROM information_schema.columns WHERE  table_schema = 'blackstarDb' AND table_name = 'scheduledService' AND column_name = 'officeId' ) = 0 THEN
@@ -82,7 +92,7 @@ IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blacksta
 
 		-- Eliminando columna equipmentUser de policy
 		ALTER TABLE policy DROP COLUMN equipmentUser;
-	END IF;
+END IF;
 
 -- INCREMENTANDO contact en policy
 ALTER TABLE policy MODIFY contactName VARCHAR(200);

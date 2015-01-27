@@ -27,6 +27,7 @@
 			var startDateStr = yearStart.format("DD/MM/YYYY") + " 00:00:00";
 			var endDateStr = moment().format("DD/MM/YYYY") + " 00:00:00";
 			var policySearch = "";
+			var chartList = ['getTicketByUser','getTicketByOffice','getTicketByArea','getTicketByDay','getTicketByProject','getTicketByServiceAreaKPI'];
 
 			$(function(){
 				
@@ -62,7 +63,7 @@
 		    	 $(".links").accordion({
 		    	 	collapsible: true,
 		    	 	active: false,
-		    	 	event: "click mouseover",
+		    	 	event: "click",
 		    	 	icons: false,
 		    	 	heightStyle: "content"
 		    	 });
@@ -87,13 +88,52 @@
 			 	}
 		     }
 
-		     function goBloom(indAction){
-				$("a[href*=#]").css({ "color": "#888", "text-decoration":"underline"});
-				var url = "${pageContext.request.contextPath}/bloom/bloomKpi/" + indAction + ".do?startDate=" + encodeURIComponent(startDateStr) + "&endDate=" + encodeURIComponent(endDateStr);
-				$("#indicatorDetail").load(url, function() {
-					$("#" + indAction).css({ "color": "#800080", "text-decoration":"none"});
-				});
+		     function getChainedChart(chartNum){
+		     	if(chartNum < chartList.length){
+		     		var chartName = chartList[chartNum];
+		     		
+		     		// healt hcheck
+		     		if(typeof(chartName) == 'undefined'){
+			     		throw new Error('Grafica ' + chartNum + ' invalida');
+			     	}
+
+			     	// content
+					var url = "${pageContext.request.contextPath}/bloom/bloomKpi/" + chartName + ".do?startDate=" + encodeURIComponent(startDateStr) + "&endDate=" + encodeURIComponent(endDateStr);
+					$("#chartDetail" + chartNum).load(url, function() {
+						$("#" + chartName).css({ "color": "#800080", "text-decoration":"none"});
+						// next chart
+						getChainedChart(chartNum + 1);
+					});
+		     	}
 		     }
+
+		     function goBloom(indAction){
+		     	var url = "";
+
+				$("a[href*=#]").css({ "color": "#888", "text-decoration":"underline"});
+				if(indAction == 'getGeneralCharts'){
+					$("#indicatorDetail").html('');
+					getChainedChart(0);
+				}
+				else{
+					var url = "${pageContext.request.contextPath}/bloom/bloomKpi/" + indAction + ".do?startDate=" + encodeURIComponent(startDateStr) + "&endDate=" + encodeURIComponent(endDateStr);
+					$("#indicatorDetail").load(url, function() {
+						$("#" + indAction).css({ "color": "#800080", "text-decoration":"none"});
+					});
+				}
+		     }
+
+
+			function parse(input){
+				var output;
+				try {
+				    output = $.parseJSON(input.replace(/'/g, '"'));
+				} catch(err){
+					alert(err);
+				}
+				console.log(input.replace(/'/g, '"'));
+				return output;
+			}
 		</script>
 	</head>
 	<body>
@@ -202,22 +242,7 @@
 		  		  	<h3>Indicadores de Requisiciones</h3>
 					<div>
 						<div>
-							<img src="/img/navigate-right.png"/><a href="#" id="getTicketByUser" onclick="goBloom('getTicketByUser')">Requisiciones por Usuario</a>
-						</div>
-						<div>
-							<img src="/img/navigate-right.png"/><a href="#" id="getTicketByOffice" onclick="goBloom('getTicketByOffice')">Requisiciones por Oficina</a>
-						</div>
-						<div>
-							<img src="/img/navigate-right.png"/><a href="#" id="getTicketByArea" onclick="goBloom('getTicketByArea')">Requisiciones por Area solicitante</a>
-						</div>
-						<div>
-							<img src="/img/navigate-right.png"/><a href="#" id="getTicketByDay" onclick="goBloom('getTicketByDay')">Requisiciones por Dia</a>
-						</div>
-						<div>
-							<img src="/img/navigate-right.png"/><a href="#" id="getTicketByProject" onclick="goBloom('getTicketByProject')">Requisiciones por Proyecto</a>
-						</div>
-						<div>
-							<img src="/img/navigate-right.png"/><a href="#" id="getTicketByServiceAreaKPI" onclick="goBloom('getTicketByServiceAreaKPI')">Requisiciones por Area de apoyo</a>
+							<img src="/img/navigate-right.png"/><a href="#" id="getTicketByServiceAreaKPI" onclick="goBloom('getGeneralCharts')">Graficas Generales</a>
 						</div>
 						<div>
 							<img src="/img/navigate-right.png"/><a href="#" id="getTicketStatsByServiceAreaKPI" onclick="goBloom('getTicketStatsByServiceAreaKPI')">Resultados por Area de apoyo</a>
@@ -229,6 +254,24 @@
 				</c:if>
 			</div>
 			<div id="indicatorDetail">
+				
+			</div>
+			<div id="chartDetail0">
+				
+			</div>
+			<div id="chartDetail1">
+				
+			</div>
+			<div id="chartDetail2">
+				
+			</div>
+			<div id="chartDetail3">
+				
+			</div>
+			<div id="chartDetail4">
+			
+			</div>
+			<div id="chartDetail5">
 				
 			</div>
 		</div>

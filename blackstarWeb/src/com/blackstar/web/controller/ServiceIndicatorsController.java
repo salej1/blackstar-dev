@@ -1,5 +1,6 @@
 package com.blackstar.web.controller;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.servlet.ServletOutputStream;
@@ -262,6 +263,11 @@ public class ServiceIndicatorsController extends AbstractController {
 		  ModelMap model){
 	try {
 	     model.addAttribute("projectsKpi", service.getProjects(project, startDate, endDate));
+	     SimpleDateFormat sdf = new SimpleDateFormat(Globals.DATE_FORMAT_PATTERN);
+	     model.addAttribute("startDate", sdf.format(startDate));
+	     model.addAttribute("endDate", sdf.format(endDate));
+	     model.addAttribute("engHourCost", service.getEngHourCost());
+	     model.addAttribute("project", project);
 	} catch (Exception e) {
 		Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 		e.printStackTrace();
@@ -348,5 +354,26 @@ public class ServiceIndicatorsController extends AbstractController {
 		return "error";
 	}
 	return "exportEnd";
+  }
+  
+  @RequestMapping(value="/setEhCost.do", method = RequestMethod.POST)
+  public String setEhCost(
+		  @RequestParam(required = true) Date startDate,
+		  @RequestParam(required = true) Date endDate,
+		  @RequestParam(required = true) String project,
+		  @RequestParam(required = true) Double ehCost,
+		  ModelMap model){
+	try {
+		service.setEngHourCost(ehCost);
+	} catch (Exception e) {
+		Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
+		e.printStackTrace();
+		model.addAttribute("errorDetails", e.getStackTrace()[0].toString());
+		for(StackTraceElement t : e.getStackTrace()){
+			System.out.println(t.toString());
+		}
+		return "error";
+	}
+	return "_indProjects";
   }
 }

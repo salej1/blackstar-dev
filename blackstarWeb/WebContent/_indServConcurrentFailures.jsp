@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <script type="text/javascript" charset="utf-8">
 	 var str = '${tickets}';
 	 var sMonth;
@@ -43,6 +44,7 @@
 						<th>Falla</th>
 						<th>Ticket anterior</th>
 						<th>Ingeniero que atendió</th>
+						<th>Mantto. anterior</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -57,6 +59,14 @@
                        		<td><c:out value="${row.observations}" /></td>
                        		<td><a href='/ticketDetail?ticketNumber=${row.lastTicketNumber}'>${row.lastTicketNumber}</a></td>
                        		<td><c:out value="${row.employee}" /></td>
+                       		<c:choose>
+	                       		<c:when test="${not empty row.lastServiceNumber}">
+	                       			<td><a href='/osDetail/show.do?serviceOrderId=0&serviceOrderNumber=${row.lastServiceNumber}'>${row.lastServiceNumber}</a></td>
+								</c:when>
+	                       		<c:otherwise>
+	                       			<td></td>
+	                       		</c:otherwise>
+                       		</c:choose>
 				       </tr>
 				   </c:forEach>
 				</tbody>

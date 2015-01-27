@@ -324,4 +324,14 @@ implements ServiceIndicatorsService {
 	public String getProjects(String project, Date startDate, Date endDate) {
 		return dao.getProjects(project, startDate, endDate).toString();
 	}
+
+	@Override
+	public void setEngHourCost(Double engHourCost) {
+		dao.setEngHourCost(engHourCost);
+	}
+	
+	@Override
+	public Double getEngHourCost() {
+		return dao.getEngHourCost();
+	}
 }

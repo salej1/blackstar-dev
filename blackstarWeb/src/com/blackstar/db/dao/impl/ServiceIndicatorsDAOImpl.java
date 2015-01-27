@@ -141,4 +141,17 @@ public class ServiceIndicatorsDAOImpl extends AbstractDAO
 		String sqlQuery = "CALL GetProjectsKPI(?,?,?)";
 		return getJdbcTemplate().query(sqlQuery, new Object[]{project, startDate, endDate}, new JSONRowMapper()); 
 	}
+
+	@Override
+	public void setEngHourCost(Double engHourCost) {
+		String sqlQuery = "CALL SetEngHourCost(?)";
+		getJdbcTemplate().update(sqlQuery, new Object[]{engHourCost});
+	}
+	
+	@Override
+	public Double getEngHourCost() {
+		String sqlQuery = "CALL GetEngHourCost()";
+		Double cost = (Double)getJdbcTemplate().queryForObject(sqlQuery, Double.class);
+		return cost;
+	}
 }

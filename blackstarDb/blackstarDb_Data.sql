@@ -22,12 +22,22 @@
 --	6	21/07/2014	SAG 	Se cambia Servicio de Descontaminacion de Data Center 
 --								 por: Descontaminacion
 -- -----------------------------------------------------------------------------
+-- 7 	22/01/2015	SAG 	Se agrega el registro de costo hora-ingeniero en global settings
+-- -----------------------------------------------------------------------------
 
 use blackstarDb;
 
 -- -----------------------------------------------------------------------------
 -- ACTUALIZACION DE DATOS
 -- -----------------------------------------------------------------------------
+-- Estableciendo Global settings inicial
+INSERT INTO globalSettings(globalSettingsId, engHourCost)
+SELECT a.globalSettingsId, a.engHourCost FROM (
+	SELECT 1 AS globalSettingsId, 20 engHourCost
+) a
+LEFT OUTER JOIN globalSettings g ON g.globalSettingsId = a.globalSettingsId
+WHERE g.globalSettingsId IS NULL;
+
 -- Actualizando Descontaminacino de Data Center
 UPDATE equipmentType SET equipmentType = 'DESCONTAMINACION' WHERE equipmentTypeId = 'S';
 

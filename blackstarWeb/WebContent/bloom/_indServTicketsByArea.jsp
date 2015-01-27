@@ -3,17 +3,17 @@
 <script type="text/javascript">
   $(document).ready(function() {    	  
 
-      google.load('visualization', '1.0', {packages:['corechart'], callback: draw});
+      google.load('visualization', '1.0', {packages:['corechart'], callback: drawTicketByArea});
       
-      function draw() {
-        var charts = '${graphics}';
+      function drawTicketByArea() {
+        var charts = '${ticketByArea}';
         var chartsNumber = charts.split(",").length;
     	var data;
     	var options;
     	var chart;
-    	 var row;
+    	var row;
     	for(var i = 0; i< chartsNumber; i ++){
-    	  json=pase($('#data_' + i).val());
+    	  json=parse($('#ticketByAreaData_' + i).val());
     	  data = new google.visualization.DataTable();
     	  data.addColumn('string','applicantArea');
     	  data.addColumn('number','counter');
@@ -23,38 +23,27 @@
     		 row.push(json[j].counter);
     		 data.addRow(row);
          }
-         chart = new google.visualization.PieChart(document.getElementById('chart_' + i));
+         chart = new google.visualization.PieChart(document.getElementById('ticketByAreaChart_' + i));
     	 options = {legend: { position: 'right', alignment: 'center' },
    		      		   chartArea:{left:50,top:10,width:"100%", height:"100%"},
-   		        	   is3D: $('#is3d_' + i).val()};
+   		        	   is3D: $('#ticketByAreaIs3d_' + i).val()};
     	 chart.draw(data, options);
         }
       } 	
-      
-      function pase(input){
-    	var output;
-    	try {
-    	    output = $.parseJSON(input.replace(/'/g, '"'));
-    	} catch(err){
-    		alert(err);
-    	}
-    	console.log(input.replace(/'/g, '"'));
-    	return output;
-      }
    });
  </script>
 
 
 	<div id="content" class="container_16 clearfix">
-	    <c:forEach var="chart" items="${graphics}" varStatus="counter">
+	    <c:forEach var="chart" items="${ticketByArea}" varStatus="counter">
 	      <div class="grid_16">
 			  <div class="box">
 							<h2>${chart.title}</h2>
 							<div class="utils"></div>
-			  <div id="chart_${counter.index}" style="width: 900px; height: 400px;"></div>
-			  <input type="hidden" id ="type_${counter.index}" value="${chart.type}">
-			  <input type="hidden" id ="is3d_${counter.index}" value="${chart.is3d}">
-			  <input type="hidden" id ="data_${counter.index}" value="${chart.data}">
+			  <div id="ticketByAreaChart_${counter.index}" style="width: 900px; height: 400px;"></div>
+			  <input type="hidden" id ="ticketByAreaType_${counter.index}" value="${chart.type}">
+			  <input type="hidden" id ="ticketByAreaIs3d_${counter.index}" value="${chart.is3d}">
+			  <input type="hidden" id ="ticketByAreaData_${counter.index}" value="${chart.data}">
 		    </div>
 		  </div>
 	    </c:forEach>
