@@ -5738,6 +5738,8 @@ DELIMITER ;
 -- ---------------------------------------------------------------------------
 -- 11 	22/09/2014	SAG 	Se agrega tabla de transferencia bloom ticket
 -- ---------------------------------------------------------------------------
+-- 12 	28/01/2014	SAG 	Se aumenta capacidad de brand en policy
+-- ---------------------------------------------------------------------------
 
 
 USE blackstarDbTransfer;
@@ -5752,6 +5754,9 @@ BEGIN
 -- -----------------------------------------------------------------------------
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
+
+	-- Aumentando capacidad de brand a 200
+	ALTER TABLE policy MODIFY brand VARCHAR(200);
 
 	-- Agregando bloomTicket
 	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDbTransfer' AND TABLE_NAME = 'bloomTicket') = 0 THEN
@@ -5885,6 +5890,8 @@ DROP PROCEDURE blackstarDbTransfer.upgradeSchema;
 -- -----------------------------------------------------------------------------
 -- 11 	22/09/2014	SAG 	Se agrega UpsertbloomTicket
 -- -----------------------------------------------------------------------------
+-- 12	28/01/2015	SAG 	Se actialuza UpsertPolicy
+-- -----------------------------------------------------------------------------
 
 use blackstarDbTransfer;
 
@@ -5996,7 +6003,7 @@ CREATE PROCEDURE upsertPolicy(
 	  pProject VARCHAR(50),
 	  pCst VARCHAR(50),
 	  pEquipmentTypeId CHAR(1),
-	  pBrand VARCHAR(50),
+	  pBrand VARCHAR(200),
 	  pModel VARCHAR(100),
 	  pSerialNumber VARCHAR(100),
 	  pCapacity VARCHAR(50),
@@ -6036,6 +6043,9 @@ BEGIN
 			contactPhone = pContactPhone,
 			modified = now(),
 			capacity = pCapacity,
+			equipmentTypeId = pEquipmentTypeId,
+			brand = pBrand,
+			model = pModel,
 			modifiedBy = 'UpsertPolicy'
 		WHERE serialNumber = pSerialNumber AND project = pProject;
 	END IF;
@@ -6162,7 +6172,14 @@ BEGIN
 		bp.equipmentAddress = p.equipmentAddress,
 		bp.contactName = p.contact,
 		bp.contactPhone = p.contactPhone,
-		bp.contactEmail = p.contactEmail;
+		bp.contactEmail = p.contactEmail,
+		bp.capacity = p.capacity,
+		bp.equipmentTypeId = p.equipmentTypeId,
+		bp.brand = p.brand,
+		bp.model = p.model,
+		bp.modified = now(),
+		bp.modifiedBy = 'PolicyTransfer',
+		bp.modifiedByUsr = 'portal-servicios';
 
 	-- ACTUALIZAR LOS CORREOS DE ACCESO A CLIENTES
 	CALL syncPolicyUsers();

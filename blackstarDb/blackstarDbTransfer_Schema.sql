@@ -32,6 +32,8 @@
 -- ---------------------------------------------------------------------------
 -- 11 	22/09/2014	SAG 	Se agrega tabla de transferencia bloom ticket
 -- ---------------------------------------------------------------------------
+-- 12 	28/01/2014	SAG 	Se aumenta capacidad de brand en policy
+-- ---------------------------------------------------------------------------
 
 
 USE blackstarDbTransfer;
@@ -46,6 +48,9 @@ BEGIN
 -- -----------------------------------------------------------------------------
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
+
+	-- Aumentando capacidad de brand a 200
+	ALTER TABLE policy MODIFY brand VARCHAR(200);
 
 	-- Agregando bloomTicket
 	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDbTransfer' AND TABLE_NAME = 'bloomTicket') = 0 THEN

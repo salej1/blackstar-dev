@@ -5,6 +5,14 @@
 <!DOCTYPE html>
 <c:set var="pageSection" scope="request" value="ordenesServicio" />
 <c:import url="header.jsp"></c:import>
+<c:choose>
+<c:when test="${user.belongsToGroup['Coordinador']}">
+	<c:set var="mode" scope="session" value="edit" />
+</c:when>
+<c:otherwise>
+	<c:set var="mode" scope="session" value="detail" />
+</c:otherwise>
+</c:choose>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -97,7 +105,9 @@
 
 		$("#optProjects option[value='${scheduledService.project}']").attr("selected", "true");
 
-		$("#serviceStartDate").datetimepicker({format:'d/m/Y H:i:s', lang:'es'});
+		if("${mode}" == "edit"){
+			$("#serviceStartDate").datetimepicker({format:'d/m/Y H:i:s', lang:'es'});
+		}
 
 		// tabla de empleados
 		var strEpmloyees = '${employees}';
@@ -110,17 +120,17 @@
 			"bProcessing": true,
 			"bFilter": true,
 			"bLengthChange": false,
-			"iDisplayLength": 10,
+			"iDisplayLength": 1000,
 			"bInfo": false,
 			"aaData": empData,
-			"sDom": '<"top"i>rt<"bottom"flp><"clear">',
+			"sDom": '<"top"i>rt<"bottom"l><"clear">',
 			"aoColumns": [
 						  { "mData": "DT_RowId" },
 						  { "mData": "employee" }
 					  ],
 			"aoColumnDefs" : [
 						{"mRender" : function(data, type, row){
-							var template = "<input type='checkbox' name='employeeList' value='" + row.DT_RowId + "' checked/>"
+							var template = "<input type='checkbox' name='employeeList' value='" + row.DT_RowId + "' checked class='lockOnDetail'/>"
 							
 							for(var emp in emps){
 								if(emps[emp].trim() == row.DT_RowId){
@@ -144,10 +154,10 @@
 			"bProcessing": true,
 			"bFilter": true,
 			"bLengthChange": false,
-			"iDisplayLength": 10,
+			"iDisplayLength": 1000,
 			"bInfo": false,
 			"aaData": eqData,
-			"sDom": '<"top"i>rt<"bottom"flp><"clear">',
+			"sDom": '<"top"i>rt<"bottom"l><"clear">',
 			"aoColumns": [
 						  { "mData": "DT_RowId" },
 						  { "mData": "equipmentType" },
@@ -156,7 +166,7 @@
 					  ],
 			"aoColumnDefs" : [
 						{"mRender" : function(data, type, row){
-							var template = "<input type='checkbox' name='policyList' value='"+ row.DT_RowId +"' checked/>";
+							var template = "<input type='checkbox' name='policyList' value='"+ row.DT_RowId +"' checked class='lockOnDetail'/>";
 
 							for(var eq in eqs){
 								if(eqs[eq].trim() == row.DT_RowId){
@@ -168,6 +178,7 @@
 						}, "aTargets" : [0]}
 					]}
 		);	
+		
 		
 		$(".info").hide();
 
@@ -213,6 +224,9 @@
 	    });
 
 		$('#equipments').bind('filter', function() {
+			$("input:checked[name='policyList']").each(function(){
+				$(this).closest("tr").addClass("no-filter");
+			});
 	        var nTable    = $(this).dataTable();
 	        var oSettings = nTable.fnSettings();
 	    
@@ -239,13 +253,24 @@
 	    });
 
 		// filtro inicial 
-		$("#equipments").dataTable().fnFilter("${scheduledService.project}"); 
+		$("#equipments").dataTable().fnFilter("${scheduledService.project}", 3); 
+		$("#equipments").dataTable().fnSort([[ 0, "asc" ]]);
+		$("#employees").dataTable().fnSort([[ 0, "asc" ]]);
 
 		// tipos de equipo
 		$("#equipmentTypeList").bind('change', function(){
 			$("#equipmentTypeId").val($(this).val());
 		});
 		$("#equipmentTypeId").val($("#equipmentTypeList option:selected").val());
+
+		// bloqueando campos en modo detalle
+		if("${mode}" == "detail"){
+			$(".lockOnDetail").attr("readonly", "");
+			$("input.lockOnDetail").attr("disabled", "");
+			$("select.lockOnDetail").attr("disabled", "");	
+			$("#employees").dataTable().fnFilter('checked', 0);
+			$("#equipments").dataTable().fnFilter('checked', 0);
+		}
 	});
 	
 	function processForm(form){
@@ -264,6 +289,10 @@
 		<div class="grid_16">					
 			<form:form  commandName="scheduledService" action="/scheduleStatus/save.do" method="POST">
 				<form:hidden path="createdByUsr" value="${user.userEmail}"/>
+				<div>
+					<img src="/img/navigate-right.png"/><a href="/scheduleStatus/show.do">Volver a Programa de Servicios</a>
+				</div>
+				<br>
 				<div class="box">
 					<h2>Datos del servicio</h2>
 					<div id="dateInfo" class="info">
@@ -274,7 +303,7 @@
 						<span>
 							Oficina:
 							<form:input type="hidden" path="officeId" id="officeId"/>
-							<select id="optOffices">
+							<select id="optOffices" class="lockOnDetail">
 								<option value="">Todas</option>
 								<c:forEach var="office" items="${offices}">
 									<option value = "${office}">${office}</option>
@@ -285,7 +314,7 @@
 						<span style="margin-left:10px">
 							Proyecto: 
 							<form:input type="hidden" id="scheduledServiceId" path="scheduledServiceId"/>
-							<select id="optProjects" onchange="filterEquipmentByProject($(this).val());">
+							<select id="optProjects" onchange="filterEquipmentByProject($(this).val());" class="lockOnDetail">
 								<option value=""></option>
 								<c:forEach var="project" items="${projects}">
 									<option value = "${project}">${project}</option>
@@ -293,22 +322,22 @@
 							</select>
 						</span>
 						<span style="margin-left:10px">
-							Fecha y hora: <form:input id="serviceStartDate" path="serviceStartDate" type="text" readonly="readonly" required="true" />
+							Fecha y hora: <form:input id="serviceStartDate" path="serviceStartDate" type="text" readonly="readonly" required="true"  class="lockOnDetail"/>
 						</span>
 						<span style="margin-left:10px">
-							Dias: <form:input id="numDays" path="numDays" type="text" style="width:20px;" required="true" />
+							Dias: <form:input id="numDays" path="numDays" type="text" style="width:20px;" required="true"  class="lockOnDetail"/>
 						</span>
 						<div>
 							<div style="margin-top:20px;">Descripcion:</div>
-							<form:textarea path="description" id="description" style="width:70%;" rows="8"/>
+							<form:textarea path="description" id="description" style="width:70%;" rows="8" class="lockOnDetail"/>
 						</div>
 						<div style="width:120px;">
 							Persona de contacto:
-							<form:input path="serviceContact" style="width:443px;"/>
+							<form:input path="serviceContact" style="width:443px;" class="lockOnDetail"/>
 						</div>
 						<div style="width:120px;">
 							Email de contacto:
-							<form:input path="serviceContactEmail" style="width:443px;"/>
+							<form:input path="serviceContactEmail" style="width:443px;" class="lockOnDetail"/>
 						</div>
 					</div>
 					<p> </p>
@@ -317,19 +346,23 @@
 						Por favor seleccione al menos un ingeniero de servicio
 					</div>
 					<div class="employeeBox">
-						<table id="employees">
-							<thead>
-								<tr>
-									<th style="width:80px;">Agregar</th>
-									<th>Empleado</th>
-								</tr>
-							</thead>
-						</table>
+						<div style="max-height:375px; overflow:scroll">
+							<table id="employees">
+								<thead>
+									<tr>
+										<th style="width:80px;">Agregar</th>
+										<th>Ingeniero</th>
+									</tr>
+								</thead>
+							</table>
+						</div>
 					</div>
 					<p> </p>
-
-					Agendar equipo sin poliza
-					<form:checkbox path="noPolicy"/>
+					
+					<c:if test="${mode == 'edit'}">
+						Agendar equipo sin poliza
+						<form:checkbox path="noPolicy" class="lockOnDetail"/>
+					</c:if>
 
 					<!-- Seleccion de equipos en poliza -->
 					<div id = "equipmentSelect">
@@ -409,8 +442,10 @@
 					</div>
 				</div>	
 			</form:form>
-			<button class="searchButton" id="send" onclick='return processForm("scheduledService");'>Guardar</button>
-			<button class="searchButton" id="cancel" onclick="window.location='/scheduleStatus/show.do'">Cancelar</button>
+			<c:if test="${mode == 'edit'}">
+				<button class="searchButton" id="send" onclick='return processForm("scheduledService");'>Guardar</button>
+				<button class="searchButton" id="cancel" onclick="window.location='/scheduleStatus/show.do'">Cancelar</button>
+			</c:if>
 		</div>
 	</div>	
 </body>

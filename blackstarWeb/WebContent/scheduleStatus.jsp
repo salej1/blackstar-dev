@@ -6,6 +6,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <c:set var="pageSection" scope="request" value="ordenesServicio" />
 <c:import url="header.jsp"></c:import>
+<c:choose>
+<c:when test="${user.belongsToGroup['Coordinador']}">
+	<c:set var="actionTitle" scope="session" value="Editar" />
+</c:when>
+<c:otherwise>
+	<c:set var="actionTitle" scope="session" value="Detalles" />
+</c:otherwise>
+</c:choose>
 <script src="${pageContext.request.contextPath}/js/dateFormat.js"></script>
 <script src="${pageContext.request.contextPath}/DataTables-1.9.4/media/js/jquery.dataTables.js"></script>
 <script src="${pageContext.request.contextPath}/js/jquery.cookie.js"></script>
@@ -35,7 +43,7 @@
 					  ],
 			"aoColumnDefs" : [
 						{"mRender" : function(data, type, row){return new Date(data).format("dd/MM/yyyy");}, "aTargets" : [0]},
-						{"mRender" : function(data, type, row){return "<a href='/scheduleStatus/scheduledServiceDetail.do?serviceId=" + row.scheduledServiceId + "'>Editar</a>";}, "aTargets" : [7]}
+						{"mRender" : function(data, type, row){return "<a href='/scheduleStatus/scheduledServiceDetail.do?serviceId=" + row.scheduledServiceId + "'>${actionTitle}</a>";}, "aTargets" : [7]}
 					]}
 		);	
 
@@ -90,7 +98,7 @@
 							<td>${ service.customer }</td>
 							<td>${ service.serialNumber }</td>
 							<td>${ service.defaultEmployee }</td>
-							<td><a href="/scheduleStatus/scheduledServiceDetail.do?serviceId=${service.scheduledServiceId}">Editar</a></td>
+							<td><a href="/scheduleStatus/scheduledServiceDetail.do?serviceId=${service.scheduledServiceId}">${actionTitle}</a></td>
 						</tr>
 					</c:forEach>
 						
@@ -106,7 +114,7 @@
 							<td>${ service.customer }</td>
 							<td>${ service.serialNumber }</td>
 							<td>${ service.defaultEmployee }</td>
-							<td><a href="/scheduleStatus/scheduledServiceDetail.do?serviceId=${service.scheduledServiceId}">Editar</a></td>
+							<td><a href="/scheduleStatus/scheduledServiceDetail.do?serviceId=${service.scheduledServiceId}">${actionTitle}</a></td>
 						</tr>
 					</c:forEach>
 					</tbody>
@@ -122,7 +130,7 @@
 							<td>${ service.customer }</td>
 							<td>${ service.serialNumber }</td>
 							<td>${ service.defaultEmployee }</td>
-							<td><a href="/scheduleStatus/scheduledServiceDetail.do?serviceId=${service.scheduledServiceId}">Editar</a></td>
+							<td><a href="/scheduleStatus/scheduledServiceDetail.do?serviceId=${service.scheduledServiceId}">${actionTitle}</a></td>
 						</tr>
 					</c:forEach>
 					</tbody>
@@ -138,7 +146,7 @@
 							<td>${ service.customer }</td>
 							<td>${ service.serialNumber }</td>
 							<td>${ service.defaultEmployee }</td>
-							<td><a href="/scheduleStatus/scheduledServiceDetail.do?serviceId=${service.scheduledServiceId}">Editar</a></td>
+							<td><a href="/scheduleStatus/scheduledServiceDetail.do?serviceId=${service.scheduledServiceId}">${actionTitle}</a></td>
 						</tr>
 					</c:forEach>
 					</tbody>
@@ -154,7 +162,7 @@
 							<td>${ service.customer }</td>
 							<td>${ service.serialNumber }</td>
 							<td>${ service.defaultEmployee }</td>
-							<td><a href="/scheduleStatus/scheduledServiceDetail.do?serviceId=${service.scheduledServiceId}">Editar</a></td>
+							<td><a href="/scheduleStatus/scheduledServiceDetail.do?serviceId=${service.scheduledServiceId}">${actionTitle}</a></td>
 						</tr>
 					</c:forEach>
 					</tbody>
@@ -170,7 +178,7 @@
 							<td>${ service.customer }</td>
 							<td>${ service.serialNumber }</td>
 							<td>${ service.defaultEmployee }</td>
-							<td><a href="/scheduleStatus/scheduledServiceDetail.do?serviceId=${service.scheduledServiceId}">Editar</a></td>
+							<td><a href="/scheduleStatus/scheduledServiceDetail.do?serviceId=${service.scheduledServiceId}">${actionTitle}</a></td>
 						</tr>
 					</c:forEach>
 					</tbody>
@@ -186,7 +194,7 @@
 							<td>${ service.customer }</td>
 							<td>${ service.serialNumber }</td>
 							<td>${ service.defaultEmployee }</td>
-							<td><a href="/scheduleStatus/scheduledServiceDetail.do?serviceId=${service.scheduledServiceId}">Editar</a></td>
+							<td><a href="/scheduleStatus/scheduledServiceDetail.do?serviceId=${service.scheduledServiceId}">${actionTitle}</a></td>
 						</tr>
 					</c:forEach>
 					</tbody>
@@ -210,7 +218,7 @@
 							<th>Oficina</th>
 							<th>Marca</th>
 							<th>No. Serie</th>
-							<th>Editar</th>
+							<th>${actionTitle}</th>
 						</tr>
 					</thead>
 			
