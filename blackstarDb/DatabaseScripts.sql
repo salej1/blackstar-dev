@@ -3159,7 +3159,7 @@ CREATE TABLE IF NOT EXISTS blackstarDb.codexClient(
   _id INT NOT NULL AUTO_INCREMENT,
   clientTypeId INT,
   clientOriginId INT,
-  sellerId INT(100),
+  cstId INTEGER,
   sellerName VARCHAR(200),
   isProspect Tinyint,
   rfc VARCHAR(100),
@@ -3188,7 +3188,7 @@ CREATE TABLE IF NOT EXISTS blackstarDb.codexClient(
   PRIMARY KEY (_id),
   FOREIGN KEY (clientTypeId) REFERENCES codexClientType (_id),
   FOREIGN KEY (clientOriginId) REFERENCES codexClientOrigin (_id),
-  FOREIGN KEY (sellerId) REFERENCES blackstarUser (blackstarUserId)
+  FOREIGN KEY (cstId) REFERENCES cst (cstId)
 )ENGINE=INNODB;
 
 CREATE TABLE IF NOT EXISTS blackstarDb.codexStatusType( 
@@ -3457,6 +3457,8 @@ CREATE TABLE IF NOT EXISTS blackstarDb.cstOffice(
 -- ---------------------------------------------------------------------------
 -- 8	15/01/2015	SAG 	Se agrega documentId a priceProposal
 -- ---------------------------------------------------------------------------
+-- 9 	29/01/2015	SAG 	Se agrega scope a cst
+-- ---------------------------------------------------------------------------
 
 use blackstarDb;
 
@@ -3469,6 +3471,11 @@ BEGIN
 -- -----------------------------------------------------------------------------
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
+
+-- AGREGANDO scope a cst
+IF(SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'cst' AND COLUMN_NAME = 'scope') = 0 THEN
+	ALTER TABLE blackstarDb.cst ADD scope INT NOT NULL DEFAULT 0;
+END IF;
 
 -- AGREGANDO documentId a codexPriceProposal
 IF(SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'codexPriceProposal' AND COLUMN_NAME = 'documentId') = 0 THEN
@@ -3489,14 +3496,6 @@ END IF;
 ALTER TABLE codexPriceProposal MODIFY advance float(15,2) NULL;
 ALTER TABLE codexPriceProposal MODIFY timeLimit int NULL;
 ALTER TABLE codexPriceProposal MODIFY settlementTimeLimit int NULL;
-
--- CAMBIANDO sellerId
-IF(SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'codexClient' AND COLUMN_NAME = 'sellerId') > 0 THEN
-	ALTER TABLE blackstarDb.codexClient DROP FOREIGN KEY codexClient_ibfk_3;
-	ALTER TABLE blackstarDb.codexClient DROP INDEX sellerId;
-	ALTER TABLE blackstarDb.codexClient CHANGE sellerId cstId INT(11) NULL;
-	ALTER TABLE blackstarDb.codexClient ADD CONSTRAINT FK_codexClient_cst FOREIGN KEY (cstId) REFERENCES cst(cstId);
-END IF;
 
 -- AGREGANDO priceListId a codexEntryItem
 IF(SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'codexEntryItem' AND COLUMN_NAME = 'priceListId') = 0 THEN
@@ -4643,7 +4642,7 @@ FROM codexProject cp
   INNER JOIN codexCurrencyType cct ON cp.currencyTypeId = cct._id
   INNER JOIN codexCostCenter ccc ON cp.costCenterId = ccc._id
 WHERE 
-      cc.cstId = pUserId;
+      if(pUserId = 0, 1=1, cc.cstId = pUserId);
       
 END$$
 
@@ -4897,6 +4896,11 @@ DROP PROCEDURE IF EXISTS blackstarDb.updateCodexData$$
 CREATE PROCEDURE blackstarDb.updateCodexData()
 BEGIN
 
+	IF(SELECT count(*) FROM cst WHERE scope > 0) = 0 THEN
+		UPDATE cst SET scope = 1 WHERE email = 'liliana.diaz@gposac.com.mx';
+		UPDATE cst SET scope = 1 WHERE email = 'saul.andrade@gposac.com.mx';
+	END IF;
+
 	IF(SELECT count(*) FROM blackstarDb.sequence WHERE sequenceTypeId = 'C') = 0 THEN
 		INSERT INTO blackstarDb.sequence(sequenceTypeId, sequenceNumber, description)
 		SELECT 'C', max(_id), 'Secuencia para numero de clientes' FROM blackstarDb.codexClient;
@@ -4966,9 +4970,9 @@ BEGIN
 		SELECT 'Jose Ivan Martin Miranda', 'Q', '442 295 24 68', '312', '(44) 2226-7847', 'ivan.martin@gposac.com.mx', 1 UNION
 		SELECT 'Juan Ramos Anaya', 'Q', '442 295 24 68', '318', '', 'juan.ramos@gposac.com.mx', 0 UNION
 		SELECT 'Jorge Alberto Martinez', 'M', '(55) 5020-2160', '427', '(55) 1452-7626', 'jorge.martinez@gposac.com.mx', 1 UNION
-		SELECT 'Michel Galicia Camacho', 'M', '(55) 5020-2160', '429', '', 'michelle.galicia@gposac.com.mx', 0 UNION
+		SELECT 'Michel Galicia Camacho', 'M', '(55) 5020-2160', '429', '(55) 34343570', 'michelle.galicia@gposac.com.mx', 0 UNION
 		SELECT 'Liliana Diaz Cuevas', 'M', '(55) 5020-2160', '407', '(55) 1452-7278', 'liliana.diaz@gposac.com.mx', 0 UNION
-		SELECT 'Pilar Paz Torres', 'M', '(55) 5020-2160', '428', '', 'pilar.paz@gposac.com.mx', 0 UNION
+		SELECT 'Pilar Paz Torres', 'M', '(55) 5020-2160', '428', '(55) 1452-7278', 'pilar.paz@gposac.com.mx', 0 UNION
 		SELECT 'Nicolas Andrade Carrillo', 'G', '(33) 3793-0138', '217', '(33) 3191-9226', 'nicolas.andrade@gposac.com.mx', 1 UNION
 		SELECT 'Saul Andrade Gonzalez', 'G', '(33) 3793-0138', '220', '(33) 3576-8144', 'saul.andrade@gposac.com.mx', 1 ;
 	END IF;

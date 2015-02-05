@@ -30,6 +30,8 @@
 -- ---------------------------------------------------------------------------
 -- 8	15/01/2015	SAG 	Se agrega documentId a priceProposal
 -- ---------------------------------------------------------------------------
+-- 9 	29/01/2015	SAG 	Se agrega scope a cst
+-- ---------------------------------------------------------------------------
 
 use blackstarDb;
 
@@ -42,6 +44,11 @@ BEGIN
 -- -----------------------------------------------------------------------------
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
+
+-- AGREGANDO scope a cst
+IF(SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'cst' AND COLUMN_NAME = 'scope') = 0 THEN
+	ALTER TABLE blackstarDb.cst ADD scope INT NOT NULL DEFAULT 0;
+END IF;
 
 -- AGREGANDO documentId a codexPriceProposal
 IF(SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'codexPriceProposal' AND COLUMN_NAME = 'documentId') = 0 THEN
@@ -62,14 +69,6 @@ END IF;
 ALTER TABLE codexPriceProposal MODIFY advance float(15,2) NULL;
 ALTER TABLE codexPriceProposal MODIFY timeLimit int NULL;
 ALTER TABLE codexPriceProposal MODIFY settlementTimeLimit int NULL;
-
--- CAMBIANDO sellerId
-IF(SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'codexClient' AND COLUMN_NAME = 'sellerId') > 0 THEN
-	ALTER TABLE blackstarDb.codexClient DROP FOREIGN KEY codexClient_ibfk_3;
-	ALTER TABLE blackstarDb.codexClient DROP INDEX sellerId;
-	ALTER TABLE blackstarDb.codexClient CHANGE sellerId cstId INT(11) NULL;
-	ALTER TABLE blackstarDb.codexClient ADD CONSTRAINT FK_codexClient_cst FOREIGN KEY (cstId) REFERENCES cst(cstId);
-END IF;
 
 -- AGREGANDO priceListId a codexEntryItem
 IF(SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'codexEntryItem' AND COLUMN_NAME = 'priceListId') = 0 THEN

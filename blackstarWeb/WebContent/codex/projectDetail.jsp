@@ -158,7 +158,10 @@
 	    function setButtonStatusText(){
 	      var projectStatus = '${project.statusId}';
 		  if(projectStatus == '1'){
-		  	if('${enableEdition}' == 'true'){
+		  	if(${project.id} <= 0){
+		  		$(".statusButton").hide();
+		  	}
+		  	else if('${enableEdition}' == 'true'){
 			  	$(".statusButton").html("Enviar a Autorización");
 		  	}
 		  	else{
@@ -191,7 +194,7 @@
 	    	entryNumber++;
 	    	$('#entryTable').append('\
 	    		<tr class="part" id="entry_' + entryNumber + '" name="' + entryNumber + '">\
-	    			<td>\
+	    			<td style="width:40px">\
 	    			<span>\
 	    				<c:if test="${enableEdition}"><img src="/img/delete.png" title="Eliminar partida" id="removeEntryButton_' + entryNumber +'" onclick="removeEntry(' + entryNumber +'); return false;" style="cursor:pointer"/></c:if>\
 		    			' + entryNumber + '\
@@ -302,14 +305,14 @@
 	     				description = $("#reference_" + itemId).val();
 	     			}
 	     			strEntries += $("#entryItemTypeId_" + itemId).val()
-	     			           +  "°" + itemReference
-	     			           +  "°" + description
-	     			           +  "°" + $("#itemQuantity_" + itemId).val()
-	     			           +  "°" + $("#itemPriceByUnit_" + itemId).val()
-	     			           +  "°" + $("#itemDiscount_" + itemId).val()
-	     			           +  "°" + $("#itemTotalPrice_" + itemId).val()
-	     			           +  "°" + $("#itemComments_" + itemId).val()
-	     			           +  "°" + itemId
+	     			           +  "::" + itemReference
+	     			           +  "::" + description
+	     			           +  "::" + $("#itemQuantity_" + itemId).val()
+	     			           +  "::" + $("#itemPriceByUnit_" + itemId).val()
+	     			           +  "::" + $("#itemDiscount_" + itemId).val()
+	     			           +  "::" + $("#itemTotalPrice_" + itemId).val()
+	     			           +  "::" + $("#itemComments_" + itemId).val()
+	     			           +  "::" + itemId
 	     			           +  "^";
 	     		}
 	     		strEntries += "~";
@@ -420,26 +423,40 @@
 	    	}
 	    }
 
-	    function advanceStatus(){
-			var isUpdate = '${isUpdate}';
-			var target = '';
+	    function performAdvance(){
+	    	$('#mainForm').attr('action', '/codex/project/advanceStatus.do?projectId=' +  $("#projectId").val());
+			$("#mainForm").submit();
+	    }
 
-			if(isUpdate == 'true'){
-				target = '/codex/project/update.do';
-			}
+	    function advanceStatus(){
+	    	if("${enableEdition}" == "true" && ${project.statusId} < 3){
+	    		// Modo edicion --> primero guardar
+	    		var isUpdate = '${isUpdate}';
+				var target = '';
+
+				if(isUpdate == 'true'){
+					target = '/codex/project/update.do';
+				}
+				else{
+					throw new Error("Can't advance Status for new projects");
+				}
+				if(validate()){
+					prepareSubmit();
+					$.ajax({
+					  type: "POST",
+					  url: target,
+					  data: $("#mainForm").serialize()
+					}).done(function(){
+				      performAdvance();
+					});
+				}
+	    	}
+	    	else if(${project.statusId} == 4){
+
+	    	}
 			else{
-				target = "/codex/project/insert.do";
-			}
-			if(validate()){
-				prepareSubmit();
-				$.ajax({
-				  type: "POST",
-				  url: target,
-				  data: $("#mainForm").serialize()
-				}).done(function(){
-			      $('#mainForm').attr('action', '/codex/project/advanceStatus.do?projectId=' +  $("#projectId").val());
-			      $("#mainForm").submit();
-				});
+				// Modo detalle --> solo avanzar
+				performAdvance();
 			}
 	    }
 
@@ -676,6 +693,7 @@
 			$("#commentsCapture").val($("#" + field + number).val());
 			$("#commentsDialog").dialog('open');
 		}
+
 	</script>
 	
 <!--   CONTENT   -->
@@ -795,7 +813,7 @@
 									<span class="total" id="productsNumberDisplay"></span>
 								</td>
 								<td>FIANZA(S)</td>
-								<td><form:input type="text" path="financesNumber" style="width:95%" class="calc" title="Monto de fianza = Monto del proyecto * % a afianzar * 2.0 % * numero de años * numero de fianzas. Si es < $ 290.00 fianza es $ 290.00"/></td>
+								<td><form:input type="text" path="financesNumber" style="width:95%" class="calc lockOnDetail" title="Monto de fianza = Monto del proyecto * % a afianzar * 2.0 % * numero de años * numero de fianzas. Si es < $ 290.00 fianza es $ 290.00"/></td>
 							  </tr>
 							  <tr>
 								<td>TOTAL DE SERVICIOS</td>

@@ -58,15 +58,26 @@ public class ProjectController extends AbstractController {
 		this.cstService = cstService;
 	}
 
+  private Boolean isSalesMgr(UserSession userSession){
+	  return userSession.getUser().getBelongsToGroup().get(Globals.GROUP_SALES_MANAGER) != null && userSession.getUser().getBelongsToGroup().get(Globals.GROUP_SALES_MANAGER) == true;
+  }
+  
 @RequestMapping(value = "/showList.do") 
   public String showList(ModelMap model, HttpServletRequest request,
 		  @ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession ){
-	User user = null;
+
 	try {
 		 CstDTO cstId =  cstService.getCstByEmail(userSession.getUser().getUserEmail());
 		 
 		 if(cstId != null){
-			 model.addAttribute("projects", service.getAllProjectsByUsrJson(cstId.getCstId()));
+			 Integer id= -1;
+			 if(isSalesMgr(userSession) || cstId.getScope() == 1){
+				 id = 0;
+			 }
+			 else{
+				 id = cstId.getCstId();
+			 }
+			 model.addAttribute("projects", service.getAllProjectsByUsrJson(id));
 		 }
 		 
 	} catch (Exception e) {
@@ -99,12 +110,12 @@ public class ProjectController extends AbstractController {
 		 Boolean enableEdition = false;
 		 Boolean enableFallback = false;
 		 if(project.getStatusId() == 1){
-			 if(userSession.getUser().getBelongsToGroup().get(Globals.GROUP_SALES_MANAGER) != null || project.getCstEmail().equals(userSession.getUser().getUserEmail())){
+			 if(isSalesMgr(userSession) || project.getCstEmail().equals(userSession.getUser().getUserEmail())){
 				 enableEdition = true;
 			 }
 		 }
 		 else if(project.getStatusId() > 1 && project.getStatusId() <= 4){
-			 if(userSession.getUser().getBelongsToGroup().get(Globals.GROUP_SALES_MANAGER) != null && userSession.getUser().getBelongsToGroup().get(Globals.GROUP_SALES_MANAGER) == true && project.getStatusId() < 3){
+			 if(isSalesMgr(userSession) && project.getStatusId() < 3){
 				 enableEdition = true;
 			 }
 			 if(project.getCstEmail().equals(userSession.getUser().getUserEmail())){
@@ -271,11 +282,7 @@ public class ProjectController extends AbstractController {
 	try {
 		 user = ((UserSession) request.getSession().getAttribute(Globals
                                          .SESSION_KEY_PARAM)).getUser();
-		 if(project.getStatusId() == 1){
-			service.updateProject(project, user);
-		 } else {
-	        service.updateEntries(project);
-		 }
+		 service.updateProject(project, user);
 	} catch (Exception e) {
 		e.printStackTrace();
 		model.addAttribute("errorDetails", e.getStackTrace()[0].toString());

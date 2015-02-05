@@ -25,20 +25,18 @@ public class PriceProposalReport extends AbstractReport {
 	data = (ProjectVO) fillData;
 	printHeader();
 	printCover();
-
+	printFooter(1,4);
+	
 	drawer.newPage();
 	printHeader();
 	printProposal();
+	printFooter(2,4);
 	
 	drawer.newPage();
 	printHeader();
 	printContract(data);
+	printFooter(4,4);
 
-	// printing footers
-	for(int i = 0; i < drawer.getPageCount(); i++){
-		
-		printFooter(i + 1, drawer.getPageCount());
-	}
   }
 	
 	
@@ -48,16 +46,19 @@ public class PriceProposalReport extends AbstractReport {
   
   private void printCover() throws Exception {
 	  
-	  drawer.textBlock("Proyecto:", Align.CENTER, 20, 180, 520, false, 14);
-	  drawer.textBlock(data.getProjectNumber(), Align.CENTER, 20, 200, 520, true, 14);
-	  drawer.textBlock("Cotización No.", Align.CENTER, 20, 230, 520, false, 14);
-	  drawer.textBlock(data.getPriceProposalNumber(), Align.CENTER, 20, 250, 520, true, 14);
-	  drawer.textBlock("Cliente:", Align.CENTER, 20, 280, 520, false, 12);
-	  drawer.textBlock(data.getClientDescription(), Align.CENTER, 20, 300, 520, true, 14);
-	  drawer.textBlock("Atención:", Align.CENTER, 20, 330, 520, false, 12);
-	  drawer.textBlock(data.getContactName(), Align.CENTER, 20, 350, 520, true, 14);
-	  drawer.textBlock("Fecha de Creación:", Align.CENTER, 20, 380, 520, false, 12);
-	  drawer.textBlock(Globals.getLocalDateString(), Align.CENTER, 20, 410, 520, false, 12);
+	  int yAdj = 40;
+	  drawer.textBlock("INGENERIA DE SERVICIO", Align.CENTER, 20, 120 + yAdj, 520, true, Color.darkblue, 16);
+	  drawer.textBlock("EN PROTECCION INTEGRAL", Align.CENTER, 20, 140 + yAdj, 520, true, Color.darkblue, 16);
+	  drawer.textBlock("Proyecto:", Align.CENTER, 20, 180 + yAdj, 520, false, 14);
+	  drawer.textBlock(data.getProjectNumber(), Align.CENTER, 20, 200 + yAdj, 520, true, 14);
+	  drawer.textBlock("Cotización No.", Align.CENTER, 20, 230 + yAdj, 520, false, 14);
+	  drawer.textBlock(data.getPriceProposalNumber(), Align.CENTER, 20, 250 + yAdj, 520, true, 14);
+	  drawer.textBlock("Cliente:", Align.CENTER, 20, 280 + yAdj, 520, false, 12);
+	  drawer.textBlock(data.getClientDescription(), Align.CENTER, 20, 300 + yAdj, 520, true, 14);
+	  drawer.textBlock("Atención:", Align.CENTER, 20, 330 + yAdj, 520, false, 12);
+	  drawer.textBlock(data.getContactName(), Align.CENTER, 20, 350 + yAdj, 520, true, 14);
+	  drawer.textBlock("Fecha de Creación:", Align.CENTER, 20, 380 + yAdj, 520, false, 12);
+	  drawer.textBlock(Globals.getLocalDateString(), Align.CENTER, 20, 410 + yAdj, 520, false, 12);
 	  drawer.textBlock("Aviso de Restricciones de Uso y Divulgación:", Align.JUSTIFY, 40, 630, 520, true, 9);
 	  String s = "La información contenida en la totalidad de esta Propuesta, constituye un secreto de marca y/o información comercial y/o financiera " +
 	  "propiedad de SISTEMAS AVANZADOS EN COMPUTACIÓN DE MÉXICO, S.A. DE C.V., en lo sucesivo \"GRUPO SAC\", la cual, se encuentra " +
@@ -273,6 +274,7 @@ public class PriceProposalReport extends AbstractReport {
 
 	  drawer.newPage();
 	  printHeader();
+	  printFooter(3,4);
 	  
 	  drawer.text("9. Transferencia de Propiedad", 40, 120, true);
 	  s = "La transferencia de propiedad tendrá lugar en el sitio donde se entreguen los equipos, pagados en su totalidad y con la facturación " +

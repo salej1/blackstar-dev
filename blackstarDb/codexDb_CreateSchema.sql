@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS blackstarDb.codexClient(
   _id INT NOT NULL AUTO_INCREMENT,
   clientTypeId INT,
   clientOriginId INT,
-  sellerId INT(100),
+  cstId INTEGER,
   sellerName VARCHAR(200),
   isProspect Tinyint,
   rfc VARCHAR(100),
@@ -80,7 +80,7 @@ CREATE TABLE IF NOT EXISTS blackstarDb.codexClient(
   PRIMARY KEY (_id),
   FOREIGN KEY (clientTypeId) REFERENCES codexClientType (_id),
   FOREIGN KEY (clientOriginId) REFERENCES codexClientOrigin (_id),
-  FOREIGN KEY (sellerId) REFERENCES blackstarUser (blackstarUserId)
+  FOREIGN KEY (cstId) REFERENCES cst (cstId)
 )ENGINE=INNODB;
 
 CREATE TABLE IF NOT EXISTS blackstarDb.codexStatusType( 

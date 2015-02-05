@@ -61,7 +61,12 @@ public class ProjectEntryItemVO {
 		this.reference = reference;
 	}
 	public String getDescription() {
-		return description;
+		if(description != null){
+			return description.replace("'", "\\'");
+		}
+		else{
+			return description;
+		}
 	}
 	public void setDescription(String description) {
 		this.description = description;

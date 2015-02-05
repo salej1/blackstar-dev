@@ -9,6 +9,7 @@ public class CstDTO {
 	String mobile;
 	String email;
 	Integer autoAuthProjects;
+	Integer scope;
 	
 	public Integer getCstId() {
 		return cstId;
@@ -57,5 +58,11 @@ public class CstDTO {
 	}
 	public void setAutoAuthProjects(Integer autoAuthProjects) {
 		this.autoAuthProjects = autoAuthProjects;
+	}
+	public Integer getScope() {
+		return scope;
+	}
+	public void setScope(Integer scope) {
+		this.scope = scope;
 	}
 }

@@ -14,7 +14,6 @@
       var pickerBuilder = new google.picker.PickerBuilder()
           .addView(docsView)
           .addView(uploadView)
-          .enableFeature(google.picker.Feature.MULTISELECT_ENABLED)
           .setOAuthToken('${accessToken}');
       if(customPickerCallBack == null){
     	  pickerBuilder.setCallback(pickerCallback);
@@ -30,11 +29,12 @@
     
     function pickerCallback(data) {
       if (data.action == google.picker.Action.PICKED) {
-        for(var i = 0 ; i < data.docs.length; i++){
-        	window.open('https://docs.google.com/file/d/' + data.docs[i].id);	
+        if(data.docs.length > 0){
+          $("#pickedAttachmentId").val(data.docs[0].id);
         }
       }
     }
+
     </script>
     
 
@@ -53,6 +53,7 @@
 		</tr>
 	</tbody>
 </table>
+<input type="hidden" id="pickedAttachmentId">
 
 <div id="result"></div>
 

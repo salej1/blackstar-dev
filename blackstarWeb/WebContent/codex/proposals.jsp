@@ -42,7 +42,10 @@
 							  { "mData": "statusDescription" },
 							  { "mData": null }
 						  ],
-				"aoColumnDefs" : [{"mRender" : function(data, type, row){return "<div align=center style='width:75px;'><a href=/codex/project/advanceStatus.do?projectId=" + row.id + ">" + "Crear pedido" + "</a></div>";}, "aTargets" : [5]},
+				"aoColumnDefs" : [{"mRender" : function(data, type, row){
+									return "";
+									//<div align=center style='width:75px;'><a href=/codex/project/advanceStatus.do?projectId=" + row.id + ">" + "Crear pedido" + "</a></div>";
+								}, "aTargets" : [5]},
 								  {"mRender" : function(data, type, row){return "<div align=center style='width:75px;'><a href=${pageContext.request.contextPath}/codex/project/edit.do?projectId=" + row.id + ">" + data + "</a></div>";}, "aTargets" : [0]}]}
 
 			);

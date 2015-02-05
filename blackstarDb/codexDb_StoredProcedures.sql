@@ -54,6 +54,9 @@
 -- 7  15/01/2015  SAG     Se agrega:
 --                              blackstarDb.GetPriceProposalList
 -- -----------------------------------------------------------------------------
+-- 8  29/01/2015  SAG     Se modifica:
+--                              blackstarDb.CodexGetAllProjectsByUsr
+-- -----------------------------------------------------------------------------
 
 use blackstarDb;
 
@@ -1053,7 +1056,7 @@ FROM codexProject cp
   INNER JOIN codexCurrencyType cct ON cp.currencyTypeId = cct._id
   INNER JOIN codexCostCenter ccc ON cp.costCenterId = ccc._id
 WHERE 
-      cc.cstId = pUserId;
+      if(pUserId = 0, 1=1, cc.cstId = pUserId);
       
 END$$
 

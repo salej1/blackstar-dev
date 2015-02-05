@@ -226,7 +226,7 @@ public class ProjectServiceImpl extends AbstractService
 						Float.valueOf(values[4]),Float.valueOf(values[5]), values[6]);
 		items = values[8].split("\\^");
 		for(String item : items){
-			values = item.split("°");
+			values = item.split("::");
 			dao.upsertEntryItem(-1, entryId, Integer.valueOf(values[0]), values[1]
 			   , values[2], Integer.valueOf(values[3]), Float.valueOf(values[4])
 			   , Float.valueOf(values[5]), Float.valueOf(values[6]), values[7]);
@@ -251,7 +251,7 @@ public class ProjectServiceImpl extends AbstractService
 				Float.valueOf(values[4]),Float.valueOf(values[5]), values[6]);
 		items = values[8].split("\\^");
 		for(String item : items){
-			values = item.split("°");
+			values = item.split("::");
 			dao.upsertEntryItem(-1, entryId, Integer.valueOf(values[0]), values[1]
 			   , values[2], Integer.valueOf(values[3]), Float.valueOf(values[4])
 			   , Float.valueOf(values[5]), Float.valueOf(values[6]), values[7]);
@@ -259,24 +259,6 @@ public class ProjectServiceImpl extends AbstractService
 	}
   }
   
-  @Override
-  public void updateEntries(ProjectVO project){
-	String [] entries = project.getStrEntries().split("~");
-	String [] items, values;
-	Integer entryId, itemId;
-	for(String entry : entries){
-		values = entry.split("\\|");
-		entryId = Integer.valueOf(values[7]);
-		dao.upsertProjectEntry(entryId, project.getId(), 0, "", 0, 0F, 0F, 0F, values[6]);
-		items = values[8].split("\\^");
-		for(String item : items){
-			values = item.split("°");
-			itemId = Integer.valueOf(values[8]);
-			dao.upsertEntryItem(itemId, entryId, 0, "", "", 0, 0F, 0F, 0F, values[7]);
-		}
-	}
-	  
-  }
   
   @Override
   public List<DeliverableVO> getDeliverables(Integer projectId){
