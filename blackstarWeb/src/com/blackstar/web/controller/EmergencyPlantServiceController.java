@@ -2,12 +2,16 @@ package com.blackstar.web.controller;
 
 import java.util.Date;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.blackstar.common.Globals;
@@ -15,10 +19,13 @@ import com.blackstar.db.DAOFactory;
 import com.blackstar.interfaces.IEmailService;
 import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
+import com.blackstar.model.Equipmenttype;
 import com.blackstar.model.OpenCustomer;
 import com.blackstar.model.Policy;
 import com.blackstar.model.Serviceorder;
 import com.blackstar.model.UserSession;
+import com.blackstar.model.dto.AirCoServiceDTO;
+import com.blackstar.model.dto.AirCoServicePolicyDTO;
 import com.blackstar.model.dto.EmergencyPlantServiceDTO;
 import com.blackstar.model.dto.EmergencyPlantServicePolicyDTO;
 import com.blackstar.services.interfaces.OpenCustomerService;
@@ -254,4 +261,48 @@ public class EmergencyPlantServiceController extends AbstractController {
 	      sendNotification(userEmail + "," + serviceOrder.getReceivedByEmail(), report, serviceOrder.getServiceOrderNumber());
 	    }
 
+	    @RequestMapping(value = "/remake.do", method = RequestMethod.GET)
+	    public @ResponseBody String remake( 
+	    		@RequestParam(required = true) int idObject,
+	    		@ModelAttribute(Globals.SESSION_KEY_PARAM)  UserSession userSession,
+	          ModelMap model, HttpServletRequest req, HttpServletResponse resp) throws Exception
+	    {
+	    	EmergencyPlantServicePolicyDTO serviceDTO = null;
+	    	if(userSession.getUser().getUserEmail().equals("portal-servicios@gposac.com.mx")){
+	    		try{
+	    			Integer serviceOrderId = idObject;
+	    			EmergencyPlantServiceDTO emergencyPlantServiceDTO = service.getEmergencyPlantService(serviceOrderId);
+	    			if(emergencyPlantServiceDTO == null){
+	    				emergencyPlantServiceDTO = new EmergencyPlantServiceDTO();
+	    				emergencyPlantServiceDTO.setServiceOrderId(serviceOrderId);
+	    			}
+	    			Serviceorder serviceOrder = this.daoFactory.getServiceOrderDAO().getServiceOrderById(serviceOrderId);
+	    			Policy policy = this.daoFactory.getPolicyDAO().getPolicyById(serviceOrder.getPolicyId());
+	    			Equipmenttype equipType;
+	    			if(policy != null && policy.getPolicyId() > 0){
+	    				equipType = this.daoFactory.getEquipmentTypeDAO().getEquipmentTypeById(policy.getEquipmentTypeId());
+	    				serviceDTO = new EmergencyPlantServicePolicyDTO(policy, serviceOrder,  emergencyPlantServiceDTO);
+	    				model.addAttribute("hasPolicy", true);
+	    			}
+	    			else if(serviceOrder.getOpenCustomerId() > 0){
+	    				OpenCustomer oc = ocService.GetOpenCustomerById(serviceOrder.getOpenCustomerId());
+	    				serviceDTO = new EmergencyPlantServicePolicyDTO(oc, serviceOrder, emergencyPlantServiceDTO);
+	    				model.addAttribute("hasPolicy", false);
+	    			}
+
+	    			byte [] report = rpService.getEmergencyPlantReport(serviceDTO);
+	    			saveReport(serviceOrder.getServiceOrderId(), report);
+
+	    			return "OK";
+	    		}
+	    		catch(Exception e){
+	    			Logger.Log(LogLevel.FATAL, e.getStackTrace()[0].toString(), e);
+	    			model.addAttribute("errorDetails", e.getMessage() + " - " + e.getStackTrace()[0].toString());
+	    			return "Fail";
+	    		}
+	    	}
+	    	else{
+	    		return "Not allowed";
+	    	}
+	    }
 }
