@@ -3643,6 +3643,9 @@ DROP PROCEDURE blackstarDb.upgradeCodexSchema;
 -- 7  15/01/2015  SAG     Se agrega:
 --                              blackstarDb.GetPriceProposalList
 -- -----------------------------------------------------------------------------
+-- 8  29/01/2015  SAG     Se modifica:
+--                              blackstarDb.CodexGetAllProjectsByUsr
+-- -----------------------------------------------------------------------------
 
 use blackstarDb;
 

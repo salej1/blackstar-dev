@@ -113,13 +113,7 @@ public class PriceProposalReport extends AbstractReport {
 			  printHeader();
 			  drawer.hLine(40, 545, 120);
 		  }   
-		  
-		  items = entries.get(i).getItems();
-		  rawEntryPrice = 0F;
-		  for(ProjectEntryItemVO item :  items){
-			  rawEntryPrice += item.getPriceByUnit();
-		  }
-		  
+		  		  
 		  drawer.text(i + 1 + "", 60, 325 + yFactor);
 		  int descOffset = drawer.textBlock(entries.get(i).getDescription(), Align.JUSTIFY, 105, 325 + yFactor, 200, false, 8);
 		  descOffset *= 12;
@@ -133,6 +127,7 @@ public class PriceProposalReport extends AbstractReport {
 		  drawer.vLine(310 + yFactor, 335 + yFactor + descOffset, 440);
 		  drawer.vLine(310 + yFactor, 335 + yFactor + descOffset, 525);
 		  
+		  rawEntryPrice = entries.get(i).getUnitPrice();
 		  Double actualEntryPrice = entries.get(i).getTotalPrice();
 		  
 		  if(data.getCurrencyTypeId() == CurrencyType.MXN){
@@ -140,7 +135,7 @@ public class PriceProposalReport extends AbstractReport {
 			  actualEntryPrice = actualEntryPrice * data.getChangeType();
 		  }
 		  		  
-		  drawer.text(DecimalFormat.getCurrencyInstance().format(actualEntryPrice) + "", 385, 325 + yFactor);
+		  drawer.text(DecimalFormat.getCurrencyInstance().format(rawEntryPrice) + "", 385, 325 + yFactor);
 		  drawer.text(DecimalFormat.getCurrencyInstance().format(actualEntryPrice) + "", 455, 325 + yFactor);
 		  
 		  yFactor += descOffset + 25;
@@ -223,7 +218,14 @@ public class PriceProposalReport extends AbstractReport {
 	  drawer.text("Los precios están cotizados en " + data.getCurrencyCode() + " y no incluyen el impuesto al valor agregado (IVA), el cual se cargará al momento de la facturación.", 40, 200);
 	  
 	  drawer.text("3. Condiciones de Pago", 40, 220, true);
-	  drawer.text(data.getPaymentConditions().replace("\r\n", ". "), 40, 230);
+	  String paymentType;
+	  if(data.getPaymentTypeId() == 1){
+		  paymentType = "Pago de contado. ";
+	  }
+	  else{
+		  paymentType = "A crédito. ";
+	  }
+	  drawer.text(paymentType + data.getPaymentConditions().replace("\r\n", ". "), 40, 230);
 	  String s = "Nota: En caso de que se le ofrezca un crédito y no cuente con línea de crédito ya establecida con GRUPO SAC, su autorización estará  " +
 			  "supeditada al dictamen de nuestro departamento correspondiente. Para las cotizaciones en dólares el pago podrá ser realizado en moneda " +
 			  "nacional con base al tipo de cambio publicado en el DOF del día en que se aplique en firme el deposito en nuestra cuenta bancaria.";
