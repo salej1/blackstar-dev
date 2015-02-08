@@ -32,6 +32,8 @@
 -- ---------------------------------------------------------------------------
 -- 9 	29/01/2015	SAG 	Se agrega scope a cst
 -- ---------------------------------------------------------------------------
+-- 10 	05/02/2015	SAG 	Se agrega createdBy y createdByUsr a codexDeliverableTrace
+-- ---------------------------------------------------------------------------
 
 use blackstarDb;
 
@@ -44,6 +46,15 @@ BEGIN
 -- -----------------------------------------------------------------------------
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
+
+-- AGREGANDO createdBy & createdByUsr a codexDeliverableTrace
+IF(SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'codexDeliverableTrace' AND COLUMN_NAME = 'createdBy') = 0 THEN
+	ALTER TABLE blackstarDb.codexDeliverableTrace ADD createdBy VARCHAR(200) NULL;
+END IF;
+
+IF(SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'codexDeliverableTrace' AND COLUMN_NAME = 'createdByUsr') = 0 THEN
+	ALTER TABLE blackstarDb.codexDeliverableTrace ADD createdByUsr VARCHAR(200) NULL;
+END IF;
 
 -- AGREGANDO scope a cst
 IF(SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'cst' AND COLUMN_NAME = 'scope') = 0 THEN
