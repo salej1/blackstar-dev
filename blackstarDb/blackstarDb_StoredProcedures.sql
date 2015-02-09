@@ -8,56 +8,6 @@
 -- Change History
 -- -----------------------------------------------------------------------------
 -- PR   Date    	Author	Description
--- --   --------   -------  ----------------------------------------------------
--- 43	03/06/2014	SAG 	Se modifica:
---                              blackstarDb.GetPoliciesKPI
--- -----------------------------------------------------------------------------
--- 44	04/06/2014	SAG 	Se modifica:
---                              blackstarDb.GetAllServiceOrders
--- -----------------------------------------------------------------------------
--- 45	10/06/2014	SAG 	Se modifica:
---                              blackstarDb.GetTicketsKPI
--- -----------------------------------------------------------------------------
--- 46	13/06/2014	SAG 	Se modifica:
---                              blackstarDb.GetProjectsKPI
--- -----------------------------------------------------------------------------
--- 47	15/06/2014	SAG 	Se modifica:
---                              blackstarDb.GetProjectsKPI
---								blackstarDb.AddSurveyService
--- -----------------------------------------------------------------------------
--- 48	02/07/2014	SAG 	Se modifica:
---								blackstarDb.GetServiceOrders
--- -----------------------------------------------------------------------------
--- 49 	05/07/2014	SAG 	Se modifica:
---								blackstarDb.SaveIssue
--- -----------------------------------------------------------------------------
--- 50 	08/07/2014	SAG 	Se modifica:
---								blackstarDb.UpsertUser
---								blackstarDb.GetUserWatchingIssues
---								blackstarDb.GetAutoCompleteServiceOrdersByDate
--- -----------------------------------------------------------------------------
--- 51	18/07/2014	SAG 	Se modifica:
---								blackstarDb.GetPoliciesKPI
---								blackstarDb.GetTicketsKPI
---								blackstarDb.GetServiceOrders
--- -----------------------------------------------------------------------------
--- 52 	24/07/2014	SAG 	Se implementa relacion 1-n entre polizas y usuarios cliente
--- -----------------------------------------------------------------------------
--- 53	09/09/2014	SAG 	Se modifica:
---								blackstarDb.AddupsService
--- -----------------------------------------------------------------------------
--- 54 	01/11/2014	SAG 	Se agrega:
---								GetSupportServiceOrderDetail
---								GetSupportServiceOrderComments
---								DeleteServiceOrder
---								DeleteServiceOrderPDF
---								GetSupportTicketDetail
---								DeleteFollowUp
---								DeleteTicket
---								GetSupportTicketComments
---								GetSupportBloomTicketDetails
---								DeleteBloomTicket
---								GetSupportBloomTicketComments
 -- -----------------------------------------------------------------------------
 -- 55	03/11/2014	SAG		Se agrega:
 --								GetGuid
@@ -74,6 +24,9 @@
 -- 58 	22/01/2015 SAG 		Se agrega:
 --								SetEngHourCost
 --								GetEngHourCost
+-- -----------------------------------------------------------------------------
+-- 59	08/02/2015	SAG 	Se modifica:
+--								UpdateServiceOrder
 -- -----------------------------------------------------------------------------
 
 use blackstarDb;
@@ -2021,42 +1974,75 @@ END$$
 DROP PROCEDURE IF EXISTS blackstarDb.GetConcurrentFailuresKPI$$
 CREATE PROCEDURE blackstarDb.`GetConcurrentFailuresKPI`(project varchar(200), startDate datetime, endDate datetime, user VARCHAR(100))
 BEGIN
-	SELECT 
-		t1.ticketId, 
-		t1.created as created,
-		t1.ticketNumber as ticketNumber, 
-		p1.customer as customer,
-		et.equipmentType as equipmentTypeId,
-		p1.brand as brand,
-		p1.serialNumber as serialNumber,
-		t1.observations as observations,
-		t2.ticketNumber as lastTicketNumber,
-		t2.closed as lastTicketClosed,
-		t2.employee as employee,
-		ifnull(s.serviceOrderNumber,'') as lastServiceNumber
-	FROM ticket t1
-	INNER JOIN policy p1 on t1.policyId = p1.policyId
-	INNER JOIN equipmentType et ON p1.equipmentTypeId = et.equipmentTypeId
-	INNER JOIN policy p2 on p1.equipmentTypeId = p2.equipmentTypeId 
-		AND p1.brand = p2.brand 
-		AND p1.serialNumber = p2.serialNumber
-	INNER JOIN ticket t2  on t2.policyId = p2.policyId 
-		AND t2.ticketId = (
-			SELECT t3.ticketId FROM ticket t3 
-			WHERE t3.policyId = p2.policyId 
-				AND t3.ticketId < t1.ticketId ORDER BY created DESC LIMIT 1)
-		AND DATEDIFF(t1.created, t2.created) <= 15
-	LEFT OUTER JOIN serviceOrder s ON s.serviceOrderId = (
-		SELECT serviceOrderId FROM serviceOrder s1
-		WHERE s1.policyId = t1.policyId 
-			AND s1.serviceDate < t1.created 
-			AND s1.serviceTypeId != 'C' 
-		ORDER BY serviceDate DESC LIMIT 1)
-	INNER JOIN policyEquipmentUser pe ON p1.policyId = pe.policyId
-	WHERE t1.created >= startDate and t1.created <= endDate
-		AND if(project = 'All', 1=1, p1.project = project)
-		AND if(user = '', 1=1, pe.equipmentUserId = user)
-	ORDER BY t1.created DESC;
+	IF user = '' THEN
+		SELECT 
+			t1.ticketId, 
+			t1.created as created,
+			t1.ticketNumber as ticketNumber, 
+			p1.customer as customer,
+			et.equipmentType as equipmentTypeId,
+			p1.brand as brand,
+			p1.serialNumber as serialNumber,
+			t1.observations as observations,
+			ifnull(t2.ticketNumber,'') as lastTicketNumber,
+			t2.closed as lastTicketClosed,
+			t2.employee as employee,
+			ifnull(s.serviceOrderNumber,'') as lastServiceNumber
+		FROM ticket t1
+		INNER JOIN policy p1 on t1.policyId = p1.policyId
+		INNER JOIN equipmentType et ON p1.equipmentTypeId = et.equipmentTypeId
+		LEFT OUTER JOIN ticket t2 ON t2.ticketId = (
+				SELECT t3.ticketId FROM ticket t3 
+				WHERE t3.policyId = p1.policyId 
+					AND t3.ticketId < t1.ticketId ORDER BY created DESC LIMIT 1)
+			AND DATEDIFF(t1.created, t2.created) <= 15
+		LEFT OUTER JOIN serviceOrder s ON s.serviceOrderId = (
+			SELECT serviceOrderId FROM serviceOrder s1
+			WHERE s1.policyId = t1.policyId 
+				AND s1.serviceDate < t1.created 
+				AND s1.serviceTypeId != 'C' 
+				AND DATEDIFF(t1.created, s1.serviceDate) <= 15
+			ORDER BY serviceDate DESC LIMIT 1)
+		WHERE t1.created >= startDate and t1.created <= endDate
+			AND if(project = 'All', 1=1, p1.project = project)
+			AND coalesce(t2.ticketNumber, s.serviceOrderNumber) IS NOT NULL
+		ORDER BY t1.created DESC;
+	ELSE
+		SELECT 
+			t1.ticketId, 
+			t1.created as created,
+			t1.ticketNumber as ticketNumber, 
+			p1.customer as customer,
+			et.equipmentType as equipmentTypeId,
+			p1.brand as brand,
+			p1.serialNumber as serialNumber,
+			t1.observations as observations,
+			ifnull(t2.ticketNumber,'') as lastTicketNumber,
+			t2.closed as lastTicketClosed,
+			t2.employee as employee,
+			ifnull(s.serviceOrderNumber,'') as lastServiceNumber
+		FROM ticket t1
+		INNER JOIN policy p1 on t1.policyId = p1.policyId
+		INNER JOIN equipmentType et ON p1.equipmentTypeId = et.equipmentTypeId
+		LEFT OUTER JOIN ticket t2 ON t2.ticketId = (
+				SELECT t3.ticketId FROM ticket t3 
+				WHERE t3.policyId = p1.policyId 
+					AND t3.ticketId < t1.ticketId ORDER BY created DESC LIMIT 1)
+			AND DATEDIFF(t1.created, t2.created) <= 15
+		LEFT OUTER JOIN serviceOrder s ON s.serviceOrderId = (
+			SELECT serviceOrderId FROM serviceOrder s1
+			WHERE s1.policyId = t1.policyId 
+				AND s1.serviceDate < t1.created 
+				AND s1.serviceTypeId != 'C' 
+				AND DATEDIFF(t1.created, s1.serviceDate) <= 15
+			ORDER BY serviceDate DESC LIMIT 1)
+		WHERE t1.created >= startDate and t1.created <= endDate
+			AND if(project = 'All', 1=1, p1.project = project)
+			AND pe.equipmentUserId = user
+			AND coalesce(t2.ticketNumber, s.serviceOrderNumber) IS NOT NULL
+		ORDER BY t1.created DESC;
+	END IF;
+	
 	
 
 END$$
@@ -4365,7 +4351,8 @@ CREATE PROCEDURE blackstarDb.UpdateServiceOrder (
   modified datetime ,
   modifiedBy varchar(50) ,
   modifiedByUsr varchar(50),
-  hasPdf int
+  hasPdf int,
+  signReceivedBy TEXT
 )
 BEGIN
 	UPDATE serviceOrder s SET
@@ -4376,7 +4363,8 @@ BEGIN
 	s.modified = modified ,
 	s.modifiedBy = modifiedBy ,
 	s.modifiedByUsr = modifiedByUsr,
-	s.hasPdf = hasPdf
+	s.hasPdf = hasPdf,
+	s.signReceivedBy = signReceivedBy
 	WHERE s.serviceOrderId = serviceOrderId;
 END$$
 

@@ -153,7 +153,7 @@ public class UpsServiceController extends AbstractController {
 	    	
 	    	int idServicio = 0;
 	    	int custId = 0;
-	        boolean doCommit = false;
+	        boolean doCommit = userSession.getUser().getBelongsToGroup().get(Globals.GROUP_SERVICE) != null;
 	        
 			try{
 				if(serviceOrder.getServiceOrderId() != null && serviceOrder.getServiceOrderId() > 0){
@@ -166,7 +166,11 @@ public class UpsServiceController extends AbstractController {
 		    		servicioOrderSave.setClosed(serviceOrder.getClosed());
 		    		servicioOrderSave.setIsWrong(serviceOrder.getIsWrong()?1:0);
 		    		servicioOrderSave.setStatusId(serviceOrder.getServiceStatusId());
+					if(serviceOrder.getSignReceivedBy() != null && !serviceOrder.getSignReceivedBy().equals("")){
+		    			serviceOrder.setHasPdf(1);
+		    		}
 		    		servicioOrderSave.setHasPdf(serviceOrder.getHasPdf());
+		    		servicioOrderSave.setSignReceivedBy(serviceOrder.getSignReceivedBy());
 		    		
 		    		service.updateServiceOrder(servicioOrderSave, "UpsServiceController", userSession.getUser().getUserEmail());
 		    		idServicio = serviceOrder.getServiceOrderId();
@@ -201,7 +205,7 @@ public class UpsServiceController extends AbstractController {
 					servicioOrderSave.setReceivedByPosition(serviceOrder.getReceivedByPosition());
 					servicioOrderSave.setEmployeeListString(serviceOrder.getResponsible());
 					servicioOrderSave.setServiceDate(serviceOrder.getServiceDate());
-					servicioOrderSave.setServiceEndDate(serviceOrder.getServiceEndDate());
+					servicioOrderSave.setServiceEndDate(Globals.getLocalTime());
 					servicioOrderSave.setServiceOrderNumber(serviceOrder.getServiceOrderNumber());
 					servicioOrderSave.setServiceTypeId(serviceOrder.getServiceTypeId().toCharArray()[0]);
 					servicioOrderSave.setReceivedByEmail(serviceOrder.getReceivedByEmail());
@@ -217,18 +221,21 @@ public class UpsServiceController extends AbstractController {
 					servicioOrderSave.setPolicyId(serviceOrder.getPolicyId());
 					servicioOrderSave.setResponsible(serviceOrder.getResponsible());
 					servicioOrderSave.setTicketId(serviceOrder.getTicketId());
-					servicioOrderSave.setHasPdf(1);
+					if(serviceOrder.getSignReceivedBy() != ""){
+						servicioOrderSave.setHasPdf(1);
+					}
+					else{
+						servicioOrderSave.setHasPdf(0);
+					}
 					
 					idServicio = service.saveServiceOrder(servicioOrderSave, "UpsServiceController", userSession.getUser().getUserEmail());
 					serviceOrder.setServiceOrderId(idServicio);
-					doCommit = true;
+					//Crear orden de servicio de UpsService
+	    			service.saveUpsService(new UpsServiceDTO(serviceOrder), "UpsServiceController", userSession.getUser().getUserName());
 				}
 	    	
-	    		if(serviceOrder.getUpsServiceId()==null && doCommit)
+	    		if(serviceOrder.getUpsServiceId()==null && doCommit && serviceOrder.getSignReceivedBy() != null && !serviceOrder.getSignReceivedBy().equals(""))
 	    		{
-	    			serviceOrder.setServiceOrderId(idServicio);
-	    			//Crear orden de servicio de UpsService
-	    			service.saveUpsService(new UpsServiceDTO(serviceOrder), "UpsServiceController", userSession.getUser().getUserName());
 	    			commit(serviceOrder, userSession.getUser().getUserEmail());
 	    		}
 			}

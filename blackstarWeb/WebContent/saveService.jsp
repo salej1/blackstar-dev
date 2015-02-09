@@ -18,8 +18,15 @@
 <div id="OfflineSaveMessage" title="Revise los datos de la OS">
 	No fué posible conectar con el servidor. La OS fue guardada temporalmente en el dispositivo. Será enviada al servidor al recuperar la conexión.
 </div>
+<div id="NoSignatureMessage" title="Orden de servicio sin firma">
+	La orden de servicio no ha sido firmada por el cliente. Solo está permitido entregar la OS sin firma en caso de que el cliente no este disponible. 
+	¿Confirma que desea enviar la orden de servicio sin firma? El PDF de la OS no se creará hasta que la OS sea firmada por el cliente.
+</div>
 
 <script type="text/javascript">
+	var handler = "";
+	var validateCallback = null;
+
 	$(function(){
 		$( "#OkMessage" ).dialog({
 		      modal: true,
@@ -72,6 +79,23 @@
 	        	 Aceptar: function() {
 		         	$( this ).dialog( "close" );
 					window.location = '/dashboard/show.do';
+		        }
+		      }
+		    });
+
+		    $( "#NoSignatureMessage" ).dialog({
+		      modal: true,
+		      autoOpen: false,
+		      height: 180,
+		      width: 550,
+		      buttons: {
+	        	 Aceptar: function() {
+		         	$( this ).dialog( "close" );
+					allowSkipSignature = true;
+					performSave();
+		        },
+		        Cancelar: function(){
+		         	$( this ).dialog( "close" );
 		        }
 		      }
 		    });
@@ -130,15 +154,39 @@
 	}
 
 
-	function saveService(handler, validate){
-
-		if(validate()){
+	function performSave(){
+		if(validateCallback()){
 			// enviando
 			$( "#WaitMessage" ).dialog('open');
 			saveIfConnected(handler);
 		}
 		else{
 			$( "#InvalidMessage" ).dialog('open');
+		}
+	}
+
+	function saveService(_handler, validate){
+		handler = _handler;
+		validateCallback = validate;
+
+		// sincronizando firma
+		var signCreated = $("#signCreatedCapture").val();
+		var signReceivedBy = $("#signReceivedByCapture").val();
+
+		if(signCreated != ""){
+			$("#signCreated").val(signCreated);
+		}
+		if(signReceivedBy != ""){
+			$("#signReceivedBy").val(signReceivedBy);
+		}
+
+		// pre-validacion
+		if(isEng == "true" && (signReceivedBy == null || signReceivedBy == "")){
+			$("#NoSignatureMessage").dialog('open');
+		}
+		else
+		{
+			performSave();
 		}
 	}
 </script>

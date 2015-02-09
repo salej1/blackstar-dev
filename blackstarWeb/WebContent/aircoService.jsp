@@ -23,14 +23,14 @@
 	<script src="${pageContext.request.contextPath}/js/customAutocomplete.js"></script>
 	
 	<script type="text/javascript" charset="utf-8">
-		
+							
+		// Asignacion de campos iniciales
+		var mode = "${mode}";
+		var hasPolicy =  "${hasPolicy}"
+		var isEng = "${user.belongsToGroup['Implementacion y Servicio']}";
+
 		$(document).ready(function () {
-					
-			// Asignacion de campos iniciales
-			var mode = "${mode}";
-			var hasPolicy =  "${hasPolicy}"
-			var isEng = "${user.belongsToGroup['Implementacion y Servicio']}";
-			
+
 			if(mode == "detail"){
 				$(".lockOnDetail").attr("disabled", "");
 			}
@@ -63,6 +63,11 @@
 			// bloqueando lockOnEngDetail
 			if(isEng == "true" && mode == "detail"){
 				$(".lockOnEngDetail").attr("disabled", "");
+				// Si el ingeniero regreso a guardar la firma...
+				if('${serviceOrder.signReceivedBy}' == ""){
+					$("#guardarServicio").removeAttr("disabled");
+					enableSignCapture("right");
+				}
 			}
 
 			// inicializando el dialogo para agregar seguimientos
@@ -87,7 +92,7 @@
 			}
 			
 			if($('#serviceOrder')[0].checkValidity()){
-				if($("#signCreatedCapture").val().trim().length == 0 || $("#signReceivedByCapture").val().trim().length == 0){
+				if($("#signCreated").val().trim().length == 0){
 					$("#InvalidMessage").html("Por favor firme la OS");
 					return false;
 				}
@@ -98,8 +103,7 @@
 				if($("#responsible").val().indexOf(';') == 0){
 					$("#responsible").val($("#responsible").val().substring(1));
 				}
-				$("#signCreated").val($("#signCreatedCapture").val())
-				$("#signReceivedBy").val($("#signReceivedByCapture").val())
+
 				$("#serviceEndDate").val(dateNow());
 				return true;
 			}
@@ -123,7 +127,7 @@
 									<td>Folio:</td>
 									<td><form:input path="serviceOrderNumber" type="text" style="width:95%;" maxlength="10" readOnly="true"/></td>
 									<td colspan="2">
-										<c:if test="${serviceOrder.serviceOrderId > 0}">
+										<c:if test="${serviceOrder.serviceOrderId > 0 && serviceOrder.hasPdf == 1}">
 											<a href='${pageContext.request.contextPath}/report/show.do?serviceOrderId=${serviceOrder.serviceOrderId}' target="_blank">Ver PDF</a><img src='${pageContext.request.contextPath}/img/pdf.png'/>	
 										</c:if>
 										<form:input path="serviceOrderId" type="hidden"/>

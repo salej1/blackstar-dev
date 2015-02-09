@@ -34,6 +34,8 @@
 	var isCoord = "${user.belongsToGroup['Coordinador'] || user.belongsToGroup['Call Center']}";
 	var isEng = "${user.belongsToGroup['Implementacion y Servicio']}";
 	var hasPolicy = "${hasPolicy}";
+	var allowSkipSignature = false;
+	var newAfterSave = false;
 
 	$(document).ready(function () {
 
@@ -91,12 +93,6 @@
 		    if(isEng == "true") {
 		    	// Bloqueando campos no editables para Ing en Ordenes nuevas
 		    	$(".lockForEng").attr("disabled", "");
-
-			    // Sincronizando los campos de firma
-			    $("#serviceOrder").submit(function(){
-					$("#signCreated").val($("#signCreatedCapture").val())
-					$("#signReceivedBy").val($("#signReceivedByCapture").val())
-				});
 		    }
 
 			// Ocultar campos dependientes de perfil
@@ -158,8 +154,12 @@
 		// bloqueando lockOnEngDetail
 		if(isEng == "true" && mode == "detail"){
 			$(".lockOnEngDetail").attr("disabled", "");
+			// Si el ingeniero regreso a guardar la firma...
+			if('${serviceOrder.signReceivedBy}' == ""){
+				$("#guardarServicio").removeAttr("disabled");
+				enableSignCapture("right");
+			}
 		}
-
 	});
 
 	function validate(){
@@ -188,8 +188,7 @@
 		}
 
 		if(isEng == "true"){
-			$("#serviceEndDate").val(dateNow());
-			if($("#signCreatedCapture").val().trim().length == 0 || $("#signReceivedByCapture").val().trim().length == 0){
+			if($("#signCreated").val().trim().length == 0){
 				$("#InvalidMessage").html("Por favor firme la OS");
 				return false;
 			}
@@ -217,7 +216,12 @@
 			$.post("${pageContext.request.contextPath}/plainService/save.do", $("#serviceOrder").serialize()).
 				done(function(){
 					$( "#WaitMessage" ).dialog('close');
-					$( "#OkMessage" ).dialog('open');
+					if(newAfterSave == true){
+						$( "#OkNewMessage" ).dialog('open');
+					}
+					else{
+						$( "#OkMessage" ).dialog('open');
+					}
 				}).
 				fail(function(){
 					$( "#WaitMessage" ).dialog('close');
@@ -249,17 +253,35 @@
 		});
 	}
 
-	function saveService(){
+	function performSave(){
 		if(validate()){
-			// sincronizando firma
-			$("#signCreated").val($("#signCreatedCapture").val())
-			$("#signReceivedBy").val($("#signReceivedByCapture").val())
 			// enviando
 			$( "#WaitMessage" ).dialog('open');
 			saveIfConnected();
 		}
 		else{
 			$( "#InvalidMessage" ).dialog('open');
+		}
+	}
+
+	function saveService(){
+		// sincronizando firma
+		var signCreated = $("#signCreatedCapture").val();
+		var signReceivedBy = $("#signReceivedByCapture").val();
+		if(signCreated != ""){
+			$("#signCreated").val(signCreated);
+		}
+		if(signReceivedBy != ""){
+			$("#signReceivedBy").val(signReceivedBy);
+		}
+
+		// pre-validacion
+		if(isEng == "true" && (signReceivedBy == null || signReceivedBy == "")){
+			$("#NoSignatureMessage").dialog('open');
+		}
+		else
+		{
+			performSave();
 		}
 	}
 
@@ -576,7 +598,7 @@
 								</c:if>	
 							</c:if>	
 							<input class="searchButton lockOnEngDetail" id="guardarServicio" type="submit" onclick="saveService(); return false;" value="Guardar servicio" form="serviceOrder"/>
-							<input class="searchButton lockOnDetail" id="guardarServicioCrear" type="submit" onclick="saveAndNew(); return false;" value="Guardar y Nueva OS"/>
+							<input class="searchButton lockOnDetail" id="guardarServicioCrear" type="submit" onclick="newAfterSave = true; saveService(); return false;" value="Guardar y Nueva OS"/>
 							<button class="searchButton" onclick="window.location = '/serviceOrders/show.do'">Cancelar</button>
 							</td>
 						</tr>
@@ -607,6 +629,10 @@
 		</div>
 		<div id="OfflineSaveMessage" title="Revise los datos de la OS">
 			No fué posible conectar con el servidor. La OS fue guardada temporalmente en el dispositivo. Será enviada al servidor al recuperar la conexión.
+		</div>
+		<div id="NoSignatureMessage" title="Orden de servicio sin firma">
+			La orden de servicio no ha sido firmada por el cliente. Solo está permitido entregar la OS sin firma en caso de que el cliente no este disponible. 
+			¿Confirma que desea enviar la orden de servicio sin firma? El PDF de la OS no se creará hasta que la OS sea firmada por el cliente.
 		</div>
 	</body>
 	<script type="text/javascript">
@@ -688,6 +714,23 @@
 		      }
 		    });
 
+		    $( "#NoSignatureMessage" ).dialog({
+		      modal: true,
+		      autoOpen: false,
+		      height: 180,
+		      width: 550,
+		      buttons: {
+	        	 Aceptar: function() {
+		         	$( this ).dialog( "close" );
+					allowSkipSignature = true;
+					performSave();
+		        },
+		        Cancelar: function(){
+		         	$( this ).dialog( "close" );
+		        }
+		      }
+		    });
+
 		    $("#selectSNDialog").dialog({
 				autoOpen: false,
 				height: 290,
@@ -716,19 +759,5 @@
 
 		});
 
-		function saveAndNew(){
-			if(validate()){
-				// sincronizando firma
-				$("#signCreated").val($("#signCreatedCapture").val())
-				$("#signReceivedBy").val($("#signReceivedByCapture").val())
-				// enviando
-				$( "#WaitMessage" ).dialog('open');
-				$.post("/plainService/save.do", $("#serviceOrder").serialize()).
-				done(function(){
-					$( "#WaitMessage" ).dialog('close');
-					$( "#OkNewMessage" ).dialog('open');
-				});
-			}
-		}
 	</script>
 </html>

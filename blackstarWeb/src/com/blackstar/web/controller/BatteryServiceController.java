@@ -148,7 +148,7 @@ public class BatteryServiceController extends AbstractController {
                      ModelMap model, HttpServletRequest req, HttpServletResponse resp) throws Exception {
     int idServicio = 0;
     int custId = 0;
-    boolean doCommit = false;
+    boolean doCommit = userSession.getUser().getBelongsToGroup().get(Globals.GROUP_SERVICE) != null;
     
 	// Verificar si existe una orden de servicio
     try {
@@ -162,6 +162,10 @@ public class BatteryServiceController extends AbstractController {
     		servicioOrderSave.setClosed(serviceOrder.getClosed());
     		servicioOrderSave.setIsWrong(serviceOrder.getIsWrong()?1:0);
     		servicioOrderSave.setStatusId(serviceOrder.getServiceStatusId());
+    		if(serviceOrder.getSignReceivedBy() != null && !serviceOrder.getSignReceivedBy().equals("")){
+    			serviceOrder.setHasPdf(1);
+    		}
+    		servicioOrderSave.setSignReceivedBy(serviceOrder.getSignReceivedBy());
     		servicioOrderSave.setHasPdf(serviceOrder.getHasPdf());
     		
     		service.updateServiceOrder(servicioOrderSave, "BatteryServiceController", userSession.getUser().getUserEmail());
@@ -197,7 +201,7 @@ public class BatteryServiceController extends AbstractController {
 			servicioOrderSave.setReceivedByPosition(serviceOrder.getReceivedByPosition());
 			servicioOrderSave.setEmployeeListString(serviceOrder.getResponsible());
 			servicioOrderSave.setServiceDate(serviceOrder.getServiceDate());
-			servicioOrderSave.setServiceEndDate(serviceOrder.getServiceEndDate());
+			servicioOrderSave.setServiceEndDate(Globals.getLocalTime());
 			servicioOrderSave.setServiceOrderNumber(serviceOrder.getServiceOrderNumber());
 			servicioOrderSave.setServiceTypeId(serviceOrder.getServiceTypeId().toCharArray()[0]);
 			servicioOrderSave.setReceivedByEmail(serviceOrder.getReceivedByEmail());
@@ -213,18 +217,21 @@ public class BatteryServiceController extends AbstractController {
 			servicioOrderSave.setPolicyId(serviceOrder.getPolicyId());
 			servicioOrderSave.setResponsible(serviceOrder.getResponsible());
 			servicioOrderSave.setTicketId(serviceOrder.getTicketId());
-			servicioOrderSave.setHasPdf(1);
+			if(serviceOrder.getSignReceivedBy() != ""){
+				servicioOrderSave.setHasPdf(1);
+			}
+			else{
+				servicioOrderSave.setHasPdf(0);
+			}
 			
 			idServicio = service.saveServiceOrder(servicioOrderSave, "BatteryServiceController", userSession.getUser().getUserEmail());
 			serviceOrder.setServiceOrderId(idServicio);
-			doCommit = true;
-    	}
-	     if(serviceOrder.getBbServiceId()==null && doCommit) {
-	    	serviceOrder.setServiceOrderId(idServicio);
-	    	//Crear orden de servicio de Battery
+			//Crear orden de servicio de Battery
 	    	service.saveBateryService(new BatteryServiceDTO(serviceOrder), "BatteryServiceController", userSession.getUser().getUserName());
-	    	commit(serviceOrder, userSession.getUser().getUserEmail());
-	     }
+    	}
+    	if(serviceOrder.getBbServiceId()==null && doCommit && serviceOrder.getSignReceivedBy() != null && !serviceOrder.getSignReceivedBy().equals("")) {
+    		commit(serviceOrder, userSession.getUser().getUserEmail());
+    	}
     } catch(Exception e){
 	    Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
 	    e.printStackTrace();

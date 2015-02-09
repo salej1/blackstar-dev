@@ -27,7 +27,7 @@
 			var startDateStr = yearStart.format("DD/MM/YYYY") + " 00:00:00";
 			var endDateStr = moment().format("DD/MM/YYYY") + " 00:00:00";
 			var policySearch = "";
-			var chartList = ['getTicketByUser','getTicketByOffice','getTicketByArea','getTicketByDay','getTicketByProject','getTicketByServiceAreaKPI'];
+			var chartList = ['getTicketByOffice','getTicketByArea','getTicketByDay','getTicketByProject','getTicketByServiceAreaKPI'];
 
 			$(function(){
 				
@@ -117,6 +117,11 @@
 				}
 				else{
 					var url = "${pageContext.request.contextPath}/bloom/bloomKpi/" + indAction + ".do?startDate=" + encodeURIComponent(startDateStr) + "&endDate=" + encodeURIComponent(endDateStr);
+					$("#chartDetail0").html('');
+					$("#chartDetail1").html('');
+					$("#chartDetail2").html('');
+					$("#chartDetail3").html('');
+					$("#chartDetail4").html('');
 					$("#indicatorDetail").load(url, function() {
 						$("#" + indAction).css({ "color": "#800080", "text-decoration":"none"});
 					});
@@ -245,6 +250,9 @@
 							<img src="/img/navigate-right.png"/><a href="#" id="getTicketByServiceAreaKPI" onclick="goBloom('getGeneralCharts')">Graficas Generales</a>
 						</div>
 						<div>
+							<img src="/img/navigate-right.png"/><a href="#" id="getTicketStatsByServiceAreaKPI" onclick="goBloom('getTicketByUser')">Requisiciones por usuario</a>
+						</div>
+						<div>
 							<img src="/img/navigate-right.png"/><a href="#" id="getTicketStatsByServiceAreaKPI" onclick="goBloom('getTicketStatsByServiceAreaKPI')">Resultados por Area de apoyo</a>
 						</div>
 						<div>
@@ -270,9 +278,6 @@
 			</div>
 			<div id="chartDetail4">
 			
-			</div>
-			<div id="chartDetail5">
-				
 			</div>
 		</div>
 	</body>

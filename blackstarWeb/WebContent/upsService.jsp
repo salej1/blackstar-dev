@@ -22,14 +22,14 @@
 	<script src="${pageContext.request.contextPath}/js/jquery.datetimepicker.js"></script>
 	<script src="${pageContext.request.contextPath}/js/customAutocomplete.js"></script>
 	<script type="text/javascript" charset="utf-8">
+							
+		// Asignacion de campos iniciales
+		var mode = "${mode}";
+		var hasPolicy =  "${hasPolicy}"
+		var isEng = "${user.belongsToGroup['Implementacion y Servicio']}";
 		
 		$(document).ready(function () {
-					
-			// Asignacion de campos iniciales
-			var mode = "${mode}";
-			var hasPolicy =  "${hasPolicy}"
-			var isEng = "${user.belongsToGroup['Implementacion y Servicio']}";
-			
+
 			if(mode == "detail"){
 				$(".lockOnDetail").attr("disabled", "");
 			}
@@ -62,6 +62,11 @@
 			// bloqueando lockOnEngDetail
 			if(isEng == "true" && mode == "detail"){
 				$(".lockOnEngDetail").attr("disabled", "");
+				// Si el ingeniero regreso a guardar la firma...
+				if('${serviceOrder.signReceivedBy}' == ""){
+					$("#guardarServicio").removeAttr("disabled");
+					enableSignCapture("right");
+				}
 			}
 
 			// inicializando el dialogo para agregar seguimientos
@@ -85,7 +90,7 @@
 				return false;
 			}
 			
-			if($("#signCreatedCapture").val().trim().length == 0 || $("#signReceivedByCapture").val().trim().length == 0){
+			if($("#signCreated").val().trim().length == 0){
 				$("#InvalidMessage").html("Por favor firme la orden de servicio");
 				return false;
 			}
@@ -98,9 +103,7 @@
 				if($("#responsible").val().indexOf(';') == 0){
 					$("#responsible").val($("#responsible").val().substring(1));
 				}
-				
-				$("#signCreated").val($("#signCreatedCapture").val())
-				$("#signReceivedBy").val($("#signReceivedByCapture").val())
+
 				$("#serviceEndDate").val(dateNow());
 				
 				return true;

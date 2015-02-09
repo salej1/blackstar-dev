@@ -157,7 +157,7 @@ public class AirCoServiceController extends AbstractController {
 	    		     @ModelAttribute(Globals.SESSION_KEY_PARAM)  UserSession userSession,
                      ModelMap model) throws Exception{
     int idServicio = 0;
-    boolean doCommit = false;
+    boolean doCommit = userSession.getUser().getBelongsToGroup().get(Globals.GROUP_SERVICE) != null;
     int custId = 0;
 	try {
 			// update?
@@ -171,8 +171,11 @@ public class AirCoServiceController extends AbstractController {
 				servicioOrderSave.setClosed(serviceOrder.getClosed());
 				servicioOrderSave.setIsWrong(serviceOrder.getIsWrong()?1:0);
 				servicioOrderSave.setServiceStatusId(serviceOrder.getServiceStatusId());
-				servicioOrderSave.setHasPdf(serviceOrder.getHasPdf());
-
+				if(serviceOrder.getSignReceivedBy() != null && !serviceOrder.getSignReceivedBy().equals("")){
+	    			serviceOrder.setHasPdf(1);
+	    		}
+	    		servicioOrderSave.setHasPdf(serviceOrder.getHasPdf());
+	    		servicioOrderSave.setSignReceivedBy(serviceOrder.getSignReceivedBy());
 				service.updateServiceOrder(servicioOrderSave, "AirCoServiceController", userSession.getUser().getUserEmail());
 			}
 			else{
@@ -207,7 +210,7 @@ public class AirCoServiceController extends AbstractController {
 				servicioOrderSave.setReceivedByPosition(serviceOrder.getReceivedByPosition());
 				servicioOrderSave.setEmployeeListString(serviceOrder.getResponsible());
 				servicioOrderSave.setServiceDate(serviceOrder.getServiceDate());
-				servicioOrderSave.setServiceEndDate(serviceOrder.getServiceEndDate());
+				servicioOrderSave.setServiceEndDate(Globals.getLocalTime());
 				servicioOrderSave.setServiceOrderNumber(serviceOrder.getServiceOrderNumber());
 				servicioOrderSave.setServiceTypeId(serviceOrder.getServiceTypeId().toCharArray()[0]);
 				servicioOrderSave.setReceivedByEmail(serviceOrder.getReceivedByEmail());
@@ -223,16 +226,21 @@ public class AirCoServiceController extends AbstractController {
 				servicioOrderSave.setPolicyId(serviceOrder.getPolicyId());
 				servicioOrderSave.setResponsible(serviceOrder.getResponsible());
 				servicioOrderSave.setTicketId(serviceOrder.getTicketId());
-				servicioOrderSave.setHasPdf(1);
+				if(serviceOrder.getSignReceivedBy() != ""){
+					servicioOrderSave.setHasPdf(1);
+				}
+				else{
+					servicioOrderSave.setHasPdf(0);
+				}
 				
 				idServicio = service.saveServiceOrder(servicioOrderSave, "PlainServiceController", userSession.getUser().getUserEmail());
-				doCommit = true;
+				serviceOrder.setServiceOrderId(idServicio);
+			      //Crear orden de servicio de AirCo
+			    service.saveAirCoService(new AirCoServiceDTO(serviceOrder), "AirCoServiceController", userSession.getUser().getUserName());
 		}
 	   
-	    if(serviceOrder.getAaServiceId() == null && doCommit) {
-	      serviceOrder.setServiceOrderId(idServicio);
-	      //Crear orden de servicio de AirCo
-	      service.saveAirCoService(new AirCoServiceDTO(serviceOrder), "AirCoServiceController", userSession.getUser().getUserName());
+	    if(serviceOrder.getAaServiceId() == null && doCommit && serviceOrder.getSignReceivedBy() != null && !serviceOrder.getSignReceivedBy().equals("")) {
+	      
 	      commit(serviceOrder, userSession.getUser().getUserEmail());
 	    }
 	} catch(Exception e){

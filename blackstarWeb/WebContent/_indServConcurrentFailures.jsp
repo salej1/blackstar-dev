@@ -42,9 +42,8 @@
 						<th>Marca</th>
 						<th>Serie</th>
 						<th>Falla</th>
-						<th>Ticket anterior</th>
-						<th>Ingeniero que atendió</th>
-						<th>Mantto. anterior</th>
+						<th style="width:70px">Ticket anterior</th>
+						<th style="width:80px">Mantto. anterior</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -58,7 +57,6 @@
                        		<td><c:out value="${row.serialNumber}" /></td>
                        		<td><c:out value="${row.observations}" /></td>
                        		<td><a href='/ticketDetail?ticketNumber=${row.lastTicketNumber}'>${row.lastTicketNumber}</a></td>
-                       		<td><c:out value="${row.employee}" /></td>
                        		<c:choose>
 	                       		<c:when test="${not empty row.lastServiceNumber}">
 	                       			<td><a href='/osDetail/show.do?serviceOrderId=0&serviceOrderNumber=${row.lastServiceNumber}'>${row.lastServiceNumber}</a></td>

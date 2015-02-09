@@ -18,15 +18,24 @@
           <script src="${pageContext.request.contextPath}/js/jquery.signaturepad.min.js"></script>
           <script src="${pageContext.request.contextPath}/js/json2.min.js"></script> 
           <script type="text/javascript">
+            function enableSignCapture(side){
+                if(side == "left"){
+                    $("#leftSign").bind("click", function(){
+                      $('#signCapDialog').dialog('open');
+                    });
+                }
+                else if(side == "right"){
+                    $("#rightSign").bind("click", function(){
+                      $('#signCapDialog2').dialog('open');
+                    });
+                }
+            }
+
              $(document).ready(function () {
                 // Signature drawign boxes click binding
                 if("${mode}" == "new"){
-                  $("#leftSign").bind("click", function(){
-                  $('#signCapDialog').dialog('open');
-                });
-                $("#rightSign").bind("click", function(){
-                  $('#signCapDialog2').dialog('open');
-                });
+                  enableSignCapture("left");
+                  enableSignCapture("right");
                 }
       
               // Signature drawing box # 1 

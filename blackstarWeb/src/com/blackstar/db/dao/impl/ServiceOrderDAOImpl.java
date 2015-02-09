@@ -172,7 +172,7 @@ public class ServiceOrderDAOImpl extends AbstractDAO implements ServiceOrderDAO 
   @Override
   public boolean updateServiceOrder(Serviceorder orderService) {
 		StringBuilder sqlBuilder = new StringBuilder();
-		sqlBuilder.append("CALL UpdateServiceOrder(?,?,?,?,?,?,?,?,?)");
+		sqlBuilder.append("CALL UpdateServiceOrder(?,?,?,?,?,?,?,?,?,?)");
 		DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		Object[] args = new Object []{
 										orderService.getServiceOrderId(),
@@ -183,7 +183,8 @@ public class ServiceOrderDAOImpl extends AbstractDAO implements ServiceOrderDAO 
 										""+df.format(orderService.getModified())+ "",
 										""+orderService.getModifiedBy()+ "",
 										""+orderService.getModifiedByUsr()+ "",
-										orderService.getHasPdf()
+										orderService.getHasPdf(),
+										orderService.getSignReceivedBy()
 									};
 		
 		 getJdbcTemplate().update(sqlBuilder.toString() ,args);

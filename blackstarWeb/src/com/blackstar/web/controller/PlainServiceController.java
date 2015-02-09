@@ -239,6 +239,10 @@ public class PlainServiceController extends AbstractController {
 		    		if(serviceOrder.getLoadedOSFileId() != null && serviceOrder.getLoadedOSFileId().toString().length() > 0){
 		    			serviceOrder.setHasPdf(1);
 		    		}
+		    		if(serviceOrder.getSignReceivedBy() != null && !serviceOrder.getSignReceivedBy().equals("")){
+		    			serviceOrder.setHasPdf(1);
+		    		}
+		    		servicioOrderSave.setSignReceivedBy(serviceOrder.getSignReceivedBy());
 		    		servicioOrderSave.setHasPdf(serviceOrder.getHasPdf());
 		    		service.updateServiceOrder(servicioOrderSave, "PlainServiceController", userSession.getUser().getUserEmail());
 		    		idServicio = serviceOrder.getServiceOrderId();
@@ -274,7 +278,7 @@ public class PlainServiceController extends AbstractController {
 					servicioOrderSave.setReceivedByPosition(serviceOrder.getReceivedByPosition());
 					servicioOrderSave.setEmployeeListString(serviceOrder.getResponsible());
 					servicioOrderSave.setServiceDate(serviceOrder.getServiceDate());
-					servicioOrderSave.setServiceEndDate(serviceOrder.getServiceEndDate());
+					servicioOrderSave.setServiceEndDate(Globals.getLocalTime());
 					servicioOrderSave.setServiceOrderNumber(serviceOrder.getServiceOrderNumber());
 					servicioOrderSave.setServiceTypeId(serviceOrder.getServiceTypeId().toCharArray()[0]);
 					servicioOrderSave.setReceivedByEmail(serviceOrder.getReceivedByEmail());
@@ -297,7 +301,12 @@ public class PlainServiceController extends AbstractController {
 					servicioOrderSave.setResponsible(serviceOrder.getResponsible());
 					servicioOrderSave.setTicketId(serviceOrder.getTicketId());
 					if(userSession.getUser().getBelongsToGroup().get(Globals.GROUP_SERVICE) != null){
-						servicioOrderSave.setHasPdf(1);
+						if(serviceOrder.getSignReceivedBy() != ""){
+							servicioOrderSave.setHasPdf(1);
+						}
+						else{
+							servicioOrderSave.setHasPdf(0);
+						}
 					}
 					idServicio = service.saveServiceOrder(servicioOrderSave, "PlainServiceController", userSession.getUser().getUserEmail());
 					serviceOrder.setServiceOrderId(idServicio);
@@ -306,7 +315,8 @@ public class PlainServiceController extends AbstractController {
 	                service.savePlainService(new PlainServiceDTO(serviceOrder), "PlainServiceController", userSession.getUser().getUserEmail());
 	    		}
 	    		
-		    	if(serviceOrder.getPlainServiceId()==null && userSession.getUser().getBelongsToGroup().get(Globals.GROUP_SERVICE) != null)
+		    	if(serviceOrder.getPlainServiceId()==null && userSession.getUser().getBelongsToGroup().get(Globals.GROUP_SERVICE) != null
+		    			&& serviceOrder.getSignReceivedBy() != null && !serviceOrder.getSignReceivedBy().equals(""))
                 {
 		    		commit(serviceOrder, userSession.getUser().getUserEmail());
                 }

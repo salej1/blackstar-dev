@@ -93,11 +93,11 @@
 <div class="grid_16">
 	<div style="padding-top:20px; padding-bottom:10px;"><img src="/img/navigate-right.png"/><a href="/issues/show.do?issueId=0">Agregar pendiente</a></div>
 	<div class="box">
-		<h2>Pendientes en proceso</h2>
+		<h2>Pendientes por atender</h2>
 		<div class="utils">
 		</div>
 		<div>
-			<table cellpadding="0" cellspacing="0" border="0" class="display" id="userWatchingIssues">
+			<table cellpadding="0" cellspacing="0" border="0" class="display" id="userIssues">
 				<thead>
 					<tr>
 						<th style="width:70px;">Folio</th>
@@ -119,11 +119,11 @@
 		</div>
 	</div>
 	<div class="box">
-		<h2>Pendientes por atender</h2>
+		<h2>Pendientes en proceso</h2>
 		<div class="utils">
 		</div>
 		<div>
-			<table cellpadding="0" cellspacing="0" border="0" class="display" id="userIssues">
+			<table cellpadding="0" cellspacing="0" border="0" class="display" id="userWatchingIssues">
 				<thead>
 					<tr>
 						<th style="width:70px;">Folio</th>
