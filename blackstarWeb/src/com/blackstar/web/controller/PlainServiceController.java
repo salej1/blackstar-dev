@@ -26,12 +26,14 @@ import com.blackstar.model.Equipmenttype;
 import com.blackstar.model.OpenCustomer;
 import com.blackstar.model.Policy;
 import com.blackstar.model.Serviceorder;
+import com.blackstar.model.Servicetype;
 import com.blackstar.model.Ticket;
 import com.blackstar.model.UserSession;
 import com.blackstar.model.dto.EmployeeDTO;
 import com.blackstar.model.dto.OrderserviceDTO;
 import com.blackstar.model.dto.PlainServiceDTO;
 import com.blackstar.model.dto.PlainServicePolicyDTO;
+import com.blackstar.model.dto.ServiceTypeDTO;
 import com.blackstar.services.interfaces.OpenCustomerService;
 import com.blackstar.services.interfaces.ReportService;
 import com.blackstar.services.interfaces.ServiceOrderService;
@@ -269,6 +271,9 @@ public class PlainServiceController extends AbstractController {
 			    		
 			    		custId = ocService.SaveOpenCustomer(customer);
 	    			}
+	    			// Fecha de salida
+	    			serviceOrder.setServiceEndDate(Globals.getLocalTime());
+	    			
 	    			// Guardando la OS 
 		    		Serviceorder servicioOrderSave = new Serviceorder();
 		    		if(custId > 0){
@@ -278,7 +283,7 @@ public class PlainServiceController extends AbstractController {
 					servicioOrderSave.setReceivedByPosition(serviceOrder.getReceivedByPosition());
 					servicioOrderSave.setEmployeeListString(serviceOrder.getResponsible());
 					servicioOrderSave.setServiceDate(serviceOrder.getServiceDate());
-					servicioOrderSave.setServiceEndDate(Globals.getLocalTime());
+					servicioOrderSave.setServiceEndDate(serviceOrder.getServiceEndDate());
 					servicioOrderSave.setServiceOrderNumber(serviceOrder.getServiceOrderNumber());
 					servicioOrderSave.setServiceTypeId(serviceOrder.getServiceTypeId().toCharArray()[0]);
 					servicioOrderSave.setReceivedByEmail(serviceOrder.getReceivedByEmail());
@@ -408,6 +413,15 @@ public class PlainServiceController extends AbstractController {
 	    				Ticket ticket = daoFactory.getTicketDAO().getTicketById(serviceOrder.getTicketId());
 	    				plainServicePolicyDTO.setRequestedBy(ticket.getContact());
 	    				plainServicePolicyDTO.setTicketNumber(ticket.getTicketNumber());
+	    			}
+	    			
+	    			// tipo de servicio
+	    			List<ServiceTypeDTO> serviceTypes = service.getServiceTypeList();
+	    			for(ServiceTypeDTO t : serviceTypes){
+	    				if(t.getServiceTypeId().compareTo(serviceOrder.getServiceTypeId()) == 0){
+	    					plainServicePolicyDTO.setServiceType(t.getServiceType());
+	    					break;
+	    				}
 	    			}
 
 	    			byte [] report = rpService.getGeneralReport(plainServicePolicyDTO);

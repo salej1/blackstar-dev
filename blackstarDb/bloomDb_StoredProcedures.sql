@@ -75,6 +75,11 @@
 -- 34   17/12/2014  SAG   Se modifica:
 --                          GetBloomStatisticsByAreaSupport
 -- ------------------------------------------------------------------------------
+-- 35   08/02/2015  SAG   Se modifica:
+--                          GetBloomPercentageTimeClosedTickets
+--                          GetBloomPercentageEvaluationTickets
+--                          GetBloomNumberTicketsByArea
+-- ------------------------------------------------------------------------------
 
 use blackstarDb;
 

@@ -7226,6 +7226,11 @@ DROP PROCEDURE blackstarDb.upgradeBloomSchema;
 -- 34   17/12/2014  SAG   Se modifica:
 --                          GetBloomStatisticsByAreaSupport
 -- ------------------------------------------------------------------------------
+-- 35   08/02/2015  SAG   Se modifica:
+--                          GetBloomPercentageTimeClosedTickets
+--                          GetBloomPercentageEvaluationTickets
+--                          GetBloomNumberTicketsByArea
+-- ------------------------------------------------------------------------------
 
 use blackstarDb;
 
@@ -8067,7 +8072,7 @@ BEGIN
 					INNER JOIN bloomTicket t ON (t._id=f.bloomTicketId)
 					INNER JOIN bloomTicketTeam tt ON (tt.ticketId = f.bloomTicketId and tt.blackstarUserId=bu.blackstarUserId) -- que el follow exista en bloomTicketTeam
 					WHERE f.bloomTicketId IS NOT NULL
-					AND t.statusId=6
+					AND t.statusId IN(5,6)
 					AND bu.email <> t.createdByUsr -- que no sea el creador
 					AND t.created>= startCreationDate
 					AND t.created <= endCreationDate
@@ -8109,7 +8114,7 @@ BEGIN
       INNER JOIN bloomServiceType y ON y._id = t.serviceTypeId
       INNER JOIN bloomServiceArea a ON y.bloomServiceAreaId = a.bloomServiceAreaId
       LEFT OUTER JOIN bloomSurvey s ON t._id = s.bloomTicketId
-    WHERE t.statusId > 5
+    WHERE t.statusId IN(5,6)
       AND responseDate IS NOT NULL
       AND t.created >= startCreationDate
       AND t.created <= endCreationDate
@@ -8138,14 +8143,14 @@ BEGIN
 
 	SET noTicketsSatisfactory = (select count(id) from (
 		select t._id as id, t.created ,t.dueDate,t.responseDate,date(t.responseDate),t.statusId from bloomTicket t
-		WHERE t.statusId=6 -- tickets cerrados
+		WHERE t.statusId IN(5,6) -- tickets cerrados y resueltos
 		AND t.created>= startCreationDate
 		AND t.created <= endCreationDate
 		and date(t.responseDate) <= t.dueDate) as satisfactory);
 
 	SET noTicketsUnsatisfactory = (select count(id) from (
 		select t._id as id, t.created ,t.dueDate,t.responseDate,date(t.responseDate),t.statusId from bloomTicket t
-		WHERE t.statusId=6 -- tickets cerrados 
+		WHERE t.statusId IN(5,6) -- tickets cerrados y resueltos
 		AND t.created>= startCreationDate
 		AND t.created <= endCreationDate
 		and date(t.responseDate) > t.dueDate) as unatisfactory);
@@ -8179,7 +8184,7 @@ BEGIN
 	SET noTicketsEvaluationSatisfactory = (select count(id) from (
 		select t._id as id, t.evaluation, t.created ,t.dueDate,t.responseDate,date(t.responseDate),t.statusId from bloomTicket t
 		WHERE t.evaluation>=initEvaluationValue
-		AND t.statusId=6 -- tickets cerrados
+		AND t.statusId IN(5,6) -- tickets cerrados y resueltos
 		AND t.created>= startCreationDate
 		AND t.created <= endCreationDate
 		) as evaluation);
@@ -8187,7 +8192,7 @@ BEGIN
 	SET noTicketsEvaluationUnsatisfactory = (select count(id) from (
 		select t._id as id, t.evaluation, t.created ,t.dueDate,t.responseDate,date(t.responseDate),t.statusId from bloomTicket t
 		WHERE t.evaluation<initEvaluationValue
-		AND t.statusId=6 -- tickets cerrados
+		AND t.statusId IN(5,6) -- tickets cerrados y resueltos
 		AND t.created>= startCreationDate
 		AND t.created <= endCreationDate
 		) as evaluation);
@@ -8217,7 +8222,7 @@ BEGIN
 						INNER JOIN userGroup ug ON (ug.userGroupId=bug.userGroupId)
 						INNER JOIN bloomTicket t ON (t._id=f.bloomTicketId)
 						WHERE f.bloomTicketId IS NOT NULL
-						AND t.statusId=6 -- tickets cerrados
+						AND t.statusId IN(5,6) -- tickets cerrados y resueltos
 						AND t.created>= startCreationDate
 						AND t.created <= endCreationDate
 						AND bu.email <> t.createdByUsr -- que no sea el creador

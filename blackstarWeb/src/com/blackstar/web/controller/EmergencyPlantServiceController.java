@@ -198,6 +198,9 @@ public class EmergencyPlantServiceController extends AbstractController {
 			    		customer.setCreatedByUsr(userSession.getUser().getUserEmail());
 			    		custId = ocService.SaveOpenCustomer(customer);
 		    		}
+					// Fecha de salida
+					serviceOrder.setServiceEndDate(Globals.getLocalTime());
+					
 		    		// Guardando la OS 
 		    		Serviceorder servicioOrderSave = new Serviceorder();
 		    		if(custId > 0){
@@ -207,7 +210,7 @@ public class EmergencyPlantServiceController extends AbstractController {
 					servicioOrderSave.setReceivedByPosition(serviceOrder.getReceivedByPosition());
 					servicioOrderSave.setEmployeeListString(serviceOrder.getResponsible());
 					servicioOrderSave.setServiceDate(serviceOrder.getServiceDate());
-					servicioOrderSave.setServiceEndDate(Globals.getLocalTime());
+					servicioOrderSave.setServiceEndDate(serviceOrder.getServiceEndDate());
 					servicioOrderSave.setServiceOrderNumber(serviceOrder.getServiceOrderNumber());
 					servicioOrderSave.setServiceTypeId(serviceOrder.getServiceTypeId().toCharArray()[0]);
 					servicioOrderSave.setReceivedByEmail(serviceOrder.getReceivedByEmail());
