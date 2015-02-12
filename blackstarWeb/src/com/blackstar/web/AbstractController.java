@@ -47,7 +47,7 @@ public class AbstractController {
   @InitBinder
   private void dateBinder(WebDataBinder binder) {
               //The date format to parse or output your dates
-      SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+      SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
               //Create a new CustomDateEditor
       CustomDateEditor editor = new CustomDateEditor(dateFormat, true);
               //Register it as custom editor for the Date type

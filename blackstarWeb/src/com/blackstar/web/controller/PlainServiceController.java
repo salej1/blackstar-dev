@@ -265,7 +265,7 @@ public class PlainServiceController extends AbstractController {
 			    		customer.setPhone(serviceOrder.getContactPhone());
 			    		customer.setProject(serviceOrder.getProject());
 			    		customer.setOfficeId(serviceOrder.getOfficeId().length()>0?serviceOrder.getOfficeId().substring(0,1):null);
-			    		customer.setCreated(new Date());
+			    		customer.setCreated(Globals.getLocalTime());
 			    		customer.setCreatedBy("PlainServiceController");
 			    		customer.setCreatedByUsr(userSession.getUser().getUserEmail());
 			    		

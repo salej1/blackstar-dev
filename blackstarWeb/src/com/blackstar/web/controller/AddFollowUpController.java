@@ -1,5 +1,6 @@
 package com.blackstar.web.controller;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -311,7 +312,7 @@ private static void SendIssueAssignationEmail(Integer issueId, String asignee, S
 	SendAssignationEmail(asignee, sender, createdBy, timestamp, comment, "I", issue.getReferenceId(), issue.getReferenceNumber());
 }
 
-private static void SendBloomTicketAssignationEmail(Integer ticketId, String asignee, String sender, AssignType type, String comment){
+private static void SendBloomTicketAssignationEmail(Integer ticketId, String asignee, String sender, AssignType type, String comment) throws Exception{
 	// Recuperar el ticket
 	List<TicketDetailDTO> rawDetail = internalTicketsDao.getTicketDetail(ticketId);
 	if(rawDetail != null && rawDetail.size() > 0){

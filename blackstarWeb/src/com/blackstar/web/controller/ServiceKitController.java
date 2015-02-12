@@ -1,5 +1,7 @@
 package com.blackstar.web.controller;
 
+import java.util.Date;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.blackstar.common.Globals;
+import com.blackstar.common.Utils;
 import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
 import com.blackstar.services.SupportService;
@@ -29,6 +32,8 @@ public class ServiceKitController extends AbstractController{
 	public String show(@RequestParam(required = false) String code, ModelMap model){
 		try{
 			if(service.isGuidValid(code)){
+				model.addAttribute("localTime", Globals.getLocalTime().toLocaleString());
+				model.addAttribute("serverTime", new Date().toLocaleString());
 				return "serviceKit";
 			}else
 			{

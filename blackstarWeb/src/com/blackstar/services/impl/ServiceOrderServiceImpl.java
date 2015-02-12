@@ -1,10 +1,12 @@
 package com.blackstar.services.impl;
 
+import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
 import org.json.JSONObject;
 
+import com.blackstar.common.Globals;
 import com.blackstar.db.dao.interfaces.EquipmentTypeDAO;
 import com.blackstar.db.dao.interfaces.ServiceOrderDAO;
 import com.blackstar.db.dao.interfaces.ServiceTypeDAO;
@@ -80,39 +82,44 @@ public UpsServiceDTO getUpsService(Integer serviceOrderId) {
 }
 
 @Override
-public void saveAirCoService(AirCoServiceDTO service, String createdBy, String createdByUsr) {
+public void saveAirCoService(AirCoServiceDTO service, String createdBy, String createdByUsr) throws Exception {
 	
-	dao.saveAirCoService(service, new Date(), createdBy, createdByUsr);
+	dao.saveAirCoService(service, Globals.getLocalTime(), createdBy, createdByUsr);
 }
 
 @Override
-public void saveBateryService(BatteryServiceDTO service, String createdBy, String createdByUsr) {
+public void saveBateryService(BatteryServiceDTO service, String createdBy, String createdByUsr) throws Exception {
 	// TODO Auto-generated method stub
-	dao.saveBateryService(service, new Date(), createdBy, createdByUsr);
+	dao.saveBateryService(service, Globals.getLocalTime(), createdBy, createdByUsr);
 }
 
 @Override
-public void saveEmergencyPlantService(EmergencyPlantServiceDTO service, String createdBy, String createdByUsr) {
+public void saveEmergencyPlantService(EmergencyPlantServiceDTO service, String createdBy, String createdByUsr) throws Exception {
 	// TODO Auto-generated method stub
-	dao.saveEmergencyPlantService(service, new Date(), createdBy, createdByUsr);
+	dao.saveEmergencyPlantService(service, Globals.getLocalTime(), createdBy, createdByUsr);
 }
 
 @Override
-public void savePlainService(PlainServiceDTO service, String createdBy, String createdByUsr) {
+public void savePlainService(PlainServiceDTO service, String createdBy, String createdByUsr) throws Exception {
 	// TODO Auto-generated method stub
-	dao.savePlainService(service, new Date(), createdBy, createdByUsr);
+	dao.savePlainService(service, Globals.getLocalTime(), createdBy, createdByUsr);
 }
 
 @Override
-public void saveUpsService(UpsServiceDTO service, String createdBy, String createdByUsr) {
+public void saveUpsService(UpsServiceDTO service, String createdBy, String createdByUsr) throws Exception {
 	// TODO Auto-generated method stub
-	dao.saveUpsService(service, new Date(), createdBy, createdByUsr);
+	dao.saveUpsService(service, Globals.getLocalTime(), createdBy, createdByUsr);
 }
 
 @Override
 public int saveServiceOrder(Serviceorder service, String createdBy,
 		String createdByUsr) {
-	service.setCreated(new Date());
+	try {
+		service.setCreated(Globals.getLocalTime());
+	} catch (ParseException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
 	service.setCreatedBy(createdBy);
 	service.setCreatedByUsr(createdByUsr);
 	 return dao.insertServiceOrder(service);
@@ -122,7 +129,12 @@ public int saveServiceOrder(Serviceorder service, String createdBy,
 public void updateServiceOrder(Serviceorder service, String modifiedBy,
 		String modifiedByUsr) {
 	// TODO Auto-generated method stub
-	service.setModified(new Date());
+	try {
+		service.setModified(Globals.getLocalTime());
+	} catch (ParseException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
 	service.setModifiedBy(modifiedBy);
 	service.setModifiedByUsr(modifiedByUsr);
 	dao.updateServiceOrder(service);

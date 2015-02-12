@@ -259,6 +259,9 @@
 	<div id="content" class="container_16 clearfix">
 		<div class="grid_16">					
 			<h1>Kit de Soporte</h1>
+			Hora servidor: ${serverTime}
+			<br>
+			Hora local: ${localTime}
 
 			<!-- Ordenes de servicio -->
 			<div  class="box">

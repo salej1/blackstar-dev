@@ -1,5 +1,6 @@
 package com.blackstar.services.impl;
 
+import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -90,10 +91,14 @@ public class SupportServiceImpl implements SupportService {
 				return false;
 			}
 			else{
-				if(Globals.getLocalTime().compareTo(g.get(0).getExpires()) < 0){
-					return true;
-				}
-				else{
+				try {
+					if(Globals.getLocalTime().compareTo(g.get(0).getExpires()) < 0){
+						return true;
+					}
+					else{
+						return false;
+					}
+				} catch (ParseException e) {
 					return false;
 				}
 			}

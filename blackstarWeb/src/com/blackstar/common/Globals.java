@@ -2,6 +2,7 @@ package com.blackstar.common;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -62,16 +63,23 @@ public class Globals {
 	  // time format
 	  public static final String DEFAULT_TIME_ZONE = "America/Mexico_City";
 	  public static final String DATE_FORMAT_PATTERN = "dd/MM/yyyy hh:mm:ss a";
-	  public static Date getLocalTime(){
-		  Calendar c = Calendar.getInstance(TimeZone.getTimeZone(DEFAULT_TIME_ZONE));
-		  return c.getTime();
+	  public static final String SQL_FORMAT_PATTERN = "yyyy-MM-dd HH:mm:ss";
+
+	  public static Date getLocalTime() throws ParseException{
+		  SimpleDateFormat sdf = new SimpleDateFormat(Globals.DATE_FORMAT_PATTERN);
+		  sdf.setTimeZone(TimeZone.getTimeZone(Globals.DEFAULT_TIME_ZONE));
+
+		  SimpleDateFormat sdf2 = new SimpleDateFormat(Globals.DATE_FORMAT_PATTERN);
+		  Date d = sdf2.parse(sdf.format(new Date()));
+		  return d;
 	  }
+	  
 	  public static String getLocalTimeString(){
 		  SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT_PATTERN);
 		  sdf.setTimeZone(TimeZone.getTimeZone(DEFAULT_TIME_ZONE));
-		  return sdf.format(getLocalTime());
+		  return sdf.format(new Date());
 	  }
-	  
+	   
 	  // Google 
 	  public static final String GOOGLE_DRIVE_URL_PREFIX = "https://docs.google.com/a/gposac.com.mx/file/d/";
 	  public static final String GOOGLE_DRIVE_URL_SUFIX = "/edit";

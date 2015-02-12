@@ -195,7 +195,7 @@ public class AirCoServiceController extends AbstractController {
 		    		customer.setPhone(serviceOrder.getContactPhone());
 		    		customer.setProject(serviceOrder.getProject());
 		    		customer.setOfficeId(String.valueOf(serviceOrder.getOfficeId()));		    		
-		    		customer.setCreated(new Date());
+		    		customer.setCreated(Globals.getLocalTime());
 		    		customer.setCreatedBy("AircoServiceController");
 		    		customer.setCreatedByUsr(userSession.getUser().getUserEmail());
 		    		custId = ocService.SaveOpenCustomer(customer);

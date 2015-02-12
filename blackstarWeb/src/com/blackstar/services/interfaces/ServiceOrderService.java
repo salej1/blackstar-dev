@@ -34,11 +34,11 @@ public interface ServiceOrderService {
 	public int saveServiceOrder (Serviceorder service,String createdBy, String createdByUsr);
 	public void updateServiceOrder (Serviceorder service,String modifiedBy, String modifiedByUsr);
 
-	public void saveAirCoService (AirCoServiceDTO service,String createdBy, String createdByUsr);
-	public void saveBateryService (BatteryServiceDTO service,String createdBy, String createdByUsr);
-	public void saveEmergencyPlantService (EmergencyPlantServiceDTO service,String createdBy, String createdByUsr);
-	public void savePlainService (PlainServiceDTO service,String createdBy, String createdByUsr);
-	public void saveUpsService (UpsServiceDTO service,String createdBy, String createdByUsr);
+	public void saveAirCoService (AirCoServiceDTO service,String createdBy, String createdByUsr) throws Exception ;
+	public void saveBateryService (BatteryServiceDTO service,String createdBy, String createdByUsr) throws Exception ;
+	public void saveEmergencyPlantService (EmergencyPlantServiceDTO service,String createdBy, String createdByUsr) throws Exception ;
+	public void savePlainService (PlainServiceDTO service,String createdBy, String createdByUsr) throws Exception ;
+	public void saveUpsService (UpsServiceDTO service,String createdBy, String createdByUsr) throws Exception ;
 
 	// regresa un numero de OS preventivo, segun tipo de equipo
 	public String getNewServiceNumber(String equipmentType);
