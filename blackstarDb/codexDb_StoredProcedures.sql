@@ -57,10 +57,47 @@
 -- 8  29/01/2015  SAG     Se modifica:
 --                              blackstarDb.CodexGetAllProjectsByUsr
 -- -----------------------------------------------------------------------------
+-- 9 13/02/2015   SAG     Se agrega:
+--                              blackstarDb.RecordSalesCall
+--                              blackstarDb.getSalesCallRecords
+-- -----------------------------------------------------------------------------
 
 use blackstarDb;
 
 DELIMITER $$
+
+-- -----------------------------------------------------------------------------
+  -- blackstarDb.getSalesCallRecords
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.getSalesCallRecords$$
+CREATE PROCEDURE blackstarDb.getSalesCallRecords(startDate DATETIME, endDate DATETIME, cstEmail VARCHAR(500))
+BEGIN
+  
+  SELECT c.name AS cst,
+    s.month AS month,
+    s.year AS year,
+    count(s.codexSalesCallId) AS callCount
+  FROM cst c
+    LEFT OUTER JOIN codexSalesCall s ON s.cstId = c.cstId
+  WHERE if(cstEmail = 'All', 1=1, c.email = cstEmail)
+    AND callDate >= startDate 
+    AND callDate <= endDate
+  GROUP BY c.name, s.month, s.year;
+
+END$$
+
+-- -----------------------------------------------------------------------------
+  -- blackstarDb.RecordSalesCall
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.RecordSalesCall$$
+CREATE PROCEDURE blackstarDb.RecordSalesCall(cstEmail VARCHAR(500), callDate DATETIME)
+BEGIN
+  
+  INSERT INTO codexSalesCall(cstId, month, year, callDate)
+  SELECT cstId, month(callDate), year(callDate), callDate FROM cst
+  WHERE email = cstEmail;
+
+END$$
 
 -- -----------------------------------------------------------------------------
   -- blackstarDb.getAutocompleteClientList

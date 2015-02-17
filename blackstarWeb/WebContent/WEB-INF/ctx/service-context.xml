@@ -120,4 +120,9 @@
   <bean id="kpiService" class="com.codex.service.impl.KpiServiceImpl" parent="abstractService">
       <property name="dao" ref="kpiDAO" />
   </bean>
+
+   <bean id="salesCallService" class="com.codex.service.impl.SalesCallServiceImpl" parent="abstractService">
+      <property name="dao" ref="salesCallDAO" />
+  </bean>
+  
 </beans>

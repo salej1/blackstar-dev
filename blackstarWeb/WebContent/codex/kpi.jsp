@@ -21,7 +21,7 @@
 			var month = moment().month();
 			var monthStart = moment({year: year, month: month, day: 1});
 			var startDateStr = yearStart.format("DD/MM/YYYY") + " 00:00:00";
-			var endDateStr = moment().format("DD/MM/YYYY") + " 00:00:00";
+			var endDateStr = moment().format("DD/MM/YYYY") + " 23:59:59";
 
 			function loadAllKpi(){
 				// invoicing KPI
@@ -197,6 +197,26 @@
 								  ]}
 					);
 				});
+
+				// Llamadas de ventas
+				$.getJSON("${pageContext.request.contextPath}/codex/kpi/getSalesCallsRecords.do" + parametersTemplate, function(data){
+					$("#salesCallsRecords").dataTable({
+						"bProcessing": true,
+						"bFilter": true,
+						"bLengthChange": false,
+						"iDisplayLength": 1000,
+						"bInfo": false,
+						"sPaginationType": "full_numbers",
+						"aaData": data,
+						"sDom": '<"top"i>rt<"bottom"flp><"clear">',
+						"aoColumns": [
+									  { "mData": "cst" },
+									  { "mData": "month" },
+									  { "mData": "year" },
+									  { "mData": "callCount" }
+								  ]}
+					);
+				});
 			}
 
 			function applyFilter(){
@@ -209,6 +229,7 @@
 				$('#newCustomers').dataTable().fnDestroy();
 				$('#productFamilies').dataTable().fnDestroy();
 				$('#comerceCodes').dataTable().fnDestroy();
+				$('#salesCallsRecords').dataTable().fnDestroy();
 				loadAllKpi();
 			}
 
@@ -216,22 +237,22 @@
 				
 				 $(".dateRange").hide();
 		    	 $("#startDate").datepicker({ dateFormat: 'dd/mm/yy', onSelect: function(date, obj){startDateStr = date +" 00:00:00";}, changeMonth: true, changeYear: true});
-		    	 $("#endDate").datepicker({ dateFormat: 'dd/mm/yy', onSelect: function(date, obj){endDateStr = date +" 00:00:00";}, changeMonth: true, changeYear: true});
+		    	 $("#endDate").datepicker({ dateFormat: 'dd/mm/yy', onSelect: function(date, obj){endDateStr = date +" 23:59:59";}, changeMonth: true, changeYear: true});
 		    	 $("#dateSelector").bind("change", function(){
 		    	 	switch($(this).val()){
 		    	 		case "1":
 		    	 			startDateStr = yearStart.format("DD/MM/YYYY") + " 00:00:00";
-		    	 			endDateStr = moment().format("DD/MM/YYYY") + " 00:00:00";
+		    	 			endDateStr = moment().format("DD/MM/YYYY") + " 23:59:59";
 		    	 			$(".dateRange").hide();
 		    	 			break;
 	    	 			case "2":
 	    	 				startDateStr = monthStart.format("DD/MM/YYYY") + " 00:00:00";
-		    	 			endDateStr = moment().format("DD/MM/YYYY") + " 00:00:00";
+		    	 			endDateStr = moment().format("DD/MM/YYYY") + " 23:59:59";
 		    	 			$(".dateRange").hide();
 		    	 			break;
 		    	 		case "3":
 		    	 			startDateStr = monthStart.format("DD/MM/YYYY") + " 00:00:00";
-		    	 			endDateStr = moment().format("DD/MM/YYYY") + " 00:00:00";
+		    	 			endDateStr = moment().format("DD/MM/YYYY") + " 23:59:59";
 		    	 			$("#startDate").val(monthStart.format("DD/MM/YYYY"));
 		    	 			$("#endDate").val(moment().format("DD/MM/YYYY"));
 		    	 			$(".dateRange").show();
@@ -320,6 +341,9 @@
 					</div>
 					<div>
 						<img src="/img/navigate-right.png"/><a href="#comercia" >Codigos Comercia</a>
+					</div>
+					<div>
+						<img src="/img/navigate-right.png"/><a href="#salesCalls" >Llamadas de ventas</a>
 					</div>
 				</div>				
 <!--   ~ CONTENT COLUMN   -->			
@@ -472,6 +496,22 @@
 					</table>
 <!--   ~ Comercia  -->	
 
+<!--   Llamadas de ventas    -->	
+					<hr>
+					<h2 id="salesCalls">
+						Llamadas de Ventas
+					</h2>
+					<table id="salesCallsRecords">
+						<thead>
+						<tr>
+							<th>CST</th>
+							<th>Mes</th>
+							<th>Año</th>
+							<th>Llamadas</th>
+						</tr>
+						</thead>
+					</table>
+<!--   ~ Llamadas de ventas  -->	
 				</div>
 			</div>
 <!--   ~ CONTENT   -->

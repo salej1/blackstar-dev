@@ -3461,6 +3461,8 @@ CREATE TABLE IF NOT EXISTS blackstarDb.cstOffice(
 -- ---------------------------------------------------------------------------
 -- 10 	05/02/2015	SAG 	Se agrega createdBy y createdByUsr a codexDeliverableTrace
 -- ---------------------------------------------------------------------------
+-- 11	02/13/2015	SAG		Se agrega salesCall
+-- ---------------------------------------------------------------------------
 
 use blackstarDb;
 
@@ -3473,6 +3475,19 @@ BEGIN
 -- -----------------------------------------------------------------------------
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
+-- AGREGANDO TABLA codexSalesCall
+	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'codexSalesCall') = 0 THEN
+		CREATE TABLE blackstarDb.codexSalesCall(
+			codexSalesCallId INT AUTO_INCREMENT,
+			cstId INTEGER,
+			month INT,
+			year INT,
+			callDate DATETIME,
+			PRIMARY KEY(codexSalesCallId)
+		)ENGINE=INNODB;
+
+		ALTER TABLE codexSalesCall ADD CONSTRAINT FK_codexSalesCall_cst FOREIGN KEY (cstId) REFERENCES cst(cstId);
+	END IF;
 
 -- AGREGANDO createdBy & createdByUsr a codexDeliverableTrace
 IF(SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'codexDeliverableTrace' AND COLUMN_NAME = 'createdBy') = 0 THEN
@@ -3657,10 +3672,47 @@ DROP PROCEDURE blackstarDb.upgradeCodexSchema;
 -- 8  29/01/2015  SAG     Se modifica:
 --                              blackstarDb.CodexGetAllProjectsByUsr
 -- -----------------------------------------------------------------------------
+-- 9 13/02/2015   SAG     Se agrega:
+--                              blackstarDb.RecordSalesCall
+--                              blackstarDb.getSalesCallRecords
+-- -----------------------------------------------------------------------------
 
 use blackstarDb;
 
 DELIMITER $$
+
+-- -----------------------------------------------------------------------------
+  -- blackstarDb.getSalesCallRecords
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.getSalesCallRecords$$
+CREATE PROCEDURE blackstarDb.getSalesCallRecords(startDate DATETIME, endDate DATETIME, cstEmail VARCHAR(500))
+BEGIN
+  
+  SELECT c.name AS cst,
+    s.month AS month,
+    s.year AS year,
+    count(s.codexSalesCallId) AS callCount
+  FROM cst c
+    LEFT OUTER JOIN codexSalesCall s ON s.cstId = c.cstId
+  WHERE if(cstEmail = 'All', 1=1, c.email = cstEmail)
+    AND callDate >= startDate 
+    AND callDate <= endDate
+  GROUP BY c.name, s.month, s.year;
+
+END$$
+
+-- -----------------------------------------------------------------------------
+  -- blackstarDb.RecordSalesCall
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.RecordSalesCall$$
+CREATE PROCEDURE blackstarDb.RecordSalesCall(cstEmail VARCHAR(500), callDate DATETIME)
+BEGIN
+  
+  INSERT INTO codexSalesCall(cstId, month, year, callDate)
+  SELECT cstId, month(callDate), year(callDate), callDate FROM cst
+  WHERE email = cstEmail;
+
+END$$
 
 -- -----------------------------------------------------------------------------
   -- blackstarDb.getAutocompleteClientList

@@ -34,6 +34,8 @@
 -- ---------------------------------------------------------------------------
 -- 10 	05/02/2015	SAG 	Se agrega createdBy y createdByUsr a codexDeliverableTrace
 -- ---------------------------------------------------------------------------
+-- 11	02/13/2015	SAG		Se agrega salesCall
+-- ---------------------------------------------------------------------------
 
 use blackstarDb;
 
@@ -46,6 +48,19 @@ BEGIN
 -- -----------------------------------------------------------------------------
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
+-- AGREGANDO TABLA codexSalesCall
+	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'codexSalesCall') = 0 THEN
+		CREATE TABLE blackstarDb.codexSalesCall(
+			codexSalesCallId INT AUTO_INCREMENT,
+			cstId INTEGER,
+			month INT,
+			year INT,
+			callDate DATETIME,
+			PRIMARY KEY(codexSalesCallId)
+		)ENGINE=INNODB;
+
+		ALTER TABLE codexSalesCall ADD CONSTRAINT FK_codexSalesCall_cst FOREIGN KEY (cstId) REFERENCES cst(cstId);
+	END IF;
 
 -- AGREGANDO createdBy & createdByUsr a codexDeliverableTrace
 IF(SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'codexDeliverableTrace' AND COLUMN_NAME = 'createdBy') = 0 THEN

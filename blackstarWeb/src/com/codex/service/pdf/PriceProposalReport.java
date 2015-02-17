@@ -1,21 +1,17 @@
 package com.codex.service.pdf;
 
-import java.io.FileOutputStream;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-
 import com.blackstar.common.Globals;
 import com.blackstar.services.report.AbstractReport;
+import com.blackstar.services.report.util.NoSpaceInPageException;
 import com.codex.model.CurrencyType;
-import com.codex.vo.ProjectEntryItemVO;
 import com.codex.vo.ProjectEntryVO;
 import com.codex.vo.ProjectVO;
 import com.pdfjet.Align;
 import com.pdfjet.Color;
-import com.pdfjet.Font;
 
 public class PriceProposalReport extends AbstractReport {
 
@@ -25,18 +21,21 @@ public class PriceProposalReport extends AbstractReport {
 	data = (ProjectVO) fillData;
 	printHeader();
 	printCover();
-	printFooter(1,4);
 	
 	drawer.newPage();
 	printHeader();
 	printProposal();
-	printFooter(2,4);
 	
 	drawer.newPage();
 	printHeader();
 	printContract(data);
-	printFooter(4,4);
-
+	
+	for(int i = 0; i < drawer.getPageCount(); i++){
+		drawer.gotoPage(i);
+		printFooter(i+1, drawer.getPageCount());
+	}
+	
+	drawer.commit();
   }
 	
 	
@@ -70,20 +69,16 @@ public class PriceProposalReport extends AbstractReport {
   }
   
   private void printFooter(int page, int pageCount) throws Exception {
-	  String s = "La información contenida en la totalidad de este documento es clasificada como confidencial y se entrega bajo el entendido de que no será usada o " +
-			  "divulgada, sin el permiso de Sistemas Avanzados en Computación de México, S.A. de C.V.";
-	 // drawer.textBlock(s, Align.JUSTIFY, 40, 725, 480, false, Color.gray, 7);
+	  // drawer.textBlock(s, Align.JUSTIFY, 40, 725, 480, false, Color.gray, 7);
 	  drawer.text("4 - VE - 11                Rev. 1           15-01-2015                                                                TRA: Mientras este Activo   TRAM: 1 año", 40,745, false, Color.gray, 7);
 	  drawer.text("Pag. " + page + "/" + pageCount, 500 , 745, false, Color.gray, 7);
   }
   
   private void printProposal() throws Exception {
 	  List<ProjectEntryVO> entries = data.getEntries();
-	  List<ProjectEntryItemVO> items = null;
 	  int yFactor = 0;
-	  int rowCounter = 0, adjusment = 0;
 	  float rawEntryPrice = 0F;
-	  float totalPrice = 0, totalDiscount = 0;
+	  float totalPrice = 0;
 	  drawer.box(40, 140, 490, 20, Color.gray, true);
 	  drawer.text("Propuesta", 260, 154, true, 0, 10);
 	  String s = "Damos a nuestros clientes la confianza de que sus procesos críticos trabajarán de forma continua gracias a nuestras soluciones en monitoreo, " + 
@@ -104,21 +99,27 @@ public class PriceProposalReport extends AbstractReport {
 	  drawer.text("Cantidad", 328, 303, true);
 	  drawer.text("P. Unitario", 387, 303, true);
 	  drawer.text("Importe", 468, 303, true);
-	  for(int i = 0; i < entries.size() ; i++, rowCounter ++){
-		  if((yFactor + 335) > 690){
+	  for(int i = 0; i < entries.size() ; i++){
+		  int descOffset = 0;
+		  
+		  try{
+			  descOffset = drawer.textBlock(entries.get(i).getDescription(), Align.JUSTIFY, 105, 325 + yFactor, 200, false, 8);
+			  descOffset *= 12;
+			  drawer.text(i + 1 + "", 60, 325 + yFactor);
+		  }
+		  
+		  catch(NoSpaceInPageException ex){
 			  yFactor = -190;
-			  rowCounter = 0;
-			  adjusment = -190;
 			  drawer.newPage();
 			  printHeader();
-			  drawer.hLine(40, 545, 120);
-		  }   
-		  		  
-		  drawer.text(i + 1 + "", 60, 325 + yFactor);
-		  int descOffset = drawer.textBlock(entries.get(i).getDescription(), Align.JUSTIFY, 105, 325 + yFactor, 200, false, 8);
-		  descOffset *= 12;
-		  drawer.text(entries.get(i).getQty().toString(), 342, 325 + yFactor);
+			  drawer.hLine(40, 525, 120);
+			  descOffset = drawer.textBlock(entries.get(i).getDescription(), Align.JUSTIFY, 105, 325 + yFactor, 200, false, 8);
+			  descOffset *= 12;
+			  drawer.text(i + 1 + "", 60, 325 + yFactor);
+		  }
 		  
+		  drawer.text(entries.get(i).getQty().toString(), 342, 325 + yFactor);
+		  	
 		  drawer.hLine(40, 525, 335 + yFactor + descOffset);
 		  drawer.vLine(310 + yFactor, 335 + yFactor + descOffset, 40);
 		  drawer.vLine(310 + yFactor, 335 + yFactor + descOffset, 90);
@@ -143,7 +144,6 @@ public class PriceProposalReport extends AbstractReport {
 		  totalPrice += actualEntryPrice;
 		  
 		  if(entries.get(i).getDiscount() > 0){
-			  totalDiscount += (rawEntryPrice - actualEntryPrice);
 		  }	  
 	  }
 	  
@@ -232,7 +232,8 @@ public class PriceProposalReport extends AbstractReport {
 	  drawer.textBlock(s, Align.JUSTIFY, 40, 250, 490, false, 8);
 
 	  drawer.text("4. Entrega", 40, 310, true);
-	  s = "a) El tiempo de entrega es de " + data.getDeliveryTimeDisplay() + " SEMANAS, el cual iniciará a partir de la recepción de su orden de compra y/o contrato y/o nuestra cotización " +
+	  String weekText = data.getDeliveryTimeDisplay().equals("1")? "SEMANA" : "SEMANAS";
+	  s = "a) El tiempo de entrega es de " + data.getDeliveryTimeDisplay() + " " + weekText + ", el cual iniciará a partir de la recepción de su orden de compra y/o contrato y/o nuestra cotización " +
 			  "y del deposito en firme del anticipo correspondiente.";
 	  drawer.textBlock(s, Align.JUSTIFY, 40, 320, 490, false, 8);
 	  
@@ -276,7 +277,6 @@ public class PriceProposalReport extends AbstractReport {
 
 	  drawer.newPage();
 	  printHeader();
-	  printFooter(3,4);
 	  
 	  drawer.text("9. Transferencia de Propiedad", 40, 120, true);
 	  s = "La transferencia de propiedad tendrá lugar en el sitio donde se entreguen los equipos, pagados en su totalidad y con la facturación " +

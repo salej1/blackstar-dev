@@ -1,7 +1,5 @@
 package com.codex.web.controller;
 
-import java.sql.Date;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -10,6 +8,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.blackstar.common.Globals;
+import com.blackstar.logging.LogLevel;
+import com.blackstar.logging.Logger;
 import com.blackstar.model.UserSession;
 import com.blackstar.web.AbstractController;
 import com.codex.model.dto.VisitDTO;
@@ -48,9 +48,9 @@ public class VisitController extends AbstractController {
 			service.upsertVisit(visit);
 		}
 		catch (Exception e) {
+			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 			e.printStackTrace();
 			model.addAttribute("errorDetails", e.getStackTrace()[0].toString());
-			System.out.println("Error =>" + e);
 			return "error";
 		}
 		
@@ -72,6 +72,7 @@ public class VisitController extends AbstractController {
 			model.addAttribute("statusList", service.getVisitaStatusList());
 		}
 		catch (Exception e) {
+			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 			e.printStackTrace();
 			model.addAttribute("errorDetails", e.getStackTrace()[0].toString());
 			System.out.println("Error =>" + e);
@@ -96,6 +97,7 @@ public class VisitController extends AbstractController {
 			model.addAttribute("statusList", service.getVisitaStatusList());
 		}
 		catch (Exception e) {
+			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 			e.printStackTrace();
 			model.addAttribute("errorDetails", e.getStackTrace()[0].toString());
 			System.out.println("Error =>" + e);
@@ -120,6 +122,7 @@ public class VisitController extends AbstractController {
 			service.upsertVisit(visit);
 		}
 		catch (Exception e) {
+			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 			e.printStackTrace();
 			model.addAttribute("errorDetails", e.getStackTrace()[0].toString());
 			System.out.println("Error =>" + e);
@@ -143,6 +146,7 @@ public class VisitController extends AbstractController {
 			return visits;
 		}
 		catch (Exception e) {
+			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 			e.printStackTrace();
 			model.addAttribute("errorDetails", e.getStackTrace()[0].toString());
 			System.out.println("Error =>" + e);

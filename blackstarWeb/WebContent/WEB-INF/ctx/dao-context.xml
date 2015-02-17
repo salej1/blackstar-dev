@@ -51,5 +51,6 @@
 	<bean id="cstDAO" class="com.codex.db.impl.CstDAOImpl" parent="abstractDAO" />
 	<bean id="visitDAO" class="com.codex.db.impl.VisitDAOImpl" parent="abstractDAO" />
 	<bean id="kpiDAO" class="com.codex.db.impl.KpiDAOImpl" parent="abstractDAO" />
+	<bean id="salesCallDAO" class="com.codex.db.impl.SalesCallDAOImpl" parent="abstractDAO" />
 
 </beans>

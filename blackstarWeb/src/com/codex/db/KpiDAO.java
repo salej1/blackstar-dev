@@ -12,4 +12,5 @@ public interface KpiDAO{
 	public String getNewCustomers(Date startDate, Date endDate, String cst);
 	public String getProductFamilies(Date startDate, Date endDate);
 	public String getComerceCodes(Date startDate, Date endDate);
+	public String getSalesCallRecords(Date startDate, Date endDate, String cst);
 }

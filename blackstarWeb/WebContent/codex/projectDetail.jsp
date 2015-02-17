@@ -59,6 +59,15 @@
 					}}
 			});
 
+			$( "#WaitMessage" ).dialog({
+		      modal: true,
+		      autoOpen: false,
+		      width: 350,
+		      buttons: {
+		        
+		        }
+		    });
+
 			setButtonStatusText();
 			
 			// Bloqueo de campos
@@ -429,6 +438,8 @@
 	    }
 
 	    function advanceStatus(){
+	    	$("#WaitMessage").dialog('open');
+
 	    	if("${enableEdition}" == "true" && ${project.statusId} < 3){
 	    		// Modo edicion --> primero guardar
 	    		var isUpdate = '${isUpdate}';
@@ -461,6 +472,7 @@
 	    }
 
 	    function fallBackStatus(){
+	      $("#WaitMessage").dialog('open');
 	      $('#mainForm').attr('action', '/codex/project/fallbackStatus.do?projectId=' +  $("#projectId").val());
 	      $("#mainForm").submit();
 	    }
@@ -1039,6 +1051,10 @@
 						disabled
 					</c:if>
 					></textarea>
+				</div>
+
+				<div id="WaitMessage" title="Guardando Cedula de Proyecto" style="text-align:center">
+					Procesando cedula de proyecto, espere... <br><br> <img src="/img/processing.gif"/>
 				</div>
 								
 <!--   ~ CONTENT COLUMN   -->

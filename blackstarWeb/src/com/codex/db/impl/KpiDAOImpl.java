@@ -134,4 +134,17 @@ public class KpiDAOImpl extends AbstractDAO implements KpiDAO{
 		}
 	}
 
+	@Override
+	public String getSalesCallRecords(Date startDate, Date endDate, String cst) {
+		String sql = "CALL getSalesCallRecords(?,?,?)";
+		List<JSONObject> list = getJdbcTemplate().query(sql, new Object[]{startDate, endDate, cst}, new JSONRowMapper());
+		
+		if(list != null){
+			return list.toString();
+		}
+		else{
+			return "[]";
+		}
+	}
+
 }

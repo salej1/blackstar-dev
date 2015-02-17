@@ -103,7 +103,14 @@
 	     <c:set var="sysSalesManger" scope="request" value="${user.belongsToGroup['Gerente comercial']}" />
 	     <c:set var="sysCST" scope="request" value="${user.belongsToGroup['CST']}" />
 
-	     <div class="grid_16">	
+	     <div class="grid_16">
+	     	<!-- Llamadas de ventas	 -->
+	     	<c:import url="salesCall.jsp"></c:import>
+			<script type="text/javascript">
+				$(function(){
+					initialize_salesCall();
+				});
+			</script>
 			<p>
 				<img src="/img/navigate-right.png"/><a href="${pageContext.request.contextPath}/codex/client/create.do" >Nuevo Prospecto</a>
 			</p>

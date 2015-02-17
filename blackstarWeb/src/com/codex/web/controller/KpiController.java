@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.blackstar.common.Globals;
 import com.blackstar.model.User;
+import com.blackstar.model.UserSession;
 import com.blackstar.web.AbstractController;
 import com.codex.service.ClientService;
 import com.codex.service.CstService;
@@ -165,4 +167,22 @@ public class KpiController extends AbstractController{
 		return null;
 	}
 	
+	@RequestMapping(value = "/getSalesCallsRecords.do", produces="application/json")
+	public @ResponseBody String getSalesCallsRecords(
+			@RequestParam(required=true) Date startDate, @RequestParam(required=true) Date endDate,
+			@RequestParam(required=true) String cst,
+			@ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession) {
+		try {
+			if(userSession.getUser().getBelongsToGroup().get(Globals.GROUP_SALES_MANAGER) != null){
+				return service.getSalesCallsRecords(startDate, endDate, "All");
+			}
+			else{
+				return service.getSalesCallsRecords(startDate, endDate, userSession.getUser().getUserEmail());
+			}
+			
+		} catch (Exception e) {
+			System.out.println("getComerceCodes=>" + e);
+		}
+		return null;
+	}
 }

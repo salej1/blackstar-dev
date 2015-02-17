@@ -65,4 +65,9 @@ public class KpiServiceImpl extends AbstractService implements KpiService {
 		return dao.getComerceCodes(startDate, endDate);
 	}
 
+	@Override
+	public String getSalesCallsRecords(Date startDate, Date endDate, String cst) {
+		return dao.getSalesCallRecords(startDate, endDate, cst);
+	}
+
 }
