@@ -8,10 +8,13 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONObject;
+
 import com.blackstar.db.dao.interfaces.TicketDAO;
 import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
 import com.blackstar.model.Ticket;
+import com.blackstar.model.dto.TicketDTO;
 
 public class MySQLTicketDAO implements TicketDAO, Serializable {
 
@@ -149,6 +152,36 @@ public class MySQLTicketDAO implements TicketDAO, Serializable {
 		}
 		// TODO Auto-generated method stub
 		return ticket;
+	}
+
+	@Override
+	public List<JSONObject> getEquipmentList(String customerEmail) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<JSONObject> getEquipmentList() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<JSONObject> getPolicyData(Integer policyId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Integer saveTicket(TicketDTO ticket) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public TicketDTO getTicketDTOById(Integer ticketId) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

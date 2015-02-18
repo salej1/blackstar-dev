@@ -35,7 +35,7 @@
 				<img alt="Grupo Sac" src="${pageContext.request.contextPath}/img/grupo-sac-logo.png" border="0"/>
 			</div>
 			<span class="slogan">Portal de servicios</span>
-			<span style="display:inline-block;width:180px;"><small>v2.377</small></span>
+			<span style="display:inline-block;width:180px;"><small>v2.378</small></span>
 			<span><small><a href="${pageContext.request.contextPath}/dashboard/logout.do">Salir</a></small></span>
 		</h1>
 

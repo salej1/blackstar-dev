@@ -119,9 +119,14 @@
       <property name="tickDao" ref="internalTicketsDao" />
   </bean>
 
-   <bean id="supportService" class="com.blackstar.services.impl.SupportServiceImpl" parent="abstractService">
+  <bean id="supportService" class="com.blackstar.services.impl.SupportServiceImpl" parent="abstractService">
       <property name="dao" ref="supportDao" />
       <property name="mailService" ref="gmService" />
   </bean>
+
+  <bean id="ticketService" class="com.blackstar.services.impl.TicketServiceImpl" parent="abstractService">
+      <property name="dao" ref="ticketDao" />
+  </bean>
+
   
 </beans>

@@ -136,7 +136,11 @@
       <property name="internalTicketsService" ref="internalTicketsService" />
    </bean>
 
-    <bean class="com.blackstar.web.controller.ServiceKitController" parent="abstractController">
+   <bean class="com.blackstar.web.controller.ServiceKitController" parent="abstractController">
       <property name="service" ref="supportService" />
+   </bean>
+
+   <bean class="com.blackstar.web.controller.TicketController" parent="abstractController">
+      <property name="service" ref="ticketService" />
    </bean>
 </beans>

@@ -42,7 +42,7 @@ function init_autoComplete(src, targetLabels, targetValues){
 	});
 }
 
-function init_autoComplete(src, targetLabels, targetValues, mode){
+function init_autoComplete(src, targetLabels, targetValues, mode, callBack){
 	var source = src;
 	var labels = targetLabels;
 	var values = targetValues;
@@ -76,6 +76,9 @@ function init_autoComplete(src, targetLabels, targetValues, mode){
 		        $("#" + values + "").val($("#" + values + "").val() + ";" + ui.item.value );
    			}
 	    	
+	    	if(typeof(callBack) != "undefined"){
+		    	callBack();
+	    	}
 	        return false;
 		}
 	});

@@ -28,11 +28,122 @@
 -- 59	08/02/2015	SAG 	Se modifica:
 --								UpdateServiceOrder
 -- -----------------------------------------------------------------------------
+-- 60 	17/02/2015	SAG 	Se agrega:
+--								GetEquipmentListByCustomer
+--								GetEquipmentListAll
+--								GetPolicyById
+--								InsertTicket
+--								GetTicketById
+-- -----------------------------------------------------------------------------
 
 use blackstarDb;
 
 DELIMITER $$
 
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetTicketById
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetTicketById$$
+CREATE PROCEDURE blackstarDb.GetTicketById(pTicketId INT)
+BEGIN
+	
+	SELECT t.*,
+		p.officeId,
+		p.customer,
+		p.project,
+		p.cst,
+		e.equipmentType,
+		p.brand,
+		p.model,
+		p.serialNumber,
+		p.capacity,
+		p.equipmentAddress,
+		p.equipmentLocation,
+		p.contactName,
+		p.startDate,
+		p.endDate,
+		p.responseTimeHR,
+		p.solutionTimeHR,
+		p.includesParts,
+		p.exceptionParts,
+		s.serviceCenter
+	FROM ticket t 
+		INNER JOIN policy p ON p.policyId = t.policyId
+		INNER JOIN serviceCenter s ON s.serviceCenterId = p.serviceCenterId
+		INNER JOIN equipmentType e ON e.equipmentTypeId = p.equipmentTypeId
+	WHERE ticketId = pTicketId;
+
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.InsertTicket
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.InsertTicket$$
+CREATE PROCEDURE blackstarDb.InsertTicket(pPolicyId INT, pUser VARCHAR(200), pObservations TEXT, pCreated DATETIME, pCreatedBy VARCHAR(200), pCreatedByUsr VARCHAR(200), pContact VARCHAR(200), pContactEmail VARCHAR(200), pContactPhone VARCHAR(200))
+BEGIN
+	
+	SET @year = (select year(curdate()) - 2000);
+	SET @num = (select count(*) from ticket where year(created) = 2000 + @year);
+	-- desface de tickets en 2015
+	IF @year = 15 THEN
+		SET @num = @num + 5;
+	END IF;
+
+	INSERT INTO ticket(policyId, ticketNumber, user, observations, ticketStatusId, created, createdBy, createdByUsr, contact, contactEmail, contactPhone)
+	SELECT pPolicyId, concat_ws('-', @year, @num), pUser, pObservations, 'A', pCreated, pCreatedBy, pCreatedByUsr, pContact, pContactEmail, pContactPhone;
+
+	SELECT LAST_INSERT_ID();
+
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetPolicyById
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetPolicyById$$
+CREATE PROCEDURE blackstarDb.GetPolicyById(pPolicyId INT)
+BEGIN
+
+	SELECT *, if(p.endDate <= CURDATE(), 'Activo', 'Vencido') AS contractState
+	FROM policy p
+		INNER JOIN serviceCenter s ON s.serviceCenterId = p.serviceCenterId
+		INNER JOIN equipmentType e ON e.equipmentTypeId = p.equipmentTypeId
+	WHERE policyId = pPolicyId; 
+
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetEquipmentListAll
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetEquipmentListAll$$
+CREATE PROCEDURE blackstarDb.GetEquipmentListAll()
+BEGIN
+
+	SELECT 
+		concat_ws(' - ', brand, model, serialNumber) AS label,
+		p.policyId AS value
+	FROM policy p
+	WHERE p.startDate < CURDATE() AND CURDATE() < DATE_ADD(p.endDate, INTERVAL 3 MONTH)
+	ORDER BY brand, model, serialNumber; 
+
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetEquipmentListByCustomer
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetEquipmentListByCustomer$$
+CREATE PROCEDURE blackstarDb.GetEquipmentListByCustomer(customerEmail VARCHAR(200))
+BEGIN
+
+	SELECT 
+		concat_ws(' - ', brand, model, serialNumber) AS label,
+		p.policyId AS value
+	FROM policy p
+		INNER JOIN policyEquipmentUser e ON e.policyId = p.policyId
+	WHERE p.startDate < CURDATE() AND CURDATE() < DATE_ADD(p.endDate, INTERVAL 3 MONTH)
+		AND equipmentUserId = customerEmail
+	ORDER BY brand, model, serialNumber; 
+END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetEngHourCost

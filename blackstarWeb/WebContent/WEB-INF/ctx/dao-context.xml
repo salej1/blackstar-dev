@@ -48,6 +48,7 @@
        <bean id="schedulingDAO" class="com.blackstar.db.dao.impl.SchedulingDAOImpl" parent="abstractDAO"/>
        <bean id="issueDAO" class="com.blackstar.db.dao.impl.IssueDAOImpl" parent="abstractDAO"/>
        <bean id="supportDao" class="com.blackstar.db.dao.impl.SupportDAOImpl" parent="abstractDAO"/>
+       <bean id="ticketDao" class="com.blackstar.db.dao.impl.TicketDAOImpl" parent="abstractDAO"/>
 
 	   <!-- Implementacion de BLOOM HELPDESK -->
 	   <bean id="internalTicketsDao" class="com.bloom.db.dao.InternalTicketsDaoImpl" parent="abstractDAO"/>
