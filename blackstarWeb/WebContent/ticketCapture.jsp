@@ -126,13 +126,18 @@
 				$("#responseTimeHR").val(data[0].responseTimeHR);
 				$("#solutionTimeHR").val(data[0].solutionTimeHR);
 				if(data[0].includesParts == 1){
-					$("#includesParts").attr("checked", "true")	;
+					$("#includesParts").val("SI");
 				}
+				else{
+					$("#includesParts").val("NO");
+				}
+				$("#exceptionParts").val(data[0].exceptionParts);
 				$("#serviceCenter").val(data[0].serviceCenter);
 				$("#contractState").val(data[0].contractState);
 				var endDate = new Date(data[0].endDate);
 				$("#endDate").val(endDate.format('dd/MM/yyyy'));
 				$("#customer").val(data[0].customer);
+				$("#observations").focus();
 	   		});
 	   }
 
@@ -224,7 +229,7 @@
 									<td><form:input type="text" path="created" readOnly="true" style="width:50%;" required="true"/></td>
 								</tr>
 								<tr>
-									<td>Nombre</td>
+									<td>Nombre de quien reporta</td>
 									<td><form:input type="text" path="contact" style="width:50%;" required="true"/>
 								</tr>
 								<tr>
@@ -276,7 +281,11 @@
 									<td><input id="solutionTimeHR" readOnly="true" style="width:50%;"/></td>
 								</tr>
 									<td>Incluye partes</td>
-									<td><input type="checkbox" id="includesParts" disabled="true" style="float:left" value="1" /></td>
+									<td><input type="text" id="includesParts" readOnly="true" style="width:50%;"/></td>
+								</tr>
+								</tr>
+									<td>Excepción de partes</td>
+									<td><input type="text" id="exceptionParts" readOnly="true" style="width:50%;"/></td>
 								</tr>
 									<td>Centro de servicio</td>
 									<td><input id="serviceCenter" readOnly="true" style="width:50%;"/></td>

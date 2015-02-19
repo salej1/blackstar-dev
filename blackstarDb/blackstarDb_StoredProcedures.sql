@@ -67,11 +67,14 @@ BEGIN
 		p.solutionTimeHR,
 		p.includesParts,
 		p.exceptionParts,
-		s.serviceCenter
+		s.serviceCenter,
+		s.serviceCenterEmail,
+		o.officeEmail
 	FROM ticket t 
 		INNER JOIN policy p ON p.policyId = t.policyId
 		INNER JOIN serviceCenter s ON s.serviceCenterId = p.serviceCenterId
 		INNER JOIN equipmentType e ON e.equipmentTypeId = p.equipmentTypeId
+		INNER JOIN office o ON o.officeId = p.officeId
 	WHERE ticketId = pTicketId;
 
 END$$

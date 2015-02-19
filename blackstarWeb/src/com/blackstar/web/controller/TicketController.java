@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.blackstar.common.Globals;
+import com.blackstar.common.Utils;
 import com.blackstar.interfaces.IEmailService;
 import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
@@ -100,7 +101,8 @@ public class TicketController extends AbstractController {
 			 e.printStackTrace();
 			 Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 			 model.addAttribute("errorDetails", e.getMessage() + " - " + e.getStackTrace()[0].toString());
-			 return "{error}";
+			 resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			 return "error";
 		}
 	}
 	
@@ -112,31 +114,38 @@ public class TicketController extends AbstractController {
 				
 		String subject = "Reporte de Emergencia " + ticket.getTicketNumber();
 		
-		bodySb.append("<p>Proyecto: " + ticket.getProject() + "</p>");
-		bodySb.append("<p>Empresa: " + ticket.getcustomer() + "</p>");
-		bodySb.append("<p>Ubicacion del servicio: " + ticket.getEquipmentLocation() + "</p>");
-		bodySb.append("<p>Contacto: " + ticket.getContact() + "</p>");
-		bodySb.append("<p>Telefono: " + ticket.getContactPhone() + "</p>");
-		bodySb.append("<p>Email: " + ticket.getContactEmail() + "</p>");
-		bodySb.append("<p>Equipo: " + ticket.getEquipmentType() + "</p>");
-		bodySb.append("<p>Modelo: " + ticket.getModel() + "</p>");
-		bodySb.append("<p>Capacidad: " + ticket.getCapacity() + "</p>");
-		bodySb.append("<p>Marca: " + ticket.getBrand() + "</p>");
-		bodySb.append("<p>Numero de Serie: " + ticket.getSerialNumber() + "</p>");
-		bodySb.append("<p>Tiempo máxima de Respuesta: " + ticket.getResponseTimeHR() + "</p>");
-		bodySb.append("<p>Tiempo máxima de Solución: " + ticket.getSolutionTimeHR() + "</p>");
+		bodySb.append("<style>.what{font-weight:bold; width:250px; display: inline-block;}div{margin:5px;}</style>");
+		bodySb.append("<img src='" + Globals.GPOSAC_LOGO_DEFAULT_URL + "'>");
+		bodySb.append("<div style='font-family:sans-serif;margin-left:50px;font-size:0.8em'>");
+		bodySb.append("<h3 >Reporte de emergencia " + ticket.getTicketNumber() + "</h3>");
+		bodySb.append("<div><span class='what'>Usuario: </span>" + ticket.getUser() + "</div>");
+		bodySb.append("<div><span class='what'>Fecha y hora recepción: </span>" + Utils.getDateString(ticket.getCreated()) + "</div>");
+		bodySb.append("<div><span class='what'>Contacto: </span>" + ticket.getContact() + "</div>");
+		bodySb.append("<div><span class='what'>Proyecto: </span>" + ticket.getProject() + "</div>");
+		bodySb.append("<div><span class='what'>Empresa: </span>" + ticket.getcustomer() + "</div>");
+		bodySb.append("<div><span class='what'>Ubicacion del servicio: </span>" + ticket.getEquipmentLocation() + "</div>");
+		bodySb.append("<div><span class='what'>Telefono: </span>" + ticket.getContactPhone() + "</div>");
+		bodySb.append("<div><span class='what'>Email: </span>" + ticket.getContactEmail() + "</div>");
+		bodySb.append("<div><span class='what'>Equipo: </span>" + ticket.getEquipmentType() + "</div>");
+		bodySb.append("<div><span class='what'>Modelo: </span>" + ticket.getModel() + "</div>");
+		bodySb.append("<div><span class='what'>Capacidad: </span>" + ticket.getCapacity() + "</div>");
+		bodySb.append("<div><span class='what'>Marca: </span>" + ticket.getBrand() + "</div>");
+		bodySb.append("<div><span class='what'>Numero de Serie: </span>" + ticket.getSerialNumber() + "</div>");
+		bodySb.append("<div><span class='what'>Tiempo máximo de Respuesta: </span>" + ticket.getResponseTimeHR() + "</div>");
+		bodySb.append("<div><span class='what'>Tiempo máximo de Solución: </span>" + ticket.getSolutionTimeHR() + "</div>");
 		if(ticket.getIncludesParts() > 0){
-			bodySb.append("<p>Incluye Partes: SI</p>");
+			bodySb.append("<div><span class='what'>Incluye Partes: </span>SI</div>");
 		}
 		else{
-			bodySb.append("<p>Incluye Partes: NO</p>");
+			bodySb.append("<div><span class='what'>Incluye Partes: </span>NO</div>");
 		}
-		bodySb.append("<p>Observaciones:" + ticket.getObservations() + "</p>");
-		bodySb.append("<p>Centro de Servicio:" + ticket.getServiceCenter() + "</p>");
-		bodySb.append("<p>Estado del Contrato:" + ticket.getContractState() + "</p>");
-		bodySb.append("<p>Fecha de Vencimiento de Contrato:" + ticket.getEndDate() + "</p>");
+		bodySb.append("<div><span class='what'>Excepción de partes: </span>" + ticket.getExceptionParts() + "</div>");
+		bodySb.append("<div><span class='what'>Observaciones: </span>" + ticket.getObservations() + "</div>");
+		bodySb.append("<div><span class='what'>Centro de Servicio: </span>" + ticket.getServiceCenter() + "</div>");
+		bodySb.append("<div><span class='what'>Estado del Contrato: </span>" + ticket.getContractState() + "</div>");
+		bodySb.append("<div><span class='what'>Fecha de Vencimiento de Contrato: </span>" + Utils.getDateString(ticket.getEndDate()) + "</div>");
 		bodySb.append("<br>");
-		bodySb.append("<p>En el siguiente Link podra dar el seguimiento correspondiente</p>");
+		bodySb.append("<p><strong>En el siguiente Link podra dar el seguimiento correspondiente</p>");
 		bodySb.append(link);
 		bodySb.append("</div>");
 		bodySb.append("<hr>");
@@ -144,7 +153,16 @@ public class TicketController extends AbstractController {
 		// Enviar el email
 		
 		IEmailService mail = EmailServiceFactory.getEmailService();
-		String to = ticket.getContactEmail() + "," + Globals.GPOSAC_CALL_CENTER_GROUP;
-		mail.sendEmail(Globals.GPOSAC_DEFAULT_SENDER, to, subject, bodySb.toString());
+		StringBuilder to = new StringBuilder();
+		to.append(ticket.getContactEmail());
+		to.append(",");
+		to.append(Globals.GPOSAC_CALL_CENTER_GROUP);
+		to.append(",");
+		to.append(ticket.getOfficeEmail());
+		if(ticket.getOfficeEmail().compareTo(ticket.getServiceCenterEmail()) != 0){
+			to.append(",");
+			to.append(ticket.getServiceCenterEmail());
+		}
+		mail.sendEmail(Globals.GPOSAC_DEFAULT_SENDER, to.toString(), subject, bodySb.toString());
 	}
 }

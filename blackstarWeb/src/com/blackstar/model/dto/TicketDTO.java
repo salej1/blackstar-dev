@@ -56,6 +56,8 @@ public class TicketDTO {
 	Integer includesParts;
 	String 	exceptionParts;
 	String serviceCenter;
+	String serviceCenterEmail;
+	String officeEmail;
 	
 	public Integer getTicketId() {
 		return ticketId;
@@ -327,6 +329,24 @@ public class TicketDTO {
 	public void setServiceCenter(String serviceCenter) {
 		this.serviceCenter = serviceCenter;
 	}
+	public String getCustomer() {
+		return customer;
+	}
+	public void setCustomer(String customer) {
+		this.customer = customer;
+	}
+	public String getServiceCenterEmail() {
+		return serviceCenterEmail;
+	}
+	public void setServiceCenterEmail(String serviceCenterEmail) {
+		this.serviceCenterEmail = serviceCenterEmail;
+	}
+	public String getOfficeEmail() {
+		return officeEmail;
+	}
+	public void setOfficeEmail(String officeEmail) {
+		this.officeEmail = officeEmail;
+	}
 	
 	// manual
 	public String getContractState(){
@@ -349,4 +369,5 @@ public class TicketDTO {
 		
 		return "";
 	}
+
 }
