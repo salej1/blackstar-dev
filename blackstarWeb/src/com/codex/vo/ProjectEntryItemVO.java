@@ -8,7 +8,7 @@ public class ProjectEntryItemVO {
 	private String itemTypeDescription;
 	private String reference;
 	private String description;
-	private Integer quantity;
+	private Float quantity;
 	private Float priceByUnit;
 	private Float discount;
 	private Float totalPrice;
@@ -21,7 +21,7 @@ public class ProjectEntryItemVO {
 	
 	public ProjectEntryItemVO(Integer id, Integer entryId, Integer itemTypeId
 			, String itemTypeDescription, String reference, String description
-			, Integer quantity, Float priceByUnit, Float discount, Float totalPrice
+			, Float quantity, Float priceByUnit, Float discount, Float totalPrice
 			, String comments){
 		this.id = id;
 		this.entryId = entryId;
@@ -71,10 +71,10 @@ public class ProjectEntryItemVO {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public Integer getQuantity() {
+	public Float getQuantity() {
 		return quantity;
 	}
-	public void setQuantity(Integer quantity) {
+	public void setQuantity(Float quantity) {
 		this.quantity = quantity;
 	}
 	public Float getPriceByUnit() {

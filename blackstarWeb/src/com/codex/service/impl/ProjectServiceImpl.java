@@ -228,7 +228,7 @@ public class ProjectServiceImpl extends AbstractService
 		for(String item : items){
 			values = item.split("::");
 			dao.upsertEntryItem(-1, entryId, Integer.valueOf(values[0]), values[1]
-			   , values[2], Integer.valueOf(values[3]), Float.valueOf(values[4])
+			   , values[2], Float.valueOf(values[3]), Float.valueOf(values[4])
 			   , Float.valueOf(values[5]), Float.valueOf(values[6]), values[7]);
 		}
 	}
@@ -253,7 +253,7 @@ public class ProjectServiceImpl extends AbstractService
 		for(String item : items){
 			values = item.split("::");
 			dao.upsertEntryItem(-1, entryId, Integer.valueOf(values[0]), values[1]
-			   , values[2], Integer.valueOf(values[3]), Float.valueOf(values[4])
+			   , values[2], Float.valueOf(values[3]), Float.valueOf(values[4])
 			   , Float.valueOf(values[5]), Float.valueOf(values[6]), values[7]);
 		}
 	}

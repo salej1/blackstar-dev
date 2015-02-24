@@ -7,7 +7,7 @@ public class PriceProposalItemVO {
   private Integer itemTypeId;
   private String reference;
   private String description;
-  private Integer quantity;
+  private Float quantity;
   private Float priceByUnit;
   private Float discount;
   private Float totalPrice;
@@ -43,10 +43,10 @@ public class PriceProposalItemVO {
   public void setDescription(String description) {
 	this.description = description;
   }
-  public Integer getQuantity() {
+  public Float getQuantity() {
 	return quantity;
   }
-  public void setQuantity(Integer quantity) {
+  public void setQuantity(Float quantity) {
 	this.quantity = quantity;
   }
   public Float getPriceByUnit() {

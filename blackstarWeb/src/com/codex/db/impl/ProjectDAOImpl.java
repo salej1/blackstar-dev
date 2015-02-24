@@ -185,7 +185,7 @@ public class ProjectDAOImpl extends AbstractDAO
   @Override
   public void upsertEntryItem(Integer itemId, Integer entryId, Integer itemTypeId
 		                    , String reference, String description 
-		                    , Integer  quantity, Float priceByUnit
+		                    , Float  quantity, Float priceByUnit
 		                    , Float discount, Float totalPrice, String comments){
     String sqlQuery = "CALL CodexUpsertProjectEntryItem(?, ?, ?, ?, ?, ?, ?, ? ,?, ?)";
 	getJdbcTemplate().update(sqlQuery, new Object[]{itemId, entryId, itemTypeId

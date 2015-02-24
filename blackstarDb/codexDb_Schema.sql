@@ -36,6 +36,8 @@
 -- ---------------------------------------------------------------------------
 -- 11	02/13/2015	SAG		Se agrega salesCall
 -- ---------------------------------------------------------------------------
+-- 12 	23/02/2015	SAG 	Se cambia qty a float
+-- ---------------------------------------------------------------------------
 
 use blackstarDb;
 
@@ -48,6 +50,13 @@ BEGIN
 -- -----------------------------------------------------------------------------
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
+
+-- CAMBIANDO qty a Float
+	IF (SELECT DATA_TYPE FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'codexEntryItem' AND COLUMN_NAME = 'quantity') != 'float' THEN
+		ALTER TABLE blackstarDb.codexEntryItem MODIFY quantity FLOAT(10,2);
+		ALTER TABLE blackstarDb.codexPriceProposalItem MODIFY quantity FLOAT(10,2);
+	END IF;
+
 -- AGREGANDO TABLA codexSalesCall
 	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'codexSalesCall') = 0 THEN
 		CREATE TABLE blackstarDb.codexSalesCall(

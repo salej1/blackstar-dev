@@ -61,6 +61,9 @@
 --                              blackstarDb.RecordSalesCall
 --                              blackstarDb.getSalesCallRecords
 -- -----------------------------------------------------------------------------
+-- 10 23/02/2015  SAG     Se modifica:
+--                              blackstarDb.CodexUpsertProjectEntryItem
+-- -----------------------------------------------------------------------------
 
 use blackstarDb;
 
@@ -938,7 +941,7 @@ END$$
 	-- blackstarDb.CodexUpsertProjectEntryItem
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.CodexUpsertProjectEntryItem$$
-CREATE PROCEDURE blackstarDb.`CodexUpsertProjectEntryItem`(pItemId int(11),pEntryId int(11), pItemTypeId int(11), pReference TEXT, pDescription TEXT, pQuantity int(11), pPriceByUnit FLOAT(15,2), pDiscount FLOAT(15,2), pTotalPrice FLOAT(15,2), pComments TEXT)
+CREATE PROCEDURE blackstarDb.`CodexUpsertProjectEntryItem`(pItemId int(11),pEntryId int(11), pItemTypeId int(11), pReference TEXT, pDescription TEXT, pQuantity FLOAT(10,2), pPriceByUnit FLOAT(15,2), pDiscount FLOAT(15,2), pTotalPrice FLOAT(15,2), pComments TEXT)
 BEGIN
   DECLARE isUpdate INTEGER;
   SET isUpdate = (SELECT COUNT(*) FROM codexEntryItem WHERE _id = pItemId);
@@ -1256,7 +1259,7 @@ END$$
 	-- blackstarDb.CodexInsertPriceProposalEntryItem
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.CodexInsertPriceProposalEntryItem$$
-CREATE PROCEDURE blackstarDb.`CodexInsertPriceProposalEntryItem`(pPriceProposalEntryId int(11), pItemTypeId int(11), pReference TEXT, pDescription TEXT, pQuantity int(11), pPriceByUnit FLOAT(15,2), pDiscount FLOAT(15,2), pTotalPrice FLOAT(15,2), pComments TEXT)
+CREATE PROCEDURE blackstarDb.`CodexInsertPriceProposalEntryItem`(pPriceProposalEntryId int(11), pItemTypeId int(11), pReference TEXT, pDescription TEXT, pQuantity FLOAT(10,2), pPriceByUnit FLOAT(15,2), pDiscount FLOAT(15,2), pTotalPrice FLOAT(15,2), pComments TEXT)
 BEGIN
     INSERT INTO codexPriceProposalItem (priceProposalEntryId, itemTypeId, reference, description, quantity, priceByUnit, discount, totalPrice, comments)
     VALUES (pPriceProposalEntryId, pItemTypeId, pReference, pDescription, pQuantity, pPriceByUnit, pDiscount, pTotalPrice, pComments);  

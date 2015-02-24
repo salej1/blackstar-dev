@@ -150,6 +150,9 @@
 						$(this).dialog('close');
 					}}
 			});
+
+			// calculo inicial	
+			calc();
 	    });
 	    
 	    function warning(msg){
@@ -910,6 +913,7 @@
                   	     			             $("#itemQuantity_" + itemNumber).val('${item.quantity}');
                   	     			             $("#itemPriceByUnit_" + itemNumber).val('${item.priceByUnit}');
                   	     			             $("#itemDiscount_" + itemNumber).val('${item.discount}');
+                  	     			             $("#itemDiscountNum_" + itemNumber).val('${item.discount * item.quantity * item.priceByUnit / 100}');
                   	     			             $("#itemTotalPrice_" + itemNumber).val('${item.totalPrice}');
                   	     			             bindComments("itemComments_", itemNumber, "${item.commentsDisplay}");
                   	     			             if('${enableEdition}' == 'false'){

@@ -44,7 +44,7 @@ public interface ProjectDAO {
             , Integer qty, Float unitPrice, Float discount, Float totalPrice
             , String comments);
 	public void upsertEntryItem(Integer itemId, Integer entryId, Integer itemTypeId
-                      , String reference, String description , Integer  quantity
+                      , String reference, String description , Float  quantity
                       , Float priceByUnit, Float discount, Float totalPrice
                       , String comments);
 	public Integer upsertProject(ProjectVO project);
