@@ -14,6 +14,7 @@ import com.blackstar.services.AbstractService;
 import com.blackstar.services.EmailServiceFactory;
 import com.codex.model.dto.CostCenterDTO;
 import com.codex.model.dto.CstDTO;
+import com.codex.model.dto.DeliverableTraceDTO;
 import com.codex.db.ClientDAO;
 import com.codex.db.ProjectDAO;
 import com.codex.service.PDFReportService;
@@ -189,9 +190,11 @@ public class ProjectServiceImpl extends AbstractService
   }
   
   @Override
-  public void addDeliverableTrace(Integer projectId, Integer deliverableTypeId
-                                                            , Integer userId){
-	dao.addDeliverableTrace(projectId, deliverableTypeId, userId);
+  public void addDeliverableTrace(DeliverableTraceDTO deliverable){
+	  
+	deliverable.setCreated(Globals.getLocalTime());
+	dao.addDeliverableTrace(deliverable);
+	
   }
   
   @Override
@@ -285,6 +288,15 @@ public class ProjectServiceImpl extends AbstractService
 	  case 3: 
 		  gotoPricePropStatus(project);
 		  break;     
+	  case 4:
+		  gotoRequestedStatus(project);
+		  break;
+	  case 5:
+		  gotoDeliveredStatus(project);
+		  break;
+	  case 6: 
+		  gotoClosedStatus(project);
+		  break;
 	  }
   }
   
@@ -307,7 +319,7 @@ public class ProjectServiceImpl extends AbstractService
 
 	  if(!autoAuth){
 		  StringBuilder to = new StringBuilder();
-
+		  
 		  List<User> mgrs = dao.getSalesManger();
 
 		  for(User mgr : mgrs){
@@ -342,6 +354,11 @@ public class ProjectServiceImpl extends AbstractService
 	  else{
 		  // Auto-autorizado
 	  }
+  }
+
+  private void gotoDeliveredStatus(ProjectVO project){
+	// STATUS ADVANCE
+	dao.advanceStatus(project.getId(), project.getStatusId() + 1);
   }
   
   private void gotoAuthStatus(ProjectVO project){
@@ -395,6 +412,36 @@ public class ProjectServiceImpl extends AbstractService
 
   }
   
+  private void gotoRequestedStatus(ProjectVO project){
+	  IEmailService mail = EmailServiceFactory.getEmailService();
+	  
+	  // STATUS ADVANCE
+	  dao.advanceStatus(project.getId(), project.getStatusId() + 1);
+
+	  String link = Globals.GOOGLE_CONTEXT_URL + "/codex/project/edit.do?projectId=" + project.getId();
+	  String subject = "Pedido para Proyecto " + project.getProjectNumber();
+	  StringBuilder bodySb = new StringBuilder();
+	  String to = project.getCstEmail() + "," + getOfficeEmail(project.getOfficeId());
+
+	  bodySb.append("<img src='" + Globals.GPOSAC_LOGO_DEFAULT_URL + "'>");
+	  bodySb.append("<div style='font-family:sans-serif;margin-left:50px;'>");
+	  bodySb.append("<h3>Pedido para Proyecto " + project.getProjectNumber() + "</h3>");
+	  bodySb.append("<p>Para su informacion:</p>");
+	  bodySb.append("<p>Favor de llevar a cabo el pedido del proyecto " + project.getProjectNumber() + "</p>");
+	  bodySb.append("<br>Fecha: " + Globals.getLocalTimeString());
+	  bodySb.append("<br>");
+	  bodySb.append("<p>En el siguiente Link podra revisar los detalles del proyecto.</p>");
+	  bodySb.append(link);
+	  bodySb.append("</div>");
+	  bodySb.append("<hr>");
+	  bodySb.append("<small>Favor de no responder a este email. En caso de duda pongase en contacto con el consultor</small>");
+
+	  mail.sendEmail("portal-servicios@gposac.com.mx", to.toString(), subject, bodySb.toString());
+  }
+  
+  private void gotoClosedStatus(ProjectVO project){
+	  dao.advanceStatus(project.getId(), project.getStatusId() + 1);
+  }
   
   private String saveReport(ProjectVO project, byte[] report) throws Exception {
 	String parentId = gdService.getProposalFolderId(project.getProjectNumber());
@@ -402,6 +449,20 @@ public class ProjectServiceImpl extends AbstractService
 			                                        + ".pdf", parentId, report);
 	
 	return documentId;
+  }
+  
+  private String getOfficeEmail(String officeId){
+	  
+	  // TODO: cambiar por acceso a BD
+	  switch(officeId){
+	  case "Q":
+		  return "queretaro@gposac.com.mx";
+	  case "G":
+		  return "guadalajara@gposac.com.mx";
+	  case "M":
+		  return "mexico@gposac.com.mx";
+	  default: return "";
+	  }
   }
 
   @Override

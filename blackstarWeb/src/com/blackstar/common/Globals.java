@@ -55,6 +55,8 @@ public class Globals {
 	  public static final String GROUP_CALL_CENTER = "sysCallCenter";
 	  public static final String GROUP_COORDINATOR = "sysCoordinador";
 	  public static final String GROUP_SALES_MANAGER = "Gerente comercial";
+	  public static final String GROUP_PURCHASE = "Compras";
+	  public static final String GROUP_PURCHASE_MANAGER = "Jefe de Compras";
 	  public static final String GPOSAC_DEFAULT_SENDER = "portal-servicios@gposac.com.mx";
 	  public static final String GPOSAC_LOGO_DEFAULT_URL = "http://innso-blackstar-dev3.appspot.com/img/grupo-sac-logo.png";
 	  public static final String GOOGLE_CONTEXT_URL = "http://innso-blackstar-dev3.appspot.com";

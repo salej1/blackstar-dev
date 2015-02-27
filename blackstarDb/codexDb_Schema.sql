@@ -37,6 +37,9 @@
 -- 11	02/13/2015	SAG		Se agrega salesCall
 -- ---------------------------------------------------------------------------
 -- 12 	23/02/2015	SAG 	Se cambia qty a float
+--					 		Se agrega documentId a codexDeliverableTrace
+--					 		Se agrega documentName a codexDeliverableTrace
+--							Se modifica userId en codexDeliverableTrace
 -- ---------------------------------------------------------------------------
 
 use blackstarDb;
@@ -51,25 +54,45 @@ BEGIN
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
 
+-- Cambiando created a DATETIME en codexDeliverableTrace
+IF (SELECT DATA_TYPE FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'codexDeliverableTrace' AND COLUMN_NAME = 'created') != 'DATETIME' THEN
+	ALTER TABLE blackstarDb.codexDeliverableTrace MODIFY created DATETIME;
+END IF;
+
+-- Cambiando userId a VARCHAR en codexDeliverableTrace
+IF (SELECT DATA_TYPE FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'codexDeliverableTrace' AND COLUMN_NAME = 'userId') != 'varchar' THEN
+	ALTER TABLE blackstarDb.codexDeliverableTrace MODIFY userId VARCHAR(1000);
+END IF;
+
+-- Agregando DocumentId a codexDeliverableTrace
+IF(SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'codexDeliverableTrace' AND COLUMN_NAME = 'documentId') = 0 THEN
+	ALTER TABLE blackstarDb.codexDeliverableTrace ADD documentId VARCHAR(2000) NULL;
+END IF;
+
+-- Agregando DocumentName a codexDeliverableTrace
+IF(SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'codexDeliverableTrace' AND COLUMN_NAME = 'documentName') = 0 THEN
+	ALTER TABLE blackstarDb.codexDeliverableTrace ADD documentName VARCHAR(2000) NULL;
+END IF;
+
 -- CAMBIANDO qty a Float
-	IF (SELECT DATA_TYPE FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'codexEntryItem' AND COLUMN_NAME = 'quantity') != 'float' THEN
-		ALTER TABLE blackstarDb.codexEntryItem MODIFY quantity FLOAT(10,2);
-		ALTER TABLE blackstarDb.codexPriceProposalItem MODIFY quantity FLOAT(10,2);
-	END IF;
+IF (SELECT DATA_TYPE FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'codexEntryItem' AND COLUMN_NAME = 'quantity') != 'float' THEN
+	ALTER TABLE blackstarDb.codexEntryItem MODIFY quantity FLOAT(10,2);
+	ALTER TABLE blackstarDb.codexPriceProposalItem MODIFY quantity FLOAT(10,2);
+END IF;
 
 -- AGREGANDO TABLA codexSalesCall
-	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'codexSalesCall') = 0 THEN
-		CREATE TABLE blackstarDb.codexSalesCall(
-			codexSalesCallId INT AUTO_INCREMENT,
-			cstId INTEGER,
-			month INT,
-			year INT,
-			callDate DATETIME,
-			PRIMARY KEY(codexSalesCallId)
-		)ENGINE=INNODB;
+IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'codexSalesCall') = 0 THEN
+	CREATE TABLE blackstarDb.codexSalesCall(
+		codexSalesCallId INT AUTO_INCREMENT,
+		cstId INTEGER,
+		month INT,
+		year INT,
+		callDate DATETIME,
+		PRIMARY KEY(codexSalesCallId)
+	)ENGINE=INNODB;
 
-		ALTER TABLE codexSalesCall ADD CONSTRAINT FK_codexSalesCall_cst FOREIGN KEY (cstId) REFERENCES cst(cstId);
-	END IF;
+	ALTER TABLE codexSalesCall ADD CONSTRAINT FK_codexSalesCall_cst FOREIGN KEY (cstId) REFERENCES cst(cstId);
+END IF;
 
 -- AGREGANDO createdBy & createdByUsr a codexDeliverableTrace
 IF(SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'codexDeliverableTrace' AND COLUMN_NAME = 'createdBy') = 0 THEN

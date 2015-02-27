@@ -3464,6 +3464,9 @@ CREATE TABLE IF NOT EXISTS blackstarDb.cstOffice(
 -- 11	02/13/2015	SAG		Se agrega salesCall
 -- ---------------------------------------------------------------------------
 -- 12 	23/02/2015	SAG 	Se cambia qty a float
+--					 		Se agrega documentId a codexDeliverableTrace
+--					 		Se agrega documentName a codexDeliverableTrace
+--							Se modifica userId en codexDeliverableTrace
 -- ---------------------------------------------------------------------------
 
 use blackstarDb;
@@ -3478,25 +3481,45 @@ BEGIN
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
 
+-- Cambiando created a DATETIME en codexDeliverableTrace
+IF (SELECT DATA_TYPE FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'codexDeliverableTrace' AND COLUMN_NAME = 'created') != 'DATETIME' THEN
+	ALTER TABLE blackstarDb.codexDeliverableTrace MODIFY created DATETIME;
+END IF;
+
+-- Cambiando userId a VARCHAR en codexDeliverableTrace
+IF (SELECT DATA_TYPE FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'codexDeliverableTrace' AND COLUMN_NAME = 'userId') != 'varchar' THEN
+	ALTER TABLE blackstarDb.codexDeliverableTrace MODIFY userId VARCHAR(1000);
+END IF;
+
+-- Agregando DocumentId a codexDeliverableTrace
+IF(SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'codexDeliverableTrace' AND COLUMN_NAME = 'documentId') = 0 THEN
+	ALTER TABLE blackstarDb.codexDeliverableTrace ADD documentId VARCHAR(2000) NULL;
+END IF;
+
+-- Agregando DocumentName a codexDeliverableTrace
+IF(SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'codexDeliverableTrace' AND COLUMN_NAME = 'documentName') = 0 THEN
+	ALTER TABLE blackstarDb.codexDeliverableTrace ADD documentName VARCHAR(2000) NULL;
+END IF;
+
 -- CAMBIANDO qty a Float
-	IF (SELECT DATA_TYPE FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'codexEntryItem' AND COLUMN_NAME = 'quantity') != 'float' THEN
-		ALTER TABLE blackstarDb.codexEntryItem MODIFY quantity FLOAT(10,2);
-		ALTER TABLE blackstarDb.codexPriceProposalItem MODIFY quantity FLOAT(10,2);
-	END IF;
+IF (SELECT DATA_TYPE FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'codexEntryItem' AND COLUMN_NAME = 'quantity') != 'float' THEN
+	ALTER TABLE blackstarDb.codexEntryItem MODIFY quantity FLOAT(10,2);
+	ALTER TABLE blackstarDb.codexPriceProposalItem MODIFY quantity FLOAT(10,2);
+END IF;
 
 -- AGREGANDO TABLA codexSalesCall
-	IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'codexSalesCall') = 0 THEN
-		CREATE TABLE blackstarDb.codexSalesCall(
-			codexSalesCallId INT AUTO_INCREMENT,
-			cstId INTEGER,
-			month INT,
-			year INT,
-			callDate DATETIME,
-			PRIMARY KEY(codexSalesCallId)
-		)ENGINE=INNODB;
+IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'codexSalesCall') = 0 THEN
+	CREATE TABLE blackstarDb.codexSalesCall(
+		codexSalesCallId INT AUTO_INCREMENT,
+		cstId INTEGER,
+		month INT,
+		year INT,
+		callDate DATETIME,
+		PRIMARY KEY(codexSalesCallId)
+	)ENGINE=INNODB;
 
-		ALTER TABLE codexSalesCall ADD CONSTRAINT FK_codexSalesCall_cst FOREIGN KEY (cstId) REFERENCES cst(cstId);
-	END IF;
+	ALTER TABLE codexSalesCall ADD CONSTRAINT FK_codexSalesCall_cst FOREIGN KEY (cstId) REFERENCES cst(cstId);
+END IF;
 
 -- AGREGANDO createdBy & createdByUsr a codexDeliverableTrace
 IF(SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'codexDeliverableTrace' AND COLUMN_NAME = 'createdBy') = 0 THEN
@@ -3687,6 +3710,8 @@ DROP PROCEDURE blackstarDb.upgradeCodexSchema;
 -- -----------------------------------------------------------------------------
 -- 10 23/02/2015  SAG     Se modifica:
 --                              blackstarDb.CodexUpsertProjectEntryItem
+--                              blackstarDb.CodexInsertDeliverableTrace
+--                              blackstarDb.CodexGetProjectById
 -- -----------------------------------------------------------------------------
 
 use blackstarDb;
@@ -4472,7 +4497,7 @@ SELECT cp._id id, cp.projectNumber projectNumber, cp.clientId clientId, cp.taxes
       , cp.productsNumber productsNumber, cp.financesNumber financesNumber, cp.servicesNumber servicesNumber
       , cp.totalProjectNumber totalProjectNumber, cp.createdBy createdBy, cp.createdByUsr createdByUsr
       , cp. modified modified, cp.modifiedBy modifiedBy, cp.modifiedByUsr modifiedByUsr, cp.discountNumber discountNumber
-      , cp.paymentConditions paymentConditions
+      , cp.paymentConditions paymentConditions, cc.rfc clientRfc
 FROM codexProject cp, codexClient cc, codexStatusType cst, codexPaymentType cpt, codexCurrencyType cct, codexCostCenter ccc
 WHERE cp.statusId = cst._id
       AND cp.clientId = cc._id
@@ -4507,10 +4532,19 @@ END$$
 	-- blackstarDb.CodexInsertDeliverableTrace
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.CodexInsertDeliverableTrace$$
-CREATE PROCEDURE blackstarDb.`CodexInsertDeliverableTrace`(pProjectId int(11), pDeliverableId int(2), pUserId int(11))
+CREATE PROCEDURE blackstarDb.`CodexInsertDeliverableTrace`(pCodexProjectId  int(11), pDeliverableTypeId  int(11), pCreated DATETIME, pUserId varchar(1000), pCreatedBy varchar(200), pCreatedByUsr varchar(200), pDocumentId varchar(2000), pDocumentName varchar(2000))
 BEGIN
-	INSERT INTO codexDeliverableTrace (codexProjectId, deliverableTypeId, created, userId)
-  VALUES (pProjectId, pDeliverableId, NOW(), pUserId);
+	INSERT INTO codexDeliverableTrace (codexProjectId, deliverableTypeId, created, userId, createdBy, createdByUsr, documentId, documentName)
+  VALUES (pCodexProjectId, pDeliverableTypeId, pCreated, pUserId, pCreatedBy, pCreatedByUsr, pDocumentId, pDocumentName);
+
+  -- Conversion del prospecto a cliente
+  SET @clientId = (SELECT clientId FROM codexProject WHERE _id = pCodexProjectId);
+  IF pDeliverableTypeId = 6 AND (SELECT isProspect FROM codexClient c WHERE c._id = @clientId) = 0 THEN
+
+    UPDATE codexClient SET
+      isProspect = 1
+    WHERE _id = @clientId;
+  END IF;
 END$$
 
 
@@ -4632,11 +4666,11 @@ END$$
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.CodexUpsertProspect$$
 CREATE PROCEDURE blackstarDb.`CodexUpsertProspect`(pClientId INT, pClientTypeId int(2), pClientOriginId int(2), pCstId int(11)
-                                                 , pIsProspect tinyint(4), pRfc varchar(13), pCorporateName text, pTradeName text, pPhoneArea varchar(3), pPhoneNumber varchar(10)
-                                                 , pPhoneExtension varchar(6), pPhoneAreaAlt varchar(3), pPhoneNumberAlt varchar(10), pPhoneExtensionAlt varchar(6)
-                                                 , pEmail varchar(60), pEmailAlt varchar(60), pStreet text, pIntNumber varchar(5), pExtNumber varchar(5)
-                                                 , pZipCode int(5), pCountry text, pState varchar(20), pMunicipality text, pCity text, pNeighborhood text
-                                                 , pContactName text, pCurp varchar(18), pRetention varchar(20))
+                                                 , pIsProspect tinyint(4), pRfc varchar(13), pCorporateName text, pTradeName text, pPhoneArea varchar(50), pPhoneNumber varchar(100)
+                                                 , pPhoneExtension varchar(50), pPhoneAreaAlt varchar(50), pPhoneNumberAlt varchar(100), pPhoneExtensionAlt varchar(50)
+                                                 , pEmail varchar(200), pEmailAlt varchar(200), pStreet text, pIntNumber varchar(50), pExtNumber varchar(50)
+                                                 , pZipCode int(100), pCountry text, pState varchar(100), pMunicipality text, pCity text, pNeighborhood text
+                                                 , pContactName text, pCurp varchar(50), pRetention varchar(100))
 BEGIN
   DECLARE existsId INTEGER;
   
@@ -4689,7 +4723,7 @@ DROP PROCEDURE IF EXISTS blackstarDb.CodexGetClientById$$
 CREATE PROCEDURE blackstarDb.`CodexGetClientById`(pClientId int(11))
 BEGIN
   SELECT _id id, clientTypeId clientTypeId, clientOriginId clientOriginId, cstId cstId
-         , isProspect isProspect, rfc rfc, corporateName corporateName, tradeName tradeName
+         , isProspect prospect, rfc rfc, corporateName corporateName, tradeName tradeName
          , phoneArea phoneArea, phoneNumber phoneNumber, phoneExtension phoneExtension
          , phoneAreaAlt phoneAreaAlt, phoneNumberAlt phoneNumberAlt, phoneExtensionAlt phoneExtensionAlt
          , email email, emailAlt emailAlt, street street, intNumber intNumber, extNumber extNumber
@@ -4706,19 +4740,20 @@ DROP PROCEDURE IF EXISTS blackstarDb.CodexGetAllProjectsByUsr$$
 CREATE PROCEDURE blackstarDb.`CodexGetAllProjectsByUsr`(pUserId int(11))
 BEGIN
 SELECT cp._id id, cp.projectNumber projectNumber, cp.clientId clientId, cp.taxesTypeId taxesTypeId, cp.statusId statusId
-      , cp.paymentTypeId paymentTypeId, cp.currencyTypeId currencyTypeId, cst.name statusDescription
-      , cc.tradeName clientDescription, ccc.costCenter costCenter, cp.changeType changeType, cp.created created
+      , cp.paymentTypeId paymentTypeId, cp.currencyTypeId currencyTypeId, ctt.name statusDescription
+      , cc.tradeName clientDescription, ccc.costCenter costCenter, cp.changeType changeType, Date(cp.created) created
       , cp.contactName contactName, cp.location location, cp.advance advance, cp.timeLimit timeLimit
       , cp.settlementTimeLimit settlementTimeLimit, cp.deliveryTime deliveryTime, cp.incoterm incoterm
       , cp.productsNumber productsNumber, cp.financesNumber financesNumber, cp.servicesNumber servicesNumber
       , cp.totalProjectNumber totalProjectNumber, cp.createdBy createdBy, cp.createdByUsr createdByUsr
-      , cp. modified modified, cp.modifiedBy modifiedBy, cp.modifiedByUsr modifiedByUsr
+      , cp. modified modified, cp.modifiedBy modifiedBy, cp.modifiedByUsr modifiedByUsr, cst.name cstName
 FROM codexProject cp
   INNER JOIN codexClient cc ON cp.clientId = cc._id
-  INNER JOIN codexStatusType cst ON cp.statusId = cst._id
+  INNER JOIN codexStatusType ctt ON cp.statusId = ctt._id
   INNER JOIN codexPaymentType cpt ON cp.paymentTypeId = cpt._id
   INNER JOIN codexCurrencyType cct ON cp.currencyTypeId = cct._id
   INNER JOIN codexCostCenter ccc ON cp.costCenterId = ccc._id
+  INNER JOIN cst cst ON cst.cstId = cc.cstId
 WHERE 
       if(pUserId = 0, 1=1, cc.cstId = pUserId);
       
@@ -4731,19 +4766,20 @@ DROP PROCEDURE IF EXISTS blackstarDb.CodexGetProjectsByStatus$$
 CREATE PROCEDURE blackstarDb.`CodexGetProjectsByStatus`(pStatusId INT(2))
 BEGIN
 SELECT cp._id id, cp.projectNumber projectNumber, cp.clientId clientId, cp.taxesTypeId taxesTypeId, cp.statusId statusId
-      , cp.paymentTypeId paymentTypeId, cp.currencyTypeId currencyTypeId, cst.name statusDescription
-      , cc.tradeName clientDescription, ccc.costCenter costCenter, cp.changeType changeType, cp.created created
+      , cp.paymentTypeId paymentTypeId, cp.currencyTypeId currencyTypeId, ctt.name statusDescription
+      , cc.tradeName clientDescription, ccc.costCenter costCenter, cp.changeType changeType, Date(cp.created) created
       , cp.contactName contactName, cp.location location, cp.advance advance, cp.timeLimit timeLimit
       , cp.settlementTimeLimit settlementTimeLimit, cp.deliveryTime deliveryTime, cp.incoterm incoterm
       , cp.productsNumber productsNumber, cp.financesNumber financesNumber, cp.servicesNumber servicesNumber
       , cp.totalProjectNumber totalProjectNumber, cp.createdBy createdBy, cp.createdByUsr createdByUsr
-      , cp. modified modified, cp.modifiedBy modifiedBy, cp.modifiedByUsr modifiedByUsr
-FROM codexProject cp, codexClient cc, codexStatusType cst, codexPaymentType cpt, codexCurrencyType cct, codexCostCenter ccc
-WHERE cp.statusId = cst._id
+      , cp. modified modified, cp.modifiedBy modifiedBy, cp.modifiedByUsr modifiedByUsr, cst.name cstName
+FROM codexProject cp, codexClient cc, codexStatusType ctt, codexPaymentType cpt, codexCurrencyType cct, codexCostCenter ccc, cst cst
+WHERE cp.statusId = ctt._id
       AND cp.clientId = cc._id
       AND cp.paymentTypeId = cpt._id
       AND cp.currencyTypeId = cct._id
       AND cp.costCenterId = ccc._id
+      AND cc.cstId = cst.cstId
       AND cp.statusId = pStatusId;
 END$$ 
 
@@ -4751,24 +4787,25 @@ END$$
 	-- blackstarDb.CodexGetProjectsByStatusAndUser
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.CodexGetProjectsByStatusAndUser$$
-CREATE PROCEDURE blackstarDb.`CodexGetProjectsByStatusAndUser`(pStatusId INT(2), pUserId INT(11))
+CREATE PROCEDURE blackstarDb.`CodexGetProjectsByStatusAndUser`(pStatusId INT(2), pCstId INT(11))
 BEGIN
 SELECT cp._id id, cp.projectNumber projectNumber, cp.clientId clientId, cp.taxesTypeId taxesTypeId, cp.statusId statusId
-      , cp.paymentTypeId paymentTypeId, cp.currencyTypeId currencyTypeId, cst.name statusDescription
+      , cp.paymentTypeId paymentTypeId, cp.currencyTypeId currencyTypeId, ctt.name statusDescription
       , cc.tradeName clientDescription, ccc.costCenter costCenter, cp.changeType changeType, cp.created created
       , cp.contactName contactName, cp.location location, cp.advance advance, cp.timeLimit timeLimit
       , cp.settlementTimeLimit settlementTimeLimit, cp.deliveryTime deliveryTime, cp.incoterm incoterm
       , cp.productsNumber productsNumber, cp.financesNumber financesNumber, cp.servicesNumber servicesNumber
       , cp.totalProjectNumber totalProjectNumber, cp.createdBy createdBy, cp.createdByUsr createdByUsr
-      , cp. modified modified, cp.modifiedBy modifiedBy, cp.modifiedByUsr modifiedByUsr
+      , cp. modified modified, cp.modifiedBy modifiedBy, cp.modifiedByUsr modifiedByUsr, cst.name cstName
 FROM codexProject cp
   INNER JOIN codexClient cc ON cp.clientId = cc._id
-  INNER JOIN codexStatusType cst ON cp.statusId = cst._id
+  INNER JOIN codexStatusType ctt ON cp.statusId = ctt._id
   INNER JOIN codexPaymentType cpt ON cp.paymentTypeId = cpt._id
   INNER JOIN codexCurrencyType cct ON cp.currencyTypeId = cct._id
   INNER JOIN codexCostCenter ccc ON cp.costCenterId = ccc._id
+  INNER JOIN cst cst ON cst.cstId = cc.cstId
 WHERE 
-      cc.cstId = pUserId
+      cc.cstId = pCstId
       AND cp.statusId = pStatusId;
 END$$ 
 
@@ -4806,14 +4843,17 @@ END$$
 DROP PROCEDURE IF EXISTS blackstarDb.CodexGetDeliverables$$
 CREATE PROCEDURE blackstarDb.CodexGetDeliverables(pProjectId INTEGER)
 BEGIN	
-  SELECT cdt._id id, cdt.codexProjectId projectId, cp.projectNumber projectNumber
-        ,cdt.deliverableTypeId deliverableTypeId, cdty.name deliverableTypeDescription
-        , cdt.created created, cdt.userId userId, bu.name userName
-	FROM codexDeliverableTrace	cdt, codexProject cp, codexDeliverableType cdty, blackstarUser bu
-  WHERE cdt.codexProjectId = pProjectId
-        AND cdt.codexProjectId = cp._id
-        AND cdt.deliverableTypeId = cdty._id
-        AND cdt.userId = bu.blackstarUserId;
+  
+  SELECT t.*,
+    u.name AS userName,
+    p.projectNumber AS projectNumber,
+    ty.name AS deliverableTypeName,
+    ty.description AS deliverableTypeDescription
+  FROM codexDeliverableTrace t 
+    INNER JOIN codexProject p ON t.codexProjectId = p._id
+    INNER JOIN codexDeliverableType ty ON ty._id = t.deliverableTypeId
+    INNER JOIN blackstarUser u ON u.email = t.userId
+  WHERE t.codexProjectId = pProjectId;
 END$$  
 
 -- -----------------------------------------------------------------------------
@@ -4826,6 +4866,7 @@ BEGIN
   DECLARE status INTEGER;
   SET status = (SELECT cp.statusId FROM codexProject cp WHERE cp._id =  pProjectId);
   UPDATE codexProject SET statusId = pStatusId WHERE _id = pProjectId;
+
 END$$
 
 -- -----------------------------------------------------------------------------
@@ -4922,7 +4963,7 @@ BEGIN
   SELECT
     p.projectId AS projectId,
     p.priceProposalNumber AS priceProposalNumber,
-    p.created AS created,
+    Date(p.created) AS created,
     c.corporateName AS name,
     p.contactName AS contactName,
     p.totalProjectNumber AS total,
@@ -4962,6 +5003,9 @@ DELIMITER ;
 -- ---------------------------------------------------------------------------
 -- 5 	15/01/2015	SAG 	Se agregan los valores de secuencia para clientes
 -- ---------------------------------------------------------------------------
+-- 6 	24/02/2015	SAG 	Se agregan status a codexStatusType
+--							Se agregan deliverableTypes
+-- ---------------------------------------------------------------------------
 use blackstarDb;
 
 DELIMITER $$
@@ -4973,6 +5017,28 @@ DELIMITER $$
 DROP PROCEDURE IF EXISTS blackstarDb.updateCodexData$$
 CREATE PROCEDURE blackstarDb.updateCodexData()
 BEGIN
+	-- Agregando DeliverableType
+	IF (SELECT count(*) FROM blackstarDb.codexDeliverableType) = 0 THEN
+		INSERT INTO blackstarDb.codexDeliverableType(_id, name, description)
+		SELECT 1, 'Creación', 'Cédula Creada' UNION
+		SELECT 2, 'Autorización', 'Cédula Autorizada' UNION
+		SELECT 3, 'Cotización', 'Cotización Enviada' UNION
+		SELECT 4, 'Orden de Compra', 'Orden de Compra cargada' UNION
+		SELECT 5, 'Pedido', 'Pedido realizado' UNION
+		SELECT 6, 'Factura', 'Factura cargada' UNION
+		SELECT 7, 'Surtido', 'Todos los equipos surtidos' UNION
+		SELECT 8, 'Carta de Término', 'Carta de Término cargada' UNION
+		SELECT 9, 'Cierre', 'Proyecto cerrado' UNION
+		SELECT 10,'Attachment', 'Archivo Adjunto';
+	END IF;
+
+	-- Agregando status faltantes
+	IF(SELECT count(*) FROM codexStatusType) < 5 THEN
+		INSERT INTO blackstarDb.codexStatusType(_id, name, description)
+		SELECT 5, 'Pedido', 'Pedido' UNION
+		SELECT 6, 'Surtido', 'Surtido' UNION
+		SELECT 7, 'Cerrado', 'Cerrado';
+	END IF;
 
 	IF(SELECT count(*) FROM cst WHERE scope > 0) = 0 THEN
 		UPDATE cst SET scope = 1 WHERE email = 'liliana.diaz@gposac.com.mx';

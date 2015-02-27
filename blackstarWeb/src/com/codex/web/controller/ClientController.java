@@ -47,7 +47,7 @@ public class ClientController extends AbstractController {
 	  try{
 		  ClientVO client = new ClientVO();
 		  client.setId(Integer.valueOf(service.getNextclientId()));
-		  client.setProspect(true);
+		  client.setProspect(false);
 		  model.addAttribute("client", client);
 		  model.addAttribute("cstList", service.getCstList());
 		  model.addAttribute("states", service.getAllStates());

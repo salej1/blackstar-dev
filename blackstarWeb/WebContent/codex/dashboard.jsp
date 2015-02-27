@@ -1,6 +1,7 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ page isELIgnored="false"%>
+<%@page isELIgnored="false"%>
 <!DOCTYPE HTML>
 <c:set var="pageSection" scope="request" value="dashboard" />
 <c:import url="../header.jsp"></c:import>
@@ -13,6 +14,16 @@
 <script src="/DataTables-1.9.4/media/js/jquery.dataTables.js"></script>
 
 <script type="text/javascript">
+	function toCurrency(n) {
+    	var amount = Number(0.00);
+    	if(n == "" || isNaN(n)){
+    		return "$ 0.00";
+    	}
+    	else{
+    		amount = Number(n);
+	   		return "$ " + amount.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,");
+    	}
+	}
 
 	 $(document).ready(function() {
 
@@ -37,13 +48,19 @@
 				"aoColumns": [
 							  { "mData": "projectNumber"},
 							  { "mData": "clientDescription" },
-							  { "mData": "created" },
+							  { "mData": "cstName" },
 							  { "mData": "location" },
+							  { "mData": "created" },
+							  { "mData": "totalProjectNumber" },
 							  { "mData": "statusDescription" },
 							  { "mData": null }
 						  ],
-				"aoColumnDefs" : [{"mRender" : function(data, type, row){return "<div align=center ><a href=/codex/project/advanceStatus.do?projectId=" + row.id + ">" + "Enviar a autorizar" + "</a></div>";}, "aTargets" : [5]},
-								  {"mRender" : function(data, type, row){return "<div align=center ><a href=${pageContext.request.contextPath}/codex/project/edit.do?projectId=" + row.id + ">" + data + "</a></div>";}, "aTargets" : [0]}]}
+				"aoColumnDefs" : [{"mRender" : function(data, type, row){return "<div align=center ><a href=/codex/project/advanceStatus.do?projectId=" + row.id + "&projectNumber=" + row.projectNumber + "&deliverableTypeId=1&dashboard=1>" + "Enviar a autorizar" + "</a></div>";}, "aTargets" : [7]},
+								  {"mRender" : function(data, type, row){return "<div align=center ><a href=${pageContext.request.contextPath}/codex/project/edit.do?projectId=" + row.id + ">" + data + "</a></div>";}, "aTargets" : [0]},
+								  {"mRender" : function(data, type, row){
+											return toCurrency(data);
+								  		}, "aTargets" : [5]
+								  }]}
 
 			);
 		 
@@ -59,13 +76,19 @@
 				"aoColumns": [
 							  { "mData": "projectNumber"},
 							  { "mData": "clientDescription" },
-							  { "mData": "created" },
+							  { "mData": "cstName" },
 							  { "mData": "location" },
+							  { "mData": "created" },
+							  { "mData": "totalProjectNumber" },
 							  { "mData": "statusDescription" },
 							  { "mData": null }
 						  ],
-				"aoColumnDefs" : [{"mRender" : function(data, type, row){return "<div align=left ><a href=/codex/project/advanceStatus.do?projectId=" + row.id + ">" + "Crear cotización" + "</a></div>";}, "aTargets" : [5]},
-								  {"mRender" : function(data, type, row){return "<div align=left ><a href=${pageContext.request.contextPath}/codex/project/edit.do?projectId=" + row.id + ">" + data + "</a></div>";}, "aTargets" : [0]}]}
+				"aoColumnDefs" : [{"mRender" : function(data, type, row){return "<div align=left ><a href=/codex/project/advanceStatus.do?projectId=" + row.id + "&projectNumber=" + row.projectNumber + "&deliverableTypeId=3&dashboard=1>" + "Crear cotización" + "</a></div>";}, "aTargets" : [7]},
+								  {"mRender" : function(data, type, row){return "<div align=left ><a href=${pageContext.request.contextPath}/codex/project/edit.do?projectId=" + row.id + ">" + data + "</a></div>";}, "aTargets" : [0]},
+								  {"mRender" : function(data, type, row){
+											return toCurrency(data);
+								  		}, "aTargets" : [5]
+								  }]}
 
 			);
 		 
@@ -81,13 +104,19 @@
 				"aoColumns": [
 							  { "mData": "projectNumber"},
 							  { "mData": "clientDescription" },
-							  { "mData": "created" },
+							  { "mData": "cstName" },
 							  { "mData": "location" },
+							  { "mData": "created" },
+							  { "mData": "totalProjectNumber" },
 							  { "mData": "statusDescription" },
 							  { "mData": null }
 						  ],
-				"aoColumnDefs" : [{"mRender" : function(data, type, row){return "<div align=left style='width:75px;'><a href=/codex/project/advanceStatus.do?projectId=" + row.id + ">" + "Autorizar" + "</a></div>";}, "aTargets" : [5]},
-								  {"mRender" : function(data, type, row){return "<div align=left ><a href=${pageContext.request.contextPath}/codex/project/edit.do?projectId=" + row.id + ">" + data + "</a></div>";}, "aTargets" : [0]}]}
+				"aoColumnDefs" : [{"mRender" : function(data, type, row){return "<div align=left style='width:75px;'><a href=/codex/project/advanceStatus.do?projectId=" + row.id + "&projectNumber=" + row.projectNumber + "&deliverableTypeId=2&dashboard=1>" + "Autorizar" + "</a></div>";}, "aTargets" : [7]},
+								  {"mRender" : function(data, type, row){return "<div align=left ><a href=${pageContext.request.contextPath}/codex/project/edit.do?projectId=" + row.id + ">" + data + "</a></div>";}, "aTargets" : [0]},
+								  {"mRender" : function(data, type, row){
+											return toCurrency(data);
+								  		}, "aTargets" : [5]
+								  }]}
 			);
 
 		
@@ -129,12 +158,14 @@
 				<table cellpadding="0" cellspacing="0" border="0" class="display" id="byAuthProjectsList">
 					<thead>
 						<tr>
-							<th style="width:80px;">Proyecto</th>
-							<th>Cliente</th>
-							<th>Ultima Actividad</th>
-							<th>Ubicacion</th>
+							<th style="width:60px">No. Cédula</th>
+							<th style="width:250px">Cliente</th>
+							<th style="width:120px">Consultor</th>
+							<th>Localidad</th>
+							<th>Creada</th>
+							<th style="width:90px">Total</th>
 							<th>Estatus</th>
-							<th style="width:100px;">Accion</th>
+							<th style="width:90px">Accion</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -153,12 +184,14 @@
 				<table cellpadding="0" cellspacing="0" border="0" class="display" id="newProjectsList">
 					<thead>
 						<tr>
-							<th style="width:80px;">Proyecto</th>
-							<th>Cliente</th>
-							<th>Ultima Actividad</th>
-							<th>Ubicacion</th>
+							<th style="width:60px">No. Cédula</th>
+							<th style="width:250px">Cliente</th>
+							<th style="width:120px">Consultor</th>
+							<th>Localidad</th>
+							<th>Creada</th>
+							<th style="width:90px">Total</th>
 							<th>Estatus</th>
-							<th style="width:100px;">Accion</th>
+							<th style="width:90px">Accion</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -177,12 +210,14 @@
 				<table cellpadding="0" cellspacing="0" border="0" class="display" id="authProjectsList">
 					<thead>
 						<tr>
-							<th>Proyecto</th>
-							<th>Cliente</th>
-							<th>Ultima Actividad</th>
-							<th>Ubicacion</th>
+							<th style="width:60px">No. Cédula</th>
+							<th style="width:250px">Cliente</th>
+							<th style="width:120px">Consultor</th>
+							<th>Localidad</th>
+							<th>Creada</th>
+							<th style="width:90px">Total</th>
 							<th>Estatus</th>
-							<th>Accion</th>
+							<th style="width:90px">Accion</th>
 						</tr>
 					</thead>
 					<tbody>

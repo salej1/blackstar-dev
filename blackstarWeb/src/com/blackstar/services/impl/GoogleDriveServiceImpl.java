@@ -108,6 +108,10 @@ public class GoogleDriveServiceImpl extends AbstractService
 	return getSysFolderId(String.valueOf(id), sysFolderIds.get("OS_REPORTS"));
   }	
   
+  public String getRootFolderId() throws Exception{
+		 return sysFolderIds.get("ROOT");
+  }
+  
   public String getProposalFolderId(String id) throws Exception {
 	  return getSysFolderId(id, sysFolderIds.get("CX_PROPOSAL"));
   }
@@ -201,5 +205,38 @@ public class GoogleDriveServiceImpl extends AbstractService
 	file = drive.files().insert(file).execute();
     return file.getId();
   }
-	
+
+  public void LoadOSFile(String osFileId, Integer serviceOrderId) throws Exception{
+	  File osFile = new File();
+	  osFile.setTitle("ServiceOrder.pdf");
+	  osFile.setParents(Arrays.asList(new ParentReference()
+	  		.setId(getReportsFolderId(serviceOrderId))));
+	  osFile.setMimeType( "application/pdf");
+	  
+	  try{
+		  osFile = drive.files().copy(osFileId, osFile).execute();		  
+	  }
+	  catch(Exception e){
+		  Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
+		  throw e;
+	  }
+  }
+  
+  public String importFile(String srcId, String title, String parentId) throws Exception{
+	  File osFile = new File();
+	  osFile.setTitle(title);
+	  osFile.setParents(Arrays.asList(new ParentReference()
+	  		.setId(parentId)));
+	  osFile.setMimeType( "application/pdf");
+	  
+	  try{
+		  osFile = drive.files().copy(srcId, osFile).execute();		  
+	  }
+	  catch(Exception e){
+		  Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
+		  throw e;
+	  }
+	  
+	  return osFile.getId();
+  }
 }

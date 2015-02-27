@@ -9,5 +9,9 @@ public interface GoogleDriveService {
   public String getAccessToken() throws Exception;
   public String getReportFileId(Integer serviceOrderId, String reportName) 
                                                           throws Exception;
+  public void LoadOSFile(String osFileId, Integer serviceOrderId) throws Exception;
+  public String getRootFolderId() throws Exception;
+  String importFile(String srcId, String title, String parentId) throws Exception;
+  
   public String getProposalFolderId(String id) throws Exception;
 }

@@ -6,6 +6,7 @@ import com.blackstar.model.Followup;
 import com.blackstar.model.User;
 import com.codex.model.dto.CostCenterDTO;
 import com.codex.model.dto.CstDTO;
+import com.codex.model.dto.DeliverableTraceDTO;
 import com.codex.vo.CurrencyTypesVO;
 import com.codex.vo.DeliverableTypesVO;
 import com.codex.vo.DeliverableVO;
@@ -33,8 +34,7 @@ public interface ProjectService {
 		                       , Integer projectId, String detail);
   public Integer getNewProjectId(String type);
   public List<DeliverableTypesVO> getDeliverableTypes();
-  public void addDeliverableTrace(Integer projectId, Integer deliverableTypeId
-                                                            , Integer userId);
+  public void addDeliverableTrace(DeliverableTraceDTO deliverable);
   public String getReferenceTypes(Integer itemTypeId);
   public List<PaymentTypeVO> getAllPaymentTypes();
   public void insertProject(ProjectVO project, User user);

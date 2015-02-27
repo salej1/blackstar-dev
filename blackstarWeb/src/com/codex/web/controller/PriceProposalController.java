@@ -34,7 +34,7 @@ public class PriceProposalController extends AbstractController{
 		this.dService = dService;
 	}
 
-	@RequestMapping(value = "/showAll.do") 
+	@RequestMapping(value = "/showProposals.do") 
 	public String showList(ModelMap model, HttpServletRequest request ){
 		User user = null;
 		try {
@@ -49,6 +49,23 @@ public class PriceProposalController extends AbstractController{
 		}
 
 		return "codex/proposals";
+	}
+	
+	@RequestMapping(value = "/showSold.do") 
+	public String showSold(ModelMap model, HttpServletRequest request ){
+		User user = null;
+		try {
+
+			model.addAttribute("soldProjects", dService.getProjectsByStatusJson(5));
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			model.addAttribute("errorDetails", e.getStackTrace()[0].toString());
+			System.out.println("Error =>" + e);
+			return "error";
+		}
+
+		return "codex/sold";
 	}
 
 }

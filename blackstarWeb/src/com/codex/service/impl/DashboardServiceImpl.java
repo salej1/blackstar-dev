@@ -24,9 +24,9 @@ public class DashboardServiceImpl extends AbstractService
   }
   
   @Override
-  public String getProjectsByStatusAndUserJson(Integer statusId, Integer userId){
+  public String getProjectsByStatusAndUserJson(Integer statusId, Integer cstId){
 	List<JSONObject> projects = dao.getProjectsByStatusAndUserJson(statusId
-			                                                     , userId);
+			                                                     , cstId);
 	return projects != null ? encode(projects.toString()): "";
   }
 

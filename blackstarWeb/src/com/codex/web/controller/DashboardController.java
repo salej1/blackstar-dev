@@ -11,6 +11,8 @@ import com.blackstar.common.Globals;
 import com.blackstar.model.User;
 import com.blackstar.model.UserSession;
 import com.blackstar.web.AbstractController;
+import com.codex.model.dto.CstDTO;
+import com.codex.service.CstService;
 import com.codex.service.impl.DashboardServiceImpl;
 
 @Controller
@@ -19,19 +21,29 @@ import com.codex.service.impl.DashboardServiceImpl;
 public class DashboardController extends AbstractController{
 	
   private DashboardServiceImpl service;
-	
+  private CstService cstService;
+  	
   public void setService(DashboardServiceImpl service) {
 	this.service = service;
   }
   
-  @RequestMapping(value = "/show.do")
+  public void setCstService(CstService cstService) {
+	this.cstService = cstService;
+}
+
+@RequestMapping(value = "/show.do")
   public String show(ModelMap model,HttpServletRequest request){
 	User user = null;
 	try {
 		 user = ((UserSession) request.getSession().getAttribute(Globals
                                          .SESSION_KEY_PARAM)).getUser();
-         model.addAttribute("newProjects", service
-        		 .getProjectsByStatusAndUserJson(1, user.getBlackstarUserId()));
+		 
+		 CstDTO cst = cstService.getCstByEmail(user.getUserEmail());
+		 
+		 if(cst == null){
+			 throw new Exception("Es necesario tener privilegios de CST para acceder a esta pagina");
+		 }
+         model.addAttribute("newProjects", service.getProjectsByStatusAndUserJson(1, cst.getCstId()));
          model.addAttribute("byAuthProjects", service.getProjectsByStatusJson(2));
 	     model.addAttribute("authProjects", service.getProjectsByStatusJson(3));
 

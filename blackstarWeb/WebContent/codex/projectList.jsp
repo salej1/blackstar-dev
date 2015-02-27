@@ -1,7 +1,7 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ page isELIgnored="false"%>
-
+<%@page isELIgnored="false"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <c:set var="pageSection" scope="request" value="projects" />
 <c:import url="../header.jsp"></c:import>
@@ -15,6 +15,16 @@
 <script src="${pageContext.request.contextPath}/DataTables-1.9.4/media/js/jquery.dataTables.js"></script>
 
 <script type="text/javascript" charset="utf-8">
+	function toCurrency(n) {
+    	var amount = Number(0.00);
+    	if(n == "" || isNaN(n)){
+    		return "$ 0.00";
+    	}
+    	else{
+    		amount = Number(n);
+	   		return "$ " + amount.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,");
+    	}
+	}
 
 	 $(document).ready(function() {
 
@@ -37,13 +47,24 @@
 				"aoColumns": [
 							  { "mData": "projectNumber"},
 							  { "mData": "clientDescription" },
+							  { "mData": "cstName" },
 							  { "mData": "location" },
 							  { "mData": "created" },
 							  { "mData": "totalProjectNumber" },
 							  { "mData": "statusDescription" }
 						  ],
-				"aoColumnDefs" : [{"mRender" : function(data, type, row){return "<div align=center style='width:75px;'><a href=${pageContext.request.contextPath}/codex/project/edit.do?projectId=" + row.id + ">" + data + "</a></div>";}, "aTargets" : [0]}]}
-			);
+				"aoColumnDefs" : [{"mRender" : function(data, type, row){
+											return toCurrency(data);
+								  		}, "aTargets" : [5]
+								  },
+								{"mRender" : function(data, type, row){
+											return "<div align=center style='width:75px;'><a href=${pageContext.request.contextPath}/codex/project/edit.do?projectId=" + row.id + ">" + data + "</a></div>";
+										}, "aTargets" : [0]
+								},
+								{"mRender" : function(data, type, row){
+									return "<div align=left><a href=/codex/client/edit.do?clientId=" + row.clientId + ">" + data + "</a></div>";
+								}, "aTargets" : [1]}]
+			});
 		
 	} );
 
@@ -71,10 +92,11 @@
 			<table cellpadding="0" cellspacing="0" border="0" class="display" id="projectList">
 				<thead>
 					<tr>
-						<th>Número de Cédula</th>
-						<th>Cliente</th>
+						<th style="width:60px">No. Cédula</th>
+						<th style="width:250px">Cliente</th>
+						<th style="width:150px">Consultor</th>
 						<th>Localidad</th>
-						<th>Fecha de Creación</th>
+						<th>Creada</th>
 						<th>Total</th>
 						<th>Estatus</th>
 					</tr>

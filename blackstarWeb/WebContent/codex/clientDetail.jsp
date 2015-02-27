@@ -183,7 +183,13 @@
 <!--   CONTENT COLUMN   -->			
 				<div class="grid_16">					
 					<div class="box">
-						<h2>Nuevo prospecto</h2>
+						<h2>
+							<c:choose>
+								<c:when test="${client.prospect == false}">Prospecto</c:when>
+								<c:otherwise>Cliente</c:otherwise>
+							</c:choose>
+							
+						</h2>
                         <form:form  commandName="client" action="${pageContext.request.contextPath}/codex/client/insert.do">
 						<table>
 							<tr>

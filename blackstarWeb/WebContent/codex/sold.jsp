@@ -3,7 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@page isELIgnored="false"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<c:set var="pageSection" scope="request" value="proposals" />
+<c:set var="pageSection" scope="request" value="sold" />
 <c:import url="../header.jsp"></c:import>
 <html>
 <head>
@@ -19,7 +19,7 @@
 	 $(document).ready(function() {
 
 		 try{
-		     var cotProjects = $.parseJSON('${cotProjects}');
+		     var cotProjects = $.parseJSON('${soldProjects}');
 		 }
 		 catch(err){
 		 alert(err);
@@ -60,7 +60,7 @@
 	     
 		<div class="grid_16">
 			<div class="box">
-				<h2>C. de proyectos en cotización</h2>
+				<h2>Pedidos</h2>
 				<div class="utils">
 					
 				</div>

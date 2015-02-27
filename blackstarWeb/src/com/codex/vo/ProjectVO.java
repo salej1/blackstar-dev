@@ -21,6 +21,7 @@ public class ProjectVO {
 	private Integer currencyTypeId;
 	private String statusDescription;
 	private String clientDescription;
+	private String clientRfc;
 	private String costCenter;
 	private Float changeType;
 	private Date created;
@@ -342,6 +343,18 @@ public class ProjectVO {
 
 	public void setPriceProposalNumber(String priceProposalNumber) {
 		this.priceProposalNumber = priceProposalNumber;
+	}
+	
+	public String getOfficeId(){
+		return this.projectNumber.substring(1, 2);
+	}
+
+	public String getClientRfc() {
+		return clientRfc;
+	}
+
+	public void setClientRfc(String clientRfc) {
+		this.clientRfc = clientRfc;
 	}
 
 }

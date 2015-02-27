@@ -31,6 +31,7 @@
 	    var totDiscount = 0;
 	    var priceList = $.parseJSON('${priceListJson}');
 	    var productTypeMap = {};
+        var targetDeliverableType =-1;
 
     	<c:forEach var="pt" items="${entryTypes}">
 		<c:out value='productTypeMap[${pt.id}] = "${pt.productType}";' escapeXml='false'/>
@@ -38,26 +39,6 @@
 	   
 
 	    $(document).ready(function () {
-
-			//Attachment dialog
-			$("#attachmentDlg").dialog({
-				autoOpen: false,
-				height: 270,
-				width: 420,
-				modal: true,
-				buttons: {
-					"Aceptar": function() {
-						$.ajax({
-					        type: "GET",
-					        url: "addDeliverableTrace.do",
-					        data: "projectId=${project.id}&deliverableTypeId=" + $("#attachmentType").val() + "&userId=${user.blackstarUserId}",
-					        success: function(html) {
-					        	$('#attachmentDlg').dialog( "close" );
-					        	$("#fileTraceArea").load("${pageContext.request.contextPath}/codex/project/getDeliverables.do?projectId=${project.id}");
-					        }
-					    });
-					}}
-			});
 
 			$( "#WaitMessage" ).dialog({
 		      modal: true,
@@ -68,7 +49,7 @@
 		        }
 		    });
 
-			setButtonStatusText();
+			setupStatusButton();
 			
 			// Bloqueo de campos
 			if('${enableEdition}' == 'true')
@@ -167,31 +148,60 @@
 			});
 	    }
 
-	    function setButtonStatusText(){
+	    function setupStatusButton(){
 	      var projectStatus = '${project.statusId}';
+
+	      // Init
+	      $(".invoiceButton").hide();
+
+	      // Status 1 - Nueva --> Enviar a autorizar
 		  if(projectStatus == '1'){
 		  	if(${project.id} <= 0){
 		  		$(".statusButton").hide();
 		  	}
 		  	else if('${enableEdition}' == 'true'){
 			  	$(".statusButton").html("Enviar a Autorización");
+			  	targetDeliverableType = 1;
 		  	}
 		  	else{
 		  		$(".statusButton").hide();
 		  	}
+	      // Status 2 - En autorizacion --> Autorizar
 		  } else if(projectStatus == '2'){
 		  	if('${userCanAuth}' == 'true'){
 			  	$(".statusButton").html("Autorizar");
+			  	targetDeliverableType = 2;
 		  	}
 		  	else{
 		  		$(".statusButton").hide();
 		  	}
+	      // Status 3 - Autorizada --> Crear cotizacion
 		  } else if(projectStatus == '3'){
-		  	$(".statusButton").html("Enviar cotización");
+		  		$(".statusButton").html("Enviar cotización");
+			  	targetDeliverableType = 3;
+	      // Status 4 - En cotizacion --> Cargar orden de compra --> Se genera pedido
 		  } else if(projectStatus == '4'){
-		  	$(".statusButton").html("Adjuntar orden de compra");
+		  		$(".statusButton").html("Cargar orden de compra");
+			  	targetDeliverableType = 4;
+	      // Status 5 - Pedido --> Adjuntar Factura, Surtido completo
 		  } else if(projectStatus == '5'){
-		  	$(".statusButton").html("Adjuntar factura");
+		  	if('${userCanDeliver}' == 'true'){
+		  		$(".statusButton").html("Pedido surtido");
+			  	targetDeliverableType = 7;
+		  	}
+		  	else{
+		  		$(".statusButton").hide();
+		  	}
+		  	
+		  	$(".invoiceButton").show();
+	      // Status 6 - Surtido --> Adjuntar Factura, Adjuntar Carta de Termino --> Se cierra proyecto
+		  } else if(projectStatus == '6') {
+		  		$(".statusButton").html("Adjuntar Carta de Término");
+			  	targetDeliverableType = 8;
+		  		$(".invoiceButton").show();
+	      // Status 7 - Cerrado 
+		  } else if(projectStatus == '7'){
+		  		$(".statusButton").hide();
 		  }
 	    }
 	    
@@ -279,11 +289,6 @@
 	    	$("#itemAdd_" + entryNumber).remove();
 	    	calc();
 	    }
-
-	    function customPickerCallBack(data) {
-			$("#attachmentFileName").val(data.docs[0].name);
-			$('#attachmentDlg').dialog('open');
-		}
 	    
 	    function prepareSubmit(){
 	     	var entries = $( "tr.part" );
@@ -435,15 +440,14 @@
 	    	}
 	    }
 
-	    function performAdvance(){
-	    	$('#mainForm').attr('action', '/codex/project/advanceStatus.do?projectId=' +  $("#projectId").val());
-			$("#mainForm").submit();
+	    function loadInvoice(){
+	    	advanceDeliverable(6);
 	    }
 
 	    function advanceStatus(){
-	    	$("#WaitMessage").dialog('open');
 
-	    	if("${enableEdition}" == "true" && ${project.statusId} < 3){
+	    	if(${project.statusId} < 3 && "${enableEdition}" == "true"){
+		    	$("#WaitMessage").dialog('open');
 	    		// Modo edicion --> primero guardar
 	    		var isUpdate = '${isUpdate}';
 				var target = '';
@@ -461,17 +465,13 @@
 					  url: target,
 					  data: $("#mainForm").serialize()
 					}).done(function(){
-				      performAdvance();
+				      advanceDeliverable(targetDeliverableType);
 					});
 				}
 	    	}
-	    	else if(${project.statusId} == 4){
-
+	    	else{
+			      advanceDeliverable(targetDeliverableType);
 	    	}
-			else{
-				// Modo detalle --> solo avanzar
-				performAdvance();
-			}
 	    }
 
 	    function fallBackStatus(){
@@ -720,7 +720,8 @@
 						<h2>Cedula de proyectos</h2>				
 						<div>
 							<p></p>							
-							<button class="searchButton statusButton" onclick="advanceStatus();"></button>
+							<button class="searchButton statusButton" onclick="advanceStatus(); return false;"></button>
+							<button class="searchButton invoiceButton" onclick="loadInvoice(); return false;">Adjuntar Factura</button>
 							<c:if test="${enableEdition}">
 								<button class="searchButton" onclick="commit();">Guardar</button>
 								<button class="searchButton" onclick="window.history.back();">Cancelar</button>
@@ -773,7 +774,7 @@
 								<td>Ubicación(es) del Proyecto:</td>
 								<td><form:input type="text" id="location" path="location"  style="width:100%" class="lockOnDetail" required="true"/></td>
 								<td>Forma de pago:</td>
-								<td><form:select name="" id="paymentTypeId" path="paymentTypeId" style="width:95%" class="lockOnDetail" required="true">
+								<td><form:select name="" id="paymentTypeId" path="paymentTypeId" style="width:100%" class="lockOnDetail" required="true">
 											<c:forEach var="ss" items="${paymentTypes}">
 												<option value="${ss.id}"
 												<c:if test="${ss.id == project.paymentTypeId}">
@@ -963,7 +964,7 @@
 											  ],
 									"aoColumnDefs" : [
 										{"mRender" : function(data, type, row){
-											return "<a href='https://docs.google.com/a/gposac.com.mx/file/d/" + data + "/edit' target='_blank'><img src='${pageContext.request.contextPath}/img/pdf.png'</a>";
+											return "<a href='https://docs.google.com/a/gposac.com.mx/file/d/" + data + "/edit' target='_blank'><img src='${pageContext.request.contextPath}/img/pdf.png'/></a>";
 										}, "aTargets" : [5]},
 										{"mRender" : function(data, type, row){
 											return toCurrency(data) + " USD";
@@ -976,10 +977,10 @@
 						<h2>Cotizaciones enviadas</h2>
 						<table id="priceProposalList">
 							<thead><tr>
-								<th>No. Cotizacion</th>
-								<th>Fecha</th>
-								<th>Cliente</th>
-								<th>Contacto</th>
+								<th style="width:80px">No. Cotizacion</th>
+								<th style="width:100px">Fecha</th>
+								<th style="width:280px">Cliente</th>
+								<th style="width:150px">Contacto</th>
 								<th>Total</th>
 								<th>Documento</th>
 							</tr></thead>
@@ -987,25 +988,25 @@
 						</table>
 <!--   ~COTIZACIONES   -->		
                          <c:if test="${not enableEdition}">
-                         
 <!--   SEGUIMIENTO   -->		
-						<br /><br />		
-						<c:import url="_followTable.jsp"></c:import>
+							<br /><br />		
+							<c:import url="_followTable.jsp"></c:import>
 <!--   ~ SEGUIMIENTO   -->		
-
-<!-- ADJUNTOS -->
-						<br><br>		
-                            <div id="fileTraceArea">
-                               <c:import url="/codex/_fileTraceTable.jsp"></c:import>
-                            </div>
-							<c:import url="/_attachments.jsp"></c:import>
 						</c:if>
-<!-- ~ ADJUNTOS -->
+
+<!-- ADJUNTOS E HISTORIAL -->
+						<br><br>		
+						<c:import url="/codex/projectDeliverables.jsp"></c:import>
+						<script type="text/javascript">
+							init_projectDeliverables();
+						</script>
+<!-- ~ ADJUNTOS E HISTORIAL -->
 
 <!--   BOTONES    -->
 						<div>
 							<hr>
 							<button class="searchButton statusButton" onclick="advanceStatus();"></button>
+							<button class="searchButton invoiceButton" onclick="loadInvoice(); return false;">Adjuntar Factura</button>
 							<c:if test="${enableEdition}">
 								<button class="searchButton" onclick="commit();">Guardar</button>
 								<button class="searchButton" onclick="window.history.back();">Cancelar</button>
@@ -1018,19 +1019,7 @@
 					</div>					
 				</div>
 				 
-                 <!-- Attachment Img section -->
-				<div id="attachmentDlg" title="Referencia">
-					<p></p>
-					<p>Tipo de archivo</p>
-					<input id="attachmentFileName" size="80" readOnly="true"/> 
-					<select id="attachmentType" style="width:200px;">
-					   <option value="-1">Sin referencia</option>
-					     <c:forEach var="current" items="${deliverableTypes}" >
-					        <option value="${current.id}">${current.name}</option>
-					     </c:forEach>
-					</select>
-
-				</div>		
+                	
 
 				<div id="warningMsg" title="Advertencia">
 					

@@ -19,6 +19,9 @@
 -- ---------------------------------------------------------------------------
 -- 5 	15/01/2015	SAG 	Se agregan los valores de secuencia para clientes
 -- ---------------------------------------------------------------------------
+-- 6 	24/02/2015	SAG 	Se agregan status a codexStatusType
+--							Se agregan deliverableTypes
+-- ---------------------------------------------------------------------------
 use blackstarDb;
 
 DELIMITER $$
@@ -30,6 +33,28 @@ DELIMITER $$
 DROP PROCEDURE IF EXISTS blackstarDb.updateCodexData$$
 CREATE PROCEDURE blackstarDb.updateCodexData()
 BEGIN
+	-- Agregando DeliverableType
+	IF (SELECT count(*) FROM blackstarDb.codexDeliverableType) = 0 THEN
+		INSERT INTO blackstarDb.codexDeliverableType(_id, name, description)
+		SELECT 1, 'Creación', 'Cédula Creada' UNION
+		SELECT 2, 'Autorización', 'Cédula Autorizada' UNION
+		SELECT 3, 'Cotización', 'Cotización Enviada' UNION
+		SELECT 4, 'Orden de Compra', 'Orden de Compra cargada' UNION
+		SELECT 5, 'Pedido', 'Pedido realizado' UNION
+		SELECT 6, 'Factura', 'Factura cargada' UNION
+		SELECT 7, 'Surtido', 'Todos los equipos surtidos' UNION
+		SELECT 8, 'Carta de Término', 'Carta de Término cargada' UNION
+		SELECT 9, 'Cierre', 'Proyecto cerrado' UNION
+		SELECT 10,'Attachment', 'Archivo Adjunto';
+	END IF;
+
+	-- Agregando status faltantes
+	IF(SELECT count(*) FROM codexStatusType) < 5 THEN
+		INSERT INTO blackstarDb.codexStatusType(_id, name, description)
+		SELECT 5, 'Pedido', 'Pedido' UNION
+		SELECT 6, 'Surtido', 'Surtido' UNION
+		SELECT 7, 'Cerrado', 'Cerrado';
+	END IF;
 
 	IF(SELECT count(*) FROM cst WHERE scope > 0) = 0 THEN
 		UPDATE cst SET scope = 1 WHERE email = 'liliana.diaz@gposac.com.mx';

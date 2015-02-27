@@ -22,9 +22,11 @@ import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
 import com.blackstar.model.User;
 import com.blackstar.model.UserSession;
+import com.blackstar.services.interfaces.GoogleDriveService;
 import com.blackstar.web.AbstractController;
 import com.codex.model.dto.CostCenterDTO;
 import com.codex.model.dto.CstDTO;
+import com.codex.model.dto.DeliverableTraceDTO;
 import com.codex.service.ClientService;
 import com.codex.service.CstService;
 import com.codex.service.ExchangeRateService;
@@ -41,6 +43,7 @@ public class ProjectController extends AbstractController {
 	private ClientService cService = null;
 	private ExchangeRateService xrService;
 	private CstService cstService;
+	private GoogleDriveService gdService;
 	
 	public void setService(ProjectService service) {
 		this.service = service;
@@ -54,13 +57,22 @@ public class ProjectController extends AbstractController {
 		this.xrService = xrService;
 	}
 	
-  public void setCstService(CstService cstService) {
+    public void setCstService(CstService cstService) {
 		this.cstService = cstService;
 	}
 
-  private Boolean isSalesMgr(UserSession userSession){
+    public void setGdService(GoogleDriveService gdService) {
+		this.gdService = gdService;
+	}
+
+private Boolean isSalesMgr(UserSession userSession){
 	  return userSession.getUser().getBelongsToGroup().get(Globals.GROUP_SALES_MANAGER) != null && userSession.getUser().getBelongsToGroup().get(Globals.GROUP_SALES_MANAGER) == true;
   }
+
+private Boolean userCanDeliver(UserSession userSession){
+	  return (userSession.getUser().getBelongsToGroup().get(Globals.GROUP_PURCHASE_MANAGER) != null && userSession.getUser().getBelongsToGroup().get(Globals.GROUP_PURCHASE_MANAGER) == true) 
+			  || (userSession.getUser().getBelongsToGroup().get(Globals.GROUP_PURCHASE) != null && userSession.getUser().getBelongsToGroup().get(Globals.GROUP_PURCHASE) == true);
+}
   
 @RequestMapping(value = "/showList.do") 
   public String showList(ModelMap model, HttpServletRequest request,
@@ -133,7 +145,9 @@ public class ProjectController extends AbstractController {
 		 model.addAttribute("followUps", service.getFollowUps(projectId));
 		 model.addAttribute("incotermList", service.getIncotermList());
 		 model.addAttribute("priceListJson", service.getPriceList());
-		 model.addAttribute("userCanAuth", userSession.getUser().getBelongsToGroup().get(Globals.GROUP_SALES_MANAGER) != null);
+		 model.addAttribute("userCanAuth", isSalesMgr(userSession));
+		 model.addAttribute("userCanDeliver", userCanDeliver(userSession));
+		 
 		} catch (Exception e) {
 			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 			e.printStackTrace();
@@ -240,21 +254,45 @@ public class ProjectController extends AbstractController {
   }
   
   @RequestMapping(value = "/addDeliverableTrace.do", method = RequestMethod.GET)
-  public ResponseEntity<HttpStatus> addDeliverableTrace(@RequestParam(required = true) Integer projectId
-		                        , @RequestParam(required = true) Integer deliverableTypeId
-		                        , @RequestParam(required = true) Integer userId
-				                                            , ModelMap model) {
+  public String addDeliverableTrace(ModelMap model, @RequestParam(required = true) Integer deliverableTypeId
+		  , @RequestParam(required = true) Integer projectId
+		  , @RequestParam(required = true) String projectNumber
+		  , @RequestParam(required = false) String documentId
+		  , @RequestParam(required = false) String documentName
+		  , @ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession) {
 	try {
 		 if(deliverableTypeId > 0){
-		   service.addDeliverableTrace(projectId, deliverableTypeId, userId);
+
+		    // si hay documento, guardarlo en la carpeta drive
+		    String importedDocId = null;
+		    if(documentId != null){
+		    	importedDocId = gdService.importFile(documentId, documentName, gdService.getAttachmentFolderId(projectNumber));
+		    }
+			    
+		   // crear registro de avance
+	        DeliverableTraceDTO deliverable = new DeliverableTraceDTO();
+	        deliverable.setCodexProjectId(projectId);
+	        deliverable.setCreated(Globals.getLocalTime());
+	        deliverable.setCreatedBy("ProjectController");
+	        deliverable.setCreatedByUsr(userSession.getUser().getUserEmail());
+	        deliverable.setUserId(userSession.getUser().getUserEmail());
+	        deliverable.setDeliverableTypeId(deliverableTypeId);
+	        if(importedDocId != null){
+	        	deliverable.setDocumentId(importedDocId);
+	        }
+	        if(documentName != null){
+	        	deliverable.setDocumentName(documentName);
+	        }
+	        
+	        service.addDeliverableTrace(deliverable);
 		 }
 	} catch (Exception e) {
 		Logger.Log(LogLevel.ERROR,e.getStackTrace()[0].toString(), e);
 		e.printStackTrace();
 		model.addAttribute("errorDetails", e.getStackTrace()[0].toString());
-		return new ResponseEntity<HttpStatus>(HttpStatus.BAD_REQUEST);
+		return "error";
 	}
-	return new ResponseEntity<HttpStatus>(HttpStatus.OK);
+	return "redirect:/codex/project/edit.do?projectId=" + projectId;
   }
   
   @RequestMapping(value = "/insert.do") 
@@ -294,8 +332,13 @@ public class ProjectController extends AbstractController {
   
   @RequestMapping(value = "/advanceStatus.do") 
   public String advanceStatus(ModelMap model, HttpServletRequest request 
-		            , @RequestParam(required = true) Integer projectId,
-		            @ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession){
+		            , @RequestParam(required = true) Integer projectId
+		            , @RequestParam(required = true) String projectNumber
+		            , @RequestParam(required = true) Integer deliverableTypeId
+		            , @RequestParam(required = false) String documentName
+		            , @RequestParam(required = false) String documentId
+		            , @RequestParam(required = false) Integer dashboard
+		            , @ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession){
 	  ProjectVO project = null;
 	  	  
 	  try {
@@ -303,13 +346,46 @@ public class ProjectController extends AbstractController {
 		    if(project == null){
 		    	throw new Exception("No fue posible cargar el proyecto " + projectId.toString());
 		    }
+		    
+		    // si hay documento, guardarlo en la carpeta drive
+		    String importedDocId = null;
+		    if(documentId != null && !documentId.equals("")){
+		    	importedDocId = gdService.importFile(documentId, documentName, gdService.getAttachmentFolderId(projectNumber));
+		    }
+		    
+		    // marcar avance del proyecto
 	        service.advanceStatus(project);
+	        
+	        // crear registro de avance
+	        DeliverableTraceDTO deliverable = new DeliverableTraceDTO();
+	        deliverable.setCodexProjectId(projectId);
+	        deliverable.setCreated(Globals.getLocalTime());
+	        deliverable.setCreatedBy("ProjectController");
+	        deliverable.setCreatedByUsr(userSession.getUser().getUserEmail());
+	        deliverable.setUserId(userSession.getUser().getUserEmail());
+	        deliverable.setDeliverableTypeId(deliverableTypeId);
+	        if(importedDocId != null){
+	        	deliverable.setDocumentId(importedDocId);
+	        }
+	        if(documentName != null){
+	        	deliverable.setDocumentName(documentName);
+	        }
+	        
+	        service.addDeliverableTrace(deliverable);
+	        
 	  } catch (Exception e) {
 			e.printStackTrace();
 			model.addAttribute("errorDetails", e.getStackTrace()[0].toString());
 			return "error";
 	}
-	return showList(model, request, userSession);
+	
+	if(dashboard != null && dashboard == 1){
+		return "redirect:/codex/dashboard/show.do";
+	}
+	else{
+		return "redirect:/codex/project/edit.do?projectId=" + projectId;	
+	}
+	
   }
   
   @RequestMapping(value = "/fallbackStatus.do") 
@@ -325,7 +401,7 @@ public class ProjectController extends AbstractController {
 			model.addAttribute("errorDetails", e.getStackTrace()[0].toString());
 			return "error";
 	}
-	return edit(model, projectId, userSession);
+	return "redirect:/codex/project/edit.do?projectId=" + projectId;
   }
 	
   private List<CostCenterDTO> getCostCenterList(String projectNumber){
@@ -338,5 +414,4 @@ public class ProjectController extends AbstractController {
 	  
 	  return ccList;
   }
-  
 }

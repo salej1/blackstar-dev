@@ -9,6 +9,7 @@ import com.blackstar.db.dao.mapper.JSONRowMapper;
 import com.blackstar.model.Followup;
 import com.blackstar.model.User;
 import com.codex.model.dto.CostCenterDTO;
+import com.codex.model.dto.DeliverableTraceDTO;
 import com.codex.db.ProjectDAO;
 import com.codex.vo.CurrencyTypesVO;
 import com.codex.vo.DeliverableTypesVO;
@@ -124,15 +125,22 @@ public class ProjectDAOImpl extends AbstractDAO
   public List<DeliverableVO> getDeliverables(Integer projectId) {
 	StringBuilder sqlBuilder = new StringBuilder("CALL CodexGetDeliverables(?)");
 	return (List<DeliverableVO>) getJdbcTemplate().query(sqlBuilder.toString()
-			   , new Object[]{projectId} , getMapperFor(DeliverableVO.class));
+			   , new Object[]{projectId} , getMapperFor(DeliverableTraceDTO.class));
   }
   
   @Override
-  public void addDeliverableTrace(Integer projectId, Integer deliverableTypeId
-		                                                   , Integer userId) {
-	String sqlQuery = "CALL CodexInsertDeliverableTrace(?, ?, ?)";
-	getJdbcTemplate().update(sqlQuery, new Object[]{projectId, deliverableTypeId
-			                                                         , userId});
+  public void addDeliverableTrace(DeliverableTraceDTO deliverable) {
+	String sqlQuery = "CALL CodexInsertDeliverableTrace(?,?,?,?,?,?,?,?)";
+	getJdbcTemplate().update(sqlQuery, new Object[]{
+			deliverable.getCodexProjectId(),
+			deliverable.getDeliverableTypeId(),
+			deliverable.getCreated(),
+			deliverable.getUserId(),
+			deliverable.getCreatedBy(),
+			deliverable.getCreatedByUsr(),
+			deliverable.getDocumentId(),
+			deliverable.getDocumentName()
+	});
   }
   
   @Override
