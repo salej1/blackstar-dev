@@ -48,8 +48,8 @@ public interface ServiceOrderService {
 	// Servicios de despliegue de listados de ordenes de servicio
 	public String getServiceOrdersByStatus(String status);
 	public String getServiceOrdersByDate(Date startDate);
-	public String getServiceOrderHistory();
-	public String getLimitedServiceOrdersHistoryJson(String user);
+	public String getServiceOrderHistory(Date startDate, Date endDate);
+	public String getLimitedServiceOrdersHistoryJson(Date startDate, Date endDate, String user);
 
   
 	// Servicios de recuperacion de equipos

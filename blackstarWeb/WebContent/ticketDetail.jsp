@@ -56,7 +56,17 @@
 								<tr><td>Marca</td><td><input type="text" id="lbMarca" readonly="true"  style="width:95%;" /></td></tr>
 								<tr><td>Modelo</td><td><input type="text" id="lbModelo" readonly="true"  style="width:95%;" /></td></tr>
 								<tr><td>Capacidad</td><td><input type="text" id="lbCAP" readonly="true"  style="width:95%;" /></td></tr>
-								<tr><td>Se pudo resolver via telefónica</td><td><input type="text" id="lbResolvioTel" readonly="true"  style="width:95%;" /></td></tr>
+								<tr><td>Se pudo resolver via telefónica</td><td>
+									<select id="lbResolvioTel" disabled style="width:60px;">
+										<option value="1">SI</option>
+										<option value="0">NO</option>
+									</select>
+									<c:if test="${user.belongsToGroup['Call Center']}">
+										<img src="/img/edit.png" id="editPhoneResolved" class="clickable" alt="" style="vertical-align:middle;padding-left:5px;" onclick="edit('PhoneResolved', 'lbResolvioTel');"/>
+										<img src="/img/okEdit.png" id="okEditPhoneResolved" class="clickable" alt="" style="vertical-align:middle;padding-left:5px;" onclick="okEdit('PhoneResolved', 'lbResolvioTel');"/>
+										<img src="/img/cancelEdit.png" id="cancelEditPhoneResolved" class="clickable" alt="" style="vertical-align:middle;padding-left:5px;" onclick="cancelEdit('PhoneResolved', 'lbResolvioTel', '${ticketF.phoneResolved}');"/>
+									</c:if>
+								</td></tr>
 								<tr><td>Fecha y Hora de llegada</td><td><input type="text" id="lbHoraLLegada" readonly="true"  style="width:20%;"/>
 								<c:if test="${user.belongsToGroup['Call Center']}">
 									<img src="/img/edit.png" id="editArrival" class="clickable" alt="" style="vertical-align:middle;padding-left:5px;" onclick="edit('Arrival', 'lbHoraLLegada');"/>
@@ -169,8 +179,9 @@
 				<div>Guardando cambios...</div>
 				<div style="width:100%;text-align:center;"><img src="/img/processing.gif" alt="" style="padding-top:10px;"/></div>
 				<form id="updateTicket" action="/ticketDetail" method="POST">
-					<input type="hidden" name="action" value = "updateArrival"/>
+					<input type="hidden" name="action" value = "updateData"/>
 					<input type="hidden" id="arrival" name="arrival">
+					<input type="hidden" id="phoneResolved" name="phoneResolved">
 					<input type="hidden" name="ticketId" value="${ticketF.ticketId}">
 				</form>
 			</div>
@@ -188,16 +199,18 @@
 				$('#edit'+what).hide();
 				$('#okEdit'+what).show();
 				$('#cancelEdit'+what).show();
-				$('#'+fld).removeAttr("readonly");
-				$('#'+fld).datetimepicker({format:'d/m/Y H:i:s', lang:'es'});				
-				$('#'+fld).datetimepicker('show');		
+				$('input#'+fld).removeAttr("readonly");
+				$('input#'+fld).datetimepicker({format:'d/m/Y H:i:s', lang:'es'});				
+				$('input#'+fld).datetimepicker('show');	
+				$('select#'+fld).removeAttr("disabled");	
 			}
 			else{
 				$('#edit'+what).show();
 				$('#okEdit'+what).hide();
 				$('#cancelEdit'+what).hide();
-				$('#'+fld).attr("readonly", "");
-				$('#'+fld).datetimepicker("destroy");
+				$('input#'+fld).attr("readonly", "");
+				$('select#'+fld).attr("disabled", "");
+				$('input#'+fld).datetimepicker("destroy");
 				$('#'+fld).addClass("XX_REFRESH_CLASS");
 				$('#'+fld).removeClass("XX_REFRESH_CLASS");
 			}
@@ -206,6 +219,7 @@
 		function okEdit(what, field){
 			$("#processing").dialog("open");
 			$("#arrival").val($("#lbHoraLLegada").val());
+			$("#phoneResolved").val($("#lbResolvioTel").val());
 			$("#updateTicket").submit();
 		}
 
@@ -215,7 +229,16 @@
 
 		function cancelEdit(what, field, old){
 			toggleEdit(what, false);
-			$('#'+field).val(old);		
+
+			if(old == 'true'){
+				$('#'+field).val(1);		
+			}
+			else if(old == 'false'){
+				$('#'+field).val(0);		
+			}
+			else{
+				$('#'+field).val(old);		
+			}
 		}
 
 		function applyCloseTicket(){
@@ -265,6 +288,8 @@
 			// Ocultando botones de edicion
 			$("#okEditArrival").hide();
 			$("#cancelEditArrival").hide();
+			$("#okEditPhoneResolved").hide();
+			$("#cancelEditPhoneResolved").hide();
 
 			// Close ticket section
 			$("#cerrarOSCapture").dialog({
@@ -339,11 +364,11 @@
 			$('#lbCentroServicio').val('${ServicecenterT.serviceCenter}');
 			$('#lbOficina').val('${officeT.officeName}');
 			$('#lbProyecto').val('${policyt.project}');
-			if(${ticketF.phoneResolved}){
-				$('#lbResolvioTel').val('SI');
+			if('${ticketF.phoneResolved}' == 'true'){
+				$('#lbResolvioTel').val(1);
 			}
 			else{
-				$('#lbResolvioTel').val('NO');
+				$('#lbResolvioTel').val(0);				
 			}
 			if('${ticketF.arrival}' != ''){
 				$('#lbHoraLLegada').val(moment('${ticketF.arrival}').format('DD/MM/YYYY HH:mm:ss'));

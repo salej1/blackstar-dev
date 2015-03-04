@@ -24,8 +24,11 @@ public class HttpInterceptor extends HandlerInterceptorAdapter {
     if((userService.getCurrentUser() == null) || (request.getSession().getAttribute(Globals
     		                                                .SESSION_KEY_PARAM) == null)) {
     	System.out.println("bsMessage => No Logged");
+    	System.out.println("Http Session ID:" + request.getSession().getId());
     	String url = service.getAuthorizationUrl();
+    	request.getSession().setAttribute("startUpURL", request.getRequestURL());
     	response.sendRedirect(url);
+    	
     	return false;
     }	  
 	return true;		

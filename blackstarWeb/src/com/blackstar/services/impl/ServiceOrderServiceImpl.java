@@ -152,14 +152,14 @@ public String getServiceOrdersByStatus(String status) {
 }
 
 @Override
-public String getServiceOrderHistory() {
-	List<JSONObject> history = dao.getServiceOrderHistory();
+public String getServiceOrderHistory(Date startDate, Date endDate) {
+	List<JSONObject> history = dao.getServiceOrderHistory(startDate, endDate);
 	return history.toString();
 }
 
 @Override
-public String getLimitedServiceOrdersHistoryJson(String user){
-	List<JSONObject> history = dao.getLimitedServiceOrdersHistory(user);
+public String getLimitedServiceOrdersHistoryJson(Date startDate, Date endDate, String user){
+	List<JSONObject> history = dao.getLimitedServiceOrdersHistory(startDate, endDate, user);
 	return history.toString();
 }
 

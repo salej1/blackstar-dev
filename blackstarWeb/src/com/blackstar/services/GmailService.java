@@ -35,8 +35,14 @@ public class GmailService implements IEmailService{
 		this.mailSender = mailSender;
 	}
 
+
 	@Override
 	public void sendEmail(String from, String toList, String subject, String body) {
+		sendEmail(from, "Portal Servicios", toList, subject, body);
+	}
+	
+	@Override
+	public void sendEmail(String from, String fromName, String toList, String subject, String body) {
 		Properties props = new Properties();
 		props.put("mail.smtp.auth", "true");
 		props.put("mail.smtp.starttls.enable", "true");
@@ -48,7 +54,7 @@ public class GmailService implements IEmailService{
 		try {
  
 			Message message = new MimeMessage(session);
-			message.setFrom(new InternetAddress(defaultFrom));
+			message.setFrom(new InternetAddress(defaultFrom, fromName));
 			
 			// Filter out spaces
 			toList = toList.replace(" ", "");
@@ -69,7 +75,9 @@ public class GmailService implements IEmailService{
 			e.printStackTrace();
 			//throw new RuntimeException(e);
 		}
+		
 	}
+	
 		
 	@Override
 	public void sendEmail(String to, final String subject, final String body,
@@ -95,4 +103,6 @@ public class GmailService implements IEmailService{
 			//throw new RuntimeException(e);
 		}
 	}
+
+
 }

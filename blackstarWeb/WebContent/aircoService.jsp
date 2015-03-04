@@ -347,7 +347,7 @@
 									<td><form:input path="condLectureVoltageControl" type="text" style="width:90%;" cssClass="lockOnDetail" required="true"/></td>
 								</tr>
 								<tr>
-									<td>2.5	LECTURA DE CORRIENTE EN MONITORES DE CONDENSADOR</td>
+									<td>2.5	LECTURA DE CORRIENTE EN MOTORES DE CONDENSADOR</td>
 									<td colspan="6" ><form:input path="condLectureMotorCurrent" type="text" style="width:99%;" cssClass="lockOnDetail" required="true"/></td>
 								</tr>
 								<tr>

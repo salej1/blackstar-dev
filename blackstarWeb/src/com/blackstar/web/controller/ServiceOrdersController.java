@@ -1,5 +1,6 @@
 package com.blackstar.web.controller;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,6 +29,7 @@ import com.blackstar.web.AbstractController;
 public class ServiceOrdersController extends AbstractController{
 	
 	private ServiceOrderService service;
+	private SimpleDateFormat sdf = new SimpleDateFormat(Globals.DATE_FORMAT_PATTERN);
 
 	public void setService(ServiceOrderService service) {
 		this.service = service;
@@ -54,10 +56,11 @@ public class ServiceOrdersController extends AbstractController{
     //================================================================================
 
 	@RequestMapping(value = "/serviceOrdersHistoryJson.do", method = RequestMethod.GET)
-	public @ResponseBody String ServiceOrdersHistoryJson(ModelMap model) {
+	public @ResponseBody String ServiceOrdersHistoryJson(@RequestParam(required = true) Date startDate, @RequestParam(required = true) Date endDate, ModelMap model) {
 		String retVal;
+		
 		try {
-			retVal = service.getServiceOrderHistory();
+			retVal = service.getServiceOrderHistory(startDate, endDate);
 		} catch (Exception e) {
 			Logger.Log(LogLevel.ERROR,
 					e.getStackTrace()[0].toString(), e);
@@ -84,10 +87,12 @@ public class ServiceOrdersController extends AbstractController{
 	}
 
 	@RequestMapping(value = "/limitedServiceOrdersHistoryJson.do", method = RequestMethod.GET)
-	public @ResponseBody String limitedServiceOrdersHistoryJson(ModelMap model, @ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession) {
+	public @ResponseBody String limitedServiceOrdersHistoryJson(@RequestParam(required = true) Date startDate, @RequestParam(required = true) Date endDate, 
+			ModelMap model, @ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession) {
 		String retVal;
+		
 		try {
-			retVal = service.getLimitedServiceOrdersHistoryJson(userSession.getUser().getUserEmail());
+			retVal = service.getLimitedServiceOrdersHistoryJson(startDate, endDate, userSession.getUser().getUserEmail());
 		} catch (Exception e) {
 			Logger.Log(LogLevel.ERROR,
 					e.getStackTrace()[0].toString(), e);

@@ -357,7 +357,7 @@ public class MySQLServiceOrderDAO implements ServiceOrderDAO, Serializable {
 	}
 
 	@Override
-	public List<JSONObject> getServiceOrderHistory() {
+	public List<JSONObject> getServiceOrderHistory(Date startDate, Date endDate) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -393,7 +393,7 @@ public class MySQLServiceOrderDAO implements ServiceOrderDAO, Serializable {
 	}
 
 	@Override
-	public List<JSONObject> getLimitedServiceOrdersHistory(String user) {
+	public List<JSONObject> getLimitedServiceOrdersHistory(Date startDate, Date endDate, String user) {
 		// TODO Auto-generated method stub
 		return null;
 	}

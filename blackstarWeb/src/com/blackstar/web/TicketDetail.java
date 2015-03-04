@@ -182,9 +182,12 @@ public class TicketDetail extends HttpServlet{
 				Logger.Log(LogLevel.FATAL, e.getStackTrace()[0].toString(), e);
 			}
 		}
-		else if(action.equals("updateArrival")){
+		else if(action.equals("updateData")){
 			String rawArrival = request.getParameter("arrival");
+			String rawPhoneResolved = request.getParameter("phoneResolved");
+			
 			Date arrival;
+			Integer phoneResolved;
 			ticketId = request.getParameter("ticketId");
 			
 			if(thisUser != null){
@@ -193,14 +196,21 @@ public class TicketDetail extends HttpServlet{
 			
 			try{
 				sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+				String sqlArrival = "NULL";
 				
-				arrival = sdf.parse(rawArrival);
+				if(rawArrival != null && rawArrival.compareTo("") != 0){
+					arrival = sdf.parse(rawArrival);
+					
+					sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+					sqlArrival = sdf.format(arrival);
+					sqlArrival = "'" + sqlArrival +"'";
+				}
+				
+				phoneResolved = Integer.valueOf(rawPhoneResolved);
 
-				String sql = "CALL UpdateTicketArrival(%s, '%s', '%s', '%s')";
-				
-				sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-				
-				sql = String.format(sql, ticketId, sdf.format(arrival), "TicketDetail", userId);
+				String sql = "CALL UpdateTicketData(%s, %s, %s, '%s', '%s')";
+							
+				sql = String.format(sql, ticketId, sqlArrival, phoneResolved, "TicketDetail", userId);
 				
 				BlackstarDataAccess da = new BlackstarDataAccess();
 				
@@ -214,6 +224,7 @@ public class TicketDetail extends HttpServlet{
 				return;
 			}
 		}
+		
 		
 		if(sender == null){
 			sender = "/ticketDetail?ticketId="+ticketId;

@@ -179,7 +179,7 @@
               </thead>
               <tbody>
                   <tr>
-                      <td colspan="3">¿Como valora el trato recibido por parte de nuestros ?</td>
+                      <td colspan="3">¿Como valora el trato recibido por parte de nuestros ingenieros?</td>
                   </tr>
                   <tr>
                     <td>Bueno<form:radiobutton path="questionTreatment" value="1" cssClass="lockOnDetail"/></td>

@@ -29,7 +29,9 @@
 			"bLengthChange": false,
 			"iDisplayLength": 10,
 			"bInfo": false,
+			"sPaginationType": "full_numbers",
 			"aaData": servData,
+			"aaSorting": [],
 			"sDom": '<"top"i>rt<"bottom"flp><"clear">',
 			"aoColumns": [
 						  { "mData": "scheduledDate" },
@@ -42,7 +44,7 @@
 						  { "mData": "scheduledServiceId" }
 					  ],
 			"aoColumnDefs" : [
-						{"mRender" : function(data, type, row){return new Date(data).format("dd/MM/yyyy");}, "aTargets" : [0]},
+						//{"mRender" : function(data, type, row){return new Date(data);}, "aTargets" : [0]},
 						{"mRender" : function(data, type, row){return "<a href='/scheduleStatus/scheduledServiceDetail.do?serviceId=" + row.scheduledServiceId + "'>${actionTitle}</a>";}, "aTargets" : [7]}
 					]}
 		);	

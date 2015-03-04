@@ -41,11 +41,8 @@ public class TicketController extends AbstractController {
 			if(userSession.getUser().getBelongsToGroup().get(Globals.GROUP_CUSTOMER) != null && userSession.getUser().getBelongsToGroup().get(Globals.GROUP_CUSTOMER) == true){
 				model.addAttribute("equipmentList", service.getEquipmentList(userSession.getUser().getUserEmail()));				
 			}
-			else if(userSession.getUser().getBelongsToGroup().get(Globals.GROUP_CALL_CENTER) != null && userSession.getUser().getBelongsToGroup().get(Globals.GROUP_CALL_CENTER) == true){
-				model.addAttribute("equipmentList", service.getEquipmentList());
-			}
 			else{
-				throw new Exception("El usuario no tiene permisos para esta funcion del portal");
+				model.addAttribute("equipmentList", service.getEquipmentList());
 			}
 			
 			TicketDTO ticket = new TicketDTO();
@@ -116,36 +113,36 @@ public class TicketController extends AbstractController {
 		
 		bodySb.append("<style>.what{font-weight:bold; width:250px; display: inline-block;}div{margin:5px;}</style>");
 		bodySb.append("<img src='" + Globals.GPOSAC_LOGO_DEFAULT_URL + "'>");
-		bodySb.append("<div style='font-family:sans-serif;margin-left:50px;font-size:0.8em'>");
+		bodySb.append("<div style='font-family:sans-serif;margin-left:50px;font-size:1em'>");
 		bodySb.append("<h3 >Reporte de emergencia " + ticket.getTicketNumber() + "</h3>");
-		bodySb.append("<div><span class='what'>Usuario: </span>" + ticket.getUser() + "</div>");
-		bodySb.append("<div><span class='what'>Fecha y hora recepción: </span>" + Utils.getDateString(ticket.getCreated()) + "</div>");
-		bodySb.append("<div><span class='what'>Contacto: </span>" + ticket.getContact() + "</div>");
-		bodySb.append("<div><span class='what'>Proyecto: </span>" + ticket.getProject() + "</div>");
-		bodySb.append("<div><span class='what'>Empresa: </span>" + ticket.getcustomer() + "</div>");
-		bodySb.append("<div><span class='what'>Ubicacion del servicio: </span>" + ticket.getEquipmentLocation() + "</div>");
-		bodySb.append("<div><span class='what'>Telefono: </span>" + ticket.getContactPhone() + "</div>");
-		bodySb.append("<div><span class='what'>Email: </span>" + ticket.getContactEmail() + "</div>");
-		bodySb.append("<div><span class='what'>Equipo: </span>" + ticket.getEquipmentType() + "</div>");
-		bodySb.append("<div><span class='what'>Modelo: </span>" + ticket.getModel() + "</div>");
-		bodySb.append("<div><span class='what'>Capacidad: </span>" + ticket.getCapacity() + "</div>");
-		bodySb.append("<div><span class='what'>Marca: </span>" + ticket.getBrand() + "</div>");
-		bodySb.append("<div><span class='what'>Numero de Serie: </span>" + ticket.getSerialNumber() + "</div>");
-		bodySb.append("<div><span class='what'>Tiempo máximo de Respuesta: </span>" + ticket.getResponseTimeHR() + "</div>");
-		bodySb.append("<div><span class='what'>Tiempo máximo de Solución: </span>" + ticket.getSolutionTimeHR() + "</div>");
+		bodySb.append("<div><span class='what'><strong>Usuario: </strong></span>" + ticket.getUser() + "</div>");
+		bodySb.append("<div><span class='what'><strong>Fecha y hora recepción: </strong></span>" + Utils.getDateString(ticket.getCreated()) + "</div>");
+		bodySb.append("<div><span class='what'><strong>Contacto: </strong></span>" + ticket.getContact() + "</div>");
+		bodySb.append("<div><span class='what'><strong>Proyecto: </strong></span>" + ticket.getProject() + "</div>");
+		bodySb.append("<div><span class='what'><strong>Empresa: </strong></span>" + ticket.getcustomer() + "</div>");
+		bodySb.append("<div><span class='what'><strong>Ubicacion del servicio: </strong></span>" + ticket.getEquipmentLocation() + "</div>");
+		bodySb.append("<div><span class='what'><strong>Telefono: </strong></span>" + ticket.getContactPhone() + "</div>");
+		bodySb.append("<div><span class='what'><strong>Email: </strong></span>" + ticket.getContactEmail() + "</div>");
+		bodySb.append("<div><span class='what'><strong>Equipo: </strong></span>" + ticket.getEquipmentType() + "</div>");
+		bodySb.append("<div><span class='what'><strong>Modelo: </strong></span>" + ticket.getModel() + "</div>");
+		bodySb.append("<div><span class='what'><strong>Capacidad: </strong></span>" + ticket.getCapacity() + "</div>");
+		bodySb.append("<div><span class='what'><strong>Marca: </strong></span>" + ticket.getBrand() + "</div>");
+		bodySb.append("<div><span class='what'><strong>Numero de Serie: </strong></span>" + ticket.getSerialNumber() + "</div>");
+		bodySb.append("<div><span class='what'><strong>Tiempo máximo de Respuesta: </strong></span>" + ticket.getResponseTimeHR() + " Hr.</div>");
+		bodySb.append("<div><span class='what'><strong>Tiempo máximo de Solución: </strong></span>" + ticket.getSolutionTimeHR() + " Hr.</div>");
 		if(ticket.getIncludesParts() > 0){
-			bodySb.append("<div><span class='what'>Incluye Partes: </span>SI</div>");
+			bodySb.append("<div><span class='what'><strong>Incluye Partes: </strong></span>SI</div>");
 		}
 		else{
-			bodySb.append("<div><span class='what'>Incluye Partes: </span>NO</div>");
+			bodySb.append("<div><span class='what'><strong>Incluye Partes: </strong></span>NO</div>");
 		}
-		bodySb.append("<div><span class='what'>Excepción de partes: </span>" + ticket.getExceptionParts() + "</div>");
-		bodySb.append("<div><span class='what'>Observaciones: </span>" + ticket.getObservations() + "</div>");
-		bodySb.append("<div><span class='what'>Centro de Servicio: </span>" + ticket.getServiceCenter() + "</div>");
-		bodySb.append("<div><span class='what'>Estado del Contrato: </span>" + ticket.getContractState() + "</div>");
-		bodySb.append("<div><span class='what'>Fecha de Vencimiento de Contrato: </span>" + Utils.getDateString(ticket.getEndDate()) + "</div>");
+		bodySb.append("<div><span class='what'><strong>Excepción de partes: </strong></span>" + ticket.getExceptionParts() + "</div>");
+		bodySb.append("<div><span class='what'><strong>Observaciones: </strong></span>" + ticket.getObservations() + "</div>");
+		bodySb.append("<div><span class='what'><strong>Centro de Servicio: </strong></span>" + ticket.getServiceCenter() + "</div>");
+		bodySb.append("<div><span class='what'><strong>Estado del Contrato: </strong></span>" + ticket.getContractState() + "</div>");
+		bodySb.append("<div><span class='what'><strong>Fecha de Vencimiento de Contrato: </strong></span>" + Utils.getDateString(ticket.getEndDate()) + "</div>");
 		bodySb.append("<br>");
-		bodySb.append("<p><strong>En el siguiente Link podra dar el seguimiento correspondiente</p>");
+		bodySb.append("<p><strong>En el siguiente Link podra dar el seguimiento correspondiente</strong></p>");
 		bodySb.append(link);
 		bodySb.append("</div>");
 		bodySb.append("<hr>");
@@ -163,6 +160,6 @@ public class TicketController extends AbstractController {
 			to.append(",");
 			to.append(ticket.getServiceCenterEmail());
 		}
-		mail.sendEmail(Globals.GPOSAC_DEFAULT_SENDER, to.toString(), subject, bodySb.toString());
+		mail.sendEmail(Globals.GPOSAC_DEFAULT_SENDER, "Call Center Grupo SAC", to.toString(), subject, bodySb.toString());
 	}
 }

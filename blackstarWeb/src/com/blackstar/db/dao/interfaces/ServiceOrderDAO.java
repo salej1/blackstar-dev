@@ -46,8 +46,8 @@ public interface ServiceOrderDAO {
     
 	public List<JSONObject> getServiceOrdersByStatus(String status);
 	public List<JSONObject> getServiceOrdersByDate(Date startDate);
-	public List<JSONObject> getServiceOrderHistory();
-	public List<JSONObject> getLimitedServiceOrdersHistory(String user);
+	public List<JSONObject> getServiceOrderHistory(Date startDate, Date endDate);
+	public List<JSONObject> getLimitedServiceOrdersHistory(Date startDate, Date endDate, String user);
 	
 	public List<JSONObject> getEquipmentByType(String type);
 	public String getServiceOrderTypeBySOId(Integer serviceOrderId);

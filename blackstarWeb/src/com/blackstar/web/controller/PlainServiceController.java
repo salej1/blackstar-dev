@@ -272,7 +272,9 @@ public class PlainServiceController extends AbstractController {
 			    		custId = ocService.SaveOpenCustomer(customer);
 	    			}
 	    			// Fecha de salida
-	    			serviceOrder.setServiceEndDate(Globals.getLocalTime());
+	    			if(userSession.getUser().getBelongsToGroup().get(Globals.GROUP_SERVICE) != null){
+	    				serviceOrder.setServiceEndDate(Globals.getLocalTime());
+	    			}
 	    			
 	    			// Guardando la OS 
 		    		Serviceorder servicioOrderSave = new Serviceorder();

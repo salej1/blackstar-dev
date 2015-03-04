@@ -356,10 +356,10 @@ public class TicketDTO {
 		else{
 			try {
 				if(endDate.compareTo(Globals.getLocalTime()) <= 0){
-					return "Activo";
+					return "Vencido";
 				}
 				else{
-					return "Vencido";
+					return "Activo";
 				}
 			} catch (ParseException e) {
 				// TODO Auto-generated catch block

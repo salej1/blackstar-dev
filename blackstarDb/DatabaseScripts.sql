@@ -1275,6 +1275,13 @@ DROP PROCEDURE blackstarDb.upgradeSchema;
 --								InsertTicket
 --								GetTicketById
 -- -----------------------------------------------------------------------------
+-- 61 	03/03/2015	SAG 	Se modifica:
+--								GetAllServiceOrders		
+--								GetLimitedServiceOrderList		
+--								GetPolicyById
+--								InsertTicket
+--								UpdateTicketData
+-- -----------------------------------------------------------------------------
 
 use blackstarDb;
 
@@ -1330,7 +1337,7 @@ BEGIN
 	SET @num = (select count(*) from ticket where year(created) = 2000 + @year);
 	-- desface de tickets en 2015
 	IF @year = 15 THEN
-		SET @num = @num + 5;
+		SET @num = @num + 6;
 	END IF;
 
 	INSERT INTO ticket(policyId, ticketNumber, user, observations, ticketStatusId, created, createdBy, createdByUsr, contact, contactEmail, contactPhone)
@@ -1347,7 +1354,7 @@ DROP PROCEDURE IF EXISTS blackstarDb.GetPolicyById$$
 CREATE PROCEDURE blackstarDb.GetPolicyById(pPolicyId INT)
 BEGIN
 
-	SELECT *, if(p.endDate <= CURDATE(), 'Activo', 'Vencido') AS contractState
+	SELECT *, if(CURDATE() <= p.endDate, 'Activo', 'Vencido') AS contractState
 	FROM policy p
 		INNER JOIN serviceCenter s ON s.serviceCenterId = p.serviceCenterId
 		INNER JOIN equipmentType e ON e.equipmentTypeId = p.equipmentTypeId
@@ -2267,8 +2274,29 @@ BEGIN
 	
 END$$
 
+
 -- -----------------------------------------------------------------------------
-	-- blackstarDb.UpdateTicketArrival
+	-- blackstarDb.UpdateTicketData 
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.UpdateTicketData$$
+CREATE PROCEDURE blackstarDb.UpdateTicketData(pTicketId INT, pArrival DATETIME, pPhoneResolved INT, pModifiedBy VARCHAR(100), pUser VARCHAR(100))
+BEGIN
+
+	UPDATE ticket t 
+		INNER JOIN policy p ON t.policyId = p.policyId SET
+		t.arrival = pArrival,
+		t.phoneResolved = pPhoneResolved,
+		t.realResponseTime = TIMESTAMPDIFF(HOUR, t.created, pArrival),
+		t.responseTimeDeviationHr = CASE WHEN(TIMESTAMPDIFF(HOUR, t.created, pArrival) < responseTimeHR) THEN 0 ELSE (TIMESTAMPDIFF(HOUR, t.created, pArrival) - responseTimeHR) END,
+		t.modified = NOW(),
+		t.modifiedBy = pModifiedBy,
+		t.modifiedByUsr = pUser
+	WHERE ticketId = pTicketId;
+
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.UpdateTicketArrival -- Obsoleto
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.UpdateTicketArrival$$
 CREATE PROCEDURE blackstarDb.UpdateTicketArrival(pTicketId INT, pArrival DATETIME, pModifiedBy VARCHAR(100), pUser VARCHAR(100))
@@ -2479,7 +2507,7 @@ END$$
 	-- blackstarDb.GetLimitedServiceOrderList
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetLimitedServiceOrderList$$
-CREATE PROCEDURE blackstarDb.GetLimitedServiceOrderList(pUser VARCHAR(100))
+CREATE PROCEDURE blackstarDb.GetLimitedServiceOrderList(pStartDate DATETIME, pEndDate DATETIME, pUser VARCHAR(100))
 BEGIN
 	SELECT 
 		so.ServiceOrderId AS DT_RowId,
@@ -2507,6 +2535,7 @@ BEGIN
 		INNER JOIN policyEquipmentUser pe ON p.policyId = pe.policyId
     	LEFT OUTER JOIN ticket t on t.ticketId = so.ticketId
     WHERE pe.equipmentUserId = pUser
+    	AND serviceDate >= pStartDate AND serviceDate <= pEndDate
 	ORDER BY so.serviceDate DESC;
 	
 END$$
@@ -3922,7 +3951,7 @@ END$$
 	-- blackstarDb.GetAllServiceOrders
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetAllServiceOrders$$
-CREATE PROCEDURE blackstarDb.GetAllServiceOrders()
+CREATE PROCEDURE blackstarDb.GetAllServiceOrders(pStartDate DATETIME, pEndDate DATETIME)
 BEGIN
 
 	SELECT * FROM(
@@ -3950,7 +3979,8 @@ BEGIN
 			INNER JOIN equipmentType et ON p.equipmentTypeId = et.equipmentTypeId
 			INNER JOIN office of on p.officeId = of.officeId
 			INNER JOIN serviceCenter sc ON sc.serviceCenterId = p.serviceCenterId
-	     LEFT OUTER JOIN ticket t on t.ticketId = so.ticketId
+	     	LEFT OUTER JOIN ticket t on t.ticketId = so.ticketId
+	     WHERE serviceDate >= pStartDate AND serviceDate <= pEndDate
 	     UNION
 	     SELECT 
 			so.ServiceOrderId AS DT_RowId,
@@ -3975,7 +4005,8 @@ BEGIN
 			INNER JOIN openCustomer oc ON so.openCustomerId = oc.openCustomerId
 			INNER JOIN equipmentType et ON oc.equipmentTypeId = et.equipmentTypeId
 			INNER JOIN office o ON oc.officeId = o.officeId
-	     LEFT OUTER JOIN ticket t on t.ticketId = so.ticketId
+	     	LEFT OUTER JOIN ticket t on t.ticketId = so.ticketId
+	     WHERE serviceDate >= pStartDate AND serviceDate <= pEndDate
 	) A
 	ORDER BY A.serviceDate DESC;
 	
@@ -3991,7 +4022,7 @@ BEGIN
 
 	SELECT DISTINCT
 		s.scheduledServiceId AS scheduledServiceId,
-		serviceDate AS scheduledDate,
+		Date(serviceDate) AS scheduledDate,
 		equipmentType AS equipmentType,
 		ifnull(p.customer, oc.customerName) AS customer,
 		s.project AS project,
@@ -4012,7 +4043,7 @@ BEGIN
 	WHERE s.serviceStatusId = 'P'
 		AND serviceDate >= pServiceDate
 		AND if(pOfficeId = "A", 1 = 1, ifnull(s.officeId, pOfficeId) = pOfficeId)
-	ORDER BY equipmentType;
+	ORDER BY serviceDate;
 	
 END$$
 

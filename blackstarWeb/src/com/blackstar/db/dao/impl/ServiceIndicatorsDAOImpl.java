@@ -132,8 +132,8 @@ public class ServiceIndicatorsDAOImpl extends AbstractDAO
 	@Override
 	public List<String> getSOExport(String search, String project, Date startDate,
 			Date endDate) {
-		String sqlQuery = "CALL GetAllServiceOrders()";
-		return getJdbcTemplate().query(sqlQuery, new PlainTextMapper()); 
+		String sqlQuery = "CALL GetAllServiceOrders(?,?)";
+		return getJdbcTemplate().query(sqlQuery, new Object[]{startDate, endDate}, new PlainTextMapper()); 
 	}
 
 	@Override

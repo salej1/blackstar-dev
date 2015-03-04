@@ -111,7 +111,7 @@
 			<c:if test="${user.belongsToGroup['Call Center']}">
 				<div style="padding-top:20px; padding-bottom:10px;"><img src="/img/navigate-right.png"/><a href="${pageContext.request.contextPath}/seguimiento">Seguimiento</a></div>
 			</c:if>
-			<div style="padding-top:20px; padding-bottom:10px;"><img src="/img/navigate-right.png"/><a href="https://docs.google.com/a/gposac.com.mx/spreadsheet/viewform?usp=drive_web&formkey=dExuRWRLWmZ2MTYyVlA2VlNVQUZZX2c6MQ#gid=0" target="_blank">Levantar nuevo Ticket</a></div>
+			<div style="padding-top:20px; padding-bottom:10px;"><img src="/img/navigate-right.png"/><a href="http://gposac-blackstar-pro.appspot.com/ticketCapture/show.do" target="_blank">Levantar nuevo Ticket</a></div>
 			<div class="box">
 							<h2>Historial de tickets</h2>
 							<div class="utils">
