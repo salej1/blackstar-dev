@@ -6025,6 +6025,8 @@ DROP PROCEDURE blackstarDbTransfer.upgradeSchema;
 -- -----------------------------------------------------------------------------
 -- 12	28/01/2015	SAG 	Se actialuza UpsertPolicy
 -- -----------------------------------------------------------------------------
+-- 13	05/03/2015	SAG 	Se actialuza UpsertPolicy
+-- -----------------------------------------------------------------------------
 
 use blackstarDbTransfer;
 
@@ -6178,6 +6180,8 @@ BEGIN
 			capacity = pCapacity,
 			equipmentTypeId = pEquipmentTypeId,
 			brand = pBrand,
+			customer = pCustomer,
+			finalUser = pFinalUser,
 			model = pModel,
 			modifiedBy = 'UpsertPolicy'
 		WHERE serialNumber = pSerialNumber AND project = pProject;
@@ -6310,6 +6314,8 @@ BEGIN
 		bp.equipmentTypeId = p.equipmentTypeId,
 		bp.brand = p.brand,
 		bp.model = p.model,
+		bp.customer = p.customer,
+		bp.finalUser = p.finalUser,
 		bp.modified = now(),
 		bp.modifiedBy = 'PolicyTransfer',
 		bp.modifiedByUsr = 'portal-servicios';

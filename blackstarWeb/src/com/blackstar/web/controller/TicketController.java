@@ -120,7 +120,7 @@ public class TicketController extends AbstractController {
 		bodySb.append("<div><span class='what'><strong>Contacto: </strong></span>" + ticket.getContact() + "</div>");
 		bodySb.append("<div><span class='what'><strong>Proyecto: </strong></span>" + ticket.getProject() + "</div>");
 		bodySb.append("<div><span class='what'><strong>Empresa: </strong></span>" + ticket.getcustomer() + "</div>");
-		bodySb.append("<div><span class='what'><strong>Ubicacion del servicio: </strong></span>" + ticket.getEquipmentLocation() + "</div>");
+		bodySb.append("<div><span class='what'><strong>Ubicacion del servicio: </strong></span>" + ticket.getEquipmentAddress() + ". " + ticket.getEquipmentLocation() + "</div>");
 		bodySb.append("<div><span class='what'><strong>Telefono: </strong></span>" + ticket.getContactPhone() + "</div>");
 		bodySb.append("<div><span class='what'><strong>Email: </strong></span>" + ticket.getContactEmail() + "</div>");
 		bodySb.append("<div><span class='what'><strong>Equipo: </strong></span>" + ticket.getEquipmentType() + "</div>");
