@@ -37,8 +37,8 @@ public interface ProjectService {
   public void addDeliverableTrace(DeliverableTraceDTO deliverable);
   public String getReferenceTypes(Integer itemTypeId);
   public List<PaymentTypeVO> getAllPaymentTypes();
-  public void insertProject(ProjectVO project, User user);
-  public void updateProject(ProjectVO project, User user);
+  public void insertProject(ProjectVO project, User user) throws Exception;
+  public void updateProject(ProjectVO project, User user) throws Exception;
   public String getAllProjectsByUsrJson(Integer userId);
   public ProjectVO getProjectDetail(Integer projectId);
   public ProjectVO getProjectDetail(Integer projectId, CstDTO cst);

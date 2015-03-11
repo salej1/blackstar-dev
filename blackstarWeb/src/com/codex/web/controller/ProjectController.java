@@ -93,8 +93,9 @@ private Boolean userCanDeliver(UserSession userSession){
 		 }
 		 
 	} catch (Exception e) {
+		Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 		e.printStackTrace();
-		model.addAttribute("errorDetails", e.getStackTrace()[0].toString());
+		model.addAttribute("errorDetails", e.getMessage());
 		return "error";
 	}
     return "codex/projectList";
@@ -208,7 +209,7 @@ private Boolean userCanDeliver(UserSession userSession){
 	     
 	} catch (Exception e) {
 		Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
-		System.out.println("CodexCreateProjectError=> " + e);
+		model.addAttribute("errorDetails", e.getMessage());
 		e.printStackTrace();
 		return "error";
 	}   
@@ -242,6 +243,7 @@ private Boolean userCanDeliver(UserSession userSession){
 	} catch (Exception e) {
 		Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 		e.printStackTrace();
+		model.addAttribute("errorDetails", e.getMessage());
 		return "error";
 	}
 	return "codex/_follow";
@@ -289,7 +291,7 @@ private Boolean userCanDeliver(UserSession userSession){
 	} catch (Exception e) {
 		Logger.Log(LogLevel.ERROR,e.getStackTrace()[0].toString(), e);
 		e.printStackTrace();
-		model.addAttribute("errorDetails", e.getStackTrace()[0].toString());
+		model.addAttribute("errorDetails", e.getMessage());
 		return "error";
 	}
 	return "redirect:/codex/project/edit.do?projectId=" + projectId;
@@ -305,8 +307,8 @@ private Boolean userCanDeliver(UserSession userSession){
 	     service.insertProject(project, userSession.getUser());
 	} catch (Exception e) {
 		e.printStackTrace();
-		model.addAttribute("errorDetails", e.getStackTrace()[0].toString());
-		System.out.println("Error =>" + e);
+		model.addAttribute("errorDetails", e.getMessage());
+		Logger.Log(LogLevel.ERROR,e.getStackTrace()[0].toString(), e);
 		return "error";
 	}
     return "redirect:/codex/project/edit.do?projectId=" + project.getId();
@@ -323,8 +325,8 @@ private Boolean userCanDeliver(UserSession userSession){
 		 service.updateProject(project, user);
 	} catch (Exception e) {
 		e.printStackTrace();
-		model.addAttribute("errorDetails", e.getStackTrace()[0].toString());
-		System.out.println("Error =>" + e);
+		model.addAttribute("errorDetails", e.getMessage());
+		Logger.Log(LogLevel.ERROR,e.getStackTrace()[0].toString(), e);
 		return "error";
 	}
 	return "redirect:/codex/project/edit.do?projectId=" + project.getId();
@@ -375,7 +377,8 @@ private Boolean userCanDeliver(UserSession userSession){
 	        
 	  } catch (Exception e) {
 			e.printStackTrace();
-			model.addAttribute("errorDetails", e.getStackTrace()[0].toString());
+			Logger.Log(LogLevel.ERROR,e.getStackTrace()[0].toString(), e);
+			model.addAttribute("errorDetails", e.getMessage());
 			return "error";
 	}
 	
@@ -398,7 +401,8 @@ private Boolean userCanDeliver(UserSession userSession){
 	        service.fallbackStatus(project);
 	  } catch (Exception e) {
 			e.printStackTrace();
-			model.addAttribute("errorDetails", e.getStackTrace()[0].toString());
+			Logger.Log(LogLevel.ERROR,e.getStackTrace()[0].toString(), e);
+			model.addAttribute("errorDetails", e.getMessage());
 			return "error";
 	}
 	return "redirect:/codex/project/edit.do?projectId=" + projectId;

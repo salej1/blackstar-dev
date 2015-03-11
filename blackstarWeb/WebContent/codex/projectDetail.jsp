@@ -83,16 +83,17 @@
 				$("#creditInputLine").show();
 			}
 
-			$("#warningMsg").dialog({
-				autoOpen: false,
-				height: 150,
-				width: 320,
-				modal: true,
-				buttons: {
-					"Aceptar": function() {
-						$(this).dialog('close');
-					}}
-			});
+	    	$("#warningMsg").hide();
+			// $("#warningMsg").dialog({
+			// 	autoOpen: false,
+			// 	height: 150,
+			// 	width: 320,
+			// 	modal: true,
+			// 	buttons: {
+			// 		"Aceptar": function() {
+			// 			$(this).dialog('close');
+			// 		}}
+			// });
 
 			// Initial values set
 			set("productsNumber", '${project.productsNumber}');
@@ -138,7 +139,8 @@
 	    
 	    function warning(msg){
 	    	$("#warningMsg").html(msg);
-	    	$("#warningMsg").dialog("open");
+	    	//$("#warningMsg").dialog("open");
+	    	$("#warningMsg").show();
 	    }
 
 	    function bindCalc(){
@@ -484,8 +486,20 @@
 	    	var rawQty = $("#itemQuantity_" + itemNumber).val();
 	    	var rawPrice = $("#itemPriceByUnit_" + itemNumber).val();
 	    	var rawDiscount = $("#itemDiscount_" + itemNumber).val();
-	    	if(isNaN(rawQty) || isNaN(rawPrice) || isNaN(rawDiscount)){
-	    		warning("Por favor verifique las cantidades");
+	    	if(isNaN(rawQty)){
+	    		warning("Por favor verifique la cantidad del Item " + itemNumber + ".<br>Solo se permiten valores numericos");
+	    		$("#itemQuantity_" + itemNumber).focus();
+	    		$("#itemQuantity_" + itemNumber).select();
+	    	}
+	    	if(isNaN(rawPrice)){
+	    		warning("Por favor verifique el precio unitario del Item " + itemNumber + ".<br>Solo se permiten valores numericos");
+	    		$("#itemPriceByUnit_" + itemNumber).focus();
+	    		$("#itemPriceByUnit_" + itemNumber).select();
+	    	}
+	    	if(isNaN(rawDiscount)){
+	    		warning("Por favor verifique el descuento del Item " + itemNumber + ".<br>Solo se permiten valores numericos");
+	    		$("#itemDiscount_" + itemNumber).focus();
+	    		$("#itemDiscount_" + itemNumber).select();
 	    	}
 	    	else{
 	    		var qty = Number(rawQty);
@@ -574,6 +588,9 @@
 	    }
 
 	    function calc(){
+	    	// ocultar mensajes
+	    	$("#warningMsg").hide();
+	    	
 	    	totProducts = 0;
 	    	totServices = 0;
 	    	totDiscount = 0;
@@ -937,6 +954,7 @@
 							  <a href="#" onclick="addEntry(); return false;">Agregar Partida</a>
 						   </div>
 						</c:if>
+						<div id="warningMsg" class="error" title="Advertencia"></div>
 <!--   ~PARTIDAS   -->		
 
 <!--   COTIZACIONES   -->		
@@ -1018,13 +1036,7 @@
 						</div>
 					</div>					
 				</div>
-				 
-                	
-
-				<div id="warningMsg" title="Advertencia">
-					
-				</div>
-
+				 					
 				<div id="descriptionDialog" title="Descripción del producto o servicio:">
 					Descripción:
 					<input type="hidden" id="getDescriptionNumber">

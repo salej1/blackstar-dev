@@ -27,6 +27,7 @@ import com.codex.vo.DeliverableVO;
 import com.codex.vo.PaymentTypeVO;
 import com.codex.vo.PriceProposalVO;
 import com.codex.vo.ProjectEntryItemTypesVO;
+import com.codex.vo.ProjectEntryItemVO;
 import com.codex.vo.ProjectEntryTypesVO;
 import com.codex.vo.ProjectEntryVO;
 import com.codex.vo.ProjectVO;
@@ -215,53 +216,14 @@ public class ProjectServiceImpl extends AbstractService
   }
   
   @Override
-  public void insertProject(ProjectVO project, User user){
-	String [] entries = project.getStrEntries().split("~");
-	String [] items, values;
-	Integer entryId = 0;
-	project.setCreatedByUsr(user.getBlackstarUserId());
-	dao.upsertProject(project);
-	for(String entry : entries){
-		values = entry.split("\\|");
-
-		entryId = dao.upsertProjectEntry(0, project.getId(), Integer.valueOf(values[0]),
-						values[1], Integer.valueOf(values[2]), Float.valueOf(values[3]),
-						Float.valueOf(values[4]),Float.valueOf(values[5]), values[6]);
-		items = values[8].split("\\^");
-		for(String item : items){
-			values = item.split("::");
-			dao.upsertEntryItem(-1, entryId, Integer.valueOf(values[0]), values[1]
-			   , values[2], Float.valueOf(values[3]), Float.valueOf(values[4])
-			   , Float.valueOf(values[5]), Float.valueOf(values[6]), values[7]);
-		}
-	}
-	dao.addProjectTeam(project.getId(), 1, user.getBlackstarUserId());
+  public void insertProject(ProjectVO project, User user) throws Exception{
+	  upsertProject(project, user, false);
   }
   
   @Override
-  public void updateProject(ProjectVO project, User user){
-	String [] entries = project.getStrEntries().split("~");
-	String [] items, values;
-	Integer entryId = 0;
-	project.setModifiedByUsr(user.getBlackstarUserId());
-	dao.upsertProject(project);
-	dao.cleanProjectDependencies(project.getId());
-	for(String entry : entries){
-		values = entry.split("\\|");
-
-		entryId = dao.upsertProjectEntry(0, project.getId(), Integer.valueOf(values[0]),
-				values[1], Integer.valueOf(values[2]), Float.valueOf(values[3]),
-				Float.valueOf(values[4]),Float.valueOf(values[5]), values[6]);
-		items = values[8].split("\\^");
-		for(String item : items){
-			values = item.split("::");
-			dao.upsertEntryItem(-1, entryId, Integer.valueOf(values[0]), values[1]
-			   , values[2], Float.valueOf(values[3]), Float.valueOf(values[4])
-			   , Float.valueOf(values[5]), Float.valueOf(values[6]), values[7]);
-		}
-	}
+  public void updateProject(ProjectVO project, User user) throws Exception{
+	  upsertProject(project, user, true);
   }
-  
   
   @Override
   public List<DeliverableVO> getDeliverables(Integer projectId){
@@ -304,6 +266,185 @@ public class ProjectServiceImpl extends AbstractService
   public void fallbackStatus(ProjectVO project) throws Exception{
 
 	  gotoNewStatus(project);
+  }
+  
+  @Override
+  public List<CostCenterDTO> getCostCenterList() {
+	  return dao.getCostCenterList();
+  }
+
+  @Override
+  public String getCSTOffice(String cst) {
+	  return dao.getCSTOffice(cst);
+  }
+
+  @Override
+  public List<String> getIncotermList() {
+	  List<String> incs = new ArrayList<String>();
+	  incs.add("DDP");
+	  incs.add("FOB");
+
+	  return incs;
+  }
+
+  @Override
+  public String getPriceList() {
+	  return dao.getPriceList().toString();
+  }
+
+  @Override
+  public String getPriceProposalList(Integer projectId) {
+	  return dao.getPriceProposalList(projectId).toString();
+  }
+  
+  private void upsertProject(ProjectVO project, User user, Boolean isUpdate) throws Exception{
+	  String [] entries = project.getStrEntries().replaceAll("$", "").replaceAll(",", "").split("~");
+	  String [] items, values;
+	  Integer entryId = 0;
+
+	  // Project
+	  if(isUpdate){
+		  project.setModifiedByUsr(user.getBlackstarUserId());
+	  }
+	  else{
+		  project.setCreatedByUsr(user.getBlackstarUserId());
+	  }
+	  
+	  dao.upsertProject(project);
+
+	  // Entries
+	  List<ProjectEntryVO> projEntries = new ArrayList<ProjectEntryVO>();
+
+	  for(String entry : entries){
+		  ProjectEntryVO thisEntry = new ProjectEntryVO();
+
+		  thisEntry.setId(entryId);
+		  thisEntry.setProjectId(project.getId());
+
+		  values = entry.split("\\|");
+
+		  try{
+			  thisEntry.setEntryTypeId(Integer.valueOf(values[0]));
+		  }
+		  catch(Exception e){
+			  throw new Exception("Tipo de partida invalido: " + values[0]);
+		  }
+
+		  thisEntry.setDescription(values[1]);
+
+		  try{
+			  thisEntry.setQty(Integer.valueOf(values[2]));
+		  }
+		  catch(Exception e){
+			  throw new Exception("Valor invalido para cantidad de partida: " + values[2]);
+		  }
+
+		  try{
+			  thisEntry.setUnitPrice(Float.valueOf(values[3]));
+		  }
+		  catch(Exception e){
+			  throw new Exception("Valor invalido para precio unitario de partida: " + values[3]);
+		  }
+
+		  try{
+			  thisEntry.setDiscount(Float.valueOf(values[4]));
+		  }
+		  catch(Exception e){
+			  throw new Exception("Valor invalido para valor de descuento de partida: " + values[4]);
+		  }
+
+		  try{
+			  thisEntry.setTotalPrice(Double.valueOf(values[5]));
+		  }
+		  catch(Exception e){
+			  throw new Exception("Valor invalido para precio total de partida: " + values[5]);
+		  }
+
+		  thisEntry.setComments(values[6]);
+
+		  //Items
+		  List<ProjectEntryItemVO> entryItems = new ArrayList<ProjectEntryItemVO>();
+
+		  items = values[8].split("\\^");
+		  for(String item : items){
+			  ProjectEntryItemVO thisItem = new ProjectEntryItemVO();
+
+			  values = item.split("::");
+
+			  thisItem.setId(-1);
+			  thisItem.setEntryId(entryId);
+
+			  try{
+				  thisItem.setItemTypeId(Integer.valueOf(values[0]));
+			  }
+			  catch(Exception e){
+				  throw new Exception("Valor invalido para tipo de item: " + values[0]);
+			  }
+
+			  thisItem.setReference(values[1]);
+
+			  thisItem.setDescription(values[2]);
+
+			  try {
+				  thisItem.setQuantity(Float.valueOf(values[3]));
+			  } catch (Exception e) {
+				  throw new Exception("Valor invalido para cantidad de item: " + values[3]);
+			  }
+
+			  try {
+				  thisItem.setPriceByUnit(Float.valueOf(values[4]));
+			  } catch (Exception e) {
+				  throw new Exception("Valor invalido para precio unitario de item: " + values[4]);
+			  }
+
+
+			  try {
+				  thisItem.setDiscount(Float.valueOf(values[5]));
+			  } catch (Exception e) {
+				  throw new Exception("Valor invalido para descuento de item: " + values[5]);
+			  }
+
+			  try {
+				  thisItem.setTotalPrice(Float.valueOf(values[6]));
+			  } catch (Exception e) {
+				  throw new Exception("Valor invalido para precio total de item: " + values[6]);
+			  }
+
+			  thisItem.setComments(values[7]);
+
+			  entryItems.add(thisItem);
+		  }
+
+		  thisEntry.setItems(entryItems);
+
+		  projEntries.add(thisEntry);
+
+	  }
+
+	  project.setEntries(projEntries);
+
+	  if(isUpdate){
+		  dao.cleanProjectDependencies(project.getId());  
+	  }
+	  
+	  for(ProjectEntryVO entry : projEntries){
+
+		  entryId = dao.upsertProjectEntry(0, project.getId(), entry.getEntryTypeId(), entry.getDescription() 
+				  , entry.getQty(), entry.getUnitPrice(), entry.getDiscount(), entry.getTotalPrice().floatValue()
+				  , entry.getComments());
+
+		  for(ProjectEntryItemVO item : entry.getItems()){
+
+			  dao.upsertEntryItem(-1, entryId, item.getItemTypeId()
+					  , item.getReference(), item.getDescription(), item.getQuantity()
+					  , item.getPriceByUnit(), item.getDiscount(), item.getTotalPrice()
+					  , item.getComments());
+		  }
+	  }
+	  
+	  if(!isUpdate){
+		  dao.addProjectTeam(project.getId(), 1, user.getBlackstarUserId());
+	  }
   }
   
   private void gotoNewStatus(ProjectVO project){
@@ -465,34 +606,6 @@ public class ProjectServiceImpl extends AbstractService
 	  }
   }
 
-  @Override
-  public List<CostCenterDTO> getCostCenterList() {
-	 return dao.getCostCenterList();
-  }
-
-@Override
-public String getCSTOffice(String cst) {
-	return dao.getCSTOffice(cst);
-}
-
-@Override
-public List<String> getIncotermList() {
-	List<String> incs = new ArrayList<String>();
-	incs.add("DDP");
-	incs.add("FOB");
-	
-	return incs;
-}
-
-@Override
-public String getPriceList() {
-	return dao.getPriceList().toString();
-}
-
-@Override
-public String getPriceProposalList(Integer projectId) {
-	return dao.getPriceProposalList(projectId).toString();
-}
 
 
 }
