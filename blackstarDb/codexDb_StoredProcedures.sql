@@ -66,10 +66,33 @@
 --                              blackstarDb.CodexInsertDeliverableTrace
 --                              blackstarDb.CodexGetProjectById
 -- -----------------------------------------------------------------------------
-
+-- 11 12/03/2015  SAG   Se crea:
+--                              blackstarDb.UpsertCodexProjectEntryType
+-- -----------------------------------------------------------------------------
 use blackstarDb;
 
 DELIMITER $$
+
+
+-- -----------------------------------------------------------------------------
+  -- blackstarDb.UpsertCodexProjectEntryType
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.UpsertCodexProjectEntryType$$
+CREATE PROCEDURE blackstarDb.UpsertCodexProjectEntryType(pTypeId INT, pName VARCHAR(200), pProductType CHAR(1), pActive INT)
+BEGIN
+   
+    IF(SELECT count(*) FROM codexProjectEntryTypes WHERE _id = pTypeId) = 0 THEN
+        INSERT INTO codexProjectEntryTypes(_id, name, productType, active)
+        SELECT pTypeId, pName, pProductType, pActive;
+    ELSE
+        UPDATE codexProjectEntryTypes SET
+            name = pName,
+            productType = pProductType,
+            active = pActive
+        WHERE _id = pTypeId;
+    END IF;
+
+END$$
 
 -- -----------------------------------------------------------------------------
   -- blackstarDb.getSalesCallRecords
@@ -126,36 +149,22 @@ DROP PROCEDURE IF EXISTS blackstarDb.getCodexInvoicingKpi$$
 CREATE PROCEDURE blackstarDb.getCodexInvoicingKpi(startDate DATETIME, endDate DATETIME, cst VARCHAR(200), originId INT)
 BEGIN
 
-  IF(ifnull(cst, '') != '') THEN
     SELECT
-      c.name AS cstName,
-      sum(p.totalProjectNumber) AS amount,
-      o.name AS origin,
-      '0 %' AS coverage
+        c.name AS cstName,
+        sum(p.totalProjectNumber) AS amount,
+        o.name AS origin,
+        CONVERT((sum(p.totalProjectNumber) / yearQuota) * 100, CHAR) AS coverage
     FROM codexProject p
-      INNER JOIN cst c ON p.createdByUsr = c.email
-      INNER JOIN codexClient cl ON cl._id = p.clientId
-      INNER JOIN codexClientOrigin o ON o._id = cl.clientOriginId
+        INNER JOIN blackstarUser u ON p.createdByUsr = u.blackstarUserId
+        INNER JOIN cst c ON u.email = c.email
+        INNER JOIN codexClient cl ON cl._id = p.clientId
+        INNER JOIN codexClientOrigin o ON o._id = cl.clientOriginId
     WHERE p.created >= startDate
-      AND p.created <= endDate
-      AND c.email = cst
-      AND cl.clientOriginId = originId
+        AND p.created <= endDate
+        AND cl.clientOriginId = originId
+        AND p.statusId > 4
+        AND if(cst='',1=1,u.email = cst)
     GROUP BY c.name, o.name;
-  ELSE
-     SELECT
-      c.name AS cstName,
-      sum(p.totalProjectNumber) AS amount,
-      o.name AS origin,
-      CONVERT((sum(p.totalProjectNumber) / yearQuota) * 100, CHAR) AS coverage
-    FROM codexProject p
-      INNER JOIN cst c ON p.createdByUsr = c.email
-      INNER JOIN codexClient cl ON cl._id = p.clientId
-      INNER JOIN codexClientOrigin o ON o._id = cl.clientOriginId
-    WHERE p.created >= startDate
-      AND p.created <= endDate
-      AND cl.clientOriginId = originId
-    GROUP BY c.name, o.name;
-  END IF;
   
 END$$
 
@@ -679,6 +688,7 @@ BEGIN
           concat_ws('', replace(rpad(_id, 9, ' '), ' ', "&nbsp;"), name) AS name, 
           productType AS productType
   FROM codexProjectEntryTypes
+  WHERE active = 1
   ORDER BY _id; 
 	
 END$$

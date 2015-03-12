@@ -41,6 +41,8 @@
 --					 		Se agrega documentName a codexDeliverableTrace
 --							Se modifica userId en codexDeliverableTrace
 -- ---------------------------------------------------------------------------
+-- 13	12/03/2015	SAG 	Se agrega active a codexProjectEntryTypes
+-- ---------------------------------------------------------------------------
 
 use blackstarDb;
 
@@ -53,6 +55,11 @@ BEGIN
 -- -----------------------------------------------------------------------------
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
+
+-- Agregando active a codexProjectEntryTypes
+IF(SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'codexProjectEntryTypes' AND COLUMN_NAME = 'active') = 0 THEN
+	ALTER TABLE blackstarDb.codexProjectEntryTypes ADD active INT NULL DEFAULT 1;
+END IF;
 
 -- Cambiando created a DATETIME en codexDeliverableTrace
 IF (SELECT DATA_TYPE FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'codexDeliverableTrace' AND COLUMN_NAME = 'created') != 'DATETIME' THEN
