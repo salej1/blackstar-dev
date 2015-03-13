@@ -32,6 +32,7 @@ import com.codex.service.CstService;
 import com.codex.service.ExchangeRateService;
 import com.codex.service.ProjectService;
 import com.codex.vo.ClientVO;
+import com.codex.vo.DeliverableTypesVO;
 import com.codex.vo.ProjectVO;
 
 @Controller
@@ -114,7 +115,8 @@ private Boolean userCanDeliver(UserSession userSession){
 	     model.addAttribute("entryItemTypes", service.getAllEntryItemTypes());
 	     model.addAttribute("currencyTypes", service.getAllCurrencyTypes());
 	     model.addAttribute("taxesTypes", service.getAllTaxesTypes());
-		 model.addAttribute("deliverableTypes", service.getDeliverableTypes());
+	     List<DeliverableTypesVO> deliverableTypes = service.getDeliverableTypes();
+		 model.addAttribute("deliverableTypes", deliverableTypes);
 		 model.addAttribute("paymentTypes", service.getAllPaymentTypes());
 		 model.addAttribute("staff", udService.getStaff());
 		 model.addAttribute("accessToken", gdService.getAccessToken());
@@ -148,6 +150,8 @@ private Boolean userCanDeliver(UserSession userSession){
 		 model.addAttribute("priceListJson", service.getPriceList());
 		 model.addAttribute("userCanAuth", isSalesMgr(userSession));
 		 model.addAttribute("userCanDeliver", userCanDeliver(userSession));
+		 model.addAttribute("invoicingUser", isInvoicingUser(userSession.getUser()));
+		 model.addAttribute("invoiceTypes", getInvoiceDeliverableTypes(deliverableTypes));
 		 
 		} catch (Exception e) {
 			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
@@ -417,5 +421,30 @@ private Boolean userCanDeliver(UserSession userSession){
 	  ccList.add(0, new CostCenterDTO(0, projectNumber));
 	  
 	  return ccList;
+  }
+  
+  private Boolean isInvoicingUser(User user){
+	  if(user.getBelongsToGroup().get(Globals.GROUP_INVOICING) != null && user.getBelongsToGroup().get(Globals.GROUP_INVOICING)){
+		  return true;
+	  }
+	  else{
+		  return false;
+	  }
+  }
+  
+  private List<DeliverableTypesVO> getInvoiceDeliverableTypes(List<DeliverableTypesVO> src){
+	  List<DeliverableTypesVO> retVal = new ArrayList<DeliverableTypesVO>();
+	  
+	  for(DeliverableTypesVO del : src){
+		  if(del.getName().contains("Factura")){
+			  DeliverableTypesVO dt = new DeliverableTypesVO();
+			  dt.setName(del.getName());
+			  dt.setDescription(del.getDescription());
+			  dt.setId(del.getId());
+			  retVal.add(dt);
+		  }
+	  }
+	  
+	  return retVal;
   }
 }

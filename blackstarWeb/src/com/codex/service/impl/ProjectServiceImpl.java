@@ -498,8 +498,30 @@ public class ProjectServiceImpl extends AbstractService
   }
 
   private void gotoDeliveredStatus(ProjectVO project){
+	IEmailService mail = EmailServiceFactory.getEmailService();
+	
 	// STATUS ADVANCE
 	dao.advanceStatus(project.getId(), project.getStatusId() + 1);
+
+	String link = Globals.GOOGLE_CONTEXT_URL + "/codex/project/edit.do?projectId=" + project.getId();
+	String subject = "Proyecto " + project.getProjectNumber() + " surtido";
+	StringBuilder bodySb = new StringBuilder();
+	String to = project.getCstEmail();
+
+	bodySb.append("<img src='" + Globals.GPOSAC_LOGO_DEFAULT_URL + "'>");
+	bodySb.append("<div style='font-family:sans-serif;margin-left:50px;'>");
+	bodySb.append("<h3>Proyecto " + project.getProjectNumber() + " Surtido</h3>");
+	bodySb.append("<p>Para su informacion:</p>");
+	bodySb.append("<p>El proyecto " + project.getProjectNumber() + " ha sido marcado como Surtido.</p>");
+	bodySb.append("<p>Fecha: " + Globals.getLocalTimeString() + "</p>");
+	bodySb.append("<p>Cliente: " + project.getClientDescription() + "</p>");
+	bodySb.append("<p>En el siguiente Link podra revisar los detalles del proyecto y dar el seguimiento correspondiente.</p>");
+	bodySb.append("<a href='" + link + "'>" + project.getProjectNumber() + "</a>");
+	bodySb.append("</div>");
+	bodySb.append("<hr>");
+	bodySb.append("<small>Favor de no responder a este email.</small>");
+
+	mail.sendEmail("portal-servicios@gposac.com.mx", to.toString(), subject, bodySb.toString());
   }
   
   private void gotoAuthStatus(ProjectVO project){
@@ -569,10 +591,10 @@ public class ProjectServiceImpl extends AbstractService
 	  bodySb.append("<h3>Pedido para Proyecto " + project.getProjectNumber() + "</h3>");
 	  bodySb.append("<p>Para su informacion:</p>");
 	  bodySb.append("<p>Favor de llevar a cabo el pedido del proyecto " + project.getProjectNumber() + "</p>");
-	  bodySb.append("<br>Fecha: " + Globals.getLocalTimeString());
-	  bodySb.append("<br>");
+	  bodySb.append("<p>Fecha: " + Globals.getLocalTimeString() + "</p>");
+	  bodySb.append("<p>Cliente: " + project.getClientDescription() + "</p>");
 	  bodySb.append("<p>En el siguiente Link podra revisar los detalles del proyecto.</p>");
-	  bodySb.append(link);
+	  bodySb.append("<a href='" + link + "'>" + project.getProjectNumber() + "</a>");
 	  bodySb.append("</div>");
 	  bodySb.append("<hr>");
 	  bodySb.append("<small>Favor de no responder a este email. En caso de duda pongase en contacto con el consultor</small>");

@@ -22,6 +22,8 @@
 	
 	
 	<script type="text/javascript">
+		var userCanEdit = "${userCanEdit}";
+
 		$(function(){
 			$("#errMsg").dialog({
 				modal: true,
@@ -35,6 +37,13 @@
         			}
         		}
 			});
+
+			if(userCanEdit == "false"){
+				$("input").attr("readonly", "");
+				$("select").attr("disabled", "");
+				$("#saveButton").hide();
+			}
+
 		});
 
 	   function checkZipCode(evt) {
@@ -335,7 +344,7 @@
 						</table>
 						<p></p>
 						<div>
-							<button class="searchButton" onclick="save(); return false;">Guardar</button>
+							<button class="searchButton" id="saveButton" onclick="save(); return false;">Guardar</button>
 							<button class="searchButton" onclick="window.history.back();">Cancelar</button>
 						</div>
 						</form:form>

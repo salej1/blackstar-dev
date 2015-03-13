@@ -11,8 +11,12 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import com.blackstar.common.Globals;
 import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
+import com.blackstar.model.User;
+import com.blackstar.model.UserSession;
 import com.blackstar.web.AbstractController;
+import com.codex.model.dto.CstDTO;
 import com.codex.service.ClientService;
+import com.codex.service.CstService;
 import com.codex.vo.ClientVO;
 
 
@@ -22,12 +26,17 @@ import com.codex.vo.ClientVO;
 public class ClientController extends AbstractController {
 	
   private ClientService service = null;
+  private CstService cService = null;
   
   public void setService(ClientService service) {
 	this.service = service;
   }
   
-  @RequestMapping(value = "/showClientList.do")
+  public void setcService(CstService cService) {
+	this.cService = cService;
+}
+
+@RequestMapping(value = "/showClientList.do")
   public String showClientList(ModelMap model){
 	  try{
 		  model.addAttribute("prospects", service.getClientList(true));
@@ -65,14 +74,18 @@ public class ClientController extends AbstractController {
   }
   
   @RequestMapping(value = "/edit.do")
-  public String edit(ModelMap model, @RequestParam(required = true) Integer clientId){
+  public String edit(ModelMap model, @RequestParam(required = true) Integer clientId, 
+		  @ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession){
 	  try{
 		  ClientVO client = service.getClientById(clientId);
+		  CstDTO cst = cService.getCstByEmail(userSession.getUser().getUserEmail());
 		  model.addAttribute("client", client);
 		  model.addAttribute("cstList", service.getCstList());
 		  model.addAttribute("states", service.getAllStates());
 		  model.addAttribute("originTypes", service.getAllOriginTypes());
 		  model.addAttribute("clientTypes", service.getAllClientTypes());
+		  model.addAttribute("userCanEdit", getUserCanEdit(client, cst));
+		  
 		  return "codex/clientDetail";
 	  }
 	  catch(Exception e){
@@ -106,6 +119,24 @@ public class ClientController extends AbstractController {
             System.out.println("getLocationsByZipCodeError=>" + e);
 	  }
 	  return null;
+  }
+  
+  private Boolean getUserCanEdit(ClientVO client, CstDTO cst){
+	  if(cst == null){
+		  return false;
+	  }
+	  
+	  if(!client.isProspect()){
+		  return true;
+	  }
+	  else{
+		  if(cst.getScope() > 0){
+			  return true;
+		  }
+		  else{
+			  return false;
+		  }
+	  }
   }
   
 }

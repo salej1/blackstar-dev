@@ -42,6 +42,9 @@
     }
 
     function advanceDeliverable(deliverableTypeId){
+        // Init
+        $( "#invoiceDeliverableTypes").hide();
+
         // Validation
         if(deliverableTypeId <0 || deliverableTypeId > 10){
             throw "Invalid deliverable type " + deliverableTypeId;
@@ -57,8 +60,14 @@
             // capturar RFC del Cliente
             // cargar orden de compra
             showPicker();
-        } else if(deliverableTypeId == 6 || deliverableTypeId == 10){  // Factura o Attachment
+        } else if(deliverableTypeId == 6 || deliverableTypeId == 11){  // Factura
             // cargar factura
+            $("#invoiceDeliverableTypes").show();
+            $("#deliverableType").hide();
+            $("#deliverableTraceForm").attr("action", "/codex/project/addDeliverableTrace.do");
+            showPicker();
+        } else if(deliverableTypeId == 10) {
+             // cargar attachment
             $("#deliverableTraceForm").attr("action", "/codex/project/addDeliverableTrace.do");
             showPicker();
         } else if(deliverableTypeId == 8){  // Carta de termino
@@ -88,6 +97,10 @@
             $('#deliverableDlg').dialog('close');
           }
         }
+      });
+
+      $("#invoiceDeliverableTypes").bind("change", function(){
+          $("#deliverableTypeId").val($(this).val());
       });
     }
     
@@ -124,7 +137,14 @@
     <form id="deliverableTraceForm" action="/codex/project/advanceStatus.do" method="GET">
         <div style="margin:10px">Nombre del archivo: <input id="documentName" name="documentName" size="75"/> </div>
         
-        <div style="margin:10px">Tipo de adjunto: <input type="text" id="deliverableType" size="75" readonly/></div>
+        <div style="margin:10px">
+            Tipo de adjunto: <input type="text" id="deliverableType" size="75" readonly/>
+            <select style="width:100%" name="" id="invoiceDeliverableTypes">
+              <c:forEach var="invoiceType" items="${invoiceTypes}">
+                <option value="${invoiceType.id}">${invoiceType.name}</option>
+              </c:forEach>
+            </select>
+        </div>
         <input type="hidden" id="deliverableTypeId" name="deliverableTypeId"/>
         <input type="hidden" id="projectId" name="projectId" value="${project.id}"/>
         <input type="hidden" id="projectNumber" name="projectNumber" value="${project.projectNumber}"/>

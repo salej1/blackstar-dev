@@ -115,6 +115,7 @@
 	
 	<bean class="com.codex.web.controller.ClientController" parent="abstractController">
 	    <property name="service" ref="clientService" />
+	    <property name="cService" ref="cstService" />
 	</bean>
 	
 	<bean class="com.codex.web.controller.ProjectController" parent="abstractController">

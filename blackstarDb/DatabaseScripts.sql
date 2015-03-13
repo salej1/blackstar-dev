@@ -3722,6 +3722,8 @@ DROP PROCEDURE blackstarDb.upgradeCodexSchema;
 -- -----------------------------------------------------------------------------
 -- 11 12/03/2015  SAG   Se crea:
 --                              blackstarDb.UpsertCodexProjectEntryType
+--                      Se modifica:
+--                              blackstarDb....KPI
 -- -----------------------------------------------------------------------------
 use blackstarDb;
 
@@ -3815,7 +3817,7 @@ BEGIN
         INNER JOIN codexClientOrigin o ON o._id = cl.clientOriginId
     WHERE p.created >= startDate
         AND p.created <= endDate
-        AND cl.clientOriginId = originId
+     --   AND cl.clientOriginId = originId
         AND p.statusId > 4
         AND if(cst='',1=1,u.email = cst)
     GROUP BY c.name, o.name;
@@ -3833,8 +3835,9 @@ BEGIN
   CREATE TEMPORARY TABLE cstProjects(cstEmail VARCHAR(200), originId INT, projectCount INT, soldCount INT);
 
   INSERT INTO cstProjects(cstEmail, originId, projectCount, soldCount)
-  SELECT createdByUsr, cl.clientOriginId, count(*), 0
+  SELECT u.email, cl.clientOriginId, count(*), 0
   FROM codexProject p
+    INNER JOIN blackstarUser u ON p.createdByUsr = u.blackstarUserId
     INNER JOIN codexClient cl ON p.clientId = cl._id
   WHERE p.created >= startDate
       AND p.created <= endDate
@@ -3843,8 +3846,9 @@ BEGIN
   UPDATE cstProjects SET
     soldCount = (
       SELECT count(*) FROM codexProject p
+        INNER JOIN blackstarUser u ON p.createdByUsr = u.blackstarUserId
         INNER JOIN codexClient cl ON p.clientId = cl._id
-      WHERE createdByUsr = cstEmail
+      WHERE u.email = cstEmail
         AND p.created >= startDate
         AND p.created <= endDate
         AND cl.clientOriginId = originId
@@ -3876,7 +3880,8 @@ BEGIN
     s.name AS status,
     sum(totalProjectNumber) AS amount
   FROM codexProject p
-    INNER JOIN cst c ON p.createdByUsr = c.email
+    INNER JOIN blackstarUser u ON p.createdByUsr = u.blackstarUserId
+    INNER JOIN cst c ON u.email = c.email
     INNER JOIN codexClient cl ON p.clientId = cl._id
     INNER JOIN codexClientOrigin o ON o._id = cl.clientOriginId
     INNER JOIN codexStatusType s ON p.statusId = s._id
@@ -3903,7 +3908,8 @@ BEGIN
     count(*) AS count,
     (count(*) / @projectCount) * 100 AS contribution
   FROM codexProject p
-    INNER JOIN cst c ON p.createdByUsr = c.email
+    INNER JOIN blackstarUser u ON p.createdByUsr = u.blackstarUserId
+    INNER JOIN cst c ON u.email = c.email
     INNER JOIN codexClient cl ON p.clientId = cl._id
     INNER JOIN codexClientOrigin o ON o._id = cl.clientOriginId
     INNER JOIN codexStatusType s ON p.statusId = s._id
@@ -3968,7 +3974,7 @@ BEGIN
     u.name AS cstName,
     count(*) AS count
   FROM codexClient c
-    INNER JOIN blackstarUser u ON u.blackstarUserId = c.cstId
+    INNER JOIN cst u ON u.cstId = c.cstId
   WHERE turnedCustomerDate >= startDate 
     AND turnedCustomerDate <= endDate
   GROUP BY u.name;
@@ -3991,7 +3997,7 @@ BEGIN
 
   SELECT 
     f.productFamily,
-    sum(totalProjectNumber) AS totalamount,
+    sum(totalProjectNumber) AS amount,
     (sum(totalProjectNumber) / @projectTotal) * 100 AS contribution
   FROM codexProject p
     INNER JOIN codexProjectEntry e ON e.projectId = p._id
@@ -5023,6 +5029,9 @@ DELIMITER ;
 -- 6 	24/02/2015	SAG 	Se agregan status a codexStatusType
 --							Se agregan deliverableTypes
 -- ---------------------------------------------------------------------------
+-- 7 	12/03/2015	SAG 	Se agrega Factura Parcial a deliverableTypes
+-- ---------------------------------------------------------------------------
+
 use blackstarDb;
 
 DELIMITER $$
@@ -5034,6 +5043,18 @@ DELIMITER $$
 DROP PROCEDURE IF EXISTS blackstarDb.updateCodexData$$
 CREATE PROCEDURE blackstarDb.updateCodexData()
 BEGIN
+	-- Agregando Factura Parcial
+	IF(SELECT count(*) FROM blackstarDb.codexDeliverableType WHERE name = 'Factura parcial') = 0 THEN
+		INSERT INTO blackstarDb.codexDeliverableType(_id, name, description)
+		SELECT 11, 'Factura finiquito', 'Factura finiquito';
+
+		UPDATE blackstarDb.codexDeliverableType SET
+			name = 'Factura parcial',
+			description = 'Factura parcial'
+		WHERE _id = 6;
+		
+	END IF;
+
 	-- Agregando DeliverableType
 	IF (SELECT count(*) FROM blackstarDb.codexDeliverableType) = 0 THEN
 		INSERT INTO blackstarDb.codexDeliverableType(_id, name, description)

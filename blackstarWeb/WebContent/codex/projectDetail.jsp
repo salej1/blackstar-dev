@@ -195,12 +195,16 @@
 		  		$(".statusButton").hide();
 		  	}
 		  	
-		  	$(".invoiceButton").show();
+		  	if("${invoicingUser}" == "true"){
+			  	$(".invoiceButton").show();
+		  	}
 	      // Status 6 - Surtido --> Adjuntar Factura, Adjuntar Carta de Termino --> Se cierra proyecto
 		  } else if(projectStatus == '6') {
 		  		$(".statusButton").html("Adjuntar Carta de Término");
 			  	targetDeliverableType = 8;
-		  		$(".invoiceButton").show();
+		  		if("${invoicingUser}" == "true"){
+			  		$(".invoiceButton").show();
+		  		}
 	      // Status 7 - Cerrado 
 		  } else if(projectStatus == '7'){
 		  		$(".statusButton").hide();
@@ -384,13 +388,19 @@
 	    }
 	    
 	    function commit(){
+		  $("#WaitMessage").dialog('open');
+
 	      var isUpdate = '${isUpdate}';
+
 	      if(validate()){
 	    	prepareSubmit();
 	    	if(isUpdate == 'true'){
 	    	  $('#mainForm').attr('action', '/codex/project/update.do');
 	    	}
 	    	$("#mainForm").submit();
+	      }
+	      else{
+			  $("#WaitMessage").dialog('close');
 	      }
 	    }
 	    

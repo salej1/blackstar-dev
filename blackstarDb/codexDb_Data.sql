@@ -22,6 +22,9 @@
 -- 6 	24/02/2015	SAG 	Se agregan status a codexStatusType
 --							Se agregan deliverableTypes
 -- ---------------------------------------------------------------------------
+-- 7 	12/03/2015	SAG 	Se agrega Factura Parcial a deliverableTypes
+-- ---------------------------------------------------------------------------
+
 use blackstarDb;
 
 DELIMITER $$
@@ -33,6 +36,18 @@ DELIMITER $$
 DROP PROCEDURE IF EXISTS blackstarDb.updateCodexData$$
 CREATE PROCEDURE blackstarDb.updateCodexData()
 BEGIN
+	-- Agregando Factura Parcial
+	IF(SELECT count(*) FROM blackstarDb.codexDeliverableType WHERE name = 'Factura parcial') = 0 THEN
+		INSERT INTO blackstarDb.codexDeliverableType(_id, name, description)
+		SELECT 11, 'Factura finiquito', 'Factura finiquito';
+
+		UPDATE blackstarDb.codexDeliverableType SET
+			name = 'Factura parcial',
+			description = 'Factura parcial'
+		WHERE _id = 6;
+		
+	END IF;
+
 	-- Agregando DeliverableType
 	IF (SELECT count(*) FROM blackstarDb.codexDeliverableType) = 0 THEN
 		INSERT INTO blackstarDb.codexDeliverableType(_id, name, description)
