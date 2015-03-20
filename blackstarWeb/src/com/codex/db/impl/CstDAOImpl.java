@@ -12,7 +12,14 @@ public class CstDAOImpl extends AbstractDAO implements CstDAO{
 	public CstDTO getCstByEmail(String email) {
 		String sql = "CALL GetCstByEmail(?)";
 		
-		return (CstDTO) getJdbcTemplate().queryForObject(sql, new Object[]{ email }, getMapperFor(CstDTO.class));
+		List<CstDTO> res = (List<CstDTO>) getJdbcTemplate().query(sql, new Object[]{ email }, getMapperFor(CstDTO.class));
+		
+		if(res.size() > 0){
+			return res.get(0);
+		}
+		else{
+			return null;
+		}
 	}
 
 	@Override

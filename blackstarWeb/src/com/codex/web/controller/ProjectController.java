@@ -81,17 +81,18 @@ private Boolean userCanDeliver(UserSession userSession){
 
 	try {
 		 CstDTO cstId =  cstService.getCstByEmail(userSession.getUser().getUserEmail());
+		 Integer id= 0;
 		 
 		 if(cstId != null){
-			 Integer id= -1;
 			 if(isSalesMgr(userSession) || cstId.getScope() == 1){
 				 id = 0;
 			 }
 			 else{
 				 id = cstId.getCstId();
 			 }
-			 model.addAttribute("projects", service.getAllProjectsByUsrJson(id));
 		 }
+		 
+		 model.addAttribute("projects", service.getAllProjectsByUsrJson(id));
 		 
 	} catch (Exception e) {
 		Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
@@ -152,6 +153,7 @@ private Boolean userCanDeliver(UserSession userSession){
 		 model.addAttribute("userCanDeliver", userCanDeliver(userSession));
 		 model.addAttribute("invoicingUser", isInvoicingUser(userSession.getUser()));
 		 model.addAttribute("invoiceTypes", getInvoiceDeliverableTypes(deliverableTypes));
+		 model.addAttribute("userCanPropose", userCanPropose(userSession.getUser()));
 		 
 		} catch (Exception e) {
 			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
@@ -411,6 +413,34 @@ private Boolean userCanDeliver(UserSession userSession){
 	}
 	return "redirect:/codex/project/edit.do?projectId=" + projectId;
   }
+  
+  @RequestMapping(value = "/cancelProject.do") 
+  public String cancelProject(ModelMap model, HttpServletRequest request 
+		            , @RequestParam(required = true) Integer projectId,
+		            @ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession){
+	  ProjectVO project = null;
+	  try {
+		    project = service.getProjectDetail(projectId, cstService.getCstByEmail(userSession.getUser().getUserEmail()));
+	        service.cancelProject(project);
+	        
+	        // crear registro de cancelacion
+	        DeliverableTraceDTO deliverable = new DeliverableTraceDTO();
+	        deliverable.setCodexProjectId(projectId);
+	        deliverable.setCreated(Globals.getLocalTime());
+	        deliverable.setCreatedBy("ProjectController");
+	        deliverable.setCreatedByUsr(userSession.getUser().getUserEmail());
+	        deliverable.setUserId(userSession.getUser().getUserEmail());
+	        deliverable.setDeliverableTypeId(12);
+	        
+	        service.addDeliverableTrace(deliverable);
+	  } catch (Exception e) {
+			e.printStackTrace();
+			Logger.Log(LogLevel.ERROR,e.getStackTrace()[0].toString(), e);
+			model.addAttribute("errorDetails", e.getMessage());
+			return "error";
+	}
+	return "redirect:/codex/project/edit.do?projectId=" + projectId;
+  }
 	
   private List<CostCenterDTO> getCostCenterList(String projectNumber){
 	  List<CostCenterDTO> ccList = service.getCostCenterList();
@@ -425,6 +455,16 @@ private Boolean userCanDeliver(UserSession userSession){
   
   private Boolean isInvoicingUser(User user){
 	  if(user.getBelongsToGroup().get(Globals.GROUP_INVOICING) != null && user.getBelongsToGroup().get(Globals.GROUP_INVOICING)){
+		  return true;
+	  }
+	  else{
+		  return false;
+	  }
+  }
+  
+  private Boolean userCanPropose(User user){
+	  if((user.getBelongsToGroup().get(Globals.GROUP_SALES_MANAGER) != null && user.getBelongsToGroup().get(Globals.GROUP_SALES_MANAGER))
+			  || (user.getBelongsToGroup().get(Globals.GROUP_CST) != null && user.getBelongsToGroup().get(Globals.GROUP_CST))){
 		  return true;
 	  }
 	  else{

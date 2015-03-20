@@ -49,6 +49,21 @@
 		        }
 		    });
 
+		    $( "#ConfirmMessage" ).dialog({
+		      modal: true,
+		      autoOpen: false,
+		      width: 390,
+		      buttons: {
+		        	"Si" : function(){
+		        		$(this).dialog('close');
+		        		performCancelProject();
+		        	},
+		        	"No" : function(){
+		        		$(this).dialog('close');
+		        	}
+		        }
+		    });
+
 			setupStatusButton();
 			
 			// Bloqueo de campos
@@ -179,8 +194,13 @@
 		  	}
 	      // Status 3 - Autorizada --> Crear cotizacion
 		  } else if(projectStatus == '3'){
+		  	if("${userCanPropose}" == "true"){
 		  		$(".statusButton").html("Enviar cotización");
 			  	targetDeliverableType = 3;
+		  	}
+		  	else{
+		  		$(".statusButton").hide();
+		  	}
 	      // Status 4 - En cotizacion --> Cargar orden de compra --> Se genera pedido
 		  } else if(projectStatus == '4'){
 		  		$(".statusButton").html("Cargar orden de compra");
@@ -207,6 +227,8 @@
 		  		}
 	      // Status 7 - Cerrado 
 		  } else if(projectStatus == '7'){
+		  		$(".statusButton").hide();
+		  } else if (projectStatus == '8'){
 		  		$(".statusButton").hide();
 		  }
 	    }
@@ -492,6 +514,15 @@
 	      $("#mainForm").submit();
 	    }
 
+	    function cancelProject(){
+	      $("#ConfirmMessage").dialog('open');
+	    }
+
+	    function performCancelProject(){
+	      targetDeliverableType = 12;
+	      advanceDeliverable(targetDeliverableType);
+	    }
+
 	    function calcItem(itemNumber){
 	    	var rawQty = $("#itemQuantity_" + itemNumber).val();
 	    	var rawPrice = $("#itemPriceByUnit_" + itemNumber).val();
@@ -744,7 +775,7 @@
 <!--   CONTENT COLUMN   -->			
 				<div class="grid_16">					
 					<div class="box">
-						<h2>Cedula de proyectos</h2>				
+						<h2>Cédula de proyectos</h2>				
 						<div>
 							<p></p>							
 							<button class="searchButton statusButton" onclick="advanceStatus(); return false;"></button>
@@ -756,7 +787,14 @@
 							<c:if test="${enableFallback}">
 								<button class="searchButton" onclick="fallBackStatus();">Editar</button>
 							</c:if>
-							<button class="searchButton" onclick="window.history.back();">Descartar</button>
+							<c:if test="${user.belongsToGroup['CST'] || user.belongsToGroup['Gerente comercial']}">
+								<c:if test="${project.statusId < 8}">
+									<button class="searchButton" onclick="cancelProject(); return false;">Descartar cédula</button>
+								</c:if>
+								<c:if test="${project.statusId == 8}">
+									<button class="searchButton" onclick="fallBackStatus(); return false;">Reabrir</button>
+								</c:if>
+							</c:if>
 							<hr>
 						</div>		
 <!--   ENCABEZADO CEDULA   -->			
@@ -1015,7 +1053,7 @@
 							<tbody></tbody>
 						</table>
 <!--   ~COTIZACIONES   -->		
-                         <c:if test="${not enableEdition}">
+                         <c:if test="${project.id != 0}">
 <!--   SEGUIMIENTO   -->		
 							<br /><br />		
 							<c:import url="_followTable.jsp"></c:import>
@@ -1042,7 +1080,14 @@
 							<c:if test="${enableFallback}">
 								<button class="searchButton" onclick="fallBackStatus();">Editar</button>
 							</c:if>
-							<button class="searchButton" onclick="window.history.back();">Descartar</button>
+							<c:if test="${user.belongsToGroup['CST'] || user.belongsToGroup['Gerente comercial']}">
+								<c:if test="${project.statusId < 8}">
+									<button class="searchButton" onclick="cancelProject(); return false;">Descartar cédula</button>
+								</c:if>
+								<c:if test="${project.statusId == 8}">
+									<button class="searchButton" onclick="fallBackStatus(); return false;">Reabrir</button>
+								</c:if>
+							</c:if>
 						</div>
 					</div>					
 				</div>
@@ -1070,6 +1115,10 @@
 
 				<div id="WaitMessage" title="Guardando Cedula de Proyecto" style="text-align:center">
 					Procesando cedula de proyecto, espere... <br><br> <img src="/img/processing.gif"/>
+				</div>
+
+				<div id="ConfirmMessage" title="Cancelar Cedula de Proyecto" style="text-align:center">
+					Confirma que desea descartar esta cédula de proyecto?
 				</div>
 								
 <!--   ~ CONTENT COLUMN   -->

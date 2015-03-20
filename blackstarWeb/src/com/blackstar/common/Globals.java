@@ -55,6 +55,7 @@ public class Globals {
 	  public static final String GROUP_CALL_CENTER = "sysCallCenter";
 	  public static final String GROUP_COORDINATOR = "sysCoordinador";
 	  public static final String GROUP_SALES_MANAGER = "Gerente comercial";
+	  public static final String GROUP_CST= "CST";
 	  public static final String GROUP_PURCHASE = "Compras";
 	  public static final String GROUP_PURCHASE_MANAGER = "Jefe de Compras";
 	  public static final String GROUP_INVOICING = "Facturacion";

@@ -75,12 +75,13 @@
  </head>
 <body>
 	<div id="content" class="container_16 clearfix">
-	     <div class="grid_16">	
-			<p>
-				<img src="/img/navigate-right.png"/><a href="${pageContext.request.contextPath}/codex/project/create.do" >Nueva cedula de proyectos</a>
-			</p>
-		</div>
-		
+		<c:if test="${user.belongsToGroup['Gerente comercial'] || user.belongsToGroup['CST']}">
+		     <div class="grid_16">	
+				<p>
+					<img src="/img/navigate-right.png"/><a href="${pageContext.request.contextPath}/codex/project/create.do" >Nueva cedula de proyectos</a>
+				</p>
+			</div>
+		</c:if>
 		<div class="grid_16">
 
 			<div class="grid_16">

@@ -40,17 +40,20 @@ public class DashboardController extends AbstractController{
 		 
 		 CstDTO cst = cstService.getCstByEmail(user.getUserEmail());
 		 
-		 if(cst == null){
-			 throw new Exception("Es necesario tener privilegios de CST para acceder a esta pagina");
+		 if(cst != null){
+			 model.addAttribute("newProjects", service.getProjectsByStatusAndUserJson(1, cst.getCstId()));
+	         model.addAttribute("byAuthProjects", service.getProjectsByStatusJson(2));
+		     model.addAttribute("authProjects", service.getProjectsByStatusJson(3));
 		 }
-         model.addAttribute("newProjects", service.getProjectsByStatusAndUserJson(1, cst.getCstId()));
-         model.addAttribute("byAuthProjects", service.getProjectsByStatusJson(2));
-	     model.addAttribute("authProjects", service.getProjectsByStatusJson(3));
+		 else{
+			 model.addAttribute("newProjects", "[]");
+	         model.addAttribute("byAuthProjects", "[]");
+		     model.addAttribute("authProjects", "[]");
+		 }
 
 	} catch (Exception e) {
 		e.printStackTrace();
-		model.addAttribute("errorDetails", e.getStackTrace()[0].toString());
-		System.out.println("Error =>" + e);
+		model.addAttribute("errorDetails", e.getMessage());
 		return "error";
 	}
 	return "codex/dashboard";

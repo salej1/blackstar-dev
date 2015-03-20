@@ -132,22 +132,28 @@
 	     <c:set var="sysSalesManger" scope="request" value="${user.belongsToGroup['Gerente comercial']}" />
 	     <c:set var="sysCST" scope="request" value="${user.belongsToGroup['CST']}" />
 
-	     <div class="grid_16">
-	     	<!-- Llamadas de ventas	 -->
-	     	<c:import url="salesCall.jsp"></c:import>
-			<script type="text/javascript">
-				$(function(){
-					initialize_salesCall();
-				});
-			</script>
-			<p>
-				<img src="/img/navigate-right.png"/><a href="${pageContext.request.contextPath}/codex/client/create.do" >Nuevo Prospecto</a>
-			</p>
-			<p>
-				<img src="/img/navigate-right.png"/><a href="${pageContext.request.contextPath}/codex/project/create.do" >Nueva cedula de proyectos</a>
-			</p>
-		</div>
-		
+		 <c:if test="${sysSalesManger || sysCST}">
+		     <div class="grid_16">
+		     	<!-- Llamadas de ventas	 -->
+		     	<c:import url="salesCall.jsp"></c:import>
+				<script type="text/javascript">
+					$(function(){
+						initialize_salesCall();
+					});
+				</script>
+				<p>
+					<img src="/img/navigate-right.png"/><a href="${pageContext.request.contextPath}/codex/client/create.do" >Nuevo Prospecto</a>
+				</p>
+				<p>
+					<img src="/img/navigate-right.png"/><a href="${pageContext.request.contextPath}/codex/project/create.do" >Nueva cedula de proyectos</a>
+				</p>
+				<p>
+					<img src="/img/navigate-right.png"/><a href="${pageContext.request.contextPath}/codex/visit/create.do" >Registrar visita</a>
+				</p>
+				<br>				
+
+			</div>
+		</c:if>
 		<c:if test="${user.belongsToGroup['Gerente comercial']}">
         <div class="grid_16">
 			<div class="box">
@@ -229,12 +235,14 @@
 		</c:if>
 		
 		<!-- Visitas a clientes -->
-		<c:import url="visitList.jsp"></c:import>
-		<script type="text/javascript">
-			$(function(){
-				visitList_init();
-			});
-		</script>
+		 <c:if test="${sysSalesManger || sysCST}">
+			<c:import url="visitList.jsp"></c:import>
+			<script type="text/javascript">
+				$(function(){
+					visitList_init();
+				});
+			</script>
+		</c:if>
 	</div>
 </body>
 </html>

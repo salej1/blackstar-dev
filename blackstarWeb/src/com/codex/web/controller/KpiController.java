@@ -173,12 +173,7 @@ public class KpiController extends AbstractController{
 			@RequestParam(required=true) String cst,
 			@ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession) {
 		try {
-			if(userSession.getUser().getBelongsToGroup().get(Globals.GROUP_SALES_MANAGER) != null){
-				return service.getSalesCallsRecords(startDate, endDate, "All");
-			}
-			else{
-				return service.getSalesCallsRecords(startDate, endDate, userSession.getUser().getUserEmail());
-			}
+			return service.getSalesCallsRecords(startDate, endDate, cst);
 			
 		} catch (Exception e) {
 			System.out.println("getComerceCodes=>" + e);

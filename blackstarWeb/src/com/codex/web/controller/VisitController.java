@@ -12,6 +12,7 @@ import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
 import com.blackstar.model.UserSession;
 import com.blackstar.web.AbstractController;
+import com.codex.model.dto.CstDTO;
 import com.codex.model.dto.VisitDTO;
 import com.codex.service.ClientService;
 import com.codex.service.CstService;
@@ -62,9 +63,15 @@ public class VisitController extends AbstractController {
 			@ModelAttribute(Globals.SESSION_KEY_PARAM) UserSession userSession){
 		try{
 			VisitDTO visit = new VisitDTO();
-			visit.setVisitStatusId("P");
-			model.addAttribute("visit", visit);
+			CstDTO cst = cstService.getCstByEmail(userSession.getUser().getUserEmail());
 			
+			if(cst == null){
+				throw new Exception("Es necesario tener privilegios de CST para registrar visitas a clientes");
+			}
+			visit.setVisitStatusId("P");
+			visit.setCstId(cst.getCstId());
+			model.addAttribute("visit", visit);
+						
 			model.addAttribute("mode", "new");
 			model.addAttribute("isEditable", true);
 			model.addAttribute("clients", clService.getCLientListJson());

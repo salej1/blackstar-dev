@@ -15,6 +15,7 @@
 <script src="/DataTables-1.9.4/media/js/jquery.dataTables.js"></script>
 
 <script type="text/javascript" charset="utf-8">
+	 var canTriggerProject = "${user.belongsToGroup['Gerente comercial'] || user.belongsToGroup['CST']}";
 
 	 $(document).ready(function() {
 
@@ -43,7 +44,16 @@
 							  { "mData": "contactName" },
 							  { "mData": null }
 						  ],
-				"aoColumnDefs" : [{"mRender" : function(data, type, row){return "<div align=center style='width:75px;'><a href=${pageContext.request.contextPath}/codex/project/create.do?clientId=" + row.id + ">" + "Crear Cedula" + "</a></div>";}, "aTargets" : [5]},
+				"aoColumnDefs" : [{"mRender" : function(data, type, row){
+													if(canTriggerProject == "true"){
+														return "<div align=center style='width:75px;'>\
+															<a href=${pageContext.request.contextPath}/codex/project/create.do?clientId=" + row.id + ">" + "Crear Cedula" + "</a>\
+															</div>";
+													}
+													else{
+														return "";
+													}
+												}, "aTargets" : [5]},
 				                  {"mRender" : function(data, type, row){return "<div><a href=${pageContext.request.contextPath}/codex/client/edit.do?clientId=" + row.id + ">" + data + "</a></div>";}, "aTargets" : [2]}]}
 			);
 		 
@@ -65,7 +75,15 @@
 							  { "mData": null}
 							  
 						  ],
-				"aoColumnDefs" : [{"mRender" : function(data, type, row){return "<div align=center style='width:75px;'><a href=${pageContext.request.contextPath}/codex/project/create.do?clientId=" + row.id + ">" + "Crear Cedula" + "</a></div>";}, "aTargets" : [5]},
+				"aoColumnDefs" : [{"mRender" : function(data, type, row){
+													if(canTriggerProject == "true"){
+														return "<div align=center style='width:75px;'>\
+															<a href=${pageContext.request.contextPath}/codex/project/create.do?clientId=" + row.id + ">" + "Crear Cedula" + "</a></div>";
+													}
+													else{
+														return "";
+													}
+												}, "aTargets" : [5]},
 				                  {"mRender" : function(data, type, row){return "<div><a href=${pageContext.request.contextPath}/codex/client/edit.do?clientId=" + row.id + ">" + data + "</a></div>";}, "aTargets" : [2]}]}
 			);
 		
@@ -78,12 +96,13 @@
  </head>
 <body>
 	<div id="content" class="container_16 clearfix">
+		<c:if test="${user.belongsToGroup['Gerente comercial'] || user.belongsToGroup['CST']}">
 	     <div class="grid_16">	
 			<p>
 				<img src="/img/navigate-right.png"/><a href="${pageContext.request.contextPath}/codex/client/create.do" >Nuevo Prospecto</a>
 			</p>
 		</div>
-		
+		</c:if>
 		<div class="grid_16">
 
 			<div class="grid_16">

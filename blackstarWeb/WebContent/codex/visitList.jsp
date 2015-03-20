@@ -52,10 +52,10 @@
 					"aoColumnDefs" : [{"mRender" : function(data, type, row){return "<div><a href='${pageContext.request.contextPath}/codex/visit/show.do?codexVisitId=" + row.codexVisitId + "'>" + data + "</a></div>";}, "aTargets" : [2]},
 									  {"mRender" : function(data, type, row){
 									  		if(row.visitStatusId == "P"){
-										  		return "<div align='center'><a href='#' onclick='$(\"#closingVisitId\").val(" + row.codexVisitId + "); closeVisit(); return false;'>Visita realizada</a></div>";
+										  		return "<div align='left'><a href='#' onclick='$(\"#closingVisitId\").val(" + row.codexVisitId + "); closeVisit(); return false;'>Cerrar visita</a></div>";
 									  		}
 									  		else{
-									  			return "";
+									  			return row.closure;
 									  		}
 									  	}, "aTargets" : [4]}	    		    	       
 									   ]}
@@ -69,12 +69,6 @@
 	Seccion tabla de visitas a clientes
 -->
 	<div class="grid_16">
-		<div>
-			<img src="/img/navigate-right.png"/><a href="${pageContext.request.contextPath}/codex/visit/create.do" >Registrar visita</a>
-		</div>
-		
-		<br>				
-
 		<div class="box">
 			<h2>Visitas de prospección</h2>
 			<div class="utils">
@@ -83,10 +77,10 @@
 				<thead>
 					<tr>
 						<th style="width:180px;">CST</th>
-						<th style="width:150px;">Fecha</th>
-						<th style="width:350px;">Cliente</th>
-						<th>Estatus</th>
-						<th>Accion</th>
+						<th style="width:130px;">Fecha</th>
+						<th style="width:300px;">Cliente</th>
+						<th style="width:70px;">Estatus</th>
+						<th>Seguimiento</th>
 					</tr>
 				</thead>
 				<tbody>

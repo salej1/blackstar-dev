@@ -3763,7 +3763,7 @@ BEGIN
     count(s.codexSalesCallId) AS callCount
   FROM cst c
     LEFT OUTER JOIN codexSalesCall s ON s.cstId = c.cstId
-  WHERE if(cstEmail = 'All', 1=1, c.email = cstEmail)
+  WHERE if(cstEmail = '', 1=1, c.email = cstEmail)
     AND callDate >= startDate 
     AND callDate <= endDate
   GROUP BY c.name, s.month, s.year;
@@ -3808,8 +3808,8 @@ BEGIN
     SELECT
         c.name AS cstName,
         sum(p.totalProjectNumber) AS amount,
-        o.name AS origin,
-        CONVERT((sum(p.totalProjectNumber) / yearQuota) * 100, CHAR) AS coverage
+        if(originId = 0, 'Todos', o.name) AS origin,
+        if(yearQuota = 0, 'No disponible', CONVERT((sum(p.totalProjectNumber) / yearQuota) * 100, CHAR)) AS coverage
     FROM codexProject p
         INNER JOIN blackstarUser u ON p.createdByUsr = u.blackstarUserId
         INNER JOIN cst c ON u.email = c.email
@@ -3817,10 +3817,11 @@ BEGIN
         INNER JOIN codexClientOrigin o ON o._id = cl.clientOriginId
     WHERE p.created >= startDate
         AND p.created <= endDate
-     --   AND cl.clientOriginId = originId
+        AND if(originId = 0, 1=1, cl.clientOriginId = originId)
         AND p.statusId > 4
         AND if(cst='',1=1,u.email = cst)
-    GROUP BY c.name, o.name;
+    GROUP BY c.name, o.name
+    ORDER BY c.name;
   
 END$$
 
@@ -3832,16 +3833,25 @@ DROP PROCEDURE IF EXISTS blackstarDb.getCodexEffectiveness$$
 CREATE PROCEDURE blackstarDb.getCodexEffectiveness(startDate DATETIME, endDate DATETIME, cst VARCHAR(200), originId INT)
 BEGIN
   
-  CREATE TEMPORARY TABLE cstProjects(cstEmail VARCHAR(200), originId INT, projectCount INT, soldCount INT);
+  DROP TABLE IF EXISTS cstProjects;
+  CREATE TEMPORARY TABLE cstProjects(cstEmail VARCHAR(200), origin VARCHAR(300), projectCount INT, soldCount INT);
 
-  INSERT INTO cstProjects(cstEmail, originId, projectCount, soldCount)
-  SELECT u.email, cl.clientOriginId, count(*), 0
+  INSERT INTO cstProjects(cstEmail, origin, projectCount, soldCount)
+  SELECT 
+    u.email,
+    if(originId = 0, 'Todos', o.name), 
+    count(*),
+    0
   FROM codexProject p
     INNER JOIN blackstarUser u ON p.createdByUsr = u.blackstarUserId
     INNER JOIN codexClient cl ON p.clientId = cl._id
+    INNER JOIN codexClientOrigin o ON cl.clientOriginId = o._id
   WHERE p.created >= startDate
       AND p.created <= endDate
-  GROUP BY createdByUsr, clientOriginId;
+      AND if(cst = '', 1 = 1, u.email = cst)
+      AND if(originId = 0, 1 = 1, cl.clientOriginId = originId)
+      AND p.statusId >= 4
+  GROUP BY createdByUsr;
 
   UPDATE cstProjects SET
     soldCount = (
@@ -3851,16 +3861,16 @@ BEGIN
       WHERE u.email = cstEmail
         AND p.created >= startDate
         AND p.created <= endDate
-        AND cl.clientOriginId = originId
-        AND p.statusId >=4);
+        AND if(originId = 0, 1 = 1, cl.clientOriginId = originId)
+        AND p.statusId > 4 AND p.statusId < 8);
 
   SELECT
     c.name AS cstName,
-    o.name AS origin,
+    origin AS origin,
     (soldCount/projectCount) * 100 AS effectiveness
   FROM cstProjects p
     INNER JOIN cst c ON p.cstEmail = c.email
-    INNER JOIN codexClientOrigin o ON p.originId = o._id;
+  ORDER BY c.name;
 
   DROP TABLE cstProjects;
   
@@ -3876,8 +3886,8 @@ BEGIN
 
   SELECT
     c.name AS cstName,
-    o.name AS origin,
-    s.name AS status,
+    if(originId = 0, 'Todos', o.name) AS origin,
+    count(*) as count,
     sum(totalProjectNumber) AS amount
   FROM codexProject p
     INNER JOIN blackstarUser u ON p.createdByUsr = u.blackstarUserId
@@ -3887,7 +3897,11 @@ BEGIN
     INNER JOIN codexStatusType s ON p.statusId = s._id
   WHERE p.created >= startDate
     AND p.created <= endDate
-  GROUP BY c.name, o.name, s.name;
+    AND if(cst = '', 1 = 1, u.email = cst)
+    AND if(originId = 0, 1 = 1, cl.clientOriginId = originId) 
+    AND p.statusId > 3
+  GROUP BY c.name
+  ORDER BY c.name;
 
   
 END$$
@@ -3899,11 +3913,22 @@ DROP PROCEDURE IF EXISTS blackstarDb.getCodexProjectsByStatus$$
 CREATE PROCEDURE blackstarDb.getCodexProjectsByStatus(startDate DATETIME, endDate DATETIME, cst VARCHAR(200), originId INT)
 BEGIN
 
-  SET @projectCount = (SELECT count(*) FROM codexProject WHERE created >= startDate AND created <= endDate);
+  SET @projectCount = (
+    SELECT count(*) 
+    FROM codexProject p
+    INNER JOIN blackstarUser u ON p.createdByUsr = u.blackstarUserId
+    INNER JOIN cst c ON u.email = c.email
+    INNER JOIN codexClient cl ON p.clientId = cl._id
+    INNER JOIN codexClientOrigin o ON o._id = cl.clientOriginId
+    INNER JOIN codexStatusType s ON p.statusId = s._id
+  WHERE p.created >= startDate
+    AND p.created <= endDate
+    AND if(cst = '', 1 = 1, u.email = cst)
+    AND if(originId = 0, 1 = 1, cl.clientOriginId = originId));
 
   SELECT
-    c.name AS cstName,
-    o.name AS origin,
+    if(cst = '' , 'Todos', c.name) AS cstName,
+    if(originId = 0, 'Todos', o.name) AS origin,
     s.name AS status,
     count(*) AS count,
     (count(*) / @projectCount) * 100 AS contribution
@@ -3915,7 +3940,10 @@ BEGIN
     INNER JOIN codexStatusType s ON p.statusId = s._id
   WHERE p.created >= startDate
     AND p.created <= endDate
-  GROUP BY c.name, o.name, s.name;
+    AND if(cst = '', 1 = 1, u.email = cst)
+    AND if(originId = 0, 1 = 1, cl.clientOriginId = originId) 
+  GROUP BY s.name
+  ORDER BY p.statusId;
   
 END$$
 
@@ -3926,17 +3954,29 @@ DROP PROCEDURE IF EXISTS blackstarDb.getCodexProjectsByOrigin$$
 CREATE PROCEDURE blackstarDb.getCodexProjectsByOrigin(startDate DATETIME, endDate DATETIME, cst VARCHAR(200), originId INT)
 BEGIN
 
-  SET @projectTotal = (SELECT sum(totalProjectNumber) FROM codexProject WHERE created >= startDate AND created <= endDate);
-
-  SELECT
-    o.name AS origin,
-    sum(totalProjectNumber) AS amount,
-    (sum(totalProjectNumber) / @projectTotal) * 100 AS contribution
-  FROM codexProject p
+  SET @projectTotal = (
+    SELECT count(*)
+    FROM codexProject p
+    INNER JOIN blackstarUser u ON p.createdByUsr = u.blackstarUserId
     INNER JOIN codexClient cl ON p.clientId = cl._id
     INNER JOIN codexClientOrigin o ON o._id = cl.clientOriginId
   WHERE p.created >= startDate
     AND p.created <= endDate
+    AND if(cst = '', 1 = 1, u.email = cst)
+    AND if(originId = 0, 1 = 1, cl.clientOriginId = originId));
+
+  SELECT
+    o.name AS origin,
+    count(*) AS count,
+    (count(*) / @projectTotal) * 100 AS contribution
+  FROM codexProject p
+    INNER JOIN blackstarUser u ON p.createdByUsr = u.blackstarUserId
+    INNER JOIN codexClient cl ON p.clientId = cl._id
+    INNER JOIN codexClientOrigin o ON o._id = cl.clientOriginId
+  WHERE p.created >= startDate
+    AND p.created <= endDate
+    AND if(cst = '', 1 = 1, u.email = cst)
+    AND if(originId = 0, 1 = 1, cl.clientOriginId = originId) 
   GROUP BY o.name;
   
 END$$
@@ -3950,7 +3990,7 @@ BEGIN
 
   SELECT 
     c.name AS cstName,
-    ifnull(o.name, '') AS origin,
+    if(originId = 0, 'Todos', o.name) AS origin,
     count(*) AS count
   FROM codexVisit v 
     INNER JOIN cst c ON v.cstId = c.cstId
@@ -3958,8 +3998,11 @@ BEGIN
     LEFT OUTER JOIN codexClientOrigin o ON o._id = cl.clientOriginId
   WHERE v.created >= startDate
     AND v.created <= endDate
+    AND if(cst = '', 1 = 1, c.email = cst)
+    AND if(originId = 0, 1 = 1, cl.clientOriginId = originId) 
     AND v.visitStatusId = 'R'
-  GROUP BY c.name, o.name;
+  GROUP BY c.name
+  ORDER BY c.name;
   
 END$$
 
@@ -3977,6 +4020,7 @@ BEGIN
     INNER JOIN cst u ON u.cstId = c.cstId
   WHERE turnedCustomerDate >= startDate 
     AND turnedCustomerDate <= endDate
+    AND if(cst = '', 1 = 1, u.email = cst)
   GROUP BY u.name;
    
 END$$
@@ -4100,7 +4144,8 @@ BEGIN
         INNER JOIN blackstarDb.cst c ON v.cstId = c.cstId
         INNER JOIN blackstarDb.codexVisitStatus s ON s.visitStatusId = v.visitStatusId
     WHERE v.visitStatusId != 'D'
-  AND if(ifnull(pcstEmail, '') != '', c.email = pcstEmail, 1=1 );
+  AND if(ifnull(pcstEmail, '') != '', c.email = pcstEmail, 1=1 )
+  ORDER BY visitStatus, visitDate;
 
   
 END$$
@@ -4565,7 +4610,8 @@ BEGIN
   IF pDeliverableTypeId = 6 AND (SELECT isProspect FROM codexClient c WHERE c._id = @clientId) = 0 THEN
 
     UPDATE codexClient SET
-      isProspect = 1
+      isProspect = 1,
+      turnedCustomerDate = CURDATE()
     WHERE _id = @clientId;
   END IF;
 END$$
@@ -4876,7 +4922,8 @@ BEGIN
     INNER JOIN codexProject p ON t.codexProjectId = p._id
     INNER JOIN codexDeliverableType ty ON ty._id = t.deliverableTypeId
     INNER JOIN blackstarUser u ON u.email = t.userId
-  WHERE t.codexProjectId = pProjectId;
+  WHERE t.codexProjectId = pProjectId
+  ORDER BY created;
 END$$  
 
 -- -----------------------------------------------------------------------------
@@ -5031,6 +5078,8 @@ DELIMITER ;
 -- ---------------------------------------------------------------------------
 -- 7 	12/03/2015	SAG 	Se agrega Factura Parcial a deliverableTypes
 -- ---------------------------------------------------------------------------
+-- 8 	19/03/2015	SAG 	Se agrega Cancel Status
+-- ---------------------------------------------------------------------------
 
 use blackstarDb;
 
@@ -5043,6 +5092,17 @@ DELIMITER $$
 DROP PROCEDURE IF EXISTS blackstarDb.updateCodexData$$
 CREATE PROCEDURE blackstarDb.updateCodexData()
 BEGIN
+	-- Agregando cancel Status
+	IF (SELECT count(*) FROM blackstarDb.codexDeliverableType WHERE _id = 12) = 0 THEN
+		INSERT INTO blackstarDb.codexDeliverableType(_id, name, description)
+		SELECT 12,'Cancelacion', 'Cédula cancelada';
+	END IF;
+	
+	IF(SELECT count(*) FROM codexStatusType WHERE _id = 8) = 0 THEN
+		INSERT INTO blackstarDb.codexStatusType(_id, name, description)
+		SELECT 8, 'Cancelado', 'Cancelado';
+	END IF;
+
 	-- Agregando Factura Parcial
 	IF(SELECT count(*) FROM blackstarDb.codexDeliverableType WHERE name = 'Factura parcial') = 0 THEN
 		INSERT INTO blackstarDb.codexDeliverableType(_id, name, description)

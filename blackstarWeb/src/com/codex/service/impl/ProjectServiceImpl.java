@@ -269,6 +269,11 @@ public class ProjectServiceImpl extends AbstractService
   }
   
   @Override
+  public void cancelProject(ProjectVO project) throws Exception {
+	  dao.advanceStatus(project.getId(), 8);
+  }
+
+  @Override
   public List<CostCenterDTO> getCostCenterList() {
 	  return dao.getCostCenterList();
   }
@@ -627,7 +632,4 @@ public class ProjectServiceImpl extends AbstractService
 	  default: return "";
 	  }
   }
-
-
-
 }

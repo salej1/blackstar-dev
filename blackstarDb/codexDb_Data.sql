@@ -24,6 +24,8 @@
 -- ---------------------------------------------------------------------------
 -- 7 	12/03/2015	SAG 	Se agrega Factura Parcial a deliverableTypes
 -- ---------------------------------------------------------------------------
+-- 8 	19/03/2015	SAG 	Se agrega Cancel Status
+-- ---------------------------------------------------------------------------
 
 use blackstarDb;
 
@@ -36,6 +38,17 @@ DELIMITER $$
 DROP PROCEDURE IF EXISTS blackstarDb.updateCodexData$$
 CREATE PROCEDURE blackstarDb.updateCodexData()
 BEGIN
+	-- Agregando cancel Status
+	IF (SELECT count(*) FROM blackstarDb.codexDeliverableType WHERE _id = 12) = 0 THEN
+		INSERT INTO blackstarDb.codexDeliverableType(_id, name, description)
+		SELECT 12,'Cancelacion', 'Cédula cancelada';
+	END IF;
+	
+	IF(SELECT count(*) FROM codexStatusType WHERE _id = 8) = 0 THEN
+		INSERT INTO blackstarDb.codexStatusType(_id, name, description)
+		SELECT 8, 'Cancelado', 'Cancelado';
+	END IF;
+
 	-- Agregando Factura Parcial
 	IF(SELECT count(*) FROM blackstarDb.codexDeliverableType WHERE name = 'Factura parcial') = 0 THEN
 		INSERT INTO blackstarDb.codexDeliverableType(_id, name, description)

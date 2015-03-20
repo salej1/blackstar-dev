@@ -269,26 +269,35 @@ public class ProjectVO {
 	public void setModifiedByUsr(Integer modifiedByUsr) {
 		this.modifiedByUsr = modifiedByUsr;
 	}
-	public String getCstNane() {
-		return cstName;
-	}
-	public void setCstNane(String cstNane) {
-		this.cstName = cstNane;
-	}
 	public String getCstPhone() {
-		return cstPhone;
+		if(cstPhone == null){
+			return "";
+		}
+		else{
+			return cstPhone;
+		}
 	}
 	public void setCstPhone(String cstPhone) {
 		this.cstPhone = cstPhone;
 	}
 	public String getCstEmail() {
-		return cstEmail;
+		if(cstEmail == null){
+			return "";
+		}
+		else{
+			return cstEmail;	
+		}
 	}
 	public void setCstEmail(String cstEmail) {
 		this.cstEmail = cstEmail;
 	}
 	public String getCstName() {
-		return cstName;
+		if(cstName == null){
+			return "";
+		}
+		else{
+			return cstName;	
+		}
 	}
 	public void setCstName(String cstName) {
 		this.cstName = cstName;
@@ -300,13 +309,23 @@ public class ProjectVO {
 		this.cstAutoAuth = cstAutoAuth;
 	}
 	public String getCstPhoneExt() {
-		return cstPhoneExt;
+		if(cstPhoneExt == null){
+			return "";
+		}
+		else{
+			return cstPhoneExt;
+		}
 	}
 	public void setCstPhoneExt(String cstPhoneExt) {
 		this.cstPhoneExt = cstPhoneExt;
 	}
 	public String getCstMobile() {
-		return cstMobile;
+		if(cstMobile == null){
+			return "";
+		}
+		else{
+			return cstMobile;
+		}
 	}
 	public void setCstMobile(String cstMobile) {
 		this.cstMobile = cstMobile;

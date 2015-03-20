@@ -181,13 +181,15 @@
 			<div id="content" class="container_16 clearfix">
 			
 			<!--   LINKS   -->
-		<div class="grid_16">	
-			<p>
-				<c:if test="${mode != 'new'}">
-					<img src="/img/navigate-right.png"/><a href="/codex/project/create.do?clientId=${client.id}" >Crear Cedula de proyecto</a>
-				</c:if>
-			</p>
-		</div>	
+		<c:if test="${user.belongsToGroup['Gerente comercial'] || user.belongsToGroup['CST']}">
+			<div class="grid_16">	
+				<p>
+					<c:if test="${mode != 'new'}">
+						<img src="/img/navigate-right.png"/><a href="/codex/project/create.do?clientId=${client.id}" >Crear Cedula de proyecto</a>
+					</c:if>
+				</p>
+			</div>	
+		</c:if>
 <!--  ~ LINKS   -->
 <!--   CONTENT COLUMN   -->			
 				<div class="grid_16">					

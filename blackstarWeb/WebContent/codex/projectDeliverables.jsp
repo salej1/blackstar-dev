@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@page isELIgnored="false"%>
 
@@ -46,7 +45,7 @@
         $( "#invoiceDeliverableTypes").hide();
 
         // Validation
-        if(deliverableTypeId <0 || deliverableTypeId > 10){
+        if(deliverableTypeId <0 || deliverableTypeId > 12){
             throw "Invalid deliverable type " + deliverableTypeId;
             return;
         }
@@ -74,6 +73,10 @@
             // verificar si hay al menos una factura cargada
             // cargar carta de termino
             showPicker();
+        }  else if(deliverableTypeId == 12){ // Cancelacion
+            $("#deliverableTraceForm").attr("action", "/codex/project/cancelProject.do");
+            $("#WaitMessage").dialog('open');
+            $("#deliverableTraceForm").submit();
         }  else { // Avance sin attachment, solo mover status
             $("#WaitMessage").dialog('open');
             $("#deliverableTraceForm").submit();

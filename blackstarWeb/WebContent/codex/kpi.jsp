@@ -16,6 +16,28 @@
 <script src="/js/moment.min.js"></script>
 
 <script type="text/javascript" charset="utf-8">
+			function toCurrency(n) {
+		    	var amount = Number(0.00);
+		    	if(n == "" || isNaN(n)){
+		    		return "$ 0.00";
+		    	}
+		    	else{
+		    		amount = Number(n);
+			   		return "$ " + amount.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,");
+		    	}
+			}
+
+			function toPercentage(n) {
+		    	var amount = Number(0.00);
+		    	if(n == "" || isNaN(n)){
+		    		return "0.00 %";
+		    	}
+		    	else{
+		    		amount = Number(n);
+			   		return amount.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,") + " %";
+		    	}
+			}
+
 			var year = moment().year();
 			var yearStart = moment({year: year, month: 0, day: 1});
 			var month = moment().month();
@@ -38,10 +60,14 @@
 						"sDom": '<"top"i>rt<"bottom"flp><"clear">',
 						"aoColumns": [
 									  { "mData": "cstName"},
-									  { "mData": "amount" },
 									  { "mData": "origin" },
+									  { "mData": "amount" },
 									  { "mData": "coverage" }
-								  ]}
+								  ],
+						"aoColumnDefs" : [{"mRender" : function(data, type, row){
+															return toCurrency(data);
+												  		}, "aTargets" : [2]
+								  		}]}
 					);
 				});
 
@@ -60,7 +86,11 @@
 									  { "mData": "cstName"},
 									  { "mData": "origin" },
 									  { "mData": "effectiveness" }
-								  ]}
+								  ],
+						"aoColumnDefs" : [{"mRender" : function(data, type, row){
+															return toPercentage(data);
+												  		}, "aTargets" : [2]
+								  		}]}
 					);
 				});
 
@@ -79,8 +109,12 @@
 									  { "mData": "cstName"},
 									  { "mData": "origin" },
 									  { "mData": "amount" },
-									  { "mData": "status" }
-								  ]}
+									  { "mData": "count" }
+								  ],
+						"aoColumnDefs" : [{"mRender" : function(data, type, row){
+															return toCurrency(data);
+												  		}, "aTargets" : [2]
+								  		}]}
 					);
 				});
 
@@ -101,7 +135,11 @@
 									  { "mData": "status" },
 									  { "mData": "count" },
 									  { "mData": "contribution" }
-								  ]}
+								  ],
+						"aoColumnDefs" : [{"mRender" : function(data, type, row){
+															return toPercentage(data);
+												  		}, "aTargets" : [4]
+								  		}]}
 					);
 				});
 
@@ -118,9 +156,13 @@
 						"sDom": '<"top"i>rt<"bottom"flp><"clear">',
 						"aoColumns": [
 									  { "mData": "origin" },
-									  { "mData": "amount" },
+									  { "mData": "count" },
 									  { "mData": "contribution" }
-								  ]}
+								  ],
+						"aoColumnDefs" : [{"mRender" : function(data, type, row){
+															return toPercentage(data);
+												  		}, "aTargets" : [2]
+								  		}]}
 					);
 				});
 
@@ -176,7 +218,14 @@
 									  { "mData": "productFamily" },
 									  { "mData": "amount" },
 									  { "mData": "contribution" }
-								  ]}
+								  ],
+						"aoColumnDefs" : [{"mRender" : function(data, type, row){
+															return toCurrency(data);
+												  		}, "aTargets" : [1]},
+								  		{"mRender" : function(data, type, row){
+															return toPercentage(data);
+												  		}, "aTargets" : [2]
+								  		}]}
 					);
 				});
 
@@ -194,7 +243,11 @@
 						"aoColumns": [
 									  { "mData": "code" },
 									  { "mData": "amount" }
-								  ]}
+								  ],
+						"aoColumnDefs" : [{"mRender" : function(data, type, row){
+															return toCurrency(data);
+												  		}, "aTargets" : [1]
+								  		}]}
 					);
 				});
 
@@ -295,9 +348,9 @@
 							<td>
 								CST
 								<select name="" id="cstList">
-									<option value="0">Todos</option>
+									<option value="">Todos</option>
 									<c:forEach var="cst" items="${cstList}">
-										<option value="${cst.cstId}">${cst.name}</option>
+										<option value="${cst.email}">${cst.name}</option>
 									</c:forEach>
 								</select>
 							</td>
@@ -356,9 +409,9 @@
 					<table id="invoicingKpi">
 						<thead>
 							<tr>
-								<th>CST</th>
-								<th>Monto</th>
+								<th style="width:250px;">CST</th>
 								<th>Origen</th>
+								<th>Monto</th>
 								<th>Cumplimiento Cuota %</th>
 							</tr>
 						</thead>
@@ -373,7 +426,7 @@
 					<table id="effectivenessKpi">
 						<thead>
 							<tr>
-								<th>CST</th>
+								<th style="width:250px;">CST</th>
 								<th>Origen</th>
 								<th>Efectividad</th>
 							</tr>
@@ -389,10 +442,10 @@
 					<table id="proposalsKpi">
 						<thead>
 						<tr>
-							<th>CST</th>
+							<th style="width:250px;">CST</th>
 							<th>Origen</th>
 							<th>Monto</th>
-							<th>Estatus</th>
+							<th>No. de cotizaciones</th>
 						</tr>
 						</thead>
 					</table>
@@ -406,7 +459,7 @@
 					<table id="projectsByStatus">
 						<thead>
 						<tr>
-							<th>CST</th>
+							<th style="width:250px;">CST</th>
 							<th>Origen</th>
 							<th>Estatus</th>
 							<th>Cantidad</th>
@@ -425,7 +478,7 @@
 					<table id="projectsByOrigin">
 						<thead>
 						<tr>
-							<th>Origen</th>
+							<th style="width:250px;">Origen</th>
 							<th>Cantidad</th>
 							<th>Porcentaje</th>
 						</tr>
@@ -474,7 +527,6 @@
 						<tr>
 							<th>Familia de productos</th>
 							<th>Monto</th>
-							<th></th>
 							<th>Contribucion %</th>
 						</tr>
 						</thead>

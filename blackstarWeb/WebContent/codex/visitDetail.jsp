@@ -18,7 +18,6 @@
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery.datetimepicker.css">
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery.ui.theme.css">
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery-ui.min.css">
-	<script src="${pageContext.request.contextPath}/js/dateFormat.js"></script>	
 	<script src="${pageContext.request.contextPath}/js/customAutocomplete.js"></script>	
 	<script src="${pageContext.request.contextPath}/js/jquery.datetimepicker.js"></script>	
 	
@@ -26,7 +25,7 @@
 	<script type="text/javascript">
 	   $(function(){
 	   		if("${mode}" == "new" || "${isEditable}" == "true"){
-		   		$("#visitDate").datetimepicker();
+		   		$("#visitDate").datetimepicker({format:'d/m/Y H:i:s', lang:'es'});
 	   		}
 	   		else{
 	   			if("${isEditable}" == "false"){
@@ -34,7 +33,7 @@
 	   			}
 	   		}
 
-			init_autoComplete(${clients}, "customerName", "clientId", "single");
+			init_autoComplete(${clients}, "customerName", "codexClientId", "single");
 	   });
 
 	   function discard(){

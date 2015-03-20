@@ -1,5 +1,7 @@
 package com.blackstar.logging;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.logging.Level;
 
 import com.blackstar.db.ManageDataAccess;
@@ -10,7 +12,10 @@ public class Logger {
 			Log(level, where, ex.getCause());
 		}
 		else{
-			Log(level, where, ex.toString(), ex.getStackTrace()[1].toString());
+			StringWriter sw = new StringWriter();
+			PrintWriter pw = new PrintWriter(sw);
+			ex.printStackTrace(pw);
+			Log(level, where, ex.toString(), sw.toString());
 		}
 	}
 	
