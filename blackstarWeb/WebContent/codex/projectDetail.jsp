@@ -527,20 +527,32 @@
 	    	var rawQty = $("#itemQuantity_" + itemNumber).val();
 	    	var rawPrice = $("#itemPriceByUnit_" + itemNumber).val();
 	    	var rawDiscount = $("#itemDiscount_" + itemNumber).val();
+
+	    	// normalize
+	    	rawPrice = rawPrice.replace('$','');
+	    	rawPrice = rawPrice.replace(',','');
+	    	$("#itemPriceByUnit_" + itemNumber).val(rawPrice);
+
+	    	rawDiscount = rawDiscount.replace('%','');
+	    	$("#itemDiscount_" + itemNumber).val(rawDiscount);
+	    	
 	    	if(isNaN(rawQty)){
 	    		warning("Por favor verifique la cantidad del Item " + itemNumber + ".<br>Solo se permiten valores numericos");
 	    		$("#itemQuantity_" + itemNumber).focus();
 	    		$("#itemQuantity_" + itemNumber).select();
+	    		return;
 	    	}
 	    	if(isNaN(rawPrice)){
 	    		warning("Por favor verifique el precio unitario del Item " + itemNumber + ".<br>Solo se permiten valores numericos");
 	    		$("#itemPriceByUnit_" + itemNumber).focus();
 	    		$("#itemPriceByUnit_" + itemNumber).select();
+	    		return;
 	    	}
 	    	if(isNaN(rawDiscount)){
 	    		warning("Por favor verifique el descuento del Item " + itemNumber + ".<br>Solo se permiten valores numericos");
 	    		$("#itemDiscount_" + itemNumber).focus();
 	    		$("#itemDiscount_" + itemNumber).select();
+	    		return;
 	    	}
 	    	else{
 	    		var qty = Number(rawQty);
