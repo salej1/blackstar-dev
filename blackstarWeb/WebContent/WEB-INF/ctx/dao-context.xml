@@ -55,6 +55,18 @@
 	   <bean id="internatTicketsKPIDao" class="com.bloom.db.dao.InternatTicketsKPIDaoImpl" parent="abstractDAO"/>        
 	   <bean id="catalogInternalTicketsDao" class="com.bloom.db.dao.CatalogInternalTicketsDaoImpl" parent="abstractDAO"/>
 	   <bean id="reportsTicketsDao" class="com.bloom.db.dao.ReportsTicketsDaoImpl" parent="abstractDAO"/>
-     <bean id="internalTicketsSurveyDao" class="com.bloom.db.dao.InternalTicketsSurveyDaoImpl" parent="abstractDAO"/>
+       <bean id="internalTicketsSurveyDao" class="com.bloom.db.dao.InternalTicketsSurveyDaoImpl" parent="abstractDAO"/>
+	
+    	<!-- Implementacion de CODEX-->
+    	<bean id="customerDAO" class="com.blackstar.db.dao.impl.CustomerDAOImpl" parent="abstractDAO" />
+    	<bean id="warrantProjectDAO" class="com.blackstar.db.dao.impl.WarrantProjectDAOImpl" parent="abstractDAO" />
+    	<bean id="clientDAO" class="com.codex.db.impl.ClientDAOImpl" parent="abstractDAO" />
+    	<bean id="projectDAO" class="com.codex.db.impl.ProjectDAOImpl" parent="abstractDAO" />
+    	<bean id="codexDashboardDAO" class="com.codex.db.impl.DashboardDAOImpl" parent="abstractDAO" />
+    	<bean id="priceProposalDAO" class="com.codex.db.impl.PriceProposalDAOImpl" parent="abstractDAO" />
+    	<bean id="cstDAO" class="com.codex.db.impl.CstDAOImpl" parent="abstractDAO" />
+    	<bean id="visitDAO" class="com.codex.db.impl.VisitDAOImpl" parent="abstractDAO" />
+    	<bean id="kpiDAO" class="com.codex.db.impl.KpiDAOImpl" parent="abstractDAO" />
+    	<bean id="salesCallDAO" class="com.codex.db.impl.SalesCallDAOImpl" parent="abstractDAO" />
 
 </beans>

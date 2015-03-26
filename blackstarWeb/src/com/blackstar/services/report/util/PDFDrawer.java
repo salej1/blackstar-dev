@@ -4,21 +4,25 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.plaf.basic.BasicBorders.MarginBorder;
+
 import com.blackstar.common.StringUtils;
 import com.pdfjet.*;
 
 public class PDFDrawer {
 	
-  private Page page = null;
+  private List<DrawerPage> pages = new ArrayList<DrawerPage>();
+  private DrawerPage currentPage;
   private PDF pdf = null;
   private ByteArrayOutputStream  stream;
-  
+  private int pageCount;
+
   private static final int DEFAULT_FONT_SIZE = 8;
   private static final float DEFAULT_LINE_WIDTH = .5F;
   private static final int DEFAULT_COLOR = Color.black;
   private static final int LEFT_MARGIN = 20;
   private static final int TOP_MARGIN = 20;
-  
+  private static final int MAX_Y_OFFSET = 725;
   
   private static class Point { 
 	  
@@ -34,7 +38,13 @@ public class PDFDrawer {
   public PDFDrawer() throws Exception {
 	stream = new ByteArrayOutputStream ();
 	pdf  = new PDF(stream);
-	page = new Page(pdf, A4.PORTRAIT);
+	newPage();
+  }
+    
+  public void newPage() throws Exception {
+	  pages.add(new DrawerPage());
+	  pageCount = pages.size();
+	  currentPage = pages.get(pageCount - 1);
   }
   
   public ByteArrayOutputStream getStream(){
@@ -44,7 +54,15 @@ public class PDFDrawer {
   public void close() throws Exception {
 	pdf.close();  
   }
-  
+    
+  public void point(float x, float y, float radius, int color, boolean fill) throws Exception {
+	com.pdfjet.Point point = new com.pdfjet.Point(x, TOP_MARGIN + y);
+	point.setShape(com.pdfjet.Point.CIRCLE);
+	point.setRadius(radius);
+	point.setColor(color);
+	point.setFillShape(fill);
+	currentPage.add(point);
+  }
   
   public void line(int x1, int y1, int x2, int y2) throws Exception {
 	 line(x1, y1, x2, y2 , DEFAULT_COLOR, DEFAULT_LINE_WIDTH);
@@ -54,7 +72,7 @@ public class PDFDrawer {
 	Line line = new Line(x1 + LEFT_MARGIN, y1 + TOP_MARGIN, x2 + LEFT_MARGIN, y2 + TOP_MARGIN);
 	line.setColor(color);
 	line.setWidth(width);
-	line.drawOn(page);
+	currentPage.add(line);
   }
   
   public void hLine(int x1, int x2, int y) throws Exception {
@@ -94,8 +112,9 @@ public class PDFDrawer {
 	TextLine box = new TextLine(getFont(isBold, size), text);
 	box.setColor(color == 0 ? DEFAULT_COLOR : color );
 	box.setPosition(x + LEFT_MARGIN, y + TOP_MARGIN);
-	box.drawOn(page);
+	currentPage.add(box);
   }
+  
   
   public void textBox(String text, float x, float y, float w, float h, boolean isBold, float size
 		                                                 , boolean showBorder) throws Exception {
@@ -104,7 +123,7 @@ public class PDFDrawer {
     if(! showBorder){
       box.setNoBorders();
     }
-    box.drawOn(page);
+    currentPage.add(box);
   }
   
   public void textBox(String text, float x, float y, float w, float h, boolean isBold, boolean showBorder) 
@@ -113,11 +132,19 @@ public class PDFDrawer {
   }
   
   public void image(String path, float x, float y, double scale) throws Exception {
+	int type = 0;
+	String ext = path.substring(path.lastIndexOf("."), path.length());
+	if(ext.equals(".jpg")){
+		type = ImageType.JPG;
+	}
+	else if(ext.equals(".png")){
+		type = ImageType.PNG;
+	}
 	Image image = new Image(pdf, getClass().getClassLoader()
-			     .getResourceAsStream(path), ImageType.JPG);
+			     .getResourceAsStream(path), type);
 	image.setPosition(x + LEFT_MARGIN, y + TOP_MARGIN);
 	image.scaleBy(scale);
-	image.drawOn(page);
+	currentPage.add(image);
   }
   
   public void jsonImage(String path, float x, float y) throws Exception {
@@ -125,16 +152,16 @@ public class PDFDrawer {
   }
   
   public void box(int x, int y, int width, int height, boolean fill) throws Exception{
-	box(x,y, width, height, DEFAULT_COLOR, fill);
+	  box(x,y, width, height, DEFAULT_COLOR, fill);
   }
-  
+
   public void box(int x, int y, int width, int height, int color, boolean fill) throws Exception{
-	Box box = new Box();
-	box.setLocation(x + LEFT_MARGIN, y + TOP_MARGIN);
-	box.setSize(width, height);
-	box.setColor(color);
-	box.setFillShape(fill);
-	box.drawOn(page);
+	  Box box = new Box();
+	  box.setLocation(x + LEFT_MARGIN, y + TOP_MARGIN);
+	  box.setSize(width, height);
+	  box.setColor(color);
+	  box.setFillShape(fill);
+	  currentPage.add(box);
   }
   
   private Font getFont(boolean isBold, float size) throws Exception{
@@ -177,5 +204,153 @@ public class PDFDrawer {
 	return lines;
   } 
   
+  public int textBlock(String text, int alignment, int x, int y, int width, Boolean bold, int size) throws Exception{
+	 return textBlock(text, alignment, x, y, width, bold, DEFAULT_COLOR, size);
+  }
+  
+  public int textBlock(String text, int alignment, int x, int y, int width, Boolean bold, int color, int size) throws Exception{
+	  Font f = getFont(bold, size);
+	  String[] word = text.split(" ");
+	  List<String> outBuf = new ArrayList<String>();
+	  int wordIx = 0;
+	  boolean moreWords = (word.length > 0);
+	  int totLines = 0;
+	  
+	  StringBuilder sb = new StringBuilder();
+	  
+	  // 1 - Word Wrap
+	  while(moreWords){
+		  // cabe?
+		  if(f.stringWidth(sb.toString() + word[wordIx]) <= width){
+			  // Fits --> Add it
+			  if(sb.length() == 0){
+				  sb.append(word[wordIx]);
+			  }
+			  else{
+				  sb.append(" " + word[wordIx]);
+			  }
+		  }
+		  else{
+			  // Too long --> Send to buffer and create new line
+			  outBuf.add(sb.toString());
+			  totLines ++;
+			  sb = new StringBuilder();
+			  sb.append(word[wordIx]);
+		  }
+		  
+		  wordIx ++;
+		  moreWords = (word.length > wordIx);
+		  
+		  // Final line
+		  if(!moreWords){
+			  outBuf.add(sb.toString());
+			  totLines ++;
+		  }
+	  }
+	  
+	  // Check if it's going to fit
+	  if(y + totLines * 12 > MAX_Y_OFFSET){
+		  throw new NoSpaceInPageException();
+	  }
+	  
+	  // 2 - Alignment - Left is default
+	  if(alignment == Align.CENTER){
+		  int offset = 0;
+		  
+		  for(String line : outBuf){
+			  TextLine t = new TextLine(f);
+			  StringBuilder val = new StringBuilder(line);
+			  boolean lead = true;
+			  while(f.stringWidth(val.toString() + " ") < width){
+				  if(lead){
+					  val.insert(0, " ");
+					  lead = false;
+				  }
+				  else{
+					  val.append(" ");
+					  lead = true;
+				  }			  
+			  }
+			  
+			  t.setText(val.toString());
+			  t.setColor(color);
+			  t.setPosition(x + LEFT_MARGIN, y + TOP_MARGIN + offset);
+			  currentPage.add(t);
+			  offset += (2 + f.getHeight());
+		  }
+	  }
+	  else if(alignment == Align.JUSTIFY){
+		  int offset = 0;
+		  
+		  for(int i = 0; i < outBuf.size(); i++){
+			  String line = outBuf.get(i);
+			  TextLine t = new TextLine(f);
+			  StringBuilder val = new StringBuilder(line);
+			  
+			  if(i + 1 < outBuf.size()){
+				  int lastSpace = 0;
+				  while(f.stringWidth(val.toString() + " ") < width){
+					  lastSpace = val.toString().indexOf(" ", lastSpace + 1);
+					  if(lastSpace < 0){
+						  lastSpace = 0;
+					  }
+					  val.insert(lastSpace, " ");
+					  lastSpace++;
+				  }
+			  }
+			 			  
+			  t.setText(val.toString());
+			  t.setColor(color);
+			  t.setPosition(x + LEFT_MARGIN, y + TOP_MARGIN  + offset);
+			  currentPage.add(t);
+			  offset += (2 + f.getHeight());
+			  
+		  }
+	  }
+	  else if(alignment == Align.RIGHT){
+		  int offset = 0;
+		  
+		  for(String line : outBuf){
+			  TextLine t = new TextLine(f);
+			  StringBuilder val = new StringBuilder(line);
+			  
+			  while(f.stringWidth(val.toString() + " ") < width){
+				  val.insert(0, " ");
+			  }
+			  
+			  t.setText(val.toString());
+			  t.setColor(color);
+			  t.setPosition(x + LEFT_MARGIN, y + TOP_MARGIN  + offset);
+			  currentPage.add(t);
+			  offset += (2 + f.getHeight());
+		  }
+	  }
+	  
+	  return totLines;
+  }
+  
+  public void commit(float[] pageSize) throws Exception{
+	  for(DrawerPage srcPage : pages){
+		  Page pdfPage = new Page(pdf, pageSize);
 
+		  // Boxes
+		  for(Box b : srcPage.getBoxes()){
+			  b.drawOn(pdfPage);
+		  }
+		  
+		  // Objects
+		  for(Drawable d : srcPage.getObjects()){
+			  d.drawOn(pdfPage);
+		  }
+		  
+	  }
+  }
+  
+  public void gotoPage(int index){
+	  currentPage = pages.get(index);
+  }
+
+public int getPageCount() {
+	return pageCount;
+}
 }

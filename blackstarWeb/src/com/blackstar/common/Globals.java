@@ -59,7 +59,12 @@ public class Globals {
 	  public static final String GROUP_CUSTOMER = "Cliente";
 	  public static final String GROUP_HR = "Capital Humano";
 	  public static final String GROUP_CEO = "Direccion";
-
+	  public static final String GROUP_SALES_MANAGER = "Gerente comercial";
+	  public static final String GROUP_CST= "CST";
+	  public static final String GROUP_PURCHASE = "Compras";
+	  public static final String GROUP_PURCHASE_MANAGER = "Jefe de Compras";
+	  public static final String GROUP_INVOICING = "Facturacion";
+	  
 	  // time format
 	  public static final String DEFAULT_TIME_ZONE = "America/Mexico_City";
 	  public static final String DATE_FORMAT_PATTERN = "dd/MM/yyyy hh:mm:ss a";
@@ -78,6 +83,16 @@ public class Globals {
 		  SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT_PATTERN);
 		  sdf.setTimeZone(TimeZone.getTimeZone(DEFAULT_TIME_ZONE));
 		  return sdf.format(new Date());
+	  }
+	  
+	  public static String getLocalDateString(){
+		  SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		  sdf.setTimeZone(TimeZone.getTimeZone(DEFAULT_TIME_ZONE));
+		  try {
+			return sdf.format(getLocalTime());
+		} catch (ParseException e) {
+			return sdf.format(new Date());
+		}
 	  }
 	   
 	  // Google 

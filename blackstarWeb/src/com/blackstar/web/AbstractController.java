@@ -43,7 +43,7 @@ public class AbstractController {
   public void setSecService(SecurityService secService) {
 	this.secService = secService;
   }
-	
+
   @InitBinder
   private void dateBinder(WebDataBinder binder) {
               //The date format to parse or output your dates

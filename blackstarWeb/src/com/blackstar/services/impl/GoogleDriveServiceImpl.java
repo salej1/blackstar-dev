@@ -66,13 +66,19 @@ public class GoogleDriveServiceImpl extends AbstractService
 	 	  setPermissions(folderId);
 	 	 } 
 	 	sysFolderIds.put("OS_REPORTS", folderId);
-	 	
+
 	 	 About about = drive.about().get().execute(); 
 	 	 folderId = about.getRootFolderId();
 	 	 if(folderId != null){
 	 		 sysFolderIds.put("ROOT", folderId);
 	 	 } 	
 	 	
+	 	folderId = getFolderId("cx_proposal", null);
+	 	 if(folderId == null){
+	 	   folderId = insertFile("cx_proposal", null , FOLDER_FILE_TYPE);
+	 	   setPermissions(folderId);
+	 	 } 
+	 	sysFolderIds.put("CX_PROPOSAL", folderId);
 	} catch(Exception e){
 		e.printStackTrace();
 		Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
@@ -113,6 +119,10 @@ public class GoogleDriveServiceImpl extends AbstractService
 	 return sysFolderIds.get("ROOT");
   }
   
+  public String getProposalFolderId(String id) throws Exception {
+	  return getSysFolderId(id, sysFolderIds.get("CX_PROPOSAL"));
+  }
+  
   public String getSysFolderId(String id, String parentId) 
 		                                          throws Exception {
 	String osAttachmentFolderId = getFolderId(id, parentId);		
@@ -123,6 +133,19 @@ public class GoogleDriveServiceImpl extends AbstractService
 	return osAttachmentFolderId;
   }	
 
+  public String insertFileFromStream(String type, String fileName, String parentId
+		  ,  byte[] report) throws Exception {
+	  File body = new File();
+	  body.setParents(Arrays.asList(new ParentReference().setId(parentId)));
+	  body.setTitle(fileName);
+	  body.setMimeType(type);
+	  body.setFileSize((long) report.length);
+	  InputStreamContent mediaContent = new InputStreamContent(type,
+			  new BufferedInputStream(new ByteArrayInputStream(report)));
+	  mediaContent.setLength(report.length);
+	  return drive.files().insert(body, mediaContent).execute().getId();
+  }
+  
   public String insertFileFromStream(Integer serviceOrderId, String type
 		  , String fileName, String parentId,  byte[] report) throws Exception {
 	File body = new File();
@@ -203,7 +226,7 @@ public class GoogleDriveServiceImpl extends AbstractService
 	file = drive.files().insert(file).execute();
     return file.getId();
   }
-	
+
   public void LoadOSFile(String osFileId, Integer serviceOrderId) throws Exception{
 	  File osFile = new File();
 	  osFile.setTitle("ServiceOrder.pdf");

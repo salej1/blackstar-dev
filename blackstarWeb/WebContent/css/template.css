@@ -396,3 +396,8 @@ input[type="submit"], input[type="reset"] {
 .clickable {
 	cursor:pointer;
 }
+
+.total{
+	font-size:12px;
+	font-weight:bold;
+}

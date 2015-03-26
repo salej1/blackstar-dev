@@ -4,7 +4,9 @@ import java.util.Date;
 
 import com.blackstar.common.Utils;
 import com.blackstar.services.report.util.PDFDrawer;
+import com.pdfjet.A4;
 import com.pdfjet.Color;
+import com.pdfjet.Letter;
 
 public abstract class AbstractReport {
 	
@@ -14,10 +16,13 @@ public abstract class AbstractReport {
   protected final int MAX_REQUESTEDBY_LEN = 70;
 	
   protected abstract void run(Object data) throws Exception;
+  
+  protected float[] pageType = A4.PORTRAIT;
 	
   public byte [] getReport(Object data) throws Exception {
 	drawer = new PDFDrawer();
 	run(data);
+	drawer.commit(pageType);
 	drawer.close();
 	return drawer.getStream().toByteArray();
   }
@@ -107,5 +112,16 @@ public abstract class AbstractReport {
 			  return "NO";
 		  }
 	  }
+  }
+
+  protected int getCenterX(String input){
+	int lengthPix = input.length();
+	return ((555 - lengthPix) / 2) - (lengthPix/2);
+  }
+  
+  protected double getCenterX(String input, com.pdfjet.Font f){
+	double lengthPix = f.stringWidth(input);
+	
+	return (560 - lengthPix) / 2;
   }
 }

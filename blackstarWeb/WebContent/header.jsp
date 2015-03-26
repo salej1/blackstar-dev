@@ -35,92 +35,123 @@
 				<img alt="Grupo Sac" src="${pageContext.request.contextPath}/img/grupo-sac-logo.png" border="0"/>
 			</div>
 			<span class="slogan">Portal de servicios</span>
-			<span style="display:inline-block;width:180px;"><small>v2.381</small></span>
+			<span style="display:inline-block;width:180px;"><small>v3.382</small></span>
 			<span><small><a href="${pageContext.request.contextPath}/dashboard/logout.do">Salir</a></small></span>
 		</h1>
 
 		<form action="/search" method="GET"></form>
 		<ul id="navigation">
+		<!-- Inicio -->
 		<c:choose>
 			<c:when test="${pageSection == 'dashboard'}">
 				<li><span class="active" onclick="window.location = '/dashboard/show.do'">Inicio</span></li>
-				<li><a href="${pageContext.request.contextPath}/tickets">Tickets</a></li>
-				<li><a href="${pageContext.request.contextPath}/serviceOrders/show.do">Ordenes de servicio</a></li>
-				<c:if test="${!user.belongsToGroup['Cliente']}">
-					<li><a href="${pageContext.request.contextPath}/bloom/bloomTicketPage/show.do">Requisiciones</a></li>
-					<li><a href="${pageContext.request.contextPath}/surveyServices/show.do">Encuestas</a></li>
-				</c:if>
-				<li><a href="${pageContext.request.contextPath}/indServicios/show.do">Indicadores</a></li>
 			</c:when>
-			<c:when test="${pageSection == 'tickets'}">
-				<li><a href="${pageContext.request.contextPath}/dashboard/show.do">Inicio</a></li>
-				<li><span class="active" onclick="window.location = '/tickets'">Tickets</span></li>
-				<li><a href="${pageContext.request.contextPath}/serviceOrders/show.do">Ordenes de servicio</a></li>
-				<c:if test="${!user.belongsToGroup['Cliente']}">
-					<li><a href="${pageContext.request.contextPath}/bloom/bloomTicketPage/show.do">Requisiciones</a></li>
-					<li><a href="${pageContext.request.contextPath}/surveyServices/show.do">Encuestas</a></li>
-				</c:if>
-				<li><a href="${pageContext.request.contextPath}/indServicios/show.do">Indicadores</a></li>
-			</c:when>
-			<c:when test="${pageSection == 'ordenesServicio'}">  
-				<li><a href="${pageContext.request.contextPath}/dashboard/show.do">Inicio</a></li>
-				<li><a href="${pageContext.request.contextPath}/tickets">Tickets</a></li>
-				<li><span class="active" onclick="window.location = '/serviceOrders/show.do'">Ordenes de servicio</span></li>
-				<c:if test="${!user.belongsToGroup['Cliente']}">
-					<li><a href="${pageContext.request.contextPath}/bloom/bloomTicketPage/show.do">Requisiciones</a></li>
-					<li><a href="${pageContext.request.contextPath}/surveyServices/show.do">Encuestas</a></li>
-				</c:if>
-				<li><a href="${pageContext.request.contextPath}/indServicios/show.do">Indicadores</a></li>
-			</c:when>
-			<c:when test="${pageSection == 'requisiciones'}">
-				<li><a href="${pageContext.request.contextPath}/dashboard/show.do">Inicio</a></li>
-				<li><a href="${pageContext.request.contextPath}/tickets">Tickets</a></li>
-				<li><a href="${pageContext.request.contextPath}/serviceOrders/show.do">Ordenes de servicio</a></li>
-				<c:if test="${!user.belongsToGroup['Cliente']}">
-					<li><span class="active" onclick="window.location = '/bloom/bloomTicketPage/show.do'">Requisiciones</span></li>
-					<li><a href="${pageContext.request.contextPath}/surveyServices/show.do">Encuestas</a></li>
-				</c:if>
-				<li><a href="${pageContext.request.contextPath}/indServicios/show.do">Indicadores</a></li>
-			</c:when>			
-			<c:when test="${pageSection == 'encuestas'}">
-				<li><a href="${pageContext.request.contextPath}/dashboard/show.do">Inicio</a></li>
-				<li><a href="${pageContext.request.contextPath}/tickets">Tickets</a></li>
-				<li><a href="${pageContext.request.contextPath}/serviceOrders/show.do">Ordenes de servicio</a></li>
-				<c:if test="${!user.belongsToGroup['Cliente']}">
-					<li><a href="${pageContext.request.contextPath}/bloom/bloomTicketPage/show.do">Requisiciones</a></li>
-					<li><span class="active" onclick="window.location = '/surveyServices/show.do'">Encuestas</span></li>
-				</c:if>
-				<li><a href="${pageContext.request.contextPath}/indServicios/show.do">Indicadores</a></li>
-			</c:when>			
-			<c:when test="${pageSection == 'indicadores'}">
-				<li><a href="${pageContext.request.contextPath}/dashboard/show.do">Inicio</a></li>
-				<li><a href="${pageContext.request.contextPath}/tickets">Tickets</a></li>
-				<li><a href="${pageContext.request.contextPath}/serviceOrders/show.do">Ordenes de servicio</a></li>
-				<c:if test="${!user.belongsToGroup['Cliente']}">
-					<li><a href="${pageContext.request.contextPath}/bloom/bloomTicketPage/show.do">Requisiciones</a></li>
-					<li><a href="${pageContext.request.contextPath}/surveyServices/show.do">Encuestas</a></li>
-				</c:if>
-				<li><span class="active" onclick="window.location = '/indServicios/show.do'">Indicadores</span></li>
-			</c:when>		
 			<c:otherwise>
 				<li><a href="${pageContext.request.contextPath}/dashboard/show.do">Inicio</a></li>
-				<li><a href="${pageContext.request.contextPath}/tickets">Tickets</a></li>
-				<li><a href="${pageContext.request.contextPath}/serviceOrders/show.do">Ordenes de servicio</a></li>
-				<c:if test="${!user.belongsToGroup['Cliente']}">
-					<li><a href="${pageContext.request.contextPath}/bloom/bloomTicketPage/show.do">Requisiciones</a></li>
-					<li><a href="${pageContext.request.contextPath}/surveyServices/show.do">Encuestas</a></li>
-				</c:if>
-				<li><a href="${pageContext.request.contextPath}/indServicios/show.do">Indicadores</a></li>
 			</c:otherwise>
 		</c:choose>
-			<li><span style="width:15px;"></span></li>
-			<li><input type="text"/></li>
-			<li><small>&nbsp;</small></li>
-			<li><input type="submit" value="Buscar" class="searchButton" onclick="window.location = 'resultadoBusqueda.html'"/></li>
+
+		<!-- Tickets -->
+		<c:choose>
+			<c:when test="${pageSection == 'tickets'}">
+				<li><span class="active" onclick="window.location = '/tickets'">Tickets</span></li>
+			</c:when>
+			<c:otherwise>
+				<li><a href="${pageContext.request.contextPath}/tickets">Tickets</a></li>
+			</c:otherwise>
+		</c:choose>
+
+		<!-- Ordenes de servicio -->
+		<c:choose>
+			<c:when test="${pageSection == 'ordenesServicio'}">
+				<li><span class="active" onclick="window.location = '/serviceOrders/show.do'">Ordenes de servicio</span></li>
+			</c:when>
+			<c:otherwise>
+				<li><a href="${pageContext.request.contextPath}/serviceOrders/show.do">Ordenes de servicio</a></li>
+			</c:otherwise>
+		</c:choose>
+			<c:if test="${!user.belongsToGroup['Cliente']}">
+				<!-- Requisiciones -->
+				<c:choose>
+					<c:when test="${pageSection == 'requisiciones'}">
+						<li><span class="active" onclick="window.location = '/bloom/bloomTicketPage/show.do'">Requisiciones</span></li>
+					</c:when>
+					<c:otherwise>
+						<li><a href="${pageContext.request.contextPath}/bloom/bloomTicketPage/show.do">Requisiciones</a></li>
+					</c:otherwise>
+				</c:choose>
+
+				<!-- Encuestas -->
+				<c:choose>
+					<c:when test="${pageSection == 'encuestas'}">
+						<li><span class="active" onclick="window.location = '/surveyServices/show.do'">Encuestas</span></li>
+					</c:when>
+					<c:otherwise>
+						<li><a href="${pageContext.request.contextPath}/surveyServices/show.do">Encuestas</a></li>
+					</c:otherwise>
+				</c:choose>
+
+				<!-- Clientes -->
+				<c:choose>
+					<c:when test="${pageSection == 'clientes'}">
+						<li><span class="active" onclick="window.location = '${pageContext.request.contextPath}/codex/client/showClientList.do'">Clientes</span></li>
+					</c:when>
+					<c:otherwise>
+						<li><a href="${pageContext.request.contextPath}/codex/client/showClientList.do">Clientes</a></li>
+					</c:otherwise>
+				</c:choose>
+				
+				<!-- Cedulas de proyecto -->
+				<c:choose>
+					<c:when test="${pageSection == 'projects'}">
+						<li><span class="active" onclick="window.location = '${pageContext.request.contextPath}/codex/project/showList.do'">Cedulas de Proyectos</span></li>
+					</c:when>
+					<c:otherwise>
+			    		<li><a href="${pageContext.request.contextPath}/codex/project/showList.do">Cedulas de Proyectos</a></li>
+					</c:otherwise>
+				</c:choose>
+				
+				<!-- Cotizaciones -->
+				<c:choose>
+					<c:when test="${pageSection == 'proposals'}">
+						<li><span class="active" onclick="window.location = '${pageContext.request.contextPath}/codex/priceProposal/showProposals.do">Cotizaciones</span></li>
+					</c:when>
+					<c:otherwise>
+						<li><a href="${pageContext.request.contextPath}/codex/priceProposal/showProposals.do">Cotizaciones</a></li>
+					</c:otherwise>
+				</c:choose>
+
+				<!-- Pedidos -->
+				<c:choose>
+					<c:when test="${pageSection == 'sold'}">
+						<li><span class="active" onclick="window.location = '${pageContext.request.contextPath}/codex/priceProposal/showSold.do">Pedidos</span></li>
+					</c:when>
+					<c:otherwise>
+						<li><a href="${pageContext.request.contextPath}/codex/priceProposal/showSold.do">Pedidos</a></li>
+					</c:otherwise>
+				</c:choose>
+			</c:if>
+
+			<!-- Indicadores -->
+			<c:choose>
+				<c:when test="${pageSection == 'indicadores'}">
+					<li><span class="active" onclick="window.location = '/indServicios/show.do'">Indicadores</span></li>
+				</c:when>
+				<c:otherwise>
+					<li><a href="${pageContext.request.contextPath}/indServicios/show.do">Indicadores</a></li>
+				</c:otherwise>
+			</c:choose>
 		</ul>
-		<div id="user" class="container_16 clearfix">
+		<div id="user" class="container_16 clearfix" style="margin-bottom:10px;">
 			<div class="grid_16">	
-				<p>${ user.fullDescriptor }</p>
+				<span style="width:300px;">
+					${ user.fullDescriptor }
+				</span>
+				<span style="float:right;">
+					<input type="text"/>
+					<small>&nbsp;</small>
+					<input type="submit" value="Buscar" class="searchButton" onclick="window.location = 'resultadoBusqueda.html'"/>
+				</span>
 			</div>
 		</div>
 <!--   ~ HEADER   -->

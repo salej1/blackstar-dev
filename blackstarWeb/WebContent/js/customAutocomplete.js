@@ -46,7 +46,7 @@ function init_autoComplete(src, targetLabels, targetValues, mode, callBack){
 	var source = src;
 	var labels = targetLabels;
 	var values = targetValues;
-	var data = $.parseJSON(source);
+	var data = source; //$.parseJSON(source);
 
 	$("#" + labels + "").bind( "keydown", function( event ) {
 	    if ( event.keyCode === $.ui.keyCode.TAB && $( this ).data( "ui-autocomplete" ).menu.active ) {
@@ -77,7 +77,7 @@ function init_autoComplete(src, targetLabels, targetValues, mode, callBack){
    			}
 	    	
 	    	if(typeof(callBack) != "undefined"){
-		    	callBack();
+		    	callBack(ui.item.value);
 	    	}
 	        return false;
 		}

@@ -14,7 +14,11 @@
 		
 		<file name ="blackstarDbTransfer_Data.sql"/>
 		<file name ="blackstarDb_Data.sql"/>
-		<file name ="bloomDb_Data.sql"/>
+
+		<file name ="codexDb_Schema.sql"/>
+		<file name ="codexDb_StoredProcedures.sql"/>
+		<file name ="codexDb_Data.sql"/>
+
 	</files>
 	<outputs>
 		<output prefix="" suffix="" name="DatabaseScripts.sql"/>

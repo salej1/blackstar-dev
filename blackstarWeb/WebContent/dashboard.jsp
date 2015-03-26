@@ -124,6 +124,14 @@
 
 <!-- Fin Contenido De Perfil Sysservicio -->
 
+<!-- Contenido para empleados de comercial -->
+	<c:set var="sysSalesManger" scope="request" value="${user.belongsToGroup['Gerente comercial']}" />
+	<c:set var="sysCST" scope="request" value="${user.belongsToGroup['CST']}" />
+	<c:if test="${sysSalesManger || sysCST}">
+		<c:import url="/codex/dashboard.jsp"></c:import>
+	</c:if>
+<!-- FIN Contenido para empleados de comercial -->
+
 <!-- Contenido para todo grupo sac Excepto cientes -->
 	<c:set var="sacNoCustomer" scope="request" value="${user.belongsToGroup['Cliente'] == null || user.belongsToGroup['Cliente'] == false}" />
 	<c:if test="${sacNoCustomer == true}">

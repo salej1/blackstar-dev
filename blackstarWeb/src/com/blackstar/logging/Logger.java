@@ -52,7 +52,8 @@ public class Logger {
 			break;
 		}
 		
-		message = message.replace("'", "");
+		message = message.replace("'", "\\'");
+		stackTrace = stackTrace.replace("'", "\\'");
 		if(level.ordinal()>=appLogLevel.ordinal()){
 			message = message.replace("'", "");
 			stackTrace = stackTrace.replaceAll("'", "");

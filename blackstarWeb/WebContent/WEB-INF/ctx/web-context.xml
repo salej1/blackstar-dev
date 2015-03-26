@@ -8,21 +8,21 @@
   				            http://www.springframework.org/schema/mvc
                             http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
-   <!--:::::::::::::::::::::::::: MVC Annnotations ::::::::::::::::::::::::::-->
-   <mvc:annotation-driven />
-   
-   <mvc:interceptors>
-  <mvc:interceptor>
-    <mvc:mapping path="/**"/>
-    <mvc:exclude-mapping path="/security/**"/>
-    <mvc:exclude-mapping path="/offlineOS/save.do"/>
-    <bean class="com.blackstar.web.interceptor.HttpInterceptor">
-       <property name="service" ref="securityService" />
-    </bean>
-  </mvc:interceptor>
-</mvc:interceptors>
+	<!--:::::::::::::::::::::::::: MVC Annnotations :::::::::::::::::::::::::: -->
+	<mvc:annotation-driven />
 
-    
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<mvc:mapping path="/**" />
+			<mvc:exclude-mapping path="/security/**" />
+			<mvc:exclude-mapping path="/offlineOS/save.do" />
+			<bean class="com.blackstar.web.interceptor.HttpInterceptor">
+				<property name="service" ref="securityService" />
+			</bean>
+		</mvc:interceptor>
+	</mvc:interceptors>
+
+
    <!--:::::::::::::::::::::::::::: JSP View Resolver ::::::::::::::::::::::::::::-->
    <bean id="jspViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
      <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
@@ -114,6 +114,7 @@
        
    </bean>
    
+   <!-- BLOOM -->
    <bean class="com.bloom.web.controller.InternalTicketsController" parent="abstractController">
       <property name="internalTicketsService" ref="internalTicketsService" />
    </bean>
@@ -142,5 +143,61 @@
 
    <bean class="com.blackstar.web.controller.TicketController" parent="abstractController">
       <property name="service" ref="ticketService" />
-   </bean>
+	</bean>
+
+  <!-- CODEX -->
+	<bean class="com.blackstar.web.controller.CustomerController"
+		parent="abstractController">
+		<property name="customerService" ref="customerService" />
+	</bean>
+	<bean class="com.blackstar.web.controller.WarrantProjectController"
+		parent="abstractController">
+		<property name="warrantProjectService" ref="warrantProjectService" />
+	</bean>
+	<bean class="com.blackstar.web.controller.RequisitionController" parent="abstractController">
+	    <property name="warrantProjectService" ref="warrantProjectService" />
+	</bean>
+	<bean class="com.blackstar.web.controller.SalesController" parent="abstractController">
+	    <property name="service" ref="salesService" />
+	</bean>
+	
+	<bean class="com.codex.web.controller.ClientController" parent="abstractController">
+	    <property name="service" ref="clientService" />
+	    <property name="cService" ref="cstService" />
+	</bean>
+	
+	<bean class="com.codex.web.controller.ProjectController" parent="abstractController">
+	    <property name="service" ref="projectService" />
+	    <property name="cService" ref="clientService" />
+	    <property name="xrService" ref="exchangeRateService" />
+	    <property name="cstService" ref="cstService" />
+	    <property name="gdService" ref="googleDriveService" />
+	</bean>
+	
+	<bean class="com.codex.web.controller.DashboardController" parent="abstractController">
+	    <property name="service" ref="codexDashboardService" />
+	    <property name="cstService" ref="cstService" />
+	</bean>
+	
+	<bean class="com.codex.web.controller.PriceProposalController" parent="abstractController">
+	    <property name="service" ref="priceProposalService" />
+	    <property name="dService" ref="codexDashboardService" />
+	</bean>
+
+	<bean class="com.codex.web.controller.VisitController" parent="abstractController">
+	    <property name="service" ref="visitService" />
+	    <property name="clService" ref="clientService" />
+	    <property name="cstService" ref="cstService" />
+	</bean>
+
+	<bean class="com.codex.web.controller.KpiController" parent="abstractController">
+	    <property name="service" ref="kpiService" />
+	    <property name="clService" ref="clientService" />
+	    <property name="cstService" ref="cstService" />
+	</bean>
+
+	<bean class="com.codex.web.controller.SalesCallController" parent="abstractController">
+	    <property name="service" ref="salesCallService" />
+	</bean>
+	<context:annotation-config />
 </beans>

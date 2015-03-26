@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
- 
   
   <!--::::::::::::::::::::::::::::::: Template :::::::::::::::::::::::::::::::-->
    <bean id ="abstractService" class="com.blackstar.services.AbstractService">
@@ -127,6 +126,63 @@
   <bean id="ticketService" class="com.blackstar.services.impl.TicketServiceImpl" parent="abstractService">
       <property name="dao" ref="ticketDao" />
   </bean>
+  
+  <!-- Implementacion CODEX -->  
+  <bean id="customerService" class="com.blackstar.services.impl.CustomerServiceImpl" parent="abstractService">
+      <property name="dao" ref="customerDAO" />
+  </bean>
+  
+  <bean id="warrantProjectService" class="com.blackstar.services.impl.WarrantProjectServiceImpl" parent="abstractService">
+      <property name="dao" ref="warrantProjectDAO" />
+  </bean>
+  
+  <bean id="salesService" class="com.blackstar.services.impl.SalesServiceImpl" parent="abstractService">
+      <property name="dao" ref="warrantProjectDAO" />
+  </bean>
+  
+  <bean id="clientService" class="com.codex.service.impl.ClientServiceImpl" parent="abstractService">
+      <property name="dao" ref="clientDAO" />
+  </bean>
+  
+  <bean id="projectService" class="com.codex.service.impl.ProjectServiceImpl" parent="abstractService">
+      <property name="dao" ref="projectDAO" />
+      <property name="uDAO" ref="userDAO" />
+      <property name="cDAO" ref="clientDAO" />
+      <property name="pdfService" ref="codexPDFService" />
+      <property name="gmService" ref="gmService" />
+      <property name="gdService" ref="googleDriveService" />
+      <property name="priceProposalService" ref="priceProposalService" />
+  </bean>
+  
+  <bean id="codexDashboardService" class="com.codex.service.impl.DashboardServiceImpl" parent="abstractService">
+      <property name="dao" ref="codexDashboardDAO" />
+  </bean>
+  
+  <bean id="codexPDFService" class="com.codex.service.impl.PDFReportServiceImpl" parent="abstractService"/>
 
+  <bean id="priceProposalService" class="com.codex.service.impl.PriceProposalServiceImpl" parent="abstractService">
+      <property name="dao" ref="priceProposalDAO" />
+  </bean>
+
+  <bean id="exchangeRateService" class="com.codex.service.impl.ExchangeRateServiceImpl" parent="abstractService">
+      <property name="exchangeProviderUrl" value="https://openexchangerates.org/api/latest.json" />
+      <property name="exchangeProviderKey" value="app_id=8e3017fc55b647ca92c9ea9f4f956ae7" />
+  </bean>
+
+  <bean id="cstService" class="com.codex.service.impl.CstServiceImpl" parent="abstractService">
+      <property name="dao" ref="cstDAO" />
+  </bean>
+
+  <bean id="visitService" class="com.codex.service.impl.VisitServiceImpl" parent="abstractService">
+      <property name="dao" ref="visitDAO" />
+  </bean>
+
+  <bean id="kpiService" class="com.codex.service.impl.KpiServiceImpl" parent="abstractService">
+      <property name="dao" ref="kpiDAO" />
+  </bean>
+
+   <bean id="salesCallService" class="com.codex.service.impl.SalesCallServiceImpl" parent="abstractService">
+      <property name="dao" ref="salesCallDAO" />
+  </bean>
   
 </beans>

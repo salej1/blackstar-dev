@@ -4,9 +4,11 @@ import java.util.List;
 
 import com.blackstar.db.dao.interfaces.UserDomainDAO;
 import com.blackstar.model.dto.EmployeeDTO;
+import com.blackstar.services.AbstractService;
 import com.blackstar.services.interfaces.UserDomainService;
 
-public class UserDomainServiceImpl implements UserDomainService {
+public class UserDomainServiceImpl extends AbstractService 
+                                   implements UserDomainService {
 
 	private UserDomainDAO dao = null;
 

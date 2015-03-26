@@ -113,7 +113,7 @@
 		    $("#contact").focus();
 	   });
 
-	   function fillPolicyData(){
+	   function fillPolicyData(data){
 	   		var policyId = $("#policyId").val();
 
 	   		$.getJSON("/ticketCapture/getSupportInfo.do?policyId=" + policyId, function(data){
