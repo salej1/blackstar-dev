@@ -46,7 +46,13 @@ function init_autoComplete(src, targetLabels, targetValues, mode, callBack){
 	var source = src;
 	var labels = targetLabels;
 	var values = targetValues;
-	var data = source; //$.parseJSON(source);
+	var data;
+	try{
+		data = $.parseJSON(source);
+	}
+	catch(ex){
+		data = source;
+	}
 
 	$("#" + labels + "").bind( "keydown", function( event ) {
 	    if ( event.keyCode === $.ui.keyCode.TAB && $( this ).data( "ui-autocomplete" ).menu.active ) {

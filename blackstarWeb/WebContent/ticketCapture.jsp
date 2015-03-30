@@ -61,7 +61,6 @@
 		    $("#successLiteral").hide();
 	   		
 	   		var equipmentList = '${equipmentList}';
-
 	   		init_autoComplete(equipmentList, "serialNumber", "policyId", "single", fillPolicyData);
 
 	   		 $( "#OkMessage" ).dialog({
