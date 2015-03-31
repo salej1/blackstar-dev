@@ -61,8 +61,11 @@ public class ProjectEntryItemVO {
 		this.reference = reference;
 	}
 	public String getDescription() {
+		return description;
+	}
+	public String getDescriptionDisplay() {
 		if(description != null){
-			return description.replace("'", "\\'");
+			return description.replace("'", "\\'").replace("'", "\\'");
 		}
 		else{
 			return description;
@@ -99,7 +102,7 @@ public class ProjectEntryItemVO {
 		return comments;
 	}
 	public String getCommentsDisplay() {
-		return comments.replace("\r\n", "\\r\\n");
+		return comments.replace("\r\n", "\\r\\n").replace("'", "\\'");
 	}
 	public void setComments(String comments) {
 		this.comments = comments;

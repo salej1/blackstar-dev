@@ -987,7 +987,7 @@
                                                  enableItem(itemNumber);
                                                  $("#entryItemTypeId_" + itemNumber).val('${item.itemTypeId}');
                                                  $("#referenceId_" + itemNumber).val('${item.reference}');
-                  	     			             $("#reference_" + itemNumber).val('${item.description}');
+                  	     			             $("#reference_" + itemNumber).val('${item.descriptionDisplay}');
                   	     			             $("#itemQuantity_" + itemNumber).val('${item.quantity}');
                   	     			             $("#itemPriceByUnit_" + itemNumber).val('${item.priceByUnit}');
                   	     			             $("#itemDiscount_" + itemNumber).val('${item.discount}');

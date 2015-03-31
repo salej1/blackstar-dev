@@ -75,7 +75,7 @@ public class ProjectEntryVO {
 		return comments;
 	}
 	public String getCommentsDisplay() {
-		return comments.replace("\r\n", "\\r\\n");
+		return comments.replace("\r\n", "\\r\\n").replace("'", "\\'");
 	}
 	public void setComments(String comments) {
 		this.comments = comments;
@@ -110,7 +110,7 @@ public class ProjectEntryVO {
 	}
 
 	public String getDescriptionDisplay() {
-		return description.replace("\r\n", "\\r\\n");
+		return description.replace("\r\n", "\\r\\n").replace("'", "\\'");
 	}
 
 }

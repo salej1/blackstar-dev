@@ -110,6 +110,11 @@ private Boolean userCanDeliver(UserSession userSession){
 	try {
 		 CstDTO cstId =  cstService.getCstByEmail(userSession.getUser().getUserEmail());
 		 project = service.getProjectDetail(projectId, cstId);
+		 
+		 // assertion
+		 if(project == null){
+			 throw new Exception("No se encontro proyecto con ID " + projectId);
+		 }
 		
 	     model.addAttribute("project", project);
 	     model.addAttribute("entryTypes", service.getAllEntryTypes());
@@ -134,7 +139,7 @@ private Boolean userCanDeliver(UserSession userSession){
 			 if(isSalesMgr(userSession) && project.getStatusId() < 3){
 				 enableEdition = true;
 			 }
-			 if(project.getCreatedByUsr() == userSession.getUser().getBlackstarUserId() || cstId.getScope() > 0){
+			 if(project.getCreatedByUsr() == userSession.getUser().getBlackstarUserId() || (cstId != null && cstId.getScope() > 0)){
 				 enableFallback = true;
 			 }
 		 }
