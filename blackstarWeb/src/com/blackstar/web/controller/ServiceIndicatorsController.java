@@ -21,6 +21,8 @@ import com.blackstar.logging.Logger;
 import com.blackstar.model.UserSession;
 import com.blackstar.services.interfaces.ServiceIndicatorsService;
 import com.blackstar.web.AbstractController;
+import com.codex.service.ClientService;
+import com.codex.service.CstService;
 
 
 @Controller
@@ -29,9 +31,19 @@ import com.blackstar.web.AbstractController;
 public class ServiceIndicatorsController extends AbstractController {
 	
   private ServiceIndicatorsService service;
-	
+  private CstService cstService;
+  private ClientService clService;
+  
   public void setService(ServiceIndicatorsService service) {
 	this.service = service;
+  }
+  
+  public void setCstService(CstService cstService) {
+		this.cstService = cstService;
+  }
+  
+  public void setClService(ClientService clService) {
+		this.clService = clService;
   }
   
   @RequestMapping(value= "/show.do", method = RequestMethod.GET)
@@ -42,6 +54,8 @@ public class ServiceIndicatorsController extends AbstractController {
 		  }
 		  else{
 			  model.addAttribute("projects", service.getProjectList());
+			  model.addAttribute("cstList", cstService.getAllCst());
+			  model.addAttribute("originList", clService.getAllOriginTypes());
 		  }
 	  }catch (Exception e) {
 		Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);

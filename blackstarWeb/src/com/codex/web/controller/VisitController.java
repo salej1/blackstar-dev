@@ -55,7 +55,7 @@ public class VisitController extends AbstractController {
 			return "error";
 		}
 		
-		return "redirect:/codex/dashboard/show.do";
+		return "redirect:/dashboard/show.do";
 	}
 	
 	@RequestMapping(value = "/create.do") 
@@ -136,7 +136,7 @@ public class VisitController extends AbstractController {
 			return "error";
 		}
 		
-		return "redirect:/codex/dashboard/show.do";
+		return "redirect:/dashboard/show.do";
 	}
 	
 	@RequestMapping(value = "/visitListJson.do") 

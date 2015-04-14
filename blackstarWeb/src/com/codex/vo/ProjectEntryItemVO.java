@@ -65,7 +65,7 @@ public class ProjectEntryItemVO {
 	}
 	public String getDescriptionDisplay() {
 		if(description != null){
-			return description.replace("'", "\\'").replace("'", "\\'");
+			return description.replace("\r\n", "\\r\\n").replace("'", "\\'");
 		}
 		else{
 			return description;

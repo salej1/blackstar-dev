@@ -51,7 +51,7 @@ public class PriceProposalReport extends AbstractReport {
 	  drawer.textBlock("INGENERIA DE SERVICIO", Align.CENTER, 20, 120 + yAdj, 520, true, Color.darkblue, 16);
 	  drawer.textBlock("EN PROTECCION INTEGRAL", Align.CENTER, 20, 140 + yAdj, 520, true, Color.darkblue, 16);
 	  drawer.textBlock("Proyecto:", Align.CENTER, 20, 180 + yAdj, 520, false, 14);
-	  drawer.textBlock(data.getProjectNumber(), Align.CENTER, 20, 200 + yAdj, 520, true, 14);
+	  drawer.textBlock(data.getCostCenter(), Align.CENTER, 20, 200 + yAdj, 520, true, 14);
 	  drawer.textBlock("Cotización No.", Align.CENTER, 20, 230 + yAdj, 520, false, 14);
 	  drawer.textBlock(data.getPriceProposalNumber(), Align.CENTER, 20, 250 + yAdj, 520, true, 14);
 	  drawer.textBlock("Cliente:", Align.CENTER, 20, 280 + yAdj, 520, false, 12);

@@ -228,15 +228,23 @@ END$$
 	-- blackstarDb.AddFollowUpTobloomTicket
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.AddFollowUpTobloomTicket$$
-CREATE PROCEDURE blackstarDb.`AddFollowUpTobloomTicket`(pTicketId INTEGER, asignee VARCHAR(50), pCreatedByUsrMail VARCHAR(50), pMessage TEXT)
+CREATE PROCEDURE blackstarDb.`AddFollowUpTobloomTicket`(pTicketId INTEGER, pAsignee VARCHAR(50), pCreatedByUsrMail VARCHAR(50), pMessage TEXT)
 BEGIN
-  
-  IF asignee = '' THEN
-    SET asignee = pCreatedByUsrMail;
+ 
+	INSERT INTO blackstarDb.followUp(bloomTicketId, followup, followUpReferenceTypeId, asignee, created, createdBy, createdByUsr)
+	VALUES(pTicketId, pMessage, 'R', ifnull(pAsignee, pCreatedByUsrMail), CONVERT_TZ(now(),'+00:00','-5:00'), 'AddFollowUpTobloomTicket', pCreatedByUsrMail);
+ 
+  IF ifnull(pAsignee, '') != '' THEN
+    UPDATE bloomTicket SET 
+    asignee = pAsignee,
+    assignedBy = pCreatedByUsrMail,
+    modified = now(),
+    modifiedBy = 'AddFollowUpTobloomTicket'
+  WHERE _id = pTicketId;
+
   END IF;
 
-	INSERT INTO blackstarDb.followUp(bloomTicketId, followup, followUpReferenceTypeId, asignee, created, createdBy, createdByUsr)
-	VALUES(pTicketId, pMessage, 'R', asignee, CONVERT_TZ(now(),'+00:00','-5:00'), 'AddFollowUpTobloomTicket', pCreatedByUsrMail);
+  
 END$$
 
 -- -----------------------------------------------------------------------------

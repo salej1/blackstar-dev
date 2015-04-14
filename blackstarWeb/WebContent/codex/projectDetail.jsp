@@ -383,6 +383,12 @@
 	    		return false;
 	    	}
 
+	    	// Tipo de cambio
+	    	if($("#changeType").val() == "" || isNaN($("#changeType").val())){
+				warning ("Favor de ingresar el tipo de cambio.");
+				return false;
+			}
+
 			// Plazo finiquito
 	    	if($("#settlementTimeLimit").val() == ""){
 	    		warning ("Favor de ingresar el plazo para finiquito");
@@ -395,15 +401,55 @@
 	    		return false;
 	    	}
 
+	    	// Partidas
 	    	if(entries.length == 0){
 	    		warning ("Favor de ingresar al menos una partida");
 	    		return false;
 	    	}
 	    	for(var i = 0; i < entries.length ; i++){
+	    		var partNum = entries[i].attributes.name.value;
+	    		var entryTypeId = $("#entryTypeId_" + partNum).val();
+	    		var descr = $("#description_" + partNum).val();
+	    		
+	    		// tipo de partida
+	    		if(isNaN(entryTypeId) || entryTypeId < 1){
+	    			warning ("Por favor seleccione un codigo para la partida " + partNum);
+	    			return false;
+	    		}
+
+	    		// descripcion de partida
+	    		if(descr == ""){
+	    			warning ("Por favor ingrese una descripcion para la partida " + partNum);
+	    			return false;
+	    		}
 	    		items = $("#" + entries[i].id).next().find("table.items tr");
 	    		if(items.length == 0){
 	    			warning ("Favor de ingresar al menos un Item para cada partida");
 	    			return false;
+	    		}
+	    		for(var j = 0; j < items.length; j++){
+	    			var itemNum = items[j].attributes.name.value
+	    			var itemTypeId = $("#entryItemTypeId_" + itemNum).val();
+	    			var itemDescr = $("#reference_" + itemNum).val();
+	    			var itemUnitPrice = $("#itemPriceByUnit_" + itemNum).val();
+
+	    			// tipo de item
+	    			if(isNaN(itemTypeId) || itemTypeId < 1){
+	    				warning ("Por favor seleccione el tipo de item en el item # " + itemNum);
+	    				return false;
+	    			}
+
+	    			// descripcion del item
+	    			if(itemDescr == ""){
+	    				warning ("Por favor ingrese la descripcion en el item # " + itemNum);
+	    				return false;
+	    			}
+
+	    			// precio unitario
+					if(itemUnitPrice == ""){
+	    				warning ("Por favor ingrese el precio unitario en el item # " + itemNum);
+	    				return false;
+	    			}
 	    		}
 	    	}
 	    	return true;
@@ -966,6 +1012,7 @@
                                        addEntry();
                                        enableEntry(entryNumber);
                                        $("#entryTypeId_" + entryNumber).val('${entry.entryTypeId}');
+                                       $("#productType_" + entryNumber).val(productTypeMap[${entry.entryTypeId}]);
                                        bindDescription(entryNumber, '${entry.descriptionDisplay}');
                  	     		       $("#qty_" + entryNumber).val(${entry.qty});
                  	     		       set("unitPrice_" + entryNumber, ${entry.unitPrice});

@@ -98,6 +98,8 @@
    </bean>
    <bean class="com.blackstar.web.controller.ServiceIndicatorsController" parent="abstractController">
        <property name="service" ref="serviceIndicatorsService" />
+       <property name="clService" ref="clientService" />
+       <property name="cstService" ref="cstService" />
    </bean>
    <bean class="com.blackstar.web.controller.ScheduleStatusController" parent="abstractController">
        <property name="service" ref="scheduleStatusService" />

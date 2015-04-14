@@ -32,7 +32,7 @@ public class PriceProposalServiceImpl extends AbstractService
 	 
 	 Integer entryId = null;
 	 priceProposal.setProjectId(project.getId());
-	 String proposalNumber = project.getProjectNumber() + "-" + dao.getPriceProposalNumberForProject(project.getId());
+	 String proposalNumber = project.getCostCenter() + "-" + dao.getPriceProposalNumberForProject(project.getId());
 	 priceProposal.setPriceProposalNumber(proposalNumber);
      priceProposal.setClientId(project.getClientId());
      priceProposal.setTaxesTypeId(project.getTaxesTypeId());

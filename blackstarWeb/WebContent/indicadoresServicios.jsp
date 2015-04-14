@@ -81,9 +81,14 @@
 			 		window.open("${pageContext.request.contextPath}/indServicios/" + indAction + ".do?project=" + project + "&startDate=" + encodeURIComponent(startDateStr) + "&endDate=" + encodeURIComponent(endDateStr));
 			 	}
 			 	else{
-			 		 $("a[href*=#]").css({ "color": "#888", "text-decoration":"underline"});
-		    		 $("#indicatorDetail").load("${pageContext.request.contextPath}/indServicios/" + indAction + ".do?project=" + project + "&startDate=" + encodeURIComponent(startDateStr) + "&endDate=" + encodeURIComponent(endDateStr) + "&param=" + param, function() {
-		    		  $("#" + indAction).css({ "color": "#800080", "text-decoration":"none"});
+			 		$("a[href*=#]").css({ "color": "#888", "text-decoration":"underline"});
+					$("#chartDetail0").html('');
+					$("#chartDetail1").html('');
+					$("#chartDetail2").html('');
+					$("#chartDetail3").html('');
+					$("#chartDetail4").html('');
+		    		$("#indicatorDetail").load("${pageContext.request.contextPath}/indServicios/" + indAction + ".do?project=" + project + "&startDate=" + encodeURIComponent(startDateStr) + "&endDate=" + encodeURIComponent(endDateStr) + "&param=" + param, function() {
+		    		$("#" + indAction).css({ "color": "#800080", "text-decoration":"none"});
 		    	  });
 			 	}
 		     }
@@ -259,6 +264,12 @@
 							<img src="/img/navigate-right.png"/><a href="#" id="getNonSatisfactoryTicketsByUsr" onclick="goBloom('getNonSatisfactoryTicketsByUsr')">Requisiciones no satisfactorias por usuario</a>
 						</div>
 					</div>	
+
+					<h3>Indicadores de Ventas</h3>
+					<div>
+						<c:import url="/codex/kpi.jsp">
+						</c:import>
+					</div>
 				</c:if>
 			</div>
 			<div id="indicatorDetail">

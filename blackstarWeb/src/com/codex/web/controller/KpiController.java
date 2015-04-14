@@ -56,7 +56,13 @@ public class KpiController extends AbstractController{
 		}
 		return "codex/kpi";
 	}
-
+	
+	// KPI Detail
+	@RequestMapping(value = "/kpiDetail.do")
+	public String kpiDetail(ModelMap model,HttpServletRequest request){
+		return "codex/kpiDetail";
+	}
+	
 	// KPI Jason Objects
 	@RequestMapping(value = "/getInvoicingKpi.do", produces="application/json")
 	public @ResponseBody String getInvoicingKpi(

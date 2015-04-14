@@ -49,6 +49,8 @@
 -- ---------------------------------------------------------------------------
 -- 33	22/01/2015	SAG 	Se agrega Global Settings
 -- ---------------------------------------------------------------------------
+-- 34	01/04/2015	SAG		Se agrega assignedBy a ticket, so, bloomTicket e issue
+-- ---------------------------------------------------------------------------
 
 use blackstarDb;
 
@@ -61,6 +63,23 @@ BEGIN
 -- -----------------------------------------------------------------------------
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
+
+-- AGREGANDO assignedBy
+IF(SELECT count(*) FROM information_schema.columns WHERE  table_schema = 'blackstarDb' AND table_name = 'ticket' AND column_name = 'assignedBy' ) = 0 THEN
+	ALTER TABLE ticket ADD assignedBy VARCHAR(100) NULL DEFAULT NULL;
+END IF;
+
+IF(SELECT count(*) FROM information_schema.columns WHERE  table_schema = 'blackstarDb' AND table_name = 'serviceOrder' AND column_name = 'assignedBy' ) = 0 THEN
+	ALTER TABLE serviceOrder ADD assignedBy VARCHAR(100) NULL DEFAULT NULL;
+END IF;
+
+IF(SELECT count(*) FROM information_schema.columns WHERE  table_schema = 'blackstarDb' AND table_name = 'bloomTicket' AND column_name = 'assignedBy' ) = 0 THEN
+	ALTER TABLE bloomTicket ADD assignedBy VARCHAR(100) NULL DEFAULT NULL;
+END IF;
+
+IF(SELECT count(*) FROM information_schema.columns WHERE  table_schema = 'blackstarDb' AND table_name = 'issue' AND column_name = 'assignedBy' ) = 0 THEN
+	ALTER TABLE issue ADD assignedBy VARCHAR(100) NULL DEFAULT NULL;
+END IF;
 
 -- AGREGANDO TABLA globalSettings
 IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'globalSettings') = 0 THEN

@@ -91,7 +91,7 @@
 						<c:if test="${isEditable}">
 							<button class="searchButton" onclick="submit();">Guardar</button>
 							<button class="searchButton" onclick="discard();">Descartar</button>
-							<button class="searchButton" onclick="window.location='${pageContext.request.contextPath}/codex/dashboard/show.do';">Cerrar</button>
+							<button class="searchButton" onclick="window.location='${pageContext.request.contextPath}/dashboard/show.do';">Cerrar</button>
 						</c:if>
 					</div>
 				</div>					

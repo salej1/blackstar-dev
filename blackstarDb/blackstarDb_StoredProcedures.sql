@@ -755,18 +755,23 @@ BEGIN
 	SELECT 
 		'I',
 		pIssueId,
-		pAsignee,
+		ifnull(pAsignee, pCreatedBy),
 		pMessage,
 		pCreated,
 		'AddFollowUpToIssue',
 		pCreatedBy;
 
-	UPDATE issue SET
-		issueStatusId = 'A',
-		modified = NOW(),
-		modifiedBy = 'AddFollowUpToIssue',
-		modifiedByUsr = pCreatedBy
-	WHERE issueId = pIssueId;
+	IF ifnull(pAsignee, '') != '' THEN
+		UPDATE issue SET
+			issueStatusId = 'A',
+			asignee = pAsignee,
+			assignedBy = pCreatedBy,
+			modified = NOW(),
+			modifiedBy = 'AddFollowUpToIssue',
+			modifiedByUsr = pCreatedBy
+		WHERE issueId = pIssueId;
+	END IF;
+	
 END$$
 
 
@@ -926,6 +931,7 @@ DROP PROCEDURE IF EXISTS blackstarDb.GetUserPendingIssues$$
 CREATE PROCEDURE blackstarDb.GetUserPendingIssues(pUser VARCHAR(100))
 BEGIN
 
+	
 	SET @prevRefId := 0;
 	SET @rowNumber := 0;
 	SET @myId:= (SELECT blackstarUserId FROM blackstarUser WHERE email = pUser);
@@ -3272,6 +3278,7 @@ BEGIN
 	UPDATE serviceOrder SET
 		serviceStatusId = 'E',
 		asignee = pAsignee,
+		assignedBy = pCreatedBy,
 		modified = pCreated,
 		modifiedBy = 'AddFollowUpToOS',
 		modifiedByUsr = pCreatedBy
@@ -3831,6 +3838,7 @@ BEGIN
 	UPDATE ticket SET
 		employee = pEmployee,
 		asignee = pEmployee,
+		assignedBy = usr,
 		modified = NOW(),
 		modifiedBy = proc,
 		modifiedByUsr = usr

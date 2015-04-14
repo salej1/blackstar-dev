@@ -135,14 +135,14 @@ public class ProjectServiceImpl extends AbstractService
 	  System.out.println("sendNot=> From(" + fromUser + "), to(" + toUser + ")");
 
 	  IEmailService mail = EmailServiceFactory.getEmailService();
-	  message.append(String.format("El proyecto %s le ha sido asignada para dar seguimiento. Por favor revise a continuaci贸n los detalles: ", project.getProjectNumber()));
+	  message.append(String.format("El proyecto %s le ha sido asignada para dar seguimiento. Por favor revise a continuaci髇 los detalles: ", project.getProjectNumber()));
 	  message.append(String.format("\r\n\r\n Estatus: %s", project.getStatusDescription()));
 	  message.append(String.format("\r\n\r\n Cliente: %s", project.getClientDescription()));
 	  message.append(String.format("\r\n\r\n"));
 	  message.append(String.format("\r\n\r\n Mensaje: %s", detail));
 	 //  mail.sendEmail(fromUser, toUser, "Asignaci贸n de Proyecto " + project.getProjectNumber(), message.toString());
 	  
-	  mail.sendEmail(Globals.GPOSAC_DEFAULT_SENDER, toUser, "Asignaci贸n de Proyecto " + project.getProjectNumber(), message.toString());
+	  mail.sendEmail(Globals.GPOSAC_DEFAULT_SENDER, toUser, "Asignaci髇 de Proyecto " + project.getProjectNumber(), message.toString());
 	}
   }
   
@@ -478,9 +478,7 @@ public class ProjectServiceImpl extends AbstractService
 			  if(to.length() > 0){
 				  to.append(",");  
 			  }
-			  else{
-				  to.append(mgr.getUserEmail());
-			  }
+			  to.append(mgr.getUserEmail());
 		  }
 
 		  String link = Globals.GOOGLE_CONTEXT_URL + "/codex/project/edit.do?projectId=" + project.getId();
@@ -582,7 +580,7 @@ public class ProjectServiceImpl extends AbstractService
 	  dao.advanceStatus(project.getId(), project.getStatusId() + 1);
 
 	  String to = project.getCstEmail();
-	  gmService.sendEmail(to, "Cotizaci贸n "  + priceProposal.getPriceProposalNumber(), "Cotizaci贸n", "Cotizacion.pdf", report);
+	  gmService.sendEmail(to, "Cotizaci髇 "  + priceProposal.getPriceProposalNumber(), "Cotizaci髇", "Cotizacion.pdf", report);
 
   }
   

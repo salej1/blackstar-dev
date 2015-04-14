@@ -49,6 +49,8 @@
 -- ---------------------------------------------------------------------------
 -- 33	22/01/2015	SAG 	Se agrega Global Settings
 -- ---------------------------------------------------------------------------
+-- 34	01/04/2015	SAG		Se agrega assignedBy a ticket, so, bloomTicket e issue
+-- ---------------------------------------------------------------------------
 
 use blackstarDb;
 
@@ -61,6 +63,23 @@ BEGIN
 -- -----------------------------------------------------------------------------
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
+
+-- AGREGANDO assignedBy
+IF(SELECT count(*) FROM information_schema.columns WHERE  table_schema = 'blackstarDb' AND table_name = 'ticket' AND column_name = 'assignedBy' ) = 0 THEN
+	ALTER TABLE ticket ADD assignedBy VARCHAR(100) NULL DEFAULT NULL;
+END IF;
+
+IF(SELECT count(*) FROM information_schema.columns WHERE  table_schema = 'blackstarDb' AND table_name = 'serviceOrder' AND column_name = 'assignedBy' ) = 0 THEN
+	ALTER TABLE serviceOrder ADD assignedBy VARCHAR(100) NULL DEFAULT NULL;
+END IF;
+
+IF(SELECT count(*) FROM information_schema.columns WHERE  table_schema = 'blackstarDb' AND table_name = 'bloomTicket' AND column_name = 'assignedBy' ) = 0 THEN
+	ALTER TABLE bloomTicket ADD assignedBy VARCHAR(100) NULL DEFAULT NULL;
+END IF;
+
+IF(SELECT count(*) FROM information_schema.columns WHERE  table_schema = 'blackstarDb' AND table_name = 'issue' AND column_name = 'assignedBy' ) = 0 THEN
+	ALTER TABLE issue ADD assignedBy VARCHAR(100) NULL DEFAULT NULL;
+END IF;
 
 -- AGREGANDO TABLA globalSettings
 IF(SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'blackstarDb' AND TABLE_NAME = 'globalSettings') = 0 THEN
@@ -1995,18 +2014,23 @@ BEGIN
 	SELECT 
 		'I',
 		pIssueId,
-		pAsignee,
+		ifnull(pAsignee, pCreatedBy),
 		pMessage,
 		pCreated,
 		'AddFollowUpToIssue',
 		pCreatedBy;
 
-	UPDATE issue SET
-		issueStatusId = 'A',
-		modified = NOW(),
-		modifiedBy = 'AddFollowUpToIssue',
-		modifiedByUsr = pCreatedBy
-	WHERE issueId = pIssueId;
+	IF ifnull(pAsignee, '') != '' THEN
+		UPDATE issue SET
+			issueStatusId = 'A',
+			asignee = pAsignee,
+			assignedBy = pCreatedBy,
+			modified = NOW(),
+			modifiedBy = 'AddFollowUpToIssue',
+			modifiedByUsr = pCreatedBy
+		WHERE issueId = pIssueId;
+	END IF;
+	
 END$$
 
 
@@ -2166,6 +2190,7 @@ DROP PROCEDURE IF EXISTS blackstarDb.GetUserPendingIssues$$
 CREATE PROCEDURE blackstarDb.GetUserPendingIssues(pUser VARCHAR(100))
 BEGIN
 
+	
 	SET @prevRefId := 0;
 	SET @rowNumber := 0;
 	SET @myId:= (SELECT blackstarUserId FROM blackstarUser WHERE email = pUser);
@@ -4512,6 +4537,7 @@ BEGIN
 	UPDATE serviceOrder SET
 		serviceStatusId = 'E',
 		asignee = pAsignee,
+		assignedBy = pCreatedBy,
 		modified = pCreated,
 		modifiedBy = 'AddFollowUpToOS',
 		modifiedByUsr = pCreatedBy
@@ -5071,6 +5097,7 @@ BEGIN
 	UPDATE ticket SET
 		employee = pEmployee,
 		asignee = pEmployee,
+		assignedBy = usr,
 		modified = NOW(),
 		modifiedBy = proc,
 		modifiedByUsr = usr
@@ -7530,15 +7557,23 @@ END$$
 	-- blackstarDb.AddFollowUpTobloomTicket
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.AddFollowUpTobloomTicket$$
-CREATE PROCEDURE blackstarDb.`AddFollowUpTobloomTicket`(pTicketId INTEGER, asignee VARCHAR(50), pCreatedByUsrMail VARCHAR(50), pMessage TEXT)
+CREATE PROCEDURE blackstarDb.`AddFollowUpTobloomTicket`(pTicketId INTEGER, pAsignee VARCHAR(50), pCreatedByUsrMail VARCHAR(50), pMessage TEXT)
 BEGIN
-  
-  IF asignee = '' THEN
-    SET asignee = pCreatedByUsrMail;
+ 
+	INSERT INTO blackstarDb.followUp(bloomTicketId, followup, followUpReferenceTypeId, asignee, created, createdBy, createdByUsr)
+	VALUES(pTicketId, pMessage, 'R', ifnull(pAsignee, pCreatedByUsrMail), CONVERT_TZ(now(),'+00:00','-5:00'), 'AddFollowUpTobloomTicket', pCreatedByUsrMail);
+ 
+  IF ifnull(pAsignee, '') != '' THEN
+    UPDATE bloomTicket SET 
+    asignee = pAsignee,
+    assignedBy = pCreatedByUsrMail,
+    modified = now(),
+    modifiedBy = 'AddFollowUpTobloomTicket'
+  WHERE _id = pTicketId;
+
   END IF;
 
-	INSERT INTO blackstarDb.followUp(bloomTicketId, followup, followUpReferenceTypeId, asignee, created, createdBy, createdByUsr)
-	VALUES(pTicketId, pMessage, 'R', asignee, CONVERT_TZ(now(),'+00:00','-5:00'), 'AddFollowUpTobloomTicket', pCreatedByUsrMail);
+  
 END$$
 
 -- -----------------------------------------------------------------------------
@@ -9685,7 +9720,7 @@ CREATE PROCEDURE blackstarDb.`CodexGetProjectById`(pProjectId int(11))
 BEGIN
 SELECT cp._id id, cp.projectNumber projectNumber, cp.clientId clientId, cp.taxesTypeId taxesTypeId, cp.statusId statusId
       , cp.paymentTypeId paymentTypeId, cp.currencyTypeId currencyTypeId, cst.name statusDescription
-      , cc.tradeName clientDescription, ccc.costCenter costCenter, cp.changeType changeType, cp.created created
+      , cc.corporateName clientDescription, ccc.costCenter costCenter, cp.changeType changeType, cp.created created
       , cp.contactName contactName, cp.location location, cp.advance advance, cp.timeLimit timeLimit
       , cp.settlementTimeLimit settlementTimeLimit, cp.deliveryTime deliveryTime, cp.incoterm incoterm
       , cp.productsNumber productsNumber, cp.financesNumber financesNumber, cp.servicesNumber servicesNumber

@@ -905,7 +905,7 @@ CREATE PROCEDURE blackstarDb.`CodexGetProjectById`(pProjectId int(11))
 BEGIN
 SELECT cp._id id, cp.projectNumber projectNumber, cp.clientId clientId, cp.taxesTypeId taxesTypeId, cp.statusId statusId
       , cp.paymentTypeId paymentTypeId, cp.currencyTypeId currencyTypeId, cst.name statusDescription
-      , cc.tradeName clientDescription, ccc.costCenter costCenter, cp.changeType changeType, cp.created created
+      , cc.corporateName clientDescription, ccc.costCenter costCenter, cp.changeType changeType, cp.created created
       , cp.contactName contactName, cp.location location, cp.advance advance, cp.timeLimit timeLimit
       , cp.settlementTimeLimit settlementTimeLimit, cp.deliveryTime deliveryTime, cp.incoterm incoterm
       , cp.productsNumber productsNumber, cp.financesNumber financesNumber, cp.servicesNumber servicesNumber
