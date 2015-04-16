@@ -1,14 +1,53 @@
+<%@ page language="java" contentType="text/html; charset=utf-8"
+    pageEncoding="utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@page isELIgnored="false"%>
+<script src="${pageContext.request.contextPath}/js/datepicker-es.js"></script>
+<script src="${pageContext.request.contextPath}/js/moment.min.js"></script>
 <script type="text/javascript">
-	
+	var year = moment().year();
+	var yearStart = moment({year: year, month: 0, day: 1});
+	var month = moment().month();
+	var monthStart = moment({year: year, month: month, day: 1});
+	var startDateStr = yearStart.format("DD/MM/YYYY") + " 00:00:00";
+	var endDateStr = moment().format("DD/MM/YYYY") + " 00:00:00";
+
 	// Inicializacion de tabla
+
 	function limitedServiceOrdersHistory_init(){
 
 		// Tabla de ordenes de servicio pendientes
 		getlimitedServiceOrdersHistory();
+
+		$("#dateRange").hide();
+		// $.datepicker.setDefaults( $.datepicker.regional[ "es" ] );
+    	$("#startDate").datepicker({ dateFormat: 'dd/mm/yy', onSelect: function(date, obj){startDateStr = date +" 00:00:00";}, changeMonth: true, changeYear: true});
+    	$("#endDate").datepicker({ dateFormat: 'dd/mm/yy', onSelect: function(date, obj){endDateStr = date +" 00:00:00";}, changeMonth: true, changeYear: true});
+    	$("#dateSelector").bind("change", function(){
+    	 	switch($(this).val()){
+    	 		case "1":
+    	 			startDateStr = yearStart.format("DD/MM/YYYY") + " 00:00:00";
+    	 			endDateStr = moment().format("DD/MM/YYYY") + " 00:00:00";
+    	 			$("#dateRange").hide();
+    	 			break;
+	 			case "2":
+	 				startDateStr = monthStart.format("DD/MM/YYYY") + " 00:00:00";
+    	 			endDateStr = moment().format("DD/MM/YYYY") + " 00:00:00";
+    	 			$("#dateRange").hide();
+    	 			break;
+    	 		case "3":
+    	 			startDateStr = monthStart.format("DD/MM/YYYY") + " 00:00:00";
+    	 			endDateStr = moment().format("DD/MM/YYYY") + " 00:00:00";
+    	 			$("#startDate").val(monthStart.format("DD/MM/YYYY"));
+    	 			$("#endDate").val(moment().format("DD/MM/YYYY"));
+    	 			$("#dateRange").show();
+    	 			break;
+    	 	}
+    	});
 	}	
 	
 	function getlimitedServiceOrdersHistory(){
-		$.getJSON("/serviceOrders/limitedServiceOrdersHistoryJson.do", function(data){
+		$.getJSON("/serviceOrders/limitedServiceOrdersHistoryJson.do?startDate=" + encodeURIComponent(startDateStr) + "&endDate=" + encodeURIComponent(endDateStr), function(data){
 			// Inicializacion de tabla de ordenes de servicio con algun pendiente
 			$('#dtOrdersHistory').dataTable({	
 					"bProcessing": false,
@@ -48,6 +87,11 @@
 			);
 		});
 	}
+
+	function reloadHistory(){
+		$('#dtOrdersHistory').dataTable().fnDestroy();
+		getlimitedServiceOrdersHistory();
+	}
 	
 </script>
 
@@ -60,6 +104,27 @@
 			<div class="utils">
 				
 			</div>
+			<table style="margin:10px;">
+				<tr>
+					<td style="width:20%;">
+						Periodo:
+						<select id="dateSelector">
+							<option value="1" selected>Año Actual</option>
+							<option value="2">Mes Actual</option>
+							<option value="3">Rango de fechas</option>
+						</select>
+					</td>
+					<td style="width:33%;">
+						<div id="dateRange">
+							Fecha Inicial
+							<input type="text" id="startDate" readonly/>
+							Fecha final
+							<input type="text" id="endDate" readonly/>
+						</div>
+					</td>
+				</tr>
+			</table>
+			<input style="margin:10px;" type="submit" id="filterHistory" value="Filtrar" class="searchButton" onclick="reloadHistory(); return false;"/>
 			<table cellpadding="0" cellspacing="0" border="0" class="display" id="dtOrdersHistory">
 				<thead>
 					<tr>

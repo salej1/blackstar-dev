@@ -1,7 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"
     pageEncoding="utf-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@page isELIgnored="false"%><script src="${pageContext.request.contextPath}/js/moment.min.js"></script>
+<%@page isELIgnored="false"%>
+<script src="${pageContext.request.contextPath}/js/moment.min.js"></script>
 <script type="text/javascript">
 	var year = moment().year();
 	var yearStart = moment({year: year, month: 0, day: 1});
