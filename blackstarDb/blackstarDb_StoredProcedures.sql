@@ -32,7 +32,7 @@ BEGIN
 	IF(SELECT count(*) FROM followUp WHERE isActive = 1) = 0 THEN
 		
 		-- Tickets
-		UPDATE followup f
+		UPDATE followUp f
 		INNER JOIN (
 			SELECT * FROM (
 				SELECT ticketId, max(followUpId) AS followUpId
@@ -45,7 +45,7 @@ BEGIN
 		SET isActive = 1;
 
 		-- Service orders
-		UPDATE followup f
+		UPDATE followUp f
 		INNER JOIN (
 			SELECT * FROM (
 				SELECT serviceOrderId, max(followUpId) AS followUpId
@@ -58,7 +58,7 @@ BEGIN
 		SET isActive = 1;
 
 		-- BloomTickets
-		UPDATE followup f
+		UPDATE followUp f
 		INNER JOIN (
 			SELECT * FROM (
 				SELECT bloomTicketId, max(followUpId) AS followUpId
@@ -71,7 +71,7 @@ BEGIN
 		SET isActive = 1;
 
 		-- CodexProjects
-		UPDATE followup f
+		UPDATE followUp f
 		INNER JOIN (
 			SELECT * FROM (
 				SELECT codexProjectId, max(followUpId) AS followUpId
@@ -84,7 +84,7 @@ BEGIN
 		SET isActive = 1;
 
 		-- Issues
-		UPDATE followup f
+		UPDATE followUp f
 		INNER JOIN (
 			SELECT * FROM (
 				SELECT issueId, max(followUpId) AS followUpId
@@ -766,7 +766,7 @@ BEGIN
 			followUpReferenceTypeId,
 			issueId,
 			asignee,
-			followup,
+			followUp,
 			created,
 			createdBy,
 			createdByUsr
@@ -801,7 +801,7 @@ BEGIN
 		followUpReferenceTypeId,
 		issueId,
 		asignee,
-		followup,
+		followUp,
 		created,
 		createdBy,
 		createdByUsr,
@@ -855,7 +855,7 @@ BEGIN
 		created AS timeStamp,
 		u2.name AS createdBy,
 		u.name AS asignee,
-		followup AS followUp
+		followUp AS followUp
 	FROM followUp f
 		LEFT OUTER JOIN blackstarUser u ON f.asignee = u.email
 		LEFT OUTER JOIN blackstarUser u2 ON f.createdByUsr = u2.email
@@ -895,7 +895,7 @@ BEGIN
 
 	SELECT 
 		f.followUpReferenceTypeId AS referenceTypeId, 
-		r.followupreferencetype AS referenceType,
+		r.followUpreferencetype AS referenceType,
 		coalesce(t.ticketId, s.serviceOrderId, i.issueId, bt._id) AS referenceId, 
 		coalesce(t.ticketNumber, s.serviceOrderNumber, i.issueNumber, bt.ticketNumber) AS referenceNumber,
 		coalesce(p.project, c.project, i.project, bt.project) AS project,
@@ -944,7 +944,7 @@ BEGIN
 
 	SELECT 
 		f.followUpReferenceTypeId AS referenceTypeId, 
-		r.followupreferencetype AS referenceType,
+		r.followUpreferencetype AS referenceType,
 		coalesce(t.ticketId, s.serviceOrderId, i.issueId, bt._id) AS referenceId, 
 		coalesce(t.ticketNumber, s.serviceOrderNumber, i.issueNumber, bt.ticketNumber) AS referenceNumber,
 		coalesce(p.project, c.project, i.project, bt.project) AS project,
@@ -3262,7 +3262,7 @@ BEGIN
 		followUpReferenceTypeId,
 		serviceOrderId,
 		asignee,
-		followup,
+		followUp,
 		created,
 		createdBy,
 		createdByUsr,
@@ -3305,7 +3305,7 @@ BEGIN
 		followUpReferenceTypeId,
 		ticketId,
 		asignee,
-		followup,
+		followUp,
 		created,
 		createdBy,
 		createdByUsr,
@@ -3388,7 +3388,7 @@ BEGIN
 		created AS timeStamp,
 		u2.name AS createdBy,
 		u.name AS asignee,
-		followup AS followUp
+		followUp AS followUp
 	FROM followUp f
 		LEFT OUTER JOIN blackstarUser u ON f.asignee = u.email
 		LEFT OUTER JOIN blackstarUser u2 ON f.createdByUsr = u2.email
@@ -3468,7 +3468,7 @@ BEGIN
 		created AS timeStamp,
 		u2.name AS createdBy,
 		u.name AS asignee,
-		followup AS followUp
+		followUp AS followUp
 	FROM followUp f
 		LEFT OUTER JOIN blackstarUser u ON f.asignee = u.email
 		LEFT OUTER JOIN blackstarUser u2 ON f.createdByUsr = u2.email
