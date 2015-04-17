@@ -9,47 +9,9 @@
 -- -----------------------------------------------------------------------------
 -- PR   Date    	Author	Description
 -- ---------------------------------------------------------------------------
--- 15	05/05/2014	SAG 	Se agregan serviceContact & serviceContactEmail a scheduledService
--- ---------------------------------------------------------------------------
--- 16	28/04/2014	SAG 	Se incrementa responsible en serviceOrder
--- ---------------------------------------------------------------------------
--- 17	14/05/2014	SAG 	Se agrega unique(serviceOrderNumber) a serviceOrder
--- ---------------------------------------------------------------------------
--- 18	19/05/2014	SAG 	Se agrega serviceDateEnd a serviceOrder
--- ---------------------------------------------------------------------------
--- 19	04/06/2014	SAG 	Se agrega hasPdf a serviceOrder
--- ---------------------------------------------------------------------------
--- 20	15/06/2014	SAG 	Se agrega surveyScore a serviceOrder
---							Se incrementa capacidad de namePerson, email, phone en surveyService		
--- ---------------------------------------------------------------------------
--- 21 	23/06/2014 	SAG 	Se agrega transferOS a openCustomer - auxiliar para transferencia de OpenCustomer
---							Se aumenta taman;o de openCustomer.serialNumber
--- ---------------------------------------------------------------------------
--- 22	05/07/2014	SAG 	Se agrega dueDate a issue
--- ---------------------------------------------------------------------------
--- 23 	08/07/2014 	SAG 	Se agrega bossId a blackstarUser
--- ---------------------------------------------------------------------------
--- 24 	24/04/2014	SAG 	Se agrega tabla policyEquipmentUser
--- ---------------------------------------------------------------------------
--- 25 	31/07/2014	SAG 	Se incremente tamaño de manufacturedDateSeria en upsServiceBatteryBank
--- ---------------------------------------------------------------------------
--- 26 	18/08/2014	SAG 	Se cambian campos numericos de OS por alfa-numericos
--- ---------------------------------------------------------------------------
--- 27 	20/08/2014	SAG 	Se aumenta el tamaño de todos los campos alfanumericos de OS
--- ---------------------------------------------------------------------------
--- 28	09/09/2014	SAG 	Se permiten nulos en boleanos de OS - todos los formatos
--- ---------------------------------------------------------------------------
--- 29	24/10/2014	SAG 	Se incrementa campo contact en policy
--- ---------------------------------------------------------------------------
--- 30	03/11/2014	SAG 	Se agrega guid
--- ---------------------------------------------------------------------------
--- 31 	06/11/2014	SAG 	Se agrega suggestionFlag - 1 Bueno, 0 Malo
--- ---------------------------------------------------------------------------
--- 32 	24/11/2014	SAG 	Se agreta officeId a ScheduledService
--- ---------------------------------------------------------------------------
--- 33	22/01/2015	SAG 	Se agrega Global Settings
--- ---------------------------------------------------------------------------
 -- 34	01/04/2015	SAG		Se agrega assignedBy a ticket, so, bloomTicket e issue
+-- ---------------------------------------------------------------------------
+-- 35 	16/04/2015	SAG 	Se agrega isActive a followUp
 -- ---------------------------------------------------------------------------
 
 use blackstarDb;
@@ -63,6 +25,12 @@ BEGIN
 -- -----------------------------------------------------------------------------
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
+
+-- Agregando isActive a followUp
+IF(SELECT count(*) FROM information_schema.columns WHERE  table_schema = 'blackstarDb' AND table_name = 'followUp' AND column_name = 'isActive' ) = 0 THEN
+	ALTER TABLE followUp ADD isActive INT NULL DEFAULT NULL;
+	ALTER TABLE followUp ADD INDEX (isActive);
+END IF;
 
 -- AGREGANDO assignedBy
 IF(SELECT count(*) FROM information_schema.columns WHERE  table_schema = 'blackstarDb' AND table_name = 'ticket' AND column_name = 'assignedBy' ) = 0 THEN
@@ -1268,32 +1236,6 @@ DROP PROCEDURE blackstarDb.upgradeSchema;
 -- -----------------------------------------------------------------------------
 -- PR   Date    	Author	Description
 -- -----------------------------------------------------------------------------
--- 55	03/11/2014	SAG		Se agrega:
---								GetGuid
---								SaveGuid
--- -----------------------------------------------------------------------------
--- 56	06/11/2014	SAG 	Se agrega:		
---								FlagSurveySuggestion
--- -----------------------------------------------------------------------------
--- 57 	24/11/2014	SAG 	Se modifica:
---								UpsertScheduledService
---								GetFutureServicesSchedule
---								GetServicesSchedule
--- -----------------------------------------------------------------------------
--- 58 	22/01/2015 SAG 		Se agrega:
---								SetEngHourCost
---								GetEngHourCost
--- -----------------------------------------------------------------------------
--- 59	08/02/2015	SAG 	Se modifica:
---								UpdateServiceOrder
--- -----------------------------------------------------------------------------
--- 60 	17/02/2015	SAG 	Se agrega:
---								GetEquipmentListByCustomer
---								GetEquipmentListAll
---								GetPolicyById
---								InsertTicket
---								GetTicketById
--- -----------------------------------------------------------------------------
 -- 61 	03/03/2015	SAG 	Se modifica:
 --								GetAllServiceOrders		
 --								GetLimitedServiceOrderList		
@@ -1301,11 +1243,88 @@ DROP PROCEDURE blackstarDb.upgradeSchema;
 --								InsertTicket
 --								UpdateTicketData
 -- -----------------------------------------------------------------------------
+-- 62	15/04/2015	SAG 	Se agrega setActiveFollowUp
+-- -----------------------------------------------------------------------------
 
 use blackstarDb;
 
 DELIMITER $$
 
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.setActiveFollowUp
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.setActiveFollowUp$$
+CREATE PROCEDURE blackstarDb.setActiveFollowUp()
+BEGIN
+	IF(SELECT count(*) FROM followUp WHERE isActive = 1) = 0 THEN
+		
+		-- Tickets
+		UPDATE followup f
+		INNER JOIN (
+			SELECT * FROM (
+				SELECT ticketId, max(followUpId) AS followUpId
+				FROM followUp
+				WHERE ticketId IS NOT NULL
+				GROUP BY ticketId
+			) a
+		) b
+			ON b.followUpId = f.followUpId
+		SET isActive = 1;
+
+		-- Service orders
+		UPDATE followup f
+		INNER JOIN (
+			SELECT * FROM (
+				SELECT serviceOrderId, max(followUpId) AS followUpId
+				FROM followUp
+				WHERE serviceOrderId IS NOT NULL
+				GROUP BY serviceOrderId
+			) a
+		) b
+			ON b.followUpId = f.followUpId
+		SET isActive = 1;
+
+		-- BloomTickets
+		UPDATE followup f
+		INNER JOIN (
+			SELECT * FROM (
+				SELECT bloomTicketId, max(followUpId) AS followUpId
+				FROM followUp
+				WHERE bloomTicketId IS NOT NULL
+				GROUP BY bloomTicketId
+			) a
+		) b
+			ON b.followUpId = f.followUpId
+		SET isActive = 1;
+
+		-- CodexProjects
+		UPDATE followup f
+		INNER JOIN (
+			SELECT * FROM (
+				SELECT codexProjectId, max(followUpId) AS followUpId
+				FROM followUp
+				WHERE codexProjectId IS NOT NULL
+				GROUP BY codexProjectId
+			) a
+		) b
+			ON b.followUpId = f.followUpId
+		SET isActive = 1;
+
+		-- Issues
+		UPDATE followup f
+		INNER JOIN (
+			SELECT * FROM (
+				SELECT issueId, max(followUpId) AS followUpId
+				FROM followUp
+				WHERE issueId IS NOT NULL
+				GROUP BY issueId
+			) a
+		) b
+			ON b.followUpId = f.followUpId
+		SET isActive = 1;
+
+	END IF;
+END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetTicketById
@@ -2001,6 +2020,9 @@ DROP PROCEDURE IF EXISTS blackstarDb.AddFollowUpToIssue$$
 CREATE PROCEDURE blackstarDb.AddFollowUpToIssue(pIssueId INTEGER, pCreated DATETIME, pCreatedBy VARCHAR(100), pAsignee VARCHAR(100), pMessage TEXT)
 BEGIN
 
+	-- LIMPIAR EL REGISTRO ACTIVE
+	UPDATE followUp SET isActive = NULL WHERE issueId = pIssueId AND isActive = 1;
+
 	-- INSERTAR EL REGISTRO DE SEGUIMIENTO
 	INSERT INTO blackstarDb.followUp(
 		followUpReferenceTypeId,
@@ -2009,7 +2031,8 @@ BEGIN
 		followup,
 		created,
 		createdBy,
-		createdByUsr
+		createdByUsr,
+		isActive
 	)
 	SELECT 
 		'I',
@@ -2018,7 +2041,8 @@ BEGIN
 		pMessage,
 		pCreated,
 		'AddFollowUpToIssue',
-		pCreatedBy;
+		pCreatedBy,
+		1;
 
 	IF ifnull(pAsignee, '') != '' THEN
 		UPDATE issue SET
@@ -2088,112 +2112,13 @@ DROP PROCEDURE IF EXISTS blackstarDb.GetUserWatchingIssues$$
 CREATE PROCEDURE blackstarDb.GetUserWatchingIssues(pUser VARCHAR(100))
 BEGIN
 
-	SET @prevRefId = 0;
-	SET @rowNumber = 0;
 	SET @myId = (SELECT blackstarUserId FROM blackstarUser WHERE email = pUser);
 
-	CREATE TEMPORARY TABLE usrGroup(email VARCHAR(100), name VARCHAR(200));
-	INSERT INTO usrGroup(email, name)
-	SELECT email, name FROM blackstarUser WHERE email = pUser;
-
-	INSERT INTO usrGroup(email, name)
-	SELECT email, name FROM blackstarUser WHERE bossId = (SELECT blackstarUserId FROM blackstarUser WHERE email = pUser);
-
-	CREATE TEMPORARY TABLE followUpCandidates(followUpId INT, asignee VARCHAR(100), followUp TEXT, created DATETIME, createdByUsr VARCHAR(200), ticketId INT, serviceOrderId INT, issueId INT, bloomTicketId INT);
-	INSERT INTO followUpCandidates(followUpId, asignee, followUp, created, createdByUsr, ticketId, serviceOrderId, issueId, bloomTicketId)
-	SELECT followUpId, asignee, followUp, created, createdByUsr, ticketId, serviceOrderId, issueId, bloomTicketId FROM (
-		SELECT @rowNumber := IF(coalesce(ticketId, serviceOrderId, issueId, bloomTicketId) = @prevRefId, @rowNumber + 1, 1) AS RowNum,
-			f.*, 
-			@prevRefId := coalesce(ticketId, serviceOrderId, issueId, bloomTicketId) AS PrevRef
-		FROM followUp f
-		ORDER BY followUpReferenceTypeId, coalesce(ticketId, serviceOrderId, issueId, bloomTicketId), created DESC
-	) a 
-	INNER JOIN usrGroup g ON a.asignee = g.email
-	WHERE a.RowNum = 1;
-
-	CREATE TEMPORARY TABLE displayIssues(referenceTypeId CHAR, referenceType VARCHAR(200), referenceId INT, referenceNumber VARCHAR(200), project VARCHAR(100), customer VARCHAR(400), created DATETIME, title VARCHAR(400), detail TEXT, status VARCHAR(200), createdByUsr VARCHAR(200), asignee VARCHAR(200));
-
-	-- Tickets - policies
-	INSERT INTO displayIssues(referenceTypeId, referenceType, referenceId, referenceNumber, project, customer, created, title, detail, status, createdByUsr, asignee)
-	SELECT 
-		'T', 'Ticket', f.ticketId, ticketNumber, project, customer, f.created, 'Seguimiento a Ticket', followUp, ticketStatus, u1.name, u2.name
-	FROM followUpCandidates f 
-		INNER JOIN ticket t ON t.ticketId = f.ticketId
-		INNER JOIN policy p ON t.policyId = p.policyId
-		INNER JOIN ticketStatus s ON t.ticketStatusId = s.ticketStatusId
-		INNER JOIN usrGroup u1 ON u1.email = f.asignee
-		INNER JOIN blackstarUser u2 ON f.createdByUsr = u2.email
-	WHERE f.ticketId IS NOT NULL
-		AND t.ticketStatusId IN('A','R');
-
-	-- ServiceOrders - policy
-	INSERT INTO displayIssues(referenceTypeId, referenceType, referenceId, referenceNumber, project, customer, created, title, detail, status, createdByUsr, asignee)
-	SELECT 
-		'O', 'Orden de Servicio', f.serviceOrderId, serviceOrderNumber, project, customer, f.created, 'Seguimiento a Orden de Servicio', followUp, serviceStatus, u1.name, u2.name
-	FROM followUpCandidates f 
-		INNER JOIN serviceOrder o ON o.serviceOrderId = f.serviceOrderId
-		INNER JOIN policy p ON o.policyId = p.policyId
-		INNER JOIN serviceStatus s ON o.serviceStatusId = s.serviceStatusId
-		INNER JOIN usrGroup u1 ON u1.email = f.asignee
-		INNER JOIN blackstarUser u2 ON f.createdByUsr = u2.email
-	WHERE f.serviceOrderId IS NOT NULL
-		AND o.serviceStatusId = 'E';
-
-	-- ServiceOrders - openCustomer
-	INSERT INTO displayIssues(referenceTypeId, referenceType, referenceId, referenceNumber, project, customer, created, title, detail, status, createdByUsr, asignee)
-	SELECT 
-		'O', 'Orden de Servicio', f.serviceOrderId, serviceOrderNumber, project, customerName, f.created, 'Seguimiento a Orden de Servicio', followUp, serviceStatus, u1.name, u2.name
-	FROM followUpCandidates f 
-		INNER JOIN serviceOrder o ON o.serviceOrderId = f.serviceOrderId
-		INNER JOIN openCustomer p ON o.openCustomerId = p.openCustomerId
-		INNER JOIN serviceStatus s ON o.serviceStatusId = s.serviceStatusId
-		INNER JOIN usrGroup u1 ON u1.email = f.asignee
-		INNER JOIN blackstarUser u2 ON f.createdByUsr = u2.email
-	WHERE f.serviceOrderId IS NOT NULL
-		AND o.serviceStatusId = 'E';
-
-	-- BloomTickets
-	INSERT INTO displayIssues(referenceTypeId, referenceType, referenceId, referenceNumber, project, customer, created, title, detail, status, createdByUsr, asignee)
-	SELECT 
-		'R', 'Requisicion', bloomTicketId, ticketNumber, project, '', f.created, 'Requisicion', followUp, s.name, u1.name, u2.name
-	FROM followUpCandidates f 
-		INNER JOIN bloomTicket t ON t._id = f.bloomTicketId
-		INNER JOIN bloomStatusType s ON t.statusId = s._id
-		INNER JOIN usrGroup u1 ON u1.email = f.asignee
-		INNER JOIN blackstarUser u2 ON f.createdByUsr = u2.email
-	WHERE f.bloomTicketId IS NOT NULL
-		AND t.statusId IN(1,3);
-
-	-- Issues
-	INSERT INTO displayIssues(referenceTypeId, referenceType, referenceId, referenceNumber, project, customer, created, title, detail, status, createdByUsr, asignee)
-	SELECT 
-		'I', 'Asignacion SAC', f.issueId, issueNumber, project, ifnull(customer,''), f.created, 'Asignacion SAC', followUp, s.issueStatus, u1.name, u2.name
-	FROM followUpCandidates f 
-		INNER JOIN issue i ON i.issueId = f.issueId
-		INNER JOIN issueStatus s ON i.issueStatusId = s.issueStatusId
-		INNER JOIN usrGroup u1 ON u1.email = f.asignee
-		INNER JOIN blackstarUser u2 ON f.createdByUsr = u2.email
-	WHERE f.bloomTicketId IS NOT NULL
-		AND i.issueStatusId = 'A';
-
-	SELECT * FROM displayIssues ORDER BY created;
-
-	DROP TABLE usrGroup;
-	DROP TABLE followUpCandidates;
-	DROP TABLE displayIssues;
-END$$
-
--- -----------------------------------------------------------------------------
-	-- blackstarDb.GetUserPendingIssues
--- -----------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS blackstarDb.GetUserPendingIssues$$
-CREATE PROCEDURE blackstarDb.GetUserPendingIssues(pUser VARCHAR(100))
-BEGIN
-
-	
-	SET @prevRefId := 0;
-	SET @rowNumber := 0;
-	SET @myId:= (SELECT blackstarUserId FROM blackstarUser WHERE email = pUser);
+	-- Health check
+	DROP TABLE IF EXISTS usrGroup;
+	CREATE TEMPORARY TABLE usrGroup(blackstarUserId INT, email VARCHAR(100), name VARCHAR(200));
+	INSERT INTO usrGroup(blackstarUserId, email, name)
+	SELECT blackstarUserId, email, name FROM blackstarUser WHERE bossId = @myId;
 
 	SELECT 
 		f.followUpReferenceTypeId AS referenceTypeId, 
@@ -2213,15 +2138,7 @@ BEGIN
 		coalesce(ts.ticketStatus, ist.issueStatus, bts.name, '') as status,
 		ifnull(u1.name, '') AS createdByUsr,
 		u2.name AS asignee
-	FROM (
-		SELECT * FROM (
-			SELECT @rowNumber := IF(coalesce(ticketId, serviceOrderId, issueId, bloomTicketId) = @prevRefId, @rowNumber + 1, 1) AS RowNum,
-				f.*, 
-				@prevRefId := coalesce(ticketId, serviceOrderId, issueId, bloomTicketId) AS PrevRef
-			FROM followUp f
-			ORDER BY followUpReferenceTypeId, coalesce(ticketId, serviceOrderId, issueId, bloomTicketId), created DESC
-		) a WHERE a.RowNum = 1  -- a: todos los followUps asignados por usuario, numerados por id de (ticket, so, issue)
-	) f -- f: el ultimo comentario de cada (ticket, so, issue, requisicion) y que esta asignado al usuario
+	FROM followUp f
 		INNER JOIN followUpReferenceType r ON f.followUpReferenceTypeId = r.followUpReferenceTypeId
 		LEFT OUTER JOIN ticket t ON f.ticketId = t.ticketId
 		LEFT OUTER JOIN serviceOrder s ON s.serviceOrderId = f.serviceOrderId
@@ -2235,7 +2152,57 @@ BEGIN
 		LEFT OUTER JOIN bloomStatusType bts ON bts._id = bt.statusId
 		LEFT OUTER JOIN blackstarUser u1 ON f.createdByUsr = u1.email
 		LEFT OUTER JOIN blackstarUser u2 ON f.asignee = u2.email
-	WHERE coalesce(t.asignee, s.asignee, i.asignee, bt.asignee) = pUser
+	WHERE isActive = 1
+		AND (u2.blackstarUserId IN (SELECT u3.blackstarUserId FROM usrGroup u3) OR u1.blackstarUserId = @myId)
+		AND coalesce(t.ticketStatusId, s.serviceStatusId, i.issueStatusId, '') NOT IN ('C', 'F')
+		AND ifnull(bt.statusId, 0) NOT IN(6, 4)
+	ORDER BY f.created;
+	
+	DROP TABLE usrGroup;
+
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetUserPendingIssues
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetUserPendingIssues$$
+CREATE PROCEDURE blackstarDb.GetUserPendingIssues(pUser VARCHAR(100))
+BEGIN
+
+	SELECT 
+		f.followUpReferenceTypeId AS referenceTypeId, 
+		r.followupreferencetype AS referenceType,
+		coalesce(t.ticketId, s.serviceOrderId, i.issueId, bt._id) AS referenceId, 
+		coalesce(t.ticketNumber, s.serviceOrderNumber, i.issueNumber, bt.ticketNumber) AS referenceNumber,
+		coalesce(p.project, c.project, i.project, bt.project) AS project,
+		coalesce(p.customer, c.customerName, i.customer, '') AS customer,
+		f.created AS created,
+		CASE 
+			WHEN f.followUpReferenceTypeId = 'T' THEN 'Seguimiento a Ticket'
+			WHEN f.followUpReferenceTypeId = 'O' THEN 'Seguimiento a Orden de Servicio'
+			WHEN f.followUpReferenceTypeId = 'I' THEN 'Asignacion SAC'
+			WHEN f.followUpReferenceTypeId = 'R' THEN 'Requisicion'
+		END AS title,
+		followUp AS detail,
+		coalesce(ts.ticketStatus, ist.issueStatus, bts.name, '') as status,
+		ifnull(u1.name, '') AS createdByUsr,
+		u2.name AS asignee
+	FROM followUp f
+		INNER JOIN followUpReferenceType r ON f.followUpReferenceTypeId = r.followUpReferenceTypeId
+		LEFT OUTER JOIN ticket t ON f.ticketId = t.ticketId
+		LEFT OUTER JOIN serviceOrder s ON s.serviceOrderId = f.serviceOrderId
+		LEFT OUTER JOIN issue i ON i.issueId = f.issueId
+		LEFT OUTER JOIN policy p ON coalesce(t.policyId, s.policyId) = p.policyId
+		LEFT OUTER JOIN openCustomer c ON s.openCustomerId = c.openCustomerId
+		LEFT OUTER JOIN ticketStatus ts ON ts.ticketStatusId = t.ticketStatusId
+		LEFT OUTER JOIN serviceStatus ss ON ss.serviceStatusId = s.serviceStatusId
+		LEFT OUTER JOIN issueStatus ist ON ist.issueStatusId = i.issueStatusId
+		LEFT OUTER JOIN bloomTicket bt ON f.bloomTicketId = bt._id
+		LEFT OUTER JOIN bloomStatusType bts ON bts._id = bt.statusId
+		LEFT OUTER JOIN blackstarUser u1 ON f.createdByUsr = u1.email
+		LEFT OUTER JOIN blackstarUser u2 ON f.asignee = u2.email
+	WHERE isActive = 1
+		AND f.asignee = pUser
 		AND coalesce(t.ticketStatusId, s.serviceStatusId, i.issueStatusId, '') NOT IN ('C', 'F')
 		AND ifnull(bt.statusId, 0) NOT IN(6, 4)
 	ORDER BY f.created;
@@ -4514,6 +4481,9 @@ DROP PROCEDURE IF EXISTS blackstarDb.AddFollowUpToOS$$
 CREATE PROCEDURE blackstarDb.AddFollowUpToOS(pOsId INTEGER, pCreated DATETIME, pCreatedBy VARCHAR(100), pAsignee VARCHAR(100), pMessage TEXT)
 BEGIN
 
+	-- LIMPIAR REGISTRO ACTIVE
+	UPDATE followUp SET isActive = NULL WHERE ServiceOrderId = pOsId AND isActive = 1;
+
 	-- INSERTAR EL REGISTRO DE SEGUIMIENTO
 	INSERT INTO blackstarDb.followUp(
 		followUpReferenceTypeId,
@@ -4522,7 +4492,8 @@ BEGIN
 		followup,
 		created,
 		createdBy,
-		createdByUsr
+		createdByUsr,
+		isActive
 	)
 	SELECT 
 		'O',
@@ -4531,7 +4502,8 @@ BEGIN
 		pMessage,
 		pCreated,
 		'AddFollowUpToOS',
-		pCreatedBy;
+		pCreatedBy,
+		1;
 
 	-- ACTUALIZAR LA OS
 	UPDATE serviceOrder SET
@@ -4552,6 +4524,8 @@ END$$
 DROP PROCEDURE IF EXISTS blackstarDb.AddFollowUpToTicket$$
 CREATE PROCEDURE blackstarDb.AddFollowUpToTicket(pTicketId INTEGER, pCreated DATETIME, pCreatedBy VARCHAR(100), pAsignee VARCHAR(100), pMessage TEXT)
 BEGIN
+	-- LIMPIAR REGISTRO ACTIVE
+	UPDATE followUp SET isActive = NULL WHERE ticketId = pTicketId AND isActive = 1;
 
 	-- INSERTAR EL REGISTRO DE SEGUIMIENTO
 	INSERT INTO blackstarDb.followUp(
@@ -4561,7 +4535,8 @@ BEGIN
 		followup,
 		created,
 		createdBy,
-		createdByUsr
+		createdByUsr,
+		isActive
 	)
 	SELECT 
 		'T',
@@ -4570,7 +4545,8 @@ BEGIN
 		pMessage,
 		pCreated,
 		'AddFollowUpToTicket',
-		pCreatedBy;
+		pCreatedBy,
+		1;
 
 END$$
 
@@ -7338,72 +7314,6 @@ DROP PROCEDURE blackstarDb.upgradeBloomSchema;
 -- -----------------------------------------------------------------------------
 -- PR   Date    	Author	Description
 -- --   --------   -------  ----------------------------------------------------
--- 1    20/03/2014	DCB		Se Integran los SP iniciales:
---								blackstarDb.BloomUpdateTickets
---								blackstarDb.BloomUpdateTransferFollow
---								blackstarDb.BloomUpdateTransferTeam
--- 								blackstarDb.BloomUpdateTransferUsers
--- 								blackstarDb.BloomTransfer
--- 2    24/03/2014	DCB		Se Integra blackstarDb.GetbloomTicketDetail
--- 3    24/03/2014	DCB		Se Integra blackstarDb.GetbloomTicketTeam
--- 4    28/03/2014	DCB		Se Integra blackstarDb.AddFollowUpTobloomTicket
---                          Se Integra blackstarDb.UpsertbloomTicketTeam
---                          Se Integra blackstarDb.GetBloomFollowUpByTicket
--- 5    31/03/2014  DCB     Se integra blackstarDb.GetBloomDeliverableType  
---                  DCB     Se integra blackstarDb.AddBloomDelivarable  
--- 5    02/04/2014  DCB     Se integra blackstarDb.GetbloomTicketResponsible
---                  DCB     Se integra blackstarDb.GetUserById
--- 6    03/04/2014  DCB     Se integra blackstarDb.ClosebloomTicket
-
--- 7     08/05/2014  OMA	blackstarDb.getBloomPendingTickets
--- 8     08/05/2014  OMA	blackstarDb.getbloomTickets
--- 9     08/05/2014  OMA	blackstarDb.getBloomDocumentsByService
--- 10    08/05/2014  OMA 	blackstarDb.getBloomProjects
--- 11    08/05/2014  OMA 	blackstarDb.getbloomApplicantArea
--- 12    08/05/2014  OMA 	blackstarDb.getBloomServiceType
--- 13    08/05/2014  OMA 	blackstarDb.getBloomOffice
--- 14    08/05/2014  OMA 	blackstarDb.GetNextInternalTicketNumber
--- 15    08/05/2014  OMA 	blackstarDb.AddInternalTicket
--- 16    08/05/2014  OMA 	blackstarDb.AddMemberTicketTeam
--- 17    08/05/2014  OMA 	blackstarDb.AddDeliverableTrace
--- 18    08/05/2014  OMA	blackstarDb.GetUserData (MODIFICADO:Sobrescribimos la version anterior)
--- 19    08/05/2014  OMA	blackstarDb.getBloomEstatusTickets
-
--- 19    16/05/2014  OMA	blackstarDb.GetBloomSupportAreasWithTickets
--- 20    16/05/2014  OMA	blackstarDb.GetBloomStatisticsByAreaSupport
--- 21    16/05/2014  OMA	blackstarDb.GetBloomPercentageTimeClosedTickets
--- 22    16/05/2014  OMA	blackstarDb.GetBloomPercentageEvaluationTickets
--- 23    16/05/2014  OMA	blackstarDb.GetBloomNumberTicketsByArea
--- 24    16/05/2014  OMA	blackstarDb.GetBloomUnsatisfactoryTicketsByUserByArea
--- 25    16/05/2014  OMA	blackstarDb.GetBloomHistoricalTickets
--- 26    22/06/2014  OMA	blackstarDb.getBloomAdvisedUsers
---
--- ------------------------------------------------------------------------------
--- 27   29/06/2014  SAG   Correcciones de integracion:
---                          blackstarDb.AddMemberTicketTeam
--- ------------------------------------------------------------------------------
--- 28   10/07/2014  SAG   Se modifica:
---                          blackstarDb.AddInternalTicket
--- ------------------------------------------------------------------------------
--- 29   20/08/2014  SAG   Se integra proyecto bloom 
---                        Se agrega AssignBloomTicket
---                        Se agrega UserCanAssignBloomTicket
--- ------------------------------------------------------------------------------
--- 30   16/09/2014  SAG   Se agrega:
---                        Se agrega bloomTicketAutoclose
--- ------------------------------------------------------------------------------
--- 31   06/10/2014  SAG   Se cambia:
---                          bloomTicketAutoclose por bloomTicketAutoProcess
--- ------------------------------------------------------------------------------
--- 32   07/10/2014  SAG   Se modifica:
---                          GetBloomHistoricalTickets - se agrega opcion 0 - Abiertos y retrasados
--- ------------------------------------------------------------------------------
--- 33   17/11/2014  SAG   Se agrega:
---                          bloomGetTicketsServiceOrdersMixed
--- ------------------------------------------------------------------------------
--- 34   17/12/2014  SAG   Se modifica:
---                          GetBloomStatisticsByAreaSupport
--- ------------------------------------------------------------------------------
 -- 35   08/02/2015  SAG   Se modifica:
 --                          GetBloomPercentageTimeClosedTickets
 --                          GetBloomPercentageEvaluationTickets
@@ -7559,10 +7469,13 @@ END$$
 DROP PROCEDURE IF EXISTS blackstarDb.AddFollowUpTobloomTicket$$
 CREATE PROCEDURE blackstarDb.`AddFollowUpTobloomTicket`(pTicketId INTEGER, pAsignee VARCHAR(50), pCreatedByUsrMail VARCHAR(50), pMessage TEXT)
 BEGIN
- 
-	INSERT INTO blackstarDb.followUp(bloomTicketId, followup, followUpReferenceTypeId, asignee, created, createdBy, createdByUsr)
-	VALUES(pTicketId, pMessage, 'R', ifnull(pAsignee, pCreatedByUsrMail), CONVERT_TZ(now(),'+00:00','-5:00'), 'AddFollowUpTobloomTicket', pCreatedByUsrMail);
- 
+  
+  -- LIMPIAR EL REGISTRO ACTIVE
+  UPDATE followUp SET isActive = NULL WHERE bloomTicketId = pTicketId AND isActive = 1;
+
+	INSERT INTO blackstarDb.followUp(bloomTicketId, followup, followUpReferenceTypeId, asignee, created, createdBy, createdByUsr, isActive)
+	VALUES(pTicketId, pMessage, 'R', ifnull(pAsignee, pCreatedByUsrMail), CONVERT_TZ(now(),'+00:00','-5:00'), 'AddFollowUpTobloomTicket', pCreatedByUsrMail, 1);
+
   IF ifnull(pAsignee, '') != '' THEN
     UPDATE bloomTicket SET 
     asignee = pAsignee,
@@ -7573,7 +7486,6 @@ BEGIN
 
   END IF;
 
-  
 END$$
 
 -- -----------------------------------------------------------------------------
@@ -8645,20 +8557,9 @@ WHERE serviceTypeId IN('O', 'M', 'R', 'N', 'V');
 -- -----------------------------------------------------------------------------
 -- PR   Date    AuthorDescription
 -- --   --------   -------  ----------------------------------------------------
--- 1    22/10/2013  SAG  	Version inicial. Usuarios basicos de GPO Sac
--- --   --------   -------  ----------------------------------------------------
--- 2    12/11/2013  SAG  	Version 1.1. Se agrega ExecuteTransfer
--- -----------------------------------------------------------------------------
--- 3	24/04/2014	SAG		Se agrega poblacion de datos neceasrios para Issue
--- -----------------------------------------------------------------------------
--- 4	14/06/2014	SAG		Se agrega poblacion de surveyScore en serviceOrder
--- -----------------------------------------------------------------------------
--- 5 	08/07/2014	SAG 	Se actualiza SC Tijuana BK
--- -----------------------------------------------------------------------------
---	6	21/07/2014	SAG 	Se cambia Servicio de Descontaminacion de Data Center 
---								 por: Descontaminacion
--- -----------------------------------------------------------------------------
 -- 7 	22/01/2015	SAG 	Se agrega el registro de costo hora-ingeniero en global settings
+-- -----------------------------------------------------------------------------
+-- 8 	15/04/2015	SAG 	Se establece isActive en followUp
 -- -----------------------------------------------------------------------------
 
 use blackstarDb;
@@ -8666,6 +8567,10 @@ use blackstarDb;
 -- -----------------------------------------------------------------------------
 -- ACTUALIZACION DE DATOS
 -- -----------------------------------------------------------------------------
+
+-- Estableciendo isActive iniciales en followUp
+CALL setActiveFollowUp;
+
 -- Estableciendo Global settings inicial
 INSERT INTO globalSettings(globalSettingsId, engHourCost)
 SELECT a.globalSettingsId, a.engHourCost FROM (
@@ -8823,64 +8728,6 @@ DROP PROCEDURE blackstarDb.upgradeCodexSchema;
 -- -----------------------------------------------------------------------------
 -- PR   Date        Author	 Description
 -- --   --------   -------  ------------------------------------
--- 1    24/06/2014  DCB		  Se Integran los SP iniciales:
---								              blackstarDb.GetCodexAllStates
--- --   --------   -------  ------------------------------------
--- 2    13/08/2014  SAG     Se agrega:
---                              blackstarDb.GetCostCenterList
---                              blackstarDb.GetCSTOffice
--- -----------------------------------------------------------------------------
--- 3    01/09/2014  SAG     Se modifica:
---                              blackstarDb.CodexGetProjectsByStatusAndUser
---                              blackstarDb.CodexGetAllProjectsByUsr
---                              blackstarDb.CodexGetProjectsByStatus
---                              blackstarDb.CodexUpsertProject
---                              blackstarDb.CodexUpsertProjectEntry
---                          Se agrega: 
---                              blackstarDb.UpsertCodexCostCenter
---                              blackstarDb.GetCodexPriceList
---                          Se elimina:
---                              blackstarDb.GetNextEntryId
--- -----------------------------------------------------------------------------
--- 4  24/09/2014    SAG     Se agrega:
---                              blackstarDb.GetCstByEmail
---                          Se modifica:
---                              blackstarDb.GetCSTOffice
--- -----------------------------------------------------------------------------
--- 5  22/10/2014    SAG     Se agrega:
---                              blackstarDb.UpsertCodexVisit
---                              blackstarDb.GetAllVisitStatus
---                              blackstarDb.GetVisitList
---                              blackstarDb.GetAllCst
---                              blackstarDb.GetVisitById
--- -----------------------------------------------------------------------------
--- 6  28/10/2014    SAG     Se agrega:
---                              blackstarDb.getCodexInvoicingKpi
---                              blackstarDb.getCodexEffectiveness
---                              blackstarDb.getCodexProposals
---                              blackstarDb.getCodexProjectsByStatus
---                              blackstarDb.getCodexProjectsByOrigin
---                              blackstarDb.getCodexClientVisits
---                              blackstarDb.getCodexNewCustomers
---                              blackstarDb.getCodexProductFamilies
---                              blackstarDb.getCodexComerceCodes
---                              blackstarDb.getAutocompleteClientList
--- -----------------------------------------------------------------------------
--- 7  15/01/2015  SAG     Se agrega:
---                              blackstarDb.GetPriceProposalList
--- -----------------------------------------------------------------------------
--- 8  29/01/2015  SAG     Se modifica:
---                              blackstarDb.CodexGetAllProjectsByUsr
--- -----------------------------------------------------------------------------
--- 9 13/02/2015   SAG     Se agrega:
---                              blackstarDb.RecordSalesCall
---                              blackstarDb.getSalesCallRecords
--- -----------------------------------------------------------------------------
--- 10 23/02/2015  SAG     Se modifica:
---                              blackstarDb.CodexUpsertProjectEntryItem
---                              blackstarDb.CodexInsertDeliverableTrace
---                              blackstarDb.CodexGetProjectById
--- -----------------------------------------------------------------------------
 -- 11 12/03/2015  SAG   Se crea:
 --                              blackstarDb.UpsertCodexProjectEntryType
 --                      Se modifica:
@@ -9686,8 +9533,11 @@ DROP PROCEDURE IF EXISTS blackstarDb.AddFollowUpToCodexProject$$
 CREATE PROCEDURE blackstarDb.`AddFollowUpToCodexProject`(pProjectId INTEGER, pCreatedByUsr VARCHAR(200), pAssignedUsr VARCHAR(200), pMessage TEXT)
 BEGIN
 
-	INSERT INTO blackstarDb.followUp(codexProjectId, followup, created, createdBy, createdByUsr, asignee)
-	VALUES(pProjectId, pMessage, NOW(), 'AddFollowUpToCodexProject', pCreatedByUsr, pAssignedUsr);
+  -- LIMPIAR EL REGISTRO ACTIVE
+  UPDATE followUp SET isActive = NULL WHERE codexProjectId = pProjectId AND isActive = 1;
+
+	INSERT INTO blackstarDb.followUp(codexProjectId, followup, created, createdBy, createdByUsr, asignee, isActive)
+	VALUES(pProjectId, pMessage, NOW(), 'AddFollowUpToCodexProject', pCreatedByUsr, pAssignedUsr, 1);
 END$$
 
 -- -----------------------------------------------------------------------------

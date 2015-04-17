@@ -9,47 +9,9 @@
 -- -----------------------------------------------------------------------------
 -- PR   Date    	Author	Description
 -- ---------------------------------------------------------------------------
--- 15	05/05/2014	SAG 	Se agregan serviceContact & serviceContactEmail a scheduledService
--- ---------------------------------------------------------------------------
--- 16	28/04/2014	SAG 	Se incrementa responsible en serviceOrder
--- ---------------------------------------------------------------------------
--- 17	14/05/2014	SAG 	Se agrega unique(serviceOrderNumber) a serviceOrder
--- ---------------------------------------------------------------------------
--- 18	19/05/2014	SAG 	Se agrega serviceDateEnd a serviceOrder
--- ---------------------------------------------------------------------------
--- 19	04/06/2014	SAG 	Se agrega hasPdf a serviceOrder
--- ---------------------------------------------------------------------------
--- 20	15/06/2014	SAG 	Se agrega surveyScore a serviceOrder
---							Se incrementa capacidad de namePerson, email, phone en surveyService		
--- ---------------------------------------------------------------------------
--- 21 	23/06/2014 	SAG 	Se agrega transferOS a openCustomer - auxiliar para transferencia de OpenCustomer
---							Se aumenta taman;o de openCustomer.serialNumber
--- ---------------------------------------------------------------------------
--- 22	05/07/2014	SAG 	Se agrega dueDate a issue
--- ---------------------------------------------------------------------------
--- 23 	08/07/2014 	SAG 	Se agrega bossId a blackstarUser
--- ---------------------------------------------------------------------------
--- 24 	24/04/2014	SAG 	Se agrega tabla policyEquipmentUser
--- ---------------------------------------------------------------------------
--- 25 	31/07/2014	SAG 	Se incremente tamaño de manufacturedDateSeria en upsServiceBatteryBank
--- ---------------------------------------------------------------------------
--- 26 	18/08/2014	SAG 	Se cambian campos numericos de OS por alfa-numericos
--- ---------------------------------------------------------------------------
--- 27 	20/08/2014	SAG 	Se aumenta el tamaño de todos los campos alfanumericos de OS
--- ---------------------------------------------------------------------------
--- 28	09/09/2014	SAG 	Se permiten nulos en boleanos de OS - todos los formatos
--- ---------------------------------------------------------------------------
--- 29	24/10/2014	SAG 	Se incrementa campo contact en policy
--- ---------------------------------------------------------------------------
--- 30	03/11/2014	SAG 	Se agrega guid
--- ---------------------------------------------------------------------------
--- 31 	06/11/2014	SAG 	Se agrega suggestionFlag - 1 Bueno, 0 Malo
--- ---------------------------------------------------------------------------
--- 32 	24/11/2014	SAG 	Se agreta officeId a ScheduledService
--- ---------------------------------------------------------------------------
--- 33	22/01/2015	SAG 	Se agrega Global Settings
--- ---------------------------------------------------------------------------
 -- 34	01/04/2015	SAG		Se agrega assignedBy a ticket, so, bloomTicket e issue
+-- ---------------------------------------------------------------------------
+-- 35 	16/04/2015	SAG 	Se agrega isActive a followUp
 -- ---------------------------------------------------------------------------
 
 use blackstarDb;
@@ -63,6 +25,12 @@ BEGIN
 -- -----------------------------------------------------------------------------
 -- INICIO SECCION DE CAMBIOS
 -- -----------------------------------------------------------------------------
+
+-- Agregando isActive a followUp
+IF(SELECT count(*) FROM information_schema.columns WHERE  table_schema = 'blackstarDb' AND table_name = 'followUp' AND column_name = 'isActive' ) = 0 THEN
+	ALTER TABLE followUp ADD isActive INT NULL DEFAULT NULL;
+	ALTER TABLE followUp ADD INDEX (isActive);
+END IF;
 
 -- AGREGANDO assignedBy
 IF(SELECT count(*) FROM information_schema.columns WHERE  table_schema = 'blackstarDb' AND table_name = 'ticket' AND column_name = 'assignedBy' ) = 0 THEN

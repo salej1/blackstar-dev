@@ -9,72 +9,6 @@
 -- -----------------------------------------------------------------------------
 -- PR   Date    	Author	Description
 -- --   --------   -------  ----------------------------------------------------
--- 1    20/03/2014	DCB		Se Integran los SP iniciales:
---								blackstarDb.BloomUpdateTickets
---								blackstarDb.BloomUpdateTransferFollow
---								blackstarDb.BloomUpdateTransferTeam
--- 								blackstarDb.BloomUpdateTransferUsers
--- 								blackstarDb.BloomTransfer
--- 2    24/03/2014	DCB		Se Integra blackstarDb.GetbloomTicketDetail
--- 3    24/03/2014	DCB		Se Integra blackstarDb.GetbloomTicketTeam
--- 4    28/03/2014	DCB		Se Integra blackstarDb.AddFollowUpTobloomTicket
---                          Se Integra blackstarDb.UpsertbloomTicketTeam
---                          Se Integra blackstarDb.GetBloomFollowUpByTicket
--- 5    31/03/2014  DCB     Se integra blackstarDb.GetBloomDeliverableType  
---                  DCB     Se integra blackstarDb.AddBloomDelivarable  
--- 5    02/04/2014  DCB     Se integra blackstarDb.GetbloomTicketResponsible
---                  DCB     Se integra blackstarDb.GetUserById
--- 6    03/04/2014  DCB     Se integra blackstarDb.ClosebloomTicket
-
--- 7     08/05/2014  OMA	blackstarDb.getBloomPendingTickets
--- 8     08/05/2014  OMA	blackstarDb.getbloomTickets
--- 9     08/05/2014  OMA	blackstarDb.getBloomDocumentsByService
--- 10    08/05/2014  OMA 	blackstarDb.getBloomProjects
--- 11    08/05/2014  OMA 	blackstarDb.getbloomApplicantArea
--- 12    08/05/2014  OMA 	blackstarDb.getBloomServiceType
--- 13    08/05/2014  OMA 	blackstarDb.getBloomOffice
--- 14    08/05/2014  OMA 	blackstarDb.GetNextInternalTicketNumber
--- 15    08/05/2014  OMA 	blackstarDb.AddInternalTicket
--- 16    08/05/2014  OMA 	blackstarDb.AddMemberTicketTeam
--- 17    08/05/2014  OMA 	blackstarDb.AddDeliverableTrace
--- 18    08/05/2014  OMA	blackstarDb.GetUserData (MODIFICADO:Sobrescribimos la version anterior)
--- 19    08/05/2014  OMA	blackstarDb.getBloomEstatusTickets
-
--- 19    16/05/2014  OMA	blackstarDb.GetBloomSupportAreasWithTickets
--- 20    16/05/2014  OMA	blackstarDb.GetBloomStatisticsByAreaSupport
--- 21    16/05/2014  OMA	blackstarDb.GetBloomPercentageTimeClosedTickets
--- 22    16/05/2014  OMA	blackstarDb.GetBloomPercentageEvaluationTickets
--- 23    16/05/2014  OMA	blackstarDb.GetBloomNumberTicketsByArea
--- 24    16/05/2014  OMA	blackstarDb.GetBloomUnsatisfactoryTicketsByUserByArea
--- 25    16/05/2014  OMA	blackstarDb.GetBloomHistoricalTickets
--- 26    22/06/2014  OMA	blackstarDb.getBloomAdvisedUsers
---
--- ------------------------------------------------------------------------------
--- 27   29/06/2014  SAG   Correcciones de integracion:
---                          blackstarDb.AddMemberTicketTeam
--- ------------------------------------------------------------------------------
--- 28   10/07/2014  SAG   Se modifica:
---                          blackstarDb.AddInternalTicket
--- ------------------------------------------------------------------------------
--- 29   20/08/2014  SAG   Se integra proyecto bloom 
---                        Se agrega AssignBloomTicket
---                        Se agrega UserCanAssignBloomTicket
--- ------------------------------------------------------------------------------
--- 30   16/09/2014  SAG   Se agrega:
---                        Se agrega bloomTicketAutoclose
--- ------------------------------------------------------------------------------
--- 31   06/10/2014  SAG   Se cambia:
---                          bloomTicketAutoclose por bloomTicketAutoProcess
--- ------------------------------------------------------------------------------
--- 32   07/10/2014  SAG   Se modifica:
---                          GetBloomHistoricalTickets - se agrega opcion 0 - Abiertos y retrasados
--- ------------------------------------------------------------------------------
--- 33   17/11/2014  SAG   Se agrega:
---                          bloomGetTicketsServiceOrdersMixed
--- ------------------------------------------------------------------------------
--- 34   17/12/2014  SAG   Se modifica:
---                          GetBloomStatisticsByAreaSupport
--- ------------------------------------------------------------------------------
 -- 35   08/02/2015  SAG   Se modifica:
 --                          GetBloomPercentageTimeClosedTickets
 --                          GetBloomPercentageEvaluationTickets
@@ -230,10 +164,13 @@ END$$
 DROP PROCEDURE IF EXISTS blackstarDb.AddFollowUpTobloomTicket$$
 CREATE PROCEDURE blackstarDb.`AddFollowUpTobloomTicket`(pTicketId INTEGER, pAsignee VARCHAR(50), pCreatedByUsrMail VARCHAR(50), pMessage TEXT)
 BEGIN
- 
-	INSERT INTO blackstarDb.followUp(bloomTicketId, followup, followUpReferenceTypeId, asignee, created, createdBy, createdByUsr)
-	VALUES(pTicketId, pMessage, 'R', ifnull(pAsignee, pCreatedByUsrMail), CONVERT_TZ(now(),'+00:00','-5:00'), 'AddFollowUpTobloomTicket', pCreatedByUsrMail);
- 
+  
+  -- LIMPIAR EL REGISTRO ACTIVE
+  UPDATE followUp SET isActive = NULL WHERE bloomTicketId = pTicketId AND isActive = 1;
+
+	INSERT INTO blackstarDb.followUp(bloomTicketId, followup, followUpReferenceTypeId, asignee, created, createdBy, createdByUsr, isActive)
+	VALUES(pTicketId, pMessage, 'R', ifnull(pAsignee, pCreatedByUsrMail), CONVERT_TZ(now(),'+00:00','-5:00'), 'AddFollowUpTobloomTicket', pCreatedByUsrMail, 1);
+
   IF ifnull(pAsignee, '') != '' THEN
     UPDATE bloomTicket SET 
     asignee = pAsignee,
@@ -244,7 +181,6 @@ BEGIN
 
   END IF;
 
-  
 END$$
 
 -- -----------------------------------------------------------------------------

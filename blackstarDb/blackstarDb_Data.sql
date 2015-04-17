@@ -9,20 +9,9 @@
 -- -----------------------------------------------------------------------------
 -- PR   Date    AuthorDescription
 -- --   --------   -------  ----------------------------------------------------
--- 1    22/10/2013  SAG  	Version inicial. Usuarios basicos de GPO Sac
--- --   --------   -------  ----------------------------------------------------
--- 2    12/11/2013  SAG  	Version 1.1. Se agrega ExecuteTransfer
--- -----------------------------------------------------------------------------
--- 3	24/04/2014	SAG		Se agrega poblacion de datos neceasrios para Issue
--- -----------------------------------------------------------------------------
--- 4	14/06/2014	SAG		Se agrega poblacion de surveyScore en serviceOrder
--- -----------------------------------------------------------------------------
--- 5 	08/07/2014	SAG 	Se actualiza SC Tijuana BK
--- -----------------------------------------------------------------------------
---	6	21/07/2014	SAG 	Se cambia Servicio de Descontaminacion de Data Center 
---								 por: Descontaminacion
--- -----------------------------------------------------------------------------
 -- 7 	22/01/2015	SAG 	Se agrega el registro de costo hora-ingeniero en global settings
+-- -----------------------------------------------------------------------------
+-- 8 	15/04/2015	SAG 	Se establece isActive en followUp
 -- -----------------------------------------------------------------------------
 
 use blackstarDb;
@@ -30,6 +19,10 @@ use blackstarDb;
 -- -----------------------------------------------------------------------------
 -- ACTUALIZACION DE DATOS
 -- -----------------------------------------------------------------------------
+
+-- Estableciendo isActive iniciales en followUp
+CALL setActiveFollowUp;
+
 -- Estableciendo Global settings inicial
 INSERT INTO globalSettings(globalSettingsId, engHourCost)
 SELECT a.globalSettingsId, a.engHourCost FROM (

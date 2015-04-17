@@ -9,32 +9,6 @@
 -- -----------------------------------------------------------------------------
 -- PR   Date    	Author	Description
 -- -----------------------------------------------------------------------------
--- 55	03/11/2014	SAG		Se agrega:
---								GetGuid
---								SaveGuid
--- -----------------------------------------------------------------------------
--- 56	06/11/2014	SAG 	Se agrega:		
---								FlagSurveySuggestion
--- -----------------------------------------------------------------------------
--- 57 	24/11/2014	SAG 	Se modifica:
---								UpsertScheduledService
---								GetFutureServicesSchedule
---								GetServicesSchedule
--- -----------------------------------------------------------------------------
--- 58 	22/01/2015 SAG 		Se agrega:
---								SetEngHourCost
---								GetEngHourCost
--- -----------------------------------------------------------------------------
--- 59	08/02/2015	SAG 	Se modifica:
---								UpdateServiceOrder
--- -----------------------------------------------------------------------------
--- 60 	17/02/2015	SAG 	Se agrega:
---								GetEquipmentListByCustomer
---								GetEquipmentListAll
---								GetPolicyById
---								InsertTicket
---								GetTicketById
--- -----------------------------------------------------------------------------
 -- 61 	03/03/2015	SAG 	Se modifica:
 --								GetAllServiceOrders		
 --								GetLimitedServiceOrderList		
@@ -42,11 +16,88 @@
 --								InsertTicket
 --								UpdateTicketData
 -- -----------------------------------------------------------------------------
+-- 62	15/04/2015	SAG 	Se agrega setActiveFollowUp
+-- -----------------------------------------------------------------------------
 
 use blackstarDb;
 
 DELIMITER $$
 
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.setActiveFollowUp
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.setActiveFollowUp$$
+CREATE PROCEDURE blackstarDb.setActiveFollowUp()
+BEGIN
+	IF(SELECT count(*) FROM followUp WHERE isActive = 1) = 0 THEN
+		
+		-- Tickets
+		UPDATE followup f
+		INNER JOIN (
+			SELECT * FROM (
+				SELECT ticketId, max(followUpId) AS followUpId
+				FROM followUp
+				WHERE ticketId IS NOT NULL
+				GROUP BY ticketId
+			) a
+		) b
+			ON b.followUpId = f.followUpId
+		SET isActive = 1;
+
+		-- Service orders
+		UPDATE followup f
+		INNER JOIN (
+			SELECT * FROM (
+				SELECT serviceOrderId, max(followUpId) AS followUpId
+				FROM followUp
+				WHERE serviceOrderId IS NOT NULL
+				GROUP BY serviceOrderId
+			) a
+		) b
+			ON b.followUpId = f.followUpId
+		SET isActive = 1;
+
+		-- BloomTickets
+		UPDATE followup f
+		INNER JOIN (
+			SELECT * FROM (
+				SELECT bloomTicketId, max(followUpId) AS followUpId
+				FROM followUp
+				WHERE bloomTicketId IS NOT NULL
+				GROUP BY bloomTicketId
+			) a
+		) b
+			ON b.followUpId = f.followUpId
+		SET isActive = 1;
+
+		-- CodexProjects
+		UPDATE followup f
+		INNER JOIN (
+			SELECT * FROM (
+				SELECT codexProjectId, max(followUpId) AS followUpId
+				FROM followUp
+				WHERE codexProjectId IS NOT NULL
+				GROUP BY codexProjectId
+			) a
+		) b
+			ON b.followUpId = f.followUpId
+		SET isActive = 1;
+
+		-- Issues
+		UPDATE followup f
+		INNER JOIN (
+			SELECT * FROM (
+				SELECT issueId, max(followUpId) AS followUpId
+				FROM followUp
+				WHERE issueId IS NOT NULL
+				GROUP BY issueId
+			) a
+		) b
+			ON b.followUpId = f.followUpId
+		SET isActive = 1;
+
+	END IF;
+END$$
 
 -- -----------------------------------------------------------------------------
 	-- blackstarDb.GetTicketById
@@ -742,6 +793,9 @@ DROP PROCEDURE IF EXISTS blackstarDb.AddFollowUpToIssue$$
 CREATE PROCEDURE blackstarDb.AddFollowUpToIssue(pIssueId INTEGER, pCreated DATETIME, pCreatedBy VARCHAR(100), pAsignee VARCHAR(100), pMessage TEXT)
 BEGIN
 
+	-- LIMPIAR EL REGISTRO ACTIVE
+	UPDATE followUp SET isActive = NULL WHERE issueId = pIssueId AND isActive = 1;
+
 	-- INSERTAR EL REGISTRO DE SEGUIMIENTO
 	INSERT INTO blackstarDb.followUp(
 		followUpReferenceTypeId,
@@ -750,7 +804,8 @@ BEGIN
 		followup,
 		created,
 		createdBy,
-		createdByUsr
+		createdByUsr,
+		isActive
 	)
 	SELECT 
 		'I',
@@ -759,7 +814,8 @@ BEGIN
 		pMessage,
 		pCreated,
 		'AddFollowUpToIssue',
-		pCreatedBy;
+		pCreatedBy,
+		1;
 
 	IF ifnull(pAsignee, '') != '' THEN
 		UPDATE issue SET
@@ -829,112 +885,13 @@ DROP PROCEDURE IF EXISTS blackstarDb.GetUserWatchingIssues$$
 CREATE PROCEDURE blackstarDb.GetUserWatchingIssues(pUser VARCHAR(100))
 BEGIN
 
-	SET @prevRefId = 0;
-	SET @rowNumber = 0;
 	SET @myId = (SELECT blackstarUserId FROM blackstarUser WHERE email = pUser);
 
-	CREATE TEMPORARY TABLE usrGroup(email VARCHAR(100), name VARCHAR(200));
-	INSERT INTO usrGroup(email, name)
-	SELECT email, name FROM blackstarUser WHERE email = pUser;
-
-	INSERT INTO usrGroup(email, name)
-	SELECT email, name FROM blackstarUser WHERE bossId = (SELECT blackstarUserId FROM blackstarUser WHERE email = pUser);
-
-	CREATE TEMPORARY TABLE followUpCandidates(followUpId INT, asignee VARCHAR(100), followUp TEXT, created DATETIME, createdByUsr VARCHAR(200), ticketId INT, serviceOrderId INT, issueId INT, bloomTicketId INT);
-	INSERT INTO followUpCandidates(followUpId, asignee, followUp, created, createdByUsr, ticketId, serviceOrderId, issueId, bloomTicketId)
-	SELECT followUpId, asignee, followUp, created, createdByUsr, ticketId, serviceOrderId, issueId, bloomTicketId FROM (
-		SELECT @rowNumber := IF(coalesce(ticketId, serviceOrderId, issueId, bloomTicketId) = @prevRefId, @rowNumber + 1, 1) AS RowNum,
-			f.*, 
-			@prevRefId := coalesce(ticketId, serviceOrderId, issueId, bloomTicketId) AS PrevRef
-		FROM followUp f
-		ORDER BY followUpReferenceTypeId, coalesce(ticketId, serviceOrderId, issueId, bloomTicketId), created DESC
-	) a 
-	INNER JOIN usrGroup g ON a.asignee = g.email
-	WHERE a.RowNum = 1;
-
-	CREATE TEMPORARY TABLE displayIssues(referenceTypeId CHAR, referenceType VARCHAR(200), referenceId INT, referenceNumber VARCHAR(200), project VARCHAR(100), customer VARCHAR(400), created DATETIME, title VARCHAR(400), detail TEXT, status VARCHAR(200), createdByUsr VARCHAR(200), asignee VARCHAR(200));
-
-	-- Tickets - policies
-	INSERT INTO displayIssues(referenceTypeId, referenceType, referenceId, referenceNumber, project, customer, created, title, detail, status, createdByUsr, asignee)
-	SELECT 
-		'T', 'Ticket', f.ticketId, ticketNumber, project, customer, f.created, 'Seguimiento a Ticket', followUp, ticketStatus, u1.name, u2.name
-	FROM followUpCandidates f 
-		INNER JOIN ticket t ON t.ticketId = f.ticketId
-		INNER JOIN policy p ON t.policyId = p.policyId
-		INNER JOIN ticketStatus s ON t.ticketStatusId = s.ticketStatusId
-		INNER JOIN usrGroup u1 ON u1.email = f.asignee
-		INNER JOIN blackstarUser u2 ON f.createdByUsr = u2.email
-	WHERE f.ticketId IS NOT NULL
-		AND t.ticketStatusId IN('A','R');
-
-	-- ServiceOrders - policy
-	INSERT INTO displayIssues(referenceTypeId, referenceType, referenceId, referenceNumber, project, customer, created, title, detail, status, createdByUsr, asignee)
-	SELECT 
-		'O', 'Orden de Servicio', f.serviceOrderId, serviceOrderNumber, project, customer, f.created, 'Seguimiento a Orden de Servicio', followUp, serviceStatus, u1.name, u2.name
-	FROM followUpCandidates f 
-		INNER JOIN serviceOrder o ON o.serviceOrderId = f.serviceOrderId
-		INNER JOIN policy p ON o.policyId = p.policyId
-		INNER JOIN serviceStatus s ON o.serviceStatusId = s.serviceStatusId
-		INNER JOIN usrGroup u1 ON u1.email = f.asignee
-		INNER JOIN blackstarUser u2 ON f.createdByUsr = u2.email
-	WHERE f.serviceOrderId IS NOT NULL
-		AND o.serviceStatusId = 'E';
-
-	-- ServiceOrders - openCustomer
-	INSERT INTO displayIssues(referenceTypeId, referenceType, referenceId, referenceNumber, project, customer, created, title, detail, status, createdByUsr, asignee)
-	SELECT 
-		'O', 'Orden de Servicio', f.serviceOrderId, serviceOrderNumber, project, customerName, f.created, 'Seguimiento a Orden de Servicio', followUp, serviceStatus, u1.name, u2.name
-	FROM followUpCandidates f 
-		INNER JOIN serviceOrder o ON o.serviceOrderId = f.serviceOrderId
-		INNER JOIN openCustomer p ON o.openCustomerId = p.openCustomerId
-		INNER JOIN serviceStatus s ON o.serviceStatusId = s.serviceStatusId
-		INNER JOIN usrGroup u1 ON u1.email = f.asignee
-		INNER JOIN blackstarUser u2 ON f.createdByUsr = u2.email
-	WHERE f.serviceOrderId IS NOT NULL
-		AND o.serviceStatusId = 'E';
-
-	-- BloomTickets
-	INSERT INTO displayIssues(referenceTypeId, referenceType, referenceId, referenceNumber, project, customer, created, title, detail, status, createdByUsr, asignee)
-	SELECT 
-		'R', 'Requisicion', bloomTicketId, ticketNumber, project, '', f.created, 'Requisicion', followUp, s.name, u1.name, u2.name
-	FROM followUpCandidates f 
-		INNER JOIN bloomTicket t ON t._id = f.bloomTicketId
-		INNER JOIN bloomStatusType s ON t.statusId = s._id
-		INNER JOIN usrGroup u1 ON u1.email = f.asignee
-		INNER JOIN blackstarUser u2 ON f.createdByUsr = u2.email
-	WHERE f.bloomTicketId IS NOT NULL
-		AND t.statusId IN(1,3);
-
-	-- Issues
-	INSERT INTO displayIssues(referenceTypeId, referenceType, referenceId, referenceNumber, project, customer, created, title, detail, status, createdByUsr, asignee)
-	SELECT 
-		'I', 'Asignacion SAC', f.issueId, issueNumber, project, ifnull(customer,''), f.created, 'Asignacion SAC', followUp, s.issueStatus, u1.name, u2.name
-	FROM followUpCandidates f 
-		INNER JOIN issue i ON i.issueId = f.issueId
-		INNER JOIN issueStatus s ON i.issueStatusId = s.issueStatusId
-		INNER JOIN usrGroup u1 ON u1.email = f.asignee
-		INNER JOIN blackstarUser u2 ON f.createdByUsr = u2.email
-	WHERE f.bloomTicketId IS NOT NULL
-		AND i.issueStatusId = 'A';
-
-	SELECT * FROM displayIssues ORDER BY created;
-
-	DROP TABLE usrGroup;
-	DROP TABLE followUpCandidates;
-	DROP TABLE displayIssues;
-END$$
-
--- -----------------------------------------------------------------------------
-	-- blackstarDb.GetUserPendingIssues
--- -----------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS blackstarDb.GetUserPendingIssues$$
-CREATE PROCEDURE blackstarDb.GetUserPendingIssues(pUser VARCHAR(100))
-BEGIN
-
-	
-	SET @prevRefId := 0;
-	SET @rowNumber := 0;
-	SET @myId:= (SELECT blackstarUserId FROM blackstarUser WHERE email = pUser);
+	-- Health check
+	DROP TABLE IF EXISTS usrGroup;
+	CREATE TEMPORARY TABLE usrGroup(blackstarUserId INT, email VARCHAR(100), name VARCHAR(200));
+	INSERT INTO usrGroup(blackstarUserId, email, name)
+	SELECT blackstarUserId, email, name FROM blackstarUser WHERE bossId = @myId;
 
 	SELECT 
 		f.followUpReferenceTypeId AS referenceTypeId, 
@@ -954,15 +911,7 @@ BEGIN
 		coalesce(ts.ticketStatus, ist.issueStatus, bts.name, '') as status,
 		ifnull(u1.name, '') AS createdByUsr,
 		u2.name AS asignee
-	FROM (
-		SELECT * FROM (
-			SELECT @rowNumber := IF(coalesce(ticketId, serviceOrderId, issueId, bloomTicketId) = @prevRefId, @rowNumber + 1, 1) AS RowNum,
-				f.*, 
-				@prevRefId := coalesce(ticketId, serviceOrderId, issueId, bloomTicketId) AS PrevRef
-			FROM followUp f
-			ORDER BY followUpReferenceTypeId, coalesce(ticketId, serviceOrderId, issueId, bloomTicketId), created DESC
-		) a WHERE a.RowNum = 1  -- a: todos los followUps asignados por usuario, numerados por id de (ticket, so, issue)
-	) f -- f: el ultimo comentario de cada (ticket, so, issue, requisicion) y que esta asignado al usuario
+	FROM followUp f
 		INNER JOIN followUpReferenceType r ON f.followUpReferenceTypeId = r.followUpReferenceTypeId
 		LEFT OUTER JOIN ticket t ON f.ticketId = t.ticketId
 		LEFT OUTER JOIN serviceOrder s ON s.serviceOrderId = f.serviceOrderId
@@ -976,7 +925,57 @@ BEGIN
 		LEFT OUTER JOIN bloomStatusType bts ON bts._id = bt.statusId
 		LEFT OUTER JOIN blackstarUser u1 ON f.createdByUsr = u1.email
 		LEFT OUTER JOIN blackstarUser u2 ON f.asignee = u2.email
-	WHERE coalesce(t.asignee, s.asignee, i.asignee, bt.asignee) = pUser
+	WHERE isActive = 1
+		AND (u2.blackstarUserId IN (SELECT u3.blackstarUserId FROM usrGroup u3) OR u1.blackstarUserId = @myId)
+		AND coalesce(t.ticketStatusId, s.serviceStatusId, i.issueStatusId, '') NOT IN ('C', 'F')
+		AND ifnull(bt.statusId, 0) NOT IN(6, 4)
+	ORDER BY f.created;
+	
+	DROP TABLE usrGroup;
+
+END$$
+
+-- -----------------------------------------------------------------------------
+	-- blackstarDb.GetUserPendingIssues
+-- -----------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS blackstarDb.GetUserPendingIssues$$
+CREATE PROCEDURE blackstarDb.GetUserPendingIssues(pUser VARCHAR(100))
+BEGIN
+
+	SELECT 
+		f.followUpReferenceTypeId AS referenceTypeId, 
+		r.followupreferencetype AS referenceType,
+		coalesce(t.ticketId, s.serviceOrderId, i.issueId, bt._id) AS referenceId, 
+		coalesce(t.ticketNumber, s.serviceOrderNumber, i.issueNumber, bt.ticketNumber) AS referenceNumber,
+		coalesce(p.project, c.project, i.project, bt.project) AS project,
+		coalesce(p.customer, c.customerName, i.customer, '') AS customer,
+		f.created AS created,
+		CASE 
+			WHEN f.followUpReferenceTypeId = 'T' THEN 'Seguimiento a Ticket'
+			WHEN f.followUpReferenceTypeId = 'O' THEN 'Seguimiento a Orden de Servicio'
+			WHEN f.followUpReferenceTypeId = 'I' THEN 'Asignacion SAC'
+			WHEN f.followUpReferenceTypeId = 'R' THEN 'Requisicion'
+		END AS title,
+		followUp AS detail,
+		coalesce(ts.ticketStatus, ist.issueStatus, bts.name, '') as status,
+		ifnull(u1.name, '') AS createdByUsr,
+		u2.name AS asignee
+	FROM followUp f
+		INNER JOIN followUpReferenceType r ON f.followUpReferenceTypeId = r.followUpReferenceTypeId
+		LEFT OUTER JOIN ticket t ON f.ticketId = t.ticketId
+		LEFT OUTER JOIN serviceOrder s ON s.serviceOrderId = f.serviceOrderId
+		LEFT OUTER JOIN issue i ON i.issueId = f.issueId
+		LEFT OUTER JOIN policy p ON coalesce(t.policyId, s.policyId) = p.policyId
+		LEFT OUTER JOIN openCustomer c ON s.openCustomerId = c.openCustomerId
+		LEFT OUTER JOIN ticketStatus ts ON ts.ticketStatusId = t.ticketStatusId
+		LEFT OUTER JOIN serviceStatus ss ON ss.serviceStatusId = s.serviceStatusId
+		LEFT OUTER JOIN issueStatus ist ON ist.issueStatusId = i.issueStatusId
+		LEFT OUTER JOIN bloomTicket bt ON f.bloomTicketId = bt._id
+		LEFT OUTER JOIN bloomStatusType bts ON bts._id = bt.statusId
+		LEFT OUTER JOIN blackstarUser u1 ON f.createdByUsr = u1.email
+		LEFT OUTER JOIN blackstarUser u2 ON f.asignee = u2.email
+	WHERE isActive = 1
+		AND f.asignee = pUser
 		AND coalesce(t.ticketStatusId, s.serviceStatusId, i.issueStatusId, '') NOT IN ('C', 'F')
 		AND ifnull(bt.statusId, 0) NOT IN(6, 4)
 	ORDER BY f.created;
@@ -3255,6 +3254,9 @@ DROP PROCEDURE IF EXISTS blackstarDb.AddFollowUpToOS$$
 CREATE PROCEDURE blackstarDb.AddFollowUpToOS(pOsId INTEGER, pCreated DATETIME, pCreatedBy VARCHAR(100), pAsignee VARCHAR(100), pMessage TEXT)
 BEGIN
 
+	-- LIMPIAR REGISTRO ACTIVE
+	UPDATE followUp SET isActive = NULL WHERE ServiceOrderId = pOsId AND isActive = 1;
+
 	-- INSERTAR EL REGISTRO DE SEGUIMIENTO
 	INSERT INTO blackstarDb.followUp(
 		followUpReferenceTypeId,
@@ -3263,7 +3265,8 @@ BEGIN
 		followup,
 		created,
 		createdBy,
-		createdByUsr
+		createdByUsr,
+		isActive
 	)
 	SELECT 
 		'O',
@@ -3272,7 +3275,8 @@ BEGIN
 		pMessage,
 		pCreated,
 		'AddFollowUpToOS',
-		pCreatedBy;
+		pCreatedBy,
+		1;
 
 	-- ACTUALIZAR LA OS
 	UPDATE serviceOrder SET
@@ -3293,6 +3297,8 @@ END$$
 DROP PROCEDURE IF EXISTS blackstarDb.AddFollowUpToTicket$$
 CREATE PROCEDURE blackstarDb.AddFollowUpToTicket(pTicketId INTEGER, pCreated DATETIME, pCreatedBy VARCHAR(100), pAsignee VARCHAR(100), pMessage TEXT)
 BEGIN
+	-- LIMPIAR REGISTRO ACTIVE
+	UPDATE followUp SET isActive = NULL WHERE ticketId = pTicketId AND isActive = 1;
 
 	-- INSERTAR EL REGISTRO DE SEGUIMIENTO
 	INSERT INTO blackstarDb.followUp(
@@ -3302,7 +3308,8 @@ BEGIN
 		followup,
 		created,
 		createdBy,
-		createdByUsr
+		createdByUsr,
+		isActive
 	)
 	SELECT 
 		'T',
@@ -3311,7 +3318,8 @@ BEGIN
 		pMessage,
 		pCreated,
 		'AddFollowUpToTicket',
-		pCreatedBy;
+		pCreatedBy,
+		1;
 
 END$$
 

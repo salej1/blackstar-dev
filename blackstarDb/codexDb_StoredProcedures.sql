@@ -8,64 +8,6 @@
 -- -----------------------------------------------------------------------------
 -- PR   Date        Author	 Description
 -- --   --------   -------  ------------------------------------
--- 1    24/06/2014  DCB		  Se Integran los SP iniciales:
---								              blackstarDb.GetCodexAllStates
--- --   --------   -------  ------------------------------------
--- 2    13/08/2014  SAG     Se agrega:
---                              blackstarDb.GetCostCenterList
---                              blackstarDb.GetCSTOffice
--- -----------------------------------------------------------------------------
--- 3    01/09/2014  SAG     Se modifica:
---                              blackstarDb.CodexGetProjectsByStatusAndUser
---                              blackstarDb.CodexGetAllProjectsByUsr
---                              blackstarDb.CodexGetProjectsByStatus
---                              blackstarDb.CodexUpsertProject
---                              blackstarDb.CodexUpsertProjectEntry
---                          Se agrega: 
---                              blackstarDb.UpsertCodexCostCenter
---                              blackstarDb.GetCodexPriceList
---                          Se elimina:
---                              blackstarDb.GetNextEntryId
--- -----------------------------------------------------------------------------
--- 4  24/09/2014    SAG     Se agrega:
---                              blackstarDb.GetCstByEmail
---                          Se modifica:
---                              blackstarDb.GetCSTOffice
--- -----------------------------------------------------------------------------
--- 5  22/10/2014    SAG     Se agrega:
---                              blackstarDb.UpsertCodexVisit
---                              blackstarDb.GetAllVisitStatus
---                              blackstarDb.GetVisitList
---                              blackstarDb.GetAllCst
---                              blackstarDb.GetVisitById
--- -----------------------------------------------------------------------------
--- 6  28/10/2014    SAG     Se agrega:
---                              blackstarDb.getCodexInvoicingKpi
---                              blackstarDb.getCodexEffectiveness
---                              blackstarDb.getCodexProposals
---                              blackstarDb.getCodexProjectsByStatus
---                              blackstarDb.getCodexProjectsByOrigin
---                              blackstarDb.getCodexClientVisits
---                              blackstarDb.getCodexNewCustomers
---                              blackstarDb.getCodexProductFamilies
---                              blackstarDb.getCodexComerceCodes
---                              blackstarDb.getAutocompleteClientList
--- -----------------------------------------------------------------------------
--- 7  15/01/2015  SAG     Se agrega:
---                              blackstarDb.GetPriceProposalList
--- -----------------------------------------------------------------------------
--- 8  29/01/2015  SAG     Se modifica:
---                              blackstarDb.CodexGetAllProjectsByUsr
--- -----------------------------------------------------------------------------
--- 9 13/02/2015   SAG     Se agrega:
---                              blackstarDb.RecordSalesCall
---                              blackstarDb.getSalesCallRecords
--- -----------------------------------------------------------------------------
--- 10 23/02/2015  SAG     Se modifica:
---                              blackstarDb.CodexUpsertProjectEntryItem
---                              blackstarDb.CodexInsertDeliverableTrace
---                              blackstarDb.CodexGetProjectById
--- -----------------------------------------------------------------------------
 -- 11 12/03/2015  SAG   Se crea:
 --                              blackstarDb.UpsertCodexProjectEntryType
 --                      Se modifica:
@@ -871,8 +813,11 @@ DROP PROCEDURE IF EXISTS blackstarDb.AddFollowUpToCodexProject$$
 CREATE PROCEDURE blackstarDb.`AddFollowUpToCodexProject`(pProjectId INTEGER, pCreatedByUsr VARCHAR(200), pAssignedUsr VARCHAR(200), pMessage TEXT)
 BEGIN
 
-	INSERT INTO blackstarDb.followUp(codexProjectId, followup, created, createdBy, createdByUsr, asignee)
-	VALUES(pProjectId, pMessage, NOW(), 'AddFollowUpToCodexProject', pCreatedByUsr, pAssignedUsr);
+  -- LIMPIAR EL REGISTRO ACTIVE
+  UPDATE followUp SET isActive = NULL WHERE codexProjectId = pProjectId AND isActive = 1;
+
+	INSERT INTO blackstarDb.followUp(codexProjectId, followup, created, createdBy, createdByUsr, asignee, isActive)
+	VALUES(pProjectId, pMessage, NOW(), 'AddFollowUpToCodexProject', pCreatedByUsr, pAssignedUsr, 1);
 END$$
 
 -- -----------------------------------------------------------------------------
