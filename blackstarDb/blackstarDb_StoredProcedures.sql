@@ -3225,10 +3225,9 @@ BEGIN
 	
 	-- ACTUALIZAR EL ESTATUS DEL TICKET Y NUMERO DE ORDEN DE SERVICIO
 	UPDATE ticket t 
-		INNER JOIN ticket t2 on t.ticketId = t2.ticketId
 		INNER JOIN blackstarDb.policy p on p.policyId = t.policyId
 	SET 
-		t.ticketStatusId = IF(t2.ticketStatusId = 'R', 'F', 'C'),
+		t.ticketStatusId = IF(TIMESTAMPDIFF(HOUR, t.created, pClosed) > solutionTimeHR, 'F', 'C'),
 		-- t.serviceOrderId = pOsId,
 		t.serviceOrderNumber = pOsId,
 		t.closed = pClosed,
