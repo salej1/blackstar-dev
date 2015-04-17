@@ -661,7 +661,7 @@ END$$
   -- blackstarDb.GetbloomTicketByUserKPI
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetbloomTicketByUserKPI$$
-CREATE PROCEDURE blackstarDb.`GetbloomTicketByUserKPI`()
+CREATE PROCEDURE blackstarDb.`GetbloomTicketByUserKPI`(pStartDate DATETIME, pEndDate DATETIME)
 BEGIN
 
 SELECT 
@@ -671,6 +671,8 @@ SELECT
 FROM bloomTicket bt, blackstarUser bu, bloomApplicantArea aa
 WHERE bt.applicantUserId = bu.blackstarUserId
       AND bt.applicantAreaId = aa._id
+      AND bt.created >= pStartDate
+      AND bt.created <= pEndDate
 GROUP BY bt.applicantUserId
 ORDER BY counter desc;
 
@@ -681,12 +683,14 @@ END$$
   -- blackstarDb.GetbloomTicketByOfficeKPI
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetbloomTicketByOfficeKPI$$
-CREATE PROCEDURE blackstarDb.`GetbloomTicketByOfficeKPI`()
+CREATE PROCEDURE blackstarDb.`GetbloomTicketByOfficeKPI`(pStartDate DATETIME, pEndDate DATETIME)
 BEGIN
 
 SELECT of.officeName officeName, count(*) counter
 FROM bloomTicket bt, office of
 WHERE bt.officeId = of.officeId
+      AND bt.created >= pStartDate
+      AND bt.created <= pEndDate
 GROUP BY bt.officeId
 ORDER BY counter desc;
 
@@ -697,11 +701,13 @@ END$$
   -- blackstarDb.GetbloomTicketByAreaKPI
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetbloomTicketByAreaKPI$$
-CREATE PROCEDURE blackstarDb.`GetbloomTicketByAreaKPI`()
+CREATE PROCEDURE blackstarDb.`GetbloomTicketByAreaKPI`(pStartDate DATETIME, pEndDate DATETIME)
 BEGIN
 SELECT aa.name applicantArea, count(*) counter
 FROM bloomTicket bt, bloomApplicantArea aa
 WHERE  bt.applicantAreaId = aa._id
+      AND bt.created >= pStartDate
+      AND bt.created <= pEndDate
 GROUP BY bt.applicantAreaId
 ORDER BY counter desc;
 END$$
@@ -711,7 +717,7 @@ END$$
   -- blackstarDb.GetbloomTicketByDayKPI
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetbloomTicketByDayKPI$$
-CREATE PROCEDURE blackstarDb.`GetbloomTicketByDayKPI`()
+CREATE PROCEDURE blackstarDb.`GetbloomTicketByDayKPI`(pStartDate DATETIME, pEndDate DATETIME)
 BEGIN
 
   SELECT 
@@ -719,6 +725,8 @@ BEGIN
     DATE_FORMAT(created,'%d/%m/%Y') createdStr, 
     count(*) counter
   FROM bloomTicket
+      WHERE created >= pStartDate
+      AND created <= pEndDate
 GROUP BY DATE(created)
 ORDER BY created;
 END$$
@@ -728,7 +736,7 @@ END$$
   -- blackstarDb.GetbloomTicketByProjectKPI
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetbloomTicketByProjectKPI$$
-CREATE PROCEDURE blackstarDb.`GetbloomTicketByProjectKPI`()
+CREATE PROCEDURE blackstarDb.`GetbloomTicketByProjectKPI`(pStartDate DATETIME, pEndDate DATETIME)
 BEGIN
 SELECT bt.project project, count(*) counter
 FROM bloomTicket bt
@@ -736,6 +744,8 @@ WHERE bt.project IS NOT NULL
       AND bt.project <> ''
       AND bt.project <> 'NA'
       AND bt.project <> 'N/A'
+      AND bt.created >= pStartDate
+      AND bt.created <= pEndDate
 GROUP BY bt.project
 ORDER BY counter DESC
 LIMIT 5;
@@ -746,11 +756,13 @@ END$$
   -- blackstarDb.GetbloomTicketByServiceAreaKPI
 -- -----------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS blackstarDb.GetbloomTicketByServiceAreaKPI$$
-CREATE PROCEDURE blackstarDb.`GetbloomTicketByServiceAreaKPI`()
+CREATE PROCEDURE blackstarDb.`GetbloomTicketByServiceAreaKPI`(pStartDate DATETIME, pEndDate DATETIME)
 BEGIN
 SELECT aa.bloomServiceArea applicantArea, count(*) counter
 FROM bloomTicket bt, bloomServiceArea aa, bloomServiceType st
 WHERE bt.serviceTypeId = st._id
+      AND bt.created >= pStartDate
+      AND bt.created <= pEndDate
       AND st.bloomServiceAreaId = aa.bloomServiceAreaId
 GROUP BY st.bloomServiceAreaId;
 END$$

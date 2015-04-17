@@ -52,9 +52,10 @@ public class InternalTicketsKPIController extends AbstractController {
   }
   
   @RequestMapping(value = "/bloomKpi/getTicketByUser.do", method = RequestMethod.GET)
-  public String getTicketByUser(ModelMap model) {
+  public String getTicketByUser(ModelMap model, @RequestParam(required = true) Date startDate,
+			@RequestParam(required = true) Date endDate) {
 	try {
-		 model.addAttribute("ticketsByUser", service.getTicketsByUser());
+		 model.addAttribute("ticketsByUser", service.getTicketsByUser(startDate, endDate));
 
 	} catch (Exception e) {
 		Logger.Log(LogLevel.ERROR,e.getStackTrace()[0].toString(), e);
@@ -66,9 +67,10 @@ public class InternalTicketsKPIController extends AbstractController {
   }
   
   @RequestMapping(value = "/bloomKpi/getTicketByOffice.do", method = RequestMethod.GET)
-  public String getTicketByOffice(ModelMap model) {
+  public String getTicketByOffice(ModelMap model, @RequestParam(required = true) Date startDate,
+			@RequestParam(required = true) Date endDate) {
 	try {
-		 model.addAttribute("ticketByOffice", service.getTicketByOfficeKPI());
+		 model.addAttribute("ticketByOffice", service.getTicketByOfficeKPI(startDate, endDate));
 	} catch (Exception e) {
 		Logger.Log(LogLevel.ERROR,e.getStackTrace()[0].toString(), e);
 		e.printStackTrace();
@@ -79,9 +81,10 @@ public class InternalTicketsKPIController extends AbstractController {
   }
   
   @RequestMapping(value = "/bloomKpi/getTicketByArea.do", method = RequestMethod.GET)
-  public String getTicketByArea(ModelMap model) {
+  public String getTicketByArea(ModelMap model, @RequestParam(required = true) Date startDate,
+			@RequestParam(required = true) Date endDate) {
 	try {
-		 model.addAttribute("ticketByArea", service.getTicketByAreaKPI());
+		 model.addAttribute("ticketByArea", service.getTicketByAreaKPI(startDate, endDate));
 	} catch (Exception e) {
 		Logger.Log(LogLevel.ERROR,e.getStackTrace()[0].toString(), e);
 		e.printStackTrace();
@@ -92,9 +95,10 @@ public class InternalTicketsKPIController extends AbstractController {
   }
   
   @RequestMapping(value = "/bloomKpi/getTicketByDay.do", method = RequestMethod.GET)
-  public String getTicketByDay(ModelMap model) {
+  public String getTicketByDay(ModelMap model, @RequestParam(required = true) Date startDate,
+			@RequestParam(required = true) Date endDate) {
 	try {
-		 model.addAttribute("ticketByDay", service.getTicketByDayKPI());
+		 model.addAttribute("ticketByDay", service.getTicketByDayKPI(startDate, endDate));
 	} catch (Exception e) {
 		Logger.Log(LogLevel.ERROR,e.getStackTrace()[0].toString(), e);
 		e.printStackTrace();
@@ -105,9 +109,10 @@ public class InternalTicketsKPIController extends AbstractController {
   }
   
   @RequestMapping(value = "/bloomKpi/getTicketByProject.do", method = RequestMethod.GET)
-  public String getTicketByProject(ModelMap model) {
+  public String getTicketByProject(ModelMap model, @RequestParam(required = true) Date startDate,
+			@RequestParam(required = true) Date endDate) {
 	try {
-		 model.addAttribute("ticketByProject", service.getTicketByProjectKPI());
+		 model.addAttribute("ticketByProject", service.getTicketByProjectKPI(startDate, endDate));
 	} catch (Exception e) {
 		Logger.Log(LogLevel.ERROR,e.getStackTrace()[0].toString(), e);
 		e.printStackTrace();
@@ -118,9 +123,10 @@ public class InternalTicketsKPIController extends AbstractController {
   }
   
   @RequestMapping(value = "/bloomKpi/getTicketByServiceAreaKPI.do", method = RequestMethod.GET)
-  public String getTicketByServiceAreaKPI(ModelMap model) {
+  public String getTicketByServiceAreaKPI(ModelMap model, @RequestParam(required = true) Date startDate,
+			@RequestParam(required = true) Date endDate) {
 	try {
-		 model.addAttribute("ticketByServiceAreaKPI", service.getTicketByServiceAreaKPI());
+		 model.addAttribute("ticketByServiceAreaKPI", service.getTicketByServiceAreaKPI(startDate, endDate));
 	} catch (Exception e) {
 		System.out.println("Error => " + e);
 		Logger.Log(LogLevel.ERROR,e.getStackTrace()[0].toString(), e);

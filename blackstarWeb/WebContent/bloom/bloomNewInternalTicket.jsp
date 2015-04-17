@@ -293,6 +293,7 @@
 							</tr>
 
 						</table>
+						<div id="warningMsg" class="error" title="Advertencia"></div>
 					</div>
 				</div>
 			
@@ -446,20 +447,21 @@
 						
 
 						$( "#saveButtonTicket" ).click(function() {
-							  
-							  mensaje_confirmacion("\u00BF Confirma que desea enviar la requisición general "+$("#fldFolio").val()+"?",
+							  if(validate()){
+							  		mensaje_confirmacion("\u00BF Confirma que desea enviar la requisición general "+$("#fldFolio").val()+"?",
 									  "Alta Ticket Interno","Aceptar","Cancelar",
 									  saveInternalTicket,
 									  function(){window.location = '/bloom/bloomTicketPage/show.do';});
-							  
+							  }
 						});
 						
-
 						$( "#attachButtonTicket" ).click(function() {
 							consultDeliverableType(function(){
 								$('#attachmentImgDlg').dialog('open');
 							});
 						});
+
+	    				$("#warningMsg").hide();
 
 						readDataForm();
 
@@ -499,6 +501,7 @@
 
 
 	function configureAdditionalFields() {
+	    $("#warningMsg").hide();
 
 		iniHideAdditionalFields();
 
@@ -727,9 +730,23 @@
 
 	}
 
+	function warning(msg){
+	    	$("#warningMsg").html(msg);
+	    	$("#warningMsg").show();
+	}
 
+	function validate(){
+	    $("#warningMsg").hide();
 
+		if(serviceTypeId == 13){
+			if($("#txt_modelPartISRPR").val() == ""){
+				warning("Por favor ingrese el numero de modelo requerido");
+				return false;
+			}
+		}
 
+		return true;
+	}
 
 	function saveInternalTicket() {
 		// ocultarMensajes();
@@ -965,6 +982,8 @@
 
 
 	function consultServiceType(callBackFunction) {
+	    
+	    $("#warningMsg").hide();
 		
 		applicantAreaId = parseInt($('#slAreaSolicitante').val());
 
