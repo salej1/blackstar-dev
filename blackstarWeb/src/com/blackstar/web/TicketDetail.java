@@ -68,7 +68,7 @@ public class TicketDetail extends HttpServlet{
 				if(rawTicket == null){
 					Logger.Log(LogLevel.FATAL, Thread.currentThread().getStackTrace()[1].toString(), "TicketDetail se invoca sin parametros validos", "");
 					response.getWriter().write("Ticket Detail: Parametros invalidos");
-					request.getRequestDispatcher("/dashboard").forward(request, response);
+					request.getRequestDispatcher("/dashboard/show.do").forward(request, response);
 				}
 				numTicket = rawTicket.toString();
 			}
@@ -109,7 +109,7 @@ public class TicketDetail extends HttpServlet{
 				Servicecenter Servicecenter =  this.daoFactory.getServiceCenterDAO().getServiceCenterById(policy.getServiceCenterId());
 				request.setAttribute("ServicecenterT", Servicecenter);
 					
-				Map<String, String> UsuariosAsignados = UserServiceFactory.getUserService().getEmployeeList(); 
+				List<User> UsuariosAsignados = UserServiceFactory.getUserService().getEmployeeList(); 
 				request.setAttribute("employees", UsuariosAsignados);
 					
 				// Obtener los followups asociados a la orden de servicio
@@ -122,7 +122,7 @@ public class TicketDetail extends HttpServlet{
 			}
 			request.getRequestDispatcher("/ticketDetail.jsp").forward(request, response);
 		} catch (NumberFormatException e) {
-			Logger.Log(LogLevel.FATAL, Thread.currentThread().getStackTrace()[1].toString(), e);
+			Logger.Log(LogLevel.FATAL, e.getStackTrace()[0].toString(), e);
 		}
 				
 	}
@@ -150,7 +150,7 @@ public class TicketDetail extends HttpServlet{
 			try {
 				da.executeQuery(sql);
 			} catch (Exception e) {
-				Logger.Log(LogLevel.FATAL, Thread.currentThread().getStackTrace()[1].toString(), e);
+				Logger.Log(LogLevel.FATAL, e.getStackTrace()[0].toString(), e);
 			}
 		}
 		else if(action.endsWith("reopenTicket")){
@@ -167,7 +167,7 @@ public class TicketDetail extends HttpServlet{
 			try {
 				da.executeQuery(sql);
 			} catch (Exception e) {
-				Logger.Log(LogLevel.FATAL, Thread.currentThread().getStackTrace()[1].toString(), e);
+				Logger.Log(LogLevel.FATAL, e.getStackTrace()[0].toString(), e);
 			}
 		}
 		
@@ -187,8 +187,8 @@ public class TicketDetail extends HttpServlet{
 			
 			da.closeConnection();
 		}
-		catch(Exception ex){
-			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), ex);
+		catch(Exception e){
+			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 		}
 		return list;
 	}
@@ -205,7 +205,7 @@ public class TicketDetail extends HttpServlet{
 			
 			while(rs.next()){
 				FollowUpDTO fu = new FollowUpDTO(
-						String.format("%s", rs.getTimestamp("created")),
+						String.format("%s", rs.getTimestamp("timeStamp")),
 						rs.getString("asignee"), 
 						rs.getString("createdBy"), 
 						rs.getString("followUp")
@@ -213,8 +213,8 @@ public class TicketDetail extends HttpServlet{
 				list.add(fu);
 			}
 		}
-		catch(Exception ex){
-			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), ex);
+		catch(Exception e){
+			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 		}
 		finally{
 			da.closeConnection();

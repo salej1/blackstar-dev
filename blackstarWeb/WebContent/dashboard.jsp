@@ -8,286 +8,106 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<link rel="stylesheet" href="css/jquery.ui.theme.css"/>
-<link rel="stylesheet" href="css/jquery-ui.min.css"/>
-<script src="js/jquery-1.10.1.min.js"></script>
-<script src="js/jquery-ui.js"></script>
-<script src="DataTables-1.9.4/media/js/jquery.dataTables.js"></script>
-<script src="js/jquery.cookie.js"></script>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery.ui.theme.css"/>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery-ui.min.css"/>
+<script src="${pageContext.request.contextPath}/js/jquery-1.10.1.min.js"></script>
+<script src="${pageContext.request.contextPath}/js/jquery-ui.js"></script>
+<script src="${pageContext.request.contextPath}/DataTables-1.9.4/media/js/jquery.dataTables.js"></script>
+<script src="${pageContext.request.contextPath}/js/jquery.cookie.js"></script>
 
-<script type="text/javascript" charset="utf-8">
-	var strSO = '${serviceOrdersPendingDashboard}';
-	var str = '${ticketsToAssignDashboard}';
-	var strSOTR = '${serviceOrdersToReviewDashboard}';
-	var assignedTicket = 0;
-	
-	 function assignTicket(tktId, tktNumber){
-		assignedTicket = tktId;
-		$('#lblTicketBeignAssigned').html(tktNumber);
-		$('#tktAssignDlg').dialog('open');
-	 }
-	 
-	 function refreshSoListByOffice(office){
-		// tabla de OS nuevas
-		var newSOTable = $('#dtOrdenesPorRevisar').dataTable();
-			newSOTable.fnFilter(office, 8);
-
-		// tabla de OS con pendientes
-		var pendingSOTable = $('#dtOrdenesPendientes').dataTable();
-			pendingSOTable.fnFilter(office, 8);
-			
-		// se guarda la preferencia del usuario
-		$.cookie('blackstar_office_pref', office, { expires: 365 });
-	 }
-	 
-	 function refreshTicketList(){
-	 
-		// Tabla de tickets
-		 var data = $.parseJSON(str);
-		
-		$('#dtTicketsPorAsignar').dataTable({	    		
-			"bProcessing": true,
-			"bFilter": true,
-			"bLengthChange": false,
-			"iDisplayLength": 10,
-			"bInfo": false,
-			"sPaginationType": "full_numbers",
-			"aaData": data,
-			"sDom": '<"top"i>rt<"bottom"flp><"clear">',
-			"aoColumns": [
-						  { "mData": "ticketNumber" },
-						  { "mData": "created" },
-						  { "mData": "customer" },
-						  { "mData": "equipmentType" },
-						  { "mData": "responseTimeHR" },
-						  { "mData": "project" }, 	              
-						  { "mData": "ticketStatus" },
-						  { "mData": "Asignar" }
-
-					  ],
-			"aoColumnDefs" : [{"mRender" : function(data, type, row){return "<div align=center style='width:60px;'><a href=/ticketDetail?ticketId=" + row.DT_RowId + ">" + data + "</a></div>";}, "aTargets" : [0]},
-							  {"mRender" : function(data, type, row){return "<a href='#' class='edit' onclick='javascript: assignTicket(" + row.DT_RowId + ", \"" + data + "\"); return false;'>Asignar</a>";}, "aTargets" : [7]}	    		    	       
-							 ]}
-		);
-  
-  
-		// Tabla de Ordenes de servicio nuevas
-		 var dataSOTR  = $.parseJSON(strSOTR);
-		 
-		$('#dtOrdenesPorRevisar').dataTable({	    		
-			"bProcessing": true,
-			"bFilter": true,
-			"bLengthChange": false,
-			"iDisplayLength": 10,
-			"bInfo": false,
-			"sPaginationType": "full_numbers",
-			"aaData": dataSOTR,
-			"sDom": '<"top"i>rt<"bottom"flp><"clear">',
-			"aoColumns": [
-						  { "mData": "serviceOrderNumber" },
-						  { "mData": "placeHolder" },
-						  { "mData": "ticketNumber" },
-						  { "mData": "serviceType" },
-						  { "mData": "created" },
-						  { "mData": "customer" },
-						  { "mData": "equipmentType" },
-						  { "mData": "project" },
-						  { "mData": "officeName" },
-						  { "mData": "brand" },
-						  { "mData": "serialNumber" }
-
-					  ],
-				"aoColumnDefs" : [{"mRender" : function(data, type, row){return "<div align='center' style='width:70px;' ><a href='/osDetail?serviceOrderId=" + row.DT_RowId + "'>" + data + "</a></div>";}, "aTargets" : [0]},
-								  {"mRender" : function(data){return "<img src='img/pdf.png' onclick='return false';/>" ;}, "aTargets" : [1]},
-								  {"mRender" : function(data){return "<div align='center'><a href='/ticketDetail?ticketId=" + data + "'>" + data + "</a></div>";}, "aTargets" : [2]}	    		    	       
-								   ]}
-		);
-
-		// Tabla de ordenes de servicio pendientes
-		var dataSO = $.parseJSON(strSO);	
-
-		$('#dtOrdenesPendientes').dataTable({	
-				"bProcessing": true,
-				"bFilter": true,
-				"bLengthChange": false,
-				"iDisplayLength": 10,
-				"bInfo": false,
-				"sPaginationType": "full_numbers",
-				"aaData": dataSO,
-				"sDom": '<"top"i>rt<"bottom"flp><"clear">',
-				"aoColumns": [
-						  { "mData": "serviceOrderNumber" },
-						  { "mData": "placeHolder" },
-						  { "mData": "ticketNumber" },
-						  { "mData": "serviceType" },
-						  { "mData": "created" },
-						  { "mData": "customer" },
-						  { "mData": "equipmentType" },
-						  { "mData": "project" },
-						  { "mData": "officeName" },
-						  { "mData": "brand" },
-						  { "mData": "serialNumber" }
-
-						  ],
-				"aoColumnDefs" : [{"mRender" : function(data, type, row){return "<div align='center' style='width:70px;' ><a href='/osDetail?serviceOrderId=" + row.DT_RowId + "'>" + data + "</a></div>";}, "aTargets" : [0]},
-								  {"mRender" : function(data, type, row){return "<img src='img/pdf.png' onclick='return false';/>" ;}, "aTargets" : [1]},
-								  {"mRender" : function(data, type, row){return "<div align='center'><a href='/ticketDetail?ticketNumber=" + data + "'>" + data + "</a></div>";}, "aTargets" : [2]}	    		    	       
-								   ]}
-		);
-	 }
-	 
-	 function postAssignedTicket(pTicketId, pEmployee){
-		$('#ticketId').val(pTicketId);
-		$('#employee').val(pEmployee);
-		$('#ticksetSelect').submit();
-	}
- 
- $(document).ready(function() {
-	 
-	 $("#tktAssignDlg").dialog({
-			autoOpen: false,
-			height: 200,
-			width: 260,
-			modal: true,
-			buttons: {
-				"Aceptar": function() {
-					var employee = $("#employeeSelect option:selected").val();
-
-					postAssignedTicket(assignedTicket, employee);
-					
-					$( this ).dialog( "close" );
-				},
-				
-				"Cancelar": function() {
-				$( this ).dialog( "close" );
-			}}
-	});
-
-	refreshTicketList();
-	
-	// se filtran las oficinas de acuerdo a la ultima preferencia del usuario
-	var officePref = $.cookie('blackstar_office_pref');
-	if(officePref != null){
-		$("#optOffices").val(officePref);
-		refreshSoListByOffice(officePref);
-	}
-});
-</script> 
-<title>Tickets</title>
+<title>Portal de Servicios</title>
 </head>
 <body>
 <div id="content" class="container_16 clearfix">
 
 <!--   CONTENT COLUMN   -->		
-				<div class="grid_16">
-					<div class="box">
-						<h2>Tickets por asignar</h2>
-						<div class="utils">
-							
-						</div>
-						<div id= ticketTablaContainer>
-							<table cellpadding="0" cellspacing="0" border="0" class="display" id="dtTicketsPorAsignar">
-								<thead>
-									<tr> 
-										<th>Ticket</th>
-										<th>Fecha/Hora</th>
-										<th>Cliente</th>
-										<th>Equipo</th>
-										<th>Tiem. R</th>
-										<th>Proyecto</th>
-										<th>Estatus</th>
-										<th>Asignar</th>
-									</tr>
-								</thead>
-								<tbody>  
-								</tbody> 
-							</table>
-						</div>
-					</div>
-				</div>
-				<div class="grid_16">
-					<p>Oficina:
-						<select id="optOffices" onchange="refreshSoListByOffice($(this).val());">
-							<option value="">Todas</option>
-							<c:forEach var="office" items="${offices}">
-								<option value = "${office}">${office}</option>
-							</c:forEach>					
-						</select>
-					</p>
-				</div>
-				<div class="grid_16">
-					<div class="box">
-						<h2>Ordenes de servicio por revisar</h2>
-						<div class="utils">
-							
-						</div>
-						<table cellpadding="0" cellspacing="0" border="0" class="display" id="dtOrdenesPorRevisar">
-							<thead>
-								<tr>
-									<th style="width=250px;">Folio</th>
-									<th style="width=50px;"></th>
-									<th>Ticket</th>
-									<th>Tipo</th>
-									<th>Fecha</th>
-									<th>Cliente</th>
-									<th>Equipo</th>
-									<th>Proyecto</th>
-									<th>Oficina</th>
-									<th>Marca</th>
-									<th>No. Serie</th>
-								</tr>
-							</thead>
-							<tbody>
 
-							</tbody>
-						</table>
-					</div>
+<!-- Inicia Contenido De Perfiles Syscallcenter Y Syscoordinador-->
+	<c:set var="sysCallCenter" scope="request" value="${user.belongsToGroup['Call Center'] || user.belongsToGroup['Coordinador']}" />
+	<c:if test="${sysCallCenter == true}">
 
-				</div>
+		<!-- Seleccion de filtro por oficina -->
+		<c:import url="officeFilter.jsp"></c:import>
 
-				<div class="grid_16">
-					<div class="box">
-						<h2>Ordenes de servicio con pendientes</h2>
-						<div class="utils">
-							
-						</div>
-						<table cellpadding="0" cellspacing="0" border="0" class="display" id="dtOrdenesPendientes">
-							<thead>
-								<tr>
-									<th>Folio</th>
-									<th></th>
-									<th>Ticket</th>
-									<th>Tipo</th>
-									<th>Fecha</th>
-									<th>Cliente</th>
-									<th>Equipo</th>
-									<th>Proyecto</th>
-									<th>Oficina</th>
-									<th>Marca</th>
-									<th>No. Serie</th>
-								</tr>
-							</thead>
-							<tbody>
+		<!-- Tabla De Tickets Por Asignar - Unassignedtickets.jsp -->
+		<c:import url="unassignedTickets.jsp"></c:import>
+				<script type="text/javascript">
+			$(function(){
+				unassignedTickets_init();
+			});
+		</script>
 
-							</tbody>
-						</table>
-					</div>
+		<!-- Tabla De Ordenes De Servicio Por Revisar - Newserviceorders.jsp -->
+		<c:import url="newServiceOrders.jsp"></c:import>
+		<script type="text/javascript">
+			$(function(){
+				newServiceOrders_init();
+			});
+		</script>
 
-				</div>
+		<!-- Tabla De Ordenes De Servicio Con Pendientes - Pendingserviceorders.jsp -->
+		<c:import url="pendingServiceOrders.jsp"></c:import>
+		<script type="text/javascript">
+			$(function(){
+				pendingServiceOrders_init();
+			});
+		</script>
+
+		<!-- La inicializacion se hace una vez que se pintaron las tablas -->
+		<script type="text/javascript">
+			$(function(){
+				officeFilter_init();
+			});
+		</script>
+
+	</c:if>
+
+<!-- Fin Contenido De Perfiles Syscallcenter Y Syscoordinator -->
+
+<!-- Inicia Contenido De Perfil Sysservicio -->
+
+	<c:set var="sysServicio" scope="request" value="${user.belongsToGroup['Implementacion y Servicio']}" />
+	<c:if test="${sysServicio == true}">
+
+<!-- Links Para Crear Ordenes De Servicio -->
+		<c:import url="newOSLinks.jsp"></c:import>
+		<script type="text/javascript">
+			$(function(){
+				newOSLinks_init();
+			});
+		</script>
+<!-- Fin Links Para Crear Ordenes De Servicio -->
+
+<!-- Tabla de servicios programados -->
+		<c:import url="scheduledPersonalServices.jsp"></c:import>
+		<script type="text/javascript">
+			$(function(){
+				scheduledPersonalServices_init();
+			});
+		</script>
+<!-- Fin Tabla de servicios programados -->
+
+<!-- Tabla De Tickets Asignados -->
+		<c:import url="assignedTickets.jsp"></c:import>
+		<script type="text/javascript">
+			$(function(){
+				assignedTickets_init();
+			});
+		</script>
+<!-- Fin Tabla De Tickets Asignados -->
+
+<!-- Tabla De Ordenes De Servicio Con Pendientes -->
+		<c:import url="pendingPersonalServiceOrders.jsp"></c:import>
+		<script type="text/javascript">
+			$(function(){
+				pendingPersonalServiceOrders_init();
+			});
+		</script>
+<!-- Fin Tabla De Ordenes De Servicio Con Pendientes -->
+	</c:if>
+
+<!-- Fin Contenido De Perfil Sysservicio -->
 
 </div>
-	<!-- Assign Ticket section -->
-	<div id="tktAssignDlg" title="Asignar Ticket" >
-		<p>Asignar ticket<label id="lblTicketBeignAssigned"></label></p>
-			<select id="employeeSelect">
-				<c:forEach var="employee" items="${employees}">
-					<option value = "${employee.key}">${employee.value}</option>
-				</c:forEach>
-			</select>
-		<form id="ticksetSelect" action="dashboard" method="post">
-			<input id="ticketId" name="ticketId" type="hidden"/>
-			<input id="employee" name="employee" type="hidden"/>
-		</form>
-	</div>
 </body>
 </html>

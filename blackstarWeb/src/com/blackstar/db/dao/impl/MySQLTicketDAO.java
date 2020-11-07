@@ -48,7 +48,7 @@ public class MySQLTicketDAO implements TicketDAO, Serializable {
 						
 			}
 		} catch (ClassNotFoundException | SQLException e) {
-			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
+			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 		}
 		finally{
 			if(conn != null){
@@ -97,7 +97,7 @@ public class MySQLTicketDAO implements TicketDAO, Serializable {
 						
 			}
 		} catch (ClassNotFoundException | SQLException e) {
-			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
+			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 		}
 		finally{
 			if(conn != null){
@@ -132,7 +132,7 @@ public class MySQLTicketDAO implements TicketDAO, Serializable {
 						
 			}
 		} catch (ClassNotFoundException | SQLException e) {
-			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
+			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 		}
 		finally{
 			if(conn != null){

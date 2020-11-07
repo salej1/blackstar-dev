@@ -51,7 +51,7 @@ public class dbtest extends HttpServlet {
 			  // Local MySQL instance to use during development.
 			  Class.forName("com.mysql.jdbc.Driver");
 			  url = "jdbc:mysql://localhost:3306/blackstarDb";
-			  conn =  (Connection) DriverManager.getConnection(url, "root", "");
+			  conn =  (Connection) DriverManager.getConnection(url, "root_blackstar", "");
 			}
 
 			ResultSet rs = conn.createStatement().executeQuery(

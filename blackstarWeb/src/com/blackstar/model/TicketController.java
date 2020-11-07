@@ -16,8 +16,8 @@ public class TicketController {
 			da.executeUpdate(String.format("CALL AssignTicket('%s', '%s', '%s', '%s')", ticketId, asignee, who, "Dashboard"));
 			
 			SendAssignationEmail(ticketId, asignee, who, message);
-		} catch (Exception ex) {
-			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), ex);
+		} catch (Exception e) {
+			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 		}
 		finally{
 			da.closeConnection();
@@ -109,7 +109,7 @@ public class TicketController {
 						mail.sendEmail(who, to, subject, bodySb.toString()
 								);
 					} catch (Exception e) {
-						Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
+						Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 					}
 				}
 			}

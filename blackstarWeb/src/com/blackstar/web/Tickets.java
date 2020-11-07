@@ -12,10 +12,10 @@ import org.json.JSONArray;
 
 import com.blackstar.common.*;
 import com.blackstar.db.BlackstarDataAccess;
-import com.blackstar.interfaces.IUserService;
 import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
 import com.blackstar.model.TicketController;
+import com.blackstar.services.IUserService;
 import com.blackstar.services.UserServiceFactory;
 
 /**
@@ -53,9 +53,9 @@ public class Tickets extends HttpServlet {
 			IUserService dir = UserServiceFactory.getUserService();
 			request.setAttribute("employees", dir.getEmployeeList());
 		}
-		catch (Exception ex)
+		catch (Exception e)
 		{
-			 Logger.Log(LogLevel.FATAL, Thread.currentThread().getStackTrace()[1].toString(), ex);
+			 Logger.Log(LogLevel.FATAL, e.getStackTrace()[0].toString(), e);
 		}
 		
 		request.getRequestDispatcher("/tickets.jsp").forward(request, response);
@@ -66,16 +66,16 @@ public class Tickets extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
-			String ticket = request.getParameter("ticket");
+			String ticket = request.getParameter("ticketId");
 			String employee = request.getParameter("employee");
 			int ticketId = Integer.parseInt(ticket);
-			String who = "portal-servicios";
+			String who = "portal-servicios@gposac.com.mx";
 			
 			TicketController.AssignTicket(ticketId, employee, who, null);
 
 		} catch (NumberFormatException e) {
 			// TODO Auto-generated catch block
-			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
+			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 		}
 		finally{
 			response.sendRedirect("/tickets");

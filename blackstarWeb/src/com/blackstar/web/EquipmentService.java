@@ -47,7 +47,7 @@ public class EquipmentService extends HttpServlet {
 		        response.flushBuffer();
 			}
 		} catch (Exception e) {
-			Logger.Log(LogLevel.FATAL, Thread.currentThread().getStackTrace()[1].toString(), e);
+			Logger.Log(LogLevel.FATAL, e.getStackTrace()[0].toString(), e);
 		}		
 	}
 

@@ -18,7 +18,6 @@ import com.blackstar.db.BlackstarDataAccess;
 import com.blackstar.db.DAOFactory;
 import com.blackstar.db.dao.interfaces.TicketDAO;
 import com.blackstar.interfaces.IEmailService;
-import com.blackstar.interfaces.IUserService;
 import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
 import com.blackstar.model.*;
@@ -69,14 +68,14 @@ public class Dashboard extends HttpServlet {
 			request.setAttribute("offices", getOfficesList(da));
 			da.closeConnection();
 			// Recuperando la lista de empleados del directorio
-			IUserService dir = UserServiceFactory.getUserService();
+			IUserService dir = null;// = UserServiceFactory.getUserService();
 			request.setAttribute("employees", dir.getEmployeeList());
 			
 		} 
 		
-		catch (Exception ex) {
+		catch (Exception e) {
 			
-			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), ex);
+			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 			if (jsticketsToAssign.length() == 0) {
 				request.setAttribute("ticketsToAssignDashboard", "Error al recuperar tickets por asignar");
 			}
@@ -116,7 +115,7 @@ public class Dashboard extends HttpServlet {
 
 		} catch (NumberFormatException e) {
 			// TODO Auto-generated catch block
-			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
+			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 		}
 		finally{
 			response.sendRedirect("/dashboard");
@@ -132,8 +131,8 @@ public class Dashboard extends HttpServlet {
 				list.add(rs.getString("officeName"));
 			}
 		}
-		catch(Exception ex){
-			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), ex);
+		catch(Exception e){
+			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 		}
 		return list;
 	}}

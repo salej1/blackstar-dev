@@ -16,8 +16,8 @@ public class ServiceOrderController {
 			da.executeUpdate(String.format("CALL AssignServiceOrder('%s', '%s', '%s', '%s')", osId, asignee, who, "Dashboard"));
 			
 			SendAssignationEmail(osId, asignee, who, message);
-		} catch (Exception ex) {
-			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), ex);
+		} catch (Exception e) {
+			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 		}
 		finally{
 			da.closeConnection();
@@ -61,7 +61,7 @@ public class ServiceOrderController {
 							
 							bodySb.append(String.format("La orden de servicio %s le ha sido asignada para dar seguimiento. Por favor revise a continuación los detalles de la orden ", so.getServiceOrderNumber()));
 							if(message != null){
-								bodySb.append(" y la invormación adicional.");
+								bodySb.append(" y la información adicional.");
 							}
 							bodySb.append(String.format("\r\n\r\n Folio: %s", so.getServiceOrderNumber()));
 							bodySb.append(String.format("\r\n\r\n Cliente: %s", po.getCustomer()));

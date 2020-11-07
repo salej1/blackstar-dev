@@ -42,7 +42,7 @@ public class MySQLOfficeDAO implements OfficeDAO, Serializable {
 						
 			}
 		} catch (ClassNotFoundException | SQLException e) {
-			Logger.Log(LogLevel.CRITICAL, Thread.currentThread().getStackTrace()[1].toString(), e);
+			Logger.Log(LogLevel.CRITICAL, e.getStackTrace()[0].toString(), e);
 		}
 		finally{
 			if(conn != null){
@@ -85,7 +85,7 @@ public class MySQLOfficeDAO implements OfficeDAO, Serializable {
 						
 			}
 		} catch (ClassNotFoundException | SQLException e) {
-			Logger.Log(LogLevel.CRITICAL, Thread.currentThread().getStackTrace()[1].toString(), e);
+			Logger.Log(LogLevel.CRITICAL, e.getStackTrace()[0].toString(), e);
 		}
 		finally{
 			if(conn != null){

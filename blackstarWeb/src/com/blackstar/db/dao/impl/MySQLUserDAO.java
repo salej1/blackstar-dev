@@ -1,14 +1,13 @@
 package com.blackstar.db.dao.impl;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 import com.blackstar.db.dao.interfaces.UserDAO;
 import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
-import com.blackstar.model.Ticket;
 import com.blackstar.model.User;
 
 public class MySQLUserDAO implements UserDAO {
@@ -20,10 +19,11 @@ public class MySQLUserDAO implements UserDAO {
 		try {
 			conn = MySQLDAOFactory.createConnection();
 			ResultSet rs = conn.createStatement().executeQuery(String.format("CALL GetUserData('%s')", email));
-			
+			System.out.println("Email => " + email);
 			while(rs.next()) {
 				if(user == null){
 					user = new User(
+						rs.getInt("blackstarUserId"),
 						rs.getString("userEmail"),
 						rs.getString("userName")
 					);
@@ -40,19 +40,32 @@ public class MySQLUserDAO implements UserDAO {
 			}
 			
 		} catch (ClassNotFoundException | SQLException e) {
-			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
+			System.out.println("LoginError => " + e);
+			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 		}
 		finally{
 			if(conn != null){
 				try {
 					conn.close();
 				} catch (SQLException e) {
-					Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), e);
+					Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 				}
 			}
 		}
 		// TODO Auto-generated method stub
 		return user;
+	}
+
+	@Override
+	public List<User> getDomainUserList() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public User getUserById(Integer id) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

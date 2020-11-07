@@ -2,11 +2,16 @@ package com.blackstar.model;
 
 // Generated Sep 23, 2013 12:57:18 AM by Hibernate Tools 3.4.0.CR1
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+
 import static javax.persistence.GenerationType.IDENTITY;
+
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -44,6 +49,9 @@ public class Serviceorder implements java.io.Serializable {
 	private String receivedByPosition;
 	private String serviceOrderNumber;
 	private Integer isWrong;
+	private String receivedByEmail;
+	private String responsibleName;
+	private List<Employee> employeeList;
 	
 	public Serviceorder() {
 	}
@@ -55,7 +63,7 @@ public class Serviceorder implements java.io.Serializable {
 			String asignee, Date created, String createdBy,
 			String createdByUsr, Date modified, String modifiedBy,
 			String modifiedByUsr, String signCreated, String signReceivedBy, String receivedByPosition, String serviceOrderNumber, Integer serviceOrderId,
-			Integer isWrong) {
+			Integer isWrong, String receivedByEmail) {
 		this.serviceOrderId = serviceOrderId;
 		this.serviceTypeId = serviceTypeId;
 		this.ticketId = ticketId;
@@ -81,6 +89,8 @@ public class Serviceorder implements java.io.Serializable {
 		this.receivedByPosition = receivedByPosition;
 		this.serviceOrderNumber = serviceOrderNumber;
 		this.isWrong = isWrong;
+		this.receivedByEmail = receivedByEmail;
+		this.responsibleName = responsible;
 	}
 
 	@Id
@@ -323,5 +333,71 @@ public class Serviceorder implements java.io.Serializable {
 
 	public String getSignReceivedBy() {
 		return signReceivedBy;
+	}
+
+	public String getReceivedByEmail() {
+		return receivedByEmail;
+	}
+
+	public void setReceivedByEmail(String receivedByEmail) {
+		this.receivedByEmail = receivedByEmail;
+	}
+
+	public String getResponsibleName() {
+		return responsibleName;
+	}
+
+	public void setResponsibleName(String responsibleName) {
+		this.responsibleName = responsibleName;
+	}
+
+	public List<Employee> getEmployeeList() {
+		return employeeList;
+	}
+
+	public void setEmployeeList(List<Employee> employeeList) {
+		this.employeeList = employeeList;
+	}
+	
+	public String getEmployeeListString(){
+		StringBuilder buff = new StringBuilder();
+		
+		for(Employee soemp : getEmployeeList()){
+			if(buff.length() > 0){
+				buff.append("; ");
+				buff.append(soemp.getEmail());
+			}
+			else{
+				buff.append(soemp.getEmail());	
+			}
+		}
+		
+		return buff.toString();
+	}
+	
+	public String getEmployeeNameListString(){
+		StringBuilder buff = new StringBuilder();
+		
+		for(Employee soemp : getEmployeeList()){
+			if(buff.length() > 0){
+				buff.append(", ");
+				buff.append(soemp.getName());
+			}
+			else{
+				buff.append(soemp.getName());	
+			}
+		}
+		
+		return buff.toString();
+	}
+	
+	public void setEmployeeListString(String listString){
+		String[] list = listString.split("[,;]");
+		this.employeeList = new ArrayList<Employee>();
+		for(String item : list){
+			Employee emp = new Employee();
+			emp.setEmail(item);
+			this.employeeList.add(emp);
+		}
 	}
 }

@@ -2,6 +2,10 @@ package com.blackstar.common;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
 
 import com.google.api.client.extensions.appengine.datastore.AppEngineDataStoreFactory;
 import com.google.api.client.extensions.appengine.http.UrlFetchTransport;
@@ -13,8 +17,10 @@ import com.google.api.client.util.store.DataStoreFactory;
 
 public class Globals {
 	
+	public static final String SESSION_KEY_PARAM = "uSession";
+	
 	  public static final String GOOGLE_DRIVER_CLASS = "com.mysql.jdbc.GoogleDriver";
-	  public static final String CONNECTION_STRING_TEMPLATE = "jdbc:google:rdbms://innso-blackstar-dev:innso-blackstar-dev2/%s";
+	  public static final String CONNECTION_STRING_TEMPLATE = "jdbc:google:rdbms://innso-blackstar-dev:innso-blackstar-dev3/%s";
 	  public static final String DEFAULT_DRIVER_CLASS = "com.mysql.jdbc.Driver";
 	  public static final String LOCAL_CONNECTION_STRING_TEMPLATE = "jdbc:mysql://localhost:3306/%s";
 	  /**
@@ -25,7 +31,7 @@ public class Globals {
 	      AppEngineDataStoreFactory.getDefaultInstance();
 
 	  public static GoogleClientSecrets clientSecrets = null;
-	  public static final String MAIN_SERVLET_PATH = "/dashboard";
+	  public static final String MAIN_SERVLET_PATH = "/codex/dashboard/show.do";
 	  public static final String AUTH_CALLBACK_SERVLET_PATH = "/oauth2callback";
 	  public static final HttpTransport HTTP_TRANSPORT = new UrlFetchTransport();
 	  public static final JacksonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
@@ -43,8 +49,35 @@ public class Globals {
 	    return clientSecrets;
 	  }
 	  
+	  public static final String HOMEPAGE_URL = "/";
 	  // User Groups
 	  public static final String GROUP_SERVICE = "sysServicio";
 	  public static final String GROUP_CALL_CENTER = "sysCallCenter";
 	  public static final String GROUP_COORDINATOR = "sysCoordinador";
+	  public static final String GROUP_SALES_MANAGER = "Gerente comercial";
+	  public static final String GROUP_CST= "CST";
+	  public static final String GROUP_PURCHASE = "Compras";
+	  public static final String GROUP_PURCHASE_MANAGER = "Jefe de Compras";
+	  public static final String GROUP_INVOICING = "Facturacion";
+	  public static final String GPOSAC_DEFAULT_SENDER = "portal-servicios@gposac.com.mx";
+	  public static final String GPOSAC_LOGO_DEFAULT_URL = "http://innso-blackstar-dev3.appspot.com/img/grupo-sac-logo.png";
+	  public static final String GOOGLE_CONTEXT_URL = "http://innso-blackstar-dev3.appspot.com";
+	  
+	  // time format
+	  public static final String DEFAULT_TIME_ZONE = "America/Mexico_City";
+	  public static final String DATE_FORMAT_PATTERN = "dd/MM/yyyy hh:mm:ss a";
+	  public static Date getLocalTime(){
+		  Calendar c = Calendar.getInstance(TimeZone.getTimeZone(DEFAULT_TIME_ZONE));
+		  return c.getTime();
+	  }
+	  public static String getLocalTimeString(){
+		  SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT_PATTERN);
+		  sdf.setTimeZone(TimeZone.getTimeZone(DEFAULT_TIME_ZONE));
+		  return sdf.format(getLocalTime());
+	  }
+	  public static String getLocalDateString(){
+		  SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		  sdf.setTimeZone(TimeZone.getTimeZone(DEFAULT_TIME_ZONE));
+		  return sdf.format(getLocalTime());
+	  }
 }

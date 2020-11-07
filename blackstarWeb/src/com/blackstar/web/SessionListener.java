@@ -3,10 +3,10 @@ package com.blackstar.web;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
-import com.blackstar.interfaces.IUserService;
 import com.blackstar.logging.LogLevel;
 import com.blackstar.logging.Logger;
 import com.blackstar.model.*;
+import com.blackstar.services.IUserService;
 import com.blackstar.services.UserServiceFactory;
 
 /**

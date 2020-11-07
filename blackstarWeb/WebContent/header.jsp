@@ -4,16 +4,16 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		<title>${initParam['globalsSettings_appTitle']}</title>
-		<link rel="stylesheet" href="css/960.css" type="text/css" media="screen" charset="utf-8" />
-		<link rel="stylesheet" href="css/template.css" type="text/css" media="screen" charset="utf-8" />
-		<link rel="stylesheet" href="css/colour.css" type="text/css" media="screen" charset="utf-8" />
-		<link href="js/glow/1.7.0/widgets/widgets.css" type="text/css" rel="stylesheet" />
-		<link rel="stylesheet" href="css/jquery.ui.theme.css">
-		<link rel="stylesheet" href="css/jquery-ui.min.css">
-		<script src="js/glow/1.7.0/core/core.js" type="text/javascript"></script>
-		<script src="js/glow/1.7.0/widgets/widgets.js" type="text/javascript"></script>
-		<script src="js/jquery-1.10.1.min.js"></script>
-		<script src="js/jquery-ui.js"></script>
+		<link rel="stylesheet" href="${pageContext.request.contextPath}/css/960.css" type="text/css" media="screen" charset="utf-8" />
+		<link rel="stylesheet" href="${pageContext.request.contextPath}/css/template.css" type="text/css" media="screen" charset="utf-8" />
+		<link rel="stylesheet" href="${pageContext.request.contextPath}/css/colour.css" type="text/css" media="screen" charset="utf-8" />
+		<link href="${pageContext.request.contextPath}/js/glow/1.7.0/widgets/widgets.css" type="text/css" rel="stylesheet" />
+		<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery.ui.theme.css">
+		<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery-ui.min.css">
+		<script src="${pageContext.request.contextPath}/js/glow/1.7.0/core/core.js" type="text/javascript"></script>
+		<script src="${pageContext.request.contextPath}/js/glow/1.7.0/widgets/widgets.js" type="text/javascript"></script>
+		<script src="${pageContext.request.contextPath}/js/jquery-1.10.1.min.js"></script>
+		<script src="${pageContext.request.contextPath}/js/jquery-ui.js"></script>
 		<script type="text/javascript">
 			glow.ready(function(){
 				new glow.widgets.Sortable(
@@ -25,66 +25,69 @@
 					}
 				);
 			});
+			
 		</script>
 	</head>
-
+        <c:set var="sysCallCenter" scope="request" value="${user.belongsToGroup['Call Center']}" />
 		<h1 id="head">
 			<div class="logo">
-				<img alt="Grupo Sac" src="img/grupo-sac-logo.png" border="0"/>
+				<img alt="Grupo Sac" src="${pageContext.request.contextPath}/img/grupo-sac-logo.png" border="0"/>
 			</div>
-			<span class="slogan">Portal de servicios</span>
+			<span class="slogan">Plataforma de Ventas</span>
 		</h1>
 		<form action="/search" method="GET"></form>
 		<ul id="navigation">
 		<c:choose>
-			<c:when test="${pageSection == 'dashboard'}">
-				<li><span class="active" onclick="window.location = 'dashboard'">Inicio</span></li>
-				<li><a href="tickets">Tickets</a></li>
-				<li><a href="ordenesServicio">Ordenes de servicio</a></li>
-				<li><a href="seguimiento">Seguimiento</a></li>
-				<li><a href="encuestas">Encuestas de servicio</a></li>
-				<li><a href="indicadores">Indicadores Serv.</a></li>
+		<c:when test="${pageSection == 'dashboard'}">
+		       <li><span class="active" onclick="window.location = '${pageContext.request.contextPath}/codex/dashboard/show.do'">Inicio</span></li>
+			    <li><a href="${pageContext.request.contextPath}/codex/client/showClientList.do">Clientes</a></li>
+			    <li><a href="${pageContext.request.contextPath}/codex/project/showList.do">Cedulas de Proyectos</a></li>
+				<li><a href="${pageContext.request.contextPath}/codex/priceProposal/showProposals.do">Cotizaciones</a></li>
+				<li><a href="${pageContext.request.contextPath}/codex/priceProposal/showSold.do">Pedidos</a></li>
+				<li><a href="${pageContext.request.contextPath}/codex/kpi/show.do">Indicadores</a></li>
 			</c:when>
-			<c:when test="${pageSection == 'tickets'}">
-				<li><a href="dashboard">Inicio</a></li>
-				<li><span class="active" onclick="window.location = 'tickets'">Tickets</span></li>
-				<li><a href="ordenesServicio">Ordenes de servicio</a></li>
-				<li><a href="seguimiento">Seguimiento</a></li>
-				<li><a href="encuestas">Encuestas de servicio</a></li>
-				<li><a href="indicadores">Indicadores Serv.</a></li>
+			
+		<c:when test="${pageSection == 'clientes'}">
+		       <li><a href="${pageContext.request.contextPath}/codex/dashboard/show.do">Inicio</a></li>
+			    <li><span class="active" onclick="window.location = '${pageContext.request.contextPath}/codex/client/showClientList.do'">Clientes</span></li>
+			    <li><a href="${pageContext.request.contextPath}/codex/project/showList.do">Cedulas de Proyectos</a></li>
+				<li><a href="${pageContext.request.contextPath}/codex/priceProposal/showProposals.do">Cotizaciones</a></li>
+				<li><a href="${pageContext.request.contextPath}/codex/priceProposal/showSold.do">Pedidos</a></li>
+				<li><a href="${pageContext.request.contextPath}/codex/kpi/show.do">Indicadores</a></li>
 			</c:when>
-			<c:when test="${pageSection == 'ordenesServicio'}">  
-				<li><a href="dashboard">Inicio</a></li>
-				<li><a href="tickets">Tickets</a></li>
-				<li><span class="active" onclick="window.location = 'ordenesServicio'">Ordenes de servicio</span></li>
-				<li><a href="seguimiento">Seguimiento</a></li>
-				<li><a href="encuestas">Encuestas de servicio</a></li>
-				<li><a href="indicadores">Indicadores Serv.</a></li>
+			
+			<c:when test="${pageSection == 'projects'}">
+		       <li><a href="${pageContext.request.contextPath}/codex/dashboard/show.do">Inicio</a></li>
+		       <li><a href="${pageContext.request.contextPath}/codex/client/showClientList.do">Clientes</a></li>
+			    <li><span class="active" onclick="window.location = '${pageContext.request.contextPath}/codex/project/showList.do'">Cedulas de Proyectos</span></li>
+				<li><a href="${pageContext.request.contextPath}/codex/priceProposal/showProposals.do">Cotizaciones</a></li>
+				<li><a href="${pageContext.request.contextPath}/codex/priceProposal/showSold.do">Pedidos</a></li>
+				<li><a href="${pageContext.request.contextPath}/codex/kpi/show.do">Indicadores</a></li>
 			</c:when>
-			<c:when test="${pageSection == 'seguimiento'}">
-				<li><a href="dashboard">Inicio</a></li>
-				<li><a href="tickets">Tickets</a></li>
-				<li><a href="ordenesServicio">Ordenes de servicio</a></li>
-				<li><span class="active" onclick="window.location = 'seguimiento'">Seguimiento</span></li>
-				<li><a href="encuestas">Encuestas de servicio</a></li>
-				<li><a href="indicadores">Indicadores Serv.</a></li>
-			</c:when>			
-			<c:when test="${pageSection == 'encuestas'}">
-				<li><a href="dashboard">Inicio</a></li>
-				<li><a href="tickets">Tickets</a></li>
-				<li><a href="ordenesServicio">Ordenes de servicio</a></li>
-				<li><a href="seguimiento">Seguimiento</a></li>
-				<li><span class="active" onclick="window.location = 'encuestas'">Encuestas de servicio</span></li>
-				<li><a href="indicadores">Indicadores Serv.</a></li>
-			</c:when>			
-			<c:when test="${pageSection == 'indicadores'}">
-				<li><a href="dashboard">Inicio</a></li>
-				<li><a href="tickets">Tickets</a></li>
-				<li><a href="ordenesServicio">Ordenes de servicio</a></li>
-				<li><a href="seguimiento">Seguimiento</a></li>
-				<li><a href="encuestas">Encuestas de servicio</a></li>
-				<li><span class="active" onclick="window.location = 'indicadores'">Indicadores Serv.</span></li>
-			</c:when>			
+			<c:when test="${pageSection == 'proposals'}">
+		       <li><a href="${pageContext.request.contextPath}/codex/dashboard/show.do">Inicio</a></li>
+		       <li><a href="${pageContext.request.contextPath}/codex/client/showClientList.do">Clientes</a></li>
+			    <li><a href="${pageContext.request.contextPath}/codex/project/showList.do">Cedulas de Proyectos</a></li>
+			    <li><span class="active" onclick="window.location = '${pageContext.request.contextPath}/codex/priceProposal/showProposals.do">Cotizaciones</span></li>
+				<li><a href="${pageContext.request.contextPath}/codex/priceProposal/showSold.do">Pedidos</a></li>
+				<li><a href="${pageContext.request.contextPath}/codex/kpi/show.do">Indicadores</a></li>
+			</c:when>
+			<c:when test="${pageSection == 'sold'}">
+		       <li><a href="${pageContext.request.contextPath}/codex/dashboard/show.do">Inicio</a></li>
+		       <li><a href="${pageContext.request.contextPath}/codex/client/showClientList.do">Clientes</a></li>
+			    <li><a href="${pageContext.request.contextPath}/codex/project/showList.do">Cedulas de Proyectos</a></li>
+				<li><a href="${pageContext.request.contextPath}/codex/priceProposal/showProposals.do">Cotizaciones</a></li>
+			    <li><span class="active" onclick="window.location = '${pageContext.request.contextPath}/codex/priceProposal/showSold.do">Pedidos</span></li>
+				<li><a href="${pageContext.request.contextPath}/codex/kpi/show.do">Indicadores</a></li>
+			</c:when>
+			<c:otherwise>
+			    <li><a href="${pageContext.request.contextPath}/codex/dashboard/show.do">Inicio</a></li>
+		       <li><a href="${pageContext.request.contextPath}/codex/client/showClientList.do">Clientes</a></li>
+			    <li><a href="${pageContext.request.contextPath}/codex/project/showList.do">Cedulas de Proyectos</a></li>
+				<li><a href="${pageContext.request.contextPath}/codex/priceProposal/showProposals.do">Cotizaciones</a></li>
+				<li><a href="${pageContext.request.contextPath}/codex/priceProposal/showSold.do">Pedidos</a></li>
+				<li><a href="${pageContext.request.contextPath}/codex/kpi/show.do">Indicadores</a></li>
+			</c:otherwise>
 		</c:choose>
 			<li><span style="width:15px;"></span></li>
 			<li><input type="text"/></li>

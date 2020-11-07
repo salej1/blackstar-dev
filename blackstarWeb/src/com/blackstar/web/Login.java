@@ -60,13 +60,14 @@ public class Login
     	UserDAO dao = this.daoFactory.getUserDAO();
     	myUser = dao.getUserById(id);
     	if(myUser != null){
+        	req.getSession().setAttribute("user_id", gUser.getUserId());
         	req.getSession().setAttribute("user", myUser);
         	req.getSession().setAttribute("access_token", credential.getAccessToken());
     	}
     }
 
      // Send the results as the response
-    resp.sendRedirect("/dashboard");
+    resp.sendRedirect("/dashboard/show.do");
   }
   @Override
   protected AuthorizationCodeFlow initializeFlow() throws ServletException, IOException {

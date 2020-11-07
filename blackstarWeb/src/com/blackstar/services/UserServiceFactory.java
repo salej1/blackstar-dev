@@ -1,6 +1,6 @@
 package com.blackstar.services;
 
-import com.blackstar.interfaces.*;
+import com.blackstar.services.IUserService;
 
 public class UserServiceFactory {
 	public static IUserService getUserService(){

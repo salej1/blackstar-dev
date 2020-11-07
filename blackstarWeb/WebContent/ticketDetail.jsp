@@ -147,11 +147,11 @@
 									<td>
 										<select id="selectAsignee"  style="width:78%;">
 											<c:forEach var="employee" items="${employees}">
-												<option value="${employee.key}"
-												<c:if test="${ employee.key == ticketF.asignee }">
+												<option value="${employee.userEmail}"
+												<c:if test="${ employee.userEmail == ticketF.asignee }">
 													selected = "true"
 												</c:if>
-												>${ employee.value }</option>
+												>${ employee.userName }</option>
 											</c:forEach>
 										</select>
 										<button class="searchButton" onclick="javascript:assignNow(); return false;">Asignar ahora</button>
@@ -217,7 +217,7 @@
 					</div>					
 				</div>
 				
-			<form action="dashboard" id="sendAssignNow" method="POST">
+			<form action="/dashboard/asignTicket.do" id="sendAssignNow" method="POST">
 				<input type="hidden" name="ticketId" id="ticketId"/>
 				<input type="hidden" name="employee" id="employee"/>
 			</form>	

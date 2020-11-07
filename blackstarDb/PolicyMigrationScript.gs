@@ -11,9 +11,15 @@
 ** PR   Date    	Author	Description
 ** --   --------   -------  ------------------------------------
 ** 1    17/09/2013  SAG  	Version inicial: Exporta el archivo de polizas a BD blackstarDbTransfer
+** --   --------   -------  ------------------------------------
+** 2    13/03/2014  SAG  	Se Integra equipmentUser
+** --   --------   -------  ------------------------------------
+** 3	09/04/2014	SAG 	Se implementa sincronizacion selectiva
+** --   --------   -------  ------------------------------------
+** 4	30/07/2014	SAG 	Se implementa upsert
 *****************************************************************************/
 
-function main() {
+function policyMain() {
 	// Log init and timestamp
 	var formattedDate = Utilities.formatDate(new Date(), "CST", "yyyy-MM-dd HH:mm:ss");
 	Logger.log("Iniciando carga de polizas a base de datos: %s", formattedDate);
@@ -26,7 +32,7 @@ function main() {
 		var conn = getDbConnection();
 		
 		// start loading
-		sqlLog = startLoadJob(conn, sqlLog);
+		sqlLog = startPolicyLoadJob(conn, sqlLog);
 		closeDbConnection(conn);
 		
 		// Log out
@@ -45,7 +51,7 @@ function main() {
 }
 
 function getDbConnection(){
-	var conn = Jdbc.getCloudSqlConnection("jdbc:google:rdbms://salej1-blackstar-dev:salej1-blackstar-dev/blackstarDbTransfer");
+	var conn = Jdbc.getCloudSqlConnection("jdbc:google:rdbms://gposac-blackstar-pro:gposac-blackstar-pro/blackstarDbTransfer");
 	return conn;
 }
 
@@ -55,7 +61,7 @@ function closeDbConnection(conn){
 	}
 }
 
-function startLoadJob(conn, sqlLog) {
+function startPolicyLoadJob(conn, sqlLog) {
 
 	// Load the equipment type Ids
 	var eqTypes = loadEquipmentTypes(conn);
@@ -66,9 +72,9 @@ function startLoadJob(conn, sqlLog) {
 	// For every row of data, generate an policy object.
 	var data = pd.getValues();
 	
-	for(var i = 1; i < data.length; i++){
+	for(var i = 0; i < data.length; i++){
 		var currPolicy = data[i];
-		sqlLog = sendToDatabase(currPolicy, conn, eqTypes, sqlLog);
+		sqlLog = sendPolicyToDatabase(currPolicy, conn, eqTypes, sqlLog);
 	}  
 	
 	return sqlLog;
@@ -78,42 +84,9 @@ String.prototype.trim = function() {
 	return this.replace(/^\s+|\s+$/g,"");
 }
 
-function sendToDatabase(policy, conn, eqTypes, sqlLog){
+function sendPolicyToDatabase(policy, conn, eqTypes, sqlLog, range){
 	// sql string initialization
-	var sql = "	INSERT INTO `blackstarDbTransfer`.`policy`	\
-	(	\
-	`office`,	\
-	`policyType`,	\
-	`customerContract`,	\
-	`customer`,	\
-	`finalUser`,	\
-	`project`,	\
-	`cst`,	\
-	`equipmentTypeId`,	\
-	`brand`,	\
-	`model`,	\
-	`serialNumber`,	\
-	`capacity`,	\
-	`equipmentAddress`,	\
-	`equipmentLocation`,	\
-	`contact`,	\
-	`contactEmail`,	\
-	`contactPhone`,	\
-	`startDate`,	\
-	`endDate`,	\
-	`visitsPerYear`,	\
-	`responseTimeHr`,	\
-	`solutionTimeHr`,	\
-	`penalty`,	\
-	`service`,	\
-	`includesParts`,	\
-	`exceptionParts`,	\
-	`serviceCenter`,	\
-	`observations`,	\
-	`created`,	\
-	`createdBy`,	\
-	`createdByUsr`)	\
-	VALUES(";
+	var sql = "CALL upsertPolicy(VALUES_PLACEHOLDER);";
 	
 	// reading the values
 	var ix = 1;
@@ -151,11 +124,16 @@ function sendToDatabase(policy, conn, eqTypes, sqlLog){
 	var exceptionParts = policy[ix]; ix++;
 	var serviceCenter = policy[ix]; ix++;
 	var observations = policy[ix]; ix++;
+	var zone = policy[ix]; ix++;
+	var equipmentUser = policy[ix]; ix++;
 	var created = new Date();
 	var createdBy = "PolicyMigrationScript";
 	var createdByUsr = "sergio.aga";
 
 	// fetching derived values
+	if(equipmentType == "SERVICIO DE DESCONTAMINACIÓN DATA CENTER"){
+		equipmentType = "SERVICIO DE DESCONTAMINACION DATA CENTER";
+	}
 	var equipmentTypeId = eqTypes[equipmentType.trim()];
 	
 	if(equipmentTypeId == null){
@@ -171,43 +149,48 @@ function sendToDatabase(policy, conn, eqTypes, sqlLog){
 		visitsPerYear = null;
 	}
 	// appending the values to the sql string
-	sql = sql + Utilities.formatString("'%s',",office);
-	sql = sql + Utilities.formatString("'%s',",policyType);
-	sql = sql + Utilities.formatString("'%s',",customerContract);
-	sql = sql + Utilities.formatString("'%s',",customer);
-	sql = sql + Utilities.formatString("'%s',",finalUser);
-	sql = sql + Utilities.formatString("'%s',",project);
-	sql = sql + Utilities.formatString("'%s',",cst);
-	sql = sql + Utilities.formatString("'%s',",equipmentTypeId);
-	sql = sql + Utilities.formatString("'%s',",brand);
-	sql = sql + Utilities.formatString("'%s',",model);
-	sql = sql + Utilities.formatString("'%s',",serialNumber);
-	sql = sql + Utilities.formatString("'%s',",capacity);
-	sql = sql + Utilities.formatString("'%s',",equipmentAddress);
-	sql = sql + Utilities.formatString("'%s',",equipmentLocation);
-	sql = sql + Utilities.formatString("'%s',",contact);
-	sql = sql + Utilities.formatString("'%s',",contactEmail);
-	sql = sql + Utilities.formatString("'%s',",contactPhone);
-	sql = sql + Utilities.formatString("'%s',",Utilities.formatDate(startDate, "CST", "yyyy-MM-dd HH:mm:ss"));
-	sql = sql + Utilities.formatString("'%s',",Utilities.formatDate(endDate, "CST", "yyyy-MM-dd HH:mm:ss"));
+
+	var values = "";
+	values = values + Utilities.formatString("'%s',",office);
+	values = values + Utilities.formatString("'%s',",policyType);
+	values = values + Utilities.formatString("'%s',",customerContract);
+	values = values + Utilities.formatString("'%s',",customer);
+	values = values + Utilities.formatString("'%s',",finalUser);
+	values = values + Utilities.formatString("'%s',",project);
+	values = values + Utilities.formatString("'%s',",cst);
+	values = values + Utilities.formatString("'%s',",equipmentTypeId);
+	values = values + Utilities.formatString("'%s',",brand);
+	values = values + Utilities.formatString("'%s',",model);
+	values = values + Utilities.formatString("'%s',",serialNumber);
+	values = values + Utilities.formatString("'%s',",capacity);
+	values = values + Utilities.formatString("'%s',",equipmentAddress);
+	values = values + Utilities.formatString("'%s',",equipmentLocation);
+	values = values + Utilities.formatString("'%s',",contact);
+	values = values + Utilities.formatString("'%s',",contactEmail);
+	values = values + Utilities.formatString("'%s',",contactPhone);
+	values = values + Utilities.formatString("'%s',",Utilities.formatDate(startDate, "CST", "yyyy-MM-dd HH:mm:ss"));
+	values = values + Utilities.formatString("'%s',",Utilities.formatDate(endDate, "CST", "yyyy-MM-dd HH:mm:ss"));
 	if(parseInt(visitsPerYear, 10) > 0) {
-		sql = sql + Utilities.formatString("'%s',",visitsPerYear);
+		values = values + Utilities.formatString("'%s',",visitsPerYear);
 	}
 	else{
-		sql = sql + Utilities.formatString("NULL,");
+		values = values + Utilities.formatString("NULL,");
 	}
-	sql = sql + Utilities.formatString("'%s',",responseTimeHr);
-	sql = sql + Utilities.formatString("'%s',",solutionTimeHr);
-	sql = sql + Utilities.formatString("'%s',",penalty);
-	sql = sql + Utilities.formatString("'%s',",service);
-	sql = sql + Utilities.formatString("'%s',",includesPartsBool);
-	sql = sql + Utilities.formatString("'%s',",exceptionParts);
-	sql = sql + Utilities.formatString("'%s',",serviceCenter);
-	sql = sql + Utilities.formatString("'%s',",observations);
-	sql = sql + Utilities.formatString("'%s',",Utilities.formatDate(created, "CST", "yyyy-MM-dd HH:mm:ss"));
-	sql = sql + Utilities.formatString("'%s',",createdBy);
-	sql = sql + Utilities.formatString("'%s');",createdByUsr);
+	values = values + Utilities.formatString("'%s',",responseTimeHr);
+	values = values + Utilities.formatString("'%s',",solutionTimeHr);
+	values = values + Utilities.formatString("'%s',",penalty);
+	values = values + Utilities.formatString("'%s',",service);
+	values = values + Utilities.formatString("'%s',",includesPartsBool);
+	values = values + Utilities.formatString("'%s',",exceptionParts);
+	values = values + Utilities.formatString("'%s',",serviceCenter);
+	values = values + Utilities.formatString("'%s',",observations);
+	values = values + Utilities.formatString("'%s',",equipmentUser);
+	values = values + Utilities.formatString("'%s',",Utilities.formatDate(created, "CST", "yyyy-MM-dd HH:mm:ss"));
+	values = values + Utilities.formatString("'%s',",createdBy);
+	values = values + Utilities.formatString("'%s'",createdByUsr);
 	
+	sql = sql.replace("VALUES_PLACEHOLDER", values);
+
 	Logger.log(Utilities.formatString("Inserting Policy %s", serialNumber));
 	
 	sqlLog = saveSql(sqlLog, sql);
@@ -215,9 +198,11 @@ function sendToDatabase(policy, conn, eqTypes, sqlLog){
 	var stmt = conn.createStatement();
 	stmt.execute(sql);
 	
+	// remove seed
+	range.setValue(2); // sent
+
 	return sqlLog;
 }
-
 
 function loadEquipmentTypes(conn){
 	var stmt = conn.createStatement();
@@ -266,7 +251,7 @@ function policySync(){
 		var conn = getDbConnection();
 		
 		// start syncing
-		sqlLog = startSyncJob(conn, sqlLog);
+		sqlLog = startPolicySyncJob(conn, sqlLog);
 		closeDbConnection(conn);
 		
 		// Log out
@@ -285,46 +270,83 @@ function policySync(){
 
 }
 
-function startSyncJob(conn, sqlLog){
+function startPolicySyncJob(conn, sqlLog){
 
 	// Load the equipment type Ids
 	var eqTypes = loadEquipmentTypes(conn);
 	
-	// how many records do we have?
-	var policyCount = getPolicyCount(conn);
-	
 	// start point at the spreadsheet
-	const offset = 4;
-	var startRec = policyCount + offset + 1;
+	const offset = 5; // Ajustar de acuerdo al numero de polizas cargadas en el sistema
+	var startRec = offset;
 	
 	// iterate looking for new policies
-	var range = "A" + startRec.toString() + ":AC" + startRec.toString();
-	var data = SpreadsheetApp.getActiveSpreadsheet().getRange(range).getValues();
+	var range = "A" + startRec.toString() + ":BD" + startRec.toString();
+	var ss = SpreadsheetApp.getActiveSpreadsheet();
+	var sheet = ss.getSheets()[1];
+	var data = sheet.getRange(range).getValues();
 	var currPolicy = data[0];
-	
+	var seed = currPolicy[55];
+	var update = 0;
+
 	while(currPolicy != null && currPolicy[0] != null && currPolicy[0].toString() != ""){
-		sqlLog = sendToDatabase(currPolicy, conn, eqTypes, sqlLog);
+		try{
+			if(seed == 1){
+				sqlLog = sendPolicyToDatabase(currPolicy, conn, eqTypes, sqlLog, sheet.getRange("BD" + startRec.toString()));		
+				update = 1;		
+			}
+		}
+		catch(err){
+			Logger.log("Error al sincronizar poliza # " + startRec);
+			Logger.log(err);
+		}
 		startRec++;
-		range = "A" + startRec.toString() + ":AC" + startRec.toString();
+		seedRange = "BD" + startRec.toString();
+		seed = sheet.getRange(seedRange).getValues()[0];
+		range = "A" + startRec.toString() + ":AE" + startRec.toString();
 		data = SpreadsheetApp.getActiveSpreadsheet().getRange(range).getValues();
 		currPolicy = data[0];
 	}	
+
+	if(update == 1){
+		sqlLog = executeTransfer(conn, sqlLog);
+	}
+
+	return sqlLog;
 }
 
-
-function getPolicyCount(conn){
-
+// Process
+function executeTransfer(conn, sqlLog){
 	var stmt = conn.createStatement();
-	var rs = stmt.execute("use blackstarDbTransfer;");
-	var policyCount = 0;
+	var sql = "call executeTransfer();";
+
+	Logger.log("Executing Transfer...");
 	
-	rs = stmt.executeQuery("select count(*) from blackstarDbTransfer.policy;");
-	while(rs.next()){
-		policyCount = rs.getInt(1);
-	}
+	sqlLog = saveSql(sqlLog, sql);
 	
-	rs.close();
+	stmt.execute(sql);
 	stmt.close();
-	
-	return policyCount;
+
+	return sqlLog;
+}
+
+// Seed
+function onEdit(event)
+{
+	try{
+		var s = SpreadsheetApp.getActiveSheet();
+		if( s.getName() == "GENERAL" ) { 
+		    var actSht = event.source.getActiveSheet();
+		    var actRng = event.source.getActiveRange();
+
+		    var index = actRng.getRowIndex();
+		    var seedCell = actSht.getRange(index,55);
+		    var serialNumber = actSht.getRange(index,11).getValue();
+		    if(serialNumber != ""){
+			    seedCell.setValue(1);
+		    }
+		}
+	}
+	catch(err){
+		Logger.log(err);
+	}
 }

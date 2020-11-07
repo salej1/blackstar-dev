@@ -11,13 +11,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONArray;
-import org.json.JSONException;
-
 import com.blackstar.common.ResultSetConverter;
 import com.blackstar.db.BlackstarDataAccess;
-import com.blackstar.interfaces.IUserService;
 import com.blackstar.logging.*;
 import com.blackstar.model.User;
+import com.blackstar.services.IUserService;
 import com.blackstar.services.UserServiceFactory;
 
 /**
@@ -44,7 +42,7 @@ public class Seguimiento extends HttpServlet {
 		
 		try
 		{
-			if(myUser.belongsToGroup("Call Center")){
+			if(myUser.getBelongsToGroup().get("Call Center") != null){
 				processCallCenterFollowUp(da, request);
 				request.getRequestDispatcher("/seguimientoCal.jsp").forward(request, response);
 			}
@@ -53,9 +51,9 @@ public class Seguimiento extends HttpServlet {
 				request.getRequestDispatcher("/seguimiento.jsp").forward(request, response);
 			}
 		}
-		catch (Exception ex)
+		catch (Exception e)
 		{
-			 Logger.Log(LogLevel.FATAL, Thread.currentThread().getStackTrace()[1].toString(), ex);
+			 Logger.Log(LogLevel.FATAL, e.getStackTrace()[0].toString(), e);
 		}
 		
 	
@@ -140,8 +138,8 @@ public class Seguimiento extends HttpServlet {
 			
 			da.closeConnection();
 		}
-		catch(Exception ex){
-			Logger.Log(LogLevel.ERROR, Thread.currentThread().getStackTrace()[1].toString(), ex);
+		catch(Exception e){
+			Logger.Log(LogLevel.ERROR, e.getStackTrace()[0].toString(), e);
 		}
 		return list;
 	}
